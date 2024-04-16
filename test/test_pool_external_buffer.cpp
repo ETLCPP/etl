@@ -388,7 +388,7 @@ namespace
     //*************************************************************************
     TEST(test_type_error)
     {
-      struct Test
+      struct Object
       {
         uint64_t a;
         uint64_t b;
@@ -400,7 +400,7 @@ namespace
 
       etl::ipool& ip = pool;
 
-      CHECK_THROW(ip.allocate<Test>(), etl::pool_element_size);
+      CHECK_THROW(ip.allocate<Object>(), etl::pool_element_size);
 
       delete[] buffer;
     }

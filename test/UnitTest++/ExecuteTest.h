@@ -39,12 +39,12 @@ namespace UnitTest {
          testObject.RunImpl();
       })
 #endif
-      UNITTEST_IMPL_CATCH(RequiredCheckException, e, { (void)e; })
-      UNITTEST_IMPL_CATCH(AssertException, e, { (void)e; })
-      UNITTEST_IMPL_CATCH(std::exception, e,
+      UNITTEST_IMPL_CATCH(RequiredCheckException, exc, { (void)exc; })
+      UNITTEST_IMPL_CATCH(AssertException, exc, { (void)exc; })
+      UNITTEST_IMPL_CATCH(std::exception, exc,
       {
          MemoryOutStream stream;
-         stream << "Unhandled exception: " << e.what();
+         stream << "Unhandled exception: " << exc.what();
          CurrentTest::Results()->OnTestFailure(details, stream.GetText());
       })
       UNITTEST_IMPL_CATCH_ALL

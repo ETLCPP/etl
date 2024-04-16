@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_FUNCTIONAL_INCLUDED
 
 #include "platform.h"
+#include "utility.h"
 
 ///\defgroup functional functional
 ///\ingroup utilities
@@ -528,6 +529,73 @@ namespace etl
       return ~lhs;
     }
   };
+
+#if ETL_USING_CPP11
+  namespace private_functional
+  {
+    //***************************************************************************
+    template<typename TReturnType, typename TClassType, typename... TArgs>
+    class mem_fn_impl
+    {
+    public:
+
+      typedef TReturnType(TClassType::* MemberFunctionType)(TArgs...);
+
+      ETL_CONSTEXPR mem_fn_impl(MemberFunctionType member_function_)
+        : member_function(member_function_)
+      {
+      }
+
+      ETL_CONSTEXPR TReturnType operator()(TClassType& instance, TArgs... args) const
+      {
+        return (instance.*member_function)(etl::forward<TArgs>(args)...);
+      }
+
+    private:
+
+      MemberFunctionType member_function;
+    };
+
+    //***************************************************************************
+    template<typename TReturnType, typename TClassType, typename... TArgs>
+    class const_mem_fn_impl
+    {
+    public:
+
+      typedef TReturnType(TClassType::* MemberFunctionType)(TArgs...) const;
+
+      ETL_CONSTEXPR const_mem_fn_impl(MemberFunctionType member_function_)
+        : member_function(member_function_)
+      {
+      }
+
+      ETL_CONSTEXPR TReturnType operator()(const TClassType& instance, TArgs... args) const
+      {
+        return (instance.*member_function)(etl::forward<TArgs>(args)...);
+      }
+
+    private:
+
+      MemberFunctionType member_function;
+    };
+  }
+
+  //***************************************************************************
+  template<typename TReturnType, typename TClassType, typename... TArgs>
+  ETL_CONSTEXPR
+  private_functional::mem_fn_impl<TReturnType, TClassType, TArgs...> mem_fn(TReturnType(TClassType::* member_function)(TArgs...))
+  {
+    return private_functional::mem_fn_impl<TReturnType, TClassType, TArgs...>(member_function);
+  }
+
+  //***************************************************************************
+  template<typename TReturnType, typename TClassType, typename... TArgs>
+  ETL_CONSTEXPR
+  private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...> mem_fn(TReturnType(TClassType::* member_function)(TArgs...) const)
+  {
+    return private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...>(member_function);
+  }
+#endif
 }
 
 #endif

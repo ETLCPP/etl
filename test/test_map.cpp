@@ -86,6 +86,7 @@ namespace
   SUITE(test_map)
   {
     //*************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -102,6 +103,7 @@ namespace
 
       return true;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture

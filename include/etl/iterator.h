@@ -583,36 +583,25 @@ namespace etl
   //***************************************************************************
 
   //***************************************************************************
-  ///\brief  Turns assignment into insertion.
-  ///
-  /// These are output iterators, constructed from a container-of-T.
-  /// Assigning a T to the iterator appends it to the container using push_back.
-  ///
-  /// @tparam TContainer
+  /// Turns assignment into push_back
   //***************************************************************************
   template <typename TContainer>
   class back_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
   {
   public:
 
-    /// A nested typedef for the type of whatever container you used.
     typedef TContainer container_type;
 
-    /// The only way to create this %iterator is with a container.
+    //***************************************************************************
+    /// Constructor
+    //***************************************************************************
     explicit ETL_CONSTEXPR14 back_insert_iterator(TContainer& c)
       : container(etl::addressof(c))
     {
     }
 
     //***************************************************************************
-    /// This kind of %iterator doesn't really have a @a position in the
-    /// container (you can think of the position as being permanently at
-    /// the end, if you like).  Assigning a value to the %iterator will
-    /// always append the value to the end of the container.
-    ///
-    /// @param value An instance of whatever type container_type::const_reference is;
-    ///              presumably a reference-to-const T for container<T>.
-    /// @return This %iterator, for chained operations.
+    /// Assignment operator
     //***************************************************************************
     ETL_CONSTEXPR14 back_insert_iterator& operator =(const typename TContainer::value_type& value)
     {
@@ -635,7 +624,6 @@ namespace etl
 
     //***************************************************************************
     /// Dereference operator.
-    /// Simply returns *this.
     //***************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 back_insert_iterator& operator *()
     {
@@ -644,7 +632,6 @@ namespace etl
 
     //***************************************************************************
     /// Pre-increment operator.
-    /// Simply returns *this.  (This %iterator does not @a move.)
     //***************************************************************************
     ETL_CONSTEXPR14 back_insert_iterator& operator ++()
     {
@@ -653,7 +640,6 @@ namespace etl
 
     //***************************************************************************
     /// Post-increment operator.
-    /// Simply returns *this.  (This %iterator does not @a move.)
     //***************************************************************************
     ETL_CONSTEXPR14 back_insert_iterator operator ++(int)
     {
@@ -666,15 +652,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// This wrapper function helps in creating back_insert_iterator instances.
-  /// Typing the name of the %iterator requires knowing the precise full
-  /// type of the container, which can be tedious and impedes generic
-  /// programming.  Using this function lets you take advantage of automatic
-  /// template parameter deduction, making the compiler match the correct types for you.
-  ///
-  /// @tparam TContainer The container type.
-  /// @param container A container of arbitrary type.
-  /// @return An instance of back_insert_iterator working on @p container.
+  /// Creates a back_insert_iterator from a container.
   //***************************************************************************
   template <typename TContainer>
   ETL_NODISCARD 
@@ -689,28 +667,17 @@ namespace etl
   //***************************************************************************
 
   //***************************************************************************
-  ///\brief Turns assignment into insertion.
-  ///
-  /// These are output iterators, constructed from a container-of-T.
-  /// Assigning a T to the iterator prepends it to the container using
-  /// push_front.
-  ///
-  /// Tip:  Using the front_inserter function to create these iterators can
-  /// save typing.
-  ///
-  ///\tparam TContainer The container type.
+  /// Turns assignment into a push_front.
   //***************************************************************************
   template <typename TContainer>
   class front_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
   {
   public:
 
-    /// A nested typedef for the type of whatever container you used.
     typedef TContainer container_type;
 
     //***************************************************************************
     /// Constructor
-    /// The only way to create this %iterator is with a container.
     //***************************************************************************
     explicit ETL_CONSTEXPR14 front_insert_iterator(TContainer& c)
       : container(etl::addressof(c))
@@ -718,15 +685,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// This kind of %iterator doesn't really have a @a position in the
-    /// container (you can think of the position as being permanently at
-    /// the front, if you like).  Assigning a value to the %iterator will
-    /// always prepend the value to the front of the container.
-    ///
-    /// @param  value  An instance of whatever type
-    ///                container_type::const_reference is; presumably a
-    ///                reference-to-const T for container<T>.
-    /// @return  This %iterator, for chained operations.
+    /// Assignment operator
     //***************************************************************************
     ETL_CONSTEXPR14 front_insert_iterator& operator =(const typename TContainer::value_type& value)
     {
@@ -747,7 +706,6 @@ namespace etl
 
     //***************************************************************************
     /// Dereference operator.
-    /// Simply returns *this.
     //***************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 front_insert_iterator& operator *()
     {
@@ -756,7 +714,6 @@ namespace etl
 
     //***************************************************************************
     /// Pre-increment operator.
-    /// Simply returns *this.  (This %iterator does not @a move.)
     //***************************************************************************
     ETL_CONSTEXPR14 front_insert_iterator& operator ++()
     {
@@ -765,7 +722,6 @@ namespace etl
 
     //***************************************************************************
     /// Post-increment operator.
-    /// Simply returns *this.  (This %iterator does not @a move.)
     //***************************************************************************
     ETL_CONSTEXPR14 front_insert_iterator operator ++(int)
     {
@@ -778,16 +734,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// This wrapper function helps in creating front_insert_iterator instances.
-  /// Typing the name of the %iterator requires knowing the precise full
-  /// type of the container, which can be tedious and impedes generic
-  /// programming.  Using this function lets you take advantage of automatic
-  /// template parameter deduction, making the compiler match the correct
-  /// types for you.
-  ///
-  ///\tparam TContainer The container type.
-  ///\param container A container of arbitrary type.
-  ///\return An instance of front_insert_iterator working on @p x.
+  /// Creates a front_insert_iterator from a container.
   //***************************************************************************
   template <typename TContainer>
   ETL_NODISCARD
@@ -795,6 +742,90 @@ namespace etl
   etl::front_insert_iterator<TContainer> front_inserter(TContainer& container)
   {
     return etl::front_insert_iterator<TContainer>(container);
+  }
+
+  //***************************************************************************
+  // push_insert_iterator
+  //***************************************************************************
+
+  //***************************************************************************
+  /// Turns assignment into a push.
+  //***************************************************************************
+  template <typename TContainer>
+  class push_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+  {
+  public:
+
+    typedef TContainer container_type;
+
+    //***************************************************************************
+    /// Constructor
+    //***************************************************************************
+    explicit ETL_CONSTEXPR14 push_insert_iterator(TContainer& c)
+      : container(etl::addressof(c))
+    {
+    }
+
+    //***************************************************************************
+    /// Assignment operator
+    //***************************************************************************
+    ETL_CONSTEXPR14 push_insert_iterator& operator =(const typename TContainer::value_type& value)
+    {
+      container->push(value);
+
+      return (*this);
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Move assignment operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 push_insert_iterator& operator =(typename TContainer::value_type&& value)
+    {
+      container->push(etl::move(value));
+
+      return (*this);
+    }
+#endif  // ETL_USING_CPP11
+
+    //***************************************************************************
+    /// Dereference operator.
+    //***************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 push_insert_iterator& operator *()
+    {
+      return (*this);
+    }
+
+    //***************************************************************************
+    /// Pre-increment operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 push_insert_iterator& operator ++()
+    {
+      return (*this);
+    }
+
+    //***************************************************************************
+    /// Post-increment operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 push_insert_iterator operator ++(int)
+    {
+      return (*this);
+    }
+
+  protected:
+
+    TContainer* container;
+  };
+
+  //***************************************************************************
+  /// Creates a push_insert_iterator from a container.
+  //***************************************************************************
+  template <typename TContainer>
+  ETL_NODISCARD
+    ETL_CONSTEXPR14
+    etl::push_insert_iterator<TContainer> push_inserter(TContainer& container)
+  {
+    return etl::push_insert_iterator<TContainer>(container);
   }
 
   //***************************************************************************

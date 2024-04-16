@@ -659,13 +659,13 @@ namespace etl
 
       // Doesn't exist, so add a new one.
       // Get a new node.
-      node_t& node = allocate_data_node();
-      node.clear();
-      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(etl::move(key));
-      ::new ((void*)etl::addressof(node.key_value_pair.second)) mapped_type();
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new ((void*)etl::addressof(node->key_value_pair.first))  key_type(etl::move(key));
+      ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT;
 
-      pbucket->insert_after(pbucket->before_begin(), node);
+      pbucket->insert_after(pbucket->before_begin(), *node);
 
       adjust_first_last_markers_after_insert(pbucket);
 
@@ -703,13 +703,13 @@ namespace etl
 
       // Doesn't exist, so add a new one.
       // Get a new node.
-      node_t& node = allocate_data_node();
-      node.clear();
-      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(key);
-      ::new ((void*)etl::addressof(node.key_value_pair.second)) mapped_type();
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new ((void*)etl::addressof(node->key_value_pair.first))  key_type(key);
+      ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT;
 
-        pbucket->insert_after(pbucket->before_begin(), node);
+        pbucket->insert_after(pbucket->before_begin(), *node);
 
       adjust_first_last_markers_after_insert(pbucket);
 
@@ -835,13 +835,13 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new ((void*)etl::addressof(node.key_value_pair)) value_type(key_value_pair);        
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair)) value_type(key_value_pair);        
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
-        bucket.insert_after(bucket.before_begin(), node);
+        bucket.insert_after(bucket.before_begin(), *node);
 
         adjust_first_last_markers_after_insert(pbucket);
 
@@ -870,13 +870,13 @@ namespace etl
         if (inode == bucket.end())
         {
           // Get a new node.
-          node_t& node = allocate_data_node();
-          node.clear();
-          ::new ((void*)etl::addressof(node.key_value_pair)) value_type(key_value_pair);
+          node_t* node = allocate_data_node();
+          node->clear();
+          ::new ((void*)etl::addressof(node->key_value_pair)) value_type(key_value_pair);
           ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
-          bucket.insert_after(inode_previous, node);
+          bucket.insert_after(inode_previous, *node);
           adjust_first_last_markers_after_insert(&bucket);
           ++inode_previous;
 
@@ -913,13 +913,13 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new ((void*)etl::addressof(node.key_value_pair)) value_type(etl::move(key_value_pair));
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair)) value_type(etl::move(key_value_pair));
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
-        bucket.insert_after(bucket.before_begin(), node);
+        bucket.insert_after(bucket.before_begin(), *node);
 
         adjust_first_last_markers_after_insert(pbucket);
 
@@ -948,13 +948,13 @@ namespace etl
         if (inode == bucket.end())
         {
           // Get a new node.
-          node_t& node = allocate_data_node();
-          node.clear();
-          ::new ((void*)etl::addressof(node.key_value_pair)) value_type(etl::move(key_value_pair));
+          node_t* node = allocate_data_node();
+          node->clear();
+          ::new ((void*)etl::addressof(node->key_value_pair)) value_type(etl::move(key_value_pair));
           ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
-          bucket.insert_after(inode_previous, node);
+          bucket.insert_after(inode_previous, *node);
           adjust_first_last_markers_after_insert(&bucket);
           ++inode_previous;
 
@@ -1420,14 +1420,14 @@ namespace etl
     //*************************************************************************
     /// Move from a range
     //*************************************************************************
-    void move(iterator first, iterator last)
+    void move(iterator b, iterator e)
     {
-      while (first != last)
+      while (b != e)
       {
-        iterator temp = first;
+        iterator temp = b;
         ++temp;
-        insert(etl::move(*first));
-        first = temp;
+        insert(etl::move(*b));
+        b = temp;
       }
     }
 #endif
@@ -1437,10 +1437,10 @@ namespace etl
     //*************************************************************************
     /// Create a node.
     //*************************************************************************
-    node_t& allocate_data_node()
+    node_t* allocate_data_node()
     {
       node_t* (etl::ipool::*func)() = &etl::ipool::allocate<node_t>;
-      return *(pnodepool->*func)();
+      return (pnodepool->*func)();
     }
 
     //*********************************************************************
@@ -1489,26 +1489,26 @@ namespace etl
         else if (pbucket == last)
         {
           // We erased the last, so we need to search again. Start from the first, go no further than the current last.
-          bucket_t* pcurrent = first;
+          pbucket = first;
           bucket_t* pend = last;
 
           last = first;
 
-          while (pcurrent != pend)
+          while (pbucket != pend)
           {
-            if (!pcurrent->empty())
+            if (!pbucket->empty())
             {
-              last = pcurrent;
+              last = pbucket;
             }
 
-            ++pcurrent;
+            ++pbucket;
           }
         }
       }
     }
 
     //*********************************************************************
-    /// Delete a data noe at the specified location.
+    /// Delete a data node at the specified location.
     //*********************************************************************
     local_iterator delete_data_node(local_iterator iprevious, local_iterator icurrent, bucket_t& bucket)
     {
@@ -1569,20 +1569,41 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename T, typename TKeyCompare>
-  bool operator ==(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename THash, typename TKeyEqual>
+  bool operator ==(const etl::iunordered_map<TKey, T, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_map<TKey, T, THash, TKeyEqual>& rhs)
   {
     const bool sizes_match = (lhs.size() == rhs.size());
     bool elements_match = true;
 
+    typedef typename etl::iunordered_map<TKey, T, THash, TKeyEqual>::const_iterator itr_t;
+    
     if (sizes_match)
     {
-      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+      itr_t l_begin = lhs.begin();
+      itr_t l_end   = lhs.end();
+
+      while ((l_begin != l_end) && elements_match)
       {
-        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+        const TKey key     = l_begin->first;
+        const T    l_value = l_begin->second;
+
+        // See if the lhs key exists in the rhs.
+        ETL_OR_STD::pair<itr_t, itr_t> range = rhs.equal_range(key);
+
+        if (range.first != rhs.end())
+        {
+          // See if the values match
+          const T r_value = range.first->second;
+
+          elements_match = (r_value == l_value);
+        }
+        else
         {
           elements_match = false;
         }
+
+        ++l_begin;
       }
     }
 
@@ -1596,8 +1617,9 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename T, typename TKeyCompare>
-  bool operator !=(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename THash, typename TKeyEqual>
+  bool operator !=(const etl::iunordered_map<TKey, T, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_map<TKey, T, THash, TKeyEqual>& rhs)
   {
     return !(lhs == rhs);
   }

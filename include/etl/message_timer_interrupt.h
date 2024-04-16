@@ -312,14 +312,30 @@ namespace etl
     }
 
     //*******************************************
-    /// Get the time to the next timer event.
+    /// Check if there is an active timer.
     //*******************************************
-    uint32_t time_to_next() const
+    bool has_active_timer() const
     {
       TInterruptGuard guard;
       (void)guard; // Silence 'unused variable warnings.
+      return !active_list.empty();
+    }
 
-      uint32_t delta = active_list.front().delta;
+    //*******************************************
+    /// Get the time to the next timer event.
+    /// Returns etl::timer::interval::No_Active_Interval if there is no active timer.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      uint32_t delta = static_cast<uint32_t>(etl::timer::interval::No_Active_Interval);
+
+      TInterruptGuard guard;
+      (void)guard; // Silence 'unused variable warnings.
+
+      if (!active_list.empty())
+      {
+        delta = active_list.front().delta;
+      }
 
       return delta;
     }

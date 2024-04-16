@@ -101,6 +101,7 @@ namespace
   SUITE(test_multiset)
   {
     //*************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -117,11 +118,12 @@ namespace
 
       return true;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture
     {
-      // Multisets of predefined data from which to constuct multisets used in
+      // Multisets of predefined data from which to construct multisets used in
       // each test
       std::multiset<int> initial_data;
       std::multiset<int> excess_data;
@@ -1157,7 +1159,12 @@ namespace
 
       i_compare = compare_data.lower_bound(99);
       i_data = data.lower_bound(99);
-      CHECK(*i_compare == *i_data);
+      CHECK(i_data != data.end());
+      
+      if ((i_data != data.end()) && (i_compare != compare_data.end()))
+      {
+        CHECK(*i_compare == *i_data);
+      }
 #else
       i_compare = compare_data.lower_bound(-1);
       i_data = data.lower_bound(-1);
@@ -1214,7 +1221,12 @@ namespace
 
       i_compare = compare_data.lower_bound(99);
       i_data = data.lower_bound(99);
-      CHECK(*i_compare == *i_data);
+      CHECK(i_data != data.end());
+
+      if ((i_data != data.end()) && (i_compare != compare_data.end()))
+      {
+        CHECK(*i_compare == *i_data);
+      }
 #else
       i_compare = compare_data.lower_bound(-1);
       i_data = data.lower_bound(-1);
@@ -1271,7 +1283,12 @@ namespace
 
       i_compare = compare_data.upper_bound(99);
       i_data = data.upper_bound(99);
-      CHECK(*i_compare == *i_data);
+      CHECK(i_data != data.end());
+
+      if ((i_data != data.end()) && (i_compare != compare_data.end()))
+      {
+        CHECK(*i_compare == *i_data);
+      }
 #else
       i_compare = compare_data.upper_bound(-1);
       i_data = data.upper_bound(-1);
@@ -1328,7 +1345,12 @@ namespace
 
       i_compare = compare_data.upper_bound(99);
       i_data = data.upper_bound(99);
-      CHECK(*i_compare == *i_data);
+      CHECK(i_data != data.end());
+
+      if ((i_data != data.end()) && (i_compare != compare_data.end()))
+      {
+        CHECK(*i_compare == *i_data);
+      }
 #else
       i_compare = compare_data.upper_bound(-1);
       i_data = data.upper_bound(-1);
@@ -1444,7 +1466,7 @@ namespace
             if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
             {
                 //if both are not end
-                if(compare.lower_bound(i) != compare.end())
+                if ((data.lower_bound(i) != data.end()) && (compare.lower_bound(i) != compare.end()))
                 {
                     CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
                 }
@@ -1467,10 +1489,10 @@ namespace
             //upper_bound
             CHECK_EQUAL(compare.upper_bound(i) == compare.end(), data.upper_bound(i) == data.end());
             //if both end, or none
-            if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+            if ((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
             {
                 //if both are not end
-                if(compare.upper_bound(i) != compare.end())
+                if ((data.upper_bound(i) != data.end()) && (compare.upper_bound(i) != compare.end()))
                 {
                     CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
                 }
@@ -1506,7 +1528,7 @@ namespace
         if ((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
         {
           //if both are not end
-          if (compare.lower_bound(i) != compare.end())
+          if ((data.lower_bound(i) != data.end()) && (compare.lower_bound(i) != compare.end()))
           {
             CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
           }
@@ -1532,7 +1554,7 @@ namespace
         if ((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
         {
           //if both are not end
-          if (compare.upper_bound(i) != compare.end())
+          if ((data.upper_bound(i) != data.end()) && (compare.upper_bound(i) != compare.end()))
           {
             CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
           }
@@ -1563,6 +1585,7 @@ namespace
 
       for (pos = data.crbegin(); pos != data.crend(); ++pos)
       {
+#include "etl/private/diagnostic_null_dereference_push.h"
         if (*pos > prv)
         {
           pass = false;
@@ -1570,6 +1593,7 @@ namespace
         }
 
         prv = *pos;
+#include "etl/private/diagnostic_pop.h"
       }
 
       CHECK(pass);

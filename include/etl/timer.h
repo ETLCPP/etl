@@ -104,6 +104,17 @@ namespace etl
         Inactive = 0xFFFFFFFFUL
       };
     };
+
+    // Timer time interval.
+    struct interval
+    {
+      enum
+      {
+        No_Active_Interval = 0xFFFFFFFFUL
+      };
+
+      typedef uint32_t type;
+    };
   };
 }
 

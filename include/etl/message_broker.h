@@ -228,9 +228,7 @@ namespace etl
       // Always pass the message on to the successor.
       if (has_successor())
       {
-        etl::imessage_router& successor = get_successor();
-
-        successor.receive(destination_router_id, msg);
+        get_successor().receive(destination_router_id, msg);
       }
     }
 
@@ -276,11 +274,48 @@ namespace etl
     using imessage_router::accepts;
 
     //*******************************************
-    /// Message brokers accept all messages.
+    /// Message brokers accept messages determined
+    /// by the subscribed routers.
     //*******************************************
-    virtual bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    virtual bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return true;
+      if (!empty())
+      {
+        // Scan the subscription lists.
+        subscription* sub = static_cast<subscription*>(head.get_next());
+
+        while (sub != ETL_NULLPTR)
+        {
+          message_id_span_t message_ids = sub->message_id_list();
+
+          message_id_span_t::iterator itr = etl::find(message_ids.begin(), message_ids.end(), id);
+
+          if (itr != message_ids.end())
+          {
+            etl::imessage_router* router = sub->get_router();
+
+            if (router->accepts(id))
+            {
+              return true;
+            }
+          }
+
+          sub = sub->next_subscription();
+        }
+      }
+
+      // Check any successor.
+      if (has_successor())
+      {
+        if (get_successor().accepts(id))
+        {
+          return true;
+        }
+      }
+
+      return false;
+
+      //return true;
     }
 
     //*******************************************

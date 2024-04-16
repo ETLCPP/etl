@@ -672,5 +672,13 @@ namespace
       CHECK_TRUE(motorControl.exited_state);
       CHECK_TRUE(motorControl.entered_state);
     }
+
+    //*************************************************************************
+    TEST(test_fsm_no_states_and_no_start)
+    {
+      MotorControl mc;
+
+      CHECK_THROW(mc.receive(Start()), etl::fsm_not_started);
+    }
   };
 }

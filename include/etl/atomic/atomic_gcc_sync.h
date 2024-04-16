@@ -167,7 +167,7 @@ namespace etl
 
     T operator --(int) volatile
     {
-      return __atomic_fetch_sub(&value, 1), etl::memory_order_seq_cst;
+      return __atomic_fetch_sub(&value, 1, etl::memory_order_seq_cst);
     }
 
     // Add

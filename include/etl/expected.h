@@ -38,6 +38,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "utility.h"
 #include "variant.h"
+#include "initializer_list.h"
 
 namespace etl
 {
@@ -353,6 +354,7 @@ namespace etl
     {
     }
 
+#if ETL_HAS_INITIALIZER_LIST
     //*******************************************
     /// Construct value type from initializser_list and arguments.
     //*******************************************
@@ -361,6 +363,7 @@ namespace etl
       : storage(il, etl::forward<Args>(args)...)
     {
     }
+#endif
 
     //*******************************************
     /// Construct error type from arguments.
@@ -608,17 +611,23 @@ namespace etl
     template <typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(etl::forward<Args>(args)...);
+      storage.template emplace<value_type>(etl::forward<Args>(args)...);
+
+      return value();
     }
 
     //*******************************************
     ///
     //*******************************************
+#if ETL_HAS_INITIALIZER_LIST
     template <typename U, typename... Args>
-    ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U>& il, Args&&... args) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U> il, Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(il, etl::forward<Args>(args)...);
+      storage.template emplace<value_type>(il, etl::forward<Args>(args)...);
+
+      return value();
     }
+#endif
 #else
     //*******************************************
     ///

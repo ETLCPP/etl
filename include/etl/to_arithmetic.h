@@ -251,7 +251,7 @@ namespace etl
           break;
         }
 
-        case etl::radix::hex:
+        case etl::radix::hexadecimal:
         {
           return ((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f'));
           break;
@@ -281,7 +281,7 @@ namespace etl
           break;
         }
 
-        case etl::radix::hex:
+        case etl::radix::hexadecimal:
         {
           if ((c >= '0') && (c <= '9'))
           {
@@ -363,7 +363,7 @@ namespace etl
       return (radix == etl::radix::binary)  ||
              (radix == etl::radix::octal)   ||
              (radix == etl::radix::decimal) ||
-             (radix == etl::radix::hex);
+             (radix == etl::radix::hexadecimal);
     }
 
     //***************************************************************************
@@ -397,7 +397,7 @@ namespace etl
           TValue old_value = integral_value;
           integral_value *= radix;
 
-          // No multipication overflow?
+          // No multiplication overflow?
           is_not_overflow = ((integral_value / radix) == old_value);
 
           if (is_not_overflow)

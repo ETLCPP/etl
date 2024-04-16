@@ -31,6 +31,8 @@ SOFTWARE.
 #include <cstdint>
 #include <type_traits>
 #include <limits>
+#include <array>
+#include <algorithm>
 
 #include "etl/binary.h"
 #include "etl/bitset.h"
@@ -42,6 +44,15 @@ SOFTWARE.
 
 namespace
 {
+  template <typename TIterator, typename T>
+  void generate_input(TIterator first, TIterator last, T value)
+  {
+    while (first != last)
+    {
+      *first++ = value++;
+    }
+  }
+
   //***********************************
   // Count bits the easy way.
   template <typename T>
@@ -2893,6 +2904,101 @@ namespace
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFF0000), (etl::make_msb_mask<int64_t, 48>()));
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), (etl::make_msb_mask<int64_t, 56>()));
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), (etl::make_msb_mask<int64_t, 64>()));
+    }
+
+    //*************************************************************************
+    TEST(test_binary_not)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      std::array<uint8_t, 256> expected;
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = ~input[i];
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(),
+                     output.begin(),
+                     etl::binary_not<uint8_t>());
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_binary_and)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      const uint8_t value = etl::b01101001;
+
+      std::array<uint8_t, 256> expected;
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = input[i] & value;
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(), 
+                     output.begin(), 
+                     etl::binary_and<uint8_t>(value));
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_binary_or)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      const uint8_t value = etl::b01101001;
+
+      std::array<uint8_t, 256> expected;
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = input[i] | value;
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(),
+                     output.begin(),
+                     etl::binary_or<uint8_t>(value));
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_binary_xor)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      const uint8_t value = etl::b01101001;
+
+      std::array<uint8_t, 256> expected;
+
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = input[i] ^ value;
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(),
+                     output.begin(),
+                     etl::binary_xor<uint8_t>(value));
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
     }
   };
 }

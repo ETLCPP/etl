@@ -978,5 +978,13 @@ namespace
       bool exitsCorrect = std::equal(motorControl.stateExitHistory.begin(), motorControl.stateExitHistory.end(), expectedExits.begin());
       CHECK(exitsCorrect);
     }
+
+    //*************************************************************************
+    TEST(test_fsm_no_states_and_no_start)
+    {
+      MotorControl mc;
+
+      CHECK_THROW(mc.receive(Start()), etl::fsm_not_started);
+    }
   };
 }

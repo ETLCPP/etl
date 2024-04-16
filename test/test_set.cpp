@@ -106,6 +106,7 @@ namespace
   SUITE(test_set)
   {
     //*************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -122,6 +123,7 @@ namespace
 
       return true;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture
@@ -612,12 +614,7 @@ namespace
       }
 
       // Try to insert when set is full should throw etl::set_full
-      try
-      {
-        data_result = data.insert(MAX_SIZE);
-      }
-      catch(const etl::set_full &e)
-      {}
+      CHECK_THROW(data_result = data.insert(MAX_SIZE), etl::set_full);
 
       // Try adding a duplicate (should return iterator pointing to duplicate) not throw error
       for (size_t i = 0; i < MAX_SIZE; ++i)
@@ -639,7 +636,7 @@ namespace
 
     }
 
-    //*************************************************************************
+    ////*************************************************************************
     //TEST_FIXTURE(SetupFixture, test_emplace_value)
     //{
     //  Compare_Data compare_data;
@@ -1036,7 +1033,12 @@ namespace
 
       i_compare = compare_data.lower_bound(11);
       i_data = data.lower_bound(11);
-      CHECK(*i_compare == *i_data);
+      CHECK(i_data != data.end());
+
+      if ((i_data != data.end()) && (i_compare != compare_data.end()))
+      {
+        CHECK(*i_compare == *i_data);
+      }
 #else
       i_compare = compare_data.lower_bound(-1);
       i_data = data.lower_bound(-1);

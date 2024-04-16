@@ -170,6 +170,18 @@ namespace etl
   }
 
   //***************************************************************************
+  // generate
+  template <typename TIterator, typename TFunction>
+  ETL_CONSTEXPR14
+  void generate(TIterator db, TIterator de, TFunction funct)
+  {
+    while (db != de)
+    {
+      *db++ = funct();
+    }
+  }
+
+  //***************************************************************************
   // copy
 #if ETL_USING_STL && ETL_USING_CPP20 
   // Use the STL constexpr implementation.
@@ -2009,9 +2021,7 @@ namespace etl
   template <typename TIterator, typename T>
   ETL_CONSTEXPR14
   TIterator remove(TIterator first, TIterator last, const T& value)
-  {
-    first = etl::find(first, last, value);
-      
+  {    
     if (first != last)
     {
       TIterator itr = first;
@@ -2039,8 +2049,6 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
-    first = etl::find_if(first, last, predicate);
-
     if (first != last)
     {
       TIterator itr = first;
@@ -2177,7 +2185,7 @@ namespace etl
   //***************************************************************************
   /// copy_if
   /// A safer form of copy_if where it terminates when the first end iterator is reached.
-  /// There is currently no STL equivelent.
+  /// There is currently no STL equivalent.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator,
@@ -3065,6 +3073,154 @@ namespace etl
     return multimin_iter_compare(compare, t, multimin_iter_compare(compare, tx...));
   }
 #endif
+
+  //***************************************************************************
+  /// partition
+  /// For forward iterators only
+  /// Does at most etl::distance(first, last) swaps.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
+    partition(TIterator first, TIterator last, TPredicate predicate)
+  {
+    first = etl::find_if_not(first, last, predicate);
+
+    if (first == last)
+    {
+      return first;
+    }
+
+    for (TIterator i = etl::next(first); i != last; ++i)
+    {
+      if (predicate(*i))
+      {
+        using ETL_OR_STD::swap;
+        swap(*i, *first);
+        ++first;
+      }
+    }
+
+    return first;
+  }
+
+  //***************************************************************************
+  /// partition
+  /// For iterators that support bidirectional iteration.
+  /// Does at most (etl::distance(first, last) / 2) swaps.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14
+  typename etl::enable_if<etl::is_bidirectional_iterator_concept<TIterator>::value, TIterator>::type
+    partition(TIterator first, TIterator last, TPredicate predicate) 
+  {
+    while (first != last)
+    {
+      first = etl::find_if_not(first, last, predicate);
+
+      if (first == last)
+      {
+        break;
+      }
+
+      last = etl::find_if(etl::reverse_iterator<TIterator>(last),
+                          etl::reverse_iterator<TIterator>(first),
+                          predicate).base();
+
+      if (first == last)
+      {
+        break;
+      }
+
+      --last;
+      using ETL_OR_STD::swap;
+      swap(*first, *last);
+      ++first;
+    }
+
+    return first;
+  }
+
+  //*********************************************************
+  namespace private_algorithm
+  {
+    using ETL_OR_STD::swap;
+
+    template <typename TIterator, typename TCompare>
+#if (ETL_USING_CPP20 && ETL_USING_STL) || (ETL_USING_CPP14 && ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST))
+    constexpr
+#endif
+    TIterator nth_partition(TIterator first, TIterator last, TCompare compare)
+    {
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
+      TIterator  pivot = last; // Maybe find a better pivot choice?
+      value_type pivot_value = *pivot;
+
+      // Swap the pivot with the last, if necessary.
+      if (pivot != last)
+      {
+        swap(*pivot, *last);
+      }
+
+      TIterator i = first;
+
+      for (TIterator j = first; j < last; ++j)
+      {
+        if (!compare(pivot_value, *j)) // Hack to get '*j <= pivot_value' in terms of 'pivot_value < *j'
+        {
+          swap(*i, *j);
+          ++i;
+        }
+      }
+
+      swap(*i, *last);
+
+      return i;
+    }
+  }
+
+  //*********************************************************
+  /// nth_element
+  /// see https://en.cppreference.com/w/cpp/algorithm/nth_element
+  //*********************************************************
+#if ETL_USING_CPP11
+  template <typename TIterator, typename TCompare = etl::less<typename etl::iterator_traits<TIterator>::value_type> >
+#else
+  template <typename TIterator, typename TCompare>
+#endif
+#if (ETL_USING_CPP20 && ETL_USING_STL) || (ETL_USING_CPP14 && ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST))
+  constexpr
+#endif
+  typename etl::enable_if<etl::is_random_access_iterator_concept<TIterator>::value, void>::type
+    nth_element(TIterator first, TIterator nth, TIterator last, TCompare compare = TCompare())
+  {
+    if (first == last)
+    {
+      return;
+    }
+
+    // 'last' must point to the actual last value.
+    --last;
+
+    while (first <= last)
+    {
+      TIterator p = private_algorithm::nth_partition(first, last, compare);
+
+      if (p == nth)
+      {
+        return;
+      }
+      else if (p > nth)
+      {
+        last = p - 1;
+      }
+      else
+      {
+        first = p + 1;
+      }
+    }
+  }
 }
 
 #include "private/minmax_pop.h"

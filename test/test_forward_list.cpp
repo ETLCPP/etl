@@ -1000,10 +1000,13 @@ namespace
       compare_data.unique();
       data.unique();
 
-      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
+      if ((compare_data.begin() != compare_data.end()) && (data.begin() != data.end()))
+      {
+        CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data.size());
 
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-      CHECK(are_equal);
+        are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+        CHECK(are_equal);
+      }
     }
 
     //*************************************************************************

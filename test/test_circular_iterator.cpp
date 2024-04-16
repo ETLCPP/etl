@@ -8,7 +8,7 @@ https://www.etlcpp.com
 Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining data copy
-of this software and associated documentation ciles(the "Software"), to deal
+of this software and associated documentation files(the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -470,46 +470,46 @@ namespace
     //*************************************************************************
     TEST(test_member_dereference_operator_for_random_access_iterator)
     {
-      struct Test
+      struct Object
       {
         int data;
         int b;
       };
 
-      Test test[] = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+      Object object[] = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
 
-      etl::circular_iterator<Test*> ci(std::begin(test), std::end(test));
+      etl::circular_iterator<Object*> ci(std::begin(object), std::end(object));
 
-      CHECK_EQUAL(test[0].data, ci->data);
-      CHECK_EQUAL(test[0].b, ci->b);
+      CHECK_EQUAL(object[0].data, ci->data);
+      CHECK_EQUAL(object[0].b, ci->b);
 
       *ci = { 7, 8 };
 
-      CHECK_EQUAL(test[0].data, ci->data);
-      CHECK_EQUAL(test[0].b, ci->b);
+      CHECK_EQUAL(object[0].data, ci->data);
+      CHECK_EQUAL(object[0].b, ci->b);
 
       ++ci;
-      CHECK_EQUAL(test[1].data, ci->data);
-      CHECK_EQUAL(test[1].b, ci->b);
+      CHECK_EQUAL(object[1].data, ci->data);
+      CHECK_EQUAL(object[1].b, ci->b);
 
       ++ci;
-      CHECK_EQUAL(test[2].data, ci->data);
-      CHECK_EQUAL(test[2].b, ci->b);
+      CHECK_EQUAL(object[2].data, ci->data);
+      CHECK_EQUAL(object[2].b, ci->b);
     }
 
     //*************************************************************************
     TEST(test_member_dereference_operator_for_bidirectional_iterator)
     {
-      struct Test
+      struct Object
       {
         int data;
         int b;
       };
 
-      std::list<Test> test = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
-      std::list<Test>::iterator itr = test.begin();
+      std::list<Object> object = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+      std::list<Object>::iterator itr = object.begin();
 
-      etl::circular_iterator<std::list<Test>::iterator> ci(std::begin(test), std::end(test));
+      etl::circular_iterator<std::list<Object>::iterator> ci(std::begin(object), std::end(object));
 
       CHECK_EQUAL(itr->b, ci->b);
 
@@ -528,16 +528,16 @@ namespace
     //*************************************************************************
     TEST(test_member_dereference_operator_for_forward_iterator)
     {
-      struct Test
+      struct Object
       {
         int data;
         int b;
       };
 
-      std::forward_list<Test> test = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
-      std::forward_list<Test>::iterator itr = test.begin();
+      std::forward_list<Object> object = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+      std::forward_list<Object>::iterator itr = object.begin();
 
-      etl::circular_iterator<std::forward_list<Test>::iterator> ci(std::begin(test), std::end(test));
+      etl::circular_iterator<std::forward_list<Object>::iterator> ci(std::begin(object), std::end(object));
 
       CHECK_EQUAL(itr->b, ci->b);
 
