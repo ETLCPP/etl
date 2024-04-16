@@ -49,7 +49,7 @@ namespace etl
   template <typename T, typename TLess = etl::less<T> >
   struct compare
   {
-    enum  cmp_result
+    enum cmp_result
     {
       Less    = -1,
       Equal   = 0,
@@ -91,14 +91,18 @@ namespace etl
 
     static ETL_CONSTEXPR cmp_result cmp(first_argument_type lhs, second_argument_type rhs)
     {
-      return lt(lhs, rhs) ? cmp_result::Less : gt(lhs, rhs) ? cmp_result::Greater : cmp_result::Equal;
+      return lt(lhs, rhs) ? Less : gt(lhs, rhs) ? Greater : Equal;
     }
   };
 
   //***************************************************************************
   /// Default implementation of TLess is etl::less
   //***************************************************************************
-  template <typename T, typename TLess = etl::less<T>>
+#if ETL_USING_CPP11
+  template <typename T, typename TLess = etl::less<T> >
+#else
+  template <typename T, typename TLess>
+#endif
   ETL_CONSTEXPR14 int three_way_compare(const T& lhs, const T& rhs)
   {
     return etl::compare<T>::cmp(lhs, rhs);
