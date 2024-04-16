@@ -168,7 +168,7 @@ namespace etl
     {
     public:
 
-      typedef TElement            element_type;
+      typedef TElement        element_type;
       typedef TElement*       pointer;
       typedef const TElement* const_pointer;
 
