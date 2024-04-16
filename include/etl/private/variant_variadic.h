@@ -2010,7 +2010,7 @@ namespace etl
   /// Only defined if using C++20 and STL.
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
   template <typename... TTypes>
   ETL_CONSTEXPR14 
   std::common_comparison_category_t<std::compare_three_way_result_t<TTypes>...>

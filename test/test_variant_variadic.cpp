@@ -2009,7 +2009,7 @@ namespace
     }
 #endif
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
     //*************************************************************************
     TEST(test_variant_spaceship_operator)
     {
