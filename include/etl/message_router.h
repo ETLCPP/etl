@@ -354,7 +354,7 @@ namespace etl
   /// Send a message to a router.
   //***************************************************************************
   template <typename TRouter, typename TMessage>
-  static 
+  static
   typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
     send_message(TRouter&        destination,
                  const TMessage& message)
@@ -366,7 +366,7 @@ namespace etl
   /// Send a shared message to a router.
   //***************************************************************************
   template <typename TRouter>
-  static 
+  static
   typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
     send_message(TRouter&            destination,
                  etl::shared_message message)
@@ -378,7 +378,7 @@ namespace etl
   /// Send a message to a router with a particular id.
   //***************************************************************************
   template <typename TRouter, typename TMessage>
-  static 
+  static
   typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
     send_message(TRouter&                 destination,
                  etl::message_router_id_t id,
