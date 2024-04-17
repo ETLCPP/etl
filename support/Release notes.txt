@@ -1,7 +1,42 @@
 ===============================================================================
 20.38.11
-#812-Implement-SAE-J1850-CRC8
+
+Fixes
+#803 etl::unordered_map buffer overflow
+#805 legacy etl::bitset set/reset does not work if the element type is greater than 8 bit
+#819 etl::optional cannot return an optional object of self from member function
+#820 etl::send_message does not allow for non-virtual calls
+#825 Fixed extent etl::span shouldn't allow default constructor
+#827 Declaration order for etl::first_set_bit_position in binary.h
+#829 Possible bug on assign of etl::array
+#830 gcc warning - potential null pointer dereference using etl::map
+#845 etl::message_packet missing a copy constructor
+#857 etl::expected emplace methods are missing-return
+#868 etl::variant is missing comparison operators
+#869 etl::fsm::receive function can call p_state process_event also when p_state is nullptr
+#873 Validate allocated DataNode is not null to prevent gcc Wnull-dereference
+#874 Allow direct removal of a node from an etl::intrusive_list
+
+Pull Requests:
+#782 Set-is-full-error-when-adding-existing-item
+#804 etl::variant (variadic) default constructed state
+#812 Implement SAE-J1850 CRC8
+#843 In subspan function, add static checks on extents
+#849 Fix string_stream add missing initializations of const format specifiers
 #850 Fixed names according to Arduino's guidelines
+#854 In-place construction of shared message
+#858 Fix unique_ptr assigning nullptr to a null unique_ptr causes an assert
+#861 Implement constexpr strong typedef
+#863 Add eq and ne operators for compare utility
+
+Features:
+#812 Added: Implement-SAE-J1850-CRC8
+#774 Added: Truncating access for etl::bitset - Added extract() functions.
+#818 Added: Apply-code-spell-check-across-entire-code-base
+#806 etl::variant_pool should support C++17 variadic parameters
+#847 Add has_active_timer to callback_timer
+Added syntax checks to github ci
+
 
 ===============================================================================
 20.38.10
