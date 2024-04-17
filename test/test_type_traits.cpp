@@ -1284,4 +1284,40 @@ namespace
 #endif
 #endif
   }
+
+  //*************************************************************************
+  TEST(test_is_base_of_any)
+  {
+    struct Base {};
+    struct D1 : Base {};
+    struct D2 : Base {};
+    struct D3 : Base {};
+    struct D4 {};
+
+#if ETL_USING_CPP17
+    CHECK_TRUE(bool(etl::is_base_of_any_v<Base, D1, D2, D3, D4>));
+    CHECK_FALSE(bool(etl::is_base_of_any_v<Base, D4>));
+#else
+    CHECK_TRUE(bool(etl::is_base_of_any<Base, D1, D2, D3, D4>::value));
+    CHECK_FALSE(bool(etl::is_base_of_any<Base, D4>::value));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_base_of_all)
+  {
+    struct Base {};
+    struct D1 : Base {};
+    struct D2 : Base {};
+    struct D3 : Base {};
+    struct D4 {};
+
+#if ETL_USING_CPP17
+    CHECK_TRUE(bool(etl::is_base_of_all_v<Base, D1, D2, D3>));
+    CHECK_FALSE(bool(etl::is_base_of_all_v<Base, D1, D2, D3, D4>));
+#else
+    CHECK_TRUE(bool(etl::is_base_of_all<Base, D1, D2, D3>::value));
+    CHECK_FALSE(bool(etl::is_base_of_all<Base, D1, D2, D3, D4>::value));
+#endif
+  }
 }
