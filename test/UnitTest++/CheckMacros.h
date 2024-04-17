@@ -227,67 +227,67 @@
    #ifdef CHECK
       #error CHECK already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK instead
    #else
-      #define CHECK UNITTEST_CHECK
+      #define CHECK(value) UNITTEST_CHECK((value))
    #endif
 
    #ifdef CHECK_TRUE
       #error CHECK_TRUE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_TRUE instead
    #else
-      #define CHECK_TRUE UNITTEST_CHECK
+      #define CHECK_TRUE(value) UNITTEST_CHECK((value))
    #endif
 
    #ifdef CHECK_FALSE
       #error CHECK_FALSE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_FALSE instead
    #else
-      #define CHECK_FALSE UNITTEST_CHECK_FALSE
+      #define CHECK_FALSE(value) UNITTEST_CHECK_FALSE((value))
    #endif
 
    #ifdef CHECK_EQUAL
       #error CHECK_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_EQUAL instead
    #else
-      #define CHECK_EQUAL UNITTEST_CHECK_EQUAL
+      #define CHECK_EQUAL(expected, actual) UNITTEST_CHECK_EQUAL((expected), (actual))
    #endif
 
    #ifdef CHECK_EQUAL_HEX
       #error CHECK_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_EQUAL_HEX instead
    #else
-      #define CHECK_EQUAL_HEX UNITTEST_CHECK_EQUAL_HEX
+      #define CHECK_EQUAL_HEX(expected, actual) UNITTEST_CHECK_EQUAL_HEX((expected), (actual))
    #endif
 
    #ifdef CHECK_NOT_EQUAL
       #error CHECK_NOT_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NOT_EQUAL instead
    #else
-      #define CHECK_NOT_EQUAL UNITTEST_CHECK_NOT_EQUAL
+      #define CHECK_NOT_EQUAL(expected, actual) UNITTEST_CHECK_NOT_EQUAL((expected), (actual))
    #endif
 
    #ifdef CHECK_NOT_EQUAL_HEX
       #error CHECK_NOT_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NOT_EQUAL_HEX instead
    #else
-      #define CHECK_NOT_EQUAL_HEX UNITTEST_CHECK_NOT_EQUAL_HEX
+      #define CHECK_NOT_EQUAL_HEX(expected, actual) UNITTEST_CHECK_NOT_EQUAL_HEX((expected), (actual))
    #endif
 
    #ifdef CHECK_CLOSE
       #error CHECK_CLOSE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_CLOSE instead
    #else
-      #define CHECK_CLOSE UNITTEST_CHECK_CLOSE
+      #define CHECK_CLOSE(expected, actual, tolerance) UNITTEST_CHECK_CLOSE((expected), (actual), (tolerance))
    #endif
 
    #ifdef CHECK_ARRAY_EQUAL
       #error CHECK_ARRAY_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_ARRAY_EQUAL instead
    #else
-      #define CHECK_ARRAY_EQUAL UNITTEST_CHECK_ARRAY_EQUAL
+      #define CHECK_ARRAY_EQUAL(expected, actual, count) UNITTEST_CHECK_ARRAY_EQUAL((expected), (actual), (count))
    #endif
 
    #ifdef CHECK_ARRAY_CLOSE
       #error CHECK_ARRAY_CLOSE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_ARRAY_CLOSE instead
    #else
-      #define CHECK_ARRAY_CLOSE UNITTEST_CHECK_ARRAY_CLOSE
+      #define CHECK_ARRAY_CLOSE(expected, actual, count, tolerance) UNITTEST_CHECK_ARRAY_CLOSE((expected), (actual), (count), (tolerance))
    #endif
 
    #ifdef CHECK_ARRAY2D_CLOSE
       #error CHECK_ARRAY2D_CLOSE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_ARRAY2D_CLOSE instead
    #else
-      #define CHECK_ARRAY2D_CLOSE UNITTEST_CHECK_ARRAY2D_CLOSE
+      #define CHECK_ARRAY2D_CLOSE(expected, actual, rows, columns, tolerance) UNITTEST_CHECK_ARRAY2D_CLOSE((expected), (actual), (rows), (columns), (tolerance))
    #endif
 #endif
 
