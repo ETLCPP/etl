@@ -1,9 +1,10 @@
 ===============================================================================
 20.38.11
 
-Fixes
+Fixes:
 #803 etl::unordered_map buffer overflow
 #805 legacy etl::bitset set/reset does not work if the element type is greater than 8 bit
+#815 etl::remove_if calls predicate twice for first iterator, where predicate returns true.
 #819 etl::optional cannot return an optional object of self from member function
 #820 etl::send_message does not allow for non-virtual calls
 #825 Fixed extent etl::span shouldn't allow default constructor
@@ -16,9 +17,12 @@ Fixes
 #869 etl::fsm::receive function can call p_state process_event also when p_state is nullptr
 #873 Validate allocated DataNode is not null to prevent gcc Wnull-dereference
 #874 Allow direct removal of a node from an etl::intrusive_list
+#877 Optimize find_first_not_of and find_last_not_of on string_view
+#879 Render include paths relative (limits.h & random.h)
+#855 Strange expression in volatile atomic operator--
 
 Pull Requests:
-#782 Set-is-full-error-when-adding-existing-item
+#782 Set is full error when adding existing item
 #804 etl::variant (variadic) default constructed state
 #812 Implement SAE-J1850 CRC8
 #843 In subspan function, add static checks on extents
@@ -30,13 +34,33 @@ Pull Requests:
 #863 Add eq and ne operators for compare utility
 
 Features:
-#812 Added: Implement-SAE-J1850-CRC8
-#774 Added: Truncating access for etl::bitset - Added extract() functions.
-#818 Added: Apply-code-spell-check-across-entire-code-base
-#806 etl::variant_pool should support C++17 variadic parameters
+#774 Truncating access for etl::bitset - Added extract() functions.
+#806 etl::variant_pool should support C++17 variadic parameters (supports C++11 variadic parameters)
+#812 Implement-SAE-J1850-CRC8
+#818 Apply-code-spell-check-across-entire-code-base
+#841 Change push to push_back on containers, so they can be used with std::back_inserterAdded push_insert_iterator
 #847 Add has_active_timer to callback_timer
-Added syntax checks to github ci
+#883 Add etl::partition and etl::nth_element algorithms
+#864 cyclic_value first/last methods. Make first() and last() static for template based limits specialisation
 
+Changes without a Github issue:
+Added etl::mem_fn
+Added etl::generate algorithm
+Added binary functors for ~ & | ^
+Added etl::is_default_constructible_v
+Added etl::is_default_constructible
+Added syntax checks to github ci
+Refactored etl::optional implementation
+Fixed etl::optional operator =() for invalid values with non-pod types
+Refactored message_packet constructors
+Added specific copy and move constructors to message_packet for C++17 and above.
+Changed optional 'simple' types implementation for C++14 constexpr compatibility
+Fixed implicitly disabled copy constructor for message_packet
+Modified accepts() message router functions to interrogate subscribed and successor routers to achieve consistency.
+Fixed 'nodiscard' keyword errors
+Removed unused ETL_STATIC_CONSTANT
+Make binary functor operator() const
+Improved display of CHECK_EQUAL_HEX in unittest++
 
 ===============================================================================
 20.38.10
