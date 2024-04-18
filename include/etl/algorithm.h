@@ -3185,10 +3185,7 @@ namespace etl
   /// see https://en.cppreference.com/w/cpp/algorithm/nth_element
   //*********************************************************
 #if ETL_USING_CPP11
-  template <typename TIterator, typename TCompare = etl::less<typename etl::iterator_traits<TIterator>::value_type> >
-#else
-  template <typename TIterator, typename TCompare>
-#endif
+  template <typename TIterator, typename TCompare = etl::less<typename etl::iterator_traits<TIterator>::value_type>>
 #if (ETL_USING_CPP20 && ETL_USING_STL) || (ETL_USING_CPP14 && ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST))
   constexpr
 #endif
@@ -3221,6 +3218,51 @@ namespace etl
       }
     }
   }
+
+#else
+
+  //*********************************************************
+  template <typename TIterator, typename TCompare>
+  typename etl::enable_if<etl::is_random_access_iterator_concept<TIterator>::value, void>::type
+    nth_element(TIterator first, TIterator nth, TIterator last, TCompare compare)
+  {
+    if (first == last)
+    {
+      return;
+    }
+
+    // 'last' must point to the actual last value.
+    --last;
+
+    while (first <= last)
+    {
+      TIterator p = private_algorithm::nth_partition(first, last, compare);
+
+      if (p == nth)
+      {
+        return;
+      }
+      else if (p > nth)
+      {
+        last = p - 1;
+      }
+      else
+      {
+        first = p + 1;
+      }
+    }
+  }
+
+  //*********************************************************
+  template <typename TIterator>
+  typename etl::enable_if<etl::is_random_access_iterator_concept<TIterator>::value, void>::type
+    nth_element(TIterator first, TIterator nth, TIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare_t;
+
+    nth_element(first, last, compare_t());
+  }
+#endif
 }
 
 #include "private/minmax_pop.h"
