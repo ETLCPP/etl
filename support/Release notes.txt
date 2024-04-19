@@ -1,4 +1,4 @@
-===============================================================================
+﻿===============================================================================
 20.38.11
 
 Fixes:
@@ -22,16 +22,20 @@ Fixes:
 #855 Strange expression in volatile atomic operator--
 
 Pull Requests:
-#782 Set is full error when adding existing item
-#804 etl::variant (variadic) default constructed state
-#812 Implement SAE-J1850 CRC8
-#843 In subspan function, add static checks on extents
-#849 Fix string_stream add missing initializations of const format specifiers
-#850 Fixed names according to Arduino's guidelines
-#854 In-place construction of shared message
-#858 Fix unique_ptr assigning nullptr to a null unique_ptr causes an assert
-#861 Implement constexpr strong typedef
-#863 Add eq and ne operators for compare utility
+#782 Set is full error when adding existing item                              (İsmail Tüzün)
+#804 etl::variant (variadic) default constructed state                        (Manuel Seeböck)
+#812 Implement SAE-J1850 CRC8                                                 (Drew Rife)
+#832 Only copy/move storage value when optional is valid                      (Chiraffollo)
+#843 In subspan function, add static checks on extents                        (mike919192)
+#849 Fix string_stream add missing initializations of const format specifiers (Manuel Knörle)
+#850 Fixed names according to Arduino's guidelines                            (Mipsters)
+#854 In-place construction of shared message                                  (SanderSmeenkInspiro)
+#858 Fix unique_ptr assigning nullptr to a null unique_ptr causes an assert   (Derek Ludwig)
+#861 Implement constexpr strong typedef                                       (Drew Rife)
+#862 Update ETL_CONSTEXPR and C++14 designation from type_def                 (Drew Rife)
+#863 Add eq and ne operators for compare utility                              (Benzinnos)
+#865 Add utils compare equality operator                                      (Benzinnos)
+#879 Make include paths to private files relative                             (David Hebbeker)
 
 Features:
 #774 Truncating access for etl::bitset - Added extract() functions.
@@ -43,13 +47,12 @@ Features:
 #883 Add etl::partition and etl::nth_element algorithms
 #864 cyclic_value first/last methods. Make first() and last() static for template based limits specialisation
 
-Changes without a Github issue:
-Added etl::mem_fn
-Added etl::generate algorithm
+Changes without a GitHub issue#:
+Added etl::mem_fn (clone of std::mem_fn)
+Added etl::generate algorithm (clone of std::generate)
 Added binary functors for ~ & | ^
-Added etl::is_default_constructible_v
-Added etl::is_default_constructible
-Added syntax checks to github ci
+Added etl::is_default_constructible & etl::is_default_constructible_v
+Added syntax checks to GitHub CI
 Refactored etl::optional implementation
 Fixed etl::optional operator =() for invalid values with non-pod types
 Refactored message_packet constructors
@@ -60,7 +63,7 @@ Modified accepts() message router functions to interrogate subscribed and succes
 Fixed 'nodiscard' keyword errors
 Removed unused ETL_STATIC_CONSTANT
 Make binary functor operator() const
-Improved display of CHECK_EQUAL_HEX in unittest++
+Improved display of CHECK_EQUAL_HEX in UnitTest++
 
 ===============================================================================
 20.38.10
