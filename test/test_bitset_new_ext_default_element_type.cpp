@@ -217,6 +217,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment)
+    {
+      etl::bitset_ext<64>::buffer_type buffer1;
+      ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
+      etl::bitset_ext<64> data(0x123456731234567ULL, buffer1);
+      
+      etl::bitset_ext<64>::buffer_type buffer2;
+      etl::bitset_ext<64> data_copy(buffer2);
+
+      data_copy = data;
+
+      CHECK_EQUAL(compare.size(), data_copy.size());
+      CHECK_EQUAL(compare.count(), data_copy.count());
+
+      for (size_t i = 0UL; i < data_copy.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data_copy.test(i));
+      }
+    }
+
+    //*************************************************************************
     TEST(test_construct_from_char_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;

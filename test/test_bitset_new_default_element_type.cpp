@@ -281,6 +281,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment)
+    {
+      ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64> data(0x123456731234567ULL);
+      etl::bitset<64> data_copy;
+
+      data_copy =data;
+
+      CHECK_EQUAL(compare.size(), data_copy.size());
+      CHECK_EQUAL(compare.count(), data_copy.count());
+
+      for (size_t i = 0UL; i < data_copy.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data_copy.test(i));
+      }
+    }
+
+    //*************************************************************************
     TEST(test_construct_from_char_string)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
