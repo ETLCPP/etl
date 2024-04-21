@@ -42,7 +42,7 @@ Features:
 #806 etl::variant_pool should support C++17 variadic parameters (supports C++11 variadic parameters)
 #812 Implement-SAE-J1850-CRC8
 #818 Apply-code-spell-check-across-entire-code-base
-#841 Change push to push_back on containers, so they can be used with std::back_inserterAdded push_insert_iterator
+#841 Change push to push_back on containers, so they can be used with std::back_inserter. Added push_insert_iterator
 #847 Add has_active_timer to callback_timer
 #883 Add etl::partition and etl::nth_element algorithms
 #864 cyclic_value first/last methods. Make first() and last() static for template based limits specialisation
