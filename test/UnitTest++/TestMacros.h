@@ -107,7 +107,7 @@
    #ifdef SUITE
       #error SUITE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_SUITE instead
    #else
-      #define SUITE UNITTEST_SUITE
+      #define SUITE(name) UNITTEST_SUITE(name)
    #endif
 
    #ifdef TEST
