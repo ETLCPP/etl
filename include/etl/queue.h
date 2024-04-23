@@ -662,7 +662,7 @@ namespace etl
     {
       if (&rhs != this)
       {
-        base_t::move_clone(rhs);
+        base_t::move_clone(etl::move(rhs));
       }
 
       return *this;
