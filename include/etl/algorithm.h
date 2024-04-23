@@ -2022,19 +2022,18 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator remove(TIterator first, TIterator last, const T& value)
   {    
+    first = etl::find(first, last, value);
+
     if (first != last)
     {
       TIterator itr = first;
 
-      while (itr != last)
+      while (++itr != last)
       {
         if (!(*itr == value))
         {
-          *first = etl::move(*itr);
-          ++first;
+          *first++ = etl::move(*itr);
         }
-
-        ++itr;
       }
     }
       
@@ -2049,23 +2048,22 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
+    first = etl::find_if(first, last, predicate);
+
     if (first != last)
     {
       TIterator itr = first;
 
-      while (itr != last)
+      while (++itr != last)
       {
         if (!predicate(*itr))
         {
-          *first = etl::move(*itr);
-          ++first;
+          *first++ = etl::move(*itr);
         }
-
-        ++itr;
       }
     }
 
-    return first;
+    return first; 
   }
 }
 
