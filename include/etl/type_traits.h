@@ -1407,7 +1407,7 @@ typedef integral_constant<bool, true>  true_type;
   struct is_base_of_all
   {
     static const bool value = etl::is_base_of<T, T1>::value &&
-                                     etl::is_base_of_all<T, TRest...>::value;
+                              etl::is_base_of_all<T, TRest...>::value;
   };
 
   template <typename T, typename T1>
@@ -1430,7 +1430,7 @@ typedef integral_constant<bool, true>  true_type;
   struct is_base_of_any
   {
     static const bool value = etl::is_base_of<T, T1>::value ||
-                                     etl::is_base_of_any<T, TRest...>::value;
+                              etl::is_base_of_any<T, TRest...>::value;
   };
 
   template <typename T, typename T1>
