@@ -1,4 +1,12 @@
 ﻿===============================================================================
+20.38.12
+
+Fixes:
+#815 etl::remove_if calls predicate twice for first iterator, where predicate returns true.
+#885 queue move-assignment is not compiling
+Modified UnitTest++ SUITE macro for better VS2022 intellisense compatibility
+
+===============================================================================
 20.38.11
 
 Fixes:
