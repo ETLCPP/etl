@@ -388,6 +388,12 @@ namespace etl
 	constexpr bool operator <=(etl::monostate, etl::monostate) noexcept { return true; }
 	constexpr bool operator >=(etl::monostate, etl::monostate) noexcept { return true; }
 	constexpr bool operator ==(etl::monostate, etl::monostate) noexcept { return true; }
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+  constexpr std::strong_ordering operator<=>(monostate, monostate) noexcept
+  {
+    return std::strong_ordering::equal;
+  }
+#endif
 
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
   template <>
@@ -532,7 +538,7 @@ namespace etl
 
       default_construct_in_place<type>(data);
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
-      type_id   = variant_npos;
+      type_id   = 0U;
     }
 #include "diagnostic_pop.h"
 
@@ -1981,7 +1987,7 @@ namespace etl
 
   namespace private_variant
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
     //***************************************************************************
     /// C++20 compatible visitor function for testing variant '<=>'.
     /// Assumes that the two variants are already known to contain the same type.

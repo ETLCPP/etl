@@ -446,22 +446,35 @@ namespace
     //*************************************************************************
     TEST(test_constructor_default)
     {
-      CHECK_NO_THROW(test_variant_etl_3 variant_etl);
+      struct DefaultConstructible
+      {
+        DefaultConstructible()
+          : value(1)
+        {
+        }
 
-      test_variant_etl_3 variant_etl;
+        int value = 0;
+      };
 
-      CHECK(!etl::holds_alternative<char>(variant_etl));
-      CHECK(!etl::holds_alternative<int>(variant_etl));
-      CHECK(!etl::holds_alternative<std::string>(variant_etl));
+      using test_variant_t = etl::variant<DefaultConstructible, int, std::string>;
 
-      CHECK(!etl::holds_alternative<0U>(variant_etl));
-      CHECK(!etl::holds_alternative<1U>(variant_etl));
-      CHECK(!etl::holds_alternative<2U>(variant_etl));
+      CHECK_NO_THROW(test_variant_t variant_etl);
 
-      CHECK(!etl::holds_alternative(0U, variant_etl));
-      CHECK(!etl::holds_alternative(1U, variant_etl));
-      CHECK(!etl::holds_alternative(2U, variant_etl));
-      CHECK(!etl::holds_alternative(99U, variant_etl));
+      test_variant_t variant_etl;
+
+      CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<std::string>(variant_etl));
+      CHECK_EQUAL(1, etl::get<0U>(variant_etl).value);
+
+      CHECK_TRUE(etl::holds_alternative<0U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<1U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<2U>(variant_etl));
+
+      CHECK_TRUE(etl::holds_alternative(0U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(1U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(2U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(99U, variant_etl));
     }
 
     //*************************************************************************
