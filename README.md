@@ -71,7 +71,7 @@ The library is intended for any compiler that supports C++98/03/11/14/17/20.
 - Unit tested (currently over 6480 tests), using VS2019, GCC 8.1.0, , GCC 9.3.0, Clang 9.0.0 & 10.0.0
 - Many utilities for template support.
 - Easy to read and documented source.
-- Free email support
+- Free support via email, Github issues & Slack
 
 Any help porting the library to work under different platforms and compilers would be gratefully received.
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal or RTOS, and DSPs.
