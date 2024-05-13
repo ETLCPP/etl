@@ -158,6 +158,7 @@ target_sources(t20 PRIVATE etl_profile.h
         ../function.h.t.cpp
         ../functional.h.t.cpp
         ../gamma.h.t.cpp
+        ../gcd.h.t.cpp
         ../generic_pool.h.t.cpp
         ../hash.h.t.cpp
         ../ihash.h.t.cpp
@@ -178,6 +179,7 @@ target_sources(t20 PRIVATE etl_profile.h
         ../iterator.h.t.cpp
         ../jenkins.h.t.cpp
         ../largest.h.t.cpp
+        ../lcm.h.t.cpp
         ../limiter.h.t.cpp
         ../limits.h.t.cpp
         ../list.h.t.cpp
