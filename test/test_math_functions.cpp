@@ -480,6 +480,7 @@ namespace
       CHECK_EQUAL(5, etl::gcd(-10, -5, -15));
     }
 
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_constexpr_gdc)
     {
@@ -495,6 +496,7 @@ namespace
       CHECK_EQUAL(4, gcd4);
       CHECK_EQUAL(5, gcd5);
     }
+#endif
 
     //*************************************************************************
     TEST(test_lcm_for_positive_integers) 
@@ -516,6 +518,7 @@ namespace
       CHECK_EQUAL(5,  etl::lcm(-5, -5,  -5));
     }
 
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_constexpr_lcm)
     {
@@ -531,5 +534,6 @@ namespace
       CHECK_EQUAL(0,  lcm4);
       CHECK_EQUAL(5,  lcm5);
     }
+#endif
   };
 }
