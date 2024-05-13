@@ -481,6 +481,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constexpr_gdc)
+    {
+      constexpr int gcd1 = etl::gcd(3, 5, 7);
+      constexpr int gcd2 = etl::gcd(4, 6, 8);
+      constexpr int gcd3 = etl::gcd(9, 6, 3);
+      constexpr int gcd4 = etl::gcd(8, 4, 12);
+      constexpr int gcd5 = etl::gcd(10, 5, 15);
+
+      CHECK_EQUAL(1, gcd1);
+      CHECK_EQUAL(2, gcd2);
+      CHECK_EQUAL(3, gcd3);
+      CHECK_EQUAL(4, gcd4);
+      CHECK_EQUAL(5, gcd5);
+    }
+
+    //*************************************************************************
     TEST(test_lcm_for_positive_integers) 
     {
       CHECK_EQUAL(12, etl::lcm(3, 4,  6));
@@ -498,6 +514,22 @@ namespace
       CHECK_EQUAL(20, etl::lcm(-2, -5,  -4));
       CHECK_EQUAL(0,  etl::lcm(-0, -5,  -7));
       CHECK_EQUAL(5,  etl::lcm(-5, -5,  -5));
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr_lcm)
+    {
+      constexpr int lcm1 = etl::lcm(3, 4, 6);
+      constexpr int lcm2 = etl::lcm(3, 5, 10);
+      constexpr int lcm3 = etl::lcm(2, 5, 4);
+      constexpr int lcm4 = etl::lcm(0, 5, 7);
+      constexpr int lcm5 = etl::lcm(5, 5, 5);
+
+      CHECK_EQUAL(12, lcm1);
+      CHECK_EQUAL(30, lcm2);
+      CHECK_EQUAL(20, lcm3);
+      CHECK_EQUAL(0,  lcm4);
+      CHECK_EQUAL(5,  lcm5);
     }
   };
 }
