@@ -1157,6 +1157,7 @@ namespace etl
   //***************************************************************************
   namespace private_algorithm
   {
+#if ETL_USING_CPP11
     //*********************************
     // For random access iterators
     template <typename TIterator>
@@ -1169,15 +1170,17 @@ namespace etl
         return first;
       }
 
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
       int n = last - first;
       int m = middle - first;
-      int gcd_nm = etl::gcd(n, m);
+      int gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
 
       TIterator result = first + (last - middle);
 
       for (int i = 0; i < gcd_nm; i++) 
       {
-        auto temp = *(first + i);
+        value_type temp = etl::move(*(first + i));
         int j = i;
         
         while (true) 
@@ -1194,6 +1197,55 @@ namespace etl
             break;
           }
 
+          *(first + j) = etl::move(*(first + k));
+          j = k;
+        }
+
+        *(first + j) = etl::move(temp);
+      }
+
+      return result;
+    }
+#else
+    //*********************************
+    // For random access iterators
+    template <typename TIterator>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
+      rotate_general(TIterator first, TIterator middle, TIterator last)
+    {
+      if (first == middle || middle == last)
+      {
+        return first;
+      }
+
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
+      int n = last - first;
+      int m = middle - first;
+      int gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
+
+      TIterator result = first + (last - middle);
+
+      for (int i = 0; i < gcd_nm; i++)
+      {
+        value_type temp = *(first + i);
+        int j = i;
+
+        while (true)
+        {
+          int k = j + m;
+
+          if (k >= n)
+          {
+            k = k - n;
+          }
+
+          if (k == i)
+          {
+            break;
+          }
+
           *(first + j) = *(first + k);
           j = k;
         }
@@ -1203,6 +1255,7 @@ namespace etl
 
       return result;
     }
+#endif
 
     //*********************************
     // For bidirectional iterators
