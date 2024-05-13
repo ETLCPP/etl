@@ -49,6 +49,11 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral type required");
 
+    if ((a == 0 || b == 0))
+    {
+      return (a + b);
+    }
+
     while (b != 0) 
     {
       T t = b;
