@@ -1,4 +1,12 @@
 ﻿===============================================================================
+20.38.14
+
+Features:
+Added GCD and LCM algorithms. etl::gcd and etl::lcm
+Added specialisations of etl::rotate for different iterator types
+Added ETL_NODISCARD, ETL_CONSTEXPR14 and ETL_NOEXCEPT to etl::absolute and etl::absolute_unsigned
+
+===============================================================================
 20.38.13
 
 Fixes:
