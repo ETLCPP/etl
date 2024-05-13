@@ -40,8 +40,10 @@ namespace etl
   // For signed types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value, T>::type
-    absolute(T value)
+  ETL_NODISCARD
+  ETL_CONSTEXPR 
+  typename etl::enable_if<etl::is_signed<T>::value, T>::type
+    absolute(T value) ETL_NOEXCEPT
   {
     return (value < T(0)) ? -value : value;
   }
@@ -50,8 +52,10 @@ namespace etl
   // For unsigned types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    absolute(T value)
+  ETL_NODISCARD
+  ETL_CONSTEXPR
+  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    absolute(T value) ETL_NOEXCEPT
   {
     return value;
   }
@@ -65,8 +69,10 @@ namespace etl
 #else
   template <typename T, typename TReturn>
   #endif
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value, TReturn>::type
-    absolute_unsigned(T value)
+  ETL_NODISCARD
+  ETL_CONSTEXPR 
+  typename etl::enable_if<etl::is_signed<T>::value, TReturn>::type
+    absolute_unsigned(T value) ETL_NOEXCEPT
   {
     return (value == etl::integral_limits<T>::min) ? (etl::integral_limits<TReturn>::max / 2U) + 1U
                                                    : (value < T(0)) ? TReturn(-value) : TReturn(value);
@@ -77,8 +83,10 @@ namespace etl
   // Returns the result as the unsigned type.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    absolute_unsigned(T value)
+  ETL_NODISCARD
+  ETL_CONSTEXPR
+  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    absolute_unsigned(T value) ETL_NOEXCEPT
   {
     return etl::absolute(value);
   }
