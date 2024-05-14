@@ -3311,14 +3311,14 @@
     <ClCompile Include="..\test_crc8_j1850_zero.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_message.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\syntax_check\gcd.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\lcm.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message.cpp">
+      <Filter>Tests\Messaging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
