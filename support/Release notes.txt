@@ -1,4 +1,12 @@
 ﻿===============================================================================
+20.38.15
+
+Fixes:
+#892 Compilation Error with constexpr in etl::string_base::size() on ESP-WROVER-KIT (c++11)
+    Removed ETL_CONSTEXPR from etl::string_base::size().
+    Also removed ETL_CONSTEXPR from etl::vector::size().
+
+===============================================================================
 20.38.14
 
 Features:
