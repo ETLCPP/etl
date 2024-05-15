@@ -974,7 +974,7 @@ namespace etl
     /// Gets the current size of the vector.
     ///\return The current size of the vector.
     //*************************************************************************
-    ETL_CONSTEXPR size_type size() const
+    size_type size() const
     {
       return size_t(p_end - p_buffer);
     }

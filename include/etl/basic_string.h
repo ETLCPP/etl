@@ -173,7 +173,7 @@ namespace etl
     /// Gets the current size of the string.
     ///\return The current size of the string.
     //*************************************************************************
-    ETL_CONSTEXPR size_type size() const
+    size_type size() const
     {
       return current_size;
     }
