@@ -220,8 +220,8 @@ namespace etl
     //*************************************************************************
     /// Set all of the bits.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void set_all(pointer      pbuffer,
                  size_t       /*number_of_elements*/,
                  element_type top_mask) ETL_NOEXCEPT
@@ -232,8 +232,8 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_position(pointer pbuffer, 
                       size_t  position, 
                       bool    value = true)
@@ -254,8 +254,8 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_position(pointer pbuffer,
                       bool    value = true)
     {
@@ -275,8 +275,8 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position, bool Value>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_position(pointer pbuffer)
     {
       const element_type mask = element_type(element_type(1) << Position);
@@ -294,8 +294,8 @@ namespace etl
     //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void reset_all(pointer pbuffer, 
                    size_t  /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -305,8 +305,9 @@ namespace etl
     //*************************************************************************
     /// Reset the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
+
     void reset_position(pointer pbuffer, 
                         size_t  position)
     {
@@ -317,8 +318,8 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14
-    static 
     void from_string(pointer     pbuffer, 
                      size_t      /*number_of_elements*/, 
                      size_t      active_bits, 
@@ -350,8 +351,8 @@ namespace etl
     //*************************************************************************
     /// Set from a wide string.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14
-    static 
     void from_string(pointer        pbuffer, 
                      size_t         /*number_of_elements*/, 
                      size_t         active_bits, 
@@ -383,8 +384,8 @@ namespace etl
     //*************************************************************************
     /// Set from a u16 string.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    static 
+    static
+    ETL_CONSTEXPR14 
     void from_string(pointer         pbuffer, 
                      size_t          /*number_of_elements*/, 
                      size_t          active_bits, 
@@ -416,8 +417,8 @@ namespace etl
     //*************************************************************************
     /// Set from a u32 string.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void from_string(pointer         pbuffer, 
                      size_t          /*number_of_elements*/, 
                      size_t          active_bits, 
@@ -450,8 +451,8 @@ namespace etl
     /// Get as an integral value.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     T value(const_pointer pbuffer, 
             size_t        /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -462,8 +463,8 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     T extract(const_pointer pbuffer, 
               size_t        position, 
               size_t        length = etl::integral_limits<T>::bits)
@@ -491,8 +492,8 @@ namespace etl
 #else
 		template <typename T, size_t Position, size_t Length>
 #endif
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     T extract(const_pointer pbuffer)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -514,8 +515,8 @@ namespace etl
     /// Tests a bit at a position.
     /// Positions greater than the number of configured bits will return <b>false</b>.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     bool test(const_pointer pbuffer, 
               size_t        position)
     {
@@ -526,8 +527,8 @@ namespace etl
     //*************************************************************************
     /// Count the number of bits set.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     size_t count(const_pointer pbuffer, 
                  size_t        /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -537,8 +538,8 @@ namespace etl
     //*************************************************************************
     // Are all the bits sets?
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     bool all(const_pointer pbuffer, 
              size_t        /*number_of_elements*/, 
              element_type  top_mask) ETL_NOEXCEPT
@@ -549,8 +550,8 @@ namespace etl
     //*************************************************************************
     // Are all the mask bits sets?
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     bool all(const_pointer pbuffer, 
              size_t        /*number_of_elements*/, 
              element_type  top_mask, 
@@ -562,8 +563,8 @@ namespace etl
     //*************************************************************************
     /// Are none of the bits set?
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     bool none(const_pointer pbuffer, 
               size_t        /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -573,8 +574,8 @@ namespace etl
     //*************************************************************************
     /// Are none of the mask bits set?
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     bool none(const_pointer pbuffer, 
               size_t        /*number_of_elements*/, 
               element_type  mask) ETL_NOEXCEPT
@@ -585,8 +586,8 @@ namespace etl
     //*************************************************************************
     /// Are any of the bits set?
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     bool any(const_pointer pbuffer, 
              size_t        /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -596,8 +597,8 @@ namespace etl
     //*************************************************************************
     /// Are any of the mask bits set?
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     bool any(const_pointer pbuffer, 
              size_t        /*number_of_elements*/, 
              element_type  mask) ETL_NOEXCEPT
@@ -608,8 +609,8 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void flip_all(pointer pbuffer, 
                      size_t  /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -619,8 +620,8 @@ namespace etl
     //*************************************************************************
     /// Flip some of the bits.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void flip_bits(pointer      pbuffer, 
                    element_type mask = etl::integral_limits<element_type>::max) ETL_NOEXCEPT
     {
@@ -630,8 +631,8 @@ namespace etl
     //*************************************************************************
     /// Flip the bit at the position.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void flip_position(pointer pbuffer, 
                        size_t  position)
     {
@@ -643,8 +644,8 @@ namespace etl
     /// Returns a string representing the bitset.
     //*************************************************************************
     template <typename TString>
+    static
     ETL_CONSTEXPR14 
-    static 
     TString to_string(const_pointer pbuffer,
                       size_t active_bits,
                       typename TString::value_type zero = typename TString::value_type('0'),
@@ -671,8 +672,8 @@ namespace etl
     ///\param position The position to start from.
     ///\returns The position of the bit or npos if none were found.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     size_t find_next(const_pointer pbuffer, 
                      size_t        /*number_of_elements*/, 
                      size_t        active_bits, 
@@ -712,8 +713,8 @@ namespace etl
     /// operator assignment
     /// Assigns rhs to lhs
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_assignment(pointer       lhs_pbuffer, 
                              const_pointer rhs_pbuffer, 
                              size_t        /*number_of_elements*/) ETL_NOEXCEPT
@@ -725,8 +726,8 @@ namespace etl
     /// operator and
     /// AND lhs and rhs and put the result in lhs
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_and(pointer       lhs_pbuffer, 
                       const_pointer rhs_pbuffer, 
                       size_t        /*number_of_elements*/) ETL_NOEXCEPT
@@ -738,8 +739,8 @@ namespace etl
     /// operator or
     /// OR lhs and rhs and put the result in lhs
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_or(pointer       lhs_pbuffer, 
                      const_pointer rhs_pbuffer, 
                      size_t        /*number_of_elements*/) ETL_NOEXCEPT
@@ -751,8 +752,8 @@ namespace etl
     /// operator xor
     /// XOR lhs and rhs and put the result in lhs
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_xor(pointer       lhs_pbuffer, 
                       const_pointer rhs_pbuffer, 
                       size_t        /*number_of_elements*/) ETL_NOEXCEPT
@@ -764,8 +765,8 @@ namespace etl
     /// operator ~
     /// NOT the value in the buffer
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_not(pointer pbuffer, 
                       size_t  /*number_of_elements*/) ETL_NOEXCEPT
     {
@@ -775,8 +776,8 @@ namespace etl
     //*************************************************************************
     /// operator_shift_left
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_shift_left(pointer pbuffer, 
                              size_t  /*number_of_elements*/, 
                              size_t  active_bits, 
@@ -795,8 +796,8 @@ namespace etl
     //*************************************************************************
     /// operator_shift_right
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void operator_shift_right(pointer pbuffer, 
                               size_t  /*number_of_elements*/, 
                               size_t  active_bits, 
@@ -815,8 +816,8 @@ namespace etl
     //*************************************************************************
     /// operator_equality
     //*************************************************************************
-    ETL_CONSTEXPR14 
     static
+    ETL_CONSTEXPR14 
     bool operator_equality(const_pointer lhs_pbuffer, 
                            const_pointer rhs_pbuffer, 
                            size_t        /*number_of_elements*/) ETL_NOEXCEPT
@@ -828,8 +829,8 @@ namespace etl
     /// Initialise from an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
+    static
     ETL_CONSTEXPR14 
-    static 
     void initialise(pointer            pbuffer, 
                     size_t             /*number_of_elements*/,
                     unsigned long long value) ETL_NOEXCEPT
@@ -840,8 +841,8 @@ namespace etl
     //*************************************************************************
     /// swap
     //*************************************************************************
-    ETL_CONSTEXPR14 
     static
+    ETL_CONSTEXPR14 
     void swap(pointer lhs_pbuffer, 
               pointer rhs_pbuffer, 
               size_t  /*number_of_elements*/) ETL_NOEXCEPT
@@ -888,8 +889,8 @@ namespace etl
     /// Tests a bit at a position.
     /// Positions greater than the number of configured bits will return <b>false</b>.
     //*************************************************************************
-    ETL_CONSTEXPR14 
     static
+    ETL_CONSTEXPR14 
     bool test(const_pointer pbuffer,
               size_t        position) ETL_NOEXCEPT
     {
@@ -902,8 +903,8 @@ namespace etl
     //*************************************************************************
     /// Count the number of bits set.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     size_t count(const_pointer pbuffer,
                  size_t        number_of_elements) ETL_NOEXCEPT
     {
@@ -920,8 +921,8 @@ namespace etl
     //*************************************************************************
     // Are all the bits sets?
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     bool all(const_pointer pbuffer,
              size_t        number_of_elements,
              element_type  top_mask) ETL_NOEXCEPT
@@ -947,10 +948,10 @@ namespace etl
     //*************************************************************************
     /// Are none of the bits set?
     //*************************************************************************
+    static
     ETL_CONSTEXPR14
-      static
-      bool none(const_pointer pbuffer,
-                size_t        number_of_elements) ETL_NOEXCEPT
+    bool none(const_pointer pbuffer,
+              size_t        number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -966,8 +967,8 @@ namespace etl
     //*************************************************************************
     /// Are any of the bits set?
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     bool any(const_pointer pbuffer,
              size_t        number_of_elements) ETL_NOEXCEPT
     {
@@ -988,8 +989,8 @@ namespace etl
     //*************************************************************************
     /// Set all bits
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_all(pointer      pbuffer,
                  size_t       number_of_elements,
                  element_type top_mask) ETL_NOEXCEPT
@@ -1005,8 +1006,8 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_position(pointer pbuffer, 
                       size_t  position, 
                       bool    value = true) ETL_NOEXCEPT
@@ -1028,8 +1029,8 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_position(pointer pbuffer,
                       bool    value = true)
     {
@@ -1050,8 +1051,8 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position, bool Value>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void set_position(pointer pbuffer)
     {
       size_t       index = Position >> etl::log2<Bits_Per_Element>::value;
@@ -1070,8 +1071,8 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
+    static
     ETL_CONSTEXPR14 
-    static 
     void from_string(pointer     pbuffer, 
                      size_t      number_of_elements, 
                      size_t      total_bits, 
@@ -1105,8 +1106,8 @@ namespace etl
     //*************************************************************************
     /// Set from a wide string.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void from_string(pointer        pbuffer, 
                      size_t         number_of_elements, 
                      size_t         total_bits, 
@@ -1140,8 +1141,8 @@ namespace etl
     //*************************************************************************
     /// Set from a u16 string.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void from_string(pointer         pbuffer, 
                      size_t          number_of_elements, 
                      size_t          total_bits, 
@@ -1175,8 +1176,8 @@ namespace etl
     //*************************************************************************
     /// Set from a u32 string.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void from_string(pointer         pbuffer, 
                      size_t          number_of_elements, 
                      size_t          total_bits, 
@@ -1210,8 +1211,8 @@ namespace etl
     //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void reset_all(pointer pbuffer,
                    size_t  number_of_elements) ETL_NOEXCEPT
     {
@@ -1224,8 +1225,8 @@ namespace etl
     //*************************************************************************
     /// Reset the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void reset_position(pointer pbuffer, 
                         size_t  position) ETL_NOEXCEPT
     {
@@ -1239,8 +1240,8 @@ namespace etl
     /// Get as a value.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     T value(const_pointer pbuffer, 
             size_t        number_of_elements) ETL_NOEXCEPT
     {
@@ -1266,8 +1267,8 @@ namespace etl
     /// Extract an value from multiple elements.
     //*************************************************************************
     template <typename T>
+    static
     ETL_CONSTEXPR14
-    static 
     typename etl::make_unsigned<T>::type extract_from_multiple_elements(const element_type* pbuffer,
                                                                         int                 element_index,
                                                                         size_t              active_bits_in_msb,
@@ -1318,8 +1319,8 @@ namespace etl
     /// Run time position and length.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     typename etl::make_unsigned<T>::type extract_from_buffer(const_pointer pbuffer, 
                                                              size_t        position, 
                                                              size_t        length) ETL_NOEXCEPT
@@ -1358,8 +1359,8 @@ namespace etl
     /// Compile time position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     typename etl::enable_if<value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer)
     {
@@ -1377,8 +1378,8 @@ namespace etl
     /// Compile time position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     typename etl::enable_if<!value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer)
     {      
@@ -1395,8 +1396,8 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     T extract(const_pointer pbuffer,
               size_t        position,
               size_t        length = etl::integral_limits<T>::bits)
@@ -1417,8 +1418,8 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     T extract(const_pointer pbuffer)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -1436,8 +1437,8 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void flip_all(pointer pbuffer, 
                      size_t  number_of_elements) ETL_NOEXCEPT
     {
@@ -1447,8 +1448,8 @@ namespace etl
     //*************************************************************************
     /// Flip the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void flip_position(pointer pbuffer, 
                        size_t  position) ETL_NOEXCEPT
     {
@@ -1464,8 +1465,8 @@ namespace etl
     ///\param position The position to start from.
     ///\returns The position of the bit or npos if none were found.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     size_t find_next(const_pointer pbuffer, 
                      size_t        number_of_elements, 
                      size_t        total_bits, 
@@ -1521,8 +1522,8 @@ namespace etl
     /// Returns a string representing the bitset.
     //*************************************************************************
     template <typename TString>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     TString to_string(const_pointer                pbuffer,
                       size_t                       active_bits, 
                       typename TString::value_type zero, 
@@ -1546,8 +1547,8 @@ namespace etl
     //*************************************************************************
     /// operator assignment
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_assignment(pointer       lhs_pbuffer, 
                              const_pointer rhs_pbuffer, 
                              size_t        number_of_elements) ETL_NOEXCEPT
@@ -1563,8 +1564,8 @@ namespace etl
     //*************************************************************************
     /// operator and
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_and(pointer       lhs_pbuffer, 
                       const_pointer rhs_pbuffer, 
                       size_t        number_of_elements) ETL_NOEXCEPT
@@ -1580,8 +1581,8 @@ namespace etl
     //*************************************************************************
     /// operator or
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_or(pointer       lhs_pbuffer, 
                      const_pointer rhs_pbuffer, 
                      size_t        number_of_elements) ETL_NOEXCEPT
@@ -1597,8 +1598,8 @@ namespace etl
     //*************************************************************************
     /// operator xor
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_xor(pointer       lhs_pbuffer, 
                       const_pointer rhs_pbuffer, 
                       size_t        number_of_elements) ETL_NOEXCEPT
@@ -1614,8 +1615,8 @@ namespace etl
     //*************************************************************************
     /// operator not
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_not(pointer pbuffer, 
                       size_t  number_of_elements) ETL_NOEXCEPT
     {
@@ -1629,8 +1630,8 @@ namespace etl
     //*************************************************************************
     /// operator_shift_left
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_shift_left(pointer pbuffer, 
                              size_t  number_of_elements, 
                              size_t  active_bits, 
@@ -1693,8 +1694,8 @@ namespace etl
     //*************************************************************************
     /// operator_shift_right
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void operator_shift_right(pointer pbuffer, 
                               size_t  number_of_elements, 
                               size_t  active_bits, 
@@ -1759,8 +1760,8 @@ namespace etl
     //*************************************************************************
     /// operator_equality
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     bool operator_equality(const_pointer lhs_pbuffer, 
                            const_pointer rhs_pbuffer, 
                            size_t        number_of_elements) ETL_NOEXCEPT
@@ -1773,8 +1774,8 @@ namespace etl
     /// Enabled if the number of bits in the element equals the number of bits in an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     typename etl::enable_if<etl::integral_limits<TElementType>::bits == etl::integral_limits<unsigned long long>::bits, void>::type
       initialise(pointer            pbuffer, 
                  size_t             number_of_elements, 
@@ -1797,8 +1798,8 @@ namespace etl
     /// Enabled if the number of bits in the element doesn't equal the number of bits in an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     typename etl::enable_if<etl::integral_limits<TElementType>::bits != etl::integral_limits<unsigned long long>::bits, void>::type
       initialise(pointer            pbuffer,
                  size_t             number_of_elements,
@@ -1825,8 +1826,8 @@ namespace etl
     //*************************************************************************
     /// Swap bitset buffers.
     //*************************************************************************
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     void swap(pointer pbuffer1, 
               pointer pbuffer2, 
               size_t  number_of_elements)
@@ -2743,14 +2744,6 @@ namespace etl
     }
 
   private:
-
-    //*************************************************************************
-    /// Correct the unused top bits after bit manipulation.
-    //*************************************************************************
-    //ETL_CONSTEXPR14 static void clear_unused_bits_in_msb(pointer pbuffer) ETL_NOEXCEPT
-    //{
-    //  pbuffer[Number_Of_Elements - 1U] &= Top_Mask;
-    //}
 
     // The implementation of the bitset functionality.
     typedef etl::bitset_impl<element_type, (Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi> implementation;
