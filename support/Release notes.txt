@@ -2,9 +2,12 @@
 20.38.15
 
 Fixes:
+#895 Removed std algorithm calls from algorithm.h
 #892 Compilation Error with constexpr in etl::string_base::size() on ESP-WROVER-KIT (c++11)
     Removed ETL_CONSTEXPR from etl::string_base::size().
     Also removed ETL_CONSTEXPR from etl::vector::size().
+#889 bitset_new.h throws warnings for GHS compiler
+    Fixed ordering of static & ETL_CONSTEXPR14.
 
 ===============================================================================
 20.38.14
