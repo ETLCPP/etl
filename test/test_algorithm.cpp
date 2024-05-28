@@ -2384,5 +2384,41 @@ namespace
         data = initial;
       }
     }
+
+    //*************************************************************************
+    TEST(clamp_run_time)
+    {
+      CHECK_EQUAL(5, etl::clamp(5, 0, 10));
+      CHECK_EQUAL(0, etl::clamp(-5, 0, 10));
+      CHECK_EQUAL(10, etl::clamp(15, 0, 10));
+    }
+
+    //*************************************************************************
+    TEST(clamp_compile_time)
+    {
+      CHECK_EQUAL(5,  (etl::clamp<int, 0, 10>(5)));
+      CHECK_EQUAL(0,  (etl::clamp<int, 0, 10>(-5)));
+      CHECK_EQUAL(10, (etl::clamp<int, 0, 10>(15)));
+    }
+
+    //*************************************************************************
+    TEST(clamp_constexpr)
+    {
+      constexpr int result1 = etl::clamp(5, 0, 10);
+      constexpr int result2 = etl::clamp(-5, 0, 10);
+      constexpr int result3 = etl::clamp(15, 0, 10);
+
+      constexpr int result4 = etl::clamp<int, 0, 10>(5);
+      constexpr int result5 = etl::clamp<int, 0, 10>(-5);
+      constexpr int result6 = etl::clamp<int, 0, 10>(15);
+
+      CHECK_EQUAL(5,  result1);
+      CHECK_EQUAL(0,  result2);
+      CHECK_EQUAL(10, result3);
+
+      CHECK_EQUAL(5, result4);
+      CHECK_EQUAL(0, result5);
+      CHECK_EQUAL(10, result6);
+    }
   };
 }
