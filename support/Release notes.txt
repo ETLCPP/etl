@@ -9,6 +9,9 @@ Fixes:
 #889 bitset_new.h throws warnings for GHS compiler
     Fixed ordering of static & ETL_CONSTEXPR14.
 
+Changes without a GitHub issue#:
+Added extra tests for as_bytes and as_writable_bytes
+
 ===============================================================================
 20.38.14
 
