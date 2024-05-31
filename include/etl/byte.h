@@ -176,14 +176,14 @@ namespace etl
     {
     }
 
-  private:
-
     // Cast to a T
     template <typename T>
     operator T() const
     {
       return static_cast<T>(value);
     }
+
+  private:
 
     // The byte value
     unsigned char value;
