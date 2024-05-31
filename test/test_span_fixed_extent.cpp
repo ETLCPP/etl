@@ -1105,6 +1105,22 @@ namespace
 
       CHECK_EQUAL(const_bytes.size(),    sizeof(data));
       CHECK_EQUAL(writable_bytes.size(), sizeof(data));
+
+      etl::byte* pdata = reinterpret_cast<etl::byte*>(data);
+
+      // Test the reading of bytes.
+      for (size_t i = 0; i < sizeof(data); ++i)
+      {
+        CHECK_EQUAL(int(pdata[i]), int(const_bytes[i]));
+        CHECK_EQUAL(int(pdata[i]), int(writable_bytes[i]));
+      }
+
+      // Test writing of bytes.
+      for (size_t i = 0; i < writable_bytes.size(); ++i)
+      {
+        writable_bytes[i] = ~writable_bytes[i];
+        CHECK_EQUAL(int(pdata[i]), int(writable_bytes[i]));
+      }
     }
 
 #include "etl/private/diagnostic_pop.h"
