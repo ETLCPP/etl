@@ -1,16 +1,22 @@
 ﻿===============================================================================
-20.38.15
+20.38.16
 
 Fixes:
-#895 Removed std algorithm calls from algorithm.h
-#892 Compilation Error with constexpr in etl::string_base::size() on ESP-WROVER-KIT (c++11)
-    Removed ETL_CONSTEXPR from etl::string_base::size().
-    Also removed ETL_CONSTEXPR from etl::vector::size().
 #889 bitset_new.h throws warnings for GHS compiler
-    Fixed ordering of static & ETL_CONSTEXPR14.
+     Fixed ordering of static & ETL_CONSTEXPR14.
+#895 Removed std algorithm calls from algorithm.h
 
 Changes without a GitHub issue#:
 Added extra tests for as_bytes and as_writable_bytes
+Made conversion operator for C++03 etl::byte public
+
+===============================================================================
+20.38.15
+
+Fixes:
+#892 Compilation Error with constexpr in etl::string_base::size() on ESP-WROVER-KIT (c++11)
+     Removed ETL_CONSTEXPR from etl::string_base::size().
+     Also removed ETL_CONSTEXPR from etl::vector::size().
 
 ===============================================================================
 20.38.14
