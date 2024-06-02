@@ -31,6 +31,8 @@ SOFTWARE.
 #include <cstdint>
 #include <type_traits>
 #include <limits>
+#include <array>
+#include <algorithm>
 
 #include "etl/binary.h"
 #include "etl/bitset.h"
@@ -38,8 +40,19 @@ SOFTWARE.
 #include "etl/integral_limits.h"
 #include "etl/type_traits.h"
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
+  template <typename TIterator, typename T>
+  void generate_input(TIterator first, TIterator last, T value)
+  {
+    while (first != last)
+    {
+      *first++ = value++;
+    }
+  }
+
   //***********************************
   // Count bits the easy way.
   template <typename T>
@@ -2582,8 +2595,8 @@ namespace
     //*************************************************************************
     TEST(test_lsb_mask_64_bit)
     {
-      CHECK(int64_t(0x0000000000000000) == (etl::lsb_mask<int64_t, 0>::value));
-      CHECK(int64_t(0x00000000000000FF) == (etl::lsb_mask<int64_t, 8>::value));
+      CHECK(int64_t(0x0000000000000000) == (etl::lsb_mask<int64_t,  0>::value));
+      CHECK(int64_t(0x00000000000000FF) == (etl::lsb_mask<int64_t,  8>::value));
       CHECK(int64_t(0x000000000000FFFF) == (etl::lsb_mask<int64_t, 16>::value));
       CHECK(int64_t(0x0000000000FFFFFF) == (etl::lsb_mask<int64_t, 24>::value));
       CHECK(int64_t(0x00000000FFFFFFFF) == (etl::lsb_mask<int64_t, 32>::value));
@@ -2596,15 +2609,15 @@ namespace
     //*************************************************************************
     TEST(test_make_lsb_mask_8_bit)
     {
-      ETL_CONSTEXPR14 int8_t mask0 = etl::make_lsb_mask<int8_t>(0);
-      ETL_CONSTEXPR14 int8_t mask1 = etl::make_lsb_mask<int8_t>(1);
-      ETL_CONSTEXPR14 int8_t mask2 = etl::make_lsb_mask<int8_t>(2);
-      ETL_CONSTEXPR14 int8_t mask3 = etl::make_lsb_mask<int8_t>(3);
-      ETL_CONSTEXPR14 int8_t mask4 = etl::make_lsb_mask<int8_t>(4);
-      ETL_CONSTEXPR14 int8_t mask5 = etl::make_lsb_mask<int8_t>(5);
-      ETL_CONSTEXPR14 int8_t mask6 = etl::make_lsb_mask<int8_t>(6);
-      ETL_CONSTEXPR14 int8_t mask7 = etl::make_lsb_mask<int8_t>(7);
-      ETL_CONSTEXPR14 int8_t mask8 = etl::make_lsb_mask<int8_t>(8);
+      ETL_CONSTEXPR int8_t mask0 = etl::make_lsb_mask<int8_t>(0);
+      ETL_CONSTEXPR int8_t mask1 = etl::make_lsb_mask<int8_t>(1);
+      ETL_CONSTEXPR int8_t mask2 = etl::make_lsb_mask<int8_t>(2);
+      ETL_CONSTEXPR int8_t mask3 = etl::make_lsb_mask<int8_t>(3);
+      ETL_CONSTEXPR int8_t mask4 = etl::make_lsb_mask<int8_t>(4);
+      ETL_CONSTEXPR int8_t mask5 = etl::make_lsb_mask<int8_t>(5);
+      ETL_CONSTEXPR int8_t mask6 = etl::make_lsb_mask<int8_t>(6);
+      ETL_CONSTEXPR int8_t mask7 = etl::make_lsb_mask<int8_t>(7);
+      ETL_CONSTEXPR int8_t mask8 = etl::make_lsb_mask<int8_t>(8);
 
       CHECK(int8_t(etl::b00000000) == mask0);
       CHECK(int8_t(etl::b00000001) == mask1);
@@ -2628,17 +2641,51 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_make_lsb_mask_template_nbits_8_bit)
+    {
+      ETL_CONSTEXPR int8_t mask0 = etl::make_lsb_mask<int8_t, 0>();
+      ETL_CONSTEXPR int8_t mask1 = etl::make_lsb_mask<int8_t, 1>();
+      ETL_CONSTEXPR int8_t mask2 = etl::make_lsb_mask<int8_t, 2>();
+      ETL_CONSTEXPR int8_t mask3 = etl::make_lsb_mask<int8_t, 3>();
+      ETL_CONSTEXPR int8_t mask4 = etl::make_lsb_mask<int8_t, 4>();
+      ETL_CONSTEXPR int8_t mask5 = etl::make_lsb_mask<int8_t, 5>();
+      ETL_CONSTEXPR int8_t mask6 = etl::make_lsb_mask<int8_t, 6>();
+      ETL_CONSTEXPR int8_t mask7 = etl::make_lsb_mask<int8_t, 7>();
+      ETL_CONSTEXPR int8_t mask8 = etl::make_lsb_mask<int8_t, 8>();
+
+      CHECK(int8_t(etl::b00000000) == mask0);
+      CHECK(int8_t(etl::b00000001) == mask1);
+      CHECK(int8_t(etl::b00000011) == mask2);
+      CHECK(int8_t(etl::b00000111) == mask3);
+      CHECK(int8_t(etl::b00001111) == mask4);
+      CHECK(int8_t(etl::b00011111) == mask5);
+      CHECK(int8_t(etl::b00111111) == mask6);
+      CHECK(int8_t(etl::b01111111) == mask7);
+      CHECK(int8_t(etl::b11111111) == mask8);
+
+      CHECK(int8_t(etl::b00000000) == (etl::make_lsb_mask<int8_t, 0>()));
+      CHECK(int8_t(etl::b00000001) == (etl::make_lsb_mask<int8_t, 1>()));
+      CHECK(int8_t(etl::b00000011) == (etl::make_lsb_mask<int8_t, 2>()));
+      CHECK(int8_t(etl::b00000111) == (etl::make_lsb_mask<int8_t, 3>()));
+      CHECK(int8_t(etl::b00001111) == (etl::make_lsb_mask<int8_t, 4>()));
+      CHECK(int8_t(etl::b00011111) == (etl::make_lsb_mask<int8_t, 5>()));
+      CHECK(int8_t(etl::b00111111) == (etl::make_lsb_mask<int8_t, 6>()));
+      CHECK(int8_t(etl::b01111111) == (etl::make_lsb_mask<int8_t, 7>()));
+      CHECK(int8_t(etl::b11111111) == (etl::make_lsb_mask<int8_t, 8>()));
+    }
+
+    //*************************************************************************
     TEST(test_make_lsb_mask_64_bit)
     {
-      ETL_CONSTEXPR14 int64_t mask0 = etl::make_lsb_mask<int64_t>(0);
-      ETL_CONSTEXPR14 int64_t mask1 = etl::make_lsb_mask<int64_t>(8);
-      ETL_CONSTEXPR14 int64_t mask2 = etl::make_lsb_mask<int64_t>(16);
-      ETL_CONSTEXPR14 int64_t mask3 = etl::make_lsb_mask<int64_t>(24);
-      ETL_CONSTEXPR14 int64_t mask4 = etl::make_lsb_mask<int64_t>(32);
-      ETL_CONSTEXPR14 int64_t mask5 = etl::make_lsb_mask<int64_t>(40);
-      ETL_CONSTEXPR14 int64_t mask6 = etl::make_lsb_mask<int64_t>(48);
-      ETL_CONSTEXPR14 int64_t mask7 = etl::make_lsb_mask<int64_t>(56);
-      ETL_CONSTEXPR14 int64_t mask8 = etl::make_lsb_mask<int64_t>(64);
+      ETL_CONSTEXPR int64_t mask0 = etl::make_lsb_mask<int64_t>(0);
+      ETL_CONSTEXPR int64_t mask1 = etl::make_lsb_mask<int64_t>(8);
+      ETL_CONSTEXPR int64_t mask2 = etl::make_lsb_mask<int64_t>(16);
+      ETL_CONSTEXPR int64_t mask3 = etl::make_lsb_mask<int64_t>(24);
+      ETL_CONSTEXPR int64_t mask4 = etl::make_lsb_mask<int64_t>(32);
+      ETL_CONSTEXPR int64_t mask5 = etl::make_lsb_mask<int64_t>(40);
+      ETL_CONSTEXPR int64_t mask6 = etl::make_lsb_mask<int64_t>(48);
+      ETL_CONSTEXPR int64_t mask7 = etl::make_lsb_mask<int64_t>(56);
+      ETL_CONSTEXPR int64_t mask8 = etl::make_lsb_mask<int64_t>(64);
 
       CHECK_EQUAL(int64_t(0x0000000000000000), mask0);
       CHECK_EQUAL(int64_t(0x00000000000000FF), mask1);
@@ -2662,7 +2709,41 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_msb_mask_8_bit_8_bit)
+    TEST(test_make_lsb_mask_template_nbits_64_bit)
+    {
+      ETL_CONSTEXPR int64_t mask0 = etl::make_lsb_mask<int64_t,  0>();
+      ETL_CONSTEXPR int64_t mask1 = etl::make_lsb_mask<int64_t,  8>();
+      ETL_CONSTEXPR int64_t mask2 = etl::make_lsb_mask<int64_t, 16>();
+      ETL_CONSTEXPR int64_t mask3 = etl::make_lsb_mask<int64_t, 24>();
+      ETL_CONSTEXPR int64_t mask4 = etl::make_lsb_mask<int64_t, 32>();
+      ETL_CONSTEXPR int64_t mask5 = etl::make_lsb_mask<int64_t, 40>();
+      ETL_CONSTEXPR int64_t mask6 = etl::make_lsb_mask<int64_t, 48>();
+      ETL_CONSTEXPR int64_t mask7 = etl::make_lsb_mask<int64_t, 56>();
+      ETL_CONSTEXPR int64_t mask8 = etl::make_lsb_mask<int64_t, 64>();
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), mask0);
+      CHECK_EQUAL(int64_t(0x00000000000000FF), mask1);
+      CHECK_EQUAL(int64_t(0x000000000000FFFF), mask2);
+      CHECK_EQUAL(int64_t(0x0000000000FFFFFF), mask3);
+      CHECK_EQUAL(int64_t(0x00000000FFFFFFFF), mask4);
+      CHECK_EQUAL(int64_t(0x000000FFFFFFFFFF), mask5);
+      CHECK_EQUAL(int64_t(0x0000FFFFFFFFFFFF), mask6);
+      CHECK_EQUAL(int64_t(0x00FFFFFFFFFFFFFF), mask7);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), mask8);
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), (etl::make_lsb_mask<int64_t,  0>()));
+      CHECK_EQUAL(int64_t(0x00000000000000FF), (etl::make_lsb_mask<int64_t,  8>()));
+      CHECK_EQUAL(int64_t(0x000000000000FFFF), (etl::make_lsb_mask<int64_t, 16>()));
+      CHECK_EQUAL(int64_t(0x0000000000FFFFFF), (etl::make_lsb_mask<int64_t, 24>()));
+      CHECK_EQUAL(int64_t(0x00000000FFFFFFFF), (etl::make_lsb_mask<int64_t, 32>()));
+      CHECK_EQUAL(int64_t(0x000000FFFFFFFFFF), (etl::make_lsb_mask<int64_t, 40>()));
+      CHECK_EQUAL(int64_t(0x0000FFFFFFFFFFFF), (etl::make_lsb_mask<int64_t, 48>()));
+      CHECK_EQUAL(int64_t(0x00FFFFFFFFFFFFFF), (etl::make_lsb_mask<int64_t, 56>()));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), (etl::make_lsb_mask<int64_t, 64>()));
+    }
+
+    //*************************************************************************
+    TEST(test_msb_mask_8_bit)
     {
       CHECK(int8_t(etl::b00000000) == (etl::msb_mask<int8_t, 0>::value));
       CHECK(int8_t(etl::b10000000) == (etl::msb_mask<int8_t, 1>::value));
@@ -2678,8 +2759,8 @@ namespace
     //*************************************************************************
     TEST(test_msb_mask_64_bit)
     {
-      CHECK(int64_t(0x0000000000000000) == (etl::msb_mask<int64_t, 0>::value));
-      CHECK(int64_t(0xFF00000000000000) == (etl::msb_mask<int64_t, 8>::value));
+      CHECK(int64_t(0x0000000000000000) == (etl::msb_mask<int64_t,  0>::value));
+      CHECK(int64_t(0xFF00000000000000) == (etl::msb_mask<int64_t,  8>::value));
       CHECK(int64_t(0xFFFF000000000000) == (etl::msb_mask<int64_t, 16>::value));
       CHECK(int64_t(0xFFFFFF0000000000) == (etl::msb_mask<int64_t, 24>::value));
       CHECK(int64_t(0xFFFFFFFF00000000) == (etl::msb_mask<int64_t, 32>::value));
@@ -2692,15 +2773,15 @@ namespace
     //*************************************************************************
     TEST(test_make_msb_mask_8_bit)
     {
-      ETL_CONSTEXPR14 int8_t mask0 = etl::make_msb_mask<int8_t>(0);
-      ETL_CONSTEXPR14 int8_t mask1 = etl::make_msb_mask<int8_t>(1);
-      ETL_CONSTEXPR14 int8_t mask2 = etl::make_msb_mask<int8_t>(2);
-      ETL_CONSTEXPR14 int8_t mask3 = etl::make_msb_mask<int8_t>(3);
-      ETL_CONSTEXPR14 int8_t mask4 = etl::make_msb_mask<int8_t>(4);
-      ETL_CONSTEXPR14 int8_t mask5 = etl::make_msb_mask<int8_t>(5);
-      ETL_CONSTEXPR14 int8_t mask6 = etl::make_msb_mask<int8_t>(6);
-      ETL_CONSTEXPR14 int8_t mask7 = etl::make_msb_mask<int8_t>(7);
-      ETL_CONSTEXPR14 int8_t mask8 = etl::make_msb_mask<int8_t>(8);
+      ETL_CONSTEXPR int8_t mask0 = etl::make_msb_mask<int8_t>(0);
+      ETL_CONSTEXPR int8_t mask1 = etl::make_msb_mask<int8_t>(1);
+      ETL_CONSTEXPR int8_t mask2 = etl::make_msb_mask<int8_t>(2);
+      ETL_CONSTEXPR int8_t mask3 = etl::make_msb_mask<int8_t>(3);
+      ETL_CONSTEXPR int8_t mask4 = etl::make_msb_mask<int8_t>(4);
+      ETL_CONSTEXPR int8_t mask5 = etl::make_msb_mask<int8_t>(5);
+      ETL_CONSTEXPR int8_t mask6 = etl::make_msb_mask<int8_t>(6);
+      ETL_CONSTEXPR int8_t mask7 = etl::make_msb_mask<int8_t>(7);
+      ETL_CONSTEXPR int8_t mask8 = etl::make_msb_mask<int8_t>(8);
 
       CHECK(int8_t(etl::b00000000) == mask0);
       CHECK(int8_t(etl::b10000000) == mask1);
@@ -2724,17 +2805,51 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_make_msb_mask_template_nbits_8_bit)
+    {
+      ETL_CONSTEXPR int8_t mask0 = etl::make_msb_mask<int8_t, 0>();
+      ETL_CONSTEXPR int8_t mask1 = etl::make_msb_mask<int8_t, 1>();
+      ETL_CONSTEXPR int8_t mask2 = etl::make_msb_mask<int8_t, 2>();
+      ETL_CONSTEXPR int8_t mask3 = etl::make_msb_mask<int8_t, 3>();
+      ETL_CONSTEXPR int8_t mask4 = etl::make_msb_mask<int8_t, 4>();
+      ETL_CONSTEXPR int8_t mask5 = etl::make_msb_mask<int8_t, 5>();
+      ETL_CONSTEXPR int8_t mask6 = etl::make_msb_mask<int8_t, 6>();
+      ETL_CONSTEXPR int8_t mask7 = etl::make_msb_mask<int8_t, 7>();
+      ETL_CONSTEXPR int8_t mask8 = etl::make_msb_mask<int8_t, 8>();
+
+      CHECK(int8_t(etl::b00000000) == mask0);
+      CHECK(int8_t(etl::b10000000) == mask1);
+      CHECK(int8_t(etl::b11000000) == mask2);
+      CHECK(int8_t(etl::b11100000) == mask3);
+      CHECK(int8_t(etl::b11110000) == mask4);
+      CHECK(int8_t(etl::b11111000) == mask5);
+      CHECK(int8_t(etl::b11111100) == mask6);
+      CHECK(int8_t(etl::b11111110) == mask7);
+      CHECK(int8_t(etl::b11111111) == mask8);
+
+      CHECK(int8_t(etl::b00000000) == (etl::make_msb_mask<int8_t, 0>()));
+      CHECK(int8_t(etl::b10000000) == (etl::make_msb_mask<int8_t, 1>()));
+      CHECK(int8_t(etl::b11000000) == (etl::make_msb_mask<int8_t, 2>()));
+      CHECK(int8_t(etl::b11100000) == (etl::make_msb_mask<int8_t, 3>()));
+      CHECK(int8_t(etl::b11110000) == (etl::make_msb_mask<int8_t, 4>()));
+      CHECK(int8_t(etl::b11111000) == (etl::make_msb_mask<int8_t, 5>()));
+      CHECK(int8_t(etl::b11111100) == (etl::make_msb_mask<int8_t, 6>()));
+      CHECK(int8_t(etl::b11111110) == (etl::make_msb_mask<int8_t, 7>()));
+      CHECK(int8_t(etl::b11111111) == (etl::make_msb_mask<int8_t, 8>()));
+    }
+
+    //*************************************************************************
     TEST(test_make_msb_mask_64_bit)
     {
-      ETL_CONSTEXPR14 int64_t mask0 = etl::make_msb_mask<int64_t>(0);
-      ETL_CONSTEXPR14 int64_t mask1 = etl::make_msb_mask<int64_t>(8);
-      ETL_CONSTEXPR14 int64_t mask2 = etl::make_msb_mask<int64_t>(16);
-      ETL_CONSTEXPR14 int64_t mask3 = etl::make_msb_mask<int64_t>(24);
-      ETL_CONSTEXPR14 int64_t mask4 = etl::make_msb_mask<int64_t>(32);
-      ETL_CONSTEXPR14 int64_t mask5 = etl::make_msb_mask<int64_t>(40);
-      ETL_CONSTEXPR14 int64_t mask6 = etl::make_msb_mask<int64_t>(48);
-      ETL_CONSTEXPR14 int64_t mask7 = etl::make_msb_mask<int64_t>(56);
-      ETL_CONSTEXPR14 int64_t mask8 = etl::make_msb_mask<int64_t>(64);
+      ETL_CONSTEXPR int64_t mask0 = etl::make_msb_mask<int64_t>(0);
+      ETL_CONSTEXPR int64_t mask1 = etl::make_msb_mask<int64_t>(8);
+      ETL_CONSTEXPR int64_t mask2 = etl::make_msb_mask<int64_t>(16);
+      ETL_CONSTEXPR int64_t mask3 = etl::make_msb_mask<int64_t>(24);
+      ETL_CONSTEXPR int64_t mask4 = etl::make_msb_mask<int64_t>(32);
+      ETL_CONSTEXPR int64_t mask5 = etl::make_msb_mask<int64_t>(40);
+      ETL_CONSTEXPR int64_t mask6 = etl::make_msb_mask<int64_t>(48);
+      ETL_CONSTEXPR int64_t mask7 = etl::make_msb_mask<int64_t>(56);
+      ETL_CONSTEXPR int64_t mask8 = etl::make_msb_mask<int64_t>(64);
 
       CHECK_EQUAL(int64_t(0x0000000000000000), mask0);
       CHECK_EQUAL(int64_t(0xFF00000000000000), mask1);
@@ -2756,6 +2871,137 @@ namespace
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), etl::make_msb_mask<int64_t>(56));
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), etl::make_msb_mask<int64_t>(64));
     }
+
+    //*************************************************************************
+    TEST(test_make_msb_mask_template_nbits_64_bit)
+    {
+      ETL_CONSTEXPR int64_t mask0 = etl::make_msb_mask<int64_t,  0>();
+      ETL_CONSTEXPR int64_t mask1 = etl::make_msb_mask<int64_t,  8>();
+      ETL_CONSTEXPR int64_t mask2 = etl::make_msb_mask<int64_t, 16>();
+      ETL_CONSTEXPR int64_t mask3 = etl::make_msb_mask<int64_t, 24>();
+      ETL_CONSTEXPR int64_t mask4 = etl::make_msb_mask<int64_t, 32>();
+      ETL_CONSTEXPR int64_t mask5 = etl::make_msb_mask<int64_t, 40>();
+      ETL_CONSTEXPR int64_t mask6 = etl::make_msb_mask<int64_t, 48>();
+      ETL_CONSTEXPR int64_t mask7 = etl::make_msb_mask<int64_t, 56>();
+      ETL_CONSTEXPR int64_t mask8 = etl::make_msb_mask<int64_t, 64>();
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), mask0);
+      CHECK_EQUAL(int64_t(0xFF00000000000000), mask1);
+      CHECK_EQUAL(int64_t(0xFFFF000000000000), mask2);
+      CHECK_EQUAL(int64_t(0xFFFFFF0000000000), mask3);
+      CHECK_EQUAL(int64_t(0xFFFFFFFF00000000), mask4);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFF000000), mask5);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFF0000), mask6);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), mask7);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), mask8);
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), (etl::make_msb_mask<int64_t,  0>()));
+      CHECK_EQUAL(int64_t(0xFF00000000000000), (etl::make_msb_mask<int64_t,  8>()));
+      CHECK_EQUAL(int64_t(0xFFFF000000000000), (etl::make_msb_mask<int64_t, 16>()));
+      CHECK_EQUAL(int64_t(0xFFFFFF0000000000), (etl::make_msb_mask<int64_t, 24>()));
+      CHECK_EQUAL(int64_t(0xFFFFFFFF00000000), (etl::make_msb_mask<int64_t, 32>()));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFF000000), (etl::make_msb_mask<int64_t, 40>()));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFF0000), (etl::make_msb_mask<int64_t, 48>()));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), (etl::make_msb_mask<int64_t, 56>()));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), (etl::make_msb_mask<int64_t, 64>()));
+    }
+
+    //*************************************************************************
+    TEST(test_binary_not)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      std::array<uint8_t, 256> expected;
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = ~input[i];
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(),
+                     output.begin(),
+                     etl::binary_not<uint8_t>());
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_binary_and)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      const uint8_t value = etl::b01101001;
+
+      std::array<uint8_t, 256> expected;
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = input[i] & value;
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(), 
+                     output.begin(), 
+                     etl::binary_and<uint8_t>(value));
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_binary_or)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      const uint8_t value = etl::b01101001;
+
+      std::array<uint8_t, 256> expected;
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = input[i] | value;
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(),
+                     output.begin(),
+                     etl::binary_or<uint8_t>(value));
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_binary_xor)
+    {
+      std::array<uint8_t, 256> input;
+      generate_input(input.begin(), input.end(), 0);
+
+      const uint8_t value = etl::b01101001;
+
+      std::array<uint8_t, 256> expected;
+
+      for (size_t i = 0; i < input.size(); ++i)
+      {
+        expected[i] = input[i] ^ value;
+      }
+
+      std::array<uint8_t, 256> output;
+
+      std::transform(input.begin(),
+                     input.end(),
+                     output.begin(),
+                     etl::binary_xor<uint8_t>(value));
+
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+    }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"
 

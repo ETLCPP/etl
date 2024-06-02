@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/deque.h"
+#include "etl/vector.h"
 
 #include "data.h"
 
@@ -40,6 +41,8 @@ SOFTWARE.
 #include <numeric>
 #include <cstring>
 #include <memory>
+
+#include "etl/private/diagnostic_useless_cast_push.h"
 
 namespace
 {
@@ -165,7 +168,6 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -194,7 +196,6 @@ namespace
     //*************************************************************************
     TEST(test_move_insert_erase)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -247,7 +248,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -292,7 +292,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment_interface)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
       typedef etl::ideque<std::unique_ptr<uint32_t>> IData;
 
@@ -696,6 +695,72 @@ namespace
 
       CHECK(first < second);
       CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_difference)
+    {
+      DataNDC data(SIZE, N0);
+
+      DataNDC::reverse_iterator first  = data.rbegin() + 1;
+      DataNDC::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK_EQUAL(-3, first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_difference)
+    {
+      DataNDC data(SIZE, N0);
+
+      DataNDC::const_reverse_iterator first  = data.crbegin() + 1;
+      DataNDC::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK_EQUAL(-3, first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_difference_rollover)
+    {
+      DataNDC data(SIZE, N0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+
+      DataNDC::reverse_iterator first  = data.rbegin() + 1;
+      DataNDC::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK_EQUAL(-3,  first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_difference_rollover)
+    {
+      DataNDC data(SIZE, N0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+
+      DataNDC::const_reverse_iterator first  = data.crbegin() + 1;
+      DataNDC::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK_EQUAL(-3,  first - second);
+      CHECK_EQUAL( 3, second - first);
     }
 
     //*************************************************************************
@@ -2070,7 +2135,6 @@ namespace
     //*************************************************************************
     TEST(test_move)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       Data data1;
@@ -2153,7 +2217,7 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_deque_template_deduction)
     {
-      etl::deque data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
+      etl::deque data{ char(0), short(1), 2, long(3), 4, 5, 6, 7, 8, 9 };
 
       using Type = std::remove_reference_t<decltype(data[0])>;
       CHECK((std::is_same_v<long, Type>));
@@ -2201,3 +2265,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

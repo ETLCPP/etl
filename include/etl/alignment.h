@@ -76,9 +76,8 @@ namespace etl
   //*****************************************************************************
   inline bool is_aligned(void* p, size_t required_alignment)
   {
-    uintptr_t alignment = static_cast<uintptr_t>(required_alignment);
     uintptr_t address = reinterpret_cast<uintptr_t>(p);
-    return (address % alignment) == 0U;
+    return (address % required_alignment) == 0U;
   }
 
   //*****************************************************************************
@@ -88,7 +87,7 @@ namespace etl
   bool is_aligned(void* p)
   {
     uintptr_t address = reinterpret_cast<uintptr_t>(p);
-    return (address % static_cast<uintptr_t>(Alignment)) == 0U;
+    return (address % Alignment) == 0U;
   }
 
   //*****************************************************************************

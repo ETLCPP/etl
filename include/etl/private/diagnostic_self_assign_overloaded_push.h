@@ -33,6 +33,10 @@ SOFTWARE.
  * This file is intended to evaluated multiple times by design.
  */
 
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
+  #pragma GCC diagnostic push
+#endif
+
 #if defined(__clang__) || defined(__llvm__)
   #pragma clang diagnostic push 
   #pragma clang diagnostic ignored "-Wself-assign-overloaded"

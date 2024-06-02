@@ -1115,8 +1115,19 @@ namespace etl
       Node* inserted_node = ETL_NULLPTR;
       bool inserted = false;
 
-      ETL_ASSERT(!full(), ETL_ERROR(set_full));
-
+      if (full())
+      {
+        iterator iter = find(value);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(set_full));
+        }
+        else
+        {
+          return ETL_OR_STD::make_pair(iter, false);
+        }
+      }
+      
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
@@ -1139,8 +1150,19 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
       bool inserted = false;
-
-      ETL_ASSERT(!full(), ETL_ERROR(set_full));
+      
+      if (full())
+      {
+        iterator iter = find(value);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(set_full));
+        }
+        else
+        {
+          return ETL_OR_STD::make_pair(iter, false);
+        }
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
@@ -1165,7 +1187,18 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
 
-      ETL_ASSERT(!full(), ETL_ERROR(set_full));
+      if (full())
+      {
+        iterator iter = find(value);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(set_full));
+        }
+        else
+        {
+          return iter;
+        }
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
@@ -1189,7 +1222,18 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
 
-      ETL_ASSERT(!full(), ETL_ERROR(set_full));
+      if (full())
+      {
+        iterator iter = find(value);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(set_full));
+        }
+        else
+        {
+          return iter;
+        }
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
@@ -1363,10 +1407,10 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(const_reference value)
     {
-      Data_Node& node = allocate_data_node();
-      ::new ((void*)&node.value) value_type(value);
+      Data_Node* node = allocate_data_node();
+      ::new ((void*)&node->value) value_type(value);
       ETL_INCREMENT_DEBUG_COUNT;
-      return node;
+      return *node;
     }
 
 #if ETL_USING_CPP11
@@ -1375,20 +1419,20 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(rvalue_reference value)
     {
-      Data_Node& node = allocate_data_node();
-      ::new ((void*)&node.value) value_type(etl::move(value));
+      Data_Node* node = allocate_data_node();
+      ::new ((void*)&node->value) value_type(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT;
-      return node;
+      return *node;
     }
 #endif
 
     //*************************************************************************
     /// Create a Data_Node.
     //*************************************************************************
-    Data_Node& allocate_data_node()
+    Data_Node* allocate_data_node()
     {
       Data_Node* (etl::ipool::*func)() = &etl::ipool::allocate<Data_Node>;
-      return *(p_node_pool->*func)();
+      return (p_node_pool->*func)();
     }
 
     //*************************************************************************

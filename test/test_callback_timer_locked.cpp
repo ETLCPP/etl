@@ -84,11 +84,11 @@ namespace
   //***************************************************************************
   // Class callback via etl::function
   //***************************************************************************
-  class Test
+  class Object
   {
   public:
 
-    Test()
+    Object()
       : p_controller(nullptr)
     {
     }
@@ -121,9 +121,9 @@ namespace
   using lock_type     = etl::icallback_timer_locked::lock_type;
   using unlock_type   = etl::icallback_timer_locked::unlock_type;
 
-  Test test;
-  callback_type member_callback  = callback_type::create<Test, test, &Test::callback>();
-  callback_type member_callback2 = callback_type::create<Test, test, &Test::callback2>();
+  Object object;
+  callback_type member_callback  = callback_type::create<Object, object, &Object::callback>();
+  callback_type member_callback2 = callback_type::create<Object, object, &Object::callback2>();
 
   //***************************************************************************
   // Free function callback via etl::function
@@ -190,7 +190,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -214,11 +214,11 @@ namespace
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -236,7 +236,7 @@ namespace
       etl::callback_timer_locked<1> timer_controller(try_lock, lock, unlock);
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
-      test.tick_list.clear();
+      object.tick_list.clear();
 
       timer_controller.start(id1);
       timer_controller.enable(true);
@@ -256,7 +256,7 @@ namespace
       CHECK(timer_controller.set_period(id1, 50));
       timer_controller.start(id1);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
 
       ticks = 0;
 
@@ -268,7 +268,7 @@ namespace
 
       // Timer should have timed out.
 
-      CHECK_EQUAL(50U, *test.tick_list.data());
+      CHECK_EQUAL(50U, *object.tick_list.data());
 
       CHECK(timer_controller.unregister_timer(id1));
       CHECK(!timer_controller.unregister_timer(id1));
@@ -292,7 +292,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -316,11 +316,11 @@ namespace
       std::vector<uint64_t> compare2 = { 23, 46, 69, 92 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -341,7 +341,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -369,11 +369,11 @@ namespace
       std::vector<uint64_t> compare2 = { 25, 50, 70, 95 };
       std::vector<uint64_t> compare3 = { 15, 25, 35, 45, 55, 70, 80, 90, 100 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -394,7 +394,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -429,11 +429,11 @@ namespace
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -457,9 +457,9 @@ namespace
       (void)id2;
       (void)id3;
 
-      test.set_controller(timer_controller);
+      object.set_controller(timer_controller);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
 
       timer_controller.start(id1);
 
@@ -477,9 +477,9 @@ namespace
 
       std::vector<uint64_t> compare1 = { 100, 110, 122 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(), compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
 
       CHECK_EQUAL(0U, locks.lock_count);
     }
@@ -501,9 +501,9 @@ namespace
       (void)id2;
       (void)id3;
 
-      test.set_controller(timer_controller);
+      object.set_controller(timer_controller);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
 
       timer_controller.start(id1);
 
@@ -521,9 +521,9 @@ namespace
 
       std::vector<uint64_t> compare1 = { 102, 111, 123 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
 
       CHECK_EQUAL(0U, locks.lock_count);
     }
@@ -542,7 +542,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -573,11 +573,11 @@ namespace
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -598,7 +598,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -628,11 +628,11 @@ namespace
       std::vector<uint64_t> compare2 = { 23 };
       std::vector<uint64_t> compare3 = { 11, 22, 33 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -653,7 +653,7 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -678,11 +678,11 @@ namespace
       std::vector<uint64_t> compare2 = { 6, 28, 51, 74, 97 };
       std::vector<uint64_t> compare3 = { 16, 27, 38, 49, 60, 71, 82, 93 };
 
-      CHECK(test.tick_list.size() != 0);
+      CHECK(object.tick_list.size() != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
 
@@ -872,6 +872,43 @@ namespace
     }
 
     //*************************************************************************
+    TEST(message_timer_time_to_next_with_has_active_timer)
+    {
+      locks.clear();
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      timer_controller.tick(11);
+      CHECK_EQUAL(12, timer_controller.time_to_next());
+      CHECK_TRUE(timer_controller.has_active_timer());
+
+      timer_controller.tick(23);
+      CHECK_EQUAL(3, timer_controller.time_to_next());
+      CHECK_TRUE(timer_controller.has_active_timer());
+
+      timer_controller.tick(2);
+      CHECK_EQUAL(1, timer_controller.time_to_next());
+      CHECK_TRUE(timer_controller.has_active_timer());
+
+      timer_controller.tick(1);
+      CHECK_EQUAL(static_cast<etl::timer::interval::type>(etl::timer::interval::No_Active_Interval), timer_controller.time_to_next());
+      CHECK_FALSE(timer_controller.has_active_timer());
+    }
+
+    //*************************************************************************
 #if REALTIME_TEST
 
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
@@ -957,7 +994,7 @@ namespace
       etl::timer::id::type id2 = controller.register_timer(free_function_callback,  100, etl::timer::mode::Repeating);
       etl::timer::id::type id3 = controller.register_timer(free_function_callback2,  10, etl::timer::mode::Repeating);
 
-      test.tick_list.clear();
+      object.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
 
@@ -1001,18 +1038,18 @@ namespace
       //Join the thread with the main thread
       t1.join();
 
-      CHECK_EQUAL(2U,  test.tick_list.size());
+      CHECK_EQUAL(2U,  object.tick_list.size());
       CHECK_EQUAL(10U, free_tick_list1.size());
       CHECK(free_tick_list2.size() < 65U);
 
       std::vector<uint64_t> compare1 = { 400, 900 };
       std::vector<uint64_t> compare2 = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
 
-      CHECK(test.tick_list.size()  != 0);
+      CHECK(object.tick_list.size()  != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  min(compare1.size(), test.tick_list.size()));
+      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(),  min(compare1.size(), object.tick_list.size()));
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), min(compare2.size(), free_tick_list1.size()));
 
       CHECK_EQUAL(0U, threadLock.lock_count);

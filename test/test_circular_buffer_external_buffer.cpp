@@ -55,15 +55,16 @@ namespace
     using BufferM_t = etl::uninitialized_buffer_of<ItemM, SIZE + 1>;
     using Buffer_t  = etl::uninitialized_buffer_of<Ndc, SIZE + 1>;
 
-    BufferM_t bufferm1;
-    BufferM_t bufferm2;
+    //BufferM_t bufferm1;
+    //BufferM_t bufferm2;
 
-    Buffer_t buffer1;
-    Buffer_t buffer2;
+    //Buffer_t buffer1;
+    //Buffer_t buffer2;
 
     //*************************************************************************
     TEST(test_default_constructor)
     {
+      Buffer_t buffer1;
       Data data(buffer1.raw, SIZE);
 
       CHECK(data.is_valid());
@@ -80,6 +81,8 @@ namespace
     //*************************************************************************
     TEST(test_set_buffer_after_default_constructor)
     {
+      Buffer_t buffer1;
+
       Data data(SIZE);
       CHECK(!data.is_valid());
 
@@ -100,6 +103,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_literal)
     {
+      Buffer_t buffer1;
       Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") }, buffer1.raw, SIZE);
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
 
@@ -115,6 +119,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_literal_excess)
     {
+      Buffer_t buffer1;
       Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") }, buffer1.raw, SIZE);
       Compare compare = { Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
 
@@ -131,6 +136,7 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
+      Buffer_t buffer1;
       Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") }, buffer1.raw, SIZE);
       Compare compare{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
 
@@ -147,6 +153,7 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_cpp17_deduced_constructor_excess)
     {
+      Buffer_t buffer1;
       Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") }, buffer1.raw, SIZE);
       Compare compare{ Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")  };
 
@@ -162,6 +169,7 @@ namespace
     //*************************************************************************
     TEST(test_push)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       for (auto v : test)
@@ -183,6 +191,7 @@ namespace
     //*************************************************************************
     TEST(test_move_push)
     {
+      BufferM_t bufferm1;
       DataM data(bufferm1.raw, SIZE);
       CompareM compare;
 
@@ -203,6 +212,7 @@ namespace
     //*************************************************************************
     TEST(test_push_full_range)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -220,6 +230,7 @@ namespace
     //*************************************************************************
     TEST(test_iterator_to_pointer_operator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -241,6 +252,7 @@ namespace
     //*************************************************************************
     TEST(test_const_iterator_to_pointer_operator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -262,6 +274,7 @@ namespace
     //*************************************************************************
     TEST(test_push_full_range_reverse_iterator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -279,6 +292,7 @@ namespace
     //*************************************************************************
     TEST(test_push_excess_range)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -296,6 +310,7 @@ namespace
     //*************************************************************************
     TEST(test_push_excess_range_reverse_iterator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -313,6 +328,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_at_start_of_buffer)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -330,6 +346,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_at_start_of_buffer_reverse_iterator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -347,6 +364,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_at_end_of_buffer)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -365,6 +383,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_at_end_of_buffer_reverse_iterator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -383,6 +402,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_middle_of_buffer)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
       Compare input2{ Ndc("5"), Ndc("6"), Ndc("7") };
       Data data(buffer1.raw, SIZE);
@@ -403,6 +423,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_middle_of_buffer_reverse_iterator)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
       Compare input2{ Ndc("5"), Ndc("6"), Ndc("7") };
       Data data(buffer1.raw, SIZE);
@@ -423,6 +444,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_overlap_start_and_end_of_buffer)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
@@ -443,6 +465,7 @@ namespace
     //*************************************************************************
     TEST(test_push_short_range_overlap_start_and_end_of_buffer_reverse_iterator)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
@@ -463,6 +486,7 @@ namespace
     //*************************************************************************
     TEST(test_available)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       for (auto v : test)
@@ -475,6 +499,7 @@ namespace
     //*************************************************************************
     TEST(test_front)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
@@ -492,6 +517,7 @@ namespace
     //*************************************************************************
     TEST(test_front_const)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
@@ -505,6 +531,7 @@ namespace
     //*************************************************************************
     TEST(test_back)
     {
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
@@ -522,6 +549,7 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
+      Buffer_t buffer1;
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(input.begin(), input.end());
@@ -535,7 +563,8 @@ namespace
     //*************************************************************************
     TEST(test_index_operator)
     {
-      // Overrun by 3
+      // Overrun by 3 
+      Buffer_t buffer1;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Compare input2{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
@@ -561,6 +590,7 @@ namespace
     TEST(test_index_operator_const)
     {
       // Overrun by 3
+      Buffer_t buffer1;
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(input.begin(), input.end());
@@ -574,6 +604,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_plus)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -597,6 +628,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_plus_rollover)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -620,6 +652,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_plus_equals)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -643,6 +676,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_plus_equals_rollover)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -666,6 +700,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_minus)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -689,6 +724,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_minus_rollover)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -712,6 +748,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_minus_equals)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -735,6 +772,7 @@ namespace
     //*************************************************************************
     TEST(test_random_iterator_minus_equals_rollover)
     {
+      Buffer_t buffer1;
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(input.begin(), input.end());
@@ -758,6 +796,8 @@ namespace
     //*************************************************************************
     TEST(test_copy_constructor)
     {
+      Buffer_t buffer1;
+      Buffer_t buffer2;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare input2{ Ndc("9"), Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
       Data data1(buffer1.raw, SIZE);
@@ -781,6 +821,8 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
+      BufferM_t bufferm1;
+      BufferM_t bufferm2;
       CompareM input1;
       CompareM input2;
       CompareM compare;
@@ -819,6 +861,8 @@ namespace
     //*************************************************************************
     TEST(test_assignment)
     {
+      Buffer_t buffer1;
+      Buffer_t buffer2;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
       Compare input2{ Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
       Data data1(buffer1.raw, SIZE);
@@ -845,6 +889,8 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
+      Buffer_t buffer1;
+      Buffer_t buffer2;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
       Compare input2{ Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
       Data data1(buffer1.raw, SIZE);
@@ -871,6 +917,7 @@ namespace
     //*************************************************************************
     TEST(test_swap_iterator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -893,6 +940,7 @@ namespace
     //*************************************************************************
     TEST(test_swap_const_iterator)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -915,6 +963,7 @@ namespace
     //*************************************************************************
     TEST(test_iterator_difference)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -940,6 +989,7 @@ namespace
     //*************************************************************************
     TEST(test_const_iterator_difference)
     {
+      Buffer_t buffer1;
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data(buffer1.raw, SIZE);
       data.push(test.begin(), test.end());
@@ -987,6 +1037,7 @@ namespace
     TEST(test_equal)
     {
       // Over-write by 3
+      Buffer_t buffer1;
       Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data1(buffer1.raw, SIZE);
       Data data2(buffer1.raw, SIZE);
@@ -1000,6 +1051,8 @@ namespace
     TEST(test_not_equal)
     {
       // Over-write by 3
+      Buffer_t buffer1;
+      Buffer_t buffer2;
       Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Compare input2{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("6"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data1(buffer1.raw, SIZE);

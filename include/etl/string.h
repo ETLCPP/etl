@@ -246,9 +246,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void repair()
 #if ETL_HAS_ISTRING_REPAIR
-      ETL_OVERRIDE
+    virtual void repair() ETL_OVERRIDE
+#else
+    void repair()
 #endif
     {
       etl::istring::repair_buffer(buffer);
@@ -434,9 +435,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void repair()
 #if ETL_HAS_ISTRING_REPAIR
-      ETL_OVERRIDE
+    virtual void repair() ETL_OVERRIDE
+#else
+    void repair()
 #endif
     {
     }

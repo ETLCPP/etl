@@ -44,6 +44,7 @@ SOFTWARE.
 #include "smallest.h"
 #include "absolute.h"
 #include "expected.h"
+#include "math.h"
 
 #include <math.h>
 
@@ -250,7 +251,7 @@ namespace etl
           break;
         }
 
-        case etl::radix::hex:
+        case etl::radix::hexadecimal:
         {
           return ((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f'));
           break;
@@ -280,7 +281,7 @@ namespace etl
           break;
         }
 
-        case etl::radix::hex:
+        case etl::radix::hexadecimal:
         {
           if ((c >= '0') && (c <= '9'))
           {
@@ -362,7 +363,7 @@ namespace etl
       return (radix == etl::radix::binary)  ||
              (radix == etl::radix::octal)   ||
              (radix == etl::radix::decimal) ||
-             (radix == etl::radix::hex);
+             (radix == etl::radix::hexadecimal);
     }
 
     //***************************************************************************
@@ -396,7 +397,7 @@ namespace etl
           TValue old_value = integral_value;
           integral_value *= radix;
 
-          // No multipication overflow?
+          // No multiplication overflow?
           is_not_overflow = ((integral_value / radix) == old_value);
 
           if (is_not_overflow)
@@ -921,13 +922,11 @@ namespace etl
         value *= pow(static_cast<TValue>(10.0), static_cast<TValue>(exponent));
 
         // Check that the result is a valid floating point number.
-        if ((value == etl::numeric_limits<TValue>::infinity()) ||
-            (value == -etl::numeric_limits<TValue>::infinity()))
+        if (etl::is_infinity(value))
         {
           result = unexpected_type(to_arithmetic_status::Overflow);
         }
-        // Check for NaN.
-        else if (value != value)
+        else if (etl::is_nan(value))
         {
           result = unexpected_type(to_arithmetic_status::Invalid_Float);
         }

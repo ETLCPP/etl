@@ -39,12 +39,15 @@ SOFTWARE.
 #include "fnv_1.h"
 #include "type_traits.h"
 #include "static_assert.h"
+#include "math.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 
 ///\defgroup hash Standard hash calculations
 ///\ingroup maths
+
+#include "private/diagnostic_useless_cast_push.h"
 
 namespace etl
 {
@@ -398,7 +401,7 @@ namespace etl
           float  v;
         } u;
 
-        if (v == -0.0f)
+        if (etl::is_zero(v))
         { // -0.0 and 0.0 are represented differently at bit level
           v = 0.0f;
         }
@@ -432,7 +435,7 @@ namespace etl
           double v;
         } u;
 
-        if (v == -0.0)
+        if (etl::is_zero(v))
         { // -0.0 and 0.0 are represented differently at bit level
           v = 0.0;
         }
@@ -466,7 +469,7 @@ namespace etl
           long double v;
         } u;
 
-        if (v == -0.0L)
+        if (etl::is_zero(v))
         { // -0.0 and 0.0 are represented differently at bit level
           v = 0.0L;
         }
@@ -534,6 +537,8 @@ namespace etl
     };
   }
 }
+
+#include "private/diagnostic_pop.h"
 
 #endif // ETL_USING_8BIT_TYPES
 

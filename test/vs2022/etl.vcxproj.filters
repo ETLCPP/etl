@@ -1371,6 +1371,36 @@
     <ClInclude Include="..\..\include\etl\base64.h">
       <Filter>ETL\Codecs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\math.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u8string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u8string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u8format_spec.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_u8string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc1.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_j1850.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_j1850_zero.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\gcd.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\lcm.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -1960,9 +1990,6 @@
     </ClCompile>
     <ClCompile Include="..\test_packet.cpp">
       <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_maths.cpp">
-      <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_endian.cpp">
       <Filter>Tests\Types</Filter>
@@ -3224,6 +3251,75 @@
     <ClCompile Include="..\syntax_check\base64.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_math.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_math_functions.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u8.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u8_external_buffer.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\u8string.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u8.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u8.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_u8.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_u8string.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_arithmetic_u8.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\u8format_spec.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\u8string_stream.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\to_u8string.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc1.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new_comparisons.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\math.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc8_j1850.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc8_j1850_zero.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_j1850.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_j1850_zero.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\gcd.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\lcm.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_base64_RFC4648_URL_with_padding.cpp">
       <Filter>Tests\Codecs</Filter>
     </ClCompile>
@@ -3288,12 +3384,6 @@
     </None>
     <None Include="..\..\appveyor.yml">
       <Filter>Resource Files\CI\Appveyor</Filter>
-    </None>
-    <None Include="..\..\.github\workflows\clang.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
-    <None Include="..\..\.github\workflows\gcc.yml">
-      <Filter>Resource Files\CI\Github</Filter>
     </None>
     <None Include="..\..\.clang-format">
       <Filter>Resource Files</Filter>
@@ -3360,6 +3450,30 @@
     </None>
     <None Include="..\..\scripts\update_version.py">
       <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

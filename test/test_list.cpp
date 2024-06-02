@@ -99,7 +99,7 @@ namespace
     {
       DataNDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
@@ -404,7 +404,7 @@ namespace
       data.assign(sorted_data.begin(), sorted_data.end());
       CHECK_EQUAL(SIZE, data.size());
       data.clear();
-      CHECK_EQUAL(size_t(0UL), data.size());
+      CHECK_EQUAL(0UL, data.size());
     }
 
     //*************************************************************************
@@ -419,7 +419,7 @@ namespace
       data.resize(SIZE);
       CHECK_EQUAL(SIZE, data.size());
       data.clear();
-      CHECK_EQUAL(size_t(0UL), data.size());
+      CHECK_EQUAL(0UL, data.size());
     }
 
     //*************************************************************************

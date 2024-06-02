@@ -324,7 +324,7 @@ namespace etl
     {
       typedef T value_type;
 
-      virtual bool operator()(const value_type& current, const value_type& last) const = 0;
+      virtual bool operator()(const value_type& lhs, const value_type& rhs) const = 0;
     };
 
     //***************************************************************************
@@ -334,9 +334,9 @@ namespace etl
     {
       typedef T value_type;
 
-      virtual bool operator()(const value_type& current, const value_type& last) const ETL_OVERRIDE
+      virtual bool operator()(const value_type& lhs, const value_type& rhs) const ETL_OVERRIDE
       {
-        return etl::not_equal_to<value_type>()(current, last);
+        return etl::not_equal_to<value_type>()(lhs, rhs);
       }
     };
 
@@ -347,9 +347,9 @@ namespace etl
     {
       typedef T value_type;
 
-      virtual bool operator()(const value_type& current, const value_type& last) const ETL_OVERRIDE
+      virtual bool operator()(const value_type& lhs, const value_type& rhs) const ETL_OVERRIDE
       {
-        return etl::less<value_type>()(current, last);
+        return etl::less<value_type>()(lhs, rhs);
       }
     };
 
@@ -360,9 +360,9 @@ namespace etl
     {
       typedef T value_type;
 
-      virtual bool operator()(const value_type& current, const value_type& last) const ETL_OVERRIDE
+      virtual bool operator()(const value_type& lhs, const value_type& rhs) const ETL_OVERRIDE
       {
-        return etl::greater<value_type>()(current, last);
+        return etl::greater<value_type>()(lhs, rhs);
       }
     };
 

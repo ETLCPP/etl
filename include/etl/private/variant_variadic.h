@@ -41,6 +41,7 @@ SOFTWARE.
 #include "../placement_new.h"
 #include "../visitor.h"
 #include "../memory.h"
+#include "../compare.h"
 #include "../initializer_list.h"
 
 #include <stdint.h>
@@ -227,7 +228,7 @@ namespace etl
           default:
           {
             // This should never occur.
-  #if defined(ETL_DEBUG)
+  #if defined(ETL_IN_UNIT_TEST)
             assert(false);
   #endif
             break;
@@ -387,6 +388,12 @@ namespace etl
 	constexpr bool operator <=(etl::monostate, etl::monostate) noexcept { return true; }
 	constexpr bool operator >=(etl::monostate, etl::monostate) noexcept { return true; }
 	constexpr bool operator ==(etl::monostate, etl::monostate) noexcept { return true; }
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+  constexpr std::strong_ordering operator<=>(monostate, monostate) noexcept
+  {
+    return std::strong_ordering::equal;
+  }
+#endif
 
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
   template <>
@@ -701,6 +708,29 @@ namespace etl
       return *static_cast<T*>(data);
     }
 
+#if ETL_HAS_INITIALIZER_LIST
+    //***************************************************************************
+    /// Emplace by type with variadic constructor parameters.
+    //***************************************************************************
+    template <typename T, typename U, typename... TArgs>
+    T& emplace(std::initializer_list<U> il, TArgs&&... args)
+    {
+      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
+
+      using type = etl::remove_cvref_t<T>;
+
+      operation(private_variant::Destroy, data, nullptr);
+
+      construct_in_place_args<type>(data, il, etl::forward<TArgs>(args)...);
+
+      operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
+
+      type_id = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
+
+      return *static_cast<T*>(data);
+    }
+#endif
+
     //***************************************************************************
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
@@ -721,6 +751,29 @@ namespace etl
 
       return *static_cast<type*>(data);
     }
+
+#if ETL_HAS_INITIALIZER_LIST
+    //***************************************************************************
+    /// Emplace by index with variadic constructor parameters.
+    //***************************************************************************
+    template <size_t Index, typename U, typename... TArgs>
+    typename etl::variant_alternative<Index, variant<TArgs...>>::type& emplace(std::initializer_list<U> il, TArgs&&... args)
+    {
+      static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
+
+      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+
+      operation(private_variant::Destroy, data, nullptr);
+
+      construct_in_place_args<type>(data, il, etl::forward<TArgs>(args)...);
+
+      operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
+
+      type_id = Index;
+
+      return *static_cast<type*>(data);
+    }
+#endif
 
     //***************************************************************************
     /// Move assignment operator for type.
@@ -997,7 +1050,7 @@ namespace etl
 
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_visitor(TVisitor& visitor, etl::index_sequence<I...>)
@@ -1006,7 +1059,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_visitor(TVisitor& visitor, etl::index_sequence<I...>) const
@@ -1015,7 +1068,7 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// /// Call the relevent visitor.
+    /// /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_visitor(TVisitor& visitor)
@@ -1065,7 +1118,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// /// Call the relevent visitor.
+    /// /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_visitor(TVisitor& visitor) const
@@ -1125,7 +1178,7 @@ namespace etl
       {
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
-        // Changed all of the instances for consistancy.
+        // Changed all of the instances for consistency.
         auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
@@ -1146,7 +1199,7 @@ namespace etl
       {
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
-        // Changed all of the instances for consistancy.
+        // Changed all of the instances for consistency.
         auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
@@ -1159,7 +1212,7 @@ namespace etl
 
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_operator(TVisitor& visitor, etl::index_sequence<I...>)
@@ -1168,7 +1221,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_operator(TVisitor& visitor, etl::index_sequence<I...>) const
@@ -1177,7 +1230,7 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// Call the relevent visitor.
+    /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_operator(TVisitor& visitor)
@@ -1241,7 +1294,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Call the relevent visitor.
+    /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_operator(TVisitor& visitor) const
@@ -1693,7 +1746,7 @@ namespace etl
 
     //***************************************************************************
     /// Helper to instantiate the function pointers needed for the "jump table".
-    /// Embedds the 'TVarRest' (remaining variants) into its type to come around
+    /// Embeds the 'TVarRest' (remaining variants) into its type to come around
     /// the "double expansion" otherwise needed in "do_visit".
     //***************************************************************************
     template <typename TRet, typename TCallable, typename TCurVariant, typename... TVarRest>
@@ -1770,7 +1823,7 @@ namespace etl
   }  // namespace private_variant
 
   //***************************************************************************
-  /// c++11/14 compatible etl::visit for etl::variant. Supports both c++17
+  /// C++11/14 compatible etl::visit for etl::variant. Supports both c++17
   /// "auto return type" signature and c++20 explicit template return type.
   //***************************************************************************
   template <typename TRet = private_variant::visit_auto_return, typename... TVariants, typename TCallable, typename TDeducedReturn = private_variant::visit_result_t<TRet, TCallable, TVariants...> >
@@ -1778,5 +1831,221 @@ namespace etl
   {
     return private_variant::visit<TDeducedReturn>(static_cast<TCallable&&>(f), static_cast<TVariants&&>(vs)...);
   }
+
+  namespace private_variant
+  {
+    //***************************************************************************
+    /// C++11 compatible visitor function for testing variant equality.
+    /// Assumes that the two variants are already known to contain the same type.
+    //***************************************************************************
+    template <typename TVariant>
+    struct equality_visitor
+    {
+      equality_visitor(const TVariant& rhs_)
+        : rhs(rhs_)
+      {
+      }
+
+      template <typename TValue>
+      bool operator()(const TValue& lhs_downcasted)
+      {
+        return lhs_downcasted == etl::get<TValue>(rhs);
+      }
+
+      const TVariant& rhs;
+    };
+
+    //***************************************************************************
+    /// C++11 compatible visitor function for testing variant '<' (less than).
+    /// Assumes that the two variants are already known to contain the same type.
+    //***************************************************************************
+    template <typename TVariant>
+    struct less_than_visitor
+    {
+      less_than_visitor(const TVariant& rhs_)
+        : rhs(rhs_)
+      {
+      }
+
+      template <typename TValue>
+      bool operator()(const TValue& lhs_downcasted)
+      {
+        return lhs_downcasted < etl::get<TValue>(rhs);
+      }
+
+      const TVariant& rhs;
+    };
+  }
+
+  //***************************************************************************
+  /// Checks if the variants are equal.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator ==(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    // If both variants are valueless, they are considered equal
+    if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
+    {
+      return true;
+    }
+
+    // If one variant is valueless and the other is not, they are not equal
+    if (lhs.valueless_by_exception() || rhs.valueless_by_exception())
+    {
+      return false;
+    }
+
+    // If variants have different types, they are not equal
+    if (lhs.index() != rhs.index())
+    {
+      return false;
+    }
+
+    // Variants have the same type, apply the equality operator for the contained values
+    private_variant::equality_visitor<etl::variant<TTypes...>> visitor(rhs);
+
+    return etl::visit(visitor, lhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the variants not equal.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator !=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is less than rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator <(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    // If both variants are valueless, they are considered equal, so not less than
+    if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
+    {
+      return false;
+    }
+
+    // A valueless variant is always less than a variant with a value
+    if (lhs.valueless_by_exception())
+    {
+      return true;
+    }
+
+    // A variant with a value is never less than a valueless variant
+    if (rhs.valueless_by_exception())
+    {
+      return false;
+    }
+
+    // If variants have different types, compare the type index
+    if (lhs.index() != rhs.index())
+    {
+      return lhs.index() < rhs.index();
+    }
+
+    // Variants have the same type, apply the less than operator for the contained values
+    private_variant::less_than_visitor<etl::variant<TTypes...>> visitor(rhs);
+
+    return etl::visit(visitor, lhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is greater than rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator >(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return (rhs < lhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is less than or equal to rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator <=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return  !(lhs > rhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is greater than or equal to rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator >=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return !(lhs < rhs);
+  }
+
+  namespace private_variant
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+    //***************************************************************************
+    /// C++20 compatible visitor function for testing variant '<=>'.
+    /// Assumes that the two variants are already known to contain the same type.
+    //***************************************************************************
+    template <typename TVariant>
+    struct compare_visitor
+    {
+      compare_visitor(const TVariant& rhs_)
+        : rhs(rhs_)
+      {
+      }
+
+      template <typename TValue>
+      std::strong_ordering operator()(const TValue& lhs_downcasted)
+      {
+        return lhs_downcasted <=> etl::get<TValue>(rhs);
+      }
+
+      const TVariant& rhs;
+    };
+#endif
+  }
+
+  //***************************************************************************
+  /// Defines the 'spaceship' <=> operator for comparing variants.
+  /// Only defined if using C++20 and STL.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 
+  std::common_comparison_category_t<std::compare_three_way_result_t<TTypes>...>
+    operator <=>(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
+    {
+      return std::strong_ordering::equal;
+    }
+    else if (lhs.valueless_by_exception())
+    {
+      return std::strong_ordering::less;
+    }
+    else if (rhs.valueless_by_exception())
+    {
+      return std::strong_ordering::greater;
+    }
+    else if (lhs.index() != rhs.index())
+    {
+      return lhs.index() <=> rhs.index();
+    }
+    else
+    {
+      // Variants have the same type, apply the equality operator for the contained values
+      private_variant::compare_visitor<etl::variant<TTypes...>> visitor(rhs);
+
+      return etl::visit(visitor, lhs);
+    }
+  }
+#endif
 }
 #endif

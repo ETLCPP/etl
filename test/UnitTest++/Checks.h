@@ -4,11 +4,13 @@
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wsign-compare"
+  #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wsign-compare"
+  #pragma clang diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include "Config.h"
@@ -32,7 +34,7 @@ namespace UnitTest
   template <>
   inline std::string DisplayValue(const char& c)
   {
-    using type = std::char_traits<char>::int_type;
+    typedef std::char_traits<char>::int_type type;
 
     std::ostringstream oss;
 
@@ -45,7 +47,7 @@ namespace UnitTest
   template <>
   inline std::string DisplayValue(const char8_t& c)
   {
-    using type = std::char_traits<char8_t>::int_type;
+    typedef std::char_traits<char8_t>::int_type type;
 
     std::ostringstream oss;
 
@@ -58,7 +60,7 @@ namespace UnitTest
   template <>
   inline std::string DisplayValue(const wchar_t& c)
   {
-    using type = std::char_traits<wchar_t>::int_type;
+    typedef std::char_traits<wchar_t>::int_type type;
 
     std::ostringstream oss;
 
@@ -71,7 +73,7 @@ namespace UnitTest
   template <>
   inline std::string DisplayValue(const char16_t& c)
   {
-    using type = std::char_traits<char16_t>::int_type;
+    typedef std::char_traits<char16_t>::int_type type;
 
     std::ostringstream oss;
 
@@ -83,7 +85,7 @@ namespace UnitTest
   template <>
   inline std::string DisplayValue(const char32_t& c)
   {
-    using type = std::char_traits<char32_t>::int_type;
+    typedef std::char_traits<char32_t>::int_type type;
 
     std::ostringstream oss;
 
@@ -169,6 +171,7 @@ namespace UnitTest
      return !value;
    }
 
+#if __cplusplus >= 201103L
    template< typename Expected, typename Actual >
    void CheckEqual(TestResults& results, Expected&& expected, Actual&& actual, TestDetails const& details)
    {
@@ -181,6 +184,20 @@ namespace UnitTest
        results.OnTestFailure(details, stream.GetText());
      }
    }
+#else
+   template< typename Expected, typename Actual >
+   void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   {
+     if (!(expected == actual))
+     {
+       UnitTest::MemoryOutStream stream;
+       stream << "Expected "
+         << DisplayValue(expected) << " but was " << DisplayValue(actual);
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+#endif
 
    template< typename Expected, typename Actual >
    void CheckEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
@@ -188,7 +205,9 @@ namespace UnitTest
      if (!(expected == actual))
      {
        UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') << "Expected 0x" << std::setw(2 * sizeof(Expected)) << expected << " but was 0x" << std::setw(2 * sizeof(Actual)) << actual;
+       stream << std::hex << std::uppercase << std::setfill('0') 
+              << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (expected & ~(typename std::make_unsigned<Expected>::type(0))) 
+              << " but was 0x" << std::setw(2 * sizeof(Actual))   << (actual   & ~(typename std::make_unsigned<Actual>::type(0)));
 
        results.OnTestFailure(details, stream.GetText());
      }
@@ -212,7 +231,8 @@ namespace UnitTest
      if (expected == actual)
      {
        UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) << "Expected not equal, but both values are " << actual;
+       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) 
+              << "Expected not equal, but both values are " << (actual & ~(typename std::make_unsigned<Actual>::type(0)));
 
        results.OnTestFailure(details, stream.GetText());
      }

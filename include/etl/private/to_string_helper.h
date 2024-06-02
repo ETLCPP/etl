@@ -42,6 +42,7 @@ SOFTWARE.
 #include "../absolute.h"
 #include "../algorithm.h"
 #include "../iterator.h"
+#include "../math.h"
 #include "../limits.h"
 
 #include <math.h>

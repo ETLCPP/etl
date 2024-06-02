@@ -32,6 +32,8 @@ SOFTWARE.
 
 #include "etl/type_def.h"
 
+#include "etl/type_traits.h"
+
 namespace
 {
   SUITE(test_type_def)
@@ -44,6 +46,21 @@ namespace
 
       type1_t t1 = type1_t(1);
       type2_t t2 = type2_t(1);
+
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
+
+      CHECK_EQUAL(i1, i2);
+    }
+
+    //*************************************************************************
+    TEST(test_macro_constexpr)
+    {
+      ETL_TYPEDEF(uint32_t, type1_t);
+      ETL_TYPEDEF(uint32_t, type2_t);
+
+      constexpr type1_t t1 = type1_t(1);
+      constexpr type2_t t2 = type2_t(1);
 
       uint32_t i1 = t1.get();
       uint32_t i2 = t2.get();
@@ -70,6 +87,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_implicit_constexpr)
+    {
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
+
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
+
+      constexpr type1_t t1 = type1_t(1);
+      constexpr type2_t t2 = type2_t(1);
+
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
+
+      CHECK_EQUAL(i1, i2);
+    }
+
+    //*************************************************************************
     TEST(test_get)
     {
       class type1_t_tag;
@@ -80,6 +115,21 @@ namespace
 
       type1_t t1(1);
       type2_t t2(1);
+
+      CHECK_EQUAL(t1.get(), t2.get());
+    }
+
+    //*************************************************************************
+    TEST(test_get_constexpr)
+    {
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
+
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
+
+      constexpr type1_t t1(1);
+      constexpr type2_t t2(1);
 
       CHECK_EQUAL(t1.get(), t2.get());
     }
@@ -141,5 +191,73 @@ namespace
       CHECK(!(t1 >= t2));
       CHECK(t2 >= t4);
     }
+
+    //*************************************************************************
+    TEST(test_comparisons_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr type_t t1(1);
+      constexpr type_t t2(2);
+
+      constexpr bool eq   = t1 == t1;
+      constexpr bool neq  = t1 == t2;
+      constexpr bool lt   = t1  < t2;
+      constexpr bool nlt  = t2  < t1;
+      constexpr bool lte  = t1 <= t2;
+      constexpr bool nlte = t2 <= t1;
+      constexpr bool gt   = t1  > t2;
+      constexpr bool ngt  = t2  > t1;
+      constexpr bool gte  = t1 >= t2;
+      constexpr bool ngte = t2 >= t1;
+
+      CHECK_TRUE(eq);
+      CHECK_FALSE(neq);
+      CHECK_TRUE(lt);
+      CHECK_FALSE(nlt);
+      CHECK_TRUE(lte);
+      CHECK_FALSE(nlte);
+      CHECK_FALSE(gt);
+      CHECK_TRUE(ngt);
+      CHECK_FALSE(gte);
+      CHECK_TRUE(ngte);
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    ETL_TYPEDEF(int32_t, arithmetic_type_t);
+
+    constexpr arithmetic_type_t CreatePlus()
+    {
+      arithmetic_type_t value = 0;
+
+      ++value;
+      value++;
+      value += 1;
+
+      return value;
+    }
+
+    constexpr arithmetic_type_t CreateMinus()
+    {
+      arithmetic_type_t value = 0;
+
+      --value;
+      value--;
+      value -= 1;
+
+      return value;
+    }
+    
+    TEST(test_arithmetic_constexpr)
+    {
+      constexpr arithmetic_type_t value_plus  = CreatePlus();
+      constexpr arithmetic_type_t value_minus = CreateMinus();
+
+      CHECK_EQUAL(3,  value_plus.get());
+      CHECK_EQUAL(-3, value_minus.get());
+    }
+#endif
   };
 }

@@ -350,7 +350,8 @@ namespace etl
           {
             unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
             nbits -= mask_width;
-            uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << nbits;
+            uint32_t mask = ((1U << mask_width) - 1U) << nbits;
+            //uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << nbits;
 
             // Move chunk to lowest char bits.
             // Chunks are never larger than one char.
@@ -628,7 +629,7 @@ namespace etl
     void write_unchecked(bool value)
     {
       unsigned char chunk = value ? 1 : 0;
-      write_data<unsigned char>(static_cast<unsigned char>(chunk), 1);
+      write_data<unsigned char>(chunk, 1);
     }
 
     //***************************************************************************
@@ -860,7 +861,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Sets the function to call afer every write.
+    /// Sets the function to call after every write.
     //***************************************************************************
     void set_callback(callback_type callback_)
     {
@@ -868,7 +869,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Gets the function to call afer every write.
+    /// Gets the function to call after every write.
     //***************************************************************************
     callback_type get_callback() const
     {

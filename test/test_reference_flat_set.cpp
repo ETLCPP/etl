@@ -170,7 +170,7 @@ namespace
     {
       DataDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -364,6 +364,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_existing_value_when_full)
+    {
+      DataNDC data;
+
+      data.insert(N0);
+      data.insert(N1);
+      data.insert(N2);
+      data.insert(N3);
+      data.insert(N4);
+      data.insert(N5);
+      data.insert(N6);
+      data.insert(N7);
+      data.insert(N8);
+      data.insert(N9);
+      
+      CHECK_NO_THROW(data.insert(N0));
+      CHECK_NO_THROW(data.insert(N1));
+      CHECK_NO_THROW(data.insert(N2));
+      CHECK_NO_THROW(data.insert(N3));
+      CHECK_NO_THROW(data.insert(N4));
+      CHECK_NO_THROW(data.insert(N5));
+      CHECK_NO_THROW(data.insert(N6));
+      CHECK_NO_THROW(data.insert(N7));
+      CHECK_NO_THROW(data.insert(N8));
+      CHECK_NO_THROW(data.insert(N9));
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
+    }
+    
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
@@ -518,7 +548,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************

@@ -55,19 +55,59 @@ target_include_directories(etl_tests
   ${CMAKE_CURRENT_LIST_DIR}
   )
 
-if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	message(STATUS "Using GCC compiler")
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "Using Clang compiler")
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	target_compile_options(etl_tests
 			PRIVATE
-			-fsanitize=address,undefined,bounds
 			-fno-omit-frame-pointer
+			-fno-common
 			-Wall
 			-Wextra
 			-Werror
+			-Wfloat-equal
+			-Wuseless-cast
+			-Wshadow
+			-Wnull-dereference
 			)
-	target_link_options(etl_tests
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	target_compile_options(etl_tests
 			PRIVATE
-			-fsanitize=address,undefined,bounds
+			-fno-omit-frame-pointer
+			-fno-common
+			-Wall
+			-Wextra
+			-Werror
+			-Wfloat-equal
+			-Wshadow
+			-Wnull-dereference
 			)
+endif ()
+
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+	if (ETL_ENABLE_SANITIZER MATCHES "ON")
+		message(STATUS "Compiling with Sanitizer enabled")
+		# MinGW doesn't presently support sanitization
+		if (NOT MINGW)
+			target_compile_options(etl_tests
+				PRIVATE
+				-fsanitize=address,undefined,bounds
+				)
+
+			target_link_options(etl_tests
+				PRIVATE
+				-fsanitize=address,undefined,bounds
+				)	
+		endif()
+	endif ()
 endif ()
 
 # Enable the 'make test' CMake target using the executable defined above

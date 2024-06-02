@@ -107,19 +107,19 @@
    #ifdef SUITE
       #error SUITE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_SUITE instead
    #else
-      #define SUITE UNITTEST_SUITE
+      #define SUITE(name) UNITTEST_SUITE(name)
    #endif
 
    #ifdef TEST
       #error TEST already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_TEST instead
    #else
-      #define TEST UNITTEST_TEST
+      #define TEST(Name) UNITTEST_TEST(Name)
    #endif
 
    #ifdef TEST_FIXTURE
       #error TEST_FIXTURE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_TEST_FIXTURE instead
    #else
-      #define TEST_FIXTURE UNITTEST_TEST_FIXTURE
+      #define TEST_FIXTURE(Fixture,Name) UNITTEST_TEST_FIXTURE(Fixture,Name)
    #endif
 #endif
 

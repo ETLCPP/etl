@@ -35,17 +35,17 @@ SOFTWARE.
 
 namespace
 {
-  class Test
+  class Object
   {
   public:
 
-    Test()
+    Object()
       : p(new int())
     {
       *p = 4;
     }
 
-    ~Test()
+    ~Object()
     {
       delete p;
     }
@@ -53,18 +53,18 @@ namespace
     int* p;
   };
 
-  class Test2 : public Test
+  class Object2 : public Object
   {
   };
 }
 
 namespace etl
 {
-  // Test2 is a value parameter type.
+  // Object2 is a value parameter type.
   template <>
-  struct parameter_type<Test2>
+  struct parameter_type<Object2>
   {
-    typedef Test2 type;
+    typedef Object2 type;
   };
 }
 
@@ -80,10 +80,10 @@ namespace
       b = !etl::is_reference<etl::parameter_type<int>::type>::value;
       CHECK(b);
 
-      b = etl::is_reference<etl::parameter_type<Test>::type>::value;
+      b = etl::is_reference<etl::parameter_type<Object>::type>::value;
       CHECK(b);
 
-      b = !etl::is_reference<etl::parameter_type<Test2>::type>::value;
+      b = !etl::is_reference<etl::parameter_type<Object2>::type>::value;
       CHECK(b);
     }
   };

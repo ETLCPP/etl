@@ -173,7 +173,19 @@ namespace etl
       {
         if (p_current != p_end)
         {
-          p_value = p_current->begin();
+          while ((p_current != p_end) && p_current->empty())
+          {
+            ++p_current;
+          }
+          
+          if (p_current != p_end)
+          {
+            p_value = p_current->begin();
+          }
+          else
+          {
+            p_value = ETL_NULLPTR;
+          }
         }
       }
 

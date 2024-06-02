@@ -33,6 +33,8 @@ SOFTWARE.
 #include <array>
 #include <numeric>
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   //***********************************
@@ -93,7 +95,7 @@ namespace etl
 
 namespace
 {
-  SUITE(test_bit_stream_reader)
+  SUITE(test_bit_stream_reader_little_endian)
   {
     //*************************************************************************
     TEST(test_read_bool)
@@ -1192,4 +1194,6 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"
 

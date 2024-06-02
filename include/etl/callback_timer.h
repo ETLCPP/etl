@@ -709,11 +709,25 @@ namespace etl
     }
 
     //*******************************************
+    /// Check if there is an active timer.
+    //*******************************************
+    bool has_active_timer() const
+    {
+      return !active_list.empty();
+    }
+
+    //*******************************************
     /// Get the time to the next timer event.
+    /// Returns etl::timer::interval::No_Active_Interval if there is no active timer.
     //*******************************************
     uint32_t time_to_next() const
     {
-      uint32_t delta = active_list.front().delta;
+      uint32_t delta = static_cast<uint32_t>(etl::timer::interval::No_Active_Interval);
+
+      if (has_active_timer())
+      {
+        delta = active_list.front().delta;
+      }
 
       return delta;
     }

@@ -3,6 +3,7 @@
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
 #define ETL_CONSTANT
 #define ETL_CONSTEXPR
+#define ETL_CONSTEXPR11
 #define ETL_CONSTEXPR14
 #define ETL_CONSTEXPR17
 #define ETL_IF_CONSTEXPR
@@ -22,6 +23,18 @@
 #define ETL_CPP11_SUPPORTED
 #define ETL_CPP14_SUPPORTED
 #define ETL_CPP17_SUPPORTED
+#define ETL_CPP17_SUPPORTED
+#define ETL_USING_CPP11
+#define ETL_USING_CPP14
+#define ETL_USING_CPP17
+#define ETL_USING_CPP20
 #define ETL_ASSERT
 #define ETL_NULLPTR
 #define ETL_USING_STLPORT
+#define CHECK
+#define CHECK_FALSE
+#define CHECK_TRUE
+#define CHECK_EQUAL
+#define CHECK_ARRAY_EQUAL
+#define CHECK_CLOSE
+#define CHECK_THROW

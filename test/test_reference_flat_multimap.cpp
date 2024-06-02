@@ -157,7 +157,7 @@ namespace
     {
       DataDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -516,7 +516,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************

@@ -375,20 +375,27 @@ namespace
 
       Data data = { 0 };
 
+      Data::iterator result;
+
       // Initial data.
-      data.assign(std::begin(initial), std::end(initial));
+      result = data.assign(std::begin(initial), std::end(initial));
+      CHECK(result == data.end());
       bool isEqual = std::equal(data.begin(), data.end(), std::begin(initial));
       CHECK(isEqual);
 
       // Assign smaller.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[5]);
+      result = data.assign(std::begin(initial), std::end(initial));
+      CHECK(result == data.end());
+      result = data.assign(&source[0], &source[5]);
+      CHECK(result == &data[5]);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
       CHECK(isEqual);
 
       // Assign smaller + default.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[5], 99);
+      result = data.assign(std::begin(initial), std::end(initial));
+      CHECK(result == data.end());
+      result = data.assign(&source[0], &source[5], 99);
+      CHECK(result == &data[5]);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
       CHECK(isEqual);
     }
@@ -654,7 +661,7 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_array_template_deduction)
     {
-      etl::array data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
+      etl::array data{ char(0), short(1), 2, long(3), 4, 5, 6, 7, 8, 9 };
 
       using Type = std::remove_reference_t<decltype(data[0])>;
       CHECK((std::is_same_v<long, Type>));

@@ -29,9 +29,12 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/bit_stream.h"
+#include "etl/math.h"
 
 #include <array>
 #include <numeric>
+
+#include "etl/private/diagnostic_useless_cast_push.h"
 
 namespace
 {
@@ -45,9 +48,11 @@ namespace
 
   bool operator ==(const Object& lhs, const Object& rhs)
   {
+#include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.i == rhs.i) &&
            (lhs.d == rhs.d) &&
            (lhs.c == rhs.c);
+#include "etl/private/diagnostic_pop.h"
   }
 
   std::ostream& operator << (std::ostream& os, const Object& object)
@@ -1069,3 +1074,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

@@ -149,7 +149,7 @@ namespace
 
       DataDC data(lookup, pool);
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -223,7 +223,7 @@ namespace
       const NDC INITIAL_VALUE("1");
 
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
-      DataNDC data(size_t(5UL), NDC("1"), lookup, pool);
+      DataNDC data(5UL, NDC("1"), lookup, pool);
 
       CHECK(data.size() == INITIAL_SIZE);
       CHECK(!data.empty());
@@ -1256,7 +1256,7 @@ namespace
       DataNDC data(compare_data.begin(), compare_data.end(), lookup, pool);
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -1560,9 +1560,9 @@ namespace
     {
       struct functor
       {
-        void operator()(const NDC& ndc)
+        void operator()(const NDC& object)
         {
-          result += ndc.value;
+          result += object.value;
         }
 
         std::string result;
@@ -1594,9 +1594,9 @@ namespace
     {
       struct functor
       {
-        bool operator()(const NDC& ndc)
+        bool operator()(const NDC& object)
         {
-          return ndc.value == "4";
+          return object.value == "4";
         }
 
         std::string result;

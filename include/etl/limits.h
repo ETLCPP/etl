@@ -54,7 +54,7 @@ SOFTWARE.
 #endif
 
 #if ETL_NOT_USING_STL
-#define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
+  #define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
 
 #if !defined(LDBL_MIN) && defined(DBL_MIN)
   // Looks like we don't have these macros defined.
@@ -80,20 +80,24 @@ SOFTWARE.
 
 #if defined(ETL_NO_CPP_NAN_SUPPORT)
   #if defined(NAN)
-    #define ETL_NAN  (double)NAN
-    #define ETL_NANF (float)NAN
-    #define ETL_NANL (long double)NAN
+  #include "private/diagnostic_useless_cast_push.h"
+    #define ETL_NANF    NAN
+    #define ETL_NAN     static_cast<double>(NAN)
+    #define ETL_NANL    static_cast<long double>(NAN)
     #define ETL_HAS_NAN true
+  #include "private/diagnostic_pop.h"
   #else
-    #define ETL_NAN  (double)0.0
-    #define ETL_NANF (float)0.0
-    #define ETL_NANL (long double)0.0
+  #include "private/diagnostic_useless_cast_push.h"
+    #define ETL_NANF HUGE_VALF    
+    #define ETL_NAN  HUGE_VAL
+    #define ETL_NANL HUGE_VALL
     #define ETL_HAS_NAN false
+  #include "private/diagnostic_pop.h"
   #endif
 #else
-  #define ETL_NAN  nan("")
-  #define ETL_NANF nanf("")
-  #define ETL_NANL nanl("")
+  #define ETL_NANF    nanf("")
+  #define ETL_NAN     nan("")
+  #define ETL_NANL    nanl("")
   #define ETL_HAS_NAN true
 #endif
 
@@ -101,18 +105,18 @@ namespace etl
 {
   enum float_round_style
   {
-    round_indeterminate = -1,
-    round_toward_zero = 0,
-    round_to_nearest = 1,
-    round_toward_infinity = 2,
+    round_indeterminate       = -1,
+    round_toward_zero         = 0,
+    round_to_nearest          = 1,
+    round_toward_infinity     = 2,
     round_toward_neg_infinity = 3,
   };
 
   enum float_denorm_style
   {
     denorm_indeterminate = -1,
-    denorm_absent = 0,
-    denorm_present = 1
+    denorm_absent        = 0,
+    denorm_present       = 1
   };
 
   namespace private_limits
@@ -599,12 +603,13 @@ namespace etl
       static ETL_CONSTANT bool tinyness_before   = false;
       static ETL_CONSTANT float_denorm_style has_denorm  = denorm_indeterminate;
       static ETL_CONSTANT float_round_style  round_style = round_indeterminate;
-
-      static float round_error() { return float(0.5); }
     };
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_specialized;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_signed;
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_integer;
@@ -632,6 +637,9 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_bounded;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_modulo;
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::traps;
@@ -1092,6 +1100,7 @@ namespace etl
     static ETL_CONSTEXPR float epsilon() { return FLT_EPSILON; }
     static ETL_CONSTEXPR float denorm_min() { return FLT_MIN; }
     static ETL_CONSTEXPR float infinity() { return HUGE_VALF; }
+    static float round_error() { return 0.5f; }
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
   };
@@ -1110,6 +1119,7 @@ namespace etl
     static ETL_CONSTEXPR double epsilon() { return DBL_EPSILON; }
     static ETL_CONSTEXPR double denorm_min() { return DBL_MIN; }
     static ETL_CONSTEXPR double infinity() { return HUGE_VAL; }
+    static double round_error() { return 0.5; }
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
   };
@@ -1128,6 +1138,7 @@ namespace etl
     static ETL_CONSTEXPR long double epsilon() { return LDBL_EPSILON; }
     static ETL_CONSTEXPR long double denorm_min() { return LDBL_MIN; }
     static ETL_CONSTEXPR long double infinity() { return HUGE_VALL; }
+    static long double round_error() { return 0.5L; }
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
   };

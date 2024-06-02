@@ -38,6 +38,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "utility.h"
 #include "variant.h"
+#include "initializer_list.h"
 
 namespace etl
 {
@@ -57,29 +58,12 @@ namespace etl
   //***************************************************************************
   /// expected_invalid
   //***************************************************************************
-  template <typename TError>
-  class expected_invalid;
-
-  //*******************************************
-  template<>
-  class expected_invalid<void> : public etl::expected_exception
+  class expected_invalid : public etl::expected_exception
   {
   public:
 
     expected_invalid(string_type file_name_, numeric_type line_number_)
       : expected_exception(ETL_ERROR_TEXT("expected:invalid", ETL_EXPECTED_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //*******************************************
-  template <typename TError>
-  class expected_invalid : etl::expected_invalid<void>
-  {
-  public:
-
-    expected_invalid(string_type file_name_, numeric_type line_number_)
-      : expected_invalid<void>(file_name_, line_number_)
     {
     }
   };
@@ -370,6 +354,7 @@ namespace etl
     {
     }
 
+#if ETL_HAS_INITIALIZER_LIST
     //*******************************************
     /// Construct value type from initializser_list and arguments.
     //*******************************************
@@ -378,6 +363,7 @@ namespace etl
       : storage(il, etl::forward<Args>(args)...)
     {
     }
+#endif
 
     //*******************************************
     /// Construct error type from arguments.
@@ -625,17 +611,23 @@ namespace etl
     template <typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(etl::forward<Args>(args)...);
+      storage.template emplace<value_type>(etl::forward<Args>(args)...);
+
+      return value();
     }
 
     //*******************************************
     ///
     //*******************************************
+#if ETL_HAS_INITIALIZER_LIST
     template <typename U, typename... Args>
-    ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U>& il, Args&&... args) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U> il, Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(il, etl::forward<Args>(args)...);
+      storage.template emplace<value_type>(il, etl::forward<Args>(args)...);
+
+      return value();
     }
+#endif
 #else
     //*******************************************
     ///
@@ -668,7 +660,7 @@ namespace etl
     value_type* operator ->()
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 #endif
 
       return etl::addressof(etl::get<value_type>(storage));
@@ -680,7 +672,7 @@ namespace etl
     const value_type* operator ->() const
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 #endif
 
       return etl::addressof(etl::get<value_type>(storage));
@@ -692,7 +684,7 @@ namespace etl
     value_type& operator *() ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 #endif
 
       return etl::get<value_type>(storage);
@@ -704,7 +696,7 @@ namespace etl
     const value_type& operator *() const ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 #endif
 
       return etl::get<value_type>(storage);
@@ -717,7 +709,7 @@ namespace etl
     value_type&& operator *()&&
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 #endif
 
       return etl::move(etl::get<value_type>(storage));
@@ -729,7 +721,7 @@ namespace etl
     const value_type&& operator *() const&&
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 #endif
 
       return etl::move(etl::get<value_type>(storage));

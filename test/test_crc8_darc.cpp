@@ -41,7 +41,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_crc_experimental)
+  SUITE(test_crc8_darc)
   {
     //*************************************************************************
     // Table size 4

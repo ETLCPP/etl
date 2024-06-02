@@ -640,25 +640,25 @@ namespace
     //*************************************************************************
     TEST(test_create_copy)
     {
-      struct Test : etl::create_copy<Test>
+      struct Object : etl::create_copy<Object>
       {
         std::string text;
       };
 
-      char buffer[sizeof(Test)];
+      char buffer[sizeof(Object)];
 
-      Test test1;
-      test1.text = "12345678";
-      test1.create_copy_at(buffer);
-      test1.text = "87654321";
+      Object object1;
+      object1.text = "12345678";
+      object1.create_copy_at(buffer);
+      object1.text = "87654321";
 
-      Test& test2 = *reinterpret_cast<Test*>(buffer);
+      Object& object2 = *reinterpret_cast<Object*>(buffer);
 
-      CHECK_EQUAL(std::string("87654321"), test1.text);
-      CHECK_EQUAL(std::string("12345678"), test2.text);
+      CHECK_EQUAL(std::string("87654321"), object1.text);
+      CHECK_EQUAL(std::string("12345678"), object2.text);
 
       int count = 0;
-      test1.create_copy_at(buffer, count);
+      object1.create_copy_at(buffer, count);
 
       CHECK_EQUAL(1, count);
     }
@@ -666,23 +666,23 @@ namespace
     //*************************************************************************
     TEST(test_create_make_copy)
     {
-      struct Test : etl::create_copy<Test>
+      struct Object : etl::create_copy<Object>
       {
         std::string text;
       };
 
-      char buffer[sizeof(Test)];
+      char buffer[sizeof(Object)];
 
-      Test test1;
-      test1.text = "12345678";
-      Test& test2 = test1.make_copy_at(buffer);
-      test1.text = "87654321";
+      Object object1;
+      object1.text = "12345678";
+      Object& object2 = object1.make_copy_at(buffer);
+      object1.text = "87654321";
 
-      CHECK_EQUAL(std::string("87654321"), test1.text);
-      CHECK_EQUAL(std::string("12345678"), test2.text);
+      CHECK_EQUAL(std::string("87654321"), object1.text);
+      CHECK_EQUAL(std::string("12345678"), object2.text);
 
       int count = 0;
-      test1.make_copy_at(buffer, count);
+      object1.make_copy_at(buffer, count);
 
       CHECK_EQUAL(1, count);
     }
@@ -917,6 +917,17 @@ namespace
     TEST(test_unique_ptr_from_nullptr_assignment)
     {
       etl::unique_ptr<int> up(new int);
+
+      up = nullptr;
+
+      CHECK(up.get() == nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_nullptr_from_nullptr_assignment)
+    {
+      etl::unique_ptr<int> up;
 
       up = nullptr;
 

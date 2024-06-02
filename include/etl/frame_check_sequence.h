@@ -1,6 +1,4 @@
-
 ///\file
-
 /******************************************************************************
 The MIT License(MIT)
 Embedded Template Library.
@@ -48,13 +46,13 @@ namespace etl
     /// add_insert_iterator
     /// An output iterator used to add new values.
     //***************************************************
-    template <typename TFCS>
-    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    template <typename TFrame_Check_Sequence>
+    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, typename TFrame_Check_Sequence::value_type>
     {
     public:
 
       //***********************************
-      explicit add_insert_iterator(TFCS& fcs) ETL_NOEXCEPT
+      explicit add_insert_iterator(TFrame_Check_Sequence& fcs) ETL_NOEXCEPT
         : p_fcs(&fcs)
       {
       }
@@ -86,7 +84,7 @@ namespace etl
 
     private:
 
-      TFCS* p_fcs;
+      TFrame_Check_Sequence* p_fcs;
     };
   }
 

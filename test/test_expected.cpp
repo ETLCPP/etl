@@ -32,6 +32,7 @@ SOFTWARE.
 #include "etl/type_traits.h"
 
 #include <string>
+#include <vector>
 
 namespace
 {
@@ -442,6 +443,70 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_from_initializer_list)
+    {
+      struct S
+      {
+        S()
+          : vi()
+          , a(0)
+          , b(0)
+        {
+        }
+
+        S(std::initializer_list<int> il, int a_, int b_)
+          : vi(il)
+          , a(a_)
+          , b(b_)
+        {
+        }
+
+        std::vector<int> vi;
+        int a;
+        int b;
+      };
+
+      etl::expected<S, Error> exp;
+
+      S s1({ 10, 11, 12 }, 1, 2);
+      S s2 = exp.emplace({ 10, 11, 12 }, 1, 2);
+      
+      CHECK(s1.vi == s2.vi);
+      CHECK_EQUAL(s1.a, s2.a);
+      CHECK_EQUAL(s1.b, s2.b);
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_from_vargs)
+    {
+      struct S
+      {
+        S()
+          : a(0)
+          , b(0)
+        {
+        }
+
+        S(int a_, int b_)
+          : a(a_)
+          , b(b_)
+        {
+        }
+
+        int a;
+        int b;
+      };
+
+      etl::expected<S, Error> exp;
+
+      S s1(1, 2);
+      S s2 = exp.emplace(1, 2);
+
+      CHECK_EQUAL(s1.a, s2.a);
+      CHECK_EQUAL(s1.b, s2.b);
+    }
+
+    //*************************************************************************
     TEST(test_move_construct_void_value)
     {
       ErrorM      input1 = { "error 1" };
@@ -484,6 +549,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_dereference_operators)
+    {
+      struct ExpectedType
+      {
+        ExpectedType(int i_)
+          : i(i_)
+        {
+        }
+
+        int i;
+      };
+
+      etl::expected<ExpectedType, int>       exp  = etl::unexpected<int>(0);
+      const etl::expected<ExpectedType, int> cexp = etl::unexpected<int>(0);
+    
+      CHECK_THROW({ int i = (*exp).i;  (void)i; }, etl::expected_invalid);
+      CHECK_THROW({ int i = (*cexp).i; (void)i; }, etl::expected_invalid);
+      CHECK_THROW({ int i = exp->i;    (void)i; }, etl::expected_invalid);
+      CHECK_THROW({ int i = cexp->i;   (void)i; }, etl::expected_invalid);
+    }
+
+    //*************************************************************************
     struct value_or_helper
     {
       Expected get_value() const
@@ -518,6 +605,29 @@ namespace
 
       test_exp = etl::unexpected<int>(2);
       CHECK_FALSE(test_exp.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_expected_does_not_compile_with_ETL_LOG_ERRORS_bug_787)
+    {
+      etl::expected<int, int> test_exp = etl::unexpected<int>(0);
+      bool thrown = false;
+      std::string thrown_what;
+      std::string exception_what = etl::expected_invalid(__FILE__, __LINE__).what();
+
+      try
+      {
+        int i = *test_exp;
+        (void)i;
+      }
+      catch (etl::exception& e)
+      {
+        thrown = true;
+        thrown_what = e.what(); // what() should be accessible
+      }
+
+      CHECK_TRUE(thrown);
+      CHECK_TRUE(exception_what == thrown_what);
     }
   };
 }

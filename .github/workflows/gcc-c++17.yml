@@ -1,0 +1,52 @@
+name: gcc-c++17
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+
+jobs:
+
+  build-gcc-cpp17-linux-stl:
+    name: GCC C++17 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-gcc-cpp17-linux-no-stl:
+    name: GCC C++17 Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests

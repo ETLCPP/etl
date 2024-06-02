@@ -849,7 +849,7 @@ namespace
         Data(std::string w, size_t x, double y, const char *z) : a(w), b(x), c(y), d(z){}
         bool operator == (const Data &other) const
         {
-          return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
+          return (a == other.a) && (b == other.b) && !(c < other.c) && !(c > other.c) && (d == other.d);
         }
       };
 
@@ -908,7 +908,7 @@ namespace
         Data(std::string &w, size_t &x, double &y, const char *z) : a(w), b(x), c(y), d(z){}
         bool operator == (const Data &other) const
         {
-          return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
+          return (a == other.a) && (b == other.b) && !(c < other.c) && !(c > other.c) && (d == other.d);
         }
       };
 
@@ -1222,7 +1222,7 @@ namespace
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -1427,9 +1427,9 @@ namespace
     {
       struct functor
       {
-        void operator()(const NDC& ndc)
+        void operator()(const NDC& object)
         {
-          result += ndc.value;
+          result += object.value;
         }
 
         std::string result;
@@ -1458,9 +1458,9 @@ namespace
     {
       struct functor
       {
-        bool operator()(const NDC& ndc)
+        bool operator()(const NDC& object)
         {
-          return ndc.value == "4";
+          return object.value == "4";
         }
 
         std::string result;

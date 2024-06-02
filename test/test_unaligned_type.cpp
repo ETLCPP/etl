@@ -31,6 +31,8 @@ SOFTWARE.
 #include "etl/unaligned_type.h"
 #include "etl/integral_limits.h"
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   SUITE(test_unaligned_type)
@@ -620,23 +622,23 @@ namespace
       CHECK_EQUAL(int(0x34), int(*itr));
       ++itr;
       *itr = 0x12;
-      CHECK_EQUAL(int(0x12), int(*itr));
+      CHECK_EQUAL(0x12, *itr);
       ++itr;
       CHECK(itr == test.end());
 
       //*******************************
       citr = const_test.begin();
-      CHECK_EQUAL(int(0x12), int(*citr));
+      CHECK_EQUAL(0x12, *citr);
       ++citr;
-      CHECK_EQUAL(int(0x34), int(*citr));
+      CHECK_EQUAL(0x34, *citr);
       ++citr;
       CHECK(citr == const_test.end());
 
       //*******************************
       citr = const_test.cbegin();
-      CHECK_EQUAL(int(0x12), int(*citr));
+      CHECK_EQUAL(0x12, *citr);
       ++citr;
-      CHECK_EQUAL(int(0x34), int(*citr));
+      CHECK_EQUAL(0x34, *citr);
       ++citr;
       CHECK(citr == const_test.cend());
     }
@@ -655,35 +657,35 @@ namespace
 
       //*******************************
       itr = test.rbegin();
-      CHECK_EQUAL(int(0x34), int(*itr));
+      CHECK_EQUAL(0x34, *itr);
       ++itr;
-      CHECK_EQUAL(int(0x12), int(*itr));
+      CHECK_EQUAL(0x12, *itr);
       ++itr;
       CHECK(itr == test.rend());
 
       //*******************************
       itr = test.rbegin();
       *itr = 0x12;
-      CHECK_EQUAL(int(0x12), int(*itr));
+      CHECK_EQUAL(0x12, *itr);
       ++itr;
       *itr = 0x34;
-      CHECK_EQUAL(int(0x34), int(*itr));
+      CHECK_EQUAL(0x34, *itr);
       ++itr;
       CHECK(itr == test.rend());
 
       //*******************************
       citr = const_test.rbegin();
-      CHECK_EQUAL(int(0x34), int(*citr));
+      CHECK_EQUAL(0x34, *citr);
       ++citr;
-      CHECK_EQUAL(int(0x12), int(*citr));
+      CHECK_EQUAL(0x12, *citr);
       ++citr;
       CHECK(citr == const_test.rend());
 
       //*******************************
       citr = const_test.crbegin();
-      CHECK_EQUAL(int(0x34), int(*citr));
+      CHECK_EQUAL(0x34, *citr);
       ++citr;
-      CHECK_EQUAL(int(0x12), int(*citr));
+      CHECK_EQUAL(0x12, *citr);
       ++citr;
       CHECK(citr == const_test.crend());
     }
@@ -780,3 +782,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

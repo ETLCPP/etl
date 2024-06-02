@@ -74,7 +74,7 @@ cog.outl("//********************************************************************
 
 ///\defgroup type_traits type_traits
 /// A set of type traits definitions.
-/// Derived from either the standard or alternate definitions, dependant on whether or not ETL_NO_STL is defined.
+/// Derived from either the standard or alternate definitions, dependent on whether or not ETL_NO_STL is defined.
 /// \ingroup utilities
 
 #if ETL_USING_STL && ETL_USING_CPP11
@@ -313,7 +313,7 @@ namespace etl
   /// is_signed
   template <typename T> struct is_signed : false_type {};
   template <> struct is_signed<char> : etl::bool_constant<(char(255) < 0)> {};
-  template <> struct is_signed<wchar_t> : public etl::bool_constant<static_cast<bool>(wchar_t(-1) < wchar_t(0))> {};
+  template <> struct is_signed<wchar_t> : public etl::bool_constant<wchar_t(-1) < wchar_t(0)> {};
   template <> struct is_signed<signed char> : true_type {};
   template <> struct is_signed<short> : true_type {};
   template <> struct is_signed<int> : true_type {};
@@ -1406,6 +1406,52 @@ typedef integral_constant<bool, true>  true_type;
   inline constexpr bool is_one_of_v = etl::is_one_of<T, TRest...>::value;
 #endif
 
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Template to determine if a type is a base of all types in a specified list.
+  ///\ingroup types
+  template <typename T, typename T1, typename... TRest>
+  struct is_base_of_all
+  {
+    static const bool value = etl::is_base_of<T, T1>::value &&
+                              etl::is_base_of_all<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct is_base_of_all<T, T1>
+  {
+    static const bool value = etl::is_base_of<T, T1>::value;
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TRest>
+  inline constexpr bool is_base_of_all_v = etl::is_base_of_all<T, TRest...>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Template to determine if a type is a base of any type in a specified list.
+  ///\ingroup types
+  template <typename T, typename T1, typename... TRest>
+  struct is_base_of_any
+  {
+    static const bool value = etl::is_base_of<T, T1>::value ||
+                              etl::is_base_of_any<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct is_base_of_any<T, T1>
+  {
+    static const bool value = etl::is_base_of<T, T1>::value;
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TRest>
+  inline constexpr bool is_base_of_any_v = etl::is_base_of_any<T, TRest...>::value;
+#endif
+
   //***************************************************************************
   /// A set of templates to allow related types to be derived.
   ///\ingroup types
@@ -2077,6 +2123,21 @@ typedef integral_constant<bool, true>  true_type;
   {
   };
 
+#if ETL_USING_CPP11
+  //*********************************************
+  // is_default_constructible
+  template<typename T, typename = void>
+  struct is_default_constructible : etl::false_type { };
+
+  template<typename T>
+  struct is_default_constructible<T, etl::void_t<decltype(T())>> : etl::true_type { };
+#else
+  template <typename T>
+  struct is_default_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
 #if ETL_USING_CPP17
 
   template <typename T1, typename T2>
@@ -2087,6 +2148,9 @@ typedef integral_constant<bool, true>  true_type;
 
   template<typename T, typename... TArgs>
   inline constexpr bool is_constructible_v = etl::is_constructible<T, TArgs...>::value;
+
+  template<typename T, typename... TArgs>
+  inline constexpr bool is_default_constructible_v = etl::is_default_constructible<T, TArgs...>::value;
 
   template<typename T>
   inline constexpr bool is_copy_constructible_v = etl::is_copy_constructible<T>::value;

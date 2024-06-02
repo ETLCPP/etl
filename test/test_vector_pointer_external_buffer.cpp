@@ -105,7 +105,7 @@ namespace
     {
       Data data(buffer1, SIZE);
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -116,7 +116,7 @@ namespace
     {
       CData data(buffer1, SIZE);
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -1488,7 +1488,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -1499,7 +1499,7 @@ namespace
       CData data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************

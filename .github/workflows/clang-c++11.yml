@@ -1,0 +1,52 @@
+name: clang-c++11
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+
+jobs:
+
+  build-clang-cpp11-linux-stl:
+    name: Clang C++11 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=11 ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp11-linux-no-stl:
+    name: Clang C++11 Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=11 ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests

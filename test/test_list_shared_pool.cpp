@@ -126,7 +126,7 @@ namespace
       Pool pool;
       DataNDC data(pool);
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK(!data.full());
       CHECK_EQUAL(data.available(), SIZE);
@@ -143,12 +143,12 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      CHECK_EQUAL(data1.size(), size_t(0UL));
+      CHECK_EQUAL(data1.size(), 0UL);
       CHECK(data1.empty());
       CHECK_EQUAL(data1.max_size(), SIZE);
       CHECK(data1.begin() == data1.end());
 
-      CHECK_EQUAL(data2.size(), size_t(0UL));
+      CHECK_EQUAL(data2.size(), 0UL);
       CHECK(data2.empty());
       CHECK_EQUAL(data2.max_size(), SIZE);
       CHECK(data2.begin() == data2.end());
@@ -509,7 +509,7 @@ namespace
       DataInt data2(SIZE / 2UL, 2, pool);
 
       data1.clear();
-      CHECK_EQUAL(size_t(0UL), data1.size());
+      CHECK_EQUAL(0UL, data1.size());
       CHECK_EQUAL(SIZE / 2UL, data2.size());
 
       // Do it again to check that clear() didn't screw up the internals.
@@ -517,7 +517,7 @@ namespace
       CHECK_EQUAL(SIZE / 2UL, data1.size());
       CHECK_EQUAL(SIZE / 2UL, data2.size());
       data1.clear();
-      CHECK_EQUAL(size_t(0UL), data1.size());
+      CHECK_EQUAL(0UL, data1.size());
       CHECK_EQUAL(SIZE / 2UL, data2.size());
     }
 

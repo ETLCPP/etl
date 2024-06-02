@@ -55,7 +55,7 @@ namespace etl
     /// Can only be called once.
     /// Subsequent calls will do nothing.
     ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
-    /// If the first state has child states then they will be recersively entered.
+    /// If the first state has child states then they will be recursively entered.
     //*******************************************
     void start(bool call_on_enter_state = true) ETL_OVERRIDE
     {
@@ -98,29 +98,36 @@ namespace etl
     //*******************************************
     void receive(const etl::imessage& message) ETL_OVERRIDE
     {
-      etl::fsm_state_id_t next_state_id = p_state->process_event(message);
-
-      if (next_state_id != ifsm_state::No_State_Change)
+      if (is_started())
       {
-        ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-        etl::ifsm_state* p_next_state = state_list[next_state_id];
+        etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-        // Have we changed state?
-        if (p_next_state != p_state)
+        if (next_state_id != ifsm_state::No_State_Change)
         {
-          etl::ifsm_state* p_root = common_ancestor(p_state, p_next_state);
-          do_exits(p_root, p_state);
+          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+          etl::ifsm_state* p_next_state = state_list[next_state_id];
 
-          p_state = p_next_state;
-
-          next_state_id = do_enters(p_root, p_next_state, true);
-
-          if (next_state_id != ifsm_state::No_State_Change)
+          // Have we changed state?
+          if (p_next_state != p_state)
           {
-            ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-            p_state = state_list[next_state_id];
+            etl::ifsm_state* p_root = common_ancestor(p_state, p_next_state);
+            do_exits(p_root, p_state);
+
+            p_state = p_next_state;
+
+            next_state_id = do_enters(p_root, p_next_state, true);
+
+            if (next_state_id != ifsm_state::No_State_Change)
+            {
+              ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+              p_state = state_list[next_state_id];
+            }
           }
         }
+      }
+      else
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::fsm_not_started));
       }
     }
 

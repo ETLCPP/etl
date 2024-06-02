@@ -86,6 +86,7 @@ namespace
   SUITE(test_multimap)
   {
     //*************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -102,11 +103,12 @@ namespace
 
       return true;
     }
+#include "etl/private/diagnostic_null_dereference_push.h"
 
     //*************************************************************************
     struct SetupFixture
     {
-      // Multimaps of predefined data from which to constuct multimaps used in
+      // Multimaps of predefined data from which to construct multimaps used in
       // each test
       std::multimap<std::string, int> initial_data;
       std::multimap<std::string, int> excess_data;
@@ -208,7 +210,7 @@ namespace
     {
       Data data;
 
-      CHECK(data.size() == size_t(0UL));
+      CHECK(data.size() == 0UL);
       CHECK(data.empty());
       CHECK(data.capacity() == MAX_SIZE);
       CHECK(data.max_size() == MAX_SIZE);
@@ -276,10 +278,28 @@ namespace
 
       CHECK(!data1.empty()); // Move does not clear the source.
 
-      CHECK(1 == data2.find("1")->second.value);
-      CHECK(2 == data2.find("2")->second.value);
-      CHECK(3 == data2.find("3")->second.value);
-      CHECK(4 == data2.find("4")->second.value);
+      DataM::iterator itr;
+      int result;
+
+      itr = data2.find("1");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(1, result);
+
+      itr = data2.find("2");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(2, result);
+
+      itr = data2.find("3");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(3, result);
+
+      itr = data2.find("4");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(4, result);
     }
 
     //*************************************************************************
@@ -391,10 +411,28 @@ namespace
       data2.insert(DataM::value_type(std::string("5"), ItemM(5)));
       data2 = std::move(data1);
 
-      CHECK(1 == data2.find("1")->second.value);
-      CHECK(2 == data2.find("2")->second.value);
-      CHECK(3 == data2.find("3")->second.value);
-      CHECK(4 == data2.find("4")->second.value);
+      DataM::iterator itr;
+      int result;
+
+      itr = data2.find("1");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(1, result);
+
+      itr = data2.find("2");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(2, result);
+
+      itr = data2.find("3");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(3, result);
+
+      itr = data2.find("4");
+      CHECK(itr != data2.end());
+      result = itr->second.value;
+      CHECK_EQUAL(4, result);
     }
 
     //*************************************************************************
@@ -888,7 +926,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK(data.size() == size_t(0UL));
+      CHECK(data.size() == 0UL);
     }
 
     //*************************************************************************
@@ -1577,7 +1615,10 @@ namespace
           break;
         }
 
-        prv = pos->first;
+        if (pos != data.crend())
+        {
+          prv = pos->first;
+        }
       }
 
       CHECK(pass);

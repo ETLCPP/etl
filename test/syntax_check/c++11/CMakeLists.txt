@@ -38,6 +38,10 @@ set_target_properties(t11 PROPERTIES
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS ON
         )
+target_compile_options(t11
+	    PRIVATE
+		-fsyntax-only
+		)
 target_sources(t11 PRIVATE etl_profile.h
         ../absolute.h.t.cpp
         ../algorithm.h.t.cpp
@@ -123,6 +127,8 @@ target_sources(t11 PRIVATE etl_profile.h
         ../crc8_maxim.h.t.cpp
         ../crc8_rohc.h.t.cpp
         ../crc8_wcdma.h.t.cpp
+        ../crc8_j1850.h.t.cpp
+        ../crc8_j1850_zero.h.t.cpp
         ../cyclic_value.h.t.cpp
         ../debounce.h.t.cpp
         ../debug_count.h.t.cpp
@@ -152,6 +158,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../function.h.t.cpp
         ../functional.h.t.cpp
         ../gamma.h.t.cpp
+        ../gcd.h.t.cpp
         ../generic_pool.h.t.cpp
         ../hash.h.t.cpp
         ../ihash.h.t.cpp
@@ -172,12 +179,15 @@ target_sources(t11 PRIVATE etl_profile.h
         ../iterator.h.t.cpp
         ../jenkins.h.t.cpp
         ../largest.h.t.cpp
+        ../lcm.h.t.cpp
         ../limiter.h.t.cpp
         ../limits.h.t.cpp
         ../list.h.t.cpp
         ../log.h.t.cpp
         ../macros.h.t.cpp
         ../map.h.t.cpp
+        ../math.h.t.cpp
+        ../math_constants.h.t.cpp
         ../math_constants.h.t.cpp
         ../mean.h.t.cpp
         ../mem_cast.h.t.cpp
@@ -216,8 +226,8 @@ target_sources(t11 PRIVATE etl_profile.h
         ../pearson.h.t.cpp
         ../permutations.h.t.cpp
         ../placement_new.h.t.cpp
-        ../platform.h.t.cpp
         ../poly_span.h.t.cpp
+        ../platform.h.t.cpp
         ../pool.h.t.cpp
         ../power.h.t.cpp
         ../priority_queue.h.t.cpp
@@ -263,6 +273,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../timer.h.t.cpp
         ../to_arithmetic.h.t.cpp
         ../to_string.h.t.cpp
+        ../to_u8string.h.t.cpp
         ../to_u16string.h.t.cpp
         ../to_u32string.h.t.cpp
         ../to_wstring.h.t.cpp
@@ -270,6 +281,9 @@ target_sources(t11 PRIVATE etl_profile.h
         ../type_lookup.h.t.cpp
         ../type_select.h.t.cpp
         ../type_traits.h.t.cpp
+        ../u8format_spec.h.t.cpp
+        ../u8string.h.t.cpp
+        ../u8string_stream.h.t.cpp
         ../u16format_spec.h.t.cpp
         ../u16string.h.t.cpp
         ../u16string_stream.h.t.cpp

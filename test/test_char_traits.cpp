@@ -32,6 +32,8 @@ SOFTWARE.
 
 #include "etl/char_traits.h"
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   template <typename T>
@@ -724,3 +726,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

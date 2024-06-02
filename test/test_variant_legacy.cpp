@@ -35,6 +35,8 @@ SOFTWARE.
 #include <algorithm>
 #include <string>
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   // Test classes for polymorphic tests.
@@ -690,9 +692,11 @@ namespace
       ui16 = variant8;
       CHECK_EQUAL(ui16, variant8.get<uint16_t>());
 
+#include "etl/private/diagnostic_useless_cast_push.h"
       variant8 = int32_t(5);
       i32 = variant8;
       CHECK_EQUAL(i32, variant8.get<int32_t>());
+#include "etl/private/diagnostic_pop.h"
 
       variant8 = uint32_t(6);
       ui32 = variant8;
@@ -908,7 +912,7 @@ namespace
     {
       test_variant_3 variant;
       variant = int8_t{};
-      // c++98 should generate a const ref of dispatchern.
+      // c++98 should generate a const ref of dispatcher.
       int16_t type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
       CHECK_EQUAL(1, type);
       test_variant_3 const& variant_const = variant;
@@ -931,3 +935,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

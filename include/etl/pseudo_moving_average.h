@@ -42,13 +42,13 @@ namespace etl
     /// add_insert_iterator
     /// An output iterator used to add new values.
     //***************************************************
-    template <typename TCMA>
-    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    template <typename TPseudo_Moving_Average>
+    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, typename TPseudo_Moving_Average::value_type, void, void, void>
     {
     public:
 
       //***********************************
-      explicit add_insert_iterator(TCMA& pma) ETL_NOEXCEPT
+      explicit add_insert_iterator(TPseudo_Moving_Average& pma) ETL_NOEXCEPT
         : p_pma(&pma)
       {
       }
@@ -72,7 +72,7 @@ namespace etl
       }
 
       //***********************************
-      add_insert_iterator& operator =(typename TCMA::value_type value)
+      add_insert_iterator& operator =(typename TPseudo_Moving_Average::value_type value)
       {
         p_pma->add(value);
         return *this;
@@ -80,7 +80,7 @@ namespace etl
 
     private:
 
-      TCMA* p_pma;
+      TPseudo_Moving_Average* p_pma;
     };
   }
 

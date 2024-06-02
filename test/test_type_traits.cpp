@@ -45,7 +45,7 @@ namespace etl
 namespace
 {
   // A class to test non-fundamental types.
-  struct Test
+  struct Object
   {
     int a;
   };
@@ -110,6 +110,17 @@ namespace
     MoveableCopyable& operator =(MoveableCopyable&&) noexcept { return *this; }
     MoveableCopyable(const MoveableCopyable&) {}
     MoveableCopyable& operator =(const MoveableCopyable&) { return *this; }
+  };
+
+  //*********************************************
+  struct NotDefaultConstructible
+  {
+    NotDefaultConstructible() = delete;
+    NotDefaultConstructible(const NotDefaultConstructible&) noexcept {}
+    NotDefaultConstructible& operator =(const NotDefaultConstructible&) noexcept { return *this; }
+
+    NotDefaultConstructible(NotDefaultConstructible&&) = delete;
+    NotDefaultConstructible& operator =(NotDefaultConstructible&) = delete;
   };
 }
 
@@ -671,7 +682,7 @@ namespace
     //*************************************************************************
     TEST(test_alignment_of)
     {
-      struct Test
+      struct Object
       {
         int   a;
         char  b;
@@ -690,7 +701,7 @@ namespace
       CHECK(std::alignment_of<unsigned long long>::value == etl::alignment_of<unsigned long long>::value);
       CHECK(std::alignment_of<float>::value              == etl::alignment_of<float>::value);
       CHECK(std::alignment_of<double>::value             == etl::alignment_of<double>::value);
-      CHECK(std::alignment_of<Test>::value               == etl::alignment_of<Test>::value);
+      CHECK(std::alignment_of<Object>::value             == etl::alignment_of<Object>::value);
     }
 
     //*************************************************************************
@@ -1137,10 +1148,28 @@ namespace
     CHECK((etl::is_constructible_v<Copyable>) == (std::is_constructible_v<Copyable>));
     CHECK((etl::is_constructible_v<Moveable>) == (std::is_constructible_v<Moveable>));
     CHECK((etl::is_constructible_v<MoveableCopyable>) == (std::is_constructible_v<MoveableCopyable>));
+    CHECK((etl::is_constructible_v<NotDefaultConstructible>) == (std::is_constructible_v<NotDefaultConstructible>));
 #else
     CHECK((etl::is_constructible<Copyable>::value) == (std::is_constructible<Copyable>::value));
     CHECK((etl::is_constructible<Moveable>::value) == (std::is_constructible<Moveable>::value));
     CHECK((etl::is_constructible<MoveableCopyable>::value) == (std::is_constructible<MoveableCopyable>::value));
+    CHECK((etl::is_constructible<NotDefaultConstructible>::value) == (std::is_constructible<NotDefaultConstructible>::value));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_default_constructible)
+  {
+#if ETL_USING_CPP17
+    CHECK((etl::is_default_constructible_v<Copyable>) == (std::is_default_constructible_v<Copyable>));
+    CHECK((etl::is_default_constructible_v<Moveable>) == (std::is_default_constructible_v<Moveable>));
+    CHECK((etl::is_default_constructible_v<MoveableCopyable>) == (std::is_default_constructible_v<MoveableCopyable>));
+    CHECK((etl::is_default_constructible_v<NotDefaultConstructible>) == (std::is_default_constructible_v<NotDefaultConstructible>));
+#else
+    CHECK((etl::is_default_constructible<Copyable>::value) == (std::is_default_constructible<Copyable>::value));
+    CHECK((etl::is_default_constructible<Moveable>::value) == (std::is_default_constructible<Moveable>::value));
+    CHECK((etl::is_default_constructible<MoveableCopyable>::value) == (std::is_default_constructible<MoveableCopyable>::value));
+    CHECK((etl::is_default_constructible<NotDefaultConstructible>::value) == (std::is_default_constructible<NotDefaultConstructible>::value));
 #endif
   }
 
@@ -1253,6 +1282,42 @@ namespace
     CHECK((etl::is_trivially_copyable<MoveableCopyable>::value) == (std::is_trivially_copyable<MoveableCopyable>::value));
 #endif
 #endif
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_base_of_any)
+  {
+    struct Base {};
+    struct D1 : Base {};
+    struct D2 : Base {};
+    struct D3 : Base {};
+    struct D4 {};
+
+#if ETL_USING_CPP17
+    CHECK_TRUE(bool(etl::is_base_of_any_v<Base, D1, D2, D3, D4>));
+    CHECK_FALSE(bool(etl::is_base_of_any_v<Base, D4>));
+#else
+    CHECK_TRUE(bool(etl::is_base_of_any<Base, D1, D2, D3, D4>::value));
+    CHECK_FALSE(bool(etl::is_base_of_any<Base, D4>::value));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_base_of_all)
+  {
+    struct Base {};
+    struct D1 : Base {};
+    struct D2 : Base {};
+    struct D3 : Base {};
+    struct D4 {};
+
+#if ETL_USING_CPP17
+    CHECK_TRUE(bool(etl::is_base_of_all_v<Base, D1, D2, D3>));
+    CHECK_FALSE(bool(etl::is_base_of_all_v<Base, D1, D2, D3, D4>));
+#else
+    CHECK_TRUE(bool(etl::is_base_of_all<Base, D1, D2, D3>::value));
+    CHECK_FALSE(bool(etl::is_base_of_all<Base, D1, D2, D3, D4>::value));
 #endif
   }
 }

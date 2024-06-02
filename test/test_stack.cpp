@@ -33,6 +33,7 @@ SOFTWARE.
 #include "data.h"
 
 #include "etl/stack.h"
+#include "etl/math.h"
 
 namespace
 {
@@ -59,7 +60,9 @@ namespace
 
   bool operator == (const Item& lhs, const Item& rhs)
   {
+#include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
+#include "etl/private/diagnostic_pop.h"
   }
 
   struct ItemNTD

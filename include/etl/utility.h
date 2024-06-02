@@ -336,7 +336,9 @@ namespace etl
   template <typename T1, typename T2>
   inline bool operator ==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
-    return (a.first == b.first) && (a.second == b.second);
+#include "private/diagnostic_float_equal_push.h"
+    return (a.first == b.first) && !(a.second < b.second) && !(a.second > b.second);
+#include "private/diagnostic_pop.h"
   }
 
   /// Uses @c operator== to find the result.

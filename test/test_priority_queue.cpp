@@ -31,6 +31,7 @@ SOFTWARE.
 #include <queue>
 
 #include "etl/priority_queue.h"
+#include "etl/math.h"
 #include <functional>
 #include <string>
 
@@ -63,7 +64,9 @@ namespace
 
   bool operator == (const Item& lhs, const Item& rhs)
   {
+#include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
+#include "etl/private/diagnostic_pop.h"
   }
 
   bool operator < (const Item& lhs, const Item& rhs)
@@ -86,7 +89,7 @@ namespace
     {
       etl::priority_queue<int, SIZE> priority_queue;
 
-      CHECK_EQUAL(priority_queue.size(), size_t(0UL));
+      CHECK_EQUAL(priority_queue.size(), 0UL);
       CHECK_EQUAL(priority_queue.available(), SIZE);
       CHECK_EQUAL(priority_queue.max_size(), SIZE);
     }

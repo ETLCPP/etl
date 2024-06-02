@@ -1,3 +1,139 @@
+﻿===============================================================================
+20.38.16
+
+Fixes:
+#889 bitset_new.h throws warnings for GHS compiler
+     Fixed ordering of static & ETL_CONSTEXPR14.
+#895 Removed std algorithm calls from algorithm.h
+
+Changes without a GitHub issue#:
+Added extra tests for as_bytes and as_writable_bytes
+Made conversion operator for C++03 etl::byte public
+
+===============================================================================
+20.38.15
+
+Fixes:
+#892 Compilation Error with constexpr in etl::string_base::size() on ESP-WROVER-KIT (c++11)
+     Removed ETL_CONSTEXPR from etl::string_base::size().
+     Also removed ETL_CONSTEXPR from etl::vector::size().
+
+===============================================================================
+20.38.14
+
+Features:
+Added GCD and LCM algorithms. etl::gcd and etl::lcm
+Added specialisations of etl::rotate for different iterator types
+Added ETL_NODISCARD, ETL_CONSTEXPR14 and ETL_NOEXCEPT to etl::absolute and etl::absolute_unsigned
+
+===============================================================================
+20.38.13
+
+Fixes:
+Revert change #804 to restore value initialisation of type0 for default constructor
+
+===============================================================================
+20.38.12
+
+Fixes:
+#815 etl::remove_if calls predicate twice for first iterator, where predicate returns true.
+#885 queue move-assignment is not compiling
+Modified UnitTest++ SUITE macro for better VS2022 intellisense compatibility
+
+===============================================================================
+20.38.11
+
+Fixes:
+#803 etl::unordered_map buffer overflow
+#805 legacy etl::bitset set/reset does not work if the element type is greater than 8 bit
+#815 etl::remove_if calls predicate twice for first iterator, where predicate returns true.
+#819 etl::optional cannot return an optional object of self from member function
+#820 etl::send_message does not allow for non-virtual calls
+#825 Fixed extent etl::span shouldn't allow default constructor
+#827 Declaration order for etl::first_set_bit_position in binary.h
+#829 Possible bug on assign of etl::array
+#830 gcc warning - potential null pointer dereference using etl::map
+#845 etl::message_packet missing a copy constructor
+#857 etl::expected emplace methods are missing-return
+#868 etl::variant is missing comparison operators
+#869 etl::fsm::receive function can call p_state process_event also when p_state is nullptr
+#873 Validate allocated DataNode is not null to prevent gcc Wnull-dereference
+#874 Allow direct removal of a node from an etl::intrusive_list
+#877 Optimize find_first_not_of and find_last_not_of on string_view
+#879 Render include paths relative (limits.h & random.h)
+#855 Strange expression in volatile atomic operator--
+
+Pull Requests:
+#782 Set is full error when adding existing item                              (İsmail Tüzün)
+#804 etl::variant (variadic) default constructed state                        (Manuel Seeböck)
+#812 Implement SAE-J1850 CRC8                                                 (Drew Rife)
+#832 Only copy/move storage value when optional is valid                      (Chiraffollo)
+#843 In subspan function, add static checks on extents                        (mike919192)
+#849 Fix string_stream add missing initializations of const format specifiers (Manuel Knörle)
+#850 Fixed names according to Arduino's guidelines                            (Mipsters)
+#854 In-place construction of shared message                                  (SanderSmeenkInspiro)
+#858 Fix unique_ptr assigning nullptr to a null unique_ptr causes an assert   (Derek Ludwig)
+#861 Implement constexpr strong typedef                                       (Drew Rife)
+#862 Update ETL_CONSTEXPR and C++14 designation from type_def                 (Drew Rife)
+#863 Add eq and ne operators for compare utility                              (Benzinnos)
+#865 Add utils compare equality operator                                      (Benzinnos)
+#879 Make include paths to private files relative                             (David Hebbeker)
+
+Features:
+#774 Truncating access for etl::bitset - Added extract() functions.
+#806 etl::variant_pool should support C++17 variadic parameters (supports C++11 variadic parameters)
+#812 Implement-SAE-J1850-CRC8
+#818 Apply-code-spell-check-across-entire-code-base
+#841 Change push to push_back on containers, so they can be used with std::back_inserter. Added push_insert_iterator
+#847 Add has_active_timer to callback_timer
+#883 Add etl::partition and etl::nth_element algorithms
+#864 cyclic_value first/last methods. Make first() and last() static for template based limits specialisation
+
+Changes without a GitHub issue#:
+Added etl::mem_fn (clone of std::mem_fn)
+Added etl::generate algorithm (clone of std::generate)
+Added binary functors for ~ & | ^
+Added etl::is_default_constructible & etl::is_default_constructible_v
+Added syntax checks to GitHub CI
+Refactored etl::optional implementation
+Fixed etl::optional operator =() for invalid values with non-pod types
+Refactored message_packet constructors
+Added specific copy and move constructors to message_packet for C++17 and above.
+Changed optional 'simple' types implementation for C++14 constexpr compatibility
+Fixed implicitly disabled copy constructor for message_packet
+Modified accepts() message router functions to interrogate subscribed and successor routers to achieve consistency.
+Fixed 'nodiscard' keyword errors
+Removed unused ETL_STATIC_CONSTANT
+Make binary functor operator() const
+Improved display of CHECK_EQUAL_HEX in UnitTest++
+
+===============================================================================
+20.38.10
+#800 Prioritize ETL_TARGET_OS_* for mutex selection
+
+===============================================================================
+20.38.9
+Added etl::crc1 (parity)
+#799 Iterator returned by crc.input() does not satisfy std::output_iterator
+
+===============================================================================
+20.38.8
+#795 etl::private_variant doesn't fully respect the chosen error reporting.
+#797 Undeclared FP_NAN, FP_INFINITE and FP_ZERO
+
+===============================================================================
+20.38.7
+Updated CI scripts
+Refactored GitHub CI workflows
+Updated build script text
+Added additional etl::make_lsb_mask and etl::make_msb_mask binary functions
+#779 hash.h: warnings produced with -Wfloat-equal
+#781 etl::multi_span::iterator::operator *() fails if first span is empty
+#780 endian enum_type produces useless-cast warnings
+#783 Cannot insert existing value to full set
+#786 u8string
+#787 etl::expected doesn't compile with ETL_LOG_ERRORS
+
 ===============================================================================
 20.38.6
 #777 Allow Building Tests as Submodule and GCC < 11
@@ -129,7 +265,7 @@ Comments and noexcept updates to placement new
 etl::variant (variadic) refactor and updates for C++ standards compatibility
 etl::overload available in C++17 only
 map/flat_map speed optimisations
-Various C++03 compatibilty updates for maps
+Various C++03 compatibility updates for maps
 Refactored Bash compilation scripts to allow selection of C++ standard and optimisation level
 Renamed Bash compilation scripts. Changed 'sanity checks' to 'syntax checks
 Some internal constant case changes from all upper to capital case
@@ -195,7 +331,7 @@ Removed unused ETL_USE_MEM_BUILTINS option
 
 ===============================================================================
 20.35.7
-Updated etl::delgate to handle const functors correctly
+Updated etl::delegate to handle const functors correctly
 
 ===============================================================================
 20.35.6
@@ -243,7 +379,7 @@ Removed duplicate include in etl::array_view
 #621 No need to initialize the C-compiler, small speed improvement
 #626 Empty etl::optional ctor storage initialization performance
 Removed constexpr for etl::bit_cast due to unreliability of compiler support
-Added has_value() as an alias for is_value() for etl::result (consistancy with STL conventions)
+Added has_value() as an alias for is_value() for etl::result (consistency with STL conventions)
 Added ETL_ERROR_WITH_VALUE macro for exceptions that require a value
 Changed scaling template parameter for etl::scaled_rounding to uint32_t
 Remove redundant etl::pair functions
@@ -440,7 +576,7 @@ Fixed send_message function signatures.
 20.24.0
 #503 Algorithm transform uses expensive post increment operator - Fixed for all occurrences of iterator increment.
 #504 ETL_CONSTANT vs const in binary.h - Fixed.
-Many algorithms will leverage built-ins, if available. Dependant on compiler version.
+Many algorithms will leverage built-ins, if available. Dependent on compiler version.
 Added detection or selection of built-ins.
 Much of etl::string and etl::string_view can be constexpr.
 Added ETL initializer_list implementations that are compatible with major compilers.
@@ -808,7 +944,7 @@ Added example application for shared messages.
 Added a lockable queue with locks implemented as pure virtuals.
 Refactored the other queues.
 Fixed missing virtual destructor for C++11 observer.
-Added etl::successor class for consistant 'chain of responsibilty' pattern generation.
+Added etl::successor class for consistent 'chain of responsibilty' pattern generation.
 Added missing constructors to unique_ptr.
 Added nullptr check to unique_ptr destructor.
 Fixed VS2019 warning for etl::deque iterators.
@@ -1776,7 +1912,7 @@ Added constexpr constructors to string_view and array_view.
 
 ===============================================================================
 14.8.2
-Added missing #include "stl/interator.h" in frame_check_sequence.h
+Added missing #include "stl/iterator.h" in frame_check_sequence.h
 
 ===============================================================================
 14.8.1
@@ -2009,7 +2145,7 @@ Added SPSC & MPPC queues
 
 ===============================================================================
 11.3.0
-Improved compatibility with 64 bit pltforms.
+Improved compatibility with 64 bit platforms.
 
 ===============================================================================
 11.2.0
@@ -2046,7 +2182,7 @@ Improved etl::endianness. Added static functions.
 
 ===============================================================================
 10.19.2
-Fixed strict aliasing warnings for endianess.
+Fixed strict aliasing warnings for endianness.
 
 ===============================================================================
 10.19.1
@@ -2055,7 +2191,7 @@ Fixed strict aliasing warnings for aligned storage.
 ===============================================================================
 10.19.0
 Added 'create' and 'destroy' functions to pools.
-Modified class heirarchy.
+Modified class hierarchy.
 etl::generic_pool is derived from on etl::ipool.
 etl::pool is derived from etl::generic_pool.
 

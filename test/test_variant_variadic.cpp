@@ -44,6 +44,34 @@ SOFTWARE.
   #include <variant>
 #endif
 
+#if ETL_USING_CPP20
+  #include <compare>
+
+  std::ostream& operator <<(std::ostream& os, const std::strong_ordering& ordering)
+  {
+    if (ordering == std::strong_ordering::equal)
+    {
+      os << "std::strong_ordering::equal";
+    }
+    else if (ordering == std::strong_ordering::equivalent)
+    {
+      os << "std::strong_ordering::equivalent";
+    }
+    else if (ordering == std::strong_ordering::greater)
+    {
+      os << "std::strong_ordering::greater";
+    }
+    else if (ordering == std::strong_ordering::less)
+    {
+      os << "std::strong_ordering::less";
+    }
+
+    return os;
+  }
+#endif
+
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   // Test variant_etl types.
@@ -294,6 +322,10 @@ namespace
   };
 }
 
+// Moved from the top of the file otherwise clang has issues with
+// operator<< for std::strong_ordering.
+//#include "unit_test_framework.h"
+
 // Definitions for when the STL and compiler built-ins are not available.
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
 
@@ -414,22 +446,35 @@ namespace
     //*************************************************************************
     TEST(test_constructor_default)
     {
-      CHECK_NO_THROW(test_variant_etl_3 variant_etl);
+      struct DefaultConstructible
+      {
+        DefaultConstructible()
+          : value(1)
+        {
+        }
 
-      test_variant_etl_3 variant_etl;
+        int value = 0;
+      };
 
-      CHECK(etl::holds_alternative<char>(variant_etl));
-      CHECK(!etl::holds_alternative<int>(variant_etl));
-      CHECK(!etl::holds_alternative<std::string>(variant_etl));
+      using test_variant_t = etl::variant<DefaultConstructible, int, std::string>;
 
-      CHECK(etl::holds_alternative<0U>(variant_etl));
-      CHECK(!etl::holds_alternative<1U>(variant_etl));
-      CHECK(!etl::holds_alternative<2U>(variant_etl));
+      CHECK_NO_THROW(test_variant_t variant_etl);
 
-      CHECK(etl::holds_alternative(0U, variant_etl));
-      CHECK(!etl::holds_alternative(1U, variant_etl));
-      CHECK(!etl::holds_alternative(2U, variant_etl));
-      CHECK(!etl::holds_alternative(99U, variant_etl));
+      test_variant_t variant_etl;
+
+      CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<std::string>(variant_etl));
+      CHECK_EQUAL(1, etl::get<0U>(variant_etl).value);
+
+      CHECK_TRUE(etl::holds_alternative<0U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<1U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<2U>(variant_etl));
+
+      CHECK_TRUE(etl::holds_alternative(0U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(1U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(2U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(99U, variant_etl));
     }
 
     //*************************************************************************
@@ -1378,7 +1423,9 @@ namespace
       CHECK(etl::get_if<int>(&variant_etl)  == nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
 
+#include "etl/private/diagnostic_useless_cast_push.h"
       variant_etl = int(2);
+#include "etl/private/diagnostic_pop.h"
       CHECK(etl::get_if<char>(&variant_etl) == nullptr);
       CHECK(etl::get_if<int>(&variant_etl)  != nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
@@ -1593,7 +1640,7 @@ namespace
     //*************************************************************************
     TEST(test_get_if_by_type)
     {
-      int value;
+      int value = 0;
 
       etl::variant<int, double> v(value);
       const etl::variant<int, double> cv(value);
@@ -1629,7 +1676,7 @@ namespace
     //*************************************************************************
     TEST(test_get_if_by_index)
     {
-      int value;
+      int value = 0;
 
       etl::variant<int, double> v(value);
       const etl::variant<int, double> cv(value);
@@ -1826,7 +1873,7 @@ namespace
     //*************************************************************************
     TEST(test_variant_visit_void)
     {
-      etl::variant<int8_t, uint8_t> variant1;
+      etl::variant<int8_t, uint8_t> variant1 = int8_t{};
 
       bool       variant_was_signed{};
       auto const f = [&variant_was_signed](auto v)
@@ -1853,7 +1900,7 @@ namespace
 
       std::string result = "?";
 
-      etl::variant<TypeA, TypeB, TypeC, TypeD> package;
+      etl::variant<TypeA, TypeB, TypeC, TypeD> package = TypeA{};
 
       etl::visit(etl::overload
         {
@@ -1914,7 +1961,131 @@ namespace
       CHECK_EQUAL(std::string("TypeD"), result);
     }
 #endif
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_variant_comparisons)
+    {
+      using Variant = etl::variant<char, int, std::string>;
+    
+      Variant v_empty1;
+      Variant v_empty2;
+
+      Variant v_char_a('A');
+      Variant v_char_b('B');
+
+      Variant v_int_1(1);
+      Variant v_int_2(2);
+
+      Variant v_hello(std::string("hello"));
+      Variant v_world(std::string("world"));
+
+      CHECK_TRUE(v_empty1 == v_empty2);
+      CHECK_TRUE(v_empty1 < v_char_a);
+      CHECK_FALSE(v_char_a < v_empty1);
+
+      CHECK_TRUE(v_char_a == v_char_a);
+      CHECK_TRUE(v_char_a < v_char_b);
+      CHECK_FALSE(v_char_b < v_char_a);
+      CHECK_FALSE(v_char_a > v_char_b);
+      CHECK_TRUE(v_char_b > v_char_a);
+      CHECK_TRUE(v_char_a <= v_char_b);
+      CHECK_FALSE(v_char_b <= v_char_a);
+      CHECK_FALSE(v_char_a >= v_char_b);
+      CHECK_TRUE(v_char_b >= v_char_a);
+      CHECK_TRUE(v_char_a <= v_char_a);
+      CHECK_TRUE(v_char_a >= v_char_a);
+
+      CHECK_TRUE(v_int_1 == v_int_1);
+      CHECK_TRUE(v_int_1 < v_int_2);
+      CHECK_FALSE(v_int_2 < v_int_1);
+      CHECK_FALSE(v_int_1 > v_int_2);
+      CHECK_TRUE(v_int_2 > v_int_1);
+      CHECK_TRUE(v_int_1 <= v_int_2);
+      CHECK_FALSE(v_int_2 <= v_int_1);
+      CHECK_FALSE(v_int_1 >= v_int_2);
+      CHECK_TRUE(v_int_2 >= v_int_1);
+      CHECK_TRUE(v_int_1 <= v_int_1);
+      CHECK_TRUE(v_int_1 >= v_int_1);
+
+      CHECK_TRUE(v_hello == v_hello);
+      CHECK_TRUE(v_hello < v_world);
+      CHECK_FALSE(v_world < v_hello);
+      CHECK_FALSE(v_hello > v_world);
+      CHECK_TRUE(v_world > v_hello);
+      CHECK_TRUE(v_hello <= v_world);
+      CHECK_FALSE(v_world <= v_hello);
+      CHECK_FALSE(v_hello >= v_world);
+      CHECK_TRUE(v_world >= v_hello);
+      CHECK_TRUE(v_hello <= v_hello);
+      CHECK_TRUE(v_hello >= v_hello);
+    }
+#endif
+
+#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+    //*************************************************************************
+    TEST(test_variant_spaceship_operator)
+    {
+      using Variant = etl::variant<char, int>;
+
+      Variant v_empty1;
+      Variant v_empty2;
+
+      Variant v_char_a('A');
+      Variant v_char_b('B');
+
+      Variant v_int_1(1);
+      Variant v_int_2(2);
+
+      CHECK(std::strong_ordering::equal   == v_empty1 <=> v_empty2);
+      CHECK(std::strong_ordering::less    == v_empty1 <=> v_char_a);
+      CHECK(std::strong_ordering::greater == v_char_a <=> v_empty1);
+
+      CHECK(std::strong_ordering::equal   == v_char_a <=> v_char_a);
+      CHECK(std::strong_ordering::less    == v_char_a <=> v_char_b);
+      CHECK(std::strong_ordering::greater == v_char_b <=> v_char_a);
+
+      CHECK(std::strong_ordering::equal   == v_int_1 <=> v_int_1);
+      CHECK(std::strong_ordering::less    == v_int_1 <=> v_int_2);
+      CHECK(std::strong_ordering::greater == v_int_2 <=> v_int_1);
+
+      CHECK(std::strong_ordering::less    == v_char_a <=> v_int_1);
+      CHECK(std::strong_ordering::greater == v_int_2  <=> v_char_a);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_variant_three_way_compare_using_etl_compare_cmp)
+    {
+      using Variant = etl::variant<char, int>;
+
+      Variant v_empty1;
+      Variant v_empty2;
+
+      Variant v_char_a('A');
+      Variant v_char_b('B');
+
+      Variant v_int_1(1);
+      Variant v_int_2(2);
+
+      using Compare = etl::compare<Variant>;
+
+      CHECK_EQUAL(Compare::Equal,   (Compare::cmp(v_empty1, v_empty2)));
+      
+      CHECK_EQUAL(Compare::Equal,   (Compare::cmp(v_char_a, v_char_a)));
+      CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_char_a, v_char_b)));
+      CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_char_b, v_char_a)));
+      
+      CHECK_EQUAL(Compare::Equal,   (Compare::cmp(v_int_1,  v_int_1)));
+      CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_int_1,  v_int_2)));
+      CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_int_2,  v_int_1)));
+
+      CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_char_a, v_int_1)));
+      CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_int_1,  v_char_a)));
+    }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"
 
 #endif

@@ -174,5 +174,36 @@ namespace
       ++itr;
       CHECK_EQUAL(struct_data2[2].i, itr->i);
     }
+
+    //*************************************************************************
+    TEST(test_multi_span_with_empty_spans)
+    {
+      std::vector<etl::span<Data>> span_list =
+      {
+        etl::span<Data>(),
+        etl::span<Data>(struct_data1),
+        etl::span<Data>(),
+        etl::span<Data>(struct_data2),
+        etl::span<Data>()
+      };
+
+      etl::multi_span<Data> ms_data(etl::multi_span<Data>::span_list_type(std::begin(span_list), std::end(span_list)));
+
+      etl::multi_span<Data>::iterator itr = ms_data.begin();
+
+      CHECK_EQUAL(struct_data1[0].i, (*itr).i);
+      ++itr;
+      CHECK_EQUAL(struct_data1[1].i, (*itr).i);
+      ++itr;      
+      CHECK_EQUAL(struct_data1[2].i, (*itr).i);
+      ++itr;      
+      CHECK_EQUAL(struct_data2[0].i, (*itr).i);
+      ++itr;      
+      CHECK_EQUAL(struct_data2[1].i, (*itr).i);
+      ++itr;      
+      CHECK_EQUAL(struct_data2[2].i, (*itr).i);
+      ++itr;
+      CHECK(ETL_NULLPTR == itr.operator->());
+    }
   };
 }

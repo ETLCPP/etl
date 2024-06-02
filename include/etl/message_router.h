@@ -39,7 +39,7 @@ SOFTWARE.
 // Note: You will need Python and COG installed.
 //
 // python -m cogapp -d -e -omessage_router.h -DHandlers=<n> message_router_generator.h
-// Where <n> is the number of messages to support.
+// Where <n> is the maximum number of messages to support.
 //
 // e.g.
 // To generate handlers for up to 16 messages...
@@ -200,8 +200,8 @@ namespace etl
     }
 
     //********************************************
-    null_message_router(etl::imessage_router& successor)
-      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor)
+    null_message_router(etl::imessage_router& successor_)
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor_)
     {
     }
     
@@ -278,8 +278,8 @@ namespace etl
     }
 
     //********************************************
-    message_producer(etl::imessage_router& successor)
-      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor)
+    message_producer(etl::imessage_router& successor_)
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor_)
     {
     }
 
@@ -291,8 +291,8 @@ namespace etl
     }
 
     //********************************************
-    message_producer(etl::message_router_id_t id_, etl::imessage_router& successor)
-      : imessage_router(id_, successor)
+    message_producer(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
     {
       ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
@@ -343,10 +343,21 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Is T ultimately derived from etl::imessage_router?
+  //***************************************************************************
+  template <typename T>
+  struct is_message_router : public etl::bool_constant<etl::is_base_of<etl::imessage_router, typename etl::remove_cvref<T>::type>::value>
+  {
+  };
+
+  //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  static inline void send_message(etl::imessage_router& destination,
-                                  const etl::imessage&  message)
+  template <typename TRouter, typename TMessage>
+  static
+  typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
+    send_message(TRouter&        destination,
+                 const TMessage& message)
   {
     destination.receive(message);
   }
@@ -354,8 +365,11 @@ namespace etl
   //***************************************************************************
   /// Send a shared message to a router.
   //***************************************************************************
-  static inline void send_message(etl::imessage_router& destination,
-                                  etl::shared_message message)
+  template <typename TRouter>
+  static
+  typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
+    send_message(TRouter&            destination,
+                 etl::shared_message message)
   {
     destination.receive(message);
   }
@@ -363,9 +377,12 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router with a particular id.
   //***************************************************************************
-  static inline void send_message(etl::imessage_router& destination,
-                                  etl::message_router_id_t id,
-                                  const etl::imessage& message)
+  template <typename TRouter, typename TMessage>
+  static
+  typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
+    send_message(TRouter&                 destination,
+                 etl::message_router_id_t id,
+                 const TMessage&          message)
   {
     destination.receive(id, message);
   }
@@ -373,9 +390,12 @@ namespace etl
   //***************************************************************************
   /// Send a shared message to a router with a particular id.
   //***************************************************************************
-  static inline void send_message(etl::imessage_router& destination,
-                                  etl::message_router_id_t id,
-                                  etl::shared_message message)
+  template <typename TRouter>
+  static
+  typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
+    send_message(TRouter&                 destination,
+                 etl::message_router_id_t id,
+                 etl::shared_message      message)
   {
     destination.receive(id, message);
   }

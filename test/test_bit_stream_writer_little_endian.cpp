@@ -34,6 +34,8 @@ SOFTWARE.
 #include <vector>
 #include <numeric>
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   //***********************************
@@ -112,7 +114,7 @@ namespace
     std::vector<char> data;
   };
 
-  SUITE(test_bit_stream_little_endian)
+  SUITE(test_bit_stream_writer_little_endian)
   {
     //*************************************************************************
     TEST(test_bit_stream_writer_construction)
@@ -881,3 +883,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

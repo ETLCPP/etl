@@ -71,7 +71,7 @@ namespace
   bool parameter_correct = false;
 
   //*****************************************************************************
-  // Test data structure.
+  // Object data structure.
   //*****************************************************************************
   struct Data
   {
@@ -79,7 +79,7 @@ namespace
   };
 
   //*****************************************************************************
-  // Test moveable only data structure.
+  // Object moveable only data structure.
   //*****************************************************************************
   struct MoveableOnlyData
   {
@@ -161,7 +161,7 @@ namespace
   //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
-  class Test
+  class Object
   {
   public:
 
@@ -240,8 +240,8 @@ namespace
     return a * 2;
   }
 
-  Test test_static;
-  const Test const_test_static;
+  Object object_static;
+  const Object const_object_static;
 }
 
 namespace
@@ -437,9 +437,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void)
     {
-      Test test;
+      Object object;
 
-      etl::delegate<void(void)> d(test);
+      etl::delegate<void(void)> d(object);
 
       d();
 
@@ -449,9 +449,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_create)
     {
-      Test test;
+      Object object;
 
-      auto d = etl::delegate<void(void)>::create(test);
+      auto d = etl::delegate<void(void)>::create(object);
 
       d();
 
@@ -462,9 +462,9 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_operator_void_create_constexpr)
     {
-      static Test test;
+      static Object object;
 
-      constexpr auto d = etl::delegate<void(void)>::create(test);
+      constexpr auto d = etl::delegate<void(void)>::create(object);
 
       d();
 
@@ -475,9 +475,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_const)
     {
-      const Test test;
+      const Object object;
 
-      etl::delegate<void(void)> d(test);
+      etl::delegate<void(void)> d(object);
 
       d();
 
@@ -488,7 +488,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time)
     {
-      auto d = etl::delegate<void(void)>::create<Test, test_static>();
+      auto d = etl::delegate<void(void)>::create<Object, object_static>();
 
       d();
 
@@ -499,7 +499,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(void)>::create<Test, test_static>();
+      constexpr auto d = etl::delegate<void(void)>::create<Object, object_static>();
 
       d();
 
@@ -510,7 +510,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time_const)
     {
-      auto d = etl::delegate<void(void)>::create<const Test, const_test_static>();
+      auto d = etl::delegate<void(void)>::create<const Object, const_object_static>();
 
       d();
 
@@ -521,7 +521,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time_const_constexpr)
     {
-      constexpr auto d = etl::delegate<void(void)>::create<const Test, const_test_static>();
+      constexpr auto d = etl::delegate<void(void)>::create<const Object, const_object_static>();
 
       d();
 
@@ -533,11 +533,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment_member_operator_void)
     {
-      Test test;
+      Object object;
 
       etl::delegate<void(void)> d;
 
-      d = test;
+      d = object;
 
       d();
 
@@ -547,9 +547,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void)
     {
-      Test test;
+      Object object;
 
-      auto d = etl::delegate<void(void)>::create<Test, &Test::member_void>(test);
+      auto d = etl::delegate<void(void)>::create<Object, &Object::member_void>(object);
 
       d();
 
@@ -560,9 +560,9 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_constexpr)
     {
-      static Test test;
+      static Object object;
 
-      constexpr auto d = etl::delegate<void(void)>::create<Test, &Test::member_void>(test);
+      constexpr auto d = etl::delegate<void(void)>::create<Object, &Object::member_void>(object);
 
       d();
 
@@ -573,9 +573,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_const)
     {
-      const Test test;
+      const Object object;
 
-      auto d = etl::delegate<void(void)>::create<Test, &Test::member_void_const>(test);
+      auto d = etl::delegate<void(void)>::create<Object, &Object::member_void_const>(object);
 
       d();
 
@@ -586,9 +586,9 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_const_constexpr)
     {
-      static const Test test;
+      static const Object object;
 
-      constexpr auto d = etl::delegate<void(void)>::create<Test, &Test::member_void_const>(test);
+      constexpr auto d = etl::delegate<void(void)>::create<Object, &Object::member_void_const>(object);
 
       d();
 
@@ -599,9 +599,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int)
     {
-      Test test;
+      Object object;
 
-      auto d = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
+      auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
 
       d(VALUE1, VALUE2);
 
@@ -613,9 +613,9 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_constexpr)
     {
-      static Test test;
+      static Object object;
 
-      constexpr auto d = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
+      constexpr auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
 
       d(VALUE1, VALUE2);
 
@@ -627,9 +627,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int_const)
     {
-      const Test test;
+      const Object object;
 
-      auto d = etl::delegate<void(int, int)>::create<Test, &Test::member_int_const>(test);
+      auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);
 
       d(VALUE1, VALUE2);
 
@@ -641,9 +641,9 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_const_constexpr)
     {
-      static const Test test;
+      static const Object object;
 
-      constexpr auto d = etl::delegate<void(int, int)>::create<Test, &Test::member_int_const>(test);
+      constexpr auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);
 
       d(VALUE1, VALUE2);
 
@@ -655,8 +655,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference)
     {
-      Test test;
-      auto d = etl::delegate<void(const Data&, int)>::create<Test, &Test::member_reference>(test);
+      Object object;
+      auto d = etl::delegate<void(const Data&, int)>::create<Object, &Object::member_reference>(object);
 
       Data data;
       data.d = VALUE1;
@@ -671,8 +671,8 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_reference_constexpr)
     {
-      static Test test;
-      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Test, &Test::member_reference>(test);
+      static Object object;
+      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Object, &Object::member_reference>(object);
 
       Data data;
       data.d = VALUE1;
@@ -687,8 +687,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference_const)
     {
-      const Test test;
-      auto d = etl::delegate<void(const Data&, int)>::create<Test, &Test::member_reference_const>(test);
+      const Object object;
+      auto d = etl::delegate<void(const Data&, int)>::create<Object, &Object::member_reference_const>(object);
 
       Data data;
       data.d = VALUE1;
@@ -703,8 +703,8 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_reference_const_constexpr)
     {
-      static const Test test;
-      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Test, &Test::member_reference_const>(test);
+      static const Object object;
+      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Object, &Object::member_reference_const>(object);
 
       Data data;
       data.d = VALUE1;
@@ -719,8 +719,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_moveableonly)
     {
-      Test test;
-      auto d = etl::delegate<void(MoveableOnlyData&&)>::create<Test, &Test::member_moveableonly>(test);
+      Object object;
+      auto d = etl::delegate<void(MoveableOnlyData&&)>::create<Object, &Object::member_moveableonly>(object);
 
       MoveableOnlyData data;
       data.d = VALUE1;
@@ -735,8 +735,8 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_moveableonly_constexpr)
     {
-      static Test test;
-      constexpr auto d = etl::delegate<void(MoveableOnlyData&&)>::create<Test, &Test::member_moveableonly>(test);
+      static Object object;
+      constexpr auto d = etl::delegate<void(MoveableOnlyData&&)>::create<Object, &Object::member_moveableonly>(object);
 
       MoveableOnlyData data;
       data.d = VALUE1;
@@ -751,7 +751,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_static)
     {
-      auto d = etl::delegate<void(const Data&, int)>::create<Test::member_static>();
+      auto d = etl::delegate<void(const Data&, int)>::create<Object::member_static>();
 
       Data data;
       data.d = VALUE1;
@@ -766,7 +766,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_static_constexpr)
     {
-      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Test::member_static>();
+      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Object::member_static>();
 
       Data data;
       data.d = VALUE1;
@@ -782,7 +782,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time)
     {
-      auto d = etl::delegate<void(void)>::create<Test, test_static, &Test::member_void>();
+      auto d = etl::delegate<void(void)>::create<Object, object_static, &Object::member_void>();
 
       d();
 
@@ -793,7 +793,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(void)>::create<Test, test_static, &Test::member_void>();
+      constexpr auto d = etl::delegate<void(void)>::create<Object, object_static, &Object::member_void>();
 
       d();
 
@@ -804,7 +804,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_const_compile_time)
     {
-      auto d = etl::delegate<void(void)>::create<Test, const_test_static, &Test::member_void_const>();
+      auto d = etl::delegate<void(void)>::create<Object, const_object_static, &Object::member_void_const>();
 
       d();
 
@@ -815,7 +815,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_const_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(void)>::create<Test, const_test_static, &Test::member_void_const>();
+      constexpr auto d = etl::delegate<void(void)>::create<Object, const_object_static, &Object::member_void_const>();
 
       d();
 
@@ -826,7 +826,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int_compile_time)
     {
-      auto d = etl::delegate<void(int, int)>::create<Test, test_static, &Test::member_int>();
+      auto d = etl::delegate<void(int, int)>::create<Object, object_static, &Object::member_int>();
 
       d(VALUE1, VALUE2);
 
@@ -838,7 +838,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(int, int)>::create<Test, test_static, &Test::member_int>();
+      constexpr auto d = etl::delegate<void(int, int)>::create<Object, object_static, &Object::member_int>();
 
       d(VALUE1, VALUE2);
 
@@ -850,7 +850,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int_const_compile_time)
     {
-      auto d = etl::delegate<void(int, int)>::create<Test, const_test_static, &Test::member_int_const>();
+      auto d = etl::delegate<void(int, int)>::create<Object, const_object_static, &Object::member_int_const>();
 
       d(VALUE1, VALUE2);
 
@@ -862,7 +862,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_const_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(int, int)>::create<Test, const_test_static, &Test::member_int_const>();
+      constexpr auto d = etl::delegate<void(int, int)>::create<Object, const_object_static, &Object::member_int_const>();
 
       d(VALUE1, VALUE2);
 
@@ -874,7 +874,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference_compile_time)
     {
-      auto d = etl::delegate<void(const Data&, int)>::create<Test, test_static, &Test::member_reference>();
+      auto d = etl::delegate<void(const Data&, int)>::create<Object, object_static, &Object::member_reference>();
 
       Data data;
       data.d = VALUE1;
@@ -889,7 +889,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_reference_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Test, test_static, &Test::member_reference>();
+      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Object, object_static, &Object::member_reference>();
 
       Data data;
       data.d = VALUE1;
@@ -904,7 +904,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference_const_compile_time)
     {
-      auto d = etl::delegate<void(const Data&, int)>::create<Test, const_test_static, &Test::member_reference_const>();
+      auto d = etl::delegate<void(const Data&, int)>::create<Object, const_object_static, &Object::member_reference_const>();
 
       Data data;
       data.d = VALUE1;
@@ -919,7 +919,7 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_reference_const_compile_time_constexpr)
     {
-      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Test, const_test_static, &Test::member_reference_const>();
+      constexpr auto d = etl::delegate<void(const Data&, int)>::create<Object, const_object_static, &Object::member_reference_const>();
 
       Data data;
       data.d = VALUE1;
@@ -960,10 +960,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference)
     {
-      Test test;
+      Object object;
       etl::delegate<void(const Data&, int)> d;
       
-      d.set<Test, &Test::member_reference>(test);
+      d.set<Object, &Object::member_reference>(object);
 
       Data data;
       data.d = VALUE1;
@@ -977,10 +977,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_const_member_reference)
     {
-      Test test;
+      Object object;
       etl::delegate<void(const Data&, int)> d;
 
-      d.set<Test, &Test::member_reference_const>(test);
+      d.set<Object, &Object::member_reference_const>(object);
 
       Data data;
       data.d = VALUE1;
@@ -996,7 +996,7 @@ namespace
     {
       etl::delegate<void(const Data&, int)> d;
 
-      d.set<Test, test_static, &Test::member_reference>();
+      d.set<Object, object_static, &Object::member_reference>();
 
       Data data;
       data.d = VALUE1;
@@ -1012,7 +1012,7 @@ namespace
     {
       etl::delegate<void(const Data&, int)> d;
 
-      d.set<Test, const_test_static, &Test::member_reference_const>();
+      d.set<Object, const_object_static, &Object::member_reference_const>();
 
       Data data;
       data.d = VALUE1;
@@ -1027,9 +1027,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_construct)
     {
-      Test test;
+      Object object;
 
-      auto d1 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
+      auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       auto d2(d1);
 
       d2(VALUE1, VALUE2);
@@ -1042,9 +1042,9 @@ namespace
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_copy_construct_constexpr)
     {
-      static Test test;
+      static Object object;
 
-      constexpr auto d1 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
+      constexpr auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       constexpr auto d2(d1);
 
       d2(VALUE1, VALUE2);
@@ -1057,9 +1057,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
-      Test test;
+      Object object;
 
-      auto d1 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
+      auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       etl::delegate<void(int, int)> d2;
 
       d2 = d1;
@@ -1073,9 +1073,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_delegate_equal)
     {
-      Test test;
+      Object object;
 
-      auto d1 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
+      auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       auto d2 = d1;
 
       CHECK(d1 == d2);
@@ -1084,10 +1084,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_delegate_not_equal)
     {
-      Test test;
+      Object object;
 
-      auto d1 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test);
-      auto d2 = etl::delegate<void(int, int)>::create<Test, &Test::member_int_const>(test);;
+      auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
+      auto d2 = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);;
 
       CHECK(d1 != d2);
     }
@@ -1205,12 +1205,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_delegate_identification)
     {
-      Test test1;
-      Test test2;
+      Object test1;
+      Object test2;
 
       auto d1 = etl::delegate<void(int, int)>::create<free_int>();
-      auto d2 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test1);
-      auto d3 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test2);
+      auto d2 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(test1);
+      auto d3 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(test2);
 
       etl::delegate<void(int, int)> d4;
 
@@ -1241,7 +1241,7 @@ namespace
       CHECK(*itr != d2);
       CHECK(*itr == d3);
 
-      d4 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test2); // Same as d3
+      d4 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(test2); // Same as d3
       itr = std::find(delegate_list.begin(), delegate_list.end(), d4);
       CHECK(*itr != d1);
       CHECK(*itr != d2);

@@ -46,7 +46,7 @@ namespace
   int buffer4[SIZE];
   int buffer5[SIZE];
 
-  SUITE(test_vector)
+  SUITE(test_vector_external_buffer)
   {
     typedef etl::vector_ext<int> Data;
     typedef etl::ivector<int>    IData;
@@ -511,7 +511,7 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      CHECK(data.front() == compare_data.front());
+      CHECK_EQUAL(compare_data.front(), data.front());
     }
 
     //*************************************************************************
@@ -520,7 +520,7 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      CHECK(data.front() == compare_data.front());
+      CHECK_EQUAL(compare_data.front(), data.front());
     }
 
     //*************************************************************************
@@ -529,7 +529,7 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      CHECK(data.back() == compare_data.back());
+      CHECK_EQUAL(compare_data.back(), data.back());
     }
 
     //*************************************************************************
@@ -538,7 +538,7 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      CHECK(data.back() == compare_data.back());
+      CHECK_EQUAL(compare_data.back(), data.back());
     }
 
 
@@ -550,8 +550,8 @@ namespace
       Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
       bool is_equal = std::equal(data.data(),
-        data.data() + data.size(),
-        compare_data.begin());
+                                 data.data() + data.size(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -564,8 +564,8 @@ namespace
       const Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
       bool is_equal = std::equal(data.data(),
-                                data.data() + data.size(),
-                                compare_data.begin());
+                                 data.data() + data.size(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -1199,7 +1199,7 @@ namespace
 
         }
 
-        S(int i): i(i){}
+        S(int i_): i(i_){}
 
         int i;
       };
@@ -1235,7 +1235,7 @@ namespace
 
         }
 
-        S(int i): i(i){}
+        S(int i_): i(i_){}
 
         int i;
       };

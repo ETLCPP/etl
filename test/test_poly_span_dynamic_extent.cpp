@@ -61,7 +61,7 @@ namespace
 
     virtual bool operator ==(const AnotherBase& rhs) const
     {
-      return another_value() == rhs.another_value();
+      return !(another_value() < rhs.another_value()) && !(another_value() > rhs.another_value());
     }
   };
 

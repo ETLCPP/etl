@@ -75,7 +75,14 @@ namespace
     //*************************************************************************
     TEST(test_set_compile_time)
     {
-      etl::cyclic_value<int, 2, 7> value;
+      using CV = etl::cyclic_value<int, 2, 7>;
+
+      CV value;
+
+      CHECK_EQUAL(2, value.first());
+      CHECK_EQUAL(7, value.last());
+      CHECK_EQUAL(2, CV::first());
+      CHECK_EQUAL(7, CV::last());
 
       value.set(5);
       CHECK_EQUAL(5, value.get());

@@ -1365,7 +1365,7 @@ namespace
 
         }
 
-        S(int i): i(i){}
+        S(int i_): i(i_){}
 
         int i;
       };
@@ -1398,7 +1398,7 @@ namespace
 
         }
 
-        S(int i): i(i){}
+        S(int i_): i(i_){}
 
         int i;
       };

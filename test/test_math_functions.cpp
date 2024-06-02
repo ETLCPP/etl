@@ -35,6 +35,8 @@ SOFTWARE.
 #include "etl/sqrt.h"
 #include "etl/permutations.h"
 #include "etl/combinations.h"
+#include "etl/gcd.h"
+#include "etl/lcm.h"
 
 namespace
 {
@@ -85,7 +87,7 @@ namespace
     return permutations(n, k) / factorial(k);
   }
 
-  SUITE(test_maths)
+  SUITE(test_math_functions)
   {
     //*************************************************************************
     TEST(test_log_0_base)
@@ -457,5 +459,81 @@ namespace
       CHECK_EQUAL((combinations(13,  9)), (actual = etl::combinations<13,  9>::value));
       CHECK_EQUAL((combinations(14, 10)), (actual = etl::combinations<14, 10>::value));
     }
+
+    //*************************************************************************
+    TEST(test_gdc_for_positive_integers)
+    {
+      CHECK_EQUAL(1, etl::gcd( 3, 5,  7));
+      CHECK_EQUAL(2, etl::gcd( 4, 6,  8));
+      CHECK_EQUAL(3, etl::gcd( 9, 6,  3));
+      CHECK_EQUAL(4, etl::gcd( 8, 4, 12));
+      CHECK_EQUAL(5, etl::gcd(10, 5, 15));
+    }
+
+    //*************************************************************************
+    TEST(test_gdc_for_negative_integers)
+    {
+      CHECK_EQUAL(1, etl::gcd( -3, -5, -7));
+      CHECK_EQUAL(2, etl::gcd( -4, -6, -8));
+      CHECK_EQUAL(3, etl::gcd( -9, -6, -3));
+      CHECK_EQUAL(4, etl::gcd( -8, -4, -12));
+      CHECK_EQUAL(5, etl::gcd(-10, -5, -15));
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_constexpr_gdc)
+    {
+      constexpr int gcd1 = etl::gcd(3, 5, 7);
+      constexpr int gcd2 = etl::gcd(4, 6, 8);
+      constexpr int gcd3 = etl::gcd(9, 6, 3);
+      constexpr int gcd4 = etl::gcd(8, 4, 12);
+      constexpr int gcd5 = etl::gcd(10, 5, 15);
+
+      CHECK_EQUAL(1, gcd1);
+      CHECK_EQUAL(2, gcd2);
+      CHECK_EQUAL(3, gcd3);
+      CHECK_EQUAL(4, gcd4);
+      CHECK_EQUAL(5, gcd5);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_lcm_for_positive_integers) 
+    {
+      CHECK_EQUAL(12, etl::lcm(3, 4,  6));
+      CHECK_EQUAL(30, etl::lcm(3, 5, 10));
+      CHECK_EQUAL(20, etl::lcm(2, 5,  4));
+      CHECK_EQUAL(0,  etl::lcm(0, 5,  7));
+      CHECK_EQUAL(5,  etl::lcm(5, 5,  5));
+    }
+
+    //*************************************************************************
+    TEST(test_lcm_for_negative_integers)
+    {
+      CHECK_EQUAL(12, etl::lcm(-3, -4,  -6));
+      CHECK_EQUAL(30, etl::lcm(-3, -5, -10));
+      CHECK_EQUAL(20, etl::lcm(-2, -5,  -4));
+      CHECK_EQUAL(0,  etl::lcm(-0, -5,  -7));
+      CHECK_EQUAL(5,  etl::lcm(-5, -5,  -5));
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_constexpr_lcm)
+    {
+      constexpr int lcm1 = etl::lcm(3, 4, 6);
+      constexpr int lcm2 = etl::lcm(3, 5, 10);
+      constexpr int lcm3 = etl::lcm(2, 5, 4);
+      constexpr int lcm4 = etl::lcm(0, 5, 7);
+      constexpr int lcm5 = etl::lcm(5, 5, 5);
+
+      CHECK_EQUAL(12, lcm1);
+      CHECK_EQUAL(30, lcm2);
+      CHECK_EQUAL(20, lcm3);
+      CHECK_EQUAL(0,  lcm4);
+      CHECK_EQUAL(5,  lcm5);
+    }
+#endif
   };
 }

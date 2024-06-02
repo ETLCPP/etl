@@ -344,45 +344,6 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Find the position of the first set bit.
-  /// Starts from LSB.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14 uint_least8_t first_set_bit_position(T value)
-  {
-    return count_trailing_zeros(value);
-  }
-
-  //***************************************************************************
-  /// Find the position of the first clear bit.
-  /// Starts from LSB.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14 uint_least8_t first_clear_bit_position(T value)
-  {
-    value = ~value;
-    return count_trailing_zeros(value);
-  }
-
-  //***************************************************************************
-  /// Find the position of the first bit that is clear or set.
-  /// Starts from LSB.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14 uint_least8_t first_bit_position(bool state, T value)
-  {
-    if (!state)
-    {
-      value = ~value;
-    }
-
-    return count_trailing_zeros(value);
-  }
-
-  //***************************************************************************
   /// Gets the value of the bit at POSITION
   /// Starts from LSB.
   ///\ingroup binary
@@ -2097,6 +2058,45 @@ namespace etl
     return static_cast<T>(count_leading_ones(static_cast<unsigned_t>(value)));
   }
 
+  //***************************************************************************
+  /// Find the position of the first set bit.
+  /// Starts from LSB.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 uint_least8_t first_set_bit_position(T value)
+  {
+    return count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first clear bit.
+  /// Starts from LSB.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 uint_least8_t first_clear_bit_position(T value)
+  {
+    value = ~value;
+    return count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first bit that is clear or set.
+  /// Starts from LSB.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 uint_least8_t first_bit_position(bool state, T value)
+  {
+    if (!state)
+    {
+      value = ~value;
+    }
+
+    return count_trailing_zeros(value);
+  }
+
 #if ETL_USING_8BIT_TYPES
   //*****************************************************************************
   /// Binary interleave
@@ -2216,6 +2216,8 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
+
     static ETL_CONSTANT T value = static_cast<T>(etl::max_value_for_nbits<NBits>::value);
   };
 
@@ -2223,13 +2225,22 @@ namespace etl
   ETL_CONSTANT T lsb_mask<T, NBits>::value;
 
   //***********************************
+  template <typename T, size_t NBits>
+  ETL_CONSTEXPR T make_lsb_mask()
+  {
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
+
+    return lsb_mask<T, NBits>::value;
+  }
+
+  //***********************************
   template <typename T>
-  ETL_CONSTEXPR14 T make_lsb_mask(size_t nbits)
+  ETL_CONSTEXPR T make_lsb_mask(size_t nbits)
   {
     typedef typename etl::make_unsigned<T>::type type;
 
-    return (nbits == etl::integral_limits<type>::bits) ? static_cast<T>(etl::integral_limits<type>::max)
-                                                       : static_cast<T>((static_cast<type>(1U) << nbits) - 1U);
+    return (nbits == 0U) ? static_cast<T>(0)
+      : static_cast<T>(static_cast<type>(~0) >> (etl::integral_limits<type>::bits - nbits));
   }
 
   //***********************************
@@ -2237,6 +2248,8 @@ namespace etl
   class msb_mask
   {
   public:
+
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
 
     static ETL_CONSTANT T value = static_cast<T>(etl::reverse_bits_const<T, lsb_mask<T, NBits>::value>::value);
   };
@@ -2246,10 +2259,127 @@ namespace etl
 
   //***********************************
   template <typename T>
-  ETL_CONSTEXPR14 T make_msb_mask(size_t nbits)
+  ETL_CONSTEXPR T make_msb_mask(size_t nbits)
   {
-    return static_cast<T>(etl::reverse_bits(make_lsb_mask<T>(nbits)));
+    typedef typename etl::make_unsigned<T>::type type;
+
+    return (nbits == 0U) ? static_cast<T>(0)
+                         : static_cast<T>(static_cast<type>(~0) << (etl::integral_limits<type>::bits - nbits));
   }
+
+  //***********************************
+  template <typename T, size_t NBits>
+  ETL_CONSTEXPR T make_msb_mask()
+  {
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
+
+    return msb_mask<T, NBits>::value;
+  }
+
+  //***************************************************************************
+  /// Bit 'not' a value
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_not : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR
+    T operator ()(T value) const ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return ~value;
+    }
+  };
+
+  //***************************************************************************
+  /// Bit 'and' a value with another
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_and : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR 
+    explicit binary_and(T parameter_) ETL_NOEXCEPT
+      : parameter(parameter_)
+    {
+    }
+
+    //***********************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR 
+    T operator ()(T value) const ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return value & parameter;
+    }
+
+  private:
+
+    T parameter;
+  };
+
+  //***************************************************************************
+  /// Bit 'or' a value with another
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_or : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR
+    explicit binary_or(T parameter_) ETL_NOEXCEPT
+      : parameter(parameter_)
+    {
+    }
+
+    //***********************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR
+    T operator ()(T value) const ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return value | parameter;
+    }
+
+  private:
+
+    T parameter;
+  };
+
+  //***************************************************************************
+  /// Bit 'exclusive-or' a value with another
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_xor : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR
+    explicit binary_xor(T parameter_) ETL_NOEXCEPT
+      : parameter(parameter_)
+    {
+    }
+
+    //***********************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR
+    T operator ()(T value) const ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return value ^ parameter;
+    }
+
+  private:
+
+    T parameter;
+  };
 
   //***************************************************************************
   /// 8 bit binary byte constants.

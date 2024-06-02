@@ -86,6 +86,7 @@ namespace
   SUITE(test_map)
   {
     //*************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -102,6 +103,7 @@ namespace
 
       return true;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture
@@ -206,7 +208,7 @@ namespace
     {
       Data data;
 
-      CHECK(data.size() == size_t(0UL));
+      CHECK(data.size() == 0UL);
       CHECK(data.empty());
       CHECK(data.capacity() == MAX_SIZE);
       CHECK(data.max_size() == MAX_SIZE);
@@ -1058,7 +1060,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK(data.size() == size_t(0UL));
+      CHECK(data.size() == 0UL);
     }
 
     //*************************************************************************
@@ -1066,9 +1068,9 @@ namespace
     {
       const Data data(initial_data.begin(), initial_data.end());
 
-      CHECK(data.count("3") == size_t(1UL));
+      CHECK(data.count("3") == 1UL);
 
-      CHECK(data.count("A") == size_t(0UL));
+      CHECK(data.count("A") == 0UL);
     }
 
     //*************************************************************************
@@ -1078,9 +1080,9 @@ namespace
 
       const EMap data(initial_data.begin(), initial_data.end());
 
-      CHECK(data.count(Key("3")) == size_t(1UL));
+      CHECK(data.count(Key("3")) == 1UL);
 
-      CHECK(data.count(Key("A")) == size_t(0UL));
+      CHECK(data.count(Key("A")) == 0UL);
     }
 
     //*************************************************************************

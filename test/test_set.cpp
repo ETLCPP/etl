@@ -106,6 +106,7 @@ namespace
   SUITE(test_set)
   {
     //*************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -122,6 +123,7 @@ namespace
 
       return true;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture
@@ -179,7 +181,7 @@ namespace
     {
       Data data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(MAX_SIZE, data.available());
       CHECK_EQUAL(MAX_SIZE, data.capacity());
@@ -512,8 +514,8 @@ namespace
         compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(Data::const_iterator(data_result.first), 1);
-      compare_data.insert(Compare_Data::const_iterator(compare_result.first), 1);
+      data.insert(data_result.first, 1);
+      compare_data.insert(compare_result.first, 1);
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -595,6 +597,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_existing_value_when_full)
+    {
+      Compare_Data compare_data;
+      Data data;
+      ETL_OR_STD::pair<Data::iterator, bool> data_result;
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result;
+
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        data_result = data.insert(i);
+        compare_result = compare_data.insert(i);
+
+        // Check that both return successful return results
+        CHECK_EQUAL(*data_result.first, *compare_result.first);
+      }
+
+      // Try to insert when set is full should throw etl::set_full
+      CHECK_THROW(data_result = data.insert(MAX_SIZE), etl::set_full);
+
+      // Try adding a duplicate (should return iterator pointing to duplicate) not throw error
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        data_result = data.insert(i);
+        compare_result = compare_data.insert(i);
+
+        // Check that both return successful return results
+        CHECK_EQUAL(*data_result.first, *compare_result.first);
+      }
+
+
+
+      // Check that elements in set are the same
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+      CHECK(isEqual);
+
+    }
+
+    ////*************************************************************************
     //TEST_FIXTURE(SetupFixture, test_emplace_value)
     //{
     //  Compare_Data compare_data;
@@ -816,7 +858,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -824,9 +866,9 @@ namespace
     {
       const Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.count(3), size_t(1UL));
+      CHECK_EQUAL(data.count(3), 1UL);
 
-      CHECK_EQUAL(data.count(11), size_t(0UL));
+      CHECK_EQUAL(data.count(11), 0UL);
     }
 
     //*************************************************************************
@@ -835,9 +877,9 @@ namespace
       using EMap = etl::set<int, MAX_SIZE, etl::less<>>;
       const EMap data(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.count(Key(3)), size_t(1UL));
+      CHECK_EQUAL(data.count(Key(3)), 1UL);
 
-      CHECK_EQUAL(data.count(Key(11)), size_t(0UL));
+      CHECK_EQUAL(data.count(Key(11)), 0UL);
     }
 
     //*************************************************************************
@@ -991,7 +1033,12 @@ namespace
 
       i_compare = compare_data.lower_bound(11);
       i_data = data.lower_bound(11);
-      CHECK(*i_compare == *i_data);
+      CHECK(i_data != data.end());
+
+      if ((i_data != data.end()) && (i_compare != compare_data.end()))
+      {
+        CHECK(*i_compare == *i_data);
+      }
 #else
       i_compare = compare_data.lower_bound(-1);
       i_data = data.lower_bound(-1);

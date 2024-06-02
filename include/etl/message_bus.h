@@ -227,11 +227,9 @@ namespace etl
 
       if (has_successor())
       {
-        etl::imessage_router& successor = get_successor();
-
-        if (successor.accepts(message.get_message_id()))
+        if (get_successor().accepts(message.get_message_id()))
         {
-          successor.receive(destination_router_id, message);
+          get_successor().receive(destination_router_id, message);
         }
       }
     }
@@ -306,11 +304,9 @@ namespace etl
 
       if (has_successor())
       {
-        etl::imessage_router& successor = get_successor();
-
-        if (successor.accepts(shared_msg.get_message().get_message_id()))
+        if (get_successor().accepts(shared_msg.get_message().get_message_id()))
         {
-          successor.receive(destination_router_id, shared_msg);
+          get_successor().receive(destination_router_id, shared_msg);
         }
       }
     }
@@ -319,11 +315,35 @@ namespace etl
 
     //*******************************************
     /// Does this message bus accept the message id?
-    /// Yes!, it accepts everything!
+    /// Returns <b>true</b> on the first router that does.
     //*******************************************
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return true;
+      // Check the list of subscribed routers.
+      router_list_t::iterator irouter = router_list.begin();
+
+      while (irouter != router_list.end())
+      {
+        etl::imessage_router& router = **irouter;
+
+        if (router.accepts(id))
+        {
+          return true;
+        }
+
+        ++irouter;
+      }
+
+      // Check any successor.
+      if (has_successor())
+      {
+        if (get_successor().accepts(id))
+        {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     //*******************************************
@@ -370,9 +390,9 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_bus(router_list_t& list, etl::imessage_router& successor)
-      : imessage_router(etl::imessage_router::MESSAGE_BUS, successor),
-      router_list(list)
+    imessage_bus(router_list_t& router_list_, etl::imessage_router& successor_)
+      : imessage_router(etl::imessage_router::MESSAGE_BUS, successor_),
+      router_list(router_list_)
     {
     }
 
@@ -416,8 +436,8 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    message_bus(etl::imessage_router& successor)
-      : imessage_bus(router_list, successor)
+    message_bus(etl::imessage_router& successor_)
+      : imessage_bus(router_list, successor_)
     {
     }
 
