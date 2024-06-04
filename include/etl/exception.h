@@ -100,7 +100,7 @@ namespace etl
 
     //***************************************************************************
     /// Gets the line for the exception.
-    /// \return const char* to the line.
+    /// \return int as line number.
     //***************************************************************************
     ETL_CONSTEXPR
     numeric_type line_number() const
