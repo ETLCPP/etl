@@ -1293,7 +1293,7 @@ namespace etl
 
       TIterator next = middle;
       TIterator result = first;
-      std::advance(result, std::distance(middle, last));
+      etl::advance(result, etl::distance(middle, last));
 
       while (first != next)
       {
