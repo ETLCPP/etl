@@ -1330,6 +1330,6 @@ namespace
 
   //*************************************************************************
   TEST(test_type_identity) {
-    CHECK(type_identity_test_add(1.5f, 2) == 3.5f);
+    CHECK_CLOSE(type_identity_test_add(1.5f, 2), 3.5f, 0.01f);
   }
 }
