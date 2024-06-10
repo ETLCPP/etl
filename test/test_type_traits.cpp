@@ -122,6 +122,13 @@ namespace
     NotDefaultConstructible(NotDefaultConstructible&&) = delete;
     NotDefaultConstructible& operator =(NotDefaultConstructible&) = delete;
   };
+
+  // A function to test etl::type_identity.
+  template <typename T>
+  T type_identity_test_add(T first, typename etl::type_identity<T>::type second)
+  {
+    return first + second;
+  }
 }
 
 // Definitions for when the STL and compiler built-ins are not available.
@@ -1319,5 +1326,10 @@ namespace
     CHECK_TRUE(bool(etl::is_base_of_all<Base, D1, D2, D3>::value));
     CHECK_FALSE(bool(etl::is_base_of_all<Base, D1, D2, D3, D4>::value));
 #endif
+  }
+
+  //*************************************************************************
+  TEST(test_type_identity) {
+    CHECK(type_identity_test_add(1.5f, 2) == 3.5f);
   }
 }
