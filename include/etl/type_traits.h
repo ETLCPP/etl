@@ -2288,6 +2288,17 @@ typedef integral_constant<bool, true>  true_type;
   template <typename T>
   using signed_type_t = typename signed_type<T>::type;
 #endif
+
+//*********************************************
+// type_identity
+
+template <typename T>
+struct type_identity { typedef T type; };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using type_identity_t = typename type_identity<T>::type;
+#endif
 }
 
 // Helper macros
