@@ -51,8 +51,8 @@ SOFTWARE.
 
 namespace
 {
-  using codec               = etl::base64_rfc4648_encoder<etl::base64::Padding::Use_Padding, etl::base64::Min_Buffer_Size>;
-  using codec_larger_buffer = etl::base64_rfc4648_encoder<etl::base64::Padding::Use_Padding, etl::base64::Min_Buffer_Size * 10>;
+  using codec               = etl::base64_rfc4648_encoder<etl::base64::Padding::Use_Padding, etl::base64::Min_Encode_Buffer_Size>;
+  using codec_larger_buffer = etl::base64_rfc4648_encoder<etl::base64::Padding::Use_Padding, etl::base64::Min_Encode_Buffer_Size * 10>;
   using codec_full_buffer   = etl::base64_rfc4648_encoder<etl::base64::Padding::Use_Padding, 344>;
 
   std::array<unsigned char, 256> input_data =
@@ -339,6 +339,18 @@ namespace
 
   SUITE(test_base64_rfc4648_with_padding)
   {
+    //*************************************************************************
+    TEST(test_basic_information)
+    {
+      codec_full_buffer b64;
+
+      CHECK_EQUAL(etl::base64::Encoding::RFC_4648,   codec_full_buffer::Encoding);
+      CHECK_EQUAL("RFC_4648",                        codec_full_buffer::Encoding.c_str());
+      CHECK_EQUAL(etl::base64::Padding::Use_Padding, codec_full_buffer::Padding);
+      CHECK_EQUAL("Use_Padding",                     codec_full_buffer::Padding.c_str());
+      CHECK_EQUAL(344,                               codec_full_buffer::Buffer_Size);
+    }
+
     //*************************************************************************
     TEST(test_encode_pointer_size_single_pass_with_callback)
     {

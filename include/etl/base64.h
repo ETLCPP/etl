@@ -125,9 +125,9 @@ namespace etl
       ETL_DECLARE_ENUM_TYPE(Encoding, int)
       //ETL_ENUM_TYPE(RFC_1421, "RFC_1421") // Not implemented yet
       //ETL_ENUM_TYPE(RFC_2045, "RFC_2045") // Not implemented yet
-      ETL_ENUM_TYPE(RFC_2152, "RFC_2152")
-      ETL_ENUM_TYPE(RFC_3501, "RFC_3501")
-      ETL_ENUM_TYPE(RFC_4648, "RFC_4648")
+      ETL_ENUM_TYPE(RFC_2152,     "RFC_2152")
+      ETL_ENUM_TYPE(RFC_3501,     "RFC_3501")
+      ETL_ENUM_TYPE(RFC_4648,     "RFC_4648")
       ETL_ENUM_TYPE(RFC_4648_URL, "RFC_4648_URL")
       ETL_END_ENUM_TYPE
     };
@@ -163,37 +163,16 @@ namespace etl
     enum
     {
       Invalid_Data = etl::integral_limits<int>::max,
-      Min_Buffer_Size = 4,
+      Min_Encode_Buffer_Size = 4,
+      Min_Decode_Buffer_Size = 3
     };
-
-    //*************************************************************************
-    /// Get the encoding standard
-    //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    Encoding get_encoding() const
-    {
-      return encoding;
-    }
-
-    //*************************************************************************
-    /// Get the padding flag
-    //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool uses_padding() const
-    {
-      return use_padding;
-    }
 
   protected:
 
     ETL_CONSTEXPR14
-    base64(Encoding    encoding_,
-           const char* encoder_table_,
+    base64(const char* encoder_table_,
            bool        use_padding_)
-      : encoding(encoding_)
-      , encoder_table(encoder_table_)
+      : encoder_table(encoder_table_)
       , use_padding(use_padding_)
     {
     }
@@ -228,9 +207,8 @@ namespace etl
       return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
     }
 
-    const Encoding encoding;
-    const char*    encoder_table;
-    const bool     use_padding;
+    const char* encoder_table;
+    const bool  use_padding;
   };
 }
 #endif

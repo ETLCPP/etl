@@ -3010,6 +3010,8 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
+    <ClInclude Include="..\..\include\etl\base64.h" />
+    <ClInclude Include="..\..\include\etl\base64_decoder.h" />
     <ClInclude Include="..\..\include\etl\base64_encoder.h" />
     <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\basic_string_stream.h" />
