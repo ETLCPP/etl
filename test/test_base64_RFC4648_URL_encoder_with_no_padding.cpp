@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2023 John Wellbelove
+Copyright(c) 2024 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -46,13 +46,16 @@ SOFTWARE.
 
 //*****************************************************************************
 // Encode/decode using RFC-4648-URL with no padding
+// Using minimum buffer size, with callback.
 //*****************************************************************************
 
 namespace
 {
-  using codec = etl::base64_rfc4648_url<etl::ibase64::Padding::No_Padding>;
+  using codec               = etl::base64_rfc4648_url_encoder<etl::base64::Padding::No_Padding, etl::base64::Min_Buffer_Size>;
+  using codec_larger_buffer = etl::base64_rfc4648_url_encoder<etl::base64::Padding::No_Padding, etl::base64::Min_Buffer_Size * 10>;
+  using codec_full_buffer   = etl::base64_rfc4648_url_encoder<etl::base64::Padding::No_Padding, 344>;
 
-  std::array<unsigned char, 256> input_data_unsigned_char =
+  std::array<unsigned char, 256> input_data =
   {
     0x3B, 0x27, 0x03, 0x43, 0x2D, 0xFB, 0x28, 0x2A, 0x61, 0xAE, 0xBC, 0x49, 0x71, 0x32, 0x01, 0x15,
     0x69, 0x5C, 0x5E, 0xF5, 0xD5, 0x9B, 0xDE, 0xA5, 0x57, 0xC9, 0xC1, 0x7D, 0x80, 0xDE, 0x4C, 0x81,
@@ -70,26 +73,6 @@ namespace
     0xC7, 0x56, 0x08, 0xFE, 0x81, 0xAE, 0xFB, 0xE0, 0x92, 0xD8, 0xDB, 0xB9, 0x57, 0x7C, 0x99, 0xCB,
     0x42, 0xEF, 0xFC, 0xB3, 0x56, 0x1E, 0xD1, 0x42, 0xD3, 0x0C, 0x18, 0xB3, 0xEE, 0xAF, 0x1A, 0x77,
     0xA8, 0x52, 0x3C, 0x9E, 0xCD, 0xDE, 0x21, 0x34, 0x3E, 0x1F, 0xB5, 0x54, 0xD7, 0xFB, 0xB4, 0xBD
-  };
-
-  std::array<int8_t, 256> input_data_int8_t =
-  {
-    int8_t(0x3B), int8_t(0x27), int8_t(0x03), int8_t(0x43), int8_t(0x2D), int8_t(0xFB), int8_t(0x28), int8_t(0x2A), int8_t(0x61), int8_t(0xAE), int8_t(0xBC), int8_t(0x49), int8_t(0x71), int8_t(0x32), int8_t(0x01), int8_t(0x15),
-    int8_t(0x69), int8_t(0x5C), int8_t(0x5E), int8_t(0xF5), int8_t(0xD5), int8_t(0x9B), int8_t(0xDE), int8_t(0xA5), int8_t(0x57), int8_t(0xC9), int8_t(0xC1), int8_t(0x7D), int8_t(0x80), int8_t(0xDE), int8_t(0x4C), int8_t(0x81),
-    int8_t(0xC0), int8_t(0xCF), int8_t(0x2A), int8_t(0xD1), int8_t(0x86), int8_t(0x56), int8_t(0xD5), int8_t(0x71), int8_t(0x37), int8_t(0xEB), int8_t(0x80), int8_t(0x32), int8_t(0xDF), int8_t(0xE4), int8_t(0xDF), int8_t(0xB6),
-    int8_t(0xEE), int8_t(0x3F), int8_t(0xDC), int8_t(0x79), int8_t(0xB3), int8_t(0x17), int8_t(0x8E), int8_t(0x76), int8_t(0x65), int8_t(0x8E), int8_t(0x96), int8_t(0x21), int8_t(0xB9), int8_t(0x88), int8_t(0xD1), int8_t(0x6D),
-    int8_t(0xD0), int8_t(0xDD), int8_t(0xFF), int8_t(0xDA), int8_t(0xA8), int8_t(0x7A), int8_t(0x4D), int8_t(0xF5), int8_t(0x71), int8_t(0x77), int8_t(0xFD), int8_t(0x2E), int8_t(0xF2), int8_t(0xE4), int8_t(0x40), int8_t(0x72),
-    int8_t(0x8C), int8_t(0x83), int8_t(0x00), int8_t(0x6F), int8_t(0x13), int8_t(0x72), int8_t(0x53), int8_t(0xE4), int8_t(0x6B), int8_t(0x70), int8_t(0x0E), int8_t(0x37), int8_t(0xCA), int8_t(0x25), int8_t(0xCD), int8_t(0x68),
-    int8_t(0x62), int8_t(0xC0), int8_t(0xAB), int8_t(0x14), int8_t(0xC7), int8_t(0x59), int8_t(0x83), int8_t(0xD2), int8_t(0x82), int8_t(0x8C), int8_t(0x93), int8_t(0x6D), int8_t(0x13), int8_t(0x21), int8_t(0xC0), int8_t(0x08),
-    int8_t(0xF9), int8_t(0x6D), int8_t(0xAC), int8_t(0x84), int8_t(0x78), int8_t(0x49), int8_t(0x84), int8_t(0x6F), int8_t(0x6B), int8_t(0xFB), int8_t(0x20), int8_t(0x3B), int8_t(0x9C), int8_t(0x49), int8_t(0xFB), int8_t(0x4E),
-    int8_t(0x80), int8_t(0x69), int8_t(0x82), int8_t(0x25), int8_t(0x86), int8_t(0x95), int8_t(0xD5), int8_t(0x4D), int8_t(0x91), int8_t(0xED), int8_t(0xD2), int8_t(0x77), int8_t(0x2A), int8_t(0x24), int8_t(0x40), int8_t(0x8A),
-    int8_t(0xDF), int8_t(0x4D), int8_t(0x80), int8_t(0x2D), int8_t(0xCD), int8_t(0xD5), int8_t(0x5A), int8_t(0x26), int8_t(0xA6), int8_t(0x71), int8_t(0x15), int8_t(0x42), int8_t(0x0E), int8_t(0x3F), int8_t(0xB2), int8_t(0x70),
-    int8_t(0x14), int8_t(0x29), int8_t(0x1F), int8_t(0x8D), int8_t(0x23), int8_t(0x2E), int8_t(0xC1), int8_t(0xEA), int8_t(0xCE), int8_t(0xF9), int8_t(0x7E), int8_t(0x6C), int8_t(0xDF), int8_t(0x1C), int8_t(0xA3), int8_t(0x84),
-    int8_t(0x2B), int8_t(0x24), int8_t(0x35), int8_t(0xA7), int8_t(0x63), int8_t(0xC8), int8_t(0x0B), int8_t(0x1F), int8_t(0x8B), int8_t(0xBA), int8_t(0x51), int8_t(0xBF), int8_t(0xE9), int8_t(0x51), int8_t(0x80), int8_t(0xD2),
-    int8_t(0x23), int8_t(0xB5), int8_t(0xD1), int8_t(0xB4), int8_t(0x59), int8_t(0xAE), int8_t(0x7D), int8_t(0x30), int8_t(0x1D), int8_t(0x00), int8_t(0x1C), int8_t(0xD8), int8_t(0x70), int8_t(0x6C), int8_t(0x16), int8_t(0x71),
-    int8_t(0xC7), int8_t(0x56), int8_t(0x08), int8_t(0xFE), int8_t(0x81), int8_t(0xAE), int8_t(0xFB), int8_t(0xE0), int8_t(0x92), int8_t(0xD8), int8_t(0xDB), int8_t(0xB9), int8_t(0x57), int8_t(0x7C), int8_t(0x99), int8_t(0xCB),
-    int8_t(0x42), int8_t(0xEF), int8_t(0xFC), int8_t(0xB3), int8_t(0x56), int8_t(0x1E), int8_t(0xD1), int8_t(0x42), int8_t(0xD3), int8_t(0x0C), int8_t(0x18), int8_t(0xB3), int8_t(0xEE), int8_t(0xAF), int8_t(0x1A), int8_t(0x77),
-    int8_t(0xA8), int8_t(0x52), int8_t(0x3C), int8_t(0x9E), int8_t(0xCD), int8_t(0xDE), int8_t(0x21), int8_t(0x34), int8_t(0x3E), int8_t(0x1F), int8_t(0xB5), int8_t(0x54), int8_t(0xD7), int8_t(0xFB), int8_t(0xB4), int8_t(0xBD)
   };
 
   std::array<std::string, 257> encoded =
@@ -356,251 +339,463 @@ namespace
   SUITE(test_base64_rfc4648_url_with_no_padding)
   {
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_size)
+    TEST(test_encode_pointer_size_single_pass_with_callback)
     {
-      codec b64;
-      std::array<char, 344U> encoded_output;
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
       {
-        encoded_output.fill(0);
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_unsigned_char.data(), i,
-                               encoded_output.data(), encoded_output.size());
+        b64.encode_final(input_data.data(), i);
 
         std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
+        std::string actual(encoded_output);
 
+        CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_size_no_output_length)
+    TEST(test_encode_pointer_size_single_pass_with_callback_and_larger_buffer)
     {
-      codec b64;
-      std::array<char, 344U> encoded_output;
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
       {
-        encoded_output.fill(0);
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_unsigned_char.data(), i,
-                               encoded_output.data());
+        b64.encode_final(input_data.data(), i);
 
         std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
+        std::string actual(encoded_output);
 
+        CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_size_to_etl_back_inserter)
+    TEST(test_encode_pointer_size_multi_pass_blocks_with_callback)
     {
-      codec b64;
+      std::string encoded_output;
+      bool received_final_block = false;
 
-      for (size_t i = 0; i < 256; ++i) 
+      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec b64(callback);
+
+      for (size_t i = 0; i < 256; ++i)
       {
-        std::string actual;
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_unsigned_char.data(), i,
-                               etl::back_inserter(actual));
-
-        std::string expected(encoded[i]);
+        auto start  = input_data.data();
+        auto length = i;
         
+        while (length >= 5)
+        {
+          b64.encode(start, 5);
+          length -= 5;
+          start  += 5;
+        }
+
+        if (length > 0)
+        {
+          b64.encode(start, length);
+        }
+
+        CHECK_FALSE(received_final_block);
+        b64.flush();
+        CHECK_TRUE(received_final_block);
+
+        std::string expected(encoded[i]);
+        std::string actual(encoded_output);
+
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
-#if ETL_USING_STL
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_size_to_std_back_inserter)
+    TEST(test_encode_pointer_size_multi_pass_blocks_with_callback_larger_buffer)
     {
-      codec b64;
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
       {
-        std::string actual;
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_unsigned_char.data(), i,
-                               std::back_inserter(actual));
+        auto start = input_data.data();
+        auto length = i;
+
+        while (length >= 5)
+        {
+          b64.encode(start, 5);
+          length -= 5;
+          start += 5;
+        }
+
+        if (length > 0)
+        {
+          b64.encode(start, length);
+        }
+
+        CHECK_FALSE(received_final_block);
+        b64.flush();
+        CHECK_TRUE(received_final_block);
 
         std::string expected(encoded[i]);
+        std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
       }
     }
-#endif
 
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_pointer)
+    TEST(test_encode_pointer_pointer_single_pass_with_callback)
     {
-      codec b64;
-      std::array<char, 344U> encoded_output;
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
       {
-        encoded_output.fill(0);
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_unsigned_char.data(), input_data_unsigned_char.data() + i,
-                               encoded_output.data(), encoded_output.data() + encoded_output.size());
+        b64.encode_final(input_data.data(), input_data.data() + i);
 
         std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
+        std::string actual(encoded_output);
 
+        CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_pointer_no_output_end_pointer)
+    TEST(test_encode_pointer_pointer_single_pass_with_callback_larger_buffer)
     {
-      codec b64;
-      std::array<char, 344U> encoded_output;
+      std::string encoded_output;
+      bool received_final_block = false;
 
-      for (size_t i = 6; i < 256; ++i)
-      {
-        encoded_output.fill(0);
+      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
 
-        auto size = b64.encode(input_data_unsigned_char.data(), input_data_unsigned_char.data() + i,
-                               encoded_output.data());
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
 
-        std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
-
-        CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_encode_int8_t_pointer_size)
-    {
-      codec b64;
-      std::array<char, 344U> encoded_output;
-
-      for (size_t i = 11; i < 256; ++i)
-      {
-        encoded_output.fill(0);
-
-        auto size = b64.encode(input_data_int8_t.data(), i,
-                               encoded_output.data(), encoded_output.size());
-
-        std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
-
-        CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_encode_int8_t_pointer_size_no_output_length)
-    {
-      codec b64;
-      std::array<char, 344U> encoded_output;
-
-      for (size_t i = 6; i < 256; ++i)
-      {
-        encoded_output.fill(0);
-
-        auto size = b64.encode(input_data_int8_t.data(), i,
-                               encoded_output.data());
-
-        std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
-
-        CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_encode_int8_t_pointer_size_to_etl_back_inserter)
-    {
-      codec b64;
+      codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
       {
-        std::string actual;
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_int8_t.data(), i,
-                               etl::back_inserter(actual));
-
-        std::string expected(encoded[i]);
-
-        CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
-      }
-    }
- 
-#if ETL_USING_STL
-    //*************************************************************************
-    TEST(test_encode_int8_t_pointer_size_to_std_back_inserter)
-    {
-      codec b64;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        std::string actual;
-
-        auto size = b64.encode(input_data_int8_t.data(), i,
-                               std::back_inserter(actual));
+        b64.encode_final(input_data.data(), input_data.data() + i);
 
         std::string expected(encoded[i]);
+        std::string actual(encoded_output);
 
+        CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
-      }
-    }
-#endif
-
-    //*************************************************************************
-    TEST(test_encode_int8_t_pointer_pointer)
-    {
-      codec b64;
-      std::array<char, 344U> encoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        encoded_output.fill(0);
-
-        auto size = b64.encode(input_data_int8_t.data(), input_data_int8_t.data() + i,
-                               encoded_output.data(),    encoded_output.data() + encoded_output.size());
-
-        std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
-
-        CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
     //*************************************************************************
-    TEST(test_encode_int8_t_pointer_pointer_no_end_pointer)
+    TEST(test_encode_pointer_pointer_multi_pass_blocks_with_callback)
     {
-      codec b64;
+      std::string encoded_output;
+      bool received_final_block = false;
 
-      std::array<char, 344U> encoded_output;
+      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
       {
-        encoded_output.fill(0);
+        encoded_output.clear();
+        received_final_block = false;
 
-        auto size = b64.encode(input_data_int8_t.data(), input_data_int8_t.data() + i,
-                               encoded_output.data());
+        auto start = input_data.data();
+        auto length = i;
+
+        while (length >= 5)
+        {
+          b64.encode(start, start + 5);
+          length -= 5;
+          start += 5;
+        }
+
+        if (length > 0)
+        {
+          b64.encode(start, length);
+        }
+
+        CHECK_FALSE(received_final_block);
+        b64.flush();
+        CHECK_TRUE(received_final_block);
 
         std::string expected(encoded[i]);
-        std::string actual(encoded_output.data(), size);
+        std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_EQUAL(codec::encoded_size(i), size);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_encode_pointer_pointer_multi_pass_blocks_with_callback_larger_buffer)
+    {
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec_larger_buffer b64(callback);
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        encoded_output.clear();
+        received_final_block = false;
+
+        auto start = input_data.data();
+        auto length = i;
+
+        while (length >= 5)
+        {
+          b64.encode(start, start + 5);
+          length -= 5;
+          start += 5;
+        }
+
+        if (length > 0)
+        {
+          b64.encode(start, length);
+        }
+
+        CHECK_FALSE(received_final_block);
+        b64.flush();
+        CHECK_TRUE(received_final_block);
+
+        std::string expected(encoded[i]);
+        std::string actual(encoded_output);
+
+        CHECK_EQUAL(expected, actual);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_encode_multi_pass_by_char_with_callback)
+    {
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec b64(callback);
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        encoded_output.clear();
+        received_final_block = false;
+
+        auto start = input_data.data();
+        auto length = i;
+
+        while (length--)
+        {
+          b64.encode(*start);
+          ++start;
+        }
+
+        CHECK_FALSE(received_final_block);
+        b64.flush();
+        CHECK_TRUE(received_final_block);
+
+        std::string expected(encoded[i]);
+        std::string actual(encoded_output);
+
+        CHECK_EQUAL(expected, actual);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_encode_multi_pass_by_char_with_callback_larger_buffer)
+    {
+      std::string encoded_output;
+      bool received_final_block = false;
+
+      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
+        {
+          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+
+          if (final)
+          {
+            received_final_block = true;
+          }
+        };
+
+      codec_larger_buffer b64(callback);
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        encoded_output.clear();
+        received_final_block = false;
+
+        auto start = input_data.data();
+        auto length = i;
+
+        while (length--)
+        {
+          b64.encode(*start);
+          ++start;
+        }
+
+        CHECK_FALSE(received_final_block);
+        b64.flush();
+        CHECK_TRUE(received_final_block);
+
+        std::string expected(encoded[i]);
+        std::string actual(encoded_output);
+
+        CHECK_EQUAL(expected, actual);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_encode_multi_pass_blocks_with_no_callback_and_full_size_buffer)
+    {
+      std::string actual;
+
+      codec_full_buffer b64;
+
+      for (size_t i = 250; i < 256; ++i)
+      {
+        b64.reset();
+        actual.clear();
+
+        auto start = input_data.data();
+        auto length = i;
+        
+        while (length >= 5)
+        {
+          b64.encode(start, start + 5);
+          length -= 5;
+          start += 5;
+        }
+
+        if (length > 0)
+        {
+          b64.encode(start, length);
+        }
+
+        b64.flush();
+
+        std::string expected(encoded[i]);
+        std::string actual(b64.begin(), b64.end());
+
+        CHECK_EQUAL(expected, actual);
+        CHECK_TRUE(codec::required_output_buffer_size(i) >= actual.size());
       }
     }
 
@@ -609,13 +804,13 @@ namespace
     template <size_t Size>
     constexpr auto GetConstexprBase64(const etl::array<int8_t, Size> input) noexcept
     {
+      etl::array<char, 14> output{ 0 };
+      
+      using codec = etl::base64_rfc4648_encoder<etl::base64::Padding::No_Padding, codec::required_output_buffer_size(Size)>;
+      
       codec b64;
-
-      constexpr size_t encoded_size = codec::encoded_size(Size);
-      etl::array<char, codec::encoded_size(Size)> output{ 0 };
-
-      b64.encode(input.begin(), Size,
-                 output._buffer, encoded_size);
+      b64.encode_final(input.begin(), input.end());
+      etl::copy(b64.begin(), b64.end(), output.begin());
 
       return output;
     }
@@ -630,284 +825,19 @@ namespace
       std::string actual(output.data(), output.size());
 
       CHECK_EQUAL(expected, actual);
-      CHECK_EQUAL(codec::encoded_size(10), output.size());
+      CHECK_TRUE(codec::required_output_buffer_size(10) >= output.size());
     }
 #endif
 
     //*************************************************************************
     TEST(test_encode_overflow)
     {
+      using codec = etl::base64_rfc4648_encoder<etl::base64::Padding::No_Padding>;
+
       codec b64;
-      std::array<char, 1> encoded_output{ 0 };
 
-      CHECK_THROW((b64.encode(input_data_unsigned_char.data(), 10,
-                              encoded_output.data(), encoded_output.size())), 
-                  etl::base64_overflow);
-    }
-
-    //*************************************************************************
-    TEST(test_decode_unsigned_char_pointer_size)
-    {
-      codec b64;
-      std::array<unsigned char, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(),     encoded[i].size(),
-                                       decoded_output.data(), decoded_output.size());
-
-        CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_unsigned_char_pointer_size_no_end_pointer)
-    {
-      codec b64;
-      std::array<unsigned char, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                       decoded_output.data());
-
-        CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_unsigned_char_pointer_pointer)
-    {
-      codec b64;
-      std::array<unsigned char, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                       decoded_output.data(), decoded_output.data() + decoded_output.size());
-
-        CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_unsigned_char_pointer_pointer_no_end_pointer)
-    {
-      codec b64;
-      std::array<unsigned char, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                       decoded_output.data());
-
-        CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_size)
-    {
-      codec b64;
-      std::array<int8_t, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                       decoded_output.data(), decoded_output.size());
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_size_etl_back_inserter)
-    {
-      codec b64;
-      std::vector<int8_t> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.clear();
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                       etl::back_inserter(decoded_output));
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-#if ETL_USING_STL
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_size_std_back_inserter)
-    {
-      codec b64;
-      std::vector<int8_t> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.clear();
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                       std::back_inserter(decoded_output));
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-#endif
-
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_size_no_output_size)
-    {
-      codec b64;
-      std::array<int8_t, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                       decoded_output.data());
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_pointer)
-    {
-      codec b64;
-      std::array<int8_t, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                       decoded_output.data(), decoded_output.data() + decoded_output.size());
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_pointer_etl_back_inserter)
-    {
-      codec b64;
-      std::vector<int8_t> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.clear();
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                       etl::back_inserter(decoded_output));
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-#if ETL_USING_STL
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_pointer_std_back_inserter)
-    {
-      codec b64;
-      std::vector<int8_t> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.clear();
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                       std::back_inserter(decoded_output));
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-#endif
-
-    //*************************************************************************
-    TEST(test_decode_int8_t_pointer_pointer_no_end_pointer)
-    {
-      codec b64;
-      std::array<int8_t, 256> decoded_output;
-
-      for (size_t i = 0; i < 256; ++i)
-      {
-        decoded_output.fill(0);
-
-        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                       decoded_output.data());
-
-        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
-        CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
-        CHECK_EQUAL(i, decoded_size);
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_decode_overflow)
-    {
-      codec b64;
-      std::array<unsigned char, 1> decoded_output{ 0 };
-
-      CHECK_THROW((b64.decode(encoded[10].data(), encoded[10].size(),
-                              decoded_output.data(), decoded_output.size())), etl::base64_overflow);
-    }
-
-    //*************************************************************************
-    TEST(test_decode_invalid_character)
-    {
-      codec b64;
-      std::array<unsigned char, 50U> decoded_output{ 0 };
-
-      std::string invalid_chararacter("OycDQ#37KA");
-
-      CHECK_THROW((b64.decode(invalid_chararacter.data(), invalid_chararacter.size(),
-                              decoded_output.data(), decoded_output.size())), etl::base64_invalid_character);
-
-      std::string invalid_length("OycDQy37K");
-
-#if ETL_USING_EXCEPTIONS
-      CHECK_THROW((b64.decode(invalid_length.data(), invalid_length.size(),
-                              decoded_output.data(), decoded_output.size())), etl::base64_invalid_decode_input_length);
-#else
-      size_t size = b64.decode(invalid_length.data(), invalid_length.size(),
-                               decoded_output.data(), decoded_output.size());
-      CHECK_EQUAL(size, codec::Invalid_Data);
-#endif
+      CHECK_THROW((b64.encode(input_data.data(), 10)), etl::base64_overflow);
+      CHECK_TRUE(b64.overflow());
     }
   };
 }
