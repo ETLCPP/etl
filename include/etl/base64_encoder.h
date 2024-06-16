@@ -124,6 +124,28 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Encode to Base64
+    //*************************************************************************
+    template <typename TInputIterator>
+    ETL_CONSTEXPR14
+    void encode_final(TInputIterator input_begin, size_t input_length)
+    {
+      encode(input_begin, input_length);
+      flush();
+    }
+
+    //*************************************************************************
+    /// Encode to Base64
+    //*************************************************************************
+    template <typename TInputIterator>
+    ETL_CONSTEXPR14
+    void encode_final(TInputIterator input_begin, TInputIterator input_end)
+    {
+      encode(input_begin, input_end);
+      flush();
+    }
+
+    //*************************************************************************
     /// Flush any remaining data to the output.
     //*************************************************************************
     ETL_CONSTEXPR14
@@ -145,32 +167,10 @@ namespace etl
     /// Reset the encoder.
     //*************************************************************************
     ETL_CONSTEXPR14
-    void reset()
+    void restart()
     {
       reset_input_buffer();
       reset_output_buffer();
-    }
-
-    //*************************************************************************
-    /// Encode to Base64
-    //*************************************************************************
-    template <typename TInputIterator>
-    ETL_CONSTEXPR14
-    void encode_final(TInputIterator input_begin, size_t input_length)
-    {
-      encode(input_begin, input_length);
-      flush();
-    }
-
-    //*************************************************************************
-    /// Encode to Base64
-    //*************************************************************************
-    template <typename TInputIterator>
-    ETL_CONSTEXPR14
-    void encode_final(TInputIterator input_begin, TInputIterator input_end)
-    {
-      encode(input_begin, input_end);
-      flush();
     }
 
     //*************************************************************************
@@ -278,7 +278,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// 
+    /// Encode one block of data.
     //*************************************************************************
     ETL_CONSTEXPR14
     void encode_block()

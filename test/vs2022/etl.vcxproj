@@ -7721,6 +7721,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\test_base64_RFC2152_decoder.cpp" />
     <ClCompile Include="..\test_base64_RFC2152_encoder.cpp" />
     <ClCompile Include="..\test_base64_RFC3501.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>

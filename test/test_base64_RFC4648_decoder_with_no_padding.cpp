@@ -51,7 +51,7 @@ SOFTWARE.
 
 namespace
 {
-  using codec = etl::base64_rfc4648_decoder<etl::base64::Padding::No_Padding, etl::base64::Min_Buffer_Size>;
+  using codec = etl::base64_rfc4648_decoder<etl::base64::Padding::No_Padding, etl::base64::Min_Decode_Buffer_Size>;
 
   std::array<unsigned char, 256> input_data_unsigned_char =
   {

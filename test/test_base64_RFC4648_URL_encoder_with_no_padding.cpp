@@ -783,7 +783,7 @@ namespace
 
       for (size_t i = 250; i < 256; ++i)
       {
-        b64.reset();
+        b64.restart();
         actual.clear();
 
         auto start = input_data.data();
