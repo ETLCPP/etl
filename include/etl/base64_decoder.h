@@ -71,7 +71,7 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-    void decode(T value)
+    bool decode(T value)
     {
       ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(T), "Input type must be an 8 bit integral");
 
@@ -79,18 +79,22 @@ namespace etl
 
       if (input_buffer_is_full())
       {
-        decode_block();
-        reset_input_buffer();
-
-        if (callback.is_valid())
+        if (decode_block())
         {
-          if (output_buffer_is_full())
+          if (callback.is_valid())
           {
-            callback(span(), false);
-            reset_output_buffer();
+            if (output_buffer_is_full())
+            {
+              callback(span(), false);
+              reset_output_buffer();
+            }
           }
         }
+      
+        reset_input_buffer();
       }
+
+      return !error();
     }
 
     //*************************************************************************
@@ -98,14 +102,19 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void decode(TInputIterator input_begin, TInputIterator input_end)
+    bool decode(TInputIterator input_begin, TInputIterator input_end)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
 
       while (input_begin != input_end)
       {
-        decode(*input_begin++);
+        if (!decode(*input_begin++))
+        {
+          return false;
+        }
       }
+
+      return true;
     }
 
     //*************************************************************************
@@ -113,14 +122,19 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void decode(TInputIterator input_begin, size_t input_length)
+    bool decode(TInputIterator input_begin, size_t input_length)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
       
       while (input_length-- != 0)
       {
-        decode(*input_begin++);
+        if (!decode(*input_begin++))
+        {
+          return false;
+        }
       }
+
+      return true;
     }
     
     //*************************************************************************
@@ -128,10 +142,9 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void decode_final(TInputIterator input_begin, TInputIterator input_end)
+    bool decode_final(TInputIterator input_begin, TInputIterator input_end)
     {
-      decode(input_begin, input_end);
-      flush();
+      return (decode(input_begin, input_end) && flush());
     }
 
     //*************************************************************************
@@ -139,28 +152,32 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void decode_final(TInputIterator input_begin, size_t input_length)
+    bool decode_final(TInputIterator input_begin, size_t input_length)
     {
-      decode(input_begin, input_length);
-      flush();
+      return (decode(input_begin, input_length) && flush());
     }
 
     //*************************************************************************
     /// Flush any remaining data to the output.
     //*************************************************************************
     ETL_CONSTEXPR14
-    void flush()
+    bool flush()
     {
       // Encode any remaining input data.
-      decode_block();
-
-      if (callback.is_valid())
-      {
-        callback(span(), true);
-        reset_output_buffer();
-      }
+      bool success = decode_block();
 
       reset_input_buffer();
+
+      if (success)
+      {
+        if (callback.is_valid())
+        {
+          callback(span(), true);
+          reset_output_buffer();
+        }
+      }
+
+      return success;
     }
 
     //*************************************************************************
@@ -171,6 +188,8 @@ namespace etl
     {
       reset_input_buffer();
       reset_output_buffer();
+      overflow_detected     = false;
+      invalid_data_detected = false;
     }
 
     //*************************************************************************
@@ -229,7 +248,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    size_t max_size() const
+    size_t buffer_size() const
     {
       return output_buffer_max_size;
     }
@@ -252,7 +271,27 @@ namespace etl
     ETL_CONSTEXPR14
     bool overflow() const
     {
-      return overflowed;
+      return overflow_detected;
+    }
+
+    //*************************************************************************
+    /// Returns true if an invalid character was detected.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    bool invalid_data() const
+    {
+      return invalid_data_detected;
+    }
+
+    //*************************************************************************
+    /// Returns true if an error was detected.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    bool error() const
+    {
+      return overflow() || invalid_data();
     }
 
   protected:
@@ -273,7 +312,8 @@ namespace etl
       , output_buffer_length(0)
       , output_buffer_max_size(ouput_buffer_max_size_)
       , callback(callback_)
-      , overflowed(false)
+      , overflow_detected(false)
+      , invalid_data_detected(false)
     {
     }
 
@@ -399,27 +439,28 @@ namespace etl
       }
       else
       {
-        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(base64_invalid_character), 0);
+        invalid_data_detected = true;
+        return 0;
       }
     }
     
     //*************************************************************************
     /// Gets the padding character
     //*************************************************************************
-    //template <typename T>
-    //ETL_NODISCARD
-    //static
-    //ETL_CONSTEXPR14
-    //T padding()
-    //{
-    //  return static_cast<T>('=');
-    //}
+    template <typename T>
+    ETL_NODISCARD
+    static
+    ETL_CONSTEXPR14
+    T padding()
+    {
+      return static_cast<T>('=');
+    }
     
     //*************************************************************************
     /// Decode one block of data.
     //*************************************************************************
     ETL_CONSTEXPR14
-    void decode_block()
+    bool decode_block()
     {
       switch (input_buffer_length)
       {
@@ -465,7 +506,10 @@ namespace etl
         }
       }
 
-      ETL_ASSERT(!overflowed, ETL_ERROR(etl::base64_overflow));
+      ETL_ASSERT(!invalid_data_detected, ETL_ERROR(etl::base64_invalid_data));
+      ETL_ASSERT(!overflow_detected,     ETL_ERROR(etl::base64_overflow));
+
+      return (!invalid_data_detected && !overflow_detected);
     }
 
     //*************************************************************************
@@ -480,7 +524,7 @@ namespace etl
       }
       else
       {
-        overflowed = true;
+        overflow_detected = true;
       }
     }
 
@@ -548,7 +592,8 @@ namespace etl
 
     callback_type callback;
 
-    bool overflowed;
+    bool overflow_detected;
+    bool invalid_data_detected;
   };
 
   //*************************************************************************

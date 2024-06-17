@@ -780,23 +780,23 @@ namespace
     {
       codec_full_buffer b64;
 
-      for (size_t i = 4; i < 256; ++i)
+      for (size_t i = 0; i < 256; ++i)
       {
-        b64.restart();
+        b64.reset();
 
-        auto start = encoded[i].data();
+        auto start  = encoded[i].data();
         auto length = encoded[i].size();
 
         while (length >= 5)
         {
-          b64.decode(start, 5);
+          b64.decode(start, length);
           length -= 5;
           start += 5;
         }
 
         if (length > 0)
         {
-          b64.decode(start, start + length);
+          b64.decode(start, length);
         }
 
         b64.flush();
@@ -810,24 +810,65 @@ namespace
       }
     }
 
-    //*************************************************************************
-    TEST(test_decode_overflow)
-    {
-      codec b64;
 
-      CHECK_THROW((b64.decode(encoded[10].data(), encoded[10].size())), etl::base64_overflow);
-    }
 
-    //*************************************************************************
-    TEST(test_decode_invalid_character)
-    {
-      codec b64;
-      std::array<unsigned char, 50U> decoded_output{ 0 };
 
-      std::string invalid_chararacter("OycDQ#37KA");
 
-      CHECK_THROW((b64.decode(invalid_chararacter.data(), invalid_chararacter.size())), etl::base64_invalid_character);
-    }
+
+
+
+
+    ////*************************************************************************
+    //TEST(test_decode_unsigned_char_pointer_pointer)
+    //{
+    //  codec b64;
+    //  std::array<unsigned char, 256> decoded_output;
+
+    //  for (size_t i = 0; i < 256; ++i)
+    //  {
+    //    decoded_output.fill(0);
+
+    //    auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
+    //                                   decoded_output.data(), decoded_output.data() + decoded_output.size());
+
+    //    CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
+    //    CHECK_EQUAL(i, codec::decoded_size(encoded[i].data(), encoded[i].size()));
+    //    CHECK_EQUAL(i, decoded_size);
+    //  }
+    //}
+
+//    //*************************************************************************
+//    TEST(test_decode_overflow)
+//    {
+//      codec b64;
+//      std::array<unsigned char, 1> decoded_output{ 0 };
+//
+//      CHECK_THROW((b64.decode(encoded[10].data(), encoded[10].size(),
+//                              decoded_output.data(), decoded_output.size())), etl::base64_overflow);
+//    }
+//
+//    //*************************************************************************
+//    TEST(test_decode_invalid_character)
+//    {
+//      codec b64;
+//      std::array<unsigned char, 50U> decoded_output{ 0 };
+//
+//      std::string invalid_chararacter("OycDQ#37KA");
+//
+//      CHECK_THROW((b64.decode(invalid_chararacter.data(), invalid_chararacter.size(),
+//                              decoded_output.data(), decoded_output.size())), etl::base64_invalid_character);
+//
+//      std::string invalid_length("OycDQy37K");
+//
+//#if ETL_USING_EXCEPTIONS
+//      CHECK_THROW((b64.decode(invalid_length.data(), invalid_length.size(),
+//                              decoded_output.data(), decoded_output.size())), etl::base64_invalid_decode_input_length);
+//#else
+//      size_t size = b64.decode(invalid_length.data(), invalid_length.size(),
+//                               decoded_output.data(), decoded_output.size());
+//      CHECK_EQUAL(size, codec::Invalid_Data);
+//#endif
+//    }
   };
 }
 

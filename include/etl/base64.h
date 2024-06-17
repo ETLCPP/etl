@@ -80,12 +80,12 @@ namespace etl
   //***************************************************************************
   /// Illegal character exception.
   //***************************************************************************
-  class base64_invalid_character : public base64_exception
+  class base64_invalid_data : public base64_exception
   {
   public:
 
-    base64_invalid_character(string_type file_name_, numeric_type line_number_)
-      : base64_exception(ETL_ERROR_TEXT("base64:invalid character", ETL_BASE64_FILE_ID"B"), file_name_, line_number_)
+    base64_invalid_data(string_type file_name_, numeric_type line_number_)
+      : base64_exception(ETL_ERROR_TEXT("base64:invalid data", ETL_BASE64_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
