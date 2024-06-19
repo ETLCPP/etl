@@ -336,18 +336,18 @@ namespace
       "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/u0vQ"
     };
 
-  SUITE(test_base64_rfc4648_with_no_padding)
+  SUITE(test_base64_rfc2152_with_no_padding)
   {
     //*************************************************************************
     TEST(test_basic_information)
     {
       codec_full_buffer b64;
 
-      CHECK_EQUAL(etl::base64::Encoding::RFC_2152,  codec_full_buffer::Encoding);
-      CHECK_EQUAL("RFC_2152",                       codec_full_buffer::Encoding.c_str());
-      CHECK_EQUAL(etl::base64::Padding::No_Padding, codec_full_buffer::Padding);
-      CHECK_EQUAL("No_Padding",                     codec_full_buffer::Padding.c_str());
-      CHECK_EQUAL(344,                              codec_full_buffer::Buffer_Size);
+      CHECK_EQUAL(etl::base64::Encoding::RFC_2152,   codec_full_buffer::Encoding);
+      CHECK_EQUAL("RFC_2152",                        codec_full_buffer::Encoding.c_str());
+      CHECK_TRUE(etl::base64::Padding::No_Padding == codec_full_buffer::Padding);
+      CHECK_EQUAL("No_Padding",                      codec_full_buffer::Padding.c_str());
+      CHECK_EQUAL(344,                               codec_full_buffer::Buffer_Size);
     }
 
     //*************************************************************************
@@ -380,7 +380,7 @@ namespace
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -414,7 +414,7 @@ namespace
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -464,7 +464,7 @@ namespace
         std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -514,7 +514,7 @@ namespace
         std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -548,7 +548,7 @@ namespace
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -582,7 +582,7 @@ namespace
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -632,7 +632,7 @@ namespace
         std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -682,7 +682,7 @@ namespace
         std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -726,7 +726,7 @@ namespace
         std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -770,7 +770,7 @@ namespace
         std::string actual(encoded_output);
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= encoded_output.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= encoded_output.size());
       }
     }
 
@@ -783,7 +783,7 @@ namespace
 
       for (size_t i = 250; i < 256; ++i)
       {
-        b64.reset();
+        b64.restart();
         actual.clear();
 
         auto start = input_data.data();
@@ -807,7 +807,7 @@ namespace
         std::string actual(b64.begin(), b64.end());
 
         CHECK_EQUAL(expected, actual);
-        CHECK_TRUE(codec::required_output_buffer_size(i) >= actual.size());
+        CHECK_TRUE(codec::safe_output_buffer_size(i) >= actual.size());
       }
     }
 
@@ -818,7 +818,7 @@ namespace
     {
       etl::array<char, 14> output{ 0 };
       
-      using codec = etl::base64_rfc4648_encoder<etl::base64::Padding::No_Padding, codec::required_output_buffer_size(Size)>;
+      using codec = etl::base64_rfc4648_encoder<etl::base64::Padding::No_Padding, codec::safe_output_buffer_size(Size)>;
       
       codec b64;
       b64.encode_final(input.begin(), input.end());
@@ -827,7 +827,7 @@ namespace
       return output;
     }
 
-    TEST(test_encode_int8_t_constexpr)
+    TEST(test_encode_constexpr)
     {
       constexpr etl::array<int8_t, 10> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -837,7 +837,7 @@ namespace
       std::string actual(output.data(), output.size());
 
       CHECK_EQUAL(expected, actual);
-      CHECK_TRUE(codec::required_output_buffer_size(10) >= output.size());
+      CHECK_TRUE(codec::safe_output_buffer_size(10) >= output.size());
     }
 #endif
 
@@ -848,8 +848,12 @@ namespace
 
       codec b64;
 
+#if ETL_USING_EXCEPTIONS
       CHECK_THROW((b64.encode(input_data.data(), 10)), etl::base64_overflow);
+#else
+      CHECK_FALSE(b64.encode(input_data.data(), 10));
       CHECK_TRUE(b64.overflow());
+#endif
     }
   };
 }

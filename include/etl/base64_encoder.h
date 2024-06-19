@@ -515,7 +515,7 @@ namespace etl
     ETL_NODISCARD
     static
     ETL_CONSTEXPR14
-    size_t required_output_buffer_size(size_t input_length)
+    size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_encoder::encoded_size(input_length, etl::base64::Padding::No_Padding);
     }
@@ -585,7 +585,7 @@ namespace etl
     ETL_NODISCARD
     static
     ETL_CONSTEXPR14
-    size_t required_output_buffer_size(size_t input_length)
+    size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_encoder::encoded_size(input_length, etl::base64::Padding::No_Padding);
     }
@@ -655,7 +655,7 @@ namespace etl
     ETL_NODISCARD
     static
     ETL_CONSTEXPR14
-    size_t required_output_buffer_size(size_t input_length)
+    size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_encoder::encoded_size(input_length, Use_Padding == etl::base64::Padding::Use_Padding);
     }
@@ -725,7 +725,7 @@ namespace etl
     ETL_NODISCARD
     static
     ETL_CONSTEXPR14
-    size_t required_output_buffer_size(size_t input_length)
+    size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_encoder::encoded_size(input_length, Use_Padding == etl::base64::Padding::Use_Padding);
     }

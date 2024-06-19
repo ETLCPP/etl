@@ -229,9 +229,6 @@
     <Filter Include="Tests\Codecs\Base64">
       <UniqueIdentifier>{e2e649e4-10ee-4ed7-baa3-eb889e552ba1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Codecs\Base64-old">
-      <UniqueIdentifier>{01fbf018-8485-4546-9aa7-f79d8991947a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1407,9 +1404,6 @@
     <ClInclude Include="..\..\include\etl\lcm.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\base64.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\base64.h">
       <Filter>ETL\Codecs</Filter>
     </ClInclude>
@@ -2489,9 +2483,6 @@
     <ClCompile Include="..\test_macros.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_base64_RFC4648_with_padding.cpp">
-      <Filter>Tests\Codecs</Filter>
-    </ClCompile>
     <ClCompile Include="..\syntax_check\absolute.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
@@ -3335,18 +3326,6 @@
     <ClCompile Include="..\test_message.cpp">
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_base64_RFC4648_URL_with_padding.cpp">
-      <Filter>Tests\Codecs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_base64_RFC4648_URL_with_no_padding.cpp">
-      <Filter>Tests\Codecs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_base64_RFC2152.cpp">
-      <Filter>Tests\Codecs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_base64_RFC3501.cpp">
-      <Filter>Tests\Codecs</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_base64_RFC2152_decoder.cpp">
       <Filter>Tests\Codecs\Base64</Filter>
     </ClCompile>
@@ -3369,6 +3348,18 @@
       <Filter>Tests\Codecs\Base64</Filter>
     </ClCompile>
     <ClCompile Include="..\test_base64_RFC4648_URL_encoder_with_padding.cpp">
+      <Filter>Tests\Codecs\Base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_decoder_with_padding.cpp">
+      <Filter>Tests\Codecs\Base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC3501_decoder.cpp">
+      <Filter>Tests\Codecs\Base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_URL_decoder_with_no_padding.cpp">
+      <Filter>Tests\Codecs\Base64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_URL_decoder_with_padding.cpp">
       <Filter>Tests\Codecs\Base64</Filter>
     </ClCompile>
   </ItemGroup>

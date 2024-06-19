@@ -90,7 +90,7 @@ namespace etl
             }
           }
         }
-      
+
         reset_input_buffer();
       }
 
@@ -316,62 +316,6 @@ namespace etl
       , invalid_data_detected(false)
     {
     }
-
-    //*************************************************************************
-    /// Discovers the number of valid decodable characters
-    //*************************************************************************
-    template <typename TInputIterator>
-    ETL_NODISCARD
-    static
-    ETL_CONSTEXPR14
-    bool is_valid_decode_input_length(TInputIterator input_begin, size_t input_length, bool use_padding)
-    {
-      if (input_length == 0U)
-      {
-        return true;
-      }
-    
-      if (use_padding)
-      {
-        TInputIterator input_end = input_begin;
-    
-        if (input_length >= 2U)
-        {
-          // Jump forward to where padding characters possibly start.
-          // There are never more than two padding characters.
-          input_length -= 2U;
-          etl::advance(input_end, input_length);
-        }
-    
-        typedef typename etl::iterator_traits<TInputIterator>::value_type input_type;
-    
-        if (*input_end != padding<input_type>())
-        {
-          ++input_length;
-          ++input_end;
-    
-          if (*input_end != padding<input_type>())
-          {
-            ++input_length;
-          }
-        }
-      }
-    
-      // Not all input lengths are valid.   
-      return (((input_length - 1U) % 4U) != 0U);
-    }
-    
-    //*************************************************************************
-    /// Discovers the number of valid decodable characters
-    //*************************************************************************
-    template <typename TInputIterator>
-    ETL_NODISCARD
-    static
-    ETL_CONSTEXPR14
-    size_t valid_decode_input_length(TInputIterator input_begin, TInputIterator input_end, bool use_padding)
-    {
-      return valid_decode_input_length(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)), use_padding);
-    }
     
     //*************************************************************************
     /// Calculates the minimum buffer size required to decode from Base64
@@ -381,46 +325,9 @@ namespace etl
     ETL_CONSTEXPR14
     size_t decoded_size_from_valid_input_length(size_t input_length)
     {
-      if (input_length == 0U)
-      {
-        return 0U;
-      }
-    
-      --input_length;
       return input_length - (input_length / 4U);
     }
-    
-    //*************************************************************************
-    /// Calculates the minimum buffer size required to decode from Base64
-    //*************************************************************************
-    template <typename TInputIterator>
-    ETL_NODISCARD
-    static
-    ETL_CONSTEXPR14
-    size_t decoded_size_impl(TInputIterator input, size_t input_length, bool use_padding)
-    {
-      if (input_length == 0U)
-      {
-        return 0U;
-      }
-    
-      input_length = valid_decode_input_length(input, input_length, use_padding);
-      --input_length;
-      return input_length - (input_length / 4U);
-    }
-    
-    //*************************************************************************
-    /// Calculates the minimum buffer size required to decode from Base64
-    //*************************************************************************
-    template <typename TInputIterator>
-    ETL_NODISCARD
-    static
-    ETL_CONSTEXPR14
-    size_t decoded_size_impl(TInputIterator input_begin, TInputIterator input_end, bool use_padding)
-    {
-      return decoded_size_impl(static_cast<size_t>(etl::distance(input_begin, input_end)), use_padding);
-    }
-    
+       
   private:
 
     //*************************************************************************
@@ -562,7 +469,10 @@ namespace etl
     ETL_CONSTEXPR14
     void push_to_input_buffer(T value)
     {
-      input_buffer[input_buffer_length++] = static_cast<uint8_t>(value);
+      if (value != padding<T>())
+      {
+        input_buffer[input_buffer_length++] = static_cast<uint8_t>(value);
+      }
     }
 
     //*************************************************************************
@@ -608,9 +518,7 @@ namespace etl
     static ETL_CONSTANT etl::base64::Padding  Padding  = etl::base64::Padding::No_Padding;
 
     // Round up the buffer size to a multiple of Min_Buffer_Size.
-    static ETL_CONSTANT size_t Buffer_Size = (Buffer_Size_ == 0)
-                                             ? etl::base64::Min_Decode_Buffer_Size
-                                             : Buffer_Size_ + ((etl::base64::Min_Decode_Buffer_Size - (Buffer_Size_ % etl::base64::Min_Decode_Buffer_Size)) % etl::base64::Min_Decode_Buffer_Size);
+    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
 
     //*************************************************************************
     /// Base64 RFC-2152 constructor.
@@ -646,7 +554,7 @@ namespace etl
     ETL_NODISCARD
     static
     ETL_CONSTEXPR14
-    size_t required_output_buffer_size(size_t input_length)
+    size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -665,6 +573,210 @@ namespace etl
 
   template <size_t Buffer_Size_>
   ETL_CONSTANT size_t base64_rfc2152_decoder<Buffer_Size_>::Buffer_Size;
+
+  //*************************************************************************
+/// Base64 RFC-3501 Decoder
+//*************************************************************************
+  template <size_t Buffer_Size_ = etl::base64::Min_Decode_Buffer_Size>
+  class base64_rfc3501_decoder : public ibase64_decoder
+  {
+  public:
+
+    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_3501;
+    static ETL_CONSTANT etl::base64::Padding  Padding = etl::base64::Padding::No_Padding;
+
+    // Round up the buffer size to a multiple of Min_Buffer_Size.
+    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
+
+    //*************************************************************************
+    /// Base64 RFC-3501 constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    base64_rfc3501_decoder()
+      : ibase64_decoder(etl::base64::character_set_3(),
+                        etl::base64::Padding::No_Padding,
+                        output_buffer,
+                        Buffer_Size,
+                        callback_type())
+      , output_buffer{}
+    {
+    }
+
+    //*************************************************************************
+    /// Base64 RFC-3501 constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    base64_rfc3501_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_3(),
+                        etl::base64::Padding::No_Padding,
+                        output_buffer,
+                        Buffer_Size,
+                        callback_)
+      , output_buffer{}
+    {
+    }
+
+    //*************************************************************************
+    /// Calculate the required output encode buffer size.
+    //*************************************************************************
+    ETL_NODISCARD
+    static
+    ETL_CONSTEXPR14
+    size_t safe_output_buffer_size(size_t input_length)
+    {
+      return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
+    }
+
+  private:
+
+    /// The internal output buffer.
+    unsigned char output_buffer[Buffer_Size];
+  };
+
+  template <size_t Buffer_Size_>
+  ETL_CONSTANT etl::base64::Encoding base64_rfc3501_decoder<Buffer_Size_>::Encoding;
+
+  template <size_t Buffer_Size_>
+  ETL_CONSTANT etl::base64::Padding base64_rfc3501_decoder<Buffer_Size_>::Padding;
+
+  template <size_t Buffer_Size_>
+  ETL_CONSTANT size_t base64_rfc3501_decoder<Buffer_Size_>::Buffer_Size;
+
+  //*************************************************************************
+  /// Base64 RFC-4648 Decoder
+  //*************************************************************************
+  template <bool Use_Padding, size_t Buffer_Size_ = etl::base64::Min_Decode_Buffer_Size>
+  class base64_rfc4648_decoder : public ibase64_decoder
+  {
+  public:
+
+    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_4648;
+    static ETL_CONSTANT etl::base64::Padding  Padding  = Use_Padding ? etl::base64::Padding::Use_Padding : etl::base64::Padding::No_Padding;
+
+    // Round up the buffer size to a multiple of Min_Buffer_Size.
+    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
+
+    //*************************************************************************
+    /// Base64 RFC-4648 constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR14
+      base64_rfc4648_decoder()
+      : ibase64_decoder(etl::base64::character_set_1(),
+                        Padding,
+                        output_buffer,
+                        Buffer_Size,
+                        callback_type())
+      , output_buffer{}
+    {
+    }
+
+    //*************************************************************************
+    /// Base64 RFC-4648 constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR14
+      base64_rfc4648_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_1(),
+                        Padding,
+                        output_buffer,
+                        Buffer_Size,
+                        callback_)
+      , output_buffer{}
+    {
+    }
+
+    //*************************************************************************
+    /// Calculate the required output encode buffer size.
+    //*************************************************************************
+    ETL_NODISCARD
+    static
+    ETL_CONSTEXPR14
+    size_t safe_output_buffer_size(size_t input_length)
+    {
+      return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
+    }
+
+  private:
+
+    /// The internal output buffer.
+    unsigned char output_buffer[Buffer_Size];
+  };
+
+  template <bool Use_Padding, size_t Buffer_Size_>
+  ETL_CONSTANT etl::base64::Encoding base64_rfc4648_decoder<Use_Padding, Buffer_Size_>::Encoding;
+
+  template <bool Use_Padding, size_t Buffer_Size_>
+  ETL_CONSTANT etl::base64::Padding base64_rfc4648_decoder<Use_Padding, Buffer_Size_>::Padding;
+
+  template <bool Use_Padding, size_t Buffer_Size_>
+  ETL_CONSTANT size_t base64_rfc4648_decoder<Use_Padding, Buffer_Size_>::Buffer_Size;
+
+  //*************************************************************************
+  /// Base64 RFC-4648 Decoder
+  //*************************************************************************
+  template <bool Use_Padding, size_t Buffer_Size_ = etl::base64::Min_Decode_Buffer_Size>
+  class base64_rfc4648_url_decoder : public ibase64_decoder
+  {
+  public:
+
+    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_4648_URL;
+    static ETL_CONSTANT etl::base64::Padding  Padding  = Use_Padding ? etl::base64::Padding::Use_Padding : etl::base64::Padding::No_Padding;
+
+    // Round up the buffer size to a multiple of Min_Buffer_Size.
+    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
+
+    //*************************************************************************
+    /// Base64 RFC-4648 constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR14
+      base64_rfc4648_url_decoder()
+      : ibase64_decoder(etl::base64::character_set_2(),
+                        Padding,
+                        output_buffer,
+                        Buffer_Size,
+                        callback_type())
+      , output_buffer{}
+    {
+    }
+
+    //*************************************************************************
+    /// Base64 RFC-4648 constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR14
+      base64_rfc4648_url_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_2(),
+                        Padding,
+                        output_buffer,
+                        Buffer_Size,
+                        callback_)
+      , output_buffer{}
+    {
+    }
+
+    //*************************************************************************
+    /// Calculate the required output encode buffer size.
+    //*************************************************************************
+    ETL_NODISCARD
+      static
+      ETL_CONSTEXPR14
+      size_t safe_output_buffer_size(size_t input_length)
+    {
+      return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
+    }
+
+  private:
+
+    /// The internal output buffer.
+    unsigned char output_buffer[Buffer_Size];
+  };
+
+  template <bool Use_Padding, size_t Buffer_Size_>
+  ETL_CONSTANT etl::base64::Encoding base64_rfc4648_url_decoder<Use_Padding, Buffer_Size_>::Encoding;
+
+  template <bool Use_Padding, size_t Buffer_Size_>
+  ETL_CONSTANT etl::base64::Padding base64_rfc4648_url_decoder<Use_Padding, Buffer_Size_>::Padding;
+
+  template <bool Use_Padding, size_t Buffer_Size_>
+  ETL_CONSTANT size_t base64_rfc4648_url_decoder<Use_Padding, Buffer_Size_>::Buffer_Size;
 }
 
 #undef ETL_IS_TYPE_8_BIT_INTEGRAL
