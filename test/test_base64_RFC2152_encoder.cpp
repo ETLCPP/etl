@@ -53,7 +53,7 @@ namespace
 {
   using codec               = etl::base64_rfc2152_encoder<etl::base64::Min_Encode_Buffer_Size>;
   using codec_larger_buffer = etl::base64_rfc2152_encoder<etl::base64::Min_Encode_Buffer_Size * 10>;
-  using codec_full_buffer   = etl::base64_rfc2152_encoder<344>;
+  using codec_full_buffer   = etl::base64_rfc2152_encoder<etl::base64_rfc2152_encoder<>::safe_output_buffer_size(256)>;
 
   std::array<unsigned char, 256> input_data =
   {
@@ -345,9 +345,19 @@ namespace
 
       CHECK_EQUAL(etl::base64::Encoding::RFC_2152,   codec_full_buffer::Encoding);
       CHECK_EQUAL("RFC_2152",                        codec_full_buffer::Encoding.c_str());
-      CHECK_TRUE(etl::base64::Padding::No_Padding == codec_full_buffer::Padding);
-      CHECK_EQUAL("No_Padding",                      codec_full_buffer::Padding.c_str());
-      CHECK_EQUAL(344,                               codec_full_buffer::Buffer_Size);
+    }
+
+    //*************************************************************************
+    TEST(test_check_encode_safe_buffer_sizes)
+    {
+      for (size_t i = 0; i < 256; ++i)
+      {
+        size_t minimum_size = encoded[i].size();
+        size_t safe_size    = codec::safe_output_buffer_size(i);
+
+        CHECK_TRUE(safe_size >= minimum_size);
+        CHECK_TRUE((safe_size - minimum_size) <= 2U);
+      }
     }
 
     //*************************************************************************
@@ -818,7 +828,7 @@ namespace
     {
       etl::array<char, 14> output{ 0 };
       
-      using codec = etl::base64_rfc4648_encoder<etl::base64::Padding::No_Padding, codec::safe_output_buffer_size(Size)>;
+      using codec = etl::base64_rfc4648_encoder<codec::safe_output_buffer_size(Size)>;
       
       codec b64;
       b64.encode_final(input.begin(), input.end());
@@ -844,7 +854,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_overflow)
     {
-      using codec = etl::base64_rfc4648_encoder<etl::base64::Padding::No_Padding>;
+      using codec = etl::base64_rfc2152_encoder<>;
 
       codec b64;
 

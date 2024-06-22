@@ -119,16 +119,20 @@ namespace etl
         RFC_2152,
         RFC_3501,
         RFC_4648,
+        RFC_4648_PADDING,
         RFC_4648_URL,
+        RFC_4648_URL_PADDING,
       };
 
       ETL_DECLARE_ENUM_TYPE(Encoding, int)
       //ETL_ENUM_TYPE(RFC_1421, "RFC_1421") // Not implemented yet
       //ETL_ENUM_TYPE(RFC_2045, "RFC_2045") // Not implemented yet
-      ETL_ENUM_TYPE(RFC_2152,     "RFC_2152")
-      ETL_ENUM_TYPE(RFC_3501,     "RFC_3501")
-      ETL_ENUM_TYPE(RFC_4648,     "RFC_4648")
-      ETL_ENUM_TYPE(RFC_4648_URL, "RFC_4648_URL")
+      ETL_ENUM_TYPE(RFC_2152,             "RFC_2152")
+      ETL_ENUM_TYPE(RFC_3501,             "RFC_3501")
+      ETL_ENUM_TYPE(RFC_4648,             "RFC_4648")
+      ETL_ENUM_TYPE(RFC_4648_PADDING,     "RFC_4648_PADDING")
+      ETL_ENUM_TYPE(RFC_4648_URL,         "RFC_4648_URL")
+      ETL_ENUM_TYPE(RFC_4648_URL_PADDING, "RFC_4648_URL_PADDING")
       ETL_END_ENUM_TYPE
     };
 
@@ -141,7 +145,7 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Padding, bool)
-      ETL_ENUM_TYPE(No_Padding, "No_Padding")
+      ETL_ENUM_TYPE(No_Padding,  "No_Padding")
       ETL_ENUM_TYPE(Use_Padding, "Use_Padding")
       ETL_END_ENUM_TYPE
     };

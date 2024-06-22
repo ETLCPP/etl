@@ -52,7 +52,7 @@ namespace
 {
   using codec               = etl::base64_rfc3501_decoder<etl::base64::Min_Decode_Buffer_Size>;
   using codec_larger_buffer = etl::base64_rfc3501_decoder<etl::base64::Min_Decode_Buffer_Size * 10>;
-  using codec_full_buffer   = etl::base64_rfc3501_decoder<256>;
+  using codec_full_buffer   = etl::base64_rfc3501_decoder< etl::base64_rfc3501_decoder<>::safe_output_buffer_size(342)>;
 
   std::array<unsigned char, 256> input_data =
   {
@@ -344,9 +344,19 @@ namespace
 
       CHECK_EQUAL(etl::base64::Encoding::RFC_3501,   codec_full_buffer::Encoding);
       CHECK_EQUAL("RFC_3501",                        codec_full_buffer::Encoding.c_str());
-      CHECK_TRUE(etl::base64::Padding::No_Padding == codec_full_buffer::Padding);
-      CHECK_EQUAL("No_Padding",                      codec_full_buffer::Padding.c_str());
-      CHECK_EQUAL(256,                               codec_full_buffer::Buffer_Size);
+    }
+
+    //*************************************************************************
+    TEST(test_check_encode_safe_buffer_sizes)
+    {
+      for (size_t i = 0; i < 256; ++i)
+      {
+        size_t minimum_size = i;
+        size_t safe_size    = codec::safe_output_buffer_size(encoded[i].size());
+
+        CHECK_TRUE(safe_size >= minimum_size);
+        CHECK_TRUE((safe_size - minimum_size) <= 2U);
+      }
     }
 
     //*************************************************************************
@@ -876,7 +886,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_invalid_character)
     {
-      codec b64;
+      codec_larger_buffer b64;
       std::array<unsigned char, 50U> decoded_output{ 0 };
 
       std::string invalid_chararacter("OycDQ#37KA");
