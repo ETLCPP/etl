@@ -47,6 +47,11 @@ namespace etl
                                          T,
                                          const T&>::type type;
   };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using parameter_type_t = typename etl::parameter_type<T>::type;
+#endif
 }
 
 #endif
