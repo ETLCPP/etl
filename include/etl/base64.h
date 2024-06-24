@@ -114,8 +114,8 @@ namespace etl
     {
       enum enum_type
       {
-        //RFC_1421, // Not implemented yet
-        //RFC_2045, // Not implemented yet
+        //RFC_1421, // Not implemented
+        //RFC_2045, // Not implemented
         RFC_2152,
         RFC_3501,
         RFC_4648,
@@ -125,8 +125,8 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Encoding, int)
-      //ETL_ENUM_TYPE(RFC_1421, "RFC_1421") // Not implemented yet
-      //ETL_ENUM_TYPE(RFC_2045, "RFC_2045") // Not implemented yet
+      //ETL_ENUM_TYPE(RFC_1421, "RFC_1421") // Not implemented
+      //ETL_ENUM_TYPE(RFC_2045, "RFC_2045") // Not implemented
       ETL_ENUM_TYPE(RFC_2152,             "RFC_2152")
       ETL_ENUM_TYPE(RFC_3501,             "RFC_3501")
       ETL_ENUM_TYPE(RFC_4648,             "RFC_4648")

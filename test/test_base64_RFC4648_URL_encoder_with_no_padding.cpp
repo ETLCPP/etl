@@ -53,7 +53,26 @@ namespace
 {
   using codec               = etl::base64_rfc4648_url_encoder<etl::base64::Min_Encode_Buffer_Size>;
   using codec_larger_buffer = etl::base64_rfc4648_url_encoder<etl::base64::Min_Encode_Buffer_Size * 10>;
+#if ETL_USING_CPP14
   using codec_full_buffer   = etl::base64_rfc4648_url_encoder<etl::base64_rfc4648_url_encoder<>::safe_output_buffer_size(256)>;
+#else
+  using codec_full_buffer   = etl::base64_rfc4648_url_encoder<344>;
+#endif
+
+  std::string encoded_output;
+  bool received_final_block = false;
+
+  codec::callback_type callback = [](const codec::span_type& sp)
+    {
+      if (sp.empty())
+      {
+        received_final_block = true;
+      }
+      else
+      {
+        std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
+      }
+    };
 
   std::array<unsigned char, 256> input_data =
   {
@@ -363,19 +382,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_size_single_pass_with_callback)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -397,19 +403,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_size_single_pass_with_callback_and_larger_buffer)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -431,19 +424,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_size_multi_pass_blocks_with_callback)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -481,19 +461,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_size_multi_pass_blocks_with_callback_larger_buffer)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -531,19 +498,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_pointer_single_pass_with_callback)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -565,19 +519,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_pointer_single_pass_with_callback_larger_buffer)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -599,19 +540,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_pointer_multi_pass_blocks_with_callback)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -649,19 +577,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_pointer_pointer_multi_pass_blocks_with_callback_larger_buffer)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -699,19 +614,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_multi_pass_by_char_with_callback)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec::callback_type callback = [&encoded_output, &received_final_block](codec::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -743,19 +645,6 @@ namespace
     //*************************************************************************
     TEST(test_encode_multi_pass_by_char_with_callback_larger_buffer)
     {
-      std::string encoded_output;
-      bool received_final_block = false;
-
-      codec_larger_buffer::callback_type callback = [&encoded_output, &received_final_block](codec_larger_buffer::span_type sp, bool final)
-        {
-          std::copy(sp.begin(), sp.end(), std::back_inserter(encoded_output));
-
-          if (final)
-          {
-            received_final_block = true;
-          }
-        };
-
       codec_larger_buffer b64(callback);
 
       for (size_t i = 0; i < 256; ++i)
@@ -787,14 +676,11 @@ namespace
     //*************************************************************************
     TEST(test_encode_multi_pass_blocks_with_no_callback_and_full_size_buffer)
     {
-      std::string actual;
-
       codec_full_buffer b64;
 
       for (size_t i = 250; i < 256; ++i)
       {
         b64.restart();
-        actual.clear();
 
         auto start = input_data.data();
         auto length = i;

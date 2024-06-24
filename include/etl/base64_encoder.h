@@ -63,15 +63,15 @@ namespace etl
   {
   public:
 
-    typedef etl::span<const char>                span_type;
-    typedef etl::delegate<void(span_type, bool)> callback_type;
+    typedef etl::span<const char>                 span_type;
+    typedef etl::delegate<void(const span_type&)> callback_type;
 
     //*************************************************************************
     /// Encode to Base64
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-    void encode(T value)
+    bool encode(T value)
     {
       ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(T), "Input type must be an 8 bit integral");
 
@@ -86,11 +86,13 @@ namespace etl
         {
           if (output_buffer_is_full())
           {
-            callback(span(), false);
+            callback(span());
             reset_output_buffer();
           }
         }
       }
+
+      return !error();
     }
 
     //*************************************************************************
@@ -98,14 +100,19 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void encode(TInputIterator input_begin, size_t input_length)
+    bool encode(TInputIterator input_begin, size_t input_length)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
 
       while (input_length-- != 0)
       {
-        encode(*input_begin++);
+        if (!encode(*input_begin++))
+        {
+          return false;
+        }
       }
+
+      return true;
     }
 
     //*************************************************************************
@@ -113,14 +120,19 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void encode(TInputIterator input_begin, TInputIterator input_end)
+    bool encode(TInputIterator input_begin, TInputIterator input_end)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
 
       while (input_begin != input_end)
       {
-        encode(*input_begin++);
+        if (!encode(*input_begin++))
+        {
+          return false;
+        }
       }
+
+      return true;
     }
 
     //*************************************************************************
@@ -128,10 +140,9 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void encode_final(TInputIterator input_begin, size_t input_length)
+    bool encode_final(TInputIterator input_begin, size_t input_length)
     {
-      encode(input_begin, input_length);
-      flush();
+      return encode(input_begin, input_length) && flush();
     }
 
     //*************************************************************************
@@ -139,28 +150,40 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_CONSTEXPR14
-    void encode_final(TInputIterator input_begin, TInputIterator input_end)
+    bool encode_final(TInputIterator input_begin, TInputIterator input_end)
     {
-      encode(input_begin, input_end);
-      flush();
+      return encode(input_begin, input_end) && flush();
     }
 
     //*************************************************************************
     /// Flush any remaining data to the output.
     //*************************************************************************
     ETL_CONSTEXPR14
-    void flush()
+    bool flush()
     {
       // Encode any remaining input data.
-      encode_block();
-
-      if (callback.is_valid())
-      {
-        callback(span(), true);
-        reset_output_buffer();
-      }
+      bool success = encode_block();
 
       reset_input_buffer();
+
+      if (success)
+      {
+        if (callback.is_valid())
+        {
+          // Send any remaining data.
+          if (size() != 0)
+          {
+            callback(span());
+          }
+
+          // Indicate this was the final block.
+          callback(span_type());
+
+          reset_output_buffer();
+        }
+      }
+
+      return success;
     }
 
     //*************************************************************************
@@ -255,6 +278,16 @@ namespace etl
       return overflowed;
     }
 
+    //*************************************************************************
+    /// Returns true if an error was detected.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    bool error() const
+    {
+      return overflow();
+    }
+
   protected:
 
     //*************************************************************************
@@ -281,7 +314,7 @@ namespace etl
     /// Encode one block of data.
     //*************************************************************************
     ETL_CONSTEXPR14
-    void encode_block()
+    bool encode_block()
     {
       switch (input_buffer_length)
       {
@@ -341,6 +374,8 @@ namespace etl
       }
 
       ETL_ASSERT(!overflowed, ETL_ERROR(etl::base64_overflow));
+
+      return !overflowed;
     }
 
     //*************************************************************************
@@ -473,8 +508,8 @@ namespace etl
   {
   public:
 
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_2152;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
+    static ETL_CONSTANT etl::base64::Encoding Encoding    = etl::base64::Encoding::RFC_2152;
+    static ETL_CONSTANT size_t                Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),       "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
     ETL_STATIC_ASSERT(((Buffer_Size % etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");

@@ -63,8 +63,8 @@ namespace etl
   {
   public:
 
-    typedef etl::span<const unsigned char>       span_type;
-    typedef etl::delegate<void(span_type, bool)> callback_type;
+    typedef etl::span<const unsigned char>        span_type;
+    typedef etl::delegate<void(const span_type&)> callback_type;
 
     //*************************************************************************
     /// Decode to Base64
@@ -85,7 +85,7 @@ namespace etl
           {
             if (output_buffer_is_full())
             {
-              callback(span(), false);
+              callback(span());
               reset_output_buffer();
             }
           }
@@ -144,7 +144,7 @@ namespace etl
     ETL_CONSTEXPR14
     bool decode_final(TInputIterator input_begin, TInputIterator input_end)
     {
-      return (decode(input_begin, input_end) && flush());
+      return decode(input_begin, input_end) && flush();
     }
 
     //*************************************************************************
@@ -154,7 +154,7 @@ namespace etl
     ETL_CONSTEXPR14
     bool decode_final(TInputIterator input_begin, size_t input_length)
     {
-      return (decode(input_begin, input_length) && flush());
+      return decode(input_begin, input_length) && flush();
     }
 
     //*************************************************************************
@@ -172,7 +172,15 @@ namespace etl
       {
         if (callback.is_valid())
         {
-          callback(span(), true);
+          // Send any remaining data.
+          if (size() != 0)
+          {
+            callback(span());
+          }
+
+          // Indicate this was the final block.
+          callback(span_type());
+
           reset_output_buffer();
         }
       }
@@ -192,7 +200,7 @@ namespace etl
       reset_output_buffer();
       overflow_detected     = false;
       invalid_data_detected = false;
-      padding_received = false;
+      padding_received      = false;
     }
 
     //*************************************************************************
@@ -531,8 +539,8 @@ namespace etl
   {
   public:
 
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_2152;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
+    static ETL_CONSTANT etl::base64::Encoding Encoding    = etl::base64::Encoding::RFC_2152;
+    static ETL_CONSTANT size_t                Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Decode_Buffer_Size), "Buffer size must be greater than etl::base64::Min_Decode_Buffer_Size");
 
