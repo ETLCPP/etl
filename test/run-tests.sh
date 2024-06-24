@@ -38,14 +38,14 @@ PrintHeader()
 {
 	echo "$TitleColour"
 	echo "============================================================================" | tee -a log.txt
-	echo " Configuration     : $configuration_name" | tee -a log.txt
-	echo " Compiler          : $compiler          " | tee -a log.txt
-	echo " Language standard : C++$cxx_standard   " | tee -a log.txt
-    echo " Optimisation      : $opt               " | tee -a log.txt
-	echo " Sanitizer         : $sanitize          " | tee -a log.txt
-	echo " ETL version       : $etl_version       " | tee -a log.txt
-	echo " Git branch        : $(ParseGitBranch)  " | tee -a log.txt
-	echo " Processes         : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
+	echo " Configuration : $configuration_name" | tee -a log.txt
+	echo " Compiler      : $compiler          " | tee -a log.txt
+	echo " Language      : C++$cxx_standard   " | tee -a log.txt
+    echo " Optimisation  : $opt               " | tee -a log.txt
+	echo " Sanitizer     : $sanitize          " | tee -a log.txt
+	echo " ETL version   : $etl_version       " | tee -a log.txt
+	echo " Git branch    : $(ParseGitBranch)  " | tee -a log.txt
+	echo " Processes     : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -67,7 +67,7 @@ PassedCompilation()
 {
 	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $configuration_name" | tee -a log.txt
+	echo " Compilation Success - $configuration_name" | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }

@@ -12,8 +12,6 @@ project(etl_unit_tests LANGUAGES CXX)
 
 add_executable(etl_tests
 	main.cpp
-	test_base64_RFC4648_with_padding.cpp
-	test_base64_RFC4648_URL_with_padding.cpp
 	murmurhash3.cpp
 	test_algorithm.cpp
 	test_alignment.cpp
@@ -21,7 +19,18 @@ add_executable(etl_tests
 	test_array_view.cpp
 	test_array_wrapper.cpp
 	test_atomic.cpp
-	test_base64.cpp
+	test_base64_RFC2152_decoder.cpp
+	test_base64_RFC2152_encoder.cpp
+	test_base64_RFC3501_decoder.cpp
+	test_base64_RFC3501_encoder.cpp
+	test_base64_RFC4648_decoder_with_no_padding.cpp
+	test_base64_RFC4648_decoder_with_padding.cpp
+	test_base64_RFC4648_encoder_with_no_padding.cpp
+	test_base64_RFC4648_encoder_with_padding.cpp
+	test_base64_RFC4648_URL_decoder_with_no_padding.cpp
+	test_base64_RFC4648_URL_decoder_with_padding.cpp
+	test_base64_RFC4648_URL_encoder_with_no_padding.cpp
+	test_base64_RFC4648_URL_encoder_with_padding.cpp
     test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
@@ -56,7 +65,7 @@ add_executable(etl_tests
 	test_container.cpp
 	test_correlation.cpp
 	test_covariance.cpp
-	test_crc.cpp
+	test_crc1.cpp
 	test_crc16.cpp
 	test_crc16_a.cpp
 	test_crc16_arc.cpp
