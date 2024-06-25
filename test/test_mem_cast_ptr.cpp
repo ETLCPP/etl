@@ -72,11 +72,7 @@ namespace
     return reinterpret_cast<char*>(uintptr_t(i));
   }
 
- #if __cplusplus >= 202302L
-  alignas(Alignment) uint8_t buffer[Size];
-#else
-  typename std::aligned_storage<Size, Alignment>::type buffer;
-#endif
+  etl::aligned_storage<Size, Alignment>::type buffer;
   
   SUITE(test_mem_cast_ptr)
   {

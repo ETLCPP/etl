@@ -35,6 +35,7 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
+#include "etl/alignment.h"
 #include "etl/murmur3.h"
 
 namespace
@@ -44,11 +45,7 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_constructor)
     {
- #if __cplusplus >= 202302L
-      alignas(uint32_t) uint8_t storage[10];
-#else
-      typename std::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
-#endif
+      typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
       std::string data("123456789");      
 
       char* begin = (char*)&storage[0];
@@ -65,11 +62,7 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_values)
     {
- #if __cplusplus >= 202302L
-      alignas(uint32_t) uint8_t storage[10];
-#else
-      typename std::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
-#endif
+      typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
       std::string data("123456789");
 
       char* begin = (char*)&storage[0];
@@ -93,11 +86,7 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_range)
     {
- #if __cplusplus >= 202302L
-      alignas(uint32_t) uint8_t storage[10];
-#else
-      typename std::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
-#endif
+      typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
       std::string data("123456789");
 
       char* begin = (char*)&storage[0];
