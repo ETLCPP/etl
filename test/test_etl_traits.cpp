@@ -84,7 +84,9 @@ namespace
       CHECK_EQUAL(ETL_VERSION_MINOR,                           etl::traits::version_minor);
       CHECK_EQUAL(ETL_VERSION_PATCH,                           etl::traits::version_patch);
       CHECK_EQUAL(ETL_VERSION_VALUE,                           etl::traits::version);
-#if ETL_USING_CPP20
+#if ETL_USING_CPP23
+      CHECK_EQUAL(23,                                          etl::traits::language_standard);
+#elif ETL_USING_CPP20
       CHECK_EQUAL(20,                                          etl::traits::language_standard);
 #elif ETL_USING_CPP17
       CHECK_EQUAL(17,                                          etl::traits::language_standard);
