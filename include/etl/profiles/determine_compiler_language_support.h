@@ -37,7 +37,11 @@ SOFTWARE.
 
 // Determine C++23 support
 #if !defined(ETL_CPP23_SUPPORTED)
+#if defined(__cplusplus) && (__cplusplus >= 202302L)
+  #define ETL_CPP23_SUPPORTED 1
+#else
   #define ETL_CPP23_SUPPORTED 0
+#endif
 #endif
 
 #if ETL_CPP23_SUPPORTED
