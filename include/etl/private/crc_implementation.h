@@ -183,7 +183,7 @@ namespace etl
     template <typename TAccumulator, size_t Accumulator_Bits, size_t Chunk_Bits, uint8_t Chunk_Mask, bool Reflect>
     static
     typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && Reflect, TAccumulator>::type
-      crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
+      ETL_CONSTEXPR crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
     {
       value &= Chunk_Mask;
 
@@ -319,7 +319,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 256U>
     {
       //*************************************************************************
-      TAccumulator add(TAccumulator crc, uint8_t value) const
+      ETL_CONSTEXPR TAccumulator add(TAccumulator crc, uint8_t value) const
       {
         static ETL_CONSTANT TAccumulator table[256U] =
         {
@@ -615,7 +615,7 @@ namespace etl
       }
 
       //*************************************************************************
-      accumulator_type final(accumulator_type crc) const
+      ETL_CONSTEXPR accumulator_type final(accumulator_type crc) const
       {
         return crc ^ TCrcParameters::Xor_Out;
       }
@@ -691,7 +691,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc_type()
+    ETL_CONSTEXPR crc_type()
     {
       this->reset();
     }
@@ -702,7 +702,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    crc_type(TIterator begin, const TIterator end)
+    ETL_CONSTEXPR crc_type(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
