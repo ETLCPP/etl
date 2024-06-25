@@ -241,7 +241,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 4U>
     {
       //*************************************************************************
-      TAccumulator add(TAccumulator crc, uint8_t value) const
+      ETL_CONSTEXPR23 TAccumulator add(TAccumulator crc, uint8_t value) const
       {
         static ETL_CONSTANT TAccumulator table[4U] =
         {
@@ -276,7 +276,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 16U>
     {
       //*************************************************************************
-      TAccumulator add(TAccumulator crc, uint8_t value) const
+      ETL_CONSTEXPR23 TAccumulator add(TAccumulator crc, uint8_t value) const
       {
         static ETL_CONSTANT TAccumulator table[16U] =
         {
@@ -319,7 +319,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 256U>
     {
       //*************************************************************************
-      ETL_CONSTEXPR TAccumulator add(TAccumulator crc, uint8_t value) const
+      ETL_CONSTEXPR23 TAccumulator add(TAccumulator crc, uint8_t value) const
       {
         static ETL_CONSTANT TAccumulator table[256U] =
         {
@@ -691,7 +691,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR crc_type()
+    ETL_CONSTEXPR14 crc_type()
     {
       this->reset();
     }
@@ -702,7 +702,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    ETL_CONSTEXPR crc_type(TIterator begin, const TIterator end)
+    ETL_CONSTEXPR14 crc_type(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);

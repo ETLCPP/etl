@@ -107,7 +107,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR frame_check_sequence()
+    ETL_CONSTEXPR14 frame_check_sequence()
     {
       reset();
     }
@@ -118,7 +118,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    ETL_CONSTEXPR frame_check_sequence(TIterator begin, const TIterator end)
+    ETL_CONSTEXPR14 frame_check_sequence(TIterator begin, const TIterator end)
     {
       ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
@@ -129,7 +129,7 @@ namespace etl
     //*************************************************************************
     /// Resets the FCS to the initial state.
     //*************************************************************************
-    ETL_CONSTEXPR void reset()
+    ETL_CONSTEXPR14 void reset()
     {
       frame_check = policy.initial();
     }
@@ -140,7 +140,7 @@ namespace etl
     /// \param end
     //*************************************************************************
     template<typename TIterator>
-    ETL_CONSTEXPR void add(TIterator begin, const TIterator end)
+    ETL_CONSTEXPR23 void add(TIterator begin, const TIterator end)
     {
       ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
@@ -154,7 +154,7 @@ namespace etl
     //*************************************************************************
     /// \param value The uint8_t to add to the FCS.
     //*************************************************************************
-    ETL_CONSTEXPR void add(uint8_t value_)
+    ETL_CONSTEXPR23 void add(uint8_t value_)
     {
       frame_check = policy.add(frame_check, value_);
     }
@@ -162,7 +162,7 @@ namespace etl
     //*************************************************************************
     /// Gets the FCS value.
     //*************************************************************************
-    ETL_CONSTEXPR value_type value() const
+    ETL_CONSTEXPR14 value_type value() const
     {
       return policy.final(frame_check);
     }
