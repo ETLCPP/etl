@@ -351,8 +351,10 @@ SOFTWARE.
 // C++23
 #if ETL_USING_CPP23 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_ASSUME(expression) [[assume(expression)]]
+  #define ETL_CONSTEXPR23        constexpr
 #else
   #define ETL_ASSUME ETL_DO_NOTHING
+  #define ETL_CONSTEXPR23
 #endif
 
 //*************************************
