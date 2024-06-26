@@ -503,13 +503,10 @@ namespace etl
   //*************************************************************************
   /// Base64 RFC-2152 Encoder
   //*************************************************************************
-  template <size_t Buffer_Size_ = etl::base64::Min_Encode_Buffer_Size>
+  template <size_t Buffer_Size = etl::base64::Min_Encode_Buffer_Size>
   class base64_rfc2152_encoder : public ibase64_encoder
   {
   public:
-
-    static ETL_CONSTANT etl::base64::Encoding Encoding    = etl::base64::Encoding::RFC_2152;
-    static ETL_CONSTANT size_t                Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),       "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
     ETL_STATIC_ASSERT(((Buffer_Size % etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
@@ -524,7 +521,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_type())
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -538,7 +535,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_)
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -559,22 +556,13 @@ namespace etl
     char output_buffer[Buffer_Size];
   };
 
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT etl::base64::Encoding base64_rfc2152_encoder<Buffer_Size_>::Encoding;
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT size_t base64_rfc2152_encoder<Buffer_Size_>::Buffer_Size;
-
   //*************************************************************************
   /// Base64 RFC-3501 Encoder
   //*************************************************************************
-  template <size_t Buffer_Size_ = etl::base64::Min_Encode_Buffer_Size>
+  template <size_t Buffer_Size = etl::base64::Min_Encode_Buffer_Size>
   class base64_rfc3501_encoder : public ibase64_encoder
   {
   public:
-
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_3501;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),      "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
     ETL_STATIC_ASSERT(((Buffer_Size% etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
@@ -589,7 +577,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_type())
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -603,7 +591,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_)
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -624,25 +612,16 @@ namespace etl
     char output_buffer[Buffer_Size];
   };
 
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT etl::base64::Encoding base64_rfc3501_encoder<Buffer_Size_>::Encoding;
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT size_t base64_rfc3501_encoder<Buffer_Size_>::Buffer_Size;
-
   //*************************************************************************
   /// Base64 RFC-4648 Encoder
   //*************************************************************************
-  template <size_t Buffer_Size_ = etl::base64::Min_Encode_Buffer_Size>
+  template <size_t Buffer_Size = etl::base64::Min_Encode_Buffer_Size>
   class base64_rfc4648_encoder : public ibase64_encoder
   {
   public:
 
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_4648;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
-
-    ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),      "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
-    ETL_STATIC_ASSERT(((Buffer_Size% etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
+    ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),       "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
+    ETL_STATIC_ASSERT(((Buffer_Size % etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
 
     //*************************************************************************
     /// Base64 RFC-4648 constructor.
@@ -654,7 +633,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_type())
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -668,7 +647,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_)
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -689,22 +668,13 @@ namespace etl
     char output_buffer[Buffer_Size];
   };
 
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT etl::base64::Encoding base64_rfc4648_encoder<Buffer_Size_>::Encoding;
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT size_t base64_rfc4648_encoder<Buffer_Size_>::Buffer_Size;
-
   //*************************************************************************
-/// Base64 RFC-4648-Padding Encoder
-//*************************************************************************
-  template <size_t Buffer_Size_ = etl::base64::Min_Encode_Buffer_Size>
+  /// Base64 RFC-4648-Padding Encoder
+  //*************************************************************************
+  template <size_t Buffer_Size = etl::base64::Min_Encode_Buffer_Size>
   class base64_rfc4648_padding_encoder : public ibase64_encoder
   {
   public:
-
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_4648_PADDING;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),      "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
     ETL_STATIC_ASSERT(((Buffer_Size% etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
@@ -719,7 +689,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_type())
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -733,7 +703,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_)
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -754,22 +724,13 @@ namespace etl
     char output_buffer[Buffer_Size];
   };
 
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT etl::base64::Encoding base64_rfc4648_padding_encoder<Buffer_Size_>::Encoding;
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT size_t base64_rfc4648_padding_encoder<Buffer_Size_>::Buffer_Size;
-
   //*************************************************************************
   /// Base64 RFC-4648-URL Encoder
   //*************************************************************************
-  template <size_t Buffer_Size_ = etl::base64::Min_Encode_Buffer_Size>
+  template <size_t Buffer_Size = etl::base64::Min_Encode_Buffer_Size>
   class base64_rfc4648_url_encoder : public ibase64_encoder
   {
   public:
-
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_4648_URL;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),       "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
     ETL_STATIC_ASSERT(((Buffer_Size % etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
@@ -784,7 +745,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_type())
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -798,7 +759,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_)
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -819,22 +780,13 @@ namespace etl
     char output_buffer[Buffer_Size];
   };
 
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT etl::base64::Encoding base64_rfc4648_url_encoder<Buffer_Size_>::Encoding;
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT size_t base64_rfc4648_url_encoder<Buffer_Size_>::Buffer_Size;
-
   //*************************************************************************
   /// Base64 RFC-4648-URL_Padding Encoder
   //*************************************************************************
-  template <size_t Buffer_Size_ = etl::base64::Min_Encode_Buffer_Size>
+  template <size_t Buffer_Size = etl::base64::Min_Encode_Buffer_Size>
   class base64_rfc4648_url_padding_encoder : public ibase64_encoder
   {
   public:
-
-    static ETL_CONSTANT etl::base64::Encoding Encoding = etl::base64::Encoding::RFC_4648_URL;
-    static ETL_CONSTANT size_t Buffer_Size = Buffer_Size_;
 
     ETL_STATIC_ASSERT((Buffer_Size >= etl::base64::Min_Encode_Buffer_Size),      "Buffer size must be greater than etl::base64::Min_Encode_Buffer_Size");
     ETL_STATIC_ASSERT(((Buffer_Size% etl::base64::Min_Encode_Buffer_Size) == 0), "Buffer size must be a multiple of etl::base64::Min_Encode_Buffer_Size");
@@ -849,7 +801,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_type())
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -863,7 +815,7 @@ namespace etl
                         output_buffer,
                         Buffer_Size,
                         callback_)
-      , output_buffer{}
+      , output_buffer()
     {
     }
 
@@ -883,12 +835,6 @@ namespace etl
     /// The internal output buffer.
     char output_buffer[Buffer_Size];
   };
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT etl::base64::Encoding base64_rfc4648_url_padding_encoder<Buffer_Size_>::Encoding;
-
-  template <size_t Buffer_Size_>
-  ETL_CONSTANT size_t base64_rfc4648_url_padding_encoder<Buffer_Size_>::Buffer_Size;
 }
 
 #undef ETL_IS_TYPE_8_BIT_INTEGRAL

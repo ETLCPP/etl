@@ -354,17 +354,8 @@ namespace
     "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/u0vQ=="
   };
 
-  SUITE(test_base64_rfc4648_with_no_padding)
+  SUITE(test_base64_rfc4648_decoder_with_padding)
   {
-    //*************************************************************************
-    TEST(test_basic_information)
-    {
-      codec_full_buffer b64;
-
-      CHECK_EQUAL(etl::base64::Encoding::RFC_4648_PADDING, codec_full_buffer::Encoding);
-      CHECK_EQUAL("RFC_4648_PADDING",                      codec_full_buffer::Encoding.c_str());
-    }
-
     //*************************************************************************
     TEST(test_check_encode_safe_buffer_sizes)
     {

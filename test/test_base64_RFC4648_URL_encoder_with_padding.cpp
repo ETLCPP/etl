@@ -355,17 +355,8 @@ namespace
     "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N-27j_cebMXjnZljpYhuYjRbdDd_9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva_sgO5xJ-06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj-ycBQpH40jLsHqzvl-bN8co4QrJDWnY8gLH4u6Ub_pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7_yzVh7RQtMMGLPurxp3qFI8ns3eITQ-H7VU1_u0vQ=="
   };
 
-  SUITE(test_base64_rfc4648_url_with_no_padding)
+  SUITE(test_base64_rfc4648_url_encoder_with_padding)
   {
-    //*************************************************************************
-    TEST(test_basic_information)
-    {
-      codec_full_buffer b64;
-
-      CHECK_EQUAL(etl::base64::Encoding::RFC_4648_URL, codec_full_buffer::Encoding);
-      CHECK_EQUAL("RFC_4648_URL",                      codec_full_buffer::Encoding.c_str());
-    }
-
     //*************************************************************************
     TEST(test_check_encode_safe_buffer_sizes)
     {
