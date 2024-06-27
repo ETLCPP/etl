@@ -40,5 +40,5 @@ SOFTWARE.
 
 #if defined(__clang__) || defined(__llvm__)
   #pragma clang diagnostic push 
-  #pragma GCC diagnostic ignored "-Wc++20-compat"
+  #pragma clang diagnostic ignored "-Wc++20-compat"
 #endif
