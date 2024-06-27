@@ -183,7 +183,7 @@ namespace etl
     template <typename TAccumulator, size_t Accumulator_Bits, size_t Chunk_Bits, uint8_t Chunk_Mask, bool Reflect>
     static
     typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && Reflect, TAccumulator>::type
-      ETL_CONSTEXPR crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
+      ETL_CONSTEXPR14 crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
     {
       value &= Chunk_Mask;
 
@@ -608,14 +608,14 @@ namespace etl
       typedef accumulator_type value_type;
 
       //*************************************************************************
-      ETL_CONSTEXPR accumulator_type initial() const
+      ETL_CONSTEXPR14 accumulator_type initial() const
       {
         return TCrcParameters::Reflect ? etl::reverse_bits_const<accumulator_type, TCrcParameters::Initial>::value
                                        : TCrcParameters::Initial;
       }
 
       //*************************************************************************
-      ETL_CONSTEXPR accumulator_type final(accumulator_type crc) const
+      ETL_CONSTEXPR14 accumulator_type final(accumulator_type crc) const
       {
         return crc ^ TCrcParameters::Xor_Out;
       }
@@ -636,7 +636,7 @@ namespace etl
       typedef accumulator_type value_type;
 
       //*************************************************************************
-      ETL_CONSTEXPR accumulator_type initial() const
+      ETL_CONSTEXPR14 accumulator_type initial() const
       {
         return TCrcParameters::Reflect ? etl::reverse_bits_const<accumulator_type, TCrcParameters::Initial>::value
                                        : TCrcParameters::Initial;
@@ -664,7 +664,7 @@ namespace etl
       typedef accumulator_type value_type;
 
       //*************************************************************************
-      ETL_CONSTEXPR accumulator_type initial() const
+      ETL_CONSTEXPR14 accumulator_type initial() const
       {
         return TCrcParameters::Reflect ? etl::reverse_bits_const<accumulator_type, TCrcParameters::Initial>::value
                                        : TCrcParameters::Initial;
