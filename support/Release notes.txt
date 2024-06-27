@@ -1,7 +1,18 @@
 ﻿===============================================================================
 20.38.17
 
+Fixes:
 #895 Removed std algorithm calls from algorithm.h
+
+Features:
+Added Base64 codecs. RFC2152, RFC3501, RFC4648 and RFC4648-URL
+Added parameter_type_t for C++11
+
+Pull Requests:
+#905 Added support for type identity
+
+Other:
+Reenabled address sanitizer for VS2022
 
 ===============================================================================
 20.38.16
