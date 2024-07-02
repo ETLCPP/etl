@@ -1,0 +1,46 @@
+name: clang
+on:
+  push:
+#branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+  workflow_dispatch:
+
+jobs:
+  build-clang:
+    name: clang
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        cpp-ver: [03, 11, 14, 17, 20, 23]
+        no-stl: [ON, OFF]
+        force-03: [ON, OFF]
+        os: [ubuntu-24.04, macos-14]
+        exclude:
+          - cpp-ver: 03
+            force-03: ON
+    env:
+      ASAN_OPTIONS: alloc_dealloc_mismatch=0,detect_leaks=0
+      CC: clang
+      CXX: clang++
+      CXX_VER: ${{ matrix.cpp-ver }}
+      FORCE_03: ${{ matrix.force-03 }}
+      NO_STL: ${{ matrix.no-stl }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        cmake . \
+          -DBUILD_TESTS=ON \
+          -DNO_STL=${NO_STL} \
+          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
+          -DETL_FORCE_TEST_CPP03=${FORCE_03} \
+          -DETL_CXX_STANDARD=${CXX_VER}
+        clang --version
+        make -j $(nproc)
+    
+    - name: Run tests
+      run: ./test/etl_tests
