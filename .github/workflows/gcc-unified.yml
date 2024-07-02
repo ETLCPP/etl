@@ -1,4 +1,4 @@
-name: gcc-ubuntu-24.04
+name: gcc
 on:
   push:
     branches: [ master, development, pull-request/* ]
