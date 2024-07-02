@@ -358,9 +358,11 @@ SOFTWARE.
 //*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_NO_SMALL_CHAR_SUPPORT
+#include "private/diagnostic_cxx_20_compat_push.h"
   typedef uint_least8_t char8_t;
   #define ETL_HAS_CHAR8_T 1
   #define ETL_HAS_NATIVE_CHAR8_T 0
+#include "private/diagnostic_pop.h"
 #else
   #define ETL_HAS_CHAR8_T 1
   #define ETL_HAS_NATIVE_CHAR8_T 1
