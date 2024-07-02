@@ -19,8 +19,11 @@ jobs:
 
     - name: Build
       run: |
+        export CC=clang-18
+        export CXX=clang++-18
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=23 ./
+        clang-18 --version
         make
     
     - name: Run tests
@@ -38,8 +41,11 @@ jobs:
 
     - name: Build
       run: |
+        export CC=clang-18
+        export CXX=clang++-18
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=23 ./
+        clang-18 --version
         make
 
     - name: Run tests
@@ -57,8 +63,11 @@ jobs:
 
     - name: Build
       run: |
+        export CC=clang-18
+        export CXX=clang++-18
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=23 ./
+        clang-18 --version
         make
 
     - name: Run tests
