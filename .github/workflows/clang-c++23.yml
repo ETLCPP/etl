@@ -17,17 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
-    - name: Install newer Clang
-      run: |
-        wget https://apt.llvm.org/llvm.sh
-        chmod +x ./llvm.sh
-        sudo ./llvm.sh 17
-
     - name: Build
       run: |
-        export CC=clang-17
-        export CXX=clang++-17
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=23 ./
         clang-17 --version
