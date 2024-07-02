@@ -17,7 +17,7 @@ jobs:
         force-03: [ON, OFF]
         exclude:
           - cpp-ver: 03
-          - force-03: ON
+            force-03: ON
     env:
       ASAN_OPTIONS: alloc_dealloc_mismatch=0,detect_leaks=0
       CC: gcc
