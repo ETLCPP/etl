@@ -1,4 +1,4 @@
-name: gcc-c++20
+name: gcc-ubuntu-24.04
 on:
   push:
     branches: [ master, development, pull-request/* ]
