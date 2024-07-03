@@ -370,7 +370,7 @@ SOFTWARE.
 
 //*************************************
 // Define the large character types if necessary.
-#if ETL_NO_LARGE_CHAR_SUPPORT
+#if ETL_NO_LARGE_CHAR_SUPPORT && !defined(ETL_DEVELOPMENT_OS_APPLE)
   typedef uint_least16_t char16_t;
   typedef uint_least32_t char32_t;
   #define ETL_HAS_NATIVE_CHAR16_T 0
