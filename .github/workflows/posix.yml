@@ -57,7 +57,7 @@ jobs:
           -DNO_STL=${NO_STL} \
           -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
           -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
-          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03}
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Configure
