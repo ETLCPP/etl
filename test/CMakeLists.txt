@@ -410,6 +410,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wno-vla-cxx-extension
 			)
 endif ()
 
