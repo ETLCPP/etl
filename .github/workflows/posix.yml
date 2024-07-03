@@ -65,7 +65,8 @@ jobs:
     - name: Build
       run: |
         cd build
-        make -j $(nproc)
+        # getconf as portable solution via https://stackoverflow.com/a/64571679/6178613
+        make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
       if: ${{ matrix.tests == 'YES' }}
