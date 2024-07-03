@@ -39,7 +39,6 @@ jobs:
       CXX_VER: ${{ matrix.cpp-ver }}
       FORCE_03: ${{ matrix.force-03 }}
       NO_STL: ${{ matrix.no-stl }}
-      TESTS: ${{ matrix.tests }}
 
     steps:
     - uses: actions/checkout@v4
@@ -50,19 +49,32 @@ jobs:
         ${CXX} --version
         make --version
 
+    - name: Syntax check
+      run:
+        mkdir syntax-check
+        cd syntax-check
+        cmake ../test/syntax_check/c++${CXX_VER} \
+          -DNO_STL=${NO_STL} \
+          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
+        make -j $(getconf _NPROCESSORS_ONLN)
+
     - name: Configure
+      if: ${{ matrix.tests == 'YES' }}
       run: |
         mkdir build
         cd build
         cmake .. \
-          -DBUILD_TESTS=${TESTS} \
+          -DBUILD_TESTS=YES \
           -DNO_STL=${NO_STL} \
           -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
           -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
-          -DETL_FORCE_TEST_CPP03=${FORCE_03} \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
           -DETL_CXX_STANDARD=${CXX_VER}
 
     - name: Build
+      if: ${{ matrix.tests == 'YES' }}
       run: |
         cd build
         # getconf as portable solution via https://stackoverflow.com/a/64571679/6178613
