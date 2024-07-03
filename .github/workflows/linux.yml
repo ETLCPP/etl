@@ -16,16 +16,16 @@ jobs:
         no-stl: [ON, OFF]
         force-03: [ON, OFF]
         compiler: [GCC, LLVM]
-        os: [ubuntu-24.04]
+        os: [ubuntu-24.04, macos-14]
         exclude:
           - cpp-ver: 03
             force-03: ON
+          - compiler: GCC
+            os: macos-14
         include:
           - tests: YES
           - cpp-ver: "03"
             tests: NO
-          - compiler: LLVM
-            os: macos-14
           - compiler: GCC
             cc: gcc
             cxx: g++
