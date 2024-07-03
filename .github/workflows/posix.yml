@@ -1,4 +1,4 @@
-name: gcc
+name: posix
 on:
   push:
 #branches: [ master, development, pull-request/* ]
@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  linux:
-    name: Linux
+  posix:
+    name: Posix
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
