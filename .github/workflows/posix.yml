@@ -50,7 +50,7 @@ jobs:
         make --version
 
     - name: Syntax check
-      run:
+      run: |
         mkdir syntax-check
         cd syntax-check
         cmake ../test/syntax_check/c++${CXX_VER} \
