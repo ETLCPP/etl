@@ -417,7 +417,7 @@ endif ()
 
 check_cxx_compiler_flag(-Wvla-cxx-extension HAS_VLA_CXX_EXT)
 if(${HAS_VLA_CXX_EXT})
-	target_compile_options(-Wno-vla-cxx-extension)
+	target_compile_options(etl_tests PRIVATE -Wno-vla-cxx-extension)
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
