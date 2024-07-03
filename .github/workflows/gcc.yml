@@ -26,7 +26,7 @@ jobs:
           - compiler: GCC
             cc: gcc
             cxx: g++
-          - compiler: clang
+          - compiler: LLVM
             cc: clang
             cxx: clang++
     env:
@@ -44,7 +44,7 @@ jobs:
     - name: Versions
       run: |
         cmake --version
-        gcc --version
+        ${CXX} --version
         make --version
 
     - name: Configure
