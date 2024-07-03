@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        cpp-ver: [03, 11, 14, 17, 20, 23]
+        cpp-ver: ["03", 11, 14, 17, 20, 23]
         no-stl: [ON, OFF]
         force-03: [ON, OFF]
         exclude:
