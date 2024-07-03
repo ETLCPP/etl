@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(etl_unit_tests LANGUAGES CXX)
 
+include(CheckCXXCompilerFlag)
+
 #include(FetchContent)
 #FetchContent_Declare(
 #  googletest
@@ -410,8 +412,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
-			-Wno-vla-cxx-extension
 			)
+endif ()
+
+check_cxx_compiler_flag(-Wvla-cxx-extension HAS_VLA_CXX_EXT)
+if(${HAS_VLA_CXX_EXT})
+	target_compile_options(-Wno-vla-cxx-extension)
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
