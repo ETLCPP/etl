@@ -80,6 +80,25 @@ namespace
   static TestClass test;
 }
 
+#if ETL_USING_CPP11
+  namespace ForwardTest
+  {
+    constexpr int some_lvalue = 0;
+    enum ValueType { LVALUE, RVALUE };
+    
+    template <class T>
+    ETL_CONSTEXPR14 ValueType get_value_type(T&) { return LVALUE; }
+  
+    template <class T>
+    ETL_CONSTEXPR14 ValueType get_value_type(T&&) { return RVALUE; }
+  
+    template <typename T>
+    ETL_CONSTEXPR14 ValueType test(T&& value) {
+      return get_value_type(etl::forward<T>(value));
+    }
+  } // namespace ForwardTest
+#endif
+
 namespace
 {
   SUITE(test_utility)
@@ -666,5 +685,14 @@ namespace
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<TFL&&>(etl::move(u4)));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u4)));
     }
+
+#if ETL_USING_CPP11
+    //*********************************
+    TEST(test_forward)
+    {
+      CHECK_EQUAL(ForwardTest::test(0), ForwardTest::RVALUE);
+      CHECK_EQUAL(ForwardTest::test(ForwardTest::some_lvalue), ForwardTest::LVALUE);
+    }
+#endif
   };
 }
