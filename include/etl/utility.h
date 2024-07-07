@@ -672,6 +672,23 @@ namespace etl
     }
   };
 #endif
+
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  // forward
+  //*****************************************************************************
+  template <class T>
+  ETL_CONSTEXPR14 T&& forward(typename etl::remove_reference<T>::type& t) noexcept
+  {
+    return static_cast<T&&>(t);
+  }
+  
+  template <class T>
+  ETL_CONSTEXPR14 T&& forward(typename etl::remove_reference<T>::type&& t) noexcept
+  {
+    return static_cast<T&&>(t);
+  }
+#endif
 }
 
 #endif
