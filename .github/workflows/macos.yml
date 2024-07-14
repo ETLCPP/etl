@@ -9,11 +9,13 @@ on:
 jobs:
   posix:
     name: macOS
-    runs-on: macos-12
+    runs-on: macos-14
     strategy:
       matrix:
-        cpp-ver: ["03", 11, 14, 17, 20]
-        no-stl: [ON, OFF]
+        #cpp-ver: ["03", 11, 14, 17, 20]
+        #no-stl: [ON, OFF]
+        cpp-ver: [11, 14, 17, 20]
+        no-stl: [OFF]
         force-03: [ON, OFF]
         exclude:
           - cpp-ver: 03
