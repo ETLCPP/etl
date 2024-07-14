@@ -48,7 +48,7 @@ jobs:
           -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
           -DETL_CXX_STANDARD=${CXX_VER}
         MSBuild.exe -version
-        MSBuild.exe ./etl.sln
+        MSBuild.exe -m ./etl.sln
 
     - name: Run tests
       run: test/Debug/etl_tests.exe
