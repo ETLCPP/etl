@@ -1,0 +1,75 @@
+name: posix
+on:
+  push:
+#branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+  workflow_dispatch:
+
+jobs:
+  posix:
+    name: Posix
+    runs-on: macos-12
+    strategy:
+      matrix:
+        cpp-ver: ["03", 11, 14, 17, 20, 23]
+        no-stl: [ON, OFF]
+        force-03: [ON, OFF]
+        exclude:
+          - cpp-ver: 03
+            force-03: ON
+        include:
+          - tests: YES
+          - cpp-ver: "03"
+            tests: NO
+    env:
+      ASAN_OPTIONS: alloc_dealloc_mismatch=0,detect_leaks=0
+      CC: clang
+      CXX: clang++
+      CXX_VER: ${{ matrix.cpp-ver }}
+      FORCE_03: ${{ matrix.force-03 }}
+      NO_STL: ${{ matrix.no-stl }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Versions
+      run: |
+        cmake --version
+        ${CXX} --version
+        make --version
+
+    - name: Syntax check
+      run: |
+        mkdir syntax-check
+        cd syntax-check
+        cmake ../test/syntax_check/c++${CXX_VER} \
+          -DNO_STL=${NO_STL} \
+          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03}
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Configure
+      if: ${{ matrix.tests == 'YES' }}
+      run: |
+        mkdir build
+        cd build
+        cmake .. \
+          -DBUILD_TESTS=YES \
+          -DNO_STL=${NO_STL} \
+          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
+          -DETL_CXX_STANDARD=${CXX_VER}
+
+    - name: Build
+      if: ${{ matrix.tests == 'YES' }}
+      run: |
+        cd build
+        # getconf as portable solution via https://stackoverflow.com/a/64571679/6178613
+        make -j $(getconf _NPROCESSORS_ONLN)
+    
+    - name: Run tests
+      if: ${{ matrix.tests == 'YES' }}
+      run: ./build/test/etl_tests
