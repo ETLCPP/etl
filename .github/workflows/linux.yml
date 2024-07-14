@@ -1,4 +1,4 @@
-name: posix
+name: ubuntu
 on:
   push:
 #branches: [ master, development, pull-request/* ]
@@ -8,7 +8,7 @@ on:
 
 jobs:
   posix:
-    name: Posix
+    name: Ubuntu
     runs-on: ubuntu-24.04
     strategy:
       matrix:
