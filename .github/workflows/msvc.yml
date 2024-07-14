@@ -36,18 +36,19 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Build
+      shell: bash
       run: |
-        cmake -G "Visual Studio 17 2022" `
-          ./ `
-          -AWin32 `
-          -DBUILD_TESTS=ON `
-          -DNO_STL=${NO_STL} `
-          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF `
-          -DETL_USER_DEFINED_TYPE_TRAITS=OFF `
-          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} `
+        cmake -G "Visual Studio 17 2022" \
+          ./ \
+          -AWin32 \
+          -DBUILD_TESTS=ON \
+          -DNO_STL=${NO_STL} \
+          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
           -DETL_CXX_STANDARD=${CXX_VER}
         MSBuild.exe -version
-        MSBuild.exe .\etl.sln
+        MSBuild.exe ./etl.sln
 
     - name: Run tests
       run: test/Debug/etl_tests.exe
