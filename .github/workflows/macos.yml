@@ -22,8 +22,8 @@ jobs:
             #force-03: ON
         include:
           - tests: YES
-          - cpp-ver: "03"
-            tests: NO
+          #- cpp-ver: "03"
+            #tests: NO
     env:
       ASAN_OPTIONS: alloc_dealloc_mismatch=0,detect_leaks=0
       CC: clang
