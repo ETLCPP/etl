@@ -1,95 +1,53 @@
 name: msvc
 on:
   push:
-    branches: [ master, development, pull-request/* ]
+#branches: [ master, development, pull-request/* ]
   pull_request:
     branches: [ master, pull-request/* ]
 
 jobs:
-  build-windows-msvc-stl:
-    name: Windows - STL
+  windows:
+    name: Windows
     runs-on: [windows-2022]
+    strategy:
+      matrix:
+        cpp-ver: ["03", 11, 14, 17, 20]
+        no-stl: [ON, OFF]
+        force-03: [ON, OFF]
+        exclude:
+          - cpp-ver: 03
+            force-03: ON
+        include:
+          - cpp-ver: "03"
+            tests: NO
+
+    env:
+      CXX_VER: ${{ matrix.cpp-ver }}
+      FORCE_03: ${{ matrix.force-03 }}
+      NO_STL: ${{ matrix.no-stl }}
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
-        MSBuild.exe -version
-        MSBuild.exe .\etl.sln
-        
-    - name: Run tests
-      run: test/Debug/etl_tests.exe
-
-  build-windows-msvc-no-stl:
-    name: Windows - No STL
-    runs-on: [windows-2022]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: recursive
-
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Build
-      run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
-        MSBuild.exe -version
-        MSBuild.exe .\etl.sln
-        
-    - name: Run tests
-      run: test/Debug/etl_tests.exe
-
-  build-windows-msvc-stl-force-cpp03:
-    name: Windows - STL - Force C++03
-    runs-on: [windows-2022]
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: recursive
-
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Build
-      run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=17 ./
+        cmake -G "Visual Studio 17 2022" \
+          ./ \
+          -AWin32 \
+          -DBUILD_TESTS=ON \
+          -DNO_STL=${NO_STL} \
+          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
+          -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=${FORCE_03} \
+          -DETL_CXX_STANDARD=${CXX_VER}
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
 
     - name: Run tests
       run: test/Debug/etl_tests.exe
-        
-  build-windows-msvc-no-stl-force-cpp03:
-    name: Windows - No STL - Force C++03
-    runs-on: [windows-2022]
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: recursive
-
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Build
-      run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=17 ./
-        MSBuild.exe -version
-        MSBuild.exe .\etl.sln
-
-    - name: Run tests
-      run: test/Debug/etl_tests.exe
-
