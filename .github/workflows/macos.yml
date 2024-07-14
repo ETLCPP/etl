@@ -17,9 +17,9 @@ jobs:
         cpp-ver: [11, 14, 17, 20]
         no-stl: [OFF]
         force-03: [ON, OFF]
-        exclude:
-          - cpp-ver: 03
-            force-03: ON
+        #exclude:
+          #- cpp-ver: 03
+            #force-03: ON
         include:
           - tests: YES
           - cpp-ver: "03"
