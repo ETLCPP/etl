@@ -1393,7 +1393,7 @@ namespace etl
     }
 
     //*********************************
-    void reset(pointer p_ = pointer()) ETL_NOEXCEPT
+    void reset(pointer p_) ETL_NOEXCEPT
     {
       assert(p_ != p);
 
@@ -1404,6 +1404,12 @@ namespace etl
       {
         deleter(value);
       }
+    }
+
+    void reset(etl::nullptr_t p_ = ETL_NULLPTR) ETL_NOEXCEPT
+    {
+      (void)p_; // unused argument
+      reset(pointer());
     }
 
     //*********************************
@@ -1420,29 +1426,16 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_USING_STL && ETL_USING_CPP11
     //*********************************
-    unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
+    unique_ptr&	operator =(etl::nullptr_t) ETL_NOEXCEPT
     {
       if (p)
       {
-        reset(nullptr);
+        reset(ETL_NULLPTR);
       }
 
       return *this;
     }
-#else
-    //*********************************
-    unique_ptr&	operator =(void*) ETL_NOEXCEPT
-    {
-      if (p)
-      {
-        reset(NULL);
-      }
-
-      return *this;
-    }
-#endif
 
 #if ETL_USING_CPP11
     //*********************************

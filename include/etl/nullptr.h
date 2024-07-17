@@ -38,8 +38,18 @@ SOFTWARE.
 namespace etl
 {
 #if ETL_CPP11_NOT_SUPPORTED
-  // Use the old style C++ NULL definition.
-  typedef enum { _nullptr = 0 } nullptr_t;
+  class nullptr_t
+  {
+  public:
+    template <class T>
+    inline operator T*() const { return 0; }
+    
+    inline bool operator==(nullptr_t) const { return true; }
+    inline bool operator!=(nullptr_t) const { return false; }
+  };
+  
+  static const nullptr_t _nullptr = nullptr_t();
+
   #define ETL_NULLPTR (etl::_nullptr)
 #else
   // Use the new style nullptr.
