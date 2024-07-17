@@ -35,13 +35,18 @@ SOFTWARE.
 
 #include <stddef.h>
 
+namespace etl
+{
 #if ETL_CPP11_NOT_SUPPORTED
   // Use the old style C++ NULL definition.
-  #define ETL_NULLPTR 0
+  typedef enum { _nullptr = 0 } nullptr_t;
+  #define ETL_NULLPTR (etl::_nullptr)
 #else
   // Use the new style nullptr.
+  typedef decltype(nullptr) nullptr_t;
   #define ETL_NULLPTR nullptr
 #endif
+}
 
 #endif
 
