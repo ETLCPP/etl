@@ -49,7 +49,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  ETL_CONSTEXPR17 typename etl::enable_if<!etl::is_same<T, etl::nullptr_t>::value>::type* addressof(T& t)
+  ETL_CONSTEXPR17 typename etl::enable_if<!etl::is_same<T, etl::nullptr_t>::value, T>::type* addressof(T& t)
   {
 #if ETL_USING_STL && ETL_USING_CPP11
     return std::addressof(t);
