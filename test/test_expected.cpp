@@ -629,5 +629,54 @@ namespace
       CHECK_TRUE(thrown);
       CHECK_TRUE(exception_what == thrown_what);
     }
+
+    //*************************************************************************
+    TEST(test_expected_equal_operator)
+    {
+      etl::expected<int, int> test_exp = 1;
+      etl::expected<int, int> test_exp_equal = 1;
+      etl::expected<int, int> test_exp_unequal = 2;
+      int test_val_equal = 1;
+      int test_val_unequal = 2;
+      etl::expected<int, int> test_unexp = etl::unexpected<int>(1);
+      etl::expected<int, int> test_unexp_equal = etl::unexpected<int>(1);
+      etl::expected<int, int> test_unexp_unequal = etl::unexpected<int>(2);
+
+      CHECK_TRUE(test_exp == test_exp_equal);
+      CHECK_FALSE(test_exp != test_exp_equal);
+
+      CHECK_FALSE(test_exp == test_exp_unequal);
+      CHECK_TRUE(test_exp != test_exp_unequal);
+
+      CHECK_TRUE(test_exp == test_val_equal);
+      CHECK_FALSE(test_exp != test_val_equal);
+
+      CHECK_FALSE(test_exp == test_val_unequal);
+      CHECK_TRUE(test_exp != test_val_unequal);
+
+      CHECK_FALSE(test_exp == test_unexp);
+      CHECK_TRUE(test_exp != test_unexp);
+
+      CHECK_TRUE(test_unexp == test_unexp_equal);
+      CHECK_FALSE(test_unexp != test_unexp_equal);
+
+      CHECK_FALSE(test_unexp == test_unexp_unequal);
+      CHECK_TRUE(test_unexp != test_unexp_unequal);
+    }
+
+
+    //*************************************************************************
+    TEST(test_unexpected_equal_operator)
+    {
+      etl::unexpected<int> test_unexp = etl::unexpected<int>(1);
+      etl::unexpected<int> test_unexp_equal = etl::unexpected<int>(1);
+      etl::unexpected<int> test_unexp_unequal = etl::unexpected<int>(2);
+
+      CHECK_TRUE(test_unexp == test_unexp_equal);
+      CHECK_FALSE(test_unexp != test_unexp_equal);
+
+      CHECK_FALSE(test_unexp == test_unexp_unequal);
+      CHECK_TRUE(test_unexp != test_unexp_unequal);
+    }
   };
 }
