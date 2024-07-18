@@ -1122,6 +1122,7 @@ bool operator ==(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
   return lhs.value() == rhs;
 }
 
+//*******************************************
 template <typename TValue, typename TError, typename TError2>
 ETL_CONSTEXPR14
 bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::unexpected<TError2>& rhs)
@@ -1133,6 +1134,7 @@ bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::unexpected
   return lhs.error() == rhs;
 }
 
+//*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
 bool operator ==(const etl::unexpected<TError>& lhs, const etl::unexpected<TError2>& rhs)
@@ -1140,6 +1142,7 @@ bool operator ==(const etl::unexpected<TError>& lhs, const etl::unexpected<TErro
   return lhs.error() == rhs.error();
 }
 
+//*******************************************
 template <typename TValue, typename TError, typename TValue2, typename TError2>
 ETL_CONSTEXPR14
 bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::expected<TValue2, TError2>& rhs)
@@ -1147,6 +1150,7 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::expected<T
   return !(lhs == rhs);
 }
 
+//*******************************************
 template <typename TValue, typename TError, typename TValue2>
 ETL_CONSTEXPR14
 bool operator !=(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
@@ -1154,6 +1158,7 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
   return !(lhs == rhs);
 }
 
+//*******************************************
 template <typename TValue, typename TError, typename TError2>
 ETL_CONSTEXPR14
 bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::unexpected<TError2>& rhs)
@@ -1161,6 +1166,7 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::unexpected
   return !(lhs == rhs);
 }
 
+//*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
 bool operator !=(const etl::unexpected<TError>& lhs, const etl::unexpected<TError2>& rhs)
