@@ -40,14 +40,12 @@ SOFTWARE.
 #include <numeric>
 #include <stdint.h>
 #include <vector>
-
 #include <memory>
-
 
 namespace
 {
-  typedef std::string non_trivial_t;
-  typedef uint32_t    trivial_t;
+  typedef std::string    non_trivial_t;
+  typedef uint32_t       trivial_t;
   typedef TestDataM<int> moveable_t;
 
   const size_t SIZE = 10UL;
