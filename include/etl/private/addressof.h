@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_ADDRESSOF_INCLUDED
 
 #include "../platform.h"
+#include "../type_traits.h"
 
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #include <memory>
@@ -48,7 +49,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  ETL_CONSTEXPR17 T* addressof(T& t)
+  ETL_CONSTEXPR17 typename etl::enable_if<!etl::is_same<T, etl::nullptr_t>::value, T>::type* addressof(T& t)
   {
 #if ETL_USING_STL && ETL_USING_CPP11
     return std::addressof(t);

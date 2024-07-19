@@ -1395,8 +1395,8 @@ namespace etl
     //*********************************
     void reset(pointer p_ = pointer()) ETL_NOEXCEPT
     {
-      assert(p_ != p);
-
+      assert(p_ == ETL_NULLPTR || p_ != p);
+      
       pointer value = p;
       p = p_;
 
@@ -1420,29 +1420,16 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_USING_STL && ETL_USING_CPP11
     //*********************************
-    unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
+    unique_ptr&	operator =(etl::nullptr_t) ETL_NOEXCEPT
     {
       if (p)
       {
-        reset(nullptr);
+        reset(ETL_NULLPTR);
       }
 
       return *this;
     }
-#else
-    //*********************************
-    unique_ptr&	operator =(void*) ETL_NOEXCEPT
-    {
-      if (p)
-      {
-        reset(NULL);
-      }
-
-      return *this;
-    }
-#endif
 
 #if ETL_USING_CPP11
     //*********************************
@@ -1622,6 +1609,11 @@ namespace etl
       }
     }
 
+    void reset(etl::nullptr_t = ETL_NULLPTR) ETL_NOEXCEPT
+    {
+      reset(pointer());
+    }
+
     //*********************************
     void swap(unique_ptr& v) ETL_NOEXCEPT
     {
@@ -1636,23 +1628,13 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_USING_STL && ETL_USING_CPP11
     //*********************************
-    unique_ptr& operator =(std::nullptr_t) ETL_NOEXCEPT
+    unique_ptr& operator =(etl::nullptr_t) ETL_NOEXCEPT
     {
-      reset(nullptr);
+      reset(ETL_NULLPTR);
 
       return *this;
     }
-#else
-    //*********************************
-    unique_ptr& operator =(void*) ETL_NOEXCEPT
-    {
-      reset(NULL);
-
-      return *this;
-    }
-#endif
 
 #if ETL_USING_CPP11
     //*********************************
