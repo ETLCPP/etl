@@ -2083,6 +2083,61 @@ namespace
       CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_char_a, v_int_1)));
       CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_int_1,  v_char_a)));
     }
+
+    //*************************************************************************
+    TEST(test_is_type_legacy_api)
+    {
+      // Char.
+      char               c = 'a';
+      test_variant_etl_3 variant_char_etl(c);
+      CHECK(c == 'a');
+      CHECK_TRUE(variant_char_etl.is_type<char>());
+      CHECK_FALSE(variant_char_etl.is_type<int>());
+      CHECK_FALSE(variant_char_etl.is_type<std::string>());
+      CHECK_FALSE(variant_char_etl.is_type<double>());
+
+      // Int.
+      int                i = 1;
+      test_variant_etl_3 variant_int_etl(i);
+      CHECK(i == 1);
+      CHECK_FALSE(variant_int_etl.is_type<char>());
+      CHECK_TRUE(variant_int_etl.is_type<int>());
+      CHECK_FALSE(variant_int_etl.is_type<std::string>());
+      CHECK_FALSE(variant_int_etl.is_type<double>());
+
+      // String.
+      std::string        text("Some Text");
+      test_variant_etl_3 variant_text_etl(text);
+      CHECK(text == "Some Text");
+      CHECK_FALSE(variant_text_etl.is_type<char>());
+      CHECK_FALSE(variant_text_etl.is_type<int>());
+      CHECK_TRUE(variant_text_etl.is_type<std::string>());
+      CHECK_FALSE(variant_text_etl.is_type<double>());
+    }
+
+    //*************************************************************************
+    TEST(test_is_same_type_legacy_api)
+    {
+      char c = 'a';
+      int  i = 1;
+      test_variant_etl_3 variant1a(c);
+      test_variant_etl_3 variant1b(c);
+      test_variant_etl_3 variant2a(i);
+
+      CHECK_TRUE(variant1a.is_same_type(variant1b));
+      CHECK_FALSE(variant1a.is_same_type(variant2a));
+    }
+
+    //*************************************************************************
+    TEST(test_is_supported_type_legacy_api)
+    {
+      test_variant_etl_3 variant1;
+
+      CHECK_TRUE(variant1.is_supported_type<char>());
+      CHECK_TRUE(variant1.is_supported_type<int>());
+      CHECK_TRUE(variant1.is_supported_type<std::string>());
+      CHECK_FALSE(variant1.is_supported_type<double>());
+    }
   };
 }
 

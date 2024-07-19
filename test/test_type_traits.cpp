@@ -601,7 +601,7 @@ namespace
         Two
       };
 
-      CHECK((etl::is_same<etl::make_signed<__underlying_type(ue)>::type, std::make_signed<ue>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<typename std::underlying_type<ue>::type>::type, std::make_signed<ue>::type>::value));
 
       enum class se : int8_t
       {
@@ -609,7 +609,7 @@ namespace
         Two
       };
 
-      CHECK((etl::is_same<etl::make_signed<__underlying_type(se)>::type, std::make_signed<se>::type>::value));
+      CHECK((etl::is_same<etl::make_signed<typename std::underlying_type<se>::type>::type, std::make_signed<se>::type>::value));
     }
 
     //*************************************************************************
@@ -643,7 +643,7 @@ namespace
         Two
       };
 
-      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(ue)>::type, std::make_unsigned<ue>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<typename std::underlying_type<ue>::type>::type, std::make_unsigned<ue>::type>::value));
 
       enum class se : int8_t
       {
@@ -651,7 +651,7 @@ namespace
         Two
       };
 
-      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(se)>::type, std::make_unsigned<se>::type>::value));
+      CHECK((etl::is_same<etl::make_unsigned<typename std::underlying_type<se>::type>::type, std::make_unsigned<se>::type>::value));
     }
 
     //*************************************************************************

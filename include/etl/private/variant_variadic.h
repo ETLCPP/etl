@@ -525,6 +525,18 @@ namespace etl
     static constexpr int Move    = private_variant::Move;
     static constexpr int Destroy = private_variant::Destroy;
 
+    //*******************************************
+    // Get the index of a type.
+    //*******************************************
+    template <typename T>
+    using index_of_type = typename etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>;
+
+    //*******************************************
+    // Get the type from the index.
+    //*******************************************
+    template <size_t Index>
+    using type_from_index = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+
   public:
 
     //***************************************************************************
@@ -549,7 +561,7 @@ namespace etl
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
       : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
-      , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>::value)
+      , type_id(index_of_type<T>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
@@ -564,7 +576,7 @@ namespace etl
     template <typename T, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
       : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
-      , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>::value)
+      , type_id(index_of_type<T>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
@@ -597,7 +609,7 @@ namespace etl
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
       : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
-      , type_id(private_variant::parameter_pack<TTypes...>:: template index_of_type<etl::remove_cvref_t<T>>::value)
+      , type_id(index_of_type<T>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...> ::value, "Unsupported type");
 
@@ -739,7 +751,7 @@ namespace etl
     {
       static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
 
-      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+      using type = type_from_index<Index>;
 
       operation(private_variant::Destroy, data, nullptr);
 
@@ -761,7 +773,7 @@ namespace etl
     {
       static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
 
-      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+      using type = type_from_index<Index>;
 
       operation(private_variant::Destroy, data, nullptr);
 
@@ -863,6 +875,46 @@ namespace etl
     constexpr size_t index() const noexcept
     {
       return type_id;
+    }
+
+    //***************************************************************************
+    /// Checks to see if the type T is one of the variant's supported types.
+    /// For compatibility with legacy variant API.
+    ///\return <b>true</b> if it is, otherwise <b>false</b>.
+    //***************************************************************************
+    template <typename T>
+    static constexpr bool is_supported_type()
+    {
+      return etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value;
+    }
+
+    //***************************************************************************
+    /// Checks to see if the type currently stored is the same as that specified in the template parameter.
+    /// For compatibility with legacy variant API.
+    ///\return <b>true</b> if it is the specified type, otherwise <b>false</b>.
+    //***************************************************************************
+    template <typename T, etl::enable_if_t<is_supported_type<T>(), int> = 0>
+    constexpr bool is_type() const noexcept
+    {
+      return (type_id == etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value);
+    }
+
+    //***************************************************************************
+    template <typename T, etl::enable_if_t<!is_supported_type<T>(), int> = 0>
+    constexpr bool is_type() const noexcept
+    {
+      return false;
+    }
+
+    //***************************************************************************
+    /// Checks if the other variant holds the same type as the current stored type.
+    /// For variants with the same type declarations.
+    /// For compatibility with legacy variant API.
+    ///\return <b>true</b> if the types are the same, otherwise <b>false</b>.
+    //***************************************************************************
+    constexpr bool is_same_type(const variant& other) const
+    {
+      return type_id == other.type_id;
     }
 
     //***************************************************************************

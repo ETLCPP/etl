@@ -128,6 +128,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Helper macro for variant selection.
+#if defined(ETL_USE_LEGACY_VARIANT)
+  #define ETL_USING_LEGACY_VARIANT     1
+  #define ETL_NOT_USING_LEGACY_VARIANT 0
+#else
+  #define ETL_USING_LEGACY_VARIANT     0
+  #define ETL_NOT_USING_LEGACY_VARIANT 1
+#endif
+
+//*************************************
 // Figure out things about the compiler, if haven't already done so in etl_profile.h
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
