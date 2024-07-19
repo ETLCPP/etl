@@ -21,7 +21,7 @@ NoColour='\033[0m'
 
 ParseGitBranch() 
 {
-    git rev-parse --abbrev-ref HEAD
+	git rev-parse --abbrev-ref HEAD
 }
 
 SetConfigurationName()
@@ -41,7 +41,7 @@ PrintHeader()
 	echo " Configuration     : $configuration_name" | tee -a log.txt
 	echo " Compiler          : $compiler          " | tee -a log.txt
 	echo " Language standard : C++$cxx_standard   " | tee -a log.txt
-    echo " Optimisation      : $opt               " | tee -a log.txt
+	echo " Optimisation      : $opt               " | tee -a log.txt
 	echo " Sanitizer         : $sanitize          " | tee -a log.txt
 	echo " ETL version       : $etl_version       " | tee -a log.txt
 	echo " Git branch        : $(ParseGitBranch)  " | tee -a log.txt
@@ -54,10 +54,10 @@ PrintHelp()
 {
 	echo "$HelpColour"
 	echo "----------------------------------------------------------------------------------"
-	echo " Syntax       : ./runtests.sh <C++ Standard> <Threads> <Optimisation> <Sanitizer> "
+	echo " Syntax       : ./runtests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> "
 	echo " C++ Standard : 11, 14, 17 or 20                                                  "
-	echo " Threads      : Number of threads to use. Default = 4                             "
 	echo " Optimisation : 0, 1, 2 or 3. Default = 0                                         "
+	echo " Threads      : Number of threads to use. Default = 4                             "
 	echo " Sanitizer    : S enables sanitizer checks. Default disabled                      "
 	echo "----------------------------------------------------------------------------------"
 	echo "$NoColour"
@@ -85,7 +85,7 @@ FailedCompilation()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Compilation - $configuration_name" | tee -a log.txt
+	echo "**** Failed Compilation - $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
@@ -95,7 +95,7 @@ FailedTests()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Tests - $configuration_name" | tee -a log.txt
+	echo "**** Failed Tests - $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
@@ -142,7 +142,7 @@ fi
 #******************************************************************************
 # Set the number of concurrent processes to use.
 #******************************************************************************
-if [ $# -eq 2 ]; then
+if [ $# -le 3 ]; then
   export CMAKE_BUILD_PARALLEL_LEVEL=4
 else
   export CMAKE_BUILD_PARALLEL_LEVEL=$3
