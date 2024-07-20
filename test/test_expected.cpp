@@ -666,6 +666,24 @@ namespace
 
 
     //*************************************************************************
+    TEST(test_expected_void_equal_operator)
+    {
+      etl::expected<void, int> test_exp;
+      etl::expected<void, int> test_exp2;
+      etl::expected<void, int> test_unexp = etl::unexpected<int>(1);
+      etl::expected<void, int> test_unexp2 = etl::unexpected<int>(2);
+
+      CHECK_TRUE(test_exp == test_exp2);
+      CHECK_FALSE(test_exp != test_exp2);
+
+      CHECK_FALSE(test_exp == test_unexp);
+      CHECK_TRUE(test_exp != test_unexp);
+
+      CHECK_FALSE(test_unexp == test_unexp2);
+      CHECK_TRUE(test_unexp != test_unexp2);
+    }
+
+    //*************************************************************************
     TEST(test_unexpected_equal_operator)
     {
       etl::unexpected<int> test_unexp = etl::unexpected<int>(1);

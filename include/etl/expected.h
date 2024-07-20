@@ -976,7 +976,35 @@ bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::unexpected
   {
     return false;
   }
-  return lhs.error() == rhs;
+  return lhs.error() == rhs.error();
+}
+
+//*******************************************
+template <typename TError, typename TError2>
+ETL_CONSTEXPR14
+bool operator ==(const etl::expected<void, TError>& lhs, const etl::expected<void, TError2>& rhs)
+{
+  if (lhs.has_value() != rhs.has_value())
+  {
+    return false;
+  }
+  if (lhs.has_value())
+  {
+    return true;
+  }
+  return lhs.error() == rhs.error();
+}
+
+//*******************************************
+template <typename TError, typename TError2>
+ETL_CONSTEXPR14
+bool operator ==(const etl::expected<void, TError>& lhs, const etl::unexpected<TError2>& rhs)
+{
+  if (lhs.has_value())
+  {
+    return false;
+  }
+  return lhs.error() == rhs.error();
 }
 
 //*******************************************
@@ -1007,6 +1035,22 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
 template <typename TValue, typename TError, typename TError2>
 ETL_CONSTEXPR14
 bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::unexpected<TError2>& rhs)
+{
+  return !(lhs == rhs);
+}
+
+//*******************************************
+template <typename TError, typename TError2>
+ETL_CONSTEXPR14
+bool operator !=(const etl::expected<void, TError>& lhs, const etl::expected<void, TError2>& rhs)
+{
+  return !(lhs == rhs);
+}
+
+//*******************************************
+template <typename TError, typename TError2>
+ETL_CONSTEXPR14
+bool operator !=(const etl::expected<void, TError>& lhs, const etl::unexpected<TError2>& rhs)
 {
   return !(lhs == rhs);
 }
