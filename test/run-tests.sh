@@ -21,7 +21,7 @@ NoColour='\033[0m'
 
 ParseGitBranch() 
 {
-    git rev-parse --abbrev-ref HEAD
+	git rev-parse --abbrev-ref HEAD
 }
 
 SetConfigurationName()
@@ -54,10 +54,10 @@ PrintHelp()
 {
 	echo "$HelpColour"
 	echo "----------------------------------------------------------------------------------"
-	echo " Syntax       : ./runtests.sh <C++ Standard> <Threads> <Optimisation> <Sanitizer> "
+	echo " Syntax       : ./runtests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> "
 	echo " C++ Standard : 11, 14, 17 or 20                                                  "
-	echo " Threads      : Number of threads to use. Default = 4                             "
 	echo " Optimisation : 0, 1, 2 or 3. Default = 0                                         "
+	echo " Threads      : Number of threads to use. Default = 4                             "
 	echo " Sanitizer    : S enables sanitizer checks. Default disabled                      "
 	echo "----------------------------------------------------------------------------------"
 	echo "$NoColour"
@@ -85,7 +85,7 @@ FailedCompilation()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Compilation - $configuration_name" | tee -a log.txt
+	echo "**** Failed Compilation - $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
@@ -95,7 +95,7 @@ FailedTests()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Tests - $configuration_name" | tee -a log.txt
+	echo "**** Failed Tests - $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
