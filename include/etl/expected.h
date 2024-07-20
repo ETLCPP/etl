@@ -387,7 +387,7 @@ namespace etl
 #endif
 
     //*******************************************
-    ///
+    /// Copy assign from etl::expected.
     //*******************************************
     this_type& operator =(const this_type& other)
     {
@@ -400,7 +400,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*******************************************
-    ///
+    /// Move assign from etl::expected.
     //*******************************************
     this_type& operator =(this_type&& other)
     {
