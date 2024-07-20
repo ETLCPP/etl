@@ -605,6 +605,17 @@ namespace etl
       return etl::move(etl::get<Error_Type>(storage));
     }
 
+
+    //*******************************************
+    /// Swap with another etl::expected.
+    //*******************************************
+    void swap(this_type& other)
+    {
+      using ETL_OR_STD::swap;
+
+      swap(storage, other.storage);
+    }
+
     //*******************************************
     ///
     //*******************************************
@@ -925,6 +936,16 @@ namespace etl
     }
 #endif
 
+    //*******************************************
+    /// Swap with another etl::expected.
+    //*******************************************
+    void swap(this_type& other)
+    {
+      using ETL_OR_STD::swap;
+
+      swap(storage, other.storage);
+    }
+
   private:
 
     enum
@@ -1061,6 +1082,24 @@ ETL_CONSTEXPR14
 bool operator !=(const etl::unexpected<TError>& lhs, const etl::unexpected<TError2>& rhs)
 {
   return !(lhs == rhs);
+}
+
+//*******************************************
+/// Swap etl::expected.
+//*******************************************
+template <typename TValue, typename TError>
+ETL_CONSTEXPR14
+void swap(etl::expected<TValue, TError>& lhs, etl::expected<TValue, TError>& rhs)
+{
+  lhs.swap(rhs);
+}
+
+//*******************************************
+template <typename TError>
+ETL_CONSTEXPR14
+void swap(etl::expected<void, TError>& lhs, etl::expected<void, TError>& rhs)
+{
+  lhs.swap(rhs);
 }
 
 //*******************************************
