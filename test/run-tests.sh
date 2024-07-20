@@ -129,7 +129,9 @@ fi
 #******************************************************************************
 # Set the optimisation level. Default -O0
 #******************************************************************************
-if [ "$2" = "1" ]; then
+if [ $# -eq 1 ]; then
+  opt="-O0"
+elif [ "$2" = "1" ]; then
   opt="-O1"
 elif [ "$2" = "2" ]; then
   opt="-O2"
@@ -140,9 +142,9 @@ else
 fi
 
 #******************************************************************************
-# Set the number of concurrent processes to use.
+# Set the number of concurrent processes to use. Default 4
 #******************************************************************************
-if [ $# -eq 2 ]; then
+if [ $# -le 2 ]; then
   export CMAKE_BUILD_PARALLEL_LEVEL=4
 else
   export CMAKE_BUILD_PARALLEL_LEVEL=$3
