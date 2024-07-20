@@ -1169,6 +1169,22 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::unexpected
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
+bool operator !=(const etl::expected<void, TError>& lhs, const etl::expected<void, TError2>& rhs)
+{
+  return !(lhs == rhs);
+}
+
+//*******************************************
+template <typename TError, typename TError2>
+ETL_CONSTEXPR14
+bool operator !=(const etl::expected<void, TError>& lhs, const etl::unexpected<TError2>& rhs)
+{
+  return !(lhs == rhs);
+}
+
+//*******************************************
+template <typename TError, typename TError2>
+ETL_CONSTEXPR14
 bool operator !=(const etl::unexpected<TError>& lhs, const etl::unexpected<TError2>& rhs)
 {
   return !(lhs == rhs);
