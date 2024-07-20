@@ -142,7 +142,7 @@ fi
 #******************************************************************************
 # Set the number of concurrent processes to use.
 #******************************************************************************
-if [ $# -le 3 ]; then
+if [ $# -le 2 ]; then
   export CMAKE_BUILD_PARALLEL_LEVEL=4
 else
   export CMAKE_BUILD_PARALLEL_LEVEL=$3
