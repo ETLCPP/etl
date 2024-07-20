@@ -1395,14 +1395,15 @@ namespace etl
     //*********************************
     void reset(pointer p_ = pointer()) ETL_NOEXCEPT
     {
-      assert(p_ == ETL_NULLPTR || p_ != p);
-      
-      pointer value = p;
-      p = p_;
-
-      if (value != ETL_NULLPTR)
+      if (p_ == ETL_NULLPTR || p_ != p)
       {
-        deleter(value);
+        pointer value = p;
+        p = p_;
+
+        if (value != ETL_NULLPTR)
+        {
+          deleter(value);
+        }
       }
     }
 
@@ -1592,20 +1593,21 @@ namespace etl
     {
       pointer value = p;
       p = ETL_NULLPTR;
-      return value;
+      return value; 
     }
 
     //*********************************
     void reset(pointer p_) ETL_NOEXCEPT
     {
-      assert(p_ != p);
-
-      pointer value = p;
-      p = p_;
-      
-      if (value != ETL_NULLPTR)
+      if (p_ != p)
       {
-        deleter(value);
+        pointer value = p;
+        p = p_;
+
+        if (value != ETL_NULLPTR)
+        {
+          deleter(value);
+        }
       }
     }
 
