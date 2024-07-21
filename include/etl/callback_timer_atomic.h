@@ -327,6 +327,34 @@ namespace etl
       return delta;
     }
 
+    //*******************************************
+    /// Checks if a timer is currently active.
+    /// Returns <b>true</b> if the timer is active, otherwise <b>false</b>.
+    //*******************************************
+    bool is_active(etl::timer::id::type id_) const
+    {
+      bool result = false;
+
+      // Valid timer id?
+      if (is_valid_timer_id(id_))
+      {
+        ++process_semaphore;
+        if (has_active_timer())
+        {
+          const timer_data& timer = timer_array[id_];
+
+          // Registered timer?
+          if (timer.id != etl::timer::id::NO_TIMER)
+          {
+            result = timer.is_active();
+          }
+        }
+        --process_semaphore;
+      }
+
+      return result;
+    }
+
   protected:
 
     //*************************************************************************
@@ -407,6 +435,14 @@ namespace etl
     }
 
   private:
+
+    //*******************************************
+    /// Check that the timer id is valid.
+    //*******************************************
+    bool is_valid_timer_id(etl::timer::id::type id_) const
+    {
+      return (id_ < MAX_TIMERS);
+    }
 
     //*************************************************************************
     /// A specialised intrusive linked list for timer data.

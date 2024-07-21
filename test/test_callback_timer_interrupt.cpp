@@ -773,6 +773,41 @@ namespace
     }
 
     //*************************************************************************
+    TEST(callback_timer_is_active)
+    {
+      etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_TRUE(timer_controller.is_active(id2));
+      CHECK_TRUE(timer_controller.is_active(id3));
+
+      timer_controller.tick(11);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_TRUE(timer_controller.is_active(id2));
+      CHECK_FALSE(timer_controller.is_active(id3));
+
+      timer_controller.tick(23 - 11);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_FALSE(timer_controller.is_active(id2));
+      CHECK_FALSE(timer_controller.is_active(id3));
+
+      timer_controller.tick(37 - 23);
+      CHECK_FALSE(timer_controller.is_active(id1));
+      CHECK_FALSE(timer_controller.is_active(id2));
+      CHECK_FALSE(timer_controller.is_active(id3));
+    }
+
+    //*************************************************************************
     class test_object
     {
     public:

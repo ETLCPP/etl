@@ -1,4 +1,4 @@
-/******************************************************************************
+ /******************************************************************************
 The MIT License(MIT)
 
 Embedded Template Library.
@@ -329,6 +329,33 @@ namespace etl
       return delta;
     }
 
+    //*******************************************
+    /// Checks if a timer is currently active.
+    /// Returns <b>true</b> if the timer is active, otherwise <b>false</b>.
+    //*******************************************
+    bool is_active(etl::timer::id::type id_) const
+    {
+      // Valid timer id?
+      if (is_valid_timer_id(id_))
+      {
+        if (has_active_timer())
+        {
+          TInterruptGuard guard;
+          (void)guard;  // Silence 'unused variable warnings.
+
+          const timer_data& timer = timer_array[id_];
+
+          // Registered timer?
+          if (timer.id != etl::timer::id::NO_TIMER)
+          {
+            return timer.is_active();
+          }
+        }
+      }
+
+      return false;
+    }
+
   protected:
 
     //*************************************************************************
@@ -408,6 +435,14 @@ namespace etl
     }
 
   private:
+
+    //*******************************************
+    /// Check that the timer id is valid.
+    //*******************************************
+    bool is_valid_timer_id(etl::timer::id::type id_) const
+    {
+      return (id_ < MAX_TIMERS);
+    }
 
     //*************************************************************************
     /// A specialised intrusive linked list for timer data.
