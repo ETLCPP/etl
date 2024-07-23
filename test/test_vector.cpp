@@ -1496,6 +1496,29 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    TEST(test_make_vector_issue_931_two_pairs)
+    {
+      auto data3 = etl::make_vector(etl::make_pair(1, 2),
+                                    etl::make_pair(3, 4),
+                                    etl::make_pair(5, 6));
+      CHECK_EQUAL(1, data3[0].first);
+      CHECK_EQUAL(2, data3[0].second);
+      CHECK_EQUAL(3, data3[1].first);
+      CHECK_EQUAL(4, data3[1].second);
+      CHECK_EQUAL(5, data3[2].first);
+      CHECK_EQUAL(6, data3[2].second);
+
+      auto data2 = etl::make_vector(etl::make_pair(1, 2),
+                                    etl::make_pair(3, 4));
+      CHECK_EQUAL(1, data3[0].first);
+      CHECK_EQUAL(2, data3[0].second);
+      CHECK_EQUAL(3, data3[1].first);
+      CHECK_EQUAL(4, data3[1].second);
+    }
+#endif
+
+    //*************************************************************************
     TEST(test_fill)
     {
       etl::vector<int, 10> data(initial_data.begin(), initial_data.end());
