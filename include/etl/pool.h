@@ -71,7 +71,6 @@ namespace etl
 
     //*************************************************************************
     /// Allocate an object from the pool.
-    /// Uses the default constructor.
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
     /// Static asserts if the specified type is too large for the pool.
