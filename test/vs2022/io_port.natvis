@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<!-- ********************************************************************** -->
+	<!-- etl::io_port_rw -->
+	<!-- Visualizer for etl::io_port_rw with dynamic Address -->
+	<Type Name="etl::io_port_rw&lt;*, 0&gt;">
+		<DisplayString>{{ address={address} }}</DisplayString>
+		<Expand>
+			<Item Name="[address]">address</Item>
+		</Expand>
+	</Type>
+
+	<!-- Visualizer for etl::io_port_rw with specific Address -->
+	<Type Name="etl::io_port_rw&lt;*, *&gt;">
+	</Type>
+
+	<!-- ********************************************************************** -->
+	<!-- etl::io_port_ro -->
+	<!-- Visualizer for etl::io_port_ro with dynamic Address -->
+	<Type Name="etl::io_port_ro&lt;*, 0&gt;">
+		<DisplayString>{{ address={address} }}</DisplayString>
+		<Expand>
+			<Item Name="[address]">address</Item>
+		</Expand>
+	</Type>
+
+	<!-- Visualizer for etl::io_port_ro with specific Address -->
+	<Type Name="etl::io_port_ro&lt;*, *&gt;">
+	</Type>
+
+	<!-- ********************************************************************** -->
+	<!-- etl::io_port_wo -->
+	<!-- Visualizer for etl::io_port_wo with dynamic Address -->
+	<Type Name="etl::io_port_wo&lt;*, 0&gt;">
+		<DisplayString>{{ address={address} }}</DisplayString>
+		<Expand>
+			<Item Name="[address]">address</Item>
+		</Expand>
+	</Type>
+	
+	<!-- Visualizer for etl::io_port_wo with specific Address -->
+	<Type Name="etl::io_port_wo&lt;*, *&gt;">
+	</Type>
+
+	<!-- ********************************************************************** -->
+	<!-- etl::io_port_wos -->
+	<!-- Visualizer for etl::io_port_wos with dynamic Address -->
+	<Type Name="etl::io_port_wos&lt;*, 0&gt;">
+		<DisplayString>{{ address={address} }}</DisplayString>
+		<Expand>
+			<Item Name="[address]">address</Item>
+			<Item Name="[shadow_value]">shadow_value</Item>
+		</Expand>
+	</Type>
+
+	<!-- Visualizer for etl::io_port_wos with specific Address -->
+	<Type Name="etl::io_port_wos&lt;*, *&gt;">
+		<Expand>
+			<Item Name="[shadow_value]">shadow_value</Item>
+		</Expand>
+	</Type>
+</AutoVisualizer>

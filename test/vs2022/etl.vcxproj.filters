@@ -3577,7 +3577,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="NatvisFile.natvis">
+    <Natvis Include="io_port.natvis">
       <Filter>Resource Files</Filter>
     </Natvis>
   </ItemGroup>
