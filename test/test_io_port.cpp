@@ -44,8 +44,8 @@ namespace
   template <uintptr_t Address>
   struct serial_port
   {
-    etl::io_port_ro<uint8_t, Address>      rxdata;
-    etl::io_port_wo<uint8_t, Address + 1>  txdata;
+    etl::io_port_ro<uint8_t,  Address>     rxdata;
+    etl::io_port_wo<uint8_t,  Address + 1> txdata;
     etl::io_port_rw<uint16_t, Address + 2> control;
     etl::io_port_ro<uint16_t, Address + 4> status;
     etl::io_port_wos<uint8_t, Address + 6> control2;
@@ -87,30 +87,30 @@ namespace
       using iop_wos_t = etl::io_port_wos<uint8_t>;
 
       // Check IOP value_type
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_rw_t::value_type>));
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_ro_t::value_type>));
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_wo_t::value_type>));
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_wos_t::value_type>));
+      CHECK_TRUE((std::is_same<uint8_t, iop_rw_t::value_type>::value));
+      CHECK_TRUE((std::is_same<uint8_t, iop_ro_t::value_type>::value));
+      CHECK_TRUE((std::is_same<uint8_t, iop_wo_t::value_type>::value));
+      CHECK_TRUE((std::is_same<uint8_t, iop_wos_t::value_type>::value));
 
       // Check IOP::iterator io_port_type
-      CHECK_TRUE((std::is_same_v<iop_rw_t,  iop_rw_t::iterator::io_port_type>));
-      CHECK_TRUE((std::is_same_v<iop_wo_t,  iop_wo_t::iterator::io_port_type>));
-      CHECK_TRUE((std::is_same_v<iop_wos_t, iop_wos_t::iterator::io_port_type>));
+      CHECK_TRUE((std::is_same<iop_rw_t,  iop_rw_t::iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_wo_t,  iop_wo_t::iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_wos_t, iop_wos_t::iterator::io_port_type>::value));
 
       // Check IOP::const_iterator io_port_type
-      CHECK_TRUE((std::is_same_v<iop_rw_t,  iop_rw_t::const_iterator::io_port_type>));
-      CHECK_TRUE((std::is_same_v<iop_ro_t,  iop_ro_t::const_iterator::io_port_type>));
-      CHECK_TRUE((std::is_same_v<iop_wos_t, iop_wos_t::const_iterator::io_port_type>));
+      CHECK_TRUE((std::is_same<iop_rw_t,  iop_rw_t::const_iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_ro_t,  iop_ro_t::const_iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_wos_t, iop_wos_t::const_iterator::io_port_type>::value));
 
       // Check IOP::iterator value_type
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_rw_t::iterator::value_type>));
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_wo_t::iterator::value_type>));
-      CHECK_TRUE((std::is_same_v<uint8_t, iop_wos_t::iterator::value_type>));
+      CHECK_TRUE((std::is_same<uint8_t, iop_rw_t::iterator::value_type>::value));
+      CHECK_TRUE((std::is_same<uint8_t, iop_wo_t::iterator::value_type>::value));
+      CHECK_TRUE((std::is_same<uint8_t, iop_wos_t::iterator::value_type>::value));
 
       // Check IOP::const_iterator value_type
-      CHECK_TRUE((std::is_same_v<const uint8_t, iop_rw_t::const_iterator::value_type>));
-      CHECK_TRUE((std::is_same_v<const uint8_t, iop_ro_t::const_iterator::value_type>));
-      CHECK_TRUE((std::is_same_v<const uint8_t, iop_wos_t::const_iterator::value_type>));
+      CHECK_TRUE((std::is_same<const uint8_t, iop_rw_t::const_iterator::value_type>::value));
+      CHECK_TRUE((std::is_same<const uint8_t, iop_ro_t::const_iterator::value_type>::value));
+      CHECK_TRUE((std::is_same<const uint8_t, iop_wos_t::const_iterator::value_type>::value));
     }   
 
     //*************************************************************************
