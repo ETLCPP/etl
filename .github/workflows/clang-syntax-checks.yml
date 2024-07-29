@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-clang-cpp03-linux-STL:
-    name: Clang C++03 Linux STL
+    name: Syntax Check - Clang C++03 Linux STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -25,7 +25,7 @@ jobs:
         make
 
   build-clang-cpp03-linux-No-STL:
-    name: Clang C++03 Linux No STL 
+    name: Syntax Check - Clang C++03 Linux No STL 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -43,7 +43,7 @@ jobs:
         make
 
   build-clang-cpp11-linux-STL:
-    name: Clang C++11 Linux STL
+    name: Syntax Check - Clang C++11 Linux STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -61,7 +61,7 @@ jobs:
         make
 
   build-clang-cpp11-linux-No-STL:
-    name: Clang C++11 Linux No STL 
+    name: Syntax Check - Clang C++11 Linux No STL 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -79,7 +79,7 @@ jobs:
         make
 
   build-clang-cpp11-linux-STL-Force-CPP03:
-    name: Clang C++11 Linux STL Force C++03
+    name: Syntax Check - Clang C++11 Linux STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -97,7 +97,7 @@ jobs:
         make
 
   build-clang-cpp11-linux-No-STL-Force-CPP03:
-    name: Clang C++11 Linux No STL Force C++03
+    name: Syntax Check - Clang C++11 Linux No STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -115,7 +115,7 @@ jobs:
         make
 
   build-clang-cpp14-linux-STL:
-    name: Clang C++14 Linux STL
+    name: Syntax Check - Clang C++14 Linux STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -133,7 +133,7 @@ jobs:
         make
 
   build-clang-cpp14-linux-No-STL:
-    name: Clang C++14 Linux No STL 
+    name: Syntax Check - Clang C++14 Linux No STL 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -151,7 +151,7 @@ jobs:
         make
 
   build-clang-cpp14-linux-STL-Force-CPP03:
-    name: Clang C++14 Linux STL Force C++03
+    name: Syntax Check - Clang C++14 Linux STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -169,7 +169,7 @@ jobs:
         make
 
   build-clang-cpp14-linux-No-STL-Force-CPP03:
-    name: Clang C++14 Linux No STL Force C++03
+    name: Syntax Check - Clang C++14 Linux No STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -187,7 +187,7 @@ jobs:
         make
 
   build-clang-cpp17-linux-STL:
-    name: Clang C++17 Linux STL
+    name: Syntax Check - Clang C++17 Linux STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -205,7 +205,7 @@ jobs:
         make
 
   build-clang-cpp17-linux-No-STL:
-    name: Clang C++17 Linux No STL 
+    name: Syntax Check - Clang C++17 Linux No STL 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -223,7 +223,7 @@ jobs:
         make
 
   build-clang-cpp17-linux-STL-Force-CPP03:
-    name: Clang C++17 Linux STL Force C++03
+    name: Syntax Check - Clang C++17 Linux STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -241,7 +241,7 @@ jobs:
         make
 
   build-clang-cpp17-linux-No-STL-Force-CPP03:
-    name: Clang C++17 Linux No STL Force C++03
+    name: Syntax Check - Clang C++17 Linux No STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -259,7 +259,7 @@ jobs:
         make
 
   build-clang-cpp20-linux-STL:
-    name: Clang C++20 Linux STL
+    name: Syntax Check - Clang C++20 Linux STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -277,7 +277,7 @@ jobs:
         make
 
   build-clang-cpp20-linux-No-STL:
-    name: Clang C++20 Linux No STL 
+    name: Syntax Check - Clang C++20 Linux No STL 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -295,7 +295,7 @@ jobs:
         make
 
   build-clang-cpp20-linux-STL-Force-CPP03:
-    name: Clang C++20 Linux STL Force C++03
+    name: Syntax Check - Clang C++20 Linux STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -313,7 +313,7 @@ jobs:
         make
 
   build-clang-cpp20-linux-No-STL-Force-CPP03:
-    name: Clang C++20 Linux No STL Force C++03
+    name: Syntax Check - Clang C++20 Linux No STL Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
