@@ -139,6 +139,15 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Figure out things about the compiler, if haven't already done so in etl_profile.h
+#include "profiles/determine_compiler_version.h"
+#include "profiles/determine_compiler_language_support.h"
+
+//*************************************
+// See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
+#include "profiles/determine_development_os.h"
+
+//*************************************
 // Helper macro for choosing the variant type.
 #if !ETL_USING_CPP11 || defined(ETL_USE_LEGACY_VARIANT)
   #define ETL_USING_LEGACY_VARIANT     1
@@ -147,15 +156,6 @@ SOFTWARE.
   #define ETL_USING_LEGACY_VARIANT     0
   #define ETL_NOT_USING_LEGACY_VARIANT 1
 #endif
-
-//*************************************
-// Figure out things about the compiler, if haven't already done so in etl_profile.h
-#include "profiles/determine_compiler_version.h"
-#include "profiles/determine_compiler_language_support.h"
-
-//*************************************
-// See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
-#include "profiles/determine_development_os.h"
 
 //*************************************
 // Check WCHAR_MIN and WCHAR_MAX
