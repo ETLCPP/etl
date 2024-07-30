@@ -459,6 +459,54 @@ namespace etl
     template <typename T>
     ETL_CONSTANT bool statics_char32_t<T>::is_signed;
 #endif
+
+#if ETL_USING_20BIT_TYPES
+template <typename T = void>
+    struct statics___int20
+    {
+      typedef __int20 value_type;
+
+      static ETL_CONSTANT __int20 min       = 0x80000;
+      static ETL_CONSTANT __int20 max       = 0x7FFFF;
+      static ETL_CONSTANT int     bits      = 20;
+      static ETL_CONSTANT bool    is_signed = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT __int20 statics___int20<T>::min;
+
+    template <typename T>
+    ETL_CONSTANT __int20 statics___int20<T>::max;
+
+    template <typename T>
+    ETL_CONSTANT int statics___int20<T>::bits;
+
+    template <typename T>
+    ETL_CONSTANT bool statics___int20<T>::is_signed;
+
+    template <typename T = void>
+    struct statics_unsigned___int20
+    {
+      typedef unsigned __int20 value_type;
+
+      static ETL_CONSTANT unsigned __int20 min       = 0;
+      static ETL_CONSTANT unsigned __int20 max       = 0xFFFFF;
+      static ETL_CONSTANT int              bits      = 20;
+      static ETL_CONSTANT bool             is_signed = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT unsigned __int20 statics_unsigned___int20<T>::min;
+
+    template <typename T>
+    ETL_CONSTANT unsigned __int20 statics_unsigned___int20<T>::max;
+
+    template <typename T>
+    ETL_CONSTANT int statics_unsigned___int20<T>::bits;
+
+    template <typename T>
+    ETL_CONSTANT bool statics_unsigned___int20<T>::is_signed;
+#endif
   }
 
   //***************************************************************************
@@ -556,6 +604,21 @@ namespace etl
   struct integral_limits<unsigned long long> : public private_integral_limits::statics_unsigned_long_long<>
   {
   };
+
+  #if ETL_USING_20BIT_TYPES
+  //***************************************************************************
+  ///\ingroup integral_limits
+  //***************************************************************************
+  template <>
+  struct integral_limits<__int20> : public private_integral_limits::statics___int20<>
+  {
+  };
+
+  template <>
+  struct integral_limits<unsigned __int20> : public private_integral_limits::statics_unsigned___int20<>
+  {
+  };
+  #endif
 }
 
 #include "private/minmax_pop.h"
