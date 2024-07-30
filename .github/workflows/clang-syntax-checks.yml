@@ -22,7 +22,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++03
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp03-linux-No-STL:
     name: Syntax Check - Clang C++03 Linux No STL 
@@ -40,7 +40,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++03
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp11-linux-STL:
     name: Syntax Check - Clang C++11 Linux STL
@@ -58,7 +58,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++11
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp11-linux-No-STL:
     name: Syntax Check - Clang C++11 Linux No STL 
@@ -76,7 +76,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++11
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp11-linux-STL-Force-CPP03:
     name: Syntax Check - Clang C++11 Linux STL Force C++03
@@ -94,7 +94,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++11
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp11-linux-No-STL-Force-CPP03:
     name: Syntax Check - Clang C++11 Linux No STL Force C++03
@@ -112,7 +112,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++11
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp14-linux-STL:
     name: Syntax Check - Clang C++14 Linux STL
@@ -130,7 +130,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++14
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp14-linux-No-STL:
     name: Syntax Check - Clang C++14 Linux No STL 
@@ -148,7 +148,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++14
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp14-linux-STL-Force-CPP03:
     name: Syntax Check - Clang C++14 Linux STL Force C++03
@@ -166,7 +166,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++14
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp14-linux-No-STL-Force-CPP03:
     name: Syntax Check - Clang C++14 Linux No STL Force C++03
@@ -184,7 +184,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++14
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp17-linux-STL:
     name: Syntax Check - Clang C++17 Linux STL
@@ -202,7 +202,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++17
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp17-linux-No-STL:
     name: Syntax Check - Clang C++17 Linux No STL 
@@ -220,7 +220,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++17
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp17-linux-STL-Force-CPP03:
     name: Syntax Check - Clang C++17 Linux STL Force C++03
@@ -238,7 +238,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++17
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp17-linux-No-STL-Force-CPP03:
     name: Syntax Check - Clang C++17 Linux No STL Force C++03
@@ -256,7 +256,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++17
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp20-linux-STL:
     name: Syntax Check - Clang C++20 Linux STL
@@ -274,7 +274,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++20
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp20-linux-No-STL:
     name: Syntax Check - Clang C++20 Linux No STL 
@@ -292,7 +292,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++20
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp20-linux-STL-Force-CPP03:
     name: Syntax Check - Clang C++20 Linux STL Force C++03
@@ -310,7 +310,7 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++20
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
 
   build-clang-cpp20-linux-No-STL-Force-CPP03:
     name: Syntax Check - Clang C++20 Linux No STL Force C++03
@@ -328,4 +328,4 @@ jobs:
         export CXX=clang++
         cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++20
         clang --version
-        make
+        make -j $(getconf _NPROCESSORS_ONLN)
