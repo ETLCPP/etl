@@ -309,6 +309,7 @@ namespace etl
     /// 'void' return.
     //*************************************************************************
     template <typename TRet = TReturn>
+    ETL_CONSTEXPR14
     typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool>
       call_if(TParams... args) const
     {
@@ -328,6 +329,7 @@ namespace etl
     /// Non 'void' return.
     //*************************************************************************
     template <typename TRet = TReturn>
+    ETL_CONSTEXPR14
     typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>>
       call_if(TParams... args) const
     {

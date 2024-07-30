@@ -21,7 +21,7 @@ NoColour='\033[0m'
 
 ParseGitBranch() 
 {
-    git rev-parse --abbrev-ref HEAD
+	git rev-parse --abbrev-ref HEAD
 }
 
 SetConfigurationName()
@@ -38,14 +38,14 @@ PrintHeader()
 {
 	echo "$TitleColour"
 	echo "============================================================================" | tee -a log.txt
-	echo " Configuration     : $configuration_name" | tee -a log.txt
-	echo " Compiler          : $compiler          " | tee -a log.txt
-	echo " Language standard : C++$cxx_standard   " | tee -a log.txt
-    echo " Optimisation      : $opt               " | tee -a log.txt
-	echo " Sanitizer         : $sanitize          " | tee -a log.txt
-	echo " ETL version       : $etl_version       " | tee -a log.txt
-	echo " Git branch        : $(ParseGitBranch)  " | tee -a log.txt
-	echo " Processes         : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
+	echo " Configuration : $configuration_name" | tee -a log.txt
+	echo " Compiler      : $compiler          " | tee -a log.txt
+	echo " Language      : C++$cxx_standard   " | tee -a log.txt
+    echo " Optimisation  : $opt               " | tee -a log.txt
+	echo " Sanitizer     : $sanitize          " | tee -a log.txt
+	echo " ETL version   : $etl_version       " | tee -a log.txt
+	echo " Git branch    : $(ParseGitBranch)  " | tee -a log.txt
+	echo " Processes     : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -54,10 +54,10 @@ PrintHelp()
 {
 	echo "$HelpColour"
 	echo "----------------------------------------------------------------------------------"
-	echo " Syntax       : ./runtests.sh <C++ Standard> <Threads> <Optimisation> <Sanitizer> "
+	echo " Syntax       : ./runtests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> "
 	echo " C++ Standard : 11, 14, 17 or 20                                                  "
-	echo " Threads      : Number of threads to use. Default = 4                             "
 	echo " Optimisation : 0, 1, 2 or 3. Default = 0                                         "
+	echo " Threads      : Number of threads to use. Default = 4                             "
 	echo " Sanitizer    : S enables sanitizer checks. Default disabled                      "
 	echo "----------------------------------------------------------------------------------"
 	echo "$NoColour"
@@ -67,7 +67,7 @@ PassedCompilation()
 {
 	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $configuration_name" | tee -a log.txt
+	echo " Compilation Success - $configuration_name" | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -85,7 +85,7 @@ FailedCompilation()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Compilation - $configuration_name" | tee -a log.txt
+	echo "**** Failed Compilation - $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
@@ -95,7 +95,7 @@ FailedTests()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Tests - $configuration_name" | tee -a log.txt
+	echo "**** Failed Tests - $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
@@ -129,7 +129,9 @@ fi
 #******************************************************************************
 # Set the optimisation level. Default -O0
 #******************************************************************************
-if [ "$2" = "1" ]; then
+if [ $# -eq 1 ]; then
+  opt="-O0"
+elif [ "$2" = "1" ]; then
   opt="-O1"
 elif [ "$2" = "2" ]; then
   opt="-O2"
@@ -140,9 +142,9 @@ else
 fi
 
 #******************************************************************************
-# Set the number of concurrent processes to use.
+# Set the number of concurrent processes to use. Default 4
 #******************************************************************************
-if [ $# -eq 2 ]; then
+if [ $# -le 2 ]; then
   export CMAKE_BUILD_PARALLEL_LEVEL=4
 else
   export CMAKE_BUILD_PARALLEL_LEVEL=$3

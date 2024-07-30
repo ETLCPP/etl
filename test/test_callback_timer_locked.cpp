@@ -872,6 +872,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(callback_timer_is_active)
+    {
+      locks.clear();
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_TRUE(timer_controller.is_active(id2));
+      CHECK_TRUE(timer_controller.is_active(id3));
+
+      timer_controller.tick(11);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_TRUE(timer_controller.is_active(id2));
+      CHECK_FALSE(timer_controller.is_active(id3));
+
+      timer_controller.tick(23 - 11);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_FALSE(timer_controller.is_active(id2));
+      CHECK_FALSE(timer_controller.is_active(id3));
+
+      timer_controller.tick(37 - 23);
+      CHECK_FALSE(timer_controller.is_active(id1));
+      CHECK_FALSE(timer_controller.is_active(id2));
+      CHECK_FALSE(timer_controller.is_active(id3));
+    }
+
+    //*************************************************************************
     TEST(message_timer_time_to_next_with_has_active_timer)
     {
       locks.clear();

@@ -35,13 +35,33 @@ SOFTWARE.
 
 #include <stddef.h>
 
+namespace etl
+{
 #if ETL_CPP11_NOT_SUPPORTED
-  // Use the old style C++ NULL definition.
-  #define ETL_NULLPTR 0
+  class nullptr_t
+  {
+  public:
+    template <class T>
+    inline operator T*() const { return 0; }
+
+    template <class C, class T>
+    inline operator T C::* () const { return 0; }
+    
+    inline bool operator==(nullptr_t) const { return true; }
+    inline bool operator!=(nullptr_t) const { return false; }
+  private:
+    void operator&() const ETL_DELETE; // cannot take the address of ETL_NULLPTR
+  };
+  
+  static const nullptr_t _nullptr = nullptr_t();
+
+  #define ETL_NULLPTR (etl::_nullptr)
 #else
   // Use the new style nullptr.
+  typedef decltype(nullptr) nullptr_t;
   #define ETL_NULLPTR nullptr
 #endif
+}
 
 #endif
 

@@ -1763,17 +1763,21 @@ namespace
       CHECK_EQUAL(N << 63U, etl::bit<63>::value);
   #endif
 #endif
+    }
 
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<1>,  etl::bit_t<0>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<2>,  etl::bit_t<1>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<3>,  etl::bit_t<2>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<4>,  etl::bit_t<3>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<5>,  etl::bit_t<4>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<6>,  etl::bit_t<5>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<7>,  etl::bit_t<6>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<8>,  etl::bit_t<7>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<9>,  etl::bit_t<8>>::value));
-      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<10>,  etl::bit_t<9>>::value));
+    //*************************************************************************
+    TEST(test_bit_t)
+    {
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<1>, etl::bit_t<0>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<2>, etl::bit_t<1>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<3>, etl::bit_t<2>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<4>, etl::bit_t<3>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<5>, etl::bit_t<4>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<6>, etl::bit_t<5>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<7>, etl::bit_t<6>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<8>, etl::bit_t<7>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<9>, etl::bit_t<8>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<10>, etl::bit_t<9>>::value));
       CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<11>, etl::bit_t<10>>::value));
       CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<12>, etl::bit_t<11>>::value));
       CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<13>, etl::bit_t<12>>::value));

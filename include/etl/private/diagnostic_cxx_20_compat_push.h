@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 John Wellbelove
+Copyright(c) 2023 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,30 +28,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_PARAMETER_INCLUDED
-#define ETL_PARAMETER_INCLUDED
+/*
+ * The header include guard has been intentionally omitted.
+ * This file is intended to evaluated multiple times by design.
+ */
 
-#include "platform.h"
-#include "type_traits.h"
-
-namespace etl
-{
-  //*************************************************************************
-  /// Determine how to pass parameters.
-  //*************************************************************************
-  template <typename T>
-  struct parameter_type
-  {
-    /// By default fundamental and pointer types are passed by value.
-    typedef typename etl::conditional<etl::is_fundamental<T>::value || etl::is_pointer<T>::value,
-                                         T,
-                                         const T&>::type type;
-  };
-
-#if ETL_USING_CPP11
-  template <typename T>
-  using parameter_type_t = typename etl::parameter_type<T>::type;
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
+  #pragma GCC diagnostic push 
+  #pragma GCC diagnostic ignored "-Wc++20-compat"
 #endif
-}
 
+#if defined(__clang__) || defined(__llvm__)
+  #pragma clang diagnostic push 
+  #pragma clang diagnostic ignored "-Wc++20-compat"
 #endif

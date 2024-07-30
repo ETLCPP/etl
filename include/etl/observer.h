@@ -147,10 +147,10 @@ namespace etl
     //*****************************************************************
     void add_observer(TObserver& observer)
     {
-		  // See if we already have it in our list.
+      // See if we already have it in our list.
       typename Observer_List::iterator i_observer_item = find_observer(observer);
 
-		  // Not there?
+      // Not there?
       if (i_observer_item == observer_list.end())
       {
         // Is there enough room?
@@ -253,6 +253,26 @@ namespace etl
       }
     }
 
+#if ETL_USING_CPP11
+    //*****************************************************************
+    /// Notify all of the observers, sending them the notification.
+    //*****************************************************************
+    void notify_observers()
+    {
+      typename Observer_List::iterator i_observer_item = observer_list.begin();
+
+      while (i_observer_item != observer_list.end())
+      {
+        if (i_observer_item->enabled)
+        {
+          i_observer_item->p_observer->notification();
+        }
+
+        ++i_observer_item;
+      }
+    }
+#endif
+
   protected:
 
     ~observable()
@@ -301,6 +321,20 @@ namespace etl
     virtual ~observer() = default;
 
     virtual void notification(T1) = 0;
+  };
+
+  //*****************************************************************
+  /// The specialised observer class for void type.
+  ///\ingroup observer
+  //*****************************************************************
+  template <>
+  class observer<void>
+  {
+  public:
+
+    virtual ~observer() = default;
+
+    virtual void notification() = 0;
   };
 
 #else

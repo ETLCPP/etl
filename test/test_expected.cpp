@@ -629,5 +629,135 @@ namespace
       CHECK_TRUE(thrown);
       CHECK_TRUE(exception_what == thrown_what);
     }
+
+    //*************************************************************************
+    TEST(test_expected_equal_operator)
+    {
+      etl::expected<int, int> test_exp = 1;
+      etl::expected<int, int> test_exp_equal = 1;
+      etl::expected<int, int> test_exp_unequal = 2;
+      int test_val_equal = 1;
+      int test_val_unequal = 2;
+      etl::expected<int, int> test_unexp = etl::unexpected<int>(1);
+      etl::expected<int, int> test_unexp_equal = etl::unexpected<int>(1);
+      etl::expected<int, int> test_unexp_unequal = etl::unexpected<int>(2);
+
+      CHECK_TRUE(test_exp == test_exp_equal);
+      CHECK_FALSE(test_exp != test_exp_equal);
+
+      CHECK_FALSE(test_exp == test_exp_unequal);
+      CHECK_TRUE(test_exp != test_exp_unequal);
+
+      CHECK_TRUE(test_exp == test_val_equal);
+      CHECK_FALSE(test_exp != test_val_equal);
+
+      CHECK_FALSE(test_exp == test_val_unequal);
+      CHECK_TRUE(test_exp != test_val_unequal);
+
+      CHECK_FALSE(test_exp == test_unexp);
+      CHECK_TRUE(test_exp != test_unexp);
+
+      CHECK_TRUE(test_unexp == test_unexp_equal);
+      CHECK_FALSE(test_unexp != test_unexp_equal);
+
+      CHECK_FALSE(test_unexp == test_unexp_unequal);
+      CHECK_TRUE(test_unexp != test_unexp_unequal);
+    }
+
+
+    //*************************************************************************
+    TEST(test_expected_void_equal_operator)
+    {
+      etl::expected<void, int> test_exp;
+      etl::expected<void, int> test_exp2;
+      etl::expected<void, int> test_unexp = etl::unexpected<int>(1);
+      etl::expected<void, int> test_unexp2 = etl::unexpected<int>(2);
+
+      CHECK_TRUE(test_exp == test_exp2);
+      CHECK_FALSE(test_exp != test_exp2);
+
+      CHECK_FALSE(test_exp == test_unexp);
+      CHECK_TRUE(test_exp != test_unexp);
+
+      CHECK_FALSE(test_unexp == test_unexp2);
+      CHECK_TRUE(test_unexp != test_unexp2);
+    }
+
+    //*************************************************************************
+    TEST(test_unexpected_equal_operator)
+    {
+      etl::unexpected<int> test_unexp = etl::unexpected<int>(1);
+      etl::unexpected<int> test_unexp_equal = etl::unexpected<int>(1);
+      etl::unexpected<int> test_unexp_unequal = etl::unexpected<int>(2);
+
+      CHECK_TRUE(test_unexp == test_unexp_equal);
+      CHECK_FALSE(test_unexp != test_unexp_equal);
+
+      CHECK_FALSE(test_unexp == test_unexp_unequal);
+      CHECK_TRUE(test_unexp != test_unexp_unequal);
+    }
+
+    //*************************************************************************
+    TEST(test_expected_swap)
+    {
+      etl::expected<int, int> test_exp_1 = 1;
+      etl::expected<int, int> test_exp_2 = 2;
+      etl::expected<int, int> test_unexp_1 = etl::unexpected<int>(1);
+      etl::expected<int, int> test_unexp_2 = etl::unexpected<int>(2);
+
+      etl::expected<int, int> test_exp_1_swap = test_exp_1;
+      etl::expected<int, int> test_exp_2_swap = test_exp_2;
+
+      swap(test_exp_1_swap, test_exp_2_swap);
+
+      CHECK_TRUE(test_exp_1_swap == test_exp_2);
+      CHECK_TRUE(test_exp_2_swap == test_exp_1);
+
+      etl::expected<int, int> test_unexp_1_swap = test_unexp_1;
+      etl::expected<int, int> test_unexp_2_swap = test_unexp_2;
+
+      swap(test_unexp_1_swap, test_unexp_2_swap);
+
+      CHECK_TRUE(test_unexp_1_swap == test_unexp_2);
+      CHECK_TRUE(test_unexp_2_swap == test_unexp_1);
+
+      etl::expected<int, int> test_exp_swap = test_exp_1;
+      etl::expected<int, int> test_unexp_swap = test_unexp_1;
+
+      swap(test_exp_swap, test_unexp_swap);
+
+      CHECK_TRUE(test_exp_swap == test_unexp_1);
+      CHECK_TRUE(test_unexp_swap == test_exp_1);
+    }
+
+    //*************************************************************************
+    TEST(test_expected_void_swap)
+    {
+      etl::expected<void, int> test_exp;
+      etl::expected<void, int> test_unexp = etl::unexpected<int>(1);
+
+      etl::expected<void, int> test_exp_swap = test_exp;
+      etl::expected<void, int> test_unexp_swap = test_unexp;
+
+      swap(test_exp_swap, test_unexp_swap);
+
+      CHECK_TRUE(test_exp_swap == test_unexp);
+      CHECK_TRUE(test_unexp_swap == test_exp);
+    }
+
+    //*************************************************************************
+    TEST(test_unexpected_swap)
+    {
+      etl::unexpected<int> test_unexp_1 = etl::unexpected<int>(1);
+      etl::unexpected<int> test_unexp_2 = etl::unexpected<int>(2);
+
+      etl::unexpected<int> test_unexp_1_swap = test_unexp_1;
+      etl::unexpected<int> test_unexp_2_swap = test_unexp_2;
+
+      swap(test_unexp_1_swap, test_unexp_2_swap);
+
+      CHECK_TRUE(test_unexp_1_swap == test_unexp_2);
+      CHECK_TRUE(test_unexp_2_swap == test_unexp_1);
+    }
   };
 }

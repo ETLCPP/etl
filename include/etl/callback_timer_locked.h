@@ -339,6 +339,34 @@ namespace etl
       return delta;
     }
 
+    //*******************************************
+    /// Checks if a timer is currently active.
+    /// Returns <b>true</b> if the timer is active, otherwise <b>false</b>.
+    //*******************************************
+    bool is_active(etl::timer::id::type id_) const
+    {
+      bool result = false;
+
+      // Valid timer id?
+      if (is_valid_timer_id(id_))
+      {
+        if (has_active_timer())
+        {
+          lock();
+          const timer_data& timer = timer_array[id_];
+
+          // Registered timer?
+          if (timer.id != etl::timer::id::NO_TIMER)
+          {
+            result = timer.is_active();
+          }
+          unlock();
+        }
+      }
+
+      return result;
+    }
+
   protected:
 
     //*************************************************************************
@@ -602,6 +630,14 @@ namespace etl
 
       timer_data* const ptimers;
     };
+
+    //*******************************************
+    /// Check that the timer id is valid.
+    //*******************************************
+    bool is_valid_timer_id(etl::timer::id::type id_) const
+    {
+      return (id_ < MAX_TIMERS);
+    }
 
     // The array of timer data structures.
     timer_data* const timer_array;

@@ -1,6 +1,6 @@
 {
   "name": "Embedded Template Library ETL",
-  "version": "20.38.11",
+  "version": "20.39.0",
   "authors": {
     "name": "John Wellbelove",
     "email": "john.wellbelove@etlcpp.com"
@@ -11,7 +11,7 @@
   "keywords": "c-plus-plus, cpp, algorithms, containers, templates",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ETLCPP/etl.git"
+    "url": "https://github.com/ETLCPP/etl-arduino.git"
   },
   "build": {
     "includeDir": "include"

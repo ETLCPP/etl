@@ -1,7 +1,49 @@
 ﻿===============================================================================
+20.39.0
+
+Refactored:
+Modified io_port classes so that they are not derived from iterator types.
+    Added iterator and const_iterator types.
+    Added iter() and citer() member functions to get an iterator.
+    Added &= |= ^= <<= >>= and ~ operators (only available for io_port_rw and io_port_wos types)
+    Added static asserts to only allow integral types.
+
+Fixes:
+#921 unique_ptr reset
+#923 Missing equality operator for class expected
+#930 Unused parameter warnings
+
+Features:
+#918 Request for additional operator support for etl::io_port_*
+#919 callback_timer: expose callback_timer_data::is_active() as icallback_timer public method 
+#920 Define ETL_USING_LEGACY_VARIANT as a convenience macro for code that tries to support both new and legacy variants
+
+Pull Requests
+#909 fix c++20-compat false positive
+#914 Fix doc comment for pool::allocate()
+#924 Add an etl::nullptr_t type to <etl/nullptr.h>
+#925 Add equality operators for class expected
+#926 Fix issue #923 equality operator for class expected
+#927 Fix missing partial specialisation equal operators
+#928 Add missing swap implementations for expected
+#929 Fix run-tests.sh script
+#934 Fixes compiler detection with Wundef
+
+===============================================================================
 20.38.17
 
+Fixes:
 #895 Removed std algorithm calls from algorithm.h
+
+Features:
+Added Base64 codecs. RFC2152, RFC3501, RFC4648 and RFC4648-URL
+Added parameter_type_t for C++11
+
+Pull Requests:
+#905 Added support for type identity
+
+Other:
+Reenabled address sanitizer for VS2022
 
 ===============================================================================
 20.38.16

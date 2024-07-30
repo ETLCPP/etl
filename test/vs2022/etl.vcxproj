@@ -210,7 +210,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableASAN>false</EnableASAN>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -1550,7 +1550,7 @@
       </UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -3011,6 +3011,8 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
     <ClInclude Include="..\..\include\etl\base64.h" />
+    <ClInclude Include="..\..\include\etl\base64_decoder.h" />
+    <ClInclude Include="..\..\include\etl\base64_encoder.h" />
     <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\basic_string_stream.h" />
     <ClInclude Include="..\..\include\etl\bip_buffer_spsc_atomic.h" />
@@ -7703,7 +7705,32 @@
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
-    <ClCompile Include="..\test_base64.cpp" />
+    <ClCompile Include="..\test_base64_RFC2152_decoder.cpp" />
+    <ClCompile Include="..\test_base64_RFC2152_encoder.cpp" />
+    <ClCompile Include="..\test_base64_RFC3501_decoder.cpp" />
+    <ClCompile Include="..\test_base64_RFC3501_encoder.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_decoder_with_no_padding.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++ 20 - No Tests|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17 - No STL|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - Optimised O2|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual messages|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_decoder_with_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_encoder_with_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_URL_decoder_with_no_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_URL_decoder_with_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_URL_encoder_with_no_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_URL_encoder_with_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_encoder_with_no_padding.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
     <ClCompile Include="..\test_bitset_new_comparisons.cpp" />
     <ClCompile Include="..\test_bitset_new_default_element_type.cpp" />
@@ -9022,7 +9049,7 @@
     <Image Include="..\..\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="NatvisFile.natvis" />
+    <Natvis Include="io_port.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

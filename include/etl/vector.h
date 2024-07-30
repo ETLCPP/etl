@@ -269,6 +269,7 @@ namespace etl
     //*********************************************************************
     void reserve(size_t n)
     {
+      (void)n; // Stop 'unused parameter' warning in release mode.
       ETL_ASSERT(n <= CAPACITY, ETL_ERROR(vector_out_of_bounds));
     }
 
@@ -1376,7 +1377,7 @@ namespace etl
   template <typename... T>
   constexpr auto make_vector(T&&... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { etl::forward<T>(t)... };
   }
 #endif
 
@@ -1674,7 +1675,7 @@ namespace etl
   template <typename... T>
   constexpr auto make_vector(T*... t) -> etl::vector<typename etl::common_type_t<T*...>, sizeof...(T)>
   {
-    return { { etl::forward<T*>(t)... } };
+    return { etl::forward<T*>(t)... };
   }
 #endif
 
