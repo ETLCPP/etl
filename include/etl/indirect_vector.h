@@ -606,6 +606,7 @@ namespace etl
     //*********************************************************************
     void reserve(size_t n)
     {
+      (void)n;  // Stop 'unused parameter' warning in release mode.
       ETL_ASSERT(n <= capacity(), ETL_ERROR(vector_out_of_bounds));
     }
 
