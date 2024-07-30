@@ -118,6 +118,17 @@ SOFTWARE.
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8) // Deprecated
 
 //*************************************
+// Some targets support 20bit types.
+#if defined(ETL_USE_20BIT_TYPES)
+  #define ETL_USING_20BIT_TYPES     1
+  #define ETL_NOT_USING_20BIT_TYPES 0
+#else
+  #define ETL_USING_20BIT_TYPES     0
+  #define ETL_NOT_USING_20BIT_TYPES 1
+#endif
+
+
+//*************************************
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
   #define ETL_USING_64BIT_TYPES     0

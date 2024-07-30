@@ -1,4 +1,40 @@
 ﻿===============================================================================
+20.39.0
+
+Refactored:
+Breaking change.
+Modified io_port classes so that they are not derived from iterator types.
+    Added iterator and const_iterator types.
+    Added iter() and citer() member functions to get an iterator.
+    Added &= |= ^= <<= >>= and ~ operators (only available for io_port_rw and io_port_wos types)
+    Added static asserts to only allow integral types.
+
+Fixes:
+#921 unique_ptr reset
+#923 Missing equality operator for class expected 
+#930 Unused parameter warnings
+#931 Using etl::make_vector to make a vector of two pairs causes a compile error
+
+Features:
+#918 Request for additional operator support for etl::io_port_*
+#919 callback_timer: expose callback_timer_data::is_active() as icallback_timer public method 
+#920 Define ETL_USING_LEGACY_VARIANT as a convenience macro for code that tries to support both new and legacy variants
+
+Pull Requests
+#909 fix c++20-compat false positive
+#914 Fix doc comment for pool::allocate()
+#924 Add an etl::nullptr_t type to <etl/nullptr.h>
+#925 Add equality operators for class expected
+#926 Fix issue #923 equality operator for class expected
+#927 Fix missing partial specialisation equal operators
+#928 Add missing swap implementations for expected
+#929 Fix run-tests.sh script
+#932 Fix issue #931 Using etl::make_vector to make a vector of two pairs causes a compile error
+#934 Fixes compiler detection with Wundef
+#935 Added 20 bit integral limits (MSP430 devices)
+     New configuration macro, ETL_USE_20BIT_TYPES, which controls the definition of ETL_USING_20BIT_TYPES and ETL_NOT_USING_20BIT_TYPES.
+
+===============================================================================
 20.38.17
 
 #895 Removed std algorithm calls from algorithm.h

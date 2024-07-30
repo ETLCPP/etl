@@ -460,7 +460,7 @@ namespace etl
     ETL_CONSTANT bool statics_char32_t<T>::is_signed;
 #endif
 
-#ifdef ETL_20_BIT
+#if ETL_USING_20BIT_TYPES
 template <typename T = void>
     struct statics___int20
     {
@@ -604,11 +604,12 @@ template <typename T = void>
   struct integral_limits<unsigned long long> : public private_integral_limits::statics_unsigned_long_long<>
   {
   };
-  #ifdef ETL_20_BIT
-    //***************************************************************************
+
+  #if ETL_USING_20BIT_TYPES
+  //***************************************************************************
   ///\ingroup integral_limits
   //***************************************************************************
-    template <>
+  template <>
   struct integral_limits<__int20> : public private_integral_limits::statics___int20<>
   {
   };
