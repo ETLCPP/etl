@@ -128,8 +128,8 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Helper macro for variant selection.
-#if defined(ETL_USE_LEGACY_VARIANT)
+// Helper macro for choosing the variant type.
+#if !ETL_USING_CPP11 || defined(ETL_USE_LEGACY_VARIANT)
   #define ETL_USING_LEGACY_VARIANT     1
   #define ETL_NOT_USING_LEGACY_VARIANT 0
 #else
