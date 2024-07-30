@@ -21,6 +21,7 @@ Features:
 #920 Define ETL_USING_LEGACY_VARIANT as a convenience macro for code that tries to support both new and legacy variants
 
 Pull Requests
+#905 Add-support-for-type_identity
 #909 fix c++20-compat false positive
 #914 Fix doc comment for pool::allocate()
 #924 Add an etl::nullptr_t type to <etl/nullptr.h>
