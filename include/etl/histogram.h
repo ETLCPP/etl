@@ -249,7 +249,7 @@ namespace etl
     //*********************************
     value_type operator [](key_type key) const
     {
-      return this->accumulator[key];
+      return this->accumulator[key - Start_Index];
     }
   };
 
@@ -373,7 +373,7 @@ namespace etl
     //*********************************
     value_type operator [](key_type key) const
     {
-      return this->accumulator[key];
+      return this->accumulator[key - start_index];
     }
 
   private:
