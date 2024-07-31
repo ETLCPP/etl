@@ -37,8 +37,6 @@ Pull Requests
      New configuration macro, ETL_USE_20BIT_TYPES, which controls the definition of ETL_USING_20BIT_TYPES and ETL_NOT_USING_20BIT_TYPES.
 #939 Fix histogram indexing when accessed via operator[]
 
-
-
 ===============================================================================
 20.38.17
 
