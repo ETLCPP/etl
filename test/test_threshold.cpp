@@ -88,7 +88,7 @@ namespace
 
   std::array<double, Size> output2;
 
-  SUITE(test_histogram)
+  SUITE(test_threshold)
   {
     //*************************************************************************
     TEST(test_int_threshold)
