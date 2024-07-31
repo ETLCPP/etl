@@ -247,7 +247,7 @@ namespace
 
       for (size_t i = 0UL; i < output1.size(); ++i)
       {
-        CHECK_EQUAL(int(output1[i]), int(histogram[i]));
+        CHECK_EQUAL(int(output1[i]), int(histogram[i - 4]));
       }
     }
 
