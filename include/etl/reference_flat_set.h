@@ -999,7 +999,7 @@ namespace etl
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_reference_flat_set(T&&... keys) -> etl::reference_flat_set<TKey, sizeof...(T), TKeyCompare>
   {
-    return { {etl::forward<T>(keys)...} };
+    return { etl::forward<T>(keys)... };
   }
 #endif
 

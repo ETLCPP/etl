@@ -1470,7 +1470,7 @@ namespace etl
   template <typename... T>
   constexpr auto make_indirect_vector(T&&... t) -> etl::indirect_vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { etl::forward<T>(t)... };
   }
 #endif
 

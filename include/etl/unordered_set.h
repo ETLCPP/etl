@@ -1610,7 +1610,7 @@ namespace etl
   template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... T>
   constexpr auto make_unordered_set(T&&... keys) -> etl::unordered_set<TKey, sizeof...(T), sizeof...(T), THash, TKeyEqual>
   {
-    return { {etl::forward<T>(keys)...} };
+    return { etl::forward<T>(keys)... };
   }
 #endif
 }

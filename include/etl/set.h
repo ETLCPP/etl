@@ -2691,7 +2691,7 @@ namespace etl
   template <typename TKey, typename TCompare = etl::less<TKey>, typename... T>
   constexpr auto make_set(T&&... keys) -> etl::set<TKey, sizeof...(T), TCompare>
   {
-    return { {etl::forward<T>(keys)...} };
+    return { etl::forward<T>(keys)... };
   }
 #endif
 

@@ -2545,7 +2545,7 @@ namespace etl
   template <typename T, typename... TValues>
   constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
   {
-    return { { etl::forward<T>(values)... } };
+    return { etl::forward<T>(values)... };
   }
 #endif
 

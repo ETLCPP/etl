@@ -1616,7 +1616,7 @@ namespace etl
   template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... TPairs>
   constexpr auto make_unordered_multimap(TPairs&&... pairs) -> etl::unordered_multimap<TKey, T, sizeof...(TPairs), sizeof...(TPairs), THash, TKeyEqual>
   {
-    return { {etl::forward<TPairs>(pairs)...} };
+    return { etl::forward<TPairs>(pairs)... };
   }
 #endif
 }

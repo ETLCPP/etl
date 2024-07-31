@@ -2812,7 +2812,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
   constexpr auto make_map(TPairs&&... pairs) -> etl::map<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
   {
-    return { {etl::forward<TPairs>(pairs)...} };
+    return { etl::forward<TPairs>(pairs)... };
   }
 #endif
 

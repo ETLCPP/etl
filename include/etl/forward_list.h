@@ -1796,7 +1796,7 @@ namespace etl
   template <typename... T>
   constexpr auto make_forward_list(T&&... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { etl::forward<T>(t)... };
   }
 #endif
 

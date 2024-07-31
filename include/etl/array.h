@@ -617,7 +617,7 @@ namespace etl
   template <typename T, typename... TValues>
   constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
   {
-    return { { etl::forward<T>(values)... } };
+    return { etl::forward<T>(values)... };
   }
 #endif
 

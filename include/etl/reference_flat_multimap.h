@@ -1061,7 +1061,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
   constexpr auto make_reference_flat_multimap(TPairs&&... pairs) -> etl::reference_flat_multimap<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
   {
-    return { {etl::forward<TPairs>(pairs)...} };
+    return { etl::forward<TPairs>(pairs)... };
   }
 #endif
 }
