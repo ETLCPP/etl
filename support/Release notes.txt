@@ -19,6 +19,7 @@ Features:
 #918 Request for additional operator support for etl::io_port_*
 #919 callback_timer: expose callback_timer_data::is_active() as icallback_timer public method 
 #920 Define ETL_USING_LEGACY_VARIANT as a convenience macro for code that tries to support both new and legacy variants
+#940 Allow etl::observer notification without argument
 
 Pull Requests
 #905 Add-support-for-type_identity
@@ -35,6 +36,8 @@ Pull Requests
 #935 Added 20 bit integral limits (MSP430 devices)
      New configuration macro, ETL_USE_20BIT_TYPES, which controls the definition of ETL_USING_20BIT_TYPES and ETL_NOT_USING_20BIT_TYPES.
 #939 Fix histogram indexing when accessed via operator[]
+
+
 
 ===============================================================================
 20.38.17
