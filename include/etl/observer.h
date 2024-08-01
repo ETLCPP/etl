@@ -498,6 +498,19 @@ namespace etl
     virtual void notification(T1) = 0;
   };
 
+  //*********************************************************************
+  /// The observer interface for void argument notification type.
+  ///\ingroup observer
+  //*********************************************************************
+  template <>
+  class observer<void>
+  {
+  public:
+
+    virtual ~observer() {}
+    virtual void notification() = 0;
+  };
+
 #endif
 }
 

@@ -75,6 +75,11 @@ namespace
   // The observer base type that does not take a notification type.
   //*****************************************************************************
   typedef etl::observer<void, int> ObserverVoidIntType;
+#else
+  //*****************************************************************************
+  // The observer base type that does not take a notification type.
+  //*****************************************************************************
+  typedef etl::observer<void> ObserverVoidType;
 #endif
 }
 
@@ -139,6 +144,22 @@ public:
   void send_notifications(int n)
   {
     notify_observers(n);
+  }
+};
+#else
+//*****************************************************************************
+// The concrete observable 3 class.
+//*****************************************************************************
+class ObservableVoid : public etl::observable<ObserverVoidType, 2>
+{
+public:
+
+  //*********************************
+  // Notify all of the observers.
+  //*********************************
+  void send_notifications()
+  {
+    notify_observers();
   }
 };
 #endif
@@ -260,6 +281,32 @@ public:
   // Notification2
   //*******************************************
   void notification(int)  override
+  {
+    ++data2_count;
+  }
+
+  int data1_count;
+  int data2_count;
+};
+#else
+//*****************************************************************************
+// The third observer type.
+// If any one of the overloads is missing or a parameter declaration is incorrect
+// then the class will be 'abstract' and will not compile.
+//*****************************************************************************
+class ObserverVoid : public ObserverVoidType
+{
+public:
+
+  ObserverVoid()
+    : data1_count(0)
+  {
+  }
+
+  //*******************************************
+  // Notification1
+  //*******************************************
+  void notification() override
   {
     ++data1_count;
   }
@@ -571,6 +618,21 @@ namespace
       // Send the notifications.
       observable.send_notifications();
       observable.send_notifications(1);
+    }
+#else
+    //*************************************************************************
+    TEST(test_void_observable)
+    {
+      // The observable objects.
+      ObservableVoid observable;
+
+      // The observer objects.
+      ObserverVoid observer;
+
+      observable.add_observer(observer);
+
+      // Send the notifications.
+      observable.send_notifications();
     }
 #endif
   }
