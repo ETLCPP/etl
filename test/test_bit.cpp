@@ -283,13 +283,59 @@ namespace
       CHECK_EQUAL(0xDBU, int(value));
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotl_8_constexpr)
     {
-      char temp[etl::rotl(uint8_t(0xAAU), 1)];
+      constexpr uint8_t value0 = etl::rotl(uint8_t(0x00U), 1);
+      CHECK_EQUAL(0x00U, int(value0));
 
-      CHECK_EQUAL(etl::rotl(uint8_t(0xAAU), 1), sizeof(temp));
+      constexpr uint8_t value1 = etl::rotl(uint8_t(0x21U), 1);
+      CHECK_EQUAL(0x42U, int(value1));
+
+      constexpr uint8_t value2 = etl::rotl(uint8_t(0x42U), 1);
+      CHECK_EQUAL(0x84U, int(value2));
+
+      constexpr uint8_t value3 = etl::rotl(uint8_t(0x84U), 1);
+      CHECK_EQUAL(0x09U, int(value3));
+
+      constexpr uint8_t value4 = etl::rotl(uint8_t(0x84U), 1);
+      CHECK_EQUAL(0x09U, int(value4));
+
+      constexpr uint8_t value5 = etl::rotl(uint8_t(0xB7U), 2);
+      CHECK_EQUAL(0xDEU, int(value5));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 3);
+      //CHECK_EQUAL(0xBDU, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 4);
+      //CHECK_EQUAL(0x7BU, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 5);
+      //CHECK_EQUAL(0xF6U, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 6);
+      //CHECK_EQUAL(0xEDU, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 7);
+      //CHECK_EQUAL(0xDBU, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 8);
+      //CHECK_EQUAL(0xB7U, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, 9);
+      //CHECK_EQUAL(0x6FU, int(value));
+
+      //value = 0xB7U;
+      //value = etl::rotl(value, -1);
+      //CHECK_EQUAL(0xDBU, int(value));
     }
 #endif
 
@@ -902,9 +948,9 @@ namespace
     //*************************************************************************
     TEST(test_countr_one_8_constexpr)
     {
-      char temp[etl::countr_one(uint8_t(0x0F))];
+      constexpr size_t count = etl::countr_one(uint8_t(0x0F));
 
-      CHECK_EQUAL(test_trailing_ones(uint8_t(0x0F)), sizeof(temp));
+      CHECK_EQUAL(test_trailing_ones(uint8_t(0x0F)), count);
     }
 #endif
 
@@ -954,7 +1000,7 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_one_32_constexpr)
     {
