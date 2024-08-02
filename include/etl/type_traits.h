@@ -2289,15 +2289,67 @@ typedef integral_constant<bool, true>  true_type;
   using signed_type_t = typename signed_type<T>::type;
 #endif
 
-//*********************************************
-// type_identity
+  //*********************************************
+  // type_identity
 
-template <typename T>
-struct type_identity { typedef T type; };
+  template <typename T>
+  struct type_identity { typedef T type; };
 
 #if ETL_USING_CPP11
   template <typename T>
   using type_identity_t = typename type_identity<T>::type;
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // has_duplicates
+  template <typename... TTypes>
+  struct has_duplicates;
+
+  template <typename TFirst, typename... TRest>
+  struct has_duplicates<TFirst, TRest...> : etl::conditional_t<etl::is_one_of<TFirst, TRest...>::value,
+                                                               etl::true_type,
+                                                               has_duplicates<TRest...>> {};
+
+  template <>
+  struct has_duplicates<> : etl::false_type {};
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... TTypes>
+  inline constexpr bool has_duplicates_v = etl::has_duplicates<TTypes...>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // count_of
+  template <typename T, typename... TTypes>
+  struct count_of;
+
+  template <typename T, typename U, typename... URest>
+  struct count_of<T, U, URest...> : etl::integral_constant<size_t,
+                                                            etl::is_same<T, U>::value +
+                                                              count_of<T, URest...>::value> {};
+
+  template <typename T>
+  struct count_of<T> : etl::integral_constant<size_t, 0> {};
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TTypes>
+  inline constexpr size_t count_of_v = etl::count_of<T, TTypes...>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // has_duplicates_of
+  template <typename T, typename... TTypes>
+  struct has_duplicates_of : etl::bool_constant<(etl::count_of<T, TTypes...>::value > 1U)> {};
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TTypes>
+  inline constexpr bool has_duplicates_of_v = etl::has_duplicates_of<T, TTypes...>::value;
 #endif
 }
 

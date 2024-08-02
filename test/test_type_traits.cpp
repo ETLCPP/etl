@@ -1333,4 +1333,50 @@ namespace
   {
     CHECK_CLOSE(type_identity_test_add(1.5f, 2), 3.5f, 0.01f);
   }
+
+  //*************************************************************************
+  TEST(test_has_duplicates)
+  {
+#if ETL_USING_CPP17
+    CHECK_FALSE((etl::has_duplicates_v<char>));
+    CHECK_FALSE((etl::has_duplicates_v<char, int, double>));
+    CHECK_TRUE((etl::has_duplicates_v<char, int, char>));
+#else
+    CHECK_FALSE((etl::has_duplicates<char>::value));
+    CHECK_FALSE((etl::has_duplicates<char, int, double>::value));
+    CHECK_TRUE((etl::has_duplicates<char, int, char>::value));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_has_duplicates_of)
+  {
+#if ETL_USING_CPP17
+    CHECK_FALSE((etl::has_duplicates_of_v<char>));
+    CHECK_TRUE((etl::has_duplicates_of_v<char, char, int, char>)); // char is duplicated.
+    CHECK_FALSE((etl::has_duplicates_of_v<int, char, int, char>)); // int is not duplicated.
+#else
+    CHECK_FALSE((etl::has_duplicates_of<char>::value));
+    CHECK_TRUE((etl::has_duplicates_of<char, char, int, char>::value)); // char is duplicated.
+    CHECK_FALSE((etl::has_duplicates_of<int, char, int, char>::value)); // int is not duplicated.
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_count_of)
+  {
+#if ETL_USING_CPP17
+    CHECK_EQUAL(0, (etl::count_of_v<char>));
+    CHECK_EQUAL(0, (etl::count_of_v<char, int>));
+    CHECK_EQUAL(1, (etl::count_of_v<char, char>));
+    CHECK_EQUAL(1, (etl::count_of_v<char, int, char>));
+    CHECK_EQUAL(2, (etl::count_of_v<char, int, char, double, char>));
+#else
+    CHECK_EQUAL(0, (etl::count_of<char>::value));
+    CHECK_EQUAL(0, (etl::count_of<char, int>::value));
+    CHECK_EQUAL(1, (etl::count_of<char, char>::value));
+    CHECK_EQUAL(1, (etl::count_of<char, int, char>::value));
+    CHECK_EQUAL(2, (etl::count_of<char, int, char, double, char>::value));
+#endif
+  }
 }
