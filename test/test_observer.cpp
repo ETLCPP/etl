@@ -70,17 +70,10 @@ namespace
   //*****************************************************************************
   typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
 
-#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
   //*****************************************************************************
   // The observer base type that does not take a notification type.
   //*****************************************************************************
   typedef etl::observer<void, int> ObserverVoidIntType;
-#else
-  //*****************************************************************************
-  // The observer base type that does not take a notification type.
-  //*****************************************************************************
-  typedef etl::observer<void> ObserverVoidType;
-#endif
 }
 
 //*****************************************************************************
@@ -122,7 +115,6 @@ public:
 	}
 };
 
-#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
 //*****************************************************************************
 // The concrete observable 3 class.
 //*****************************************************************************
@@ -146,23 +138,6 @@ public:
     notify_observers(n);
   }
 };
-#else
-//*****************************************************************************
-// The concrete observable 3 class.
-//*****************************************************************************
-class ObservableVoid : public etl::observable<ObserverVoidType, 2>
-{
-public:
-
-  //*********************************
-  // Notify all of the observers.
-  //*********************************
-  void send_notifications()
-  {
-    notify_observers();
-  }
-};
-#endif
 
 //*****************************************************************************
 // The first observer type.
@@ -254,7 +229,6 @@ public:
   int data3_count;
 };
 
-#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
 //*****************************************************************************
 // The third observer type.
 // If any one of the overloads is missing or a parameter declaration is incorrect
@@ -266,6 +240,7 @@ public:
 
   ObserverVoidInt()
     : data1_count(0)
+    , data2_count(0)
   {
   }
 
@@ -288,33 +263,6 @@ public:
   int data1_count;
   int data2_count;
 };
-#else
-//*****************************************************************************
-// The third observer type.
-// If any one of the overloads is missing or a parameter declaration is incorrect
-// then the class will be 'abstract' and will not compile.
-//*****************************************************************************
-class ObserverVoid : public ObserverVoidType
-{
-public:
-
-  ObserverVoid()
-    : data1_count(0)
-  {
-  }
-
-  //*******************************************
-  // Notification1
-  //*******************************************
-  void notification() override
-  {
-    ++data1_count;
-  }
-
-  int data1_count;
-  int data2_count;
-};
-#endif
 
 namespace
 {
@@ -603,7 +551,6 @@ namespace
       CHECK_EQUAL(0UL, observable.number_of_observers());
     }
 
-#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_void_int_observable)
     {
@@ -617,24 +564,13 @@ namespace
 
       // Send the notifications.
       observable.send_notifications();
+      CHECK_EQUAL(1U, observer.data1_count);
+      CHECK_EQUAL(0U, observer.data2_count);
+
       observable.send_notifications(1);
+      CHECK_EQUAL(1U, observer.data1_count);
+      CHECK_EQUAL(1U, observer.data2_count);
     }
-#else
-    //*************************************************************************
-    TEST(test_void_observable)
-    {
-      // The observable objects.
-      ObservableVoid observable;
-
-      // The observer objects.
-      ObserverVoid observer;
-
-      observable.add_observer(observer);
-
-      // Send the notifications.
-      observable.send_notifications();
-    }
-#endif
   }
 }
 
