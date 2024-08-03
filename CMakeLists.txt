@@ -3,7 +3,7 @@
 #######################################################################
 cmake_minimum_required(VERSION 3.5.0)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/helpers.cmake)
 
 set(MSG_PREFIX "etl |")
 determine_version_with_git(${GIT_DIR_LOOKUP_POLICY})
@@ -33,7 +33,7 @@ add_library(etl::etl ALIAS ${PROJECT_NAME})
 include(GNUInstallDirs)
 
 target_include_directories(${PROJECT_NAME} ${INCLUDE_SPECIFIER} INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         )
 

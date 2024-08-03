@@ -84,7 +84,7 @@ function(_git_find_closest_git_dir _start_dir _git_dir_var)
 endfunction()
 
 function(get_git_head_revision _refspecvar _hashvar)
-    _git_find_closest_git_dir("${CMAKE_CURRENT_SOURCE_DIR}" GIT_DIR)
+    _git_find_closest_git_dir("${CMAKE_CURRENT_LIST_DIR}" GIT_DIR)
 
     if("${ARGN}" STREQUAL "ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR")
         set(ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR TRUE)
@@ -121,11 +121,11 @@ function(get_git_head_revision _refspecvar _hashvar)
         execute_process(
             COMMAND "${GIT_EXECUTABLE}" rev-parse
                     --show-superproject-working-tree
-            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
             OUTPUT_VARIABLE out
             ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
         if(NOT "${out}" STREQUAL "")
-            # If out is empty, GIT_DIR/CMAKE_CURRENT_SOURCE_DIR is in a submodule
+            # If out is empty, GIT_DIR/CMAKE_CURRENT_LIST_DIR is in a submodule
             file(READ ${GIT_DIR} submodule)
             string(REGEX REPLACE "gitdir: (.*)$" "\\1" GIT_DIR_RELATIVE
                                  ${submodule})
@@ -135,7 +135,7 @@ function(get_git_head_revision _refspecvar _hashvar)
                                    ABSOLUTE)
             set(HEAD_SOURCE_FILE "${GIT_DIR}/HEAD")
         else()
-            # GIT_DIR/CMAKE_CURRENT_SOURCE_DIR is in a worktree
+            # GIT_DIR/CMAKE_CURRENT_LIST_DIR is in a worktree
             file(READ ${GIT_DIR} worktree_ref)
             # The .git directory contains a path to the worktree information directory
             # inside the parent git repo of the worktree.
@@ -202,7 +202,7 @@ function(git_describe _var)
 
     execute_process(
         COMMAND "${GIT_EXECUTABLE}" describe --tags --always ${hash} ${ARGN}
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
         RESULT_VARIABLE res
         OUTPUT_VARIABLE out
         ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -228,7 +228,7 @@ function(git_describe_working_tree _var)
 
     execute_process(
         COMMAND "${GIT_EXECUTABLE}" describe --dirty ${ARGN}
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
         RESULT_VARIABLE res
         OUTPUT_VARIABLE out
         ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -268,7 +268,7 @@ function(git_local_changes _var)
 
     execute_process(
         COMMAND "${GIT_EXECUTABLE}" diff-index --quiet HEAD --
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
         RESULT_VARIABLE res
         OUTPUT_VARIABLE out
         ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
