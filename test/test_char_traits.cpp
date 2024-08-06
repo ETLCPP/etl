@@ -55,16 +55,32 @@ namespace
     //*************************************************************************
     TEST(test_strlen)
     {
-      char data1[etl::strlen("qwerty")];
-      char data2[etl::strlen(L"qwerty")];
-      char data3[etl::strlen(u"qwerty")];
-      char data4[etl::strlen(U"qwerty")];
+      CHECK_EQUAL(6U, etl::strlen("qwerty"));
+      CHECK_EQUAL(6U, etl::strlen(L"qwerty"));
+      CHECK_EQUAL(6U, etl::strlen(u"qwerty"));
+      CHECK_EQUAL(6U, etl::strlen(U"qwerty"));
+    }
+
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_strlen_constexpr)
+    {
+      constexpr size_t Size1 = etl::strlen("qwerty");
+      constexpr size_t Size2 = etl::strlen(L"qwerty");
+      constexpr size_t Size3 = etl::strlen(u"qwerty");
+      constexpr size_t Size4 = etl::strlen(U"qwerty");
+
+      char data1[Size1];
+      char data2[Size2];
+      char data3[Size3];
+      char data4[Size4];
 
       CHECK_EQUAL(6U, sizeof(data1));
       CHECK_EQUAL(6U, sizeof(data2));
       CHECK_EQUAL(6U, sizeof(data3));
       CHECK_EQUAL(6U, sizeof(data4));
     }
+#endif
 
     //*************************************************************************
     TEST(test_strcmp_char)
