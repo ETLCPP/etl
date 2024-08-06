@@ -33,7 +33,7 @@ SOFTWARE.
  * This file is intended to evaluated multiple times by design.
  */
 
-#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
+#if defined(__GNUC__) && (__GNUC__ >= 10) && !defined(__clang__) && !defined(__llvm__)
   #pragma GCC diagnostic push 
   #pragma GCC diagnostic ignored "-Wc++20-compat"
 #endif
