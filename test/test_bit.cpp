@@ -287,55 +287,10 @@ namespace
     //*************************************************************************
     TEST(test_rotl_8_constexpr)
     {
-      constexpr uint8_t value0 = etl::rotl(uint8_t(0x00U), 1);
-      CHECK_EQUAL(0x00U, int(value0));
+      constexpr size_t Size = etl::rotl(uint8_t(0xAAU), 1);
+      char temp[Size];
 
-      constexpr uint8_t value1 = etl::rotl(uint8_t(0x21U), 1);
-      CHECK_EQUAL(0x42U, int(value1));
-
-      constexpr uint8_t value2 = etl::rotl(uint8_t(0x42U), 1);
-      CHECK_EQUAL(0x84U, int(value2));
-
-      constexpr uint8_t value3 = etl::rotl(uint8_t(0x84U), 1);
-      CHECK_EQUAL(0x09U, int(value3));
-
-      constexpr uint8_t value4 = etl::rotl(uint8_t(0x84U), 1);
-      CHECK_EQUAL(0x09U, int(value4));
-
-      constexpr uint8_t value5 = etl::rotl(uint8_t(0xB7U), 2);
-      CHECK_EQUAL(0xDEU, int(value5));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 3);
-      //CHECK_EQUAL(0xBDU, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 4);
-      //CHECK_EQUAL(0x7BU, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 5);
-      //CHECK_EQUAL(0xF6U, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 6);
-      //CHECK_EQUAL(0xEDU, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 7);
-      //CHECK_EQUAL(0xDBU, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 8);
-      //CHECK_EQUAL(0xB7U, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, 9);
-      //CHECK_EQUAL(0x6FU, int(value));
-
-      //value = 0xB7U;
-      //value = etl::rotl(value, -1);
-      //CHECK_EQUAL(0xDBU, int(value));
+      CHECK_EQUAL(etl::rotl(uint8_t(0xAAU), 1), sizeof(temp));
     }
 #endif
 
@@ -433,11 +388,12 @@ namespace
       CHECK_EQUAL(0x5B9EU, int(value));
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotl_16_constexpr)
     {
-      char temp[etl::rotl(uint16_t(0xAAU), 1)];
+      constexpr size_t Size = etl::rotl(uint16_t(0xAAU), 1);
+      char temp[Size];
 
       CHECK_EQUAL(etl::rotl(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -501,11 +457,12 @@ namespace
       CHECK_EQUAL(0x6FU, int(value));
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotr_8_constexpr)
     {
-      char temp[etl::rotr(uint8_t(0xAAU), 1)];
+      constexpr size_t Size = etl::rotr(uint8_t(0xAAU), 1);
+      char temp[Size];
 
       CHECK_EQUAL(etl::rotr(uint8_t(0xAAU), 1), sizeof(temp));
     }
@@ -605,11 +562,12 @@ namespace
       CHECK_EQUAL(0x6E79U, int(value));
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotr_16_constexpr)
     {
-      char temp[etl::rotr(uint16_t(0xAAU), 1)];
+      constexpr size_t Size = etl::rotr(uint16_t(0xAAU), 1);
+      char temp[Size];
 
       CHECK_EQUAL(etl::rotr(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -632,11 +590,12 @@ namespace
       CHECK_EQUAL(0xCB73U, int(value));
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_rotate16_constexpr)
     {
-      char temp[etl::rotate(uint16_t(0xAAU), 1)];
+      constexpr size_t Size = etl::rotate(uint16_t(0xAAU), 1);
+      char temp[Size];
 
       CHECK_EQUAL(etl::rotate(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -652,11 +611,12 @@ namespace
       CHECK_EQUAL(0x5AU, value);
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_byteswap_8_constexpr)
     {
-      char temp[etl::byteswap(uint8_t(0x12U))];
+      constexpr size_t Size = etl::byteswap(uint8_t(0x12U));
+      char temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint8_t(0x12)), sizeof(temp));
     }
@@ -680,11 +640,12 @@ namespace
       CHECK_EQUAL(0x5AA5U, value);
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_byteswap_16_constexpr)
     {
-      char temp[etl::byteswap(uint16_t(0xA500U))];
+      constexpr size_t Size = etl::byteswap(uint16_t(0xA500U));
+      char temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint16_t(0xA500U)), sizeof(temp));
     }
@@ -708,11 +669,12 @@ namespace
       CHECK_EQUAL(0xA5A55A5AUL, value);
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_byteswap_32_constexpr)
     {
-      char temp[etl::byteswap(uint32_t(0xA5000000UL))];
+      constexpr uint32_t Size = etl::byteswap(uint32_t(0xA5000000UL));
+      char temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint32_t(0xA5000000UL)), sizeof(temp));
     }
@@ -736,11 +698,12 @@ namespace
       CHECK_EQUAL(0xA5A55A5AA5A55A5AULL, value);
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_byteswap_64_constexpr)
     {
-      char temp[etl::byteswap(uint64_t(0xA500000000000000ULL))];
+      constexpr uint64_t Size = etl::byteswap(uint64_t(0xA500000000000000ULL));
+      char temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint64_t(0xA500000000000000ULL)), sizeof(temp));
     }
@@ -755,11 +718,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_popcount_8_constexpr)
     {
-      char temp[etl::popcount(uint8_t(0xFFU))];
+      constexpr size_t Size = etl::popcount(uint8_t(0xFFU));     
+      char temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint8_t(0xFFU)), sizeof(temp));
     }
@@ -774,11 +738,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_popcount_16_constexpr)
     {
-      char temp[etl::popcount(uint16_t(0xFFU))];
+      constexpr size_t Size = etl::popcount(uint16_t(0xFFU));
+      char temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint16_t(0xFFU)), sizeof(temp));
     }
@@ -799,11 +764,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_popcount_32_constexpr)
     {
-      char temp[etl::popcount(uint32_t(0xFFU))];
+      constexpr size_t Size = etl::popcount(uint32_t(0xFFU));
+      char temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint32_t(0xFFU)), sizeof(temp));
     }
@@ -824,11 +790,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_popcount_64_constexpr)
     {
-      char temp[etl::popcount(uint64_t(0xFFU))];
+      constexpr size_t Size = etl::popcount(uint64_t(0xFFU));
+      char temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint64_t(0xFFU)), sizeof(temp));
     }
@@ -847,11 +814,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_zero_8_constexpr)
     {
-      char temp[etl::countr_zero(uint8_t(0x08))];
+      constexpr size_t Size = etl::countr_zero(uint8_t(0x08));
+      char temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint8_t(0x08)), sizeof(temp));
     }
@@ -868,11 +836,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_zero_16_constexpr)
     {
-      char temp[etl::countr_zero(uint16_t(0x08))];
+      constexpr size_t Size = etl::countr_zero(uint16_t(0x08));
+      char temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint16_t(0x08)), sizeof(temp));
     }
@@ -893,11 +862,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_zero_32_constexpr)
     {
-      char temp[etl::countr_zero(uint32_t(0x08))];
+      constexpr size_t Size = etl::countr_zero(uint32_t(0x08));
+      char temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint32_t(0x08)), sizeof(temp));
     }
@@ -918,11 +888,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_zero_64_constexpr)
     {
-      char temp[etl::countr_zero(uint64_t(0x08))];
+      constexpr size_t Size = etl::countr_zero(uint64_t(0x08));
+      char temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint64_t(0x08)), sizeof(temp));
     }
@@ -944,7 +915,7 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_one_8_constexpr)
     {
@@ -970,11 +941,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_one_16_constexpr)
     {
-      char temp[etl::countr_one(uint16_t(0x000F))];
+      constexpr size_t Size = etl::countr_one(uint16_t(0x000F));
+      char temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint16_t(0x000F)), sizeof(temp));
     }
@@ -1004,7 +976,8 @@ namespace
     //*************************************************************************
     TEST(test_countr_one_32_constexpr)
     {
-      char temp[etl::countr_one(uint32_t(0x0000000F))];
+      constexpr size_t Size = etl::countr_one(uint32_t(0x0000000F));
+      char temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint32_t(0x0000000F)), sizeof(temp));
     }
@@ -1029,11 +1002,12 @@ namespace
         }
       }
     }
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countr_one_64_constexpr)
     {
-      char temp[etl::countr_one(uint64_t(0x000000000000000F))];
+      constexpr size_t Size = etl::countr_one(uint64_t(0x000000000000000F));
+      char temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint64_t(0x000000000000000F)), sizeof(temp));
     }
@@ -1055,11 +1029,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_zero_8_constexpr)
     {
-      char temp[etl::countl_zero(uint8_t(0x01U))];
+      constexpr size_t Size = etl::countl_zero(uint8_t(0x01U));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint8_t(0x01U)), sizeof(temp));
     }
@@ -1081,11 +1056,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_zero_16_constexpr)
     {
-      char temp[etl::countl_zero(uint16_t(0x0800U))];
+      constexpr size_t Size = etl::countl_zero(uint16_t(0x0800U));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint16_t(0x0800U)), sizeof(temp));
     }
@@ -1111,11 +1087,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_zero_32_constexpr)
     {
-      char temp[etl::countl_zero(uint32_t(0x08000000U))];
+      constexpr size_t Size = etl::countl_zero(uint32_t(0x08000000U));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint32_t(0x08000000U)), sizeof(temp));
     }
@@ -1141,11 +1118,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_zero_64_constexpr)
     {
-      char temp[etl::countl_zero(uint64_t(0x0800000000000000U))];
+      constexpr size_t Size = etl::countl_zero(uint64_t(0x0800000000000000U));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint64_t(0x0800000000000000U)), sizeof(temp));
     }
@@ -1167,11 +1145,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_one_8_constexpr)
     {
-      char temp[etl::countl_one(uint8_t(0xF0U))];
+      constexpr size_t Size = etl::countl_one(uint8_t(0xF0U));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint8_t(0xF0U)), sizeof(temp));
     }
@@ -1193,11 +1172,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_one_16_constexpr)
     {
-      char temp[etl::countl_one(uint16_t(0xF000U))];
+      constexpr size_t Size = etl::countl_one(uint16_t(0xF000U));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint16_t(0xF000U)), sizeof(temp));
     }
@@ -1223,11 +1203,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_one_32_constexpr)
     {
-      char temp[etl::countl_one(uint32_t(0xF0000000UL))];
+      constexpr size_t Size = etl::countl_one(uint32_t(0xF0000000UL));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint32_t(0xF0000000UL)), sizeof(temp));
     }
@@ -1253,11 +1234,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_countl_one_64_constexpr)
     {
-      char temp[etl::countl_one(uint64_t(0xF000000000000000UL))];
+      constexpr size_t Size = etl::countl_one(uint64_t(0xF000000000000000UL));
+      char temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint64_t(0xF000000000000000UL)), sizeof(temp));
     }
@@ -1274,11 +1256,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_ceil_8_constexpr)
     {
-      char temp[etl::bit_ceil(uint8_t(1))];
+      constexpr size_t Size = etl::bit_ceil(uint8_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint8_t(1)), sizeof(temp));
     }
@@ -1304,11 +1287,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_ceil_16_constexpr)
     {
-      char temp[etl::bit_ceil(uint16_t(1))];
+      constexpr size_t Size = etl::bit_ceil(uint16_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint16_t(1)), sizeof(temp));
     }
@@ -1334,11 +1318,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_ceil_32_constexpr)
     {
-      char temp[etl::bit_ceil(uint32_t(1))];
+      constexpr size_t Size = etl::bit_ceil(uint32_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint32_t(1)), sizeof(temp));
     }
@@ -1364,11 +1349,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_ceil_64_constexpr)
     {
-      char temp[etl::bit_ceil(uint64_t(1))];
+      constexpr uint64_t Size = etl::bit_ceil(uint64_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint64_t(1)), sizeof(temp));
     }
@@ -1405,11 +1391,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_floor_16_constexpr)
     {
-      char temp[etl::bit_floor(uint16_t(1))];
+      constexpr size_t Size = etl::bit_floor(uint16_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_floor(uint16_t(1)), sizeof(temp));
     }
@@ -1435,11 +1422,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_floor_32_constexpr)
     {
-      char temp[etl::bit_floor(uint32_t(1))];
+      constexpr size_t Size = etl::bit_floor(uint32_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_floor(uint32_t(1)), sizeof(temp));
     }
@@ -1465,11 +1453,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_floor_64_constexpr)
     {
-      char temp[etl::bit_floor(uint64_t(1))];
+      constexpr uint64_t Size = etl::bit_floor(uint64_t(1));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_floor(uint64_t(1)), sizeof(temp));
     }
@@ -1486,11 +1475,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_width_8_constexpr)
     {
-      char temp[etl::bit_width(uint8_t(0xAU))];
+      constexpr size_t Size = etl::bit_width(uint8_t(0xAU));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint8_t(0xAU)), sizeof(temp));
     }
@@ -1511,11 +1501,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_width_16_constexpr)
     {
-      char temp[etl::bit_width(uint16_t(0xAU))];
+      constexpr size_t Size = etl::bit_width(uint16_t(0xAU));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint16_t(0xAU)), sizeof(temp));
     }
@@ -1536,11 +1527,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_width_32_constexpr)
     {
-      char temp[etl::bit_width(uint32_t(0xAU))];
+      constexpr size_t Size = etl::bit_width(uint32_t(0xAU));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint32_t(0xAU)), sizeof(temp));
     }
@@ -1561,11 +1553,12 @@ namespace
       }
     }
 
-#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
     //*************************************************************************
     TEST(test_bit_width_64_constexpr)
     {
-      char temp[etl::bit_width(uint64_t(0xAU))];
+      constexpr uint64_t Size = etl::bit_width(uint64_t(0xAU));
+      char temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint64_t(0xAU)), sizeof(temp));
     }
