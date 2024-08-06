@@ -4,6 +4,7 @@
 Fixes:
 #940 Allow etl::observer notification without argument
      Added a void specialisation to the < C++11 code.
+#942 Warning on pragma c++20-compat
 
 Updates:
 Added etl::count_of, etl::has_duplicates, etl::has_duplicates_of
