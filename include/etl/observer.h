@@ -253,7 +253,6 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
     //*****************************************************************
     /// Notify all of the observers, sending them the notification.
     //*****************************************************************
@@ -271,7 +270,6 @@ namespace etl
         ++i_observer_item;
       }
     }
-#endif
 
   protected:
 
@@ -294,7 +292,7 @@ namespace etl
     Observer_List observer_list;
   };
 
-#if ETL_USING_CPP11
+#if ETL_USING_CPP11 && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
   template <typename... TTypes>
   class observer;
 
