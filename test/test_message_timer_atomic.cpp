@@ -141,17 +141,17 @@ namespace
     {
       etl::message_timer_atomic<2, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Single_Shot);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Single_Shot);
 
-      CHECK(id1 != etl::timer::id::NO_TIMER);
-      CHECK(id2 != etl::timer::id::NO_TIMER);
-      CHECK(id3 == etl::timer::id::NO_TIMER);
+      CHECK(id1 != etl::timer<>::id::NO_TIMER);
+      CHECK(id2 != etl::timer<>::id::NO_TIMER);
+      CHECK(id3 == etl::timer<>::id::NO_TIMER);
 
       timer_controller.clear();
-      id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Single_Shot);
-      CHECK(id3 != etl::timer::id::NO_TIMER);
+      id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Single_Shot);
+      CHECK(id3 != etl::timer<>::id::NO_TIMER);
     }
 
     //*************************************************************************
@@ -159,9 +159,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Single_Shot);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Single_Shot);
 
       router1.clear();
 
@@ -195,7 +195,7 @@ namespace
     {
       etl::message_timer_atomic<1, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Single_Shot);
       router1.clear();
 
       timer_controller.start(id1);
@@ -241,9 +241,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -277,9 +277,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -317,9 +317,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -364,9 +364,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1;
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1;
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -385,7 +385,7 @@ namespace
         {
           timer_controller.unregister_timer(id2);
 
-          id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
+          id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
           timer_controller.start(id1);
         }
 
@@ -407,9 +407,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -449,9 +449,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, bus1, 37, etl::timer::mode::Single_Shot, ROUTER1);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, bus1, 23, etl::timer::mode::Single_Shot, ROUTER1);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, bus1, 11, etl::timer::mode::Single_Shot, etl::imessage_router::ALL_MESSAGE_ROUTERS);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, bus1, 37, etl::timer<>::mode::Single_Shot, ROUTER1);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, bus1, 23, etl::timer<>::mode::Single_Shot, ROUTER1);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, bus1, 11, etl::timer<>::mode::Single_Shot, etl::imessage_router::ALL_MESSAGE_ROUTERS);
 
       bus1.subscribe(router1);
 
@@ -487,9 +487,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -502,9 +502,9 @@ namespace
       ticks = 5;
       timer_controller.tick(uint32_t(ticks));
 
-      timer_controller.start(id1, etl::timer::start::Immediate);
-      timer_controller.start(id2, etl::timer::start::Immediate);
-      timer_controller.start(id3, etl::timer::start::Delayed);
+      timer_controller.start(id1, etl::timer<>::start::Immediate);
+      timer_controller.start(id2, etl::timer<>::start::Immediate);
+      timer_controller.start(id3, etl::timer<>::start::Delayed);
 
       const uint32_t step = 1UL;
 
@@ -528,8 +528,8 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 15, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1,  5, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 15, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1,  5, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -560,7 +560,7 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 5, etl::timer::mode::Single_Shot);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 5, etl::timer<>::mode::Single_Shot);
 
       router1.clear();
 
@@ -598,9 +598,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Repeating);
 
       router1.clear();
 
@@ -648,9 +648,9 @@ namespace
     {
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::Single_Shot);
+      etl::timer<>::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer<>::mode::Single_Shot);
 
       router1.clear();
 
@@ -673,7 +673,7 @@ namespace
       CHECK_TRUE(timer_controller.has_active_timer());
 
       timer_controller.tick(1);
-      CHECK_EQUAL(static_cast<etl::timer::interval::type>(etl::timer::interval::No_Active_Interval), timer_controller.time_to_next());
+      CHECK_EQUAL(static_cast<etl::timer<>::interval::type>(etl::timer<>::interval::No_Active_Interval), timer_controller.time_to_next());
       CHECK_FALSE(timer_controller.has_active_timer());
     }
 
@@ -720,9 +720,9 @@ namespace
     {
       FIX_PROCESSOR_AFFINITY;
 
-      etl::timer::id::type id1 = controller.register_timer(message1, router1, 400,  etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = controller.register_timer(message2, router1, 100,  etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = controller.register_timer(message3, router1, 10,   etl::timer::mode::Repeating);
+      etl::timer<>::id::type id1 = controller.register_timer(message1, router1, 400,  etl::timer<>::mode::Single_Shot);
+      etl::timer<>::id::type id2 = controller.register_timer(message2, router1, 100,  etl::timer<>::mode::Repeating);
+      etl::timer<>::id::type id3 = controller.register_timer(message3, router1, 10,   etl::timer<>::mode::Repeating);
 
       router1.clear();
 
