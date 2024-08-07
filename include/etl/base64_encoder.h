@@ -28,19 +28,19 @@ SOFTWARE.
 #ifndef ETL_BASE64_ENCODER_INCLUDED
 #define ETL_BASE64_ENCODER_INCLUDED
 
-#include "etl/platform.h"
-#include "etl/static_assert.h"
-#include "etl/error_handler.h"
-#include "etl/type_traits.h"
-#include "etl/binary.h"
-#include "etl/algorithm.h"
-#include "etl/integral_limits.h"
-#include "etl/iterator.h"
-#include "etl/enum_type.h"
-#include "etl/delegate.h"
-#include "etl/span.h"
+#include "platform.h"
+#include "static_assert.h"
+#include "error_handler.h"
+#include "type_traits.h"
+#include "binary.h"
+#include "algorithm.h"
+#include "integral_limits.h"
+#include "iterator.h"
+#include "enum_type.h"
+#include "delegate.h"
+#include "span.h"
 
-#include "etl/base64.h"
+#include "base64.h"
 
 #include <stdint.h>
 
