@@ -26,13 +26,13 @@ SOFTWARE.
 #ifndef ETL_BASE64_INCLUDED
 #define ETL_BASE64_INCLUDED
 
-#include "etl/platform.h"
-#include "etl/static_assert.h"
-#include "etl/exception.h"
-#include "etl/error_handler.h"
-#include "etl/type_traits.h"
-#include "etl/enum_type.h"
-#include "etl/integral_limits.h"
+#include "platform.h"
+#include "static_assert.h"
+#include "exception.h"
+#include "error_handler.h"
+#include "type_traits.h"
+#include "enum_type.h"
+#include "integral_limits.h"
 
 #include <stdint.h>
 
