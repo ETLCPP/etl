@@ -40,6 +40,7 @@ SOFTWARE.
 #include "endianness.h"
 #include "iterator.h"
 #include "algorithm.h"
+#include "bit.h"
 
 #include <string.h>
 
@@ -367,7 +368,7 @@ namespace etl
     //*************************************************************************
     /// Unaligned copy
     //*************************************************************************
-    template <typename U, size_t Size = sizeof(U)>
+    template <typename U, size_t Size = sizeof(U), typename Enable = void>
     struct unaligned_copy;
 
     //*******************************************
@@ -375,7 +376,7 @@ namespace etl
     /// Size == 1
     //*******************************************
     template <typename U>
-    struct unaligned_copy<U, 1U>
+    struct unaligned_copy<U, 1U, void>
     {
       //*******************************
       static ETL_CONSTEXPR14 void copy(T value, pointer store)
@@ -401,7 +402,7 @@ namespace etl
     /// Size == 2
     //*******************************************
     template <typename U>
-    struct unaligned_copy<U, 2U>
+    struct unaligned_copy<U, 2U, typename etl::enable_if<etl::is_integral<U>::value>::type>
     {
       //*******************************
       static ETL_CONSTEXPR14 void copy(T value, unsigned char* store)
@@ -452,9 +453,10 @@ namespace etl
     //*******************************************
     /// Unaligned copy
     /// Size == 4
+    /// Integrals
     //*******************************************
     template <typename U>
-    struct unaligned_copy<U, 4U>
+    struct unaligned_copy<U, 4U, typename etl::enable_if<etl::is_integral<U>::value>::type>
     {
       static ETL_CONSTEXPR14 void copy(T value, unsigned char* store)
       {
@@ -515,10 +517,55 @@ namespace etl
 
     //*******************************************
     /// Unaligned copy
-    /// Size == 8
+    /// Size == 4
+    /// Floating point
     //*******************************************
     template <typename U>
-    struct unaligned_copy<U, 8U>
+    struct unaligned_copy<U, 4U, typename etl::enable_if<etl::is_floating_point<U>::value>::type>
+    {
+      static void copy(T value, unsigned char* store)
+      {
+        memcpy(store, &value, 4U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(store, store + 4U);
+        }
+      }
+
+      //*******************************
+      static void copy(const_pointer store, T& value)
+      {
+        unsigned char temp[4U];
+        memcpy(temp, store, 4U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(temp, temp + 4U);
+        }
+
+        memcpy(&value, temp, 4U);
+      }
+
+      //*******************************
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      {
+        memcpy(dst, src, 4U);
+
+        if (Endian != endian_src)
+        {
+          etl::reverse(dst, dst + 4U);
+        }
+      }
+    };
+
+    //*******************************************
+    /// Unaligned copy
+    /// Size == 8
+    /// Integrals
+    //*******************************************
+    template <typename U>
+    struct unaligned_copy<U, 8U, typename etl::enable_if<etl::is_integral<U>::value>::type>
     {
       static ETL_CONSTEXPR14 void copy(T value, unsigned char* store)
       {
@@ -600,6 +647,138 @@ namespace etl
         }
       }
     };
+
+    //*******************************************
+    /// Unaligned copy
+    /// Size == 8
+    /// Floating point
+    //*******************************************
+    template <typename U>
+    struct unaligned_copy<U, 8U, typename etl::enable_if<etl::is_floating_point<U>::value>::type>
+    {
+      static void copy(T value, unsigned char* store)
+      {
+        memcpy(store, &value, 8U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(store, store + 8U);
+        }
+      }
+
+      //*******************************
+      static void copy(const_pointer store, T& value)
+      {
+        unsigned char temp[8U];
+        memcpy(temp, store, 8U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(temp, temp + 8U);
+        }
+
+        memcpy(&value, temp, 8U);
+      }
+
+      //*******************************
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      {
+        memcpy(dst, src, 8U);
+
+        if (Endian != endian_src)
+        {
+          etl::reverse(dst, dst + 8U);
+        }
+      }
+    };
+
+    //*******************************************
+    /// Unaligned copy
+    /// Size == 12
+    /// Floating point
+    //*******************************************
+    template <typename U>
+    struct unaligned_copy<U, 12U, typename etl::enable_if<etl::is_floating_point<U>::value>::type>
+    {
+      static void copy(T value, unsigned char* store)
+      {
+        memcpy(store, &value, 12U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(store, store + 12U);
+        }
+      }
+
+      //*******************************
+      static void copy(const_pointer store, T& value)
+      {
+        unsigned char temp[12U];
+        memcpy(temp, store, 12U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(temp, temp + 12U);
+        }
+
+        memcpy(&value, temp, 12U);
+      }
+
+      //*******************************
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      {
+        memcpy(dst, src, 12U);
+
+        if (Endian != endian_src)
+        {
+          etl::reverse(dst, dst + 12U);
+        }
+      }
+    };
+
+    //*******************************************
+    /// Unaligned copy
+    /// Size == 16
+    /// Floating point
+    //*******************************************
+    template <typename U>
+    struct unaligned_copy<U, 16U, typename etl::enable_if<etl::is_floating_point<U>::value>::type>
+    {
+      static void copy(T value, unsigned char* store)
+      {
+        memcpy(store, &value, 16U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(store, store + 16U);
+        }
+      }
+
+      //*******************************
+      static void copy(const_pointer store, T& value)
+      {
+        unsigned char temp[16U];
+        memcpy(temp, store, 16U);
+
+        if (Endian != etl::endianness::value())
+        {
+          etl::reverse(temp, temp + 16U);
+        }
+
+        memcpy(&value, temp, 16U);
+      }
+
+      //*******************************
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      {
+        memcpy(dst, src, 16U);
+
+        if (Endian != endian_src)
+        {
+          etl::reverse(dst, dst + 16U);
+        }
+      }
+    };
   };
 
   template <typename T, int Endian_>
@@ -610,89 +789,89 @@ namespace etl
 
 #if ETL_HAS_CONSTEXPR_ENDIANNESS
   // Host order
-  typedef unaligned_type<char, etl::endianness::value()> host_char_t;
-  typedef unaligned_type<signed char, etl::endianness::value()> host_schar_t;
-  typedef unaligned_type<unsigned char, etl::endianness::value()> host_uchar_t;
-  typedef unaligned_type<short, etl::endianness::value()> host_short_t;
-  typedef unaligned_type<unsigned short, etl::endianness::value()> host_ushort_t;
-  typedef unaligned_type<int, etl::endianness::value()> host_int_t;
-  typedef unaligned_type<unsigned int, etl::endianness::value()> host_uint_t;
-  typedef unaligned_type<long, etl::endianness::value()> host_long_t;
-  typedef unaligned_type<unsigned long, etl::endianness::value()> host_ulong_t;
-  typedef unaligned_type<long long, etl::endianness::value()> host_long_long_t;
+  typedef unaligned_type<char,               etl::endianness::value()> host_char_t;
+  typedef unaligned_type<signed char,        etl::endianness::value()> host_schar_t;
+  typedef unaligned_type<unsigned char,      etl::endianness::value()> host_uchar_t;
+  typedef unaligned_type<short,              etl::endianness::value()> host_short_t;
+  typedef unaligned_type<unsigned short,     etl::endianness::value()> host_ushort_t;
+  typedef unaligned_type<int,                etl::endianness::value()> host_int_t;
+  typedef unaligned_type<unsigned int,       etl::endianness::value()> host_uint_t;
+  typedef unaligned_type<long,               etl::endianness::value()> host_long_t;
+  typedef unaligned_type<unsigned long,      etl::endianness::value()> host_ulong_t;
+  typedef unaligned_type<long long,          etl::endianness::value()> host_long_long_t;
   typedef unaligned_type<unsigned long long, etl::endianness::value()> host_ulong_long_t;
 #if ETL_USING_8BIT_TYPES
-  typedef unaligned_type<int8_t, etl::endianness::value()> host_int8_t;
-  typedef unaligned_type<uint8_t, etl::endianness::value()> host_uint8_t;
+  typedef unaligned_type<int8_t,             etl::endianness::value()> host_int8_t;
+  typedef unaligned_type<uint8_t,            etl::endianness::value()> host_uint8_t;
 #endif
-  typedef unaligned_type<int16_t, etl::endianness::value()> host_int16_t;
-  typedef unaligned_type<uint16_t, etl::endianness::value()> host_uint16_t;
-  typedef unaligned_type<int32_t, etl::endianness::value()> host_int32_t;
-  typedef unaligned_type<uint32_t, etl::endianness::value()> host_uint32_t;
+  typedef unaligned_type<int16_t,            etl::endianness::value()> host_int16_t;
+  typedef unaligned_type<uint16_t,           etl::endianness::value()> host_uint16_t;
+  typedef unaligned_type<int32_t,            etl::endianness::value()> host_int32_t;
+  typedef unaligned_type<uint32_t,           etl::endianness::value()> host_uint32_t;
 #if ETL_USING_64BIT_TYPES
-  typedef unaligned_type<int64_t, etl::endianness::value()> host_int64_t;
-  typedef unaligned_type<uint64_t, etl::endianness::value()> host_uint64_t;
+  typedef unaligned_type<int64_t,            etl::endianness::value()> host_int64_t;
+  typedef unaligned_type<uint64_t,           etl::endianness::value()> host_uint64_t;
 #endif
-  typedef unaligned_type<float, etl::endianness::value()> host_float_t;
-  typedef unaligned_type<double, etl::endianness::value()> host_double_t;
-  typedef unaligned_type<long double, etl::endianness::value()> host_long_double_t;
+  typedef unaligned_type<float,              etl::endianness::value()> host_float_t;
+  typedef unaligned_type<double,             etl::endianness::value()> host_double_t;
+  typedef unaligned_type<long double,        etl::endianness::value()> host_long_double_t;
 #endif
 
   // Little Endian
-  typedef unaligned_type<char, etl::endian::little> le_char_t;
-  typedef unaligned_type<signed char, etl::endian::little> le_schar_t;
-  typedef unaligned_type<unsigned char, etl::endian::little> le_uchar_t;
-  typedef unaligned_type<short, etl::endian::little> le_short_t;
-  typedef unaligned_type<unsigned short, etl::endian::little> le_ushort_t;
-  typedef unaligned_type<int, etl::endian::little> le_int_t;
-  typedef unaligned_type<unsigned int, etl::endian::little> le_uint_t;
-  typedef unaligned_type<long, etl::endian::little> le_long_t;
-  typedef unaligned_type<unsigned long, etl::endian::little> le_ulong_t;
-  typedef unaligned_type<long long, etl::endian::little> le_long_long_t;
+  typedef unaligned_type<char,               etl::endian::little> le_char_t;
+  typedef unaligned_type<signed char,        etl::endian::little> le_schar_t;
+  typedef unaligned_type<unsigned char,      etl::endian::little> le_uchar_t;
+  typedef unaligned_type<short,              etl::endian::little> le_short_t;
+  typedef unaligned_type<unsigned short,     etl::endian::little> le_ushort_t;
+  typedef unaligned_type<int,                etl::endian::little> le_int_t;
+  typedef unaligned_type<unsigned int,       etl::endian::little> le_uint_t;
+  typedef unaligned_type<long,               etl::endian::little> le_long_t;
+  typedef unaligned_type<unsigned long,      etl::endian::little> le_ulong_t;
+  typedef unaligned_type<long long,          etl::endian::little> le_long_long_t;
   typedef unaligned_type<unsigned long long, etl::endian::little> le_ulong_long_t;
 #if ETL_USING_8BIT_TYPES
-  typedef unaligned_type<int8_t, etl::endian::little> le_int8_t;
-  typedef unaligned_type<uint8_t, etl::endian::little> le_uint8_t;
+  typedef unaligned_type<int8_t,             etl::endian::little> le_int8_t;
+  typedef unaligned_type<uint8_t,            etl::endian::little> le_uint8_t;
 #endif
-  typedef unaligned_type<int16_t, etl::endian::little> le_int16_t;
-  typedef unaligned_type<uint16_t, etl::endian::little> le_uint16_t;
-  typedef unaligned_type<int32_t, etl::endian::little> le_int32_t;
-  typedef unaligned_type<uint32_t, etl::endian::little> le_uint32_t;
+  typedef unaligned_type<int16_t,            etl::endian::little> le_int16_t;
+  typedef unaligned_type<uint16_t,           etl::endian::little> le_uint16_t;
+  typedef unaligned_type<int32_t,            etl::endian::little> le_int32_t;
+  typedef unaligned_type<uint32_t,           etl::endian::little> le_uint32_t;
 #if ETL_USING_64BIT_TYPES
-  typedef unaligned_type<int64_t, etl::endian::little> le_int64_t;
-  typedef unaligned_type<uint64_t, etl::endian::little> le_uint64_t;
+  typedef unaligned_type<int64_t,            etl::endian::little> le_int64_t;
+  typedef unaligned_type<uint64_t,           etl::endian::little> le_uint64_t;
 #endif
-  typedef unaligned_type<float, etl::endian::little> le_float_t;
-  typedef unaligned_type<double, etl::endian::little> le_double_t;
-  typedef unaligned_type<long double, etl::endian::little> le_long_double_t;
+  typedef unaligned_type<float,              etl::endian::little> le_float_t;
+  typedef unaligned_type<double,             etl::endian::little> le_double_t;
+  typedef unaligned_type<long double,        etl::endian::little> le_long_double_t;
 
   // Big Endian
-  typedef unaligned_type<char, etl::endian::big> be_char_t;
-  typedef unaligned_type<signed char, etl::endian::big> be_schar_t;
-  typedef unaligned_type<unsigned char, etl::endian::big> be_uchar_t;
-  typedef unaligned_type<short, etl::endian::big> be_short_t;
-  typedef unaligned_type<unsigned short, etl::endian::big> be_ushort_t;
-  typedef unaligned_type<int, etl::endian::big> be_int_t;
-  typedef unaligned_type<unsigned int, etl::endian::big> be_uint_t;
-  typedef unaligned_type<long, etl::endian::big> be_long_t;
-  typedef unaligned_type<unsigned long, etl::endian::big> be_ulong_t;
-  typedef unaligned_type<long long, etl::endian::big> be_long_long_t;
+  typedef unaligned_type<char,               etl::endian::big> be_char_t;
+  typedef unaligned_type<signed char,        etl::endian::big> be_schar_t;
+  typedef unaligned_type<unsigned char,      etl::endian::big> be_uchar_t;
+  typedef unaligned_type<short,              etl::endian::big> be_short_t;
+  typedef unaligned_type<unsigned short,     etl::endian::big> be_ushort_t;
+  typedef unaligned_type<int,                etl::endian::big> be_int_t;
+  typedef unaligned_type<unsigned int,       etl::endian::big> be_uint_t;
+  typedef unaligned_type<long,               etl::endian::big> be_long_t;
+  typedef unaligned_type<unsigned long,      etl::endian::big> be_ulong_t;
+  typedef unaligned_type<long long,          etl::endian::big> be_long_long_t;
   typedef unaligned_type<unsigned long long, etl::endian::big> be_ulong_long_t;
 #if ETL_USING_8BIT_TYPES
-  typedef unaligned_type<int8_t, etl::endian::big> be_int8_t;
-  typedef unaligned_type<uint8_t, etl::endian::big> be_uint8_t;
+  typedef unaligned_type<int8_t,             etl::endian::big> be_int8_t;
+  typedef unaligned_type<uint8_t,            etl::endian::big> be_uint8_t;
 #endif
-  typedef unaligned_type<int16_t, etl::endian::big> be_int16_t;
-  typedef unaligned_type<uint16_t, etl::endian::big> be_uint16_t;
-  typedef unaligned_type<int32_t, etl::endian::big> be_int32_t;
-  typedef unaligned_type<uint32_t, etl::endian::big> be_uint32_t;
+  typedef unaligned_type<int16_t,            etl::endian::big> be_int16_t;
+  typedef unaligned_type<uint16_t,           etl::endian::big> be_uint16_t;
+  typedef unaligned_type<int32_t,            etl::endian::big> be_int32_t;
+  typedef unaligned_type<uint32_t,           etl::endian::big> be_uint32_t;
 #if ETL_USING_64BIT_TYPES
-  typedef unaligned_type<int64_t, etl::endian::big> be_int64_t;
-  typedef unaligned_type<uint64_t, etl::endian::big> be_uint64_t;
+  typedef unaligned_type<int64_t,            etl::endian::big> be_int64_t;
+  typedef unaligned_type<uint64_t,           etl::endian::big> be_uint64_t;
 #endif
-  typedef unaligned_type<float, etl::endian::big> be_float_t;
-  typedef unaligned_type<double, etl::endian::big> be_double_t;
-  typedef unaligned_type<long double, etl::endian::big> be_long_double_t;
+  typedef unaligned_type<float,              etl::endian::big> be_float_t;
+  typedef unaligned_type<double,             etl::endian::big> be_double_t;
+  typedef unaligned_type<long double,        etl::endian::big> be_long_double_t;
 
   // Network Order
   typedef be_char_t        net_char_t;

@@ -1,7 +1,11 @@
 ﻿===============================================================================
 20.39.3
 
+Updates:
 Removed C++11 restriction on etl::observer::notification
+
+Fixes:
+#917 unaligned_type doesn't compile with floating point types
 
 Pull Requests:
 #946 Make include paths to private files relative
