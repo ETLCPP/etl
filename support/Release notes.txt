@@ -3,6 +3,9 @@
 
 Removed C++11 restriction on etl::observer::notification
 
+Pull Requests:
+#946 Make include paths to private files relative
+
 ===============================================================================
 20.39.2
 
