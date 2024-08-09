@@ -292,56 +292,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Equality operator
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator ==(const unaligned_type& lhs, const unaligned_type& rhs)
-    {
-      return etl::equal(lhs.data(), lhs.data() + lhs.Size, rhs.data());
-    }
-
-    //*************************************************************************
-    /// Equality operator
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator ==(const unaligned_type& lhs, T rhs)
-    {
-      T lhs_value = lhs;
-      return (lhs_value == rhs);
-    }
-
-    //*************************************************************************
-    /// Equality operator
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator ==(T lhs, const unaligned_type& rhs)
-    {
-      T rhs_value = rhs;
-      return (lhs == rhs_value);
-    }
-
-    //*************************************************************************
-    /// Inequality operator
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator !=(const unaligned_type& lhs, T rhs)
-    {
-      return !(lhs == rhs);
-    }
-
-    //*************************************************************************
-    /// Inequality operator
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
-    {
-      return !(lhs == rhs);
-    }
-
-    //*************************************************************************
-    /// Inequality operator
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator !=(T lhs, const unaligned_type& rhs)
-    {
-      return !(lhs == rhs);
-    }
-
-    //*************************************************************************
     /// Conversion operator
     //*************************************************************************
     ETL_CONSTEXPR14 operator T() const

@@ -329,19 +329,19 @@ namespace
       }
 
       // float
-      CHECK(etl::le_float_t(3.1415927f) == etl::le_float_t(3.1415927f));
-      CHECK(3.1415927f == etl::le_float_t(3.1415927f));
-      CHECK(etl::le_float_t(3.1415927f) == 3.1415927f);
+      CHECK_FLOAT_SAME(etl::le_float_t(3.1415927f), etl::le_float_t(3.1415927f));
+      CHECK_FLOAT_SAME(3.1415927f, etl::le_float_t(3.1415927f));
+      CHECK_FLOAT_SAME(etl::le_float_t(3.1415927f), 3.1415927f);
 
       // double
-      CHECK(etl::le_double_t(3.1415927) == etl::le_double_t(3.1415927));
-      CHECK(3.1415927 == etl::le_double_t(3.1415927));
-      CHECK(etl::le_double_t(3.1415927) == 3.1415927);
+      CHECK_FLOAT_SAME(etl::le_double_t(3.1415927), etl::le_double_t(3.1415927));
+      CHECK_FLOAT_SAME(3.1415927, etl::le_double_t(3.1415927));
+      CHECK_FLOAT_SAME(etl::le_double_t(3.1415927), 3.1415927);
 
       // long double
-      CHECK(etl::le_long_double_t(3.1415927L) == etl::le_long_double_t(3.1415927L));
-      CHECK(3.1415927L == etl::le_long_double_t(3.1415927L));
-      CHECK(etl::le_long_double_t(3.1415927L) == 3.1415927L);
+      CHECK_FLOAT_SAME(etl::le_long_double_t(3.1415927L), etl::le_long_double_t(3.1415927L));
+      CHECK_FLOAT_SAME(3.1415927L, etl::le_long_double_t(3.1415927L));
+      CHECK_FLOAT_SAME(etl::le_long_double_t(3.1415927L), 3.1415927L);
     }
 
     //*************************************************************************
@@ -394,7 +394,7 @@ namespace
       {
         // long long
         CHECK(etl::le_long_long_t(0x0123456789ABCDEF) != etl::le_long_long_t(0x0223456789ABCDEF));
-        CHECK((long long)(0x0123456789ABCDEF)           != etl::le_long_long_t(0x0223456789ABCDEF));
+        CHECK((long long)(0x0123456789ABCDEF)         != etl::le_long_long_t(0x0223456789ABCDEF));
         CHECK(etl::le_long_long_t(0x0123456789ABCDEF) != (long long)(0x0223456789ABCDEF));
 
         CHECK(etl::le_ulong_long_t(0x0123456789ABCDEFU) != etl::le_ulong_long_t(0x0223456789ABCDEFU));
@@ -403,19 +403,19 @@ namespace
       }
 
       // float
-      CHECK(etl::le_float_t(3.1415927f) != etl::le_float_t(2.7182818f));
-      CHECK(3.1415927f != etl::le_float_t(2.7182818f));
-      CHECK(etl::le_float_t(3.1415927f) != 2.7182818f);
+      CHECK_FLOAT_DIFFERENT(etl::le_float_t(3.1415927f), etl::le_float_t(2.7182818f));
+      CHECK_FLOAT_DIFFERENT(3.1415927f, etl::le_float_t(2.7182818f));
+      CHECK_FLOAT_DIFFERENT(etl::le_float_t(3.1415927f), 2.7182818f);
 
       // double
-      CHECK(etl::le_double_t(3.1415927) != etl::le_double_t(2.7182818));
-      CHECK(3.1415927 != etl::le_double_t(2.7182818));
-      CHECK(etl::le_double_t(3.1415927) != 2.7182818);
+      CHECK_FLOAT_DIFFERENT(etl::le_double_t(3.1415927), etl::le_double_t(2.7182818));
+      CHECK_FLOAT_DIFFERENT(3.1415927, etl::le_double_t(2.7182818));
+      CHECK_FLOAT_DIFFERENT(etl::le_double_t(3.1415927), 2.7182818);
 
       // long double
-      CHECK(etl::le_long_double_t(3.1415927L) != etl::le_long_double_t(2.7182818L));
-      CHECK(3.1415927L != etl::le_long_double_t(2.7182818L));
-      CHECK(etl::le_long_double_t(3.1415927L) != 2.7182818L);
+      CHECK_FLOAT_DIFFERENT(etl::le_long_double_t(3.1415927L), etl::le_long_double_t(2.7182818L));
+      CHECK_FLOAT_DIFFERENT(3.1415927L, etl::le_long_double_t(2.7182818L));
+      CHECK_FLOAT_DIFFERENT(etl::le_long_double_t(3.1415927L), 2.7182818L);
     }
 
     //*************************************************************************
@@ -477,19 +477,19 @@ namespace
       }
 
       // float
-      CHECK(etl::be_float_t(3.1415927f) == etl::be_float_t(3.1415927f));
-      CHECK(3.1415927f == etl::be_float_t(3.1415927f));
-      CHECK(etl::be_float_t(3.1415927f) == 3.1415927f);
+      CHECK_FLOAT_SAME(etl::be_float_t(3.1415927f), etl::be_float_t(3.1415927f));
+      CHECK_FLOAT_SAME(3.1415927f, etl::be_float_t(3.1415927f));
+      CHECK_FLOAT_SAME(etl::be_float_t(3.1415927f), 3.1415927f);
 
       // double
-      CHECK(etl::be_double_t(3.1415927) == etl::be_double_t(3.1415927));
-      CHECK(3.1415927 == etl::be_double_t(3.1415927));
-      CHECK(etl::be_double_t(3.1415927) == 3.1415927);
+      CHECK_FLOAT_SAME(etl::be_double_t(3.1415927), etl::be_double_t(3.1415927));
+      CHECK_FLOAT_SAME(3.1415927, etl::be_double_t(3.1415927));
+      CHECK_FLOAT_SAME(etl::be_double_t(3.1415927), 3.1415927);
 
       // long double
-      CHECK(etl::be_long_double_t(3.1415927L) == etl::be_long_double_t(3.1415927L));
-      CHECK(3.1415927L == etl::be_long_double_t(3.1415927L));
-      CHECK(etl::be_long_double_t(3.1415927L) == 3.1415927L);
+      CHECK_FLOAT_SAME(etl::be_long_double_t(3.1415927L), etl::be_long_double_t(3.1415927L));
+      CHECK_FLOAT_SAME(3.1415927L, etl::be_long_double_t(3.1415927L));
+      CHECK_FLOAT_SAME(etl::be_long_double_t(3.1415927L), 3.1415927L);
     }
 
     //*************************************************************************
@@ -551,19 +551,19 @@ namespace
       }
 
       // float
-      CHECK(etl::be_float_t(3.1415927f) != etl::be_float_t(2.7182818f));
-      CHECK(3.1415927f != etl::be_float_t(2.7182818f));
-      CHECK(etl::be_float_t(3.1415927f) != 2.7182818f);
+      CHECK_FLOAT_DIFFERENT(etl::be_float_t(3.1415927f), etl::be_float_t(2.7182818f));
+      CHECK_FLOAT_DIFFERENT(3.1415927f, etl::be_float_t(2.7182818f));
+      CHECK_FLOAT_DIFFERENT(etl::be_float_t(3.1415927f), 2.7182818f);
 
       // double
-      CHECK(etl::be_double_t(3.1415927) != etl::be_double_t(2.7182818));
-      CHECK(3.1415927 != etl::be_double_t(2.7182818));
-      CHECK(etl::be_double_t(3.1415927) != 2.7182818);
+      CHECK_FLOAT_DIFFERENT(etl::be_double_t(3.1415927), etl::be_double_t(2.7182818));
+      CHECK_FLOAT_DIFFERENT(3.1415927, etl::be_double_t(2.7182818));
+      CHECK_FLOAT_DIFFERENT(etl::be_double_t(3.1415927), 2.7182818);
 
       // long double
-      CHECK(etl::be_long_double_t(3.1415927L) != etl::be_long_double_t(2.7182818L));
-      CHECK(3.1415927L != etl::be_long_double_t(2.7182818L));
-      CHECK(etl::be_long_double_t(3.1415927L) != 2.7182818L);
+      CHECK_FLOAT_DIFFERENT(etl::be_long_double_t(3.1415927L), etl::be_long_double_t(2.7182818L));
+      CHECK_FLOAT_DIFFERENT(3.1415927L, etl::be_long_double_t(2.7182818L));
+      CHECK_FLOAT_DIFFERENT(etl::be_long_double_t(3.1415927L), 2.7182818L);
     }
 
     //*************************************************************************
@@ -622,17 +622,17 @@ namespace
       // float
       etl::le_float_t le_float;
       le_float = 3.1415927f;
-      CHECK(3.1415927f == le_float);
+      CHECK_FLOAT_SAME(3.1415927f, le_float);
 
       // double
       etl::le_double_t le_double;
       le_double = 3.1415927;
-      CHECK(3.1415927 == le_double);
+      CHECK_FLOAT_SAME(3.1415927, le_double);
 
       // long double
       etl::le_long_double_t le_long_double;
       le_long_double = 3.1415927L;
-      CHECK(3.1415927L == le_long_double);
+      CHECK_FLOAT_SAME(3.1415927L, le_long_double);
     }
 
     //*************************************************************************
@@ -691,17 +691,17 @@ namespace
       // float
       etl::be_float_t be_float;
       be_float = 3.1415927f;
-      CHECK(3.1415927f == be_float);
+      CHECK_FLOAT_SAME(3.1415927f, be_float);
 
       // double
       etl::be_double_t be_double;
       be_double = 3.1415927;
-      CHECK(3.1415927 == be_double);
+      CHECK_FLOAT_SAME(3.1415927, be_double);
 
       // long double
       etl::be_long_double_t be_long_double;
       be_long_double = 3.1415927L;
-      CHECK(3.1415927L == be_long_double);
+      CHECK_FLOAT_SAME(3.1415927L, be_long_double);
     }
 
     //*************************************************************************
@@ -740,10 +740,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_EQUAL(3.1415927f, le_v2);
-      CHECK_EQUAL(3.1415927f, be_v2);
-      CHECK_EQUAL(3.1415927f, le_v3);
-      CHECK_EQUAL(3.1415927f, be_v3);
+      CHECK_FLOAT_SAME(3.1415927f, le_v2);
+      CHECK_FLOAT_SAME(3.1415927f, be_v2);
+      CHECK_FLOAT_SAME(3.1415927f, le_v3);
+      CHECK_FLOAT_SAME(3.1415927f, be_v3);
     }
 
     //*************************************************************************
@@ -761,10 +761,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_EQUAL(3.1415927, le_v2);
-      CHECK_EQUAL(3.1415927, be_v2);
-      CHECK_EQUAL(3.1415927, le_v3);
-      CHECK_EQUAL(3.1415927, be_v3);
+      CHECK_FLOAT_SAME(3.1415927, le_v2);
+      CHECK_FLOAT_SAME(3.1415927, be_v2);
+      CHECK_FLOAT_SAME(3.1415927, le_v3);
+      CHECK_FLOAT_SAME(3.1415927, be_v3);
     }
 
     //*************************************************************************
@@ -782,10 +782,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_EQUAL(3.1415927L, le_v2);
-      CHECK_EQUAL(3.1415927L, be_v2);
-      CHECK_EQUAL(3.1415927L, le_v3);
-      CHECK_EQUAL(3.1415927L, be_v3);
+      CHECK_FLOAT_SAME(3.1415927L, le_v2);
+      CHECK_FLOAT_SAME(3.1415927L, be_v2);
+      CHECK_FLOAT_SAME(3.1415927L, le_v3);
+      CHECK_FLOAT_SAME(3.1415927L, be_v3);
     }
 
     //*************************************************************************
