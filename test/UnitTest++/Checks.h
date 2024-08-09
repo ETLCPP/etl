@@ -265,6 +265,19 @@ namespace UnitTest
       }
    }
 
+   template< typename Expected, typename Actual, typename Tolerance >
+   void CheckNotClose(TestResults& results, Expected const& expected, Actual const& actual, Tolerance const& tolerance,
+                      TestDetails const& details)
+   {
+     if (AreClose(expected, actual, tolerance))
+     {
+       UnitTest::MemoryOutStream stream;
+       stream << "Expected " << expected << " +/- " << tolerance << " but was " << actual;
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+
    template< typename Expected, typename Actual >
    void CheckArrayEqual(TestResults& results, Expected const& expected, Actual const& actual,
                         size_t const count, TestDetails const& details)
