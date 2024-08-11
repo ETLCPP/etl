@@ -273,7 +273,17 @@ namespace etl
     template <typename T, T& Instance, TReturn(T::*Method)(TParam)>
     static delegate create()
     {
-      return delegate(method_instance_stub<T, Instance, Method>);
+      return delegate(method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Create from instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)(TParam), T& Instance>
+    static delegate create()
+    {
+      return delegate(method_instance_stub<T, Method, Instance>);
     }
 
     //*************************************************************************
@@ -282,7 +292,17 @@ namespace etl
     template <typename T, T const& Instance, TReturn(T::*Method)(TParam) const>
     static delegate create()
     {
-      return delegate(const_method_instance_stub<T, Instance, Method>);
+      return delegate(const_method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Create from const instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)(TParam) const, T const& Instance>
+    static delegate create()
+    {
+      return delegate(const_method_instance_stub<T, Method, Instance>);
     }
 
 #if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
@@ -350,7 +370,17 @@ namespace etl
     template <typename T, T& Instance, TReturn(T::* Method)(TParam)>
     void set()
     {
-      assign(ETL_NULLPTR, method_instance_stub<T, Instance, Method>);
+      assign(ETL_NULLPTR, method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Set from instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)(TParam), T& Instance>
+    void set()
+    {
+      assign(ETL_NULLPTR, method_instance_stub<T, Method, Instance>);
     }
 
     //*************************************************************************
@@ -359,7 +389,17 @@ namespace etl
     template <typename T, T const& Instance, TReturn(T::* Method)(TParam) const>
     void set()
     {
-      assign(ETL_NULLPTR, const_method_instance_stub<T, Instance, Method>);
+      assign(ETL_NULLPTR, const_method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Set from const instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)(TParam) const, T const& Instance>
+    void set()
+    {
+      assign(ETL_NULLPTR, const_method_instance_stub<T, Method, Instance>);
     }
 
     //*************************************************************************
@@ -571,7 +611,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
-    template <typename T, T& Instance, TReturn(T::*Method)(TParam)>
+    template <typename T, TReturn(T::*Method)(TParam), T& Instance>
     static TReturn method_instance_stub(void*, TParam param)
     {
       return (Instance.*Method)(param);
@@ -580,7 +620,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
-    template <typename T, const T& Instance, TReturn(T::*Method)(TParam) const>
+    template <typename T, TReturn(T::*Method)(TParam) const, const T& Instance>
     static TReturn const_method_instance_stub(void*, TParam param)
     {
       return (Instance.*Method)(param);
@@ -734,7 +774,17 @@ namespace etl
     template <typename T, T& Instance, TReturn(T::* Method)()>
     static delegate create()
     {
-      return delegate(method_instance_stub<T, Instance, Method>);
+      return delegate(method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Create from instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)(), T& Instance>
+    static delegate create()
+    {
+      return delegate(method_instance_stub<T, Method, Instance>);
     }
 
     //*************************************************************************
@@ -743,7 +793,17 @@ namespace etl
     template <typename T, T const& Instance, TReturn(T::* Method)() const>
     static delegate create()
     {
-      return delegate(const_method_instance_stub<T, Instance, Method>);
+      return delegate(const_method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Create from const instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)() const, T const& Instance>
+    static delegate create()
+    {
+      return delegate(const_method_instance_stub<T, Method, Instance>);
     }
 
 #if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
@@ -811,7 +871,17 @@ namespace etl
     template <typename T, T& Instance, TReturn(T::* Method)()>
     void set()
     {
-      assign(ETL_NULLPTR, method_instance_stub<T, Instance, Method>);
+      assign(ETL_NULLPTR, method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Set from instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)(), T& Instance>
+    void set()
+    {
+      assign(ETL_NULLPTR, method_instance_stub<T, Method, Instance>);
     }
 
     //*************************************************************************
@@ -820,7 +890,17 @@ namespace etl
     template <typename T, T const& Instance, TReturn(T::* Method)() const>
     void set()
     {
-      assign(ETL_NULLPTR, const_method_instance_stub<T, Instance, Method>);
+      assign(ETL_NULLPTR, const_method_instance_stub<T, Method, Instance>);
+    }
+
+    //*************************************************************************
+    /// Set from const instance method (Compile time).
+    /// New API
+    //*************************************************************************
+    template <typename T, TReturn(T::* Method)() const, T const& Instance>
+    void set()
+    {
+      assign(ETL_NULLPTR, const_method_instance_stub<T, Method, Instance>);
     }
 
     //*************************************************************************
@@ -1032,7 +1112,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
-    template <typename T, T& Instance, TReturn(T::* Method)()>
+    template <typename T, TReturn(T::* Method)(), T& Instance>
     static TReturn method_instance_stub(void*)
     {
       return (Instance.*Method)();
@@ -1041,7 +1121,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
-    template <typename T, const T& Instance, TReturn(T::* Method)() const>
+    template <typename T, TReturn(T::* Method)() const, const T& Instance>
     static TReturn const_method_instance_stub(void*)
     {
       return (Instance.*Method)();
