@@ -3365,6 +3365,27 @@
     <ClCompile Include="..\test_base64_RFC4648_URL_decoder_with_padding.cpp">
       <Filter>Tests\Codecs\Base64</Filter>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\base64_decoder.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\base64_encoder.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\bitset.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc1.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\hfsm.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\result.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\stringify.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3510,6 +3531,15 @@
     </None>
     <None Include="..\..\.github\workflows\gcc-c++20.yml">
       <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\list_test_files.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\list_test_files.ps1">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\list_test_files.sh">
+      <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

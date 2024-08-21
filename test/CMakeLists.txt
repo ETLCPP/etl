@@ -31,10 +31,11 @@ add_executable(etl_tests
 	test_base64_RFC4648_URL_decoder_with_padding.cpp
 	test_base64_RFC4648_URL_encoder_with_no_padding.cpp
 	test_base64_RFC4648_URL_encoder_with_padding.cpp
-    test_binary.cpp
+	test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
 	test_bitset_legacy.cpp
+	test_bitset_new_comparisons.cpp
 	test_bitset_new_default_element_type.cpp
 	test_bitset_new_explicit_single_element_type.cpp
 	test_bitset_new_ext_default_element_type.cpp
@@ -44,12 +45,12 @@ add_executable(etl_tests
 	test_bit_stream_reader_little_endian.cpp
 	test_bit_stream_writer_big_endian.cpp
 	test_bit_stream_writer_little_endian.cpp
-	test_byte.cpp
-	test_byte_stream.cpp
 	test_bloom_filter.cpp
 	test_bresenham_line.cpp
 	test_bsd_checksum.cpp
 	test_buffer_descriptors.cpp
+	test_byte.cpp
+	test_byte_stream.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp
 	test_callback_timer_atomic.cpp
@@ -109,8 +110,8 @@ add_executable(etl_tests
 	test_crc8_ebu.cpp
 	test_crc8_icode.cpp
 	test_crc8_itu.cpp
-	test_crc8_j1850_zero.cpp
 	test_crc8_j1850.cpp
+	test_crc8_j1850_zero.cpp
 	test_crc8_maxim.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
@@ -120,6 +121,7 @@ add_executable(etl_tests
 	test_delegate_cpp03.cpp
 	test_delegate_service.cpp
 	test_delegate_service_compile_time.cpp
+	test_delegate_service_cpp03.cpp
 	test_deque.cpp
 	test_endian.cpp
 	test_enum_type.cpp
@@ -144,6 +146,7 @@ add_executable(etl_tests
 	test_gamma.cpp
 	test_hash.cpp
 	test_hfsm.cpp
+	test_hfsm_recurse_to_inner_state_on_start.cpp
 	test_histogram.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
@@ -163,14 +166,16 @@ add_executable(etl_tests
 	test_limits.cpp
 	test_list.cpp
 	test_list_shared_pool.cpp
+	test_macros.cpp
 	test_make_string.cpp
 	test_map.cpp
 	test_math.cpp
 	test_math_functions.cpp
 	test_mean.cpp
+	test_memory.cpp
 	test_mem_cast.cpp
 	test_mem_cast_ptr.cpp
-	test_memory.cpp
+	test_message.cpp
 	test_message_broker.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
@@ -184,12 +189,14 @@ add_executable(etl_tests
 	test_multiset.cpp
 	test_multi_array.cpp
 	test_multi_range.cpp
+	test_multi_span.cpp
 	test_multi_vector.cpp
 	test_murmur3.cpp
 	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp
 	test_optional.cpp
+	test_overload.cpp
 	test_packet.cpp
 	test_parameter_pack.cpp
 	test_parameter_type.cpp
@@ -232,32 +239,32 @@ add_executable(etl_tests
 	test_stack.cpp
 	test_standard_deviation.cpp
 	test_state_chart.cpp
-	test_state_chart_with_data_parameter.cpp
-	test_state_chart_with_rvalue_data_parameter.cpp
 	test_state_chart_compile_time.cpp
 	test_state_chart_compile_time_with_data_parameter.cpp
+	test_state_chart_with_data_parameter.cpp
+	test_state_chart_with_rvalue_data_parameter.cpp
 	test_string_char.cpp
 	test_string_char_external_buffer.cpp
 	test_string_stream.cpp
-	test_string_stream_u8.cpp
 	test_string_stream_u16.cpp
 	test_string_stream_u32.cpp
+	test_string_stream_u8.cpp
 	test_string_stream_wchar_t.cpp
-	test_string_u8.cpp
-	test_string_u8_external_buffer.cpp
 	test_string_u16.cpp
 	test_string_u16_external_buffer.cpp
 	test_string_u32.cpp
 	test_string_u32_external_buffer.cpp
+	test_string_u8.cpp
+	test_string_u8_external_buffer.cpp
 	test_string_utilities.cpp
 	test_string_utilities_std.cpp
-	test_string_utilities_std_u8.cpp
 	test_string_utilities_std_u16.cpp
 	test_string_utilities_std_u32.cpp
+	test_string_utilities_std_u8.cpp
 	test_string_utilities_std_wchar_t.cpp
-	test_string_utilities_u8.cpp
 	test_string_utilities_u16.cpp
 	test_string_utilities_u32.cpp
+	test_string_utilities_u8.cpp
 	test_string_utilities_wchar_t.cpp
 	test_string_view.cpp
 	test_string_wchar_t.cpp
@@ -266,14 +273,14 @@ add_executable(etl_tests
 	test_task_scheduler.cpp
 	test_threshold.cpp
 	test_to_arithmetic.cpp
-	test_to_arithmetic_u8.cpp
 	test_to_arithmetic_u16.cpp
 	test_to_arithmetic_u32.cpp
+	test_to_arithmetic_u8.cpp
 	test_to_arithmetic_wchar_t.cpp
 	test_to_string.cpp
-	test_to_u8string.cpp
 	test_to_u16string.cpp
 	test_to_u32string.cpp
+	test_to_u8string.cpp
 	test_to_wstring.cpp
 	test_type_def.cpp
 	test_type_lookup.cpp
@@ -289,9 +296,9 @@ add_executable(etl_tests
 	test_utility.cpp
 	test_variance.cpp
 	test_variant_legacy.cpp
-	test_variant_variadic.cpp
 	test_variant_pool.cpp
 	test_variant_pool_external_buffer.cpp
+	test_variant_variadic.cpp
 	test_vector.cpp
 	test_vector_external_buffer.cpp
 	test_vector_non_trivial.cpp
@@ -299,7 +306,7 @@ add_executable(etl_tests
 	test_vector_pointer_external_buffer.cpp
 	test_visitor.cpp
 	test_xor_checksum.cpp
-	test_xor_rotate_checksum.cpp 
+	test_xor_rotate_checksum.cpp
   )
 
 target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)

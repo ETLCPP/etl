@@ -468,12 +468,12 @@ namespace etl
     {
       return etl::move(data.value());
     }
-#endif
 
   private:
 
     etl::optional<TValue> data;
   };
-}
+}  // namespace etl
+#endif
 
 #endif
