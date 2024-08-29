@@ -58,6 +58,12 @@ SOFTWARE.
       #endif
     #elif defined(ETL_COMPILER_ARM5)
       #define ETL_CPP20_SUPPORTED 0
+    #elif defined(ETL_COMPILER_GCC)
+      #if (__GNUC__ == 10)
+        #define ETL_CPP20_SUPPORTED (__cplusplus >= 201709L)
+      #else
+        #define ETL_CPP20_SUPPORTED (__cplusplus >= 202002L)
+      #endif
     #else
       #define ETL_CPP20_SUPPORTED (__cplusplus >= 202002L)
     #endif
