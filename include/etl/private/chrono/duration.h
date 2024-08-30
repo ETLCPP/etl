@@ -76,25 +76,25 @@ namespace etl
       }
 
       //***********************************************************************
-      static ETL_NODISCARD ETL_CONSTEXPR etl::chrono::duration< TValue, TPeriod> zero()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::duration< TValue, TPeriod> zero()  ETL_NOEXCEPT
       {
         return etl::chrono::duration{ 0, TPeriod()};
       }
 
       //***********************************************************************
-      static ETL_NODISCARD ETL_CONSTEXPR etl::chrono::duration<TValue, TPeriod> min()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::duration<TValue, TPeriod> min()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TValue, TPeriod> { etl::numeric_limits<TValue>::min() };
       }
 
       //***********************************************************************
-      static ETL_NODISCARD ETL_CONSTEXPR etl::chrono::duration<TValue, TPeriod> max()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::duration<TValue, TPeriod> max()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TValue, TPeriod>{ etl::numeric_limits<TValue>::max() };
       }
 
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR TValue count() const ETL_NOEXCEPT
+      ETL_CONSTEXPR TValue count() const ETL_NOEXCEPT
       {
         return value;
       }
@@ -131,9 +131,16 @@ namespace etl
     template <typename TToDuration, typename TValue, typename TPeriod>
     ETL_CONSTEXPR TToDuration duration_cast(const etl::chrono::duration<TValue, TPeriod>& d) ETL_NOEXCEPT
     {
-      return TToDuration();
+      using to_value_type = typename TToDuration::value_type;
+      using to_period     = typename TToDuration::period;
+
+      // Calculate the conversion factor between the periods
+      ETL_CONSTEXPR auto conversion_factor = (static_cast<double>(TPeriod::num) / TPeriod::den) * (to_period::den / to_period::num);
+
+      // Convert the value
+      to_value_type converted_value = static_cast<to_value_type>(d.count() * conversion_factor);
+
+      return TToDuration(converted_value);
     }
   }
 }
-  
-#endif

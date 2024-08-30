@@ -37,6 +37,7 @@ SOFTWARE.
 #include "etl/chrono.h"
 
 #include <chrono>
+#include <algorithm>
 
 namespace 
 {
@@ -59,24 +60,25 @@ namespace
         std::chrono::year std_year(i);
         etl::chrono::year year(i);
 
-        CHECK_EQUAL(std_year.ok(), year.ok());
-        CHECK_EQUAL(int(std_year), int(year));
+        CHECK_TRUE(year.ok());
+        CHECK_EQUAL(i, int(year));
       }
     }
 
     //*************************************************************************
     TEST(test_pre_increment)
     {
-      std::chrono::year std_year(-32767);
       etl::chrono::year year(-32767);
+      int count = int(year);
 
-      for (int32_t i = 0; i < 65536; ++i)
+      for (int32_t i = 0; i < 65534; ++i)
       {
-        ++std_year;
-        ++year;
+        ++count;
+        etl::chrono::year this_year = ++year;
 
-        CHECK_EQUAL(std_year.ok(), year.ok());
-        CHECK_EQUAL(int(std_year), int(year));
+        CHECK_TRUE(year.ok());
+        CHECK_EQUAL(count, year);
+        CHECK_EQUAL(this_year, year);
       }
     }
 

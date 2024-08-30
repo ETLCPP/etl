@@ -30,13 +30,12 @@ SOFTWARE.
 
 #include "etl/platform.h"
 
-#if ETL_USING_CPP20
-
 #include "unit_test_framework.h"
 
 #include "etl/chrono.h"
 
 #include <chrono>
+
 #include <array>
 #include <algorithm>
 
@@ -47,129 +46,138 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      std::chrono::weekday std_weekday;
       etl::chrono::weekday weekday;
 
-      CHECK_EQUAL(std_weekday.ok(), weekday.ok());
+      CHECK_FALSE(weekday.ok());
     }
 
     //*************************************************************************
     TEST(test_constructor_in_range)
     {
-      for (unsigned i = 0U; i < 256U; ++i)
+      for (unsigned i = 0U; i < 7U; ++i)
       {
-        std::chrono::weekday std_weekday(i);
         etl::chrono::weekday weekday(i);
 
-        CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-        CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+        CHECK_TRUE(weekday.ok());
+        CHECK_EQUAL(i, weekday.c_encoding());
+        CHECK_EQUAL((i == 0U) ? 7U : i, weekday.iso_encoding());
       }
     }
 
     //*************************************************************************
-    TEST(test_encodings)
+    TEST(test_constructor_out_of_range)
     {
-      std::chrono::weekday std_weekday;
-      etl::chrono::weekday weekday;
-
-      for (unsigned i = 0U; i < 256; ++i)
+      for (unsigned i = 8U; i < 256U; ++i)
       {
-        std_weekday = std::chrono::weekday(i);
-        weekday     = etl::chrono::weekday(i);
+        etl::chrono::weekday weekday(i);
 
-        CHECK_EQUAL(std_weekday.c_encoding(),   weekday.c_encoding());
-        CHECK_EQUAL(std_weekday.iso_encoding(), weekday.iso_encoding());
+        CHECK_FALSE(weekday.ok());
+        CHECK_EQUAL(i, weekday.c_encoding());
+        CHECK_EQUAL((i == 0U) ? 7U : i, weekday.iso_encoding());
       }
     }
 
     //*************************************************************************
     TEST(test_pre_increment)
     {
-      std::chrono::weekday std_weekday(0);
       etl::chrono::weekday weekday(0);
+      unsigned count = 0;
 
       for (int i = 0; i < 255; ++i)
       {
-        ++std_weekday;
         ++weekday;
+        ++count;
 
-        CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-        CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+        CHECK_TRUE(weekday.ok());
+        CHECK_EQUAL(count % 7, weekday.c_encoding());
+        CHECK_EQUAL((count % 7 == 0U) ? 7U : count % 7, weekday.iso_encoding());
       }
     }
 
     //*************************************************************************
     TEST(test_post_increment)
     {
-      std::chrono::weekday std_weekday(0);
       etl::chrono::weekday weekday(0);
+      unsigned count = 0;
 
-      for (int i = 0; i < 256; ++i)
+      for (int i = 0; i < 255; ++i)
       {
-        std::chrono::weekday std_last_weekday = std_weekday++;
-        etl::chrono::weekday last_weekday     = weekday++;
+        etl::chrono::weekday last_weekday = weekday++;
+        unsigned last_count = count++;
 
-        CHECK_EQUAL(std_last_weekday.ok(), last_weekday.ok());
-        CHECK_EQUAL(std_last_weekday.c_encoding(), last_weekday.c_encoding());
+        CHECK_TRUE(last_weekday.ok());
+        CHECK_EQUAL(last_count % 7, last_weekday.c_encoding());
+        CHECK_EQUAL((last_count % 7 == 0U) ? 7U : last_count % 7, last_weekday.iso_encoding());
 
-        CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-        CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+        CHECK_TRUE(weekday.ok());
+        CHECK_EQUAL(count % 7, weekday.c_encoding());
+        CHECK_EQUAL((count % 7 == 0U) ? 7U : count % 7, weekday.iso_encoding());
       }
     }
 
     //*************************************************************************
     TEST(test_pre_decrement)
     {
-      std::chrono::weekday std_weekday(255);
-      etl::chrono::weekday weekday(255);
+      etl::chrono::weekday weekday(255U);
+      unsigned count = 255U;
 
-      for (int i = 0; i < 256; ++i)
+      for (int i = 0; i < 255; ++i)
       {
-        --std_weekday;
         --weekday;
+        --count;
 
-        CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-        CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+        CHECK_TRUE(weekday.ok());
+        CHECK_EQUAL(count % 7, weekday.c_encoding());
+        CHECK_EQUAL((count % 7 == 0U) ? 7U : count % 7, weekday.iso_encoding());
       }
     }
 
     //*************************************************************************
     TEST(test_post_decrement)
     {
-      std::chrono::weekday std_weekday(255);
-      etl::chrono::weekday weekday(255);
+      etl::chrono::weekday weekday(255U);
+      unsigned count = 255U;
 
-      for (int i = 0; i < 256; ++i)
+      for (int i = 0; i < 255; ++i)
       {
-        std::chrono::weekday std_last_weekday = std_weekday--;
         etl::chrono::weekday last_weekday = weekday--;
+        unsigned last_count = count--;
 
-        CHECK_EQUAL(std_last_weekday.ok(), last_weekday.ok());
-        CHECK_EQUAL(std_last_weekday.c_encoding(), last_weekday.c_encoding());
+        if (last_count == 255U)
+        {
+          CHECK_FALSE(last_weekday.ok());
+          CHECK_EQUAL(255U, last_weekday.c_encoding());
+          CHECK_EQUAL(255U, last_weekday.iso_encoding());
+        }
+        else
+        {
+          CHECK_TRUE(last_weekday.ok());
+          CHECK_EQUAL(last_count % 7, last_weekday.c_encoding());
+          CHECK_EQUAL((last_count % 7 == 0U) ? 7U : last_count % 7, last_weekday.iso_encoding());
+        }
 
-        CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-        CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+        CHECK_TRUE(weekday.ok());
+        CHECK_EQUAL(count % 7, weekday.c_encoding());
+        CHECK_EQUAL((count % 7 == 0U) ? 7U : count % 7, weekday.iso_encoding());
       }
     }
 
     //*************************************************************************
     TEST(test_plus_equal_days)
     {
-      for (int wd = 0; wd <= 6; ++wd)
+      for (unsigned wd = 0; wd <= 6; ++wd)
       {
-        for (int ds = 0; ds <= 14; ++ds)
+        for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          std::chrono::weekday std_weekday(wd);
           etl::chrono::weekday weekday(wd);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
+          weekday += days;
 
-          std_weekday += std_days;
-          weekday     += days;
+          unsigned expected = (wd + ds) % 7;
 
-          CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-          CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+          CHECK_TRUE(weekday.ok());
+          CHECK_EQUAL(expected, weekday.c_encoding());
+          CHECK_EQUAL((expected == 0U) ? 7U : expected, weekday.iso_encoding());
         }
       }
     }
@@ -177,21 +185,19 @@ namespace
     //*************************************************************************
     TEST(test_weekday_plus_days)
     {
-      for (int wd = 0; wd <= 6; ++wd)
+      for (unsigned wd = 0; wd <= 6; ++wd)
       {
-        for (int ds = 0; ds <= 14; ++ds)
+        for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          std::chrono::weekday std_weekday(wd);
           etl::chrono::weekday weekday(wd);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
+          weekday = weekday + days;
 
-          std_weekday = std_weekday + std_days;
-          weekday     = weekday + days;
+          unsigned expected = (wd + ds) % 7;
 
-          CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-          CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+          CHECK_TRUE(weekday.ok());
+          CHECK_EQUAL(expected, weekday.c_encoding());
+          CHECK_EQUAL((expected == 0U) ? 7U : expected, weekday.iso_encoding());
         }
       }
     }
@@ -199,21 +205,19 @@ namespace
     //*************************************************************************
     TEST(test_days_plus_weekday)
     {
-      for (int wd = 0; wd <= 6; ++wd)
+      for (unsigned wd = 0; wd <= 6; ++wd)
       {
-        for (int ds = 0; ds <= 14; ++ds)
+        for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          std::chrono::weekday std_weekday(wd);
           etl::chrono::weekday weekday(wd);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
+          weekday = weekday + days;
 
-          std_weekday = std_days + std_weekday;
-          weekday     = days + weekday;
+          unsigned expected = (ds + wd) % 7;
 
-          CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-          CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+          CHECK_TRUE(weekday.ok());
+          CHECK_EQUAL(expected, weekday.c_encoding());
+          CHECK_EQUAL((expected == 0U) ? 7U : expected, weekday.iso_encoding());
         }
       }
     }
@@ -221,21 +225,19 @@ namespace
     //*************************************************************************
     TEST(test_minus_equal_days)
     {
-      for (int wd = 0; wd <= 6; ++wd)
+      for (unsigned wd = 0; wd <= 6; ++wd)
       {
-        for (int ds = 0; ds <= 14; ++ds)
+        for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          std::chrono::weekday std_weekday(wd);
           etl::chrono::weekday weekday(wd);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
+          weekday -= days;
 
-          std_weekday -= std_days;
-          weekday     -= days;
+          unsigned expected = ((wd + 7U) - (ds % 7U)) % 7U;
 
-          CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-          CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+          CHECK_TRUE(weekday.ok());
+          CHECK_EQUAL(expected, weekday.c_encoding());
+          CHECK_EQUAL((expected == 0U) ? 7U : expected, weekday.iso_encoding());
         }
       }
     }
@@ -243,21 +245,19 @@ namespace
     //*************************************************************************
     TEST(test_weekday_minus_days)
     {
-      for (int wd = 0; wd <= 6; ++wd)
+      for (unsigned wd = 0; wd <= 6; ++wd)
       {
-        for (int ds = 0; ds <= 14; ++ds)
+        for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          std::chrono::weekday std_weekday(wd);
           etl::chrono::weekday weekday(wd);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
+          weekday = weekday - days;
 
-          std_weekday = std_weekday - std_days;
-          weekday     = weekday - days;
+          unsigned expected = ((wd + 7U) - (ds % 7U)) % 7U;
 
-          CHECK_EQUAL(std_weekday.ok(), weekday.ok());
-          CHECK_EQUAL(std_weekday.c_encoding(), weekday.c_encoding());
+          CHECK_TRUE(weekday.ok());
+          CHECK_EQUAL(expected, weekday.c_encoding());
+          CHECK_EQUAL((expected == 0U) ? 7U : expected, weekday.iso_encoding());
         }
       }
     }
@@ -265,19 +265,19 @@ namespace
     //*************************************************************************
     TEST(test_weekday_minus_weekday)
     {
-      for (int m = 0; m < 256; ++m)
+      for (int m = 0; m < 7; ++m)
       {
+        etl::chrono::weekday weekday1(m);
+        etl::chrono::weekday weekday2(7 - m);
+
         std::chrono::weekday std_weekday1(m);
-        std::chrono::weekday std_weekday2(255 - m);
-
-        std::chrono::weekday weekday1(m);
-        std::chrono::weekday weekday2(255 - m);
-
-        auto std_days12 = std_weekday1 - std_weekday2;
-        auto std_days21 = std_weekday2 - std_weekday1;
+        std::chrono::weekday std_weekday2(7 - m);
 
         auto days12 = weekday1 - weekday2;
         auto days21 = weekday2 - weekday1;
+
+        auto std_days12 = std_weekday1 - std_weekday2;
+        auto std_days21 = std_weekday2 - std_weekday1;
 
         CHECK_EQUAL(std_days12.count(), days12.count());
         CHECK_EQUAL(std_days21.count(), days21.count());
@@ -292,7 +292,19 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_literal_weekday)
+    TEST(test_weekday_constants)
+    {
+      CHECK_EQUAL(0U, etl::chrono::Sunday.c_encoding());
+      CHECK_EQUAL(1U, etl::chrono::Monday.c_encoding());
+      CHECK_EQUAL(2U, etl::chrono::Tuesday.c_encoding());
+      CHECK_EQUAL(3U, etl::chrono::Wednesday.c_encoding());
+      CHECK_EQUAL(4U, etl::chrono::Thursday.c_encoding());
+      CHECK_EQUAL(5U, etl::chrono::Friday.c_encoding());
+      CHECK_EQUAL(6U, etl::chrono::Saturday.c_encoding());
+    }
+
+    //*************************************************************************
+    TEST(test_weekday_literals)
     {
       using namespace etl::literals::chrono_literals;
 
@@ -324,28 +336,28 @@ namespace
     //*************************************************************************
     TEST(test_weekday_comparison_operators)
     {
-        etl::chrono::weekday weekday1(1);
-        etl::chrono::weekday weekday2(2);
+      etl::chrono::weekday weekday1(1);
+      etl::chrono::weekday weekday2(2);
 
-        CHECK_TRUE(weekday1  == weekday1);
-        CHECK_FALSE(weekday1 != weekday1);
-        CHECK_TRUE(weekday1   < weekday2);
-        CHECK_FALSE(weekday1  < weekday1);
-        CHECK_FALSE(weekday2  < weekday1);
-        CHECK_TRUE(weekday1  <= weekday2);
-        CHECK_TRUE(weekday1  <= weekday1);
-        CHECK_FALSE(weekday2 <= weekday1);
-        CHECK_FALSE(weekday1  > weekday2);
-        CHECK_FALSE(weekday1  > weekday1);
-        CHECK_TRUE(weekday2   > weekday1);
-        CHECK_FALSE(weekday1 >= weekday2);
-        CHECK_TRUE(weekday1  >= weekday1);
-        CHECK_TRUE(weekday2  >= weekday1);
+      CHECK_TRUE(weekday1  == weekday1);
+      CHECK_FALSE(weekday1 != weekday1);
+      CHECK_TRUE(weekday1   < weekday2);
+      CHECK_FALSE(weekday1  < weekday1);
+      CHECK_FALSE(weekday2  < weekday1);
+      CHECK_TRUE(weekday1  <= weekday2);
+      CHECK_TRUE(weekday1  <= weekday1);
+      CHECK_FALSE(weekday2 <= weekday1);
+      CHECK_FALSE(weekday1  > weekday2);
+      CHECK_FALSE(weekday1  > weekday1);
+      CHECK_TRUE(weekday2   > weekday1);
+      CHECK_FALSE(weekday1 >= weekday2);
+      CHECK_TRUE(weekday1  >= weekday1);
+      CHECK_TRUE(weekday2  >= weekday1);
 
 #if ETL_USING_CPP20
-        CHECK_TRUE((weekday1 <=> weekday1) == 0);
-        CHECK_TRUE((weekday1 <=> weekday2)  < 0);
-        CHECK_TRUE((weekday2 <=> weekday1)  > 0);
+      CHECK_TRUE((weekday1 <=> weekday1) == 0);
+      CHECK_TRUE((weekday1 <=> weekday2)  < 0);
+      CHECK_TRUE((weekday2 <=> weekday1)  > 0);
 #endif
     }
 
@@ -363,24 +375,5 @@ namespace
       (void)std::unique(hashes.begin(), hashes.end());
       CHECK_EQUAL(256U, hashes.size());
     }
-
-    //*************************************************************************
-    TEST(test_weekday_types)
-    {
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::January),   static_cast<unsigned>(etl::chrono::January));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::February),  static_cast<unsigned>(etl::chrono::February));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::March),     static_cast<unsigned>(etl::chrono::March));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::April),     static_cast<unsigned>(etl::chrono::April));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::May),       static_cast<unsigned>(etl::chrono::May));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::June),      static_cast<unsigned>(etl::chrono::June));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::July),      static_cast<unsigned>(etl::chrono::July));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::August),    static_cast<unsigned>(etl::chrono::August));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::September), static_cast<unsigned>(etl::chrono::September));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::October),   static_cast<unsigned>(etl::chrono::October));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::November),  static_cast<unsigned>(etl::chrono::November));
-      CHECK_EQUAL(static_cast<unsigned>(std::chrono::December),  static_cast<unsigned>(etl::chrono::December));
-    }
   };
 }
-
-#endif

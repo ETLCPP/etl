@@ -142,15 +142,15 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the year is within the valid -32767 to 32767 range
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
       {
-        return (value >= -32767) && (value <= 32767);
+        return (value != -32768);
       }
 
       //***********************************************************************
       /// The minimum year value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_NODISCARD ETL_CONSTEXPR etl::chrono::year min() ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::year min() ETL_NOEXCEPT
       {
         return etl::chrono::year(-32767);
       }
@@ -158,7 +158,7 @@ namespace etl
       //***********************************************************************
       /// The maximum year value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_NODISCARD ETL_CONSTEXPR etl::chrono::year max() ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::year max() ETL_NOEXCEPT
       {
         return etl::chrono::year(32767);
       }
@@ -166,7 +166,7 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the year is a leap year
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR bool is_leap() const ETL_NOEXCEPT
+      ETL_CONSTEXPR bool is_leap() const ETL_NOEXCEPT
       {
         return ((value % 4) == 0) && !((value % 400) == 0);
       }
@@ -187,7 +187,7 @@ namespace etl
     //***********************************************************************
     /// Equality operator
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR bool operator ==(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR bool operator ==(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(y1) == static_cast<unsigned>(y2));
     }
@@ -195,7 +195,7 @@ namespace etl
     //***********************************************************************
     /// Inequality operator
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR bool operator !=(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR bool operator !=(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return !(y1 == y2);
     }
@@ -203,7 +203,7 @@ namespace etl
     //***********************************************************************
     /// Less-than operator
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR bool operator <(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR bool operator <(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(y1) < static_cast<unsigned>(y2));
     }
@@ -211,7 +211,7 @@ namespace etl
     //***********************************************************************
     /// Less-than-or-equal operator
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR bool operator <=(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR bool operator <=(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(y1) <= static_cast<unsigned>(y2));
     }
@@ -219,7 +219,7 @@ namespace etl
     //***********************************************************************
     /// Greater-than operator
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR bool operator >(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR bool operator >(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(y1) > static_cast<unsigned>(y2));
     }
@@ -227,7 +227,7 @@ namespace etl
     //***********************************************************************
     /// Greater-than-or-equal operator
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR bool operator >=(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR bool operator >=(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(y1) >= static_cast<unsigned>(y2));
     }
@@ -246,7 +246,7 @@ namespace etl
     /// Add etl::chrono::years to etl::chrono::year
     ///\return etl::chrono::year
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::chrono::year operator +(const etl::chrono::year& y, const etl::chrono::years& ys) ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::chrono::year operator +(const etl::chrono::year& y, const etl::chrono::years& ys) ETL_NOEXCEPT
     {
       etl::chrono::year result(y);
 
@@ -259,7 +259,7 @@ namespace etl
     /// Add etl::chrono::year to etl::chrono::years
     ///\return etl::chrono::year
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::chrono::year operator +(const etl::chrono::years& ys, const etl::chrono::year& y) ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::chrono::year operator +(const etl::chrono::years& ys, const etl::chrono::year& y) ETL_NOEXCEPT
     {
       etl::chrono::year result(y);
 
@@ -272,7 +272,7 @@ namespace etl
     /// Subtract etl::chrono::years from etl::chrono::year
     ///\return etl::chrono::year
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::chrono::year operator -(const etl::chrono::year& y, const etl::chrono::years& ys) ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::chrono::year operator -(const etl::chrono::year& y, const etl::chrono::years& ys) ETL_NOEXCEPT
     {
       etl::chrono::year result(y);
 
@@ -285,7 +285,7 @@ namespace etl
     /// Subtract etl::chrono::year from etl::chrono::year
     ///\return etl::chrono::years
     //***********************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::chrono::years operator -(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::chrono::years operator -(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return etl::chrono::years(static_cast<int>(static_cast<unsigned>(y1)) - 
                                static_cast<int>(static_cast<unsigned>(y2)));
