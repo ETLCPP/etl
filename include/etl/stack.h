@@ -401,7 +401,7 @@ namespace etl
     void pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(stack_empty));
+      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(stack_empty));
 #endif
       p_buffer[top_index].~T();
       base_t::del_out();
