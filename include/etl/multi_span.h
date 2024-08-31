@@ -296,7 +296,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the multi_span size is zero.
     //*************************************************************************
-    ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bool empty() const ETL_NOEXCEPT
     {
       if (span_list.empty())
       {
