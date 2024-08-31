@@ -199,7 +199,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR multi_span(span_list_type span_list_)
+    ETL_CONSTEXPR14 multi_span(span_list_type span_list_)
       : span_list(span_list_)
     {
     }
@@ -209,7 +209,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    ETL_CONSTEXPR multi_span(TContainer& a) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 multi_span(TContainer& a) ETL_NOEXCEPT
       : span_list(a.data(), a.data() + a.size())
     {
     }
@@ -219,7 +219,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    ETL_CONSTEXPR multi_span(const TContainer& a) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 multi_span(const TContainer& a) ETL_NOEXCEPT
       : span_list(a.data(), a.data() + a.size())
     {
     }
@@ -228,7 +228,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR multi_span(TIterator begin_, TIterator end_)
+    ETL_CONSTEXPR14 multi_span(TIterator begin_, TIterator end_)
       : span_list(etl::addressof(*begin_), etl::distance(begin_, end_))
     {
     }
@@ -237,7 +237,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR multi_span(TIterator begin_, size_t length_)
+    ETL_CONSTEXPR14 multi_span(TIterator begin_, size_t length_)
       : span_list(etl::addressof(*begin_), length_)
     {
     }
@@ -245,7 +245,7 @@ namespace etl
     //*************************************************************************
     /// Copy Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR multi_span(const multi_span& other)
+    ETL_CONSTEXPR14 multi_span(const multi_span& other)
       : span_list(other.span_list)
     {
     }
@@ -253,7 +253,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator
     //*************************************************************************
-    ETL_CONSTEXPR multi_span& operator = (const multi_span & other)
+    ETL_CONSTEXPR14 multi_span& operator = (const multi_span & other)
     {
       span_list = other.span_list;
 
@@ -263,7 +263,7 @@ namespace etl
     //*************************************************************************
     /// 
     //*************************************************************************
-    ETL_CONSTEXPR iterator begin() const
+    ETL_CONSTEXPR14 iterator begin() const
     {
       return iterator(span_list.begin(), span_list.end());
     }
@@ -271,7 +271,7 @@ namespace etl
     //*************************************************************************
     /// 
     //*************************************************************************
-    ETL_CONSTEXPR iterator end() const
+    ETL_CONSTEXPR14 iterator end() const
     {
       return iterator(span_list.end(), span_list.end());
     }
@@ -328,7 +328,7 @@ namespace etl
     //*************************************************************************
     /// Returns the number of spans in the multi_span.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size_spans() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 size_t size_spans() const ETL_NOEXCEPT
     {
       return span_list.size();
     }
