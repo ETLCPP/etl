@@ -123,10 +123,10 @@ SUITE(test_message)
     struct MessageBase : public etl::imessage {};
     struct Message2 : public etl::message<2, MessageBase> {};
 
-    CHECK_TRUE((std::is_same_v<etl::imessage, Message1::base_type>));
-    CHECK_TRUE((std::is_same_v<MessageBase,   Message2::base_type>));
+    CHECK_TRUE((std::is_same<etl::imessage, Message1::base_type>::value));
+    CHECK_TRUE((std::is_same<MessageBase,   Message2::base_type>::value));
 
-    CHECK_FALSE((std::is_same_v<MessageBase,   Message1::base_type>));
-    CHECK_FALSE((std::is_same_v<etl::imessage, Message2::base_type>));
+    CHECK_FALSE((std::is_same<MessageBase,   Message1::base_type>::value));
+    CHECK_FALSE((std::is_same<etl::imessage, Message2::base_type>::value));
   }
 };
