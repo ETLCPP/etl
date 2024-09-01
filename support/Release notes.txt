@@ -3,6 +3,7 @@
 
 #948 Bug in queue pop can break queue.empty()
      Also included etl::stack in the fix.
+#949 For GCC10, we should check __cplusplus >= 201709L when determining if c++20 is supported
 
 ===============================================================================
 20.39.3
