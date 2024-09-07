@@ -28,25 +28,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CHRONO_INCLUDED
-#define ETL_CHRONO_INCLUDED
-
-#define ETL_IN_CHRONO_H
-
-#include "platform.h"
-#include "hash.h"
-
-#include <stdint.h>
-
-#include "private/chrono/last_spec.h"
-#include "private/chrono/duration.h"
-#include "private/chrono/day.h"
-#include "private/chrono/weekday.h"
-#include "private/chrono/weekday_indexed.h"
-#include "private/chrono/weekday_last.h"
-#include "private/chrono/month.h"
-#include "private/chrono/year.h"
-  
-#undef ETL_IN_CHRONO_H
-
+#ifndef ETL_IN_CHRONO_H
+  #error DO NOT DIRECTLY INCLUDE THIS FILE. USE CHRONO.H
 #endif
+
+namespace etl
+{
+  namespace chrono
+  {
+    struct last_spec
+    {
+      ETL_CONSTEXPR explicit last_spec()
+      {
+      }
+    };
+
+#if ETL_USING_CPP17
+    inline constexpr last_spec last{};
+#else
+    static ETL_CONSTANT last_spec last{};
+#endif
+  }
+}
