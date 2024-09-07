@@ -220,6 +220,12 @@
     <Filter Include="Tests\Messaging">
       <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Private\chrono">
+      <UniqueIdentifier>{46e23f29-ce01-418f-8331-9c739774414c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Chrono">
+      <UniqueIdentifier>{1b1afa65-108a-4665-9e74-3c67a27ff917}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ETL\Codecs">
       <UniqueIdentifier>{6bbca8f0-f707-45ee-9dad-6d41d401bbaf}</UniqueIdentifier>
     </Filter>
@@ -1371,6 +1377,36 @@
     <ClInclude Include="..\..\include\etl\stringify.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\chrono.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\duration.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\month.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\year.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday_indexed.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday_last.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\last_spec.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\base64_encoder.h">
       <Filter>ETL\Codecs</Filter>
     </ClInclude>
@@ -2485,6 +2521,18 @@
     </ClCompile>
     <ClCompile Include="..\test_macros.cpp">
       <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_day.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_weekday.cpp">
+      <Filter>Tests\Chrono</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\absolute.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>

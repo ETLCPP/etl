@@ -58,6 +58,12 @@ add_executable(etl_tests
 	test_callback_timer_locked.cpp
 	test_char_traits.cpp
 	test_checksum.cpp
+
+	test_chrono_day.cpp
+	test_chrono_weekday.cpp
+	test_chrono_month.cpp
+	test_chrono_year.cpp
+
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
