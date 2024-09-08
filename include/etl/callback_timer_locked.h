@@ -156,55 +156,7 @@ namespace etl
     // Returns true if the tick was processed,
     // false if not.
     //*******************************************
-    bool tick(uint32_t count)
-    {
-      if (enabled)
-      {
-        if (try_lock())
-        {
-          // We have something to do?
-          bool has_active = !active_list.empty();       
-
-          if (has_active)
-          {
-            while (has_active && (count >= active_list.front().delta))
-            {
-              timer_data& timer = active_list.front();
-
-              count -= timer.delta;
-
-              active_list.remove(timer.id, true);
-
-              if (timer.callback.is_valid())
-              {
-                timer.callback();
-              }
-
-              if (timer.repeating)
-              {
-                // Reinsert the timer.
-                timer.delta = timer.period;
-                active_list.insert(timer.id);
-              }
-
-              has_active = !active_list.empty();
-            }
-
-            if (has_active)
-            {
-              // Subtract any remainder from the next due timeout.
-              active_list.front().delta -= count;
-            }
-          }
-
-          unlock();
-
-          return true;
-        }
-      }
-
-      return false;
-    }
+    virtual bool tick(uint32_t count) = 0;
 
     //*******************************************
     /// Starts a timer.
@@ -653,6 +605,11 @@ namespace etl
     unlock_type   unlock;   ///< The callback that unlocks.
 
   public:
+    template <uint_least8_t>
+    friend class callback_timer_locked;
+
+    template <uint_least8_t, uint32_t>
+    friend class callback_timer_deferred_locked;
 
     const uint_least8_t MAX_TIMERS;
   };
@@ -687,6 +644,58 @@ namespace etl
       : icallback_timer_locked(timer_array, MAX_TIMERS_)
     {
       this->set_locks(try_lock_, lock_, unlock_);
+    }
+
+    // Implement virtual functions
+
+    bool tick(uint32_t count) final
+    {
+      if (enabled)
+      {
+        if (try_lock())
+        {
+          // We have something to do?
+          bool has_active = !active_list.empty();
+
+          if (has_active)
+          {
+            while (has_active && (count >= active_list.front().delta))
+            {
+              timer_data& timer = active_list.front();
+
+              count -= timer.delta;
+
+              active_list.remove(timer.id, true);
+
+              if (timer.callback.is_valid())
+              {
+                timer.callback();
+              }
+
+              if (timer.repeating)
+              {
+                // Reinsert the timer.
+                timer.delta = timer.period;
+                active_list.insert(timer.id);
+              }
+
+              has_active = !active_list.empty();
+            }
+
+            if (has_active)
+            {
+              // Subtract any remainder from the next due timeout.
+              active_list.front().delta -= count;
+            }
+          }
+
+          unlock();
+
+          return true;
+        }
+      }
+
+      return false;
     }
 
   private:
