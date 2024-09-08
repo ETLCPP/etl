@@ -47,11 +47,13 @@ namespace etl
       /// Default constructor
       //***********************************************************************
       ETL_CONSTEXPR weekday_indexed() ETL_NOEXCEPT
+        : wd()
+        , i()
       {
       }
 
       //***********************************************************************
-      /// Construct from unsigned
+      /// Construct from weekday and index
       //***********************************************************************
       ETL_CONSTEXPR weekday_indexed(const etl::chrono::weekday& wd_, unsigned index_) ETL_NOEXCEPT
         : wd(wd_)
@@ -100,7 +102,7 @@ namespace etl
       //***********************************************************************
       ETL_NODISCARD ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
       {
-        return wd.ok() && (i >= 1U) && (i <= 5);
+        return wd.ok() && (i >= 1U) && (i <= 5U);
       }
 
     private:

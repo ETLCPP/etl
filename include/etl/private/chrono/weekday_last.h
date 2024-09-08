@@ -44,16 +44,9 @@ namespace etl
     public:
 
       //***********************************************************************
-      /// Default constructor
-      //***********************************************************************
-      ETL_CONSTEXPR weekday_last() ETL_NOEXCEPT
-      {
-      }
-
-      //***********************************************************************
       /// Construct from unsigned
       //***********************************************************************
-      ETL_CONSTEXPR weekday_last(const etl::chrono::weekday& wd_) ETL_NOEXCEPT
+      ETL_CONSTEXPR explicit weekday_last(const etl::chrono::weekday& wd_) ETL_NOEXCEPT
         : wd(wd_)
       {
       }
@@ -103,22 +96,6 @@ namespace etl
     ETL_CONSTEXPR bool operator ==(const etl::chrono::weekday_last& wd1, const etl::chrono::weekday_last& wd2) ETL_NOEXCEPT
     {
       return (wd1.weekday() == wd2.weekday());
-    }
-
-    //***********************************************************************
-    /// Inequality operator
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator !=(const etl::chrono::weekday_last& wd1, const etl::chrono::weekday_last& wd2) ETL_NOEXCEPT
-    {
-      return !(wd1 == wd2);
-    }
-
-    //***********************************************************************
-    /// weekday index operator from index
-    //***********************************************************************
-    ETL_CONSTEXPR etl::chrono::weekday_last etl::chrono::weekday::operator[](etl::chrono::last_spec) const ETL_NOEXCEPT
-    {
-      return etl::chrono::weekday_last(*this);
     }
   }
 
