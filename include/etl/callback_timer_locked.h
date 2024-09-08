@@ -608,6 +608,9 @@ namespace etl
     template <uint_least8_t>
     friend class callback_timer_locked;
 
+    template <uint_least8_t, uint32_t>
+    friend class callback_timer_deferred_locked;
+
     const uint_least8_t MAX_TIMERS;
   };
 
