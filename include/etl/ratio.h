@@ -41,19 +41,72 @@ SOFTWARE.
 
 namespace etl
 {
-  template <size_t NUM, size_t DEN = 1UL>
+  namespace private_ratio
+  {
+    // Helper to find the greatest common divisor
+    template <intmax_t A, intmax_t B>
+    struct gcd
+    {
+      static ETL_CONSTANT intmax_t value = gcd<B, A % B>::value;
+    };
+
+    template <intmax_t A>
+    struct gcd<A, 0>
+    {
+      static ETL_CONSTANT intmax_t value = A;
+    };
+
+    // Helper to find the least common multiple
+    template <intmax_t A, intmax_t B>
+    struct lcm
+    {
+      static ETL_CONSTANT intmax_t value = (A / gcd<A, B>::value) * B;
+    };
+  }
+
+  //***********************************************************************
+  /// ratio
+  //***********************************************************************
+  template <intmax_t Num, intmax_t Den = 1UL>
   struct ratio
   {
-    static ETL_CONSTANT intmax_t num = NUM;
-    static ETL_CONSTANT intmax_t den = DEN;
+    ETL_STATIC_ASSERT(Num != 0, "Numerator cannot be zero");
+
+    static ETL_CONSTANT intmax_t num = Num / private_ratio::gcd<Num, Den>::value;
+    static ETL_CONSTANT intmax_t den = Den / private_ratio::gcd<Num, Den>::value;
+
+    typedef etl::ratio<num, den> type;
   };
 
-  template <size_t NUM, size_t DEN>
-  ETL_CONSTANT intmax_t ratio<NUM, DEN>::num;
+  template <intmax_t Num, intmax_t Den>
+  ETL_CONSTANT intmax_t ratio<Num, Den>::num;
 
-  template <size_t NUM, size_t DEN>
-  ETL_CONSTANT intmax_t ratio<NUM, DEN>::den;
+  template <intmax_t Num, intmax_t Den>
+  ETL_CONSTANT intmax_t ratio<Num, Den>::den;
 
+  //***********************************************************************
+  /// ratio_divide
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_divide
+  {
+  private:
+
+    static ETL_CONSTANT intmax_t N = TRatio1::num * TRatio2::den;
+    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::num;
+
+    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
+    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
+
+  public:  
+
+    typedef etl::ratio<N, D> type;
+  };
+
+
+  //***********************************************************************
+  /// Predefined ration types.
+  //***********************************************************************
   #if INT_MAX > INT32_MAX
     typedef ratio<1, 1000000000000000000000000> yocto;
     typedef ratio<1, 1000000000000000000000>    zepto;
@@ -94,6 +147,9 @@ namespace etl
 
   /// An approximation of root 2.
   typedef ratio<239, 169> ratio_root2;
+
+  /// An approximation of 1 over root 2.
+  typedef ratio<169, 239> ratio_1_over_root2;
 
   /// An approximation of e.
   typedef ratio<326, 120> ratio_e;

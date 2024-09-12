@@ -7957,6 +7957,7 @@
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
     <ClCompile Include="..\test_char_traits.cpp" />
     <ClCompile Include="..\test_chrono_day.cpp" />
+    <ClCompile Include="..\test_chrono_duration.cpp" />
     <ClCompile Include="..\test_chrono_month.cpp" />
     <ClCompile Include="..\test_chrono_weekday.cpp" />
     <ClCompile Include="..\test_chrono_weekday_indexed.cpp" />
