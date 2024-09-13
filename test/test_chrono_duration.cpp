@@ -38,6 +38,7 @@ SOFTWARE.
 #include <algorithm>
 #include <limits>
 #include <vector>
+#include <chrono>
 
 namespace
 {
@@ -70,13 +71,13 @@ namespace
     {
       using duration_type = etl::chrono::duration<size_t, etl::milli>;
 
-      //CHECK_EQUAL(duration_type(0),                                  duration_type::zero());
-      //CHECK_EQUAL(duration_type(std::numeric_limits<size_t>::min()), duration_type::min());
-      //CHECK_EQUAL(duration_type(std::numeric_limits<size_t>::max()), duration_type::max());
+      CHECK_EQUAL(duration_type(0).count(),                                  duration_type::zero().count());
+      CHECK_EQUAL(duration_type(std::numeric_limits<size_t>::min()).count(), duration_type::min().count());
+      CHECK_EQUAL(duration_type(std::numeric_limits<size_t>::max()).count(), duration_type::max().count());
     }
 
     //*************************************************************************
-    TEST(test_predefined_duration_types)
+    TEST(test_predefined_duration_periods)
     {
       CHECK_EQUAL((etl::ratio<1U, 1000000000U>::type::num), etl::chrono::nanoseconds::period::num);
       CHECK_EQUAL((etl::ratio<1U, 1000000000U>::type::den), etl::chrono::nanoseconds::period::den);
@@ -149,10 +150,10 @@ namespace
 
       typedef typename etl::ratio_divide<duration_type1::period, duration_type2::period>::type ratio_divide_t;
 
-      int multiplier = duration_type1::period::den / duration_type2::period::den;
+      int microseonds_per_millisecond = duration_type1::period::den / duration_type2::period::den;
 
       CHECK_EQUAL(1, ratio_divide_t::num);
-      CHECK_EQUAL(dur1.count(), dur2.count() * multiplier);
+      CHECK_EQUAL(dur1.count(), dur2.count() * microseonds_per_millisecond);
     }
 
     //*************************************************************************
@@ -166,10 +167,10 @@ namespace
 
       typedef typename etl::ratio_divide<duration_type1::period, duration_type2::period>::type ratio_divide_t;
 
-      int multiplier = duration_type2::period::den / duration_type1::period::den;
+      int microseonds_per_millisecond = duration_type2::period::den / duration_type1::period::den;
 
       CHECK_EQUAL(1, ratio_divide_t::den);
-      CHECK_EQUAL(dur1.count() * multiplier, dur2.count());
+      CHECK_EQUAL(dur1.count() * microseonds_per_millisecond, dur2.count());
     }
 
     //*************************************************************************
@@ -187,6 +188,94 @@ namespace
       CHECK_FALSE(1 == ratio_divide_t::num);
       CHECK_FALSE(1 == ratio_divide_t::den);
       CHECK_EQUAL(dur1.count(), (dur2.count() * duration_type2::period::num) / duration_type1::period::num);
+    }
+
+    //*************************************************************************
+    TEST(test_duration_assignment)
+    {
+      int Two_Hours  = 2;
+      int Four_Hours = 4;
+
+      etl::chrono::hours   hours1(Two_Hours);
+      etl::chrono::hours   hours2(Four_Hours);
+      etl::chrono::seconds seconds(0);
+
+      seconds = hours1;
+      int seconds_per_hour = etl::chrono::hours::period::num / etl::chrono::seconds::period::num;
+      CHECK_EQUAL(seconds.count(), hours1.count() * seconds_per_hour);
+      CHECK_EQUAL(Two_Hours, hours1.count());
+
+      hours1 = hours2;
+      CHECK_EQUAL(Four_Hours, hours1.count());
+      CHECK_EQUAL(Four_Hours, hours2.count());
+    }
+
+    //*************************************************************************
+    TEST(test_duration_comparison_operators)
+    {
+      using duration_type1 = etl::chrono::duration<size_t, etl::milli>;
+      using duration_type2 = etl::chrono::duration<int,    etl::micro>;
+
+      duration_type1 dur1a(245);
+      duration_type1 dur1b(245);
+      duration_type1 dur1c(246);
+      duration_type2 dur2b(245000);
+      duration_type2 dur2c(245001);
+
+      //  Same duration types
+      CHECK_TRUE(dur1a  == dur1b);
+      CHECK_TRUE(dur1a  != dur1c);
+      CHECK_FALSE(dur1a <  dur1b);
+      CHECK_TRUE(dur1a  <= dur1b);
+      CHECK_FALSE(dur1a >  dur1b);
+      CHECK_TRUE(dur1a  >= dur1b);
+
+      CHECK_TRUE(dur1a  <  dur1c);
+      CHECK_FALSE(dur1c <  dur1a);
+      CHECK_TRUE(dur1a  <= dur1c);
+      CHECK_FALSE(dur1c <= dur1a);
+      CHECK_FALSE(dur1a >  dur1c);
+      CHECK_TRUE(dur1c  >  dur1a);
+      CHECK_FALSE(dur1a >= dur1c);
+      CHECK_TRUE(dur1c  >= dur1a);
+
+      //  Different duration types
+      CHECK_TRUE(dur1a  == dur2b);
+      CHECK_TRUE(dur2b  == dur1a);
+      CHECK_TRUE(dur2c  != dur1a);
+      CHECK_TRUE(dur1a  != dur2c);
+
+      CHECK_FALSE(dur1a <  dur2b);
+      CHECK_FALSE(dur2b <  dur1a);
+      CHECK_TRUE(dur1a  <= dur2b);
+      CHECK_TRUE(dur2b  <= dur1a);
+      CHECK_FALSE(dur1a >  dur2b);
+      CHECK_FALSE(dur2b >  dur1a);
+      CHECK_TRUE(dur1a  >= dur2b);
+      CHECK_TRUE(dur2b  >= dur1a);
+
+      CHECK_TRUE(dur1a  <  dur2c);
+      CHECK_FALSE(dur2c <  dur1a);
+      CHECK_TRUE(dur1a  <= dur2c);
+      CHECK_FALSE(dur2c <= dur1a);
+      CHECK_FALSE(dur1a >  dur2c);
+      CHECK_TRUE(dur2c  >  dur1a);
+      CHECK_FALSE(dur1a >= dur2c);
+      CHECK_TRUE(dur2c  >= dur1a);
+    }
+
+    //*************************************************************************
+    TEST(test_duration_unary_operators)
+    {
+      using duration_type = etl::chrono::duration<int, etl::milli>;
+
+      duration_type dur(245);
+
+      duration_type positive = +dur;
+      duration_type negative = -dur;
+
+      CHECK_EQUAL(245,  positive.count());
+      CHECK_EQUAL(-245, negative.count());
     }
 
     //*************************************************************************
