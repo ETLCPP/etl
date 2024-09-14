@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_RATIO_INCLUDED
 
 #include "platform.h"
+#include "static_assert.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -71,6 +72,7 @@ namespace etl
   struct ratio
   {
     ETL_STATIC_ASSERT(Num != 0, "Numerator cannot be zero");
+    ETL_STATIC_ASSERT(Den != 0, "Denominator cannot be zero");
 
     static ETL_CONSTANT intmax_t num = Num / private_ratio::gcd<Num, Den>::value;
     static ETL_CONSTANT intmax_t den = Den / private_ratio::gcd<Num, Den>::value;
@@ -103,13 +105,67 @@ namespace etl
     typedef etl::ratio<N, D> type;
   };
 
+  //***********************************************************************
+  /// ratio_multiply
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_multiply
+  {
+  private:
+
+    static ETL_CONSTANT intmax_t N = TRatio1::num * TRatio2::num;
+    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::den;
+
+    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
+    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
+
+  public:  
+
+    typedef etl::ratio<N, D> type;
+  };
+
+  //***********************************************************************
+  /// ratio_add
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_add
+  {
+  private:
+
+    static ETL_CONSTANT intmax_t N = (TRatio1::num * TRatio2::den) + (TRatio2::num * TRatio1::den);
+    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::den;;
+
+    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
+    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
+
+  public:  
+
+    typedef etl::ratio<N, D> type;
+  };
+
+  //***********************************************************************
+  /// ratio_subtract
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_subtract
+  {
+  private:
+
+    static ETL_CONSTANT intmax_t N = (TRatio1::num * TRatio2::den) - (TRatio2::num * TRatio1::den);
+    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::den;;
+
+    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
+    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
+
+  public:  
+
+    typedef etl::ratio<N, D> type;
+  };
 
   //***********************************************************************
   /// Predefined ration types.
   //***********************************************************************
   #if INT_MAX > INT32_MAX
-    typedef ratio<1, 1000000000000000000000000> yocto;
-    typedef ratio<1, 1000000000000000000000>    zepto;
     typedef ratio<1, 1000000000000000000>       atto;
     typedef ratio<1, 1000000000000000>          femto;
     typedef ratio<1, 1000000000000>             pico;
@@ -138,8 +194,6 @@ namespace etl
     typedef ratio<1000000000000, 1>             tera;
     typedef ratio<1000000000000000, 1>          peta;
     typedef ratio<1000000000000000000, 1>       exa;
-    typedef ratio<1000000000000000000000, 1>    zetta;
-    typedef ratio<1000000000000000000000000, 1> yotta;
   #endif
 
   /// An approximation of PI to 6 digits.
