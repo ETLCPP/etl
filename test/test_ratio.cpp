@@ -47,17 +47,10 @@ namespace
     static ETL_CONSTANT intmax_t value = A;
   };
 
-  // Helper to find the least common multiple
-  template <intmax_t A, intmax_t B>
-  struct lcm
-  {
-    static ETL_CONSTANT intmax_t value = (A / gcd<A, B>::value) * B;
-  };
-
   SUITE(test_ratio)
   {
     //*************************************************************************
-    TEST(test_constructor)
+    TEST(test_definitions)
     {
       constexpr intmax_t Num = 20;
       constexpr intmax_t Den = 600;
@@ -75,6 +68,120 @@ namespace
 
       CHECK_EQUAL(N, ratio_type::num);
       CHECK_EQUAL(D, ratio_type::den);
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_add)
+    {
+      using two_thirds = etl::ratio<2, 3>;
+      using one_sixth  = etl::ratio<1, 6>;
+      using ratio      = etl::ratio_add<two_thirds, one_sixth>;
+
+      CHECK_TRUE((std::is_same<ratio, etl::ratio<15, 18>>::value));
+      CHECK_EQUAL(5, ratio::num);
+      CHECK_EQUAL(6, ratio::den);
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_subtract)
+    {
+      using two_thirds = etl::ratio<2, 3>;
+      using one_sixth  = etl::ratio<1, 6>;
+      using ratio      = etl::ratio_subtract<two_thirds, one_sixth>;
+
+      CHECK_TRUE((std::is_same<ratio, etl::ratio<9, 18>>::value));
+      CHECK_EQUAL(1, ratio::num);
+      CHECK_EQUAL(2, ratio::den);
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_multiply)
+    {
+      using two_thirds = etl::ratio<2, 3>;
+      using one_sixth  = etl::ratio<1, 6>;
+      using ratio      = etl::ratio_multiply<two_thirds, one_sixth>;
+
+      CHECK_TRUE((std::is_same<ratio, etl::ratio<2, 18>>::value));
+      CHECK_EQUAL(1, ratio::num);
+      CHECK_EQUAL(9, ratio::den);
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_divide)
+    {
+      using two_thirds = etl::ratio<2, 3>;
+      using one_sixth  = etl::ratio<1, 6>;
+      using ratio      = etl::ratio_divide<two_thirds, one_sixth>;
+
+      CHECK_TRUE((std::is_same<ratio, etl::ratio<12, 3>>::value));
+      CHECK_EQUAL(4, ratio::num);
+      CHECK_EQUAL(1, ratio::den);
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_equal)
+    {
+      using ratio1 = etl::ratio<5, 32>;
+      using ratio2 = etl::ratio<3, 16>; // 6/32
+
+      CHECK_TRUE((etl::ratio_equal<ratio1, ratio1>::value));
+      CHECK_FALSE((etl::ratio_equal<ratio1, ratio2>::value));
+      CHECK_FALSE((etl::ratio_equal<ratio2, ratio1>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_not_equal)
+    {
+      using ratio1 = etl::ratio<5, 32>;
+      using ratio2 = etl::ratio<3, 16>; // 6/32
+
+      CHECK_FALSE((etl::ratio_not_equal<ratio1, ratio1>::value));
+      CHECK_TRUE((etl::ratio_not_equal<ratio1, ratio2>::value));
+      CHECK_TRUE((etl::ratio_not_equal<ratio2, ratio1>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_less)
+    {
+      using ratio1 = etl::ratio<5, 32>;
+      using ratio2 = etl::ratio<3, 16>; // 6/32
+
+      CHECK_FALSE((etl::ratio_less<ratio1, ratio1>::value));
+      CHECK_TRUE((etl::ratio_less<ratio1, ratio2>::value));
+      CHECK_FALSE((etl::ratio_less<ratio2, ratio1>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_less_equal)
+    {
+      using ratio1 = etl::ratio<5, 32>;
+      using ratio2 = etl::ratio<3, 16>; // 6/32
+
+      CHECK_TRUE((etl::ratio_less_equal<ratio1, ratio1>::value));
+      CHECK_TRUE((etl::ratio_less_equal<ratio1, ratio2>::value));
+      CHECK_FALSE((etl::ratio_less_equal<ratio2, ratio1>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_greater)
+    {
+      using ratio1 = etl::ratio<5, 32>;
+      using ratio2 = etl::ratio<3, 16>; // 6/32
+
+      CHECK_FALSE((etl::ratio_greater<ratio1, ratio1>::value));
+      CHECK_FALSE((etl::ratio_greater<ratio1, ratio2>::value));
+      CHECK_TRUE((etl::ratio_greater<ratio2, ratio1>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_ratio_greater_equal)
+    {
+      using ratio1 = etl::ratio<5, 32>;
+      using ratio2 = etl::ratio<3, 16>; // 6/32
+
+      CHECK_TRUE((etl::ratio_greater_equal<ratio1, ratio1>::value));
+      CHECK_FALSE((etl::ratio_greater_equal<ratio1, ratio2>::value));
+      CHECK_TRUE((etl::ratio_greater_equal<ratio2, ratio1>::value));
     }
 
     //*************************************************************************
@@ -126,8 +233,19 @@ namespace
 
       double expected_pi = 3.1415926535897931;
       double actual_pi   = double(etl::ratio_pi::num) / double(etl::ratio_pi::den);
-
       CHECK_CLOSE(expected_pi, actual_pi, 0.0000003);
+
+      double expected_root_2 = 1.414213562373095;
+      double actual_root_2   = double(etl::ratio_root2::num) / double(etl::ratio_root2::den);
+      CHECK_CLOSE(expected_root_2, actual_root_2, 0.00002);
+
+      double expected_1_over_root_2 = 1.0 / 1.414213562373095;
+      double actual_1_over_root_2   = double(etl::ratio_1_over_root2::num) / double(etl::ratio_1_over_root2::den);
+      CHECK_CLOSE(expected_1_over_root_2, actual_1_over_root_2, 0.000007);
+
+      double expected_e = 2.7182818284590451;
+      double actual_e   = double(etl::ratio_e::num) / double(etl::ratio_e::den);
+      CHECK_CLOSE(expected_e, actual_e, 0.0004);
     }
   };
 }

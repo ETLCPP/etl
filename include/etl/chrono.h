@@ -34,6 +34,10 @@ SOFTWARE.
 #define ETL_IN_CHRONO_H
 
 #include "platform.h"
+
+#if ETL_NOT_USING_CPP11
+  #error NOT SUPPORTED FOR C++03 OR BELOW
+#else
 #include "hash.h"
 
 #include <stdint.h>
@@ -45,8 +49,9 @@ SOFTWARE.
 #include "private/chrono/weekday_indexed.h"
 #include "private/chrono/weekday_last.h"
 #include "private/chrono/month.h"
-#include "private/chrono/year.h"
-  
+#include "private/chrono/year.h" 
+#endif
+
 #undef ETL_IN_CHRONO_H
 
 #endif

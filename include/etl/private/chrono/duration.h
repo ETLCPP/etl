@@ -126,12 +126,12 @@ namespace etl
       }
 
       //***********************************************************************
-      template <typename TRep2, typename TPeriod2, typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::type::den == 1, int>::type = 0>
+      template <typename TRep2, typename TPeriod2, typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::den == 1, int>::type = 0>
       ETL_CONSTEXPR duration(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
         : value(etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count())
       {
 
-        bool b = etl::ratio_divide<TPeriod2, TPeriod>::type::den == 1;
+        bool b = etl::ratio_divide<TPeriod2, TPeriod>::den == 1;
 
         ETL_STATIC_ASSERT(!(etl::is_integral<TRep>::value && etl::is_floating_point<TRep2>::value), "Cannot convert duration from floating point to integral");
       }
@@ -139,10 +139,10 @@ namespace etl
       //***********************************************************************
       template <typename TRep2, typename TPeriod2>
       ETL_CONSTEXPR14 
-      typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::type::den == 1, etl::chrono::duration<TRep, TPeriod>&>::type
+      typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::den == 1, etl::chrono::duration<TRep, TPeriod>&>::type
         operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
       {
-        bool b = etl::ratio_divide<TPeriod2, TPeriod>::type::den == 1;
+        bool b = etl::ratio_divide<TPeriod2, TPeriod>::den == 1;
 
         value = etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count();
 
@@ -223,7 +223,7 @@ namespace etl
       typedef typename TToDuration::rep    to_rep;
       typedef typename TToDuration::period to_period;
 
-      typedef typename etl::ratio_divide<from_period, to_period>::type ratio_divide_t;
+      typedef typename etl::ratio_divide<from_period, to_period> ratio_divide_t;
       typedef typename etl::common_type<from_rep, to_rep, intmax_t>::type common_t;
 
       common_t ct_count = static_cast<common_t>(d.count());

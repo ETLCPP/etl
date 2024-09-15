@@ -3443,6 +3443,9 @@
     <ClCompile Include="..\test_chrono_duration.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_ratio.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "static_assert.h"
+#include "gcd.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -42,29 +43,6 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_ratio
-  {
-    // Helper to find the greatest common divisor
-    template <intmax_t A, intmax_t B>
-    struct gcd
-    {
-      static ETL_CONSTANT intmax_t value = gcd<B, A % B>::value;
-    };
-
-    template <intmax_t A>
-    struct gcd<A, 0>
-    {
-      static ETL_CONSTANT intmax_t value = A;
-    };
-
-    // Helper to find the least common multiple
-    template <intmax_t A, intmax_t B>
-    struct lcm
-    {
-      static ETL_CONSTANT intmax_t value = (A / gcd<A, B>::value) * B;
-    };
-  }
-
   //***********************************************************************
   /// ratio
   //***********************************************************************
@@ -74,8 +52,8 @@ namespace etl
     ETL_STATIC_ASSERT(Num != 0, "Numerator cannot be zero");
     ETL_STATIC_ASSERT(Den != 0, "Denominator cannot be zero");
 
-    static ETL_CONSTANT intmax_t num = Num / private_ratio::gcd<Num, Den>::value;
-    static ETL_CONSTANT intmax_t den = Den / private_ratio::gcd<Num, Den>::value;
+    static ETL_CONSTANT intmax_t num = Num / etl::gcd_const<Num, Den>::value;
+    static ETL_CONSTANT intmax_t den = Den / etl::gcd_const<Num, Den>::value;
 
     typedef etl::ratio<num, den> type;
   };
@@ -86,80 +64,78 @@ namespace etl
   template <intmax_t Num, intmax_t Den>
   ETL_CONSTANT intmax_t ratio<Num, Den>::den;
 
-  //***********************************************************************
-  /// ratio_divide
-  //***********************************************************************
-  template <typename TRatio1, typename TRatio2>
-  struct ratio_divide
-  {
-  private:
-
-    static ETL_CONSTANT intmax_t N = TRatio1::num * TRatio2::den;
-    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::num;
-
-    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
-    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
-
-  public:  
-
-    typedef etl::ratio<N, D> type;
-  };
-
-  //***********************************************************************
-  /// ratio_multiply
-  //***********************************************************************
-  template <typename TRatio1, typename TRatio2>
-  struct ratio_multiply
-  {
-  private:
-
-    static ETL_CONSTANT intmax_t N = TRatio1::num * TRatio2::num;
-    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::den;
-
-    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
-    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
-
-  public:  
-
-    typedef etl::ratio<N, D> type;
-  };
-
+#if ETL_USING_CPP11
   //***********************************************************************
   /// ratio_add
   //***********************************************************************
   template <typename TRatio1, typename TRatio2>
-  struct ratio_add
-  {
-  private:
-
-    static ETL_CONSTANT intmax_t N = (TRatio1::num * TRatio2::den) + (TRatio2::num * TRatio1::den);
-    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::den;;
-
-    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
-    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
-
-  public:  
-
-    typedef etl::ratio<N, D> type;
-  };
+  using ratio_add = etl::ratio<(TRatio1::num * TRatio2::den) + (TRatio2::num * TRatio1::den), TRatio1::den * TRatio2::den>;
 
   //***********************************************************************
   /// ratio_subtract
   //***********************************************************************
   template <typename TRatio1, typename TRatio2>
-  struct ratio_subtract
+  using ratio_subtract = etl::ratio<(TRatio1::num * TRatio2::den) - (TRatio2::num * TRatio1::den), TRatio1::den * TRatio2::den>;
+
+  //***********************************************************************
+  /// ratio_multiply
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  using ratio_multiply = etl::ratio<TRatio1::num * TRatio2::num, TRatio1::den * TRatio2::den>;
+
+  //***********************************************************************
+  /// ratio_divide
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  using ratio_divide = etl::ratio<TRatio1::num * TRatio2::den, TRatio1::den * TRatio2::num>;
+#endif
+
+  //***********************************************************************
+  /// ratio_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_equal : etl::bool_constant<(TRatio1::num == TRatio2::num) && (TRatio1::den == TRatio2::den)>
   {
-  private:
+  };
 
-    static ETL_CONSTANT intmax_t N = (TRatio1::num * TRatio2::den) - (TRatio2::num * TRatio1::den);
-    static ETL_CONSTANT intmax_t D = TRatio1::den * TRatio2::den;;
+  //***********************************************************************
+  /// ratio_not_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_not_equal : etl::bool_constant<!etl::ratio_equal<TRatio1, TRatio2>::value>
+  {
+  };
 
-    static ETL_CONSTANT intmax_t Num = N / private_ratio::gcd<N, D>::value;
-    static ETL_CONSTANT intmax_t Den = D / private_ratio::gcd<N, D>::value;
+  //***********************************************************************
+  /// ratio_less
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_less : etl::bool_constant<(TRatio1::num * TRatio2::den) < (TRatio2::num * TRatio1::den)>
+  {
+  };
 
-  public:  
+  //***********************************************************************
+  /// ratio_less_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_less_equal : etl::bool_constant<!etl::ratio_less<TRatio2, TRatio1>::value>
+  {
+  };
 
-    typedef etl::ratio<N, D> type;
+  //***********************************************************************
+  /// ratio_greater
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_greater : etl::bool_constant<etl::ratio_less<TRatio2, TRatio1>::value>
+  {
+  };
+
+  //***********************************************************************
+  /// ratio_greater_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_greater_equal : etl::bool_constant<!etl::ratio_less<TRatio1, TRatio2>::value>
+  {
   };
 
   //***********************************************************************
@@ -196,7 +172,7 @@ namespace etl
     typedef ratio<1000000000000000000, 1>       exa;
   #endif
 
-  /// An approximation of PI to 6 digits.
+  /// An approximation of Pi.
   typedef ratio<355, 113> ratio_pi;
 
   /// An approximation of root 2.
@@ -206,7 +182,7 @@ namespace etl
   typedef ratio<169, 239> ratio_1_over_root2;
 
   /// An approximation of e.
-  typedef ratio<326, 120> ratio_e;
+  typedef ratio<106, 39> ratio_e;
 }
 
 #endif
