@@ -251,7 +251,7 @@ namespace etl
       //*************************************************************************
       reference operator [](size_t index)
       {
-        return pbuffer[(current + index) % picb->buffer_size];
+        return picb->pbuffer[(current + index) % picb->buffer_size];
       }
 
       //*************************************************************************
@@ -259,7 +259,7 @@ namespace etl
       //*************************************************************************
       const_reference operator [](size_t index) const
       {
-        return pbuffer[(current + index) % picb->buffer_size];
+        return picb->pbuffer[(current + index) % picb->buffer_size];
       }
 
       //*************************************************************************
@@ -438,7 +438,7 @@ namespace etl
       //***************************************************
       pointer get_buffer() const
       {
-        return pbuffer;
+        return picb->pbuffer;
       }
 
     protected:
@@ -550,7 +550,7 @@ namespace etl
       //*************************************************************************
       const_reference operator [](size_t index) const
       {
-        return pbuffer[(current + index) % picb->buffer_size];
+        return picb->pbuffer[(current + index) % picb->buffer_size];
       }
 
       //*************************************************************************
@@ -717,7 +717,7 @@ namespace etl
       //***************************************************
       pointer get_buffer() const
       {
-        return pbuffer;
+        return picb->pbuffer;
       }
 
     protected:
