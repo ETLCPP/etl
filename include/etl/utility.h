@@ -601,10 +601,13 @@ namespace etl
 
 #if ETL_USING_CPP11
   //*************************************************************************
-  /// A function wrapper for free/global functions.
+  // A function wrapper for free/global functions.
+  // Deprecated.
+  // See etl::function_ptr_as_functor for a runtime time wrapper option.
+  // See etl::function_as_functor for a compile time wrapper option.
   //*************************************************************************
   template <typename TReturn, typename... TParams>
-  class functor
+  class ETL_DEPRECATED functor
   {
   public:
 
@@ -612,6 +615,144 @@ namespace etl
     /// Constructor.
     //*********************************
     constexpr functor(TReturn(*ptr_)(TParams...))
+      : ptr(ptr_)
+    {
+    }
+
+    //*********************************
+    /// Const function operator.
+    //********************************* 
+    constexpr TReturn operator()(TParams... args) const
+    {
+      return ptr(etl::forward<TParams>(args)...);
+    }
+
+  private:
+
+    /// The pointer to the function.
+    TReturn(*ptr)(TParams...);
+  };
+
+  //*****************************************************************************
+  // Wrap a member function with a static free function.
+  // Creates a static member function that calls the specified member function.
+  // Deprecated
+  // See etl::member_function_as_static
+  //*****************************************************************************
+  template <typename T>
+  class ETL_DEPRECATED member_function_wrapper;
+
+  template <typename TReturn, typename... TParams>
+  class ETL_DEPRECATED member_function_wrapper<TReturn(TParams...)>
+  {
+  public:
+
+    template <typename T, T& Instance, TReturn(T::* Method)(TParams...)>
+    static constexpr TReturn function(TParams... params)
+    {
+      return (Instance.*Method)(etl::forward<TParams>(params)...);
+    }
+  };
+
+  //*****************************************************************************
+  // Wrap a functor with a static free function.
+  // Creates a static member function that calls the specified functor.
+  // Deprecated
+  // See etl::functor_as_static
+  //*****************************************************************************
+  template <typename T>
+  class functor_wrapper;
+
+  template <typename TReturn, typename... TParams>
+  class functor_wrapper<TReturn(TParams...)>
+  {
+  public:
+
+    template <typename TFunctor, TFunctor& Instance>
+    static constexpr TReturn function(TParams... params)
+    {
+      return Instance(etl::forward<TParams>(params)...);
+    }
+  };
+#endif
+
+#if ETL_USING_CPP14
+  //*****************************************************************************
+  // Wraps a functor with a static free function at compile time.
+  // Creates a static member 'function' that calls the specified functor.
+  //*****************************************************************************
+  template <auto& Instance>
+  struct functor_as_static 
+  {
+    static constexpr auto call(auto&&... args) 
+    {
+      return (Instance.operator())(etl::forward<decltype(args)>(args)...);
+    }
+  };
+
+  //*****************************************************************************
+  // Wraps a member function with a static free function at compile time.
+  // Creates a static member function that calls the specified member function.
+  //*****************************************************************************
+  template <auto Method, auto& Instance>
+  struct member_function_as_static 
+  {
+    static constexpr auto call(auto&&... args) 
+    {
+      return (Instance.*Method)(etl::forward<decltype(args)>(args)...);
+    }
+  };
+
+  //*****************************************************************************
+  // Wraps a member function with a functor at compile time.
+  // Creates a functor that calls the specified member function.
+  //*****************************************************************************
+  template <auto Method, auto& Instance>
+  class member_function_as_functor
+  {
+  public:
+
+    template <typename... TParams>
+    constexpr auto operator()(TParams&&... args) const -> decltype((Instance.*Method)(etl::forward<TParams>(args)...))
+    {
+      return (Instance.*Method)(etl::forward<TParams>(args)...);
+    }
+  };
+
+  //*****************************************************************************
+  // Wraps a function with a functor at compile time.
+  // Creates a functor that calls the specified free function.
+  //*****************************************************************************
+  template <auto Function>
+  class function_as_functor
+  {
+  public:
+
+    template<typename... TParams>
+    constexpr auto operator()(TParams&&... args) const -> decltype(Function)
+    {
+      return Function(etl::forward<TParams>(args)...);
+    }
+  };
+#endif
+
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  // Wraps a function pointer with a functor at run time.
+  // Creates a functor that calls the specified free function.
+  //*****************************************************************************
+  template <typename T>
+  class function_ptr_as_functor;
+
+  template <typename TReturn, typename... TParams>
+  class function_ptr_as_functor<TReturn(TParams...)>
+  {
+  public:
+
+    //*********************************
+    /// Constructor.
+    //*********************************
+    constexpr function_ptr_as_functor(TReturn(*ptr_)(TParams...))
       : ptr(ptr_)
     {
     }
@@ -628,48 +769,6 @@ namespace etl
 
     /// The pointer to the function.
     TReturn(*ptr)(TParams...);
-  };
-#endif
-
-#if ETL_USING_CPP11
-  //*****************************************************************************
-  // A wrapper for a member function
-  // Creates a static member function that calls the specified member function.
-  //*****************************************************************************
-  template <typename T>
-  class member_function_wrapper;
-
-  template <typename TReturn, typename... TParams>
-  class member_function_wrapper<TReturn(TParams...)>
-  {
-  public:
-
-    template <typename T, T& Instance, TReturn(T::* Method)(TParams...)>
-    static constexpr TReturn function(TParams... params)
-    {
-      return (Instance.*Method)(etl::forward<TParams>(params)...);
-    }
-  };
-#endif
-
-#if ETL_USING_CPP11
-  //*****************************************************************************
-  // A wrapper for a functor
-  // Creates a static member function that calls the specified functor.
-  //*****************************************************************************
-  template <typename T>
-  class functor_wrapper;
-
-  template <typename TReturn, typename... TParams>
-  class functor_wrapper<TReturn(TParams...)>
-  {
-  public:
-
-    template <typename TFunctor, TFunctor& Instance>
-    static constexpr TReturn function(TParams... params)
-    {
-      return Instance(etl::forward<TParams>(params)...);
-    }
   };
 #endif
 }
