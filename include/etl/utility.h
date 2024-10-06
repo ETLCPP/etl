@@ -729,7 +729,7 @@ namespace etl
   public:
 
     template<typename... TParams>
-    constexpr auto operator()(TParams&&... args) const -> decltype(Function)
+    constexpr auto operator()(TParams&&... args) const -> decltype(Function(etl::forward<TParams>(args)...))
     {
       return Function(etl::forward<TParams>(args)...);
     }
