@@ -173,7 +173,7 @@ namespace etl
     /// Gets the current size of the string.
     ///\return The current size of the string.
     //*************************************************************************
-    ETL_CONSTEXPR20 size_type size() const
+    ETL_CONSTEXPR14 size_type size() const
     {
       return current_size;
     }
@@ -182,7 +182,7 @@ namespace etl
     /// Gets the current size of the string.
     ///\return The current size of the string.
     //*************************************************************************
-    ETL_CONSTEXPR20 size_type length() const
+    ETL_CONSTEXPR14 size_type length() const
     {
       return current_size;
     }
@@ -191,7 +191,7 @@ namespace etl
     /// Checks the 'empty' state of the string.
     ///\return <b>true</b> if empty.
     //*************************************************************************
-    ETL_CONSTEXPR20 bool empty() const
+    ETL_CONSTEXPR14 bool empty() const
     {
       return (current_size == 0);
     }
@@ -200,7 +200,7 @@ namespace etl
     /// Checks the 'full' state of the string.
     ///\return <b>true</b> if full.
     //*************************************************************************
-    ETL_CONSTEXPR20 bool full() const
+    ETL_CONSTEXPR14 bool full() const
     {
       return current_size == CAPACITY;
     }
@@ -209,7 +209,7 @@ namespace etl
     /// Returns the capacity of the string.
     ///\return The capacity of the string.
     //*************************************************************************
-    ETL_CONSTEXPR20 size_type capacity() const
+    ETL_CONSTEXPR14 size_type capacity() const
     {
       return CAPACITY;
     }
@@ -218,7 +218,7 @@ namespace etl
     /// Returns the maximum possible size of the string.
     ///\return The maximum size of the string.
     //*************************************************************************
-    ETL_CONSTEXPR20 size_type max_size() const
+    ETL_CONSTEXPR14 size_type max_size() const
     {
       return CAPACITY;
     }
@@ -227,7 +227,7 @@ namespace etl
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
-    ETL_CONSTEXPR20 size_type available() const
+    ETL_CONSTEXPR14 size_type available() const
     {
       return max_size() - size();
     }
@@ -285,7 +285,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR20 string_base(size_type max_size_)
+    ETL_CONSTEXPR14 string_base(size_type max_size_)
       : current_size(0)
       , CAPACITY(max_size_)
     {
@@ -344,7 +344,7 @@ namespace etl
     /// Returns an iterator to the beginning of the string.
     ///\return An iterator to the beginning of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator begin()
+    ETL_CONSTEXPR14 iterator begin()
     {
       return &p_buffer[0];
     }
@@ -353,7 +353,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the string.
     ///\return A const iterator to the beginning of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_iterator begin() const
+    ETL_CONSTEXPR14 const_iterator begin() const
     {
       return &p_buffer[0];
     }
@@ -362,7 +362,7 @@ namespace etl
     /// Returns an iterator to the end of the string.
     ///\return An iterator to the end of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator end()
+    ETL_CONSTEXPR14 iterator end()
     {
       return &p_buffer[current_size];
     }
@@ -371,7 +371,7 @@ namespace etl
     /// Returns a const_iterator to the end of the string.
     ///\return A const iterator to the end of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_iterator end() const
+    ETL_CONSTEXPR14 const_iterator end() const
     {
       return &p_buffer[current_size];
     }
@@ -380,7 +380,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the string.
     ///\return A const iterator to the beginning of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_iterator cbegin() const
+    ETL_CONSTEXPR14 const_iterator cbegin() const
     {
       return &p_buffer[0];
     }
@@ -389,7 +389,7 @@ namespace etl
     /// Returns a const_iterator to the end of the string.
     ///\return A const iterator to the end of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_iterator cend() const
+    ETL_CONSTEXPR14 const_iterator cend() const
     {
       return &p_buffer[current_size];
     }
@@ -398,7 +398,7 @@ namespace etl
     /// Returns an reverse iterator to the reverse beginning of the string.
     ///\return Iterator to the reverse beginning of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 reverse_iterator rbegin()
+    ETL_CONSTEXPR14 reverse_iterator rbegin()
     {
       return reverse_iterator(end());
     }
@@ -407,7 +407,7 @@ namespace etl
     /// Returns a const reverse iterator to the reverse beginning of the string.
     ///\return Const iterator to the reverse beginning of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reverse_iterator rbegin() const
+    ETL_CONSTEXPR14 const_reverse_iterator rbegin() const
     {
       return const_reverse_iterator(end());
     }
@@ -416,7 +416,7 @@ namespace etl
     /// Returns a reverse iterator to the end + 1 of the string.
     ///\return Reverse iterator to the end + 1 of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 reverse_iterator rend()
+    ETL_CONSTEXPR14 reverse_iterator rend()
     {
       return reverse_iterator(begin());
     }
@@ -425,7 +425,7 @@ namespace etl
     /// Returns a const reverse iterator to the end + 1 of the string.
     ///\return Const reverse iterator to the end + 1 of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reverse_iterator rend() const
+    ETL_CONSTEXPR14 const_reverse_iterator rend() const
     {
       return const_reverse_iterator(begin());
     }
@@ -434,7 +434,7 @@ namespace etl
     /// Returns a const reverse iterator to the reverse beginning of the string.
     ///\return Const reverse iterator to the reverse beginning of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reverse_iterator crbegin() const
+    ETL_CONSTEXPR14 const_reverse_iterator crbegin() const
     {
       return const_reverse_iterator(cend());
     }
@@ -443,7 +443,7 @@ namespace etl
     /// Returns a const reverse iterator to the end + 1 of the string.
     ///\return Const reverse iterator to the end + 1 of the string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reverse_iterator crend() const
+    ETL_CONSTEXPR14 const_reverse_iterator crend() const
     {
       return const_reverse_iterator(cbegin());
     }
@@ -517,7 +517,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    ETL_CONSTEXPR20 reference operator [](size_type i)
+    ETL_CONSTEXPR14 reference operator [](size_type i)
     {
       return p_buffer[i];
     }
@@ -527,7 +527,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reference operator [](size_type i) const
+    ETL_CONSTEXPR14 const_reference operator [](size_type i) const
     {
       return p_buffer[i];
     }
@@ -538,7 +538,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    ETL_CONSTEXPR20 reference at(size_type i)
+    ETL_CONSTEXPR14 reference at(size_type i)
     {
       ETL_ASSERT(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
@@ -550,7 +550,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reference at(size_type i) const
+    ETL_CONSTEXPR14 const_reference at(size_type i) const
     {
       ETL_ASSERT(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
@@ -560,7 +560,7 @@ namespace etl
     /// Returns a reference to the first element.
     ///\return A reference to the first element.
     //*********************************************************************
-    ETL_CONSTEXPR20 reference front()
+    ETL_CONSTEXPR14 reference front()
     {
       return p_buffer[0];
     }
@@ -569,7 +569,7 @@ namespace etl
     /// Returns a const reference to the first element.
     ///\return A const reference to the first element.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reference front() const
+    ETL_CONSTEXPR14 const_reference front() const
     {
       return p_buffer[0];
     }
@@ -578,7 +578,7 @@ namespace etl
     /// Returns a reference to the last element.
     ///\return A reference to the last element.
     //*********************************************************************
-    ETL_CONSTEXPR20 reference back()
+    ETL_CONSTEXPR14 reference back()
     {
       return p_buffer[current_size - 1];
     }
@@ -587,7 +587,7 @@ namespace etl
     /// Returns a const reference to the last element.
     ///\return A const reference to the last element.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_reference back() const
+    ETL_CONSTEXPR14 const_reference back() const
     {
       return p_buffer[current_size - 1];
     }
@@ -596,7 +596,7 @@ namespace etl
     /// Returns a pointer to the beginning of the string data.
     ///\return A pointer to the beginning of the string data.
     //*********************************************************************
-    ETL_CONSTEXPR20 pointer data()
+    ETL_CONSTEXPR14 pointer data()
     {
       return p_buffer;
     }
@@ -605,7 +605,7 @@ namespace etl
     /// Returns a const pointer to the beginning of the string data.
     ///\return A const pointer to the beginning of the string data.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_pointer data() const
+    ETL_CONSTEXPR14 const_pointer data() const
     {
       return p_buffer;
     }
@@ -614,7 +614,7 @@ namespace etl
     /// Returns a pointer to the beginning of the string data.
     ///\return A pointer to the beginning of the string data.
     //*********************************************************************
-    ETL_CONSTEXPR20 pointer data_end()
+    ETL_CONSTEXPR14 pointer data_end()
     {
       return p_buffer + current_size;
     }
@@ -623,7 +623,7 @@ namespace etl
     /// Returns a const pointer to the beginning of the string data.
     ///\return A const pointer to the beginning of the string data.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_pointer data_end() const
+    ETL_CONSTEXPR14 const_pointer data_end() const
     {
       return p_buffer + current_size;
     }
@@ -817,7 +817,7 @@ namespace etl
     /// Sets 'truncated' if the string is already full.
     ///\param value The value to add.
     //*********************************************************************
-    ETL_CONSTEXPR20 void push_back(T value)
+    ETL_CONSTEXPR14 void push_back(T value)
     {
       if (current_size != CAPACITY)
       {
@@ -840,7 +840,7 @@ namespace etl
     /// Removes an element from the end of the string.
     /// Does nothing if the string is empty.
     //*************************************************************************
-    ETL_CONSTEXPR20 void pop_back()
+    ETL_CONSTEXPR14 void pop_back()
     {
       if (current_size != 0)
       {
@@ -852,7 +852,7 @@ namespace etl
     /// Appends to the string.
     ///\param str The string to append.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& append(const ibasic_string& str)
+    ETL_CONSTEXPR14 ibasic_string& append(const ibasic_string& str)
     {
       insert(end(), str.begin(), str.end());
 
@@ -876,7 +876,7 @@ namespace etl
     ///\param subposition The position in str.
     ///\param sublength The number of characters.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& append(const ibasic_string& str, size_type subposition, size_type sublength = npos)
+    ETL_CONSTEXPR14 ibasic_string& append(const ibasic_string& str, size_type subposition, size_type sublength = npos)
     {
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -889,7 +889,7 @@ namespace etl
     /// Appends to the string.
     ///\param str The string to append.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& append(const T* str)
+    ETL_CONSTEXPR14 ibasic_string& append(const T* str)
     {
       insert(size(), str);
       return *this;
@@ -900,7 +900,7 @@ namespace etl
     ///\param str The string to append.
     ///\param n   The number of characters.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& append(const T* str, size_type n)
+    ETL_CONSTEXPR14 ibasic_string& append(const T* str, size_type n)
     {
       insert(size(), str, n);
       return *this;
@@ -911,7 +911,7 @@ namespace etl
     ///\param n The number of characters.
     ///\param c The character.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& append(size_type n, T c)
+    ETL_CONSTEXPR14 ibasic_string& append(size_type n, T c)
     {
       insert(size(), n, c);
       return *this;
@@ -923,7 +923,7 @@ namespace etl
     ///\param last  The last + 1 character to add.
     //*********************************************************************
     template <class TIterator>
-    ETL_CONSTEXPR20 ibasic_string& append(TIterator first, TIterator last)
+    ETL_CONSTEXPR14 ibasic_string& append(TIterator first, TIterator last)
     {
       insert(end(), first, last);
       return *this;
@@ -934,7 +934,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator insert(const_iterator position, T value)
+    ETL_CONSTEXPR14 iterator insert(const_iterator position, T value)
     {
       // Quick hack, as iterators are pointers.
       iterator insert_position = to_iterator(position);
@@ -986,7 +986,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator insert(const_iterator position, size_type n, T value)
+    ETL_CONSTEXPR14 iterator insert(const_iterator position, size_type n, T value)
     {
       iterator position_ = to_iterator(position);
 
@@ -1073,7 +1073,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR20 iterator insert(const_iterator position, TIterator first, TIterator last)
+    ETL_CONSTEXPR14 iterator insert(const_iterator position, TIterator first, TIterator last)
     {
       iterator position_ = to_iterator(position);
 
@@ -1164,7 +1164,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param str      The string to insert.
     //*********************************************************************
-    ETL_CONSTEXPR20 etl::ibasic_string<T>& insert(size_type position, const etl::ibasic_string<T>& str)
+    ETL_CONSTEXPR14 etl::ibasic_string<T>& insert(size_type position, const etl::ibasic_string<T>& str)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1222,7 +1222,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param s        The string to insert.
     //*********************************************************************
-    ETL_CONSTEXPR20 etl::ibasic_string<T>& insert(size_type position, const_pointer s)
+    ETL_CONSTEXPR14 etl::ibasic_string<T>& insert(size_type position, const_pointer s)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1236,7 +1236,7 @@ namespace etl
     ///\param s        The string to insert.
     ///\param n        The number of characters to insert.
     //*********************************************************************
-    ETL_CONSTEXPR20 etl::ibasic_string<T>& insert(size_type position, const_pointer s, size_type n)
+    ETL_CONSTEXPR14 etl::ibasic_string<T>& insert(size_type position, const_pointer s, size_type n)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1250,7 +1250,7 @@ namespace etl
     ///\param n        The number of characters to insert.
     ///\param c        The character to insert.
     //*********************************************************************
-    ETL_CONSTEXPR20 etl::ibasic_string<T>& insert(size_type position, size_type n, value_type c)
+    ETL_CONSTEXPR14 etl::ibasic_string<T>& insert(size_type position, size_type n, value_type c)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1264,7 +1264,7 @@ namespace etl
     ///\param length   Number of characters.
     ///\return A reference to this string.
     //*********************************************************************
-    ETL_CONSTEXPR20 etl::ibasic_string<T>& erase(size_type position, size_type length_ = npos)
+    ETL_CONSTEXPR14 etl::ibasic_string<T>& erase(size_type position, size_type length_ = npos)
     {
       // Limit the length.
       length_ = etl::min(length_, size() - position);
@@ -1279,7 +1279,7 @@ namespace etl
     ///\param i_element Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator erase(iterator i_element)
+    ETL_CONSTEXPR14 iterator erase(iterator i_element)
     {
       etl::copy(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
@@ -1292,7 +1292,7 @@ namespace etl
     ///\param i_element Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator erase(const_iterator i_element)
+    ETL_CONSTEXPR14 iterator erase(const_iterator i_element)
     {
       iterator i_element_(to_iterator(i_element));
 
@@ -1310,7 +1310,7 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    ETL_CONSTEXPR20 iterator erase(const_iterator first, const_iterator last)
+    ETL_CONSTEXPR14 iterator erase(const_iterator first, const_iterator last)
     {
       iterator first_ = to_iterator(first);
       iterator last_  = to_iterator(last);
@@ -1333,7 +1333,7 @@ namespace etl
     //*********************************************************************
     /// Return a pointer to a C string.
     //*********************************************************************
-    ETL_CONSTEXPR20 const_pointer c_str() const
+    ETL_CONSTEXPR14 const_pointer c_str() const
     {
       return p_buffer;
     }
@@ -1344,7 +1344,7 @@ namespace etl
     ///\param count The number of characters to copy.
     ///\param pos   The position to start copying from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type copy(pointer dest, size_type count, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type copy(pointer dest, size_type count, size_type pos = 0) const
     {
       if (pos < size())
       {
@@ -1372,7 +1372,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find(const ibasic_string<T>& str, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type find(const ibasic_string<T>& str, size_type pos = 0) const
     {
       if ((pos + str.size()) > size())
       {
@@ -1396,7 +1396,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find(const_pointer s, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type find(const_pointer s, size_type pos = 0) const
     {
 #if ETL_IS_DEBUG_BUILD
       if ((pos + etl::strlen(s)) > size())
@@ -1423,7 +1423,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find(const_pointer s, size_type pos, size_type n) const
+    ETL_CONSTEXPR14 size_type find(const_pointer s, size_type pos, size_type n) const
     {
 #if ETL_IS_DEBUG_BUILD
       if ((pos + etl::strlen(s) - n) > size())
@@ -1449,7 +1449,7 @@ namespace etl
     ///\param c        The character to find.
     ///\param position The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find(T c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find(T c, size_type position = 0) const
     {
       const_iterator i = etl::find(begin() + position, end(), c);
 
@@ -1468,7 +1468,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type rfind(const ibasic_string<T>& str, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(const ibasic_string<T>& str, size_type position = npos) const
     {
       if ((str.size()) > size())
       {
@@ -1499,7 +1499,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type rfind(const_pointer s, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(const_pointer s, size_type position = npos) const
     {
       size_type len = etl::strlen(s);
 
@@ -1535,7 +1535,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type rfind(const_pointer s, size_type position, size_type length_) const
+    ETL_CONSTEXPR14 size_type rfind(const_pointer s, size_type position, size_type length_) const
     {
       if (length_ > size())
       {
@@ -1569,7 +1569,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type rfind(T c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(T c, size_type position = npos) const
     {
       if (position >= size())
       {
@@ -1596,7 +1596,7 @@ namespace etl
     ///\param length   The number of characters to replace.
     ///\param str      The string to replace it with.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str)
+    ETL_CONSTEXPR14 ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1618,7 +1618,7 @@ namespace etl
     ///\param last  The one after the position to end at.
     ///\param str   The string to replace it with.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(const_iterator first, const_iterator last, const ibasic_string& str)
+    ETL_CONSTEXPR14 ibasic_string& replace(const_iterator first, const_iterator last, const ibasic_string& str)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = to_iterator(first);
@@ -1647,7 +1647,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'str' from 'subposition' of 'sublength'.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength)
+    ETL_CONSTEXPR14 ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
@@ -1679,7 +1679,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with pointed to string.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(size_type position, size_type length_, const_pointer s)
+    ETL_CONSTEXPR14 ibasic_string& replace(size_type position, size_type length_, const_pointer s)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1698,7 +1698,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'first'  'last' with pointed to string.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(const_iterator first, const_iterator last, const_pointer s)
+    ETL_CONSTEXPR14 ibasic_string& replace(const_iterator first, const_iterator last, const_pointer s)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = to_iterator(first);
@@ -1716,7 +1716,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'n' characters from pointed to string.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(size_type position, size_type length_, const_pointer s, size_type n)
+    ETL_CONSTEXPR14 ibasic_string& replace(size_type position, size_type length_, const_pointer s, size_type n)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1735,7 +1735,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'first' to 'last' with 'n' characters from pointed to string.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(const_iterator first, const_iterator last, const_pointer s, size_type n)
+    ETL_CONSTEXPR14 ibasic_string& replace(const_iterator first, const_iterator last, const_pointer s, size_type n)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = to_iterator(first);
@@ -1753,7 +1753,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'n' copies of 'c'.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(size_type position, size_type length_, size_type n, value_type c)
+    ETL_CONSTEXPR14 ibasic_string& replace(size_type position, size_type length_, size_type n, value_type c)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1772,7 +1772,7 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'first' of 'last' with 'n' copies of 'c'.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string& replace(const_iterator first, const_iterator last, size_type n, value_type c)
+    ETL_CONSTEXPR14 ibasic_string& replace(const_iterator first, const_iterator last, size_type n, value_type c)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = to_iterator(first);
@@ -1791,7 +1791,7 @@ namespace etl
     /// Replace characters from 'first' of 'last' with characters from 'first_replace' to 'last_replace'.
     //*********************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR20 ibasic_string& replace(const_iterator first, const_iterator last, TIterator first_replace, TIterator last_replace)
+    ETL_CONSTEXPR14 ibasic_string& replace(const_iterator first, const_iterator last, TIterator first_replace, TIterator last_replace)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = to_iterator(first);
@@ -1809,7 +1809,7 @@ namespace etl
     //*************************************************************************
     /// Compare with string.
     //*************************************************************************
-    ETL_CONSTEXPR20 int compare(const ibasic_string& str) const
+    ETL_CONSTEXPR14 int compare(const ibasic_string& str) const
     {
       return compare(p_buffer,
                      p_buffer + size(),
@@ -1820,7 +1820,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string.
     //*************************************************************************
-    ETL_CONSTEXPR20 int compare(size_type position, size_type length_, const ibasic_string& str) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const ibasic_string& str) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1836,7 +1836,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string / subposition / sublength.
     //*************************************************************************
-    ETL_CONSTEXPR20 int compare(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
@@ -1854,7 +1854,7 @@ namespace etl
     //*************************************************************************
     ///  Compare with C string
     //*************************************************************************
-    ETL_CONSTEXPR20 int compare(const value_type* s) const
+    ETL_CONSTEXPR14 int compare(const value_type* s) const
     {
       return compare(p_buffer,
                      p_buffer + size(),
@@ -1865,7 +1865,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string.
     //*************************************************************************
-    ETL_CONSTEXPR20 int compare(size_type position, size_type length_, const_pointer s) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const_pointer s) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -1876,7 +1876,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string / n.
     //*************************************************************************
-    ETL_CONSTEXPR20 int compare(size_type position, size_type length_, const_pointer s, size_type n) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const_pointer s, size_type n) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -1889,7 +1889,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_of(const ibasic_string<T>& str, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(const ibasic_string<T>& str, size_type position = 0) const
     {
       return find_first_of(str.c_str(), position, str.size());
     }
@@ -1899,7 +1899,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_of(const_pointer s, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(const_pointer s, size_type position = 0) const
     {
       return find_first_of(s, position, etl::strlen(s));
     }
@@ -1910,7 +1910,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_first_of(const_pointer s, size_type position, size_type n) const
     {
       if (position < size())
       {
@@ -1934,7 +1934,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_of(value_type c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(value_type c, size_type position = 0) const
     {
       if (position < size())
       {
@@ -1955,7 +1955,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_of(const ibasic_string<T>& str, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(const ibasic_string<T>& str, size_type position = npos) const
     {
       return find_last_of(str.c_str(), position, str.size());
     }
@@ -1965,7 +1965,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_of(const_pointer s, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(const_pointer s, size_type position = npos) const
     {
       return find_last_of(s, position, etl::strlen(s));
     }
@@ -1976,7 +1976,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_last_of(const_pointer s, size_type position, size_type n) const
     {
       if (empty())
       {
@@ -2009,7 +2009,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_of(value_type c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(value_type c, size_type position = npos) const
     {
       if (empty())
       {
@@ -2039,7 +2039,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_not_of(const ibasic_string<T>& str, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const ibasic_string<T>& str, size_type position = 0) const
     {
       return find_first_not_of(str.c_str(), position, str.size());
     }
@@ -2049,7 +2049,7 @@ namespace etl
     ///\param s   Pointer to the content to not find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_not_of(const_pointer s, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const_pointer s, size_type position = 0) const
     {
       return find_first_not_of(s, position, etl::strlen(s));
     }
@@ -2060,7 +2060,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_not_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const_pointer s, size_type position, size_type n) const
     {
       if (position < size())
       {
@@ -2091,7 +2091,7 @@ namespace etl
     ///\param c   The character to not find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_first_not_of(value_type c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(value_type c, size_type position = 0) const
     {
       if (position < size())
       {
@@ -2112,7 +2112,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_not_of(const ibasic_string<T>& str, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const ibasic_string<T>& str, size_type position = npos) const
     {
       return find_last_not_of(str.c_str(), position, str.size());
     }
@@ -2122,7 +2122,7 @@ namespace etl
     ///\param s   The pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_not_of(const_pointer s, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const_pointer s, size_type position = npos) const
     {
       return find_last_not_of(s, position, etl::strlen(s));
     }
@@ -2133,7 +2133,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to use.
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_not_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const_pointer s, size_type position, size_type n) const
     {
       if (empty())
       {
@@ -2171,7 +2171,7 @@ namespace etl
     //*********************************************************************
     //
     //*********************************************************************
-    ETL_CONSTEXPR20 size_type find_last_not_of(value_type c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(value_type c, size_type position = npos) const
     {
       if (empty())
       {
@@ -2199,7 +2199,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ETL_CONSTEXPR20 ibasic_string& operator = (const ibasic_string& rhs)
+    ETL_CONSTEXPR14 ibasic_string& operator = (const ibasic_string& rhs)
     {
       if (&rhs != this)
       {
@@ -2212,7 +2212,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ETL_CONSTEXPR20 ibasic_string& operator = (const_pointer rhs)
+    ETL_CONSTEXPR14 ibasic_string& operator = (const_pointer rhs)
     {
       assign(rhs);
 
@@ -2222,7 +2222,7 @@ namespace etl
     //*************************************************************************
     /// += operator.
     //*************************************************************************
-    ETL_CONSTEXPR20 ibasic_string& operator += (const ibasic_string& rhs)
+    ETL_CONSTEXPR14 ibasic_string& operator += (const ibasic_string& rhs)
     {
       append(rhs);
 
@@ -2232,7 +2232,7 @@ namespace etl
     //*************************************************************************
     /// += operator.
     //*************************************************************************
-    ETL_CONSTEXPR20 ibasic_string& operator += (const_pointer rhs)
+    ETL_CONSTEXPR14 ibasic_string& operator += (const_pointer rhs)
     {
       append(rhs);
 
@@ -2242,7 +2242,7 @@ namespace etl
     //*************************************************************************
     /// += operator.
     //*************************************************************************
-    ETL_CONSTEXPR20 ibasic_string& operator += (T rhs)
+    ETL_CONSTEXPR14 ibasic_string& operator += (T rhs)
     {
       append(size_type(1), rhs);
 
@@ -2287,7 +2287,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ETL_CONSTEXPR20 ibasic_string(T* p_buffer_, size_type MAX_SIZE_)
+    ETL_CONSTEXPR14 ibasic_string(T* p_buffer_, size_type MAX_SIZE_)
       : string_base(MAX_SIZE_),
         p_buffer(p_buffer_)
     {
@@ -2417,7 +2417,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator ==(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -2430,7 +2430,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator ==(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return (lhs.size() == etl::strlen(rhs)) && etl::equal(lhs.begin(), lhs.end(), rhs);
   }
@@ -2443,7 +2443,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator ==(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return (rhs.size() == etl::strlen(lhs)) && etl::equal(rhs.begin(), rhs.end(), lhs);
   }
@@ -2456,7 +2456,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator !=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2469,7 +2469,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator !=(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return !(lhs == rhs);
   }
@@ -2482,7 +2482,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator !=(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2495,7 +2495,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator <(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -2508,7 +2508,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator <(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR14 bool operator <(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs, rhs + etl::strlen(rhs));
   }
@@ -2521,7 +2521,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator <(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return etl::lexicographical_compare(lhs, lhs + etl::strlen(lhs), rhs.begin(), rhs.end());
   }
@@ -2535,7 +2535,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator >(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2548,7 +2548,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator >(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR14 bool operator >(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return (rhs < lhs);
   }
@@ -2561,7 +2561,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator >(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2575,7 +2575,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator <=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2588,7 +2588,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator <=(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR14 bool operator <=(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return !(lhs > rhs);
   }
@@ -2601,7 +2601,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator <=(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2615,7 +2615,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator >=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -2628,7 +2628,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator >=(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR14 bool operator >=(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return !(lhs < rhs);
   }
@@ -2641,7 +2641,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR20 bool operator >=(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs < rhs);
   }
