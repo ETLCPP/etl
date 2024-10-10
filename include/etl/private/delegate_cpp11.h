@@ -91,6 +91,15 @@ namespace etl
   {
   };
 
+  //***************************************************************************
+  /// is_delegate
+  //***************************************************************************
+  template <typename T>
+  struct is_delegate
+  {
+    static constexpr bool value = etl::is_base_of<delegate_tag, T>::value;
+  };
+
   //*************************************************************************
   /// Declaration.
   //*************************************************************************
@@ -120,7 +129,7 @@ namespace etl
     //*************************************************************************
     // Construct from lambda or functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate(TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -129,7 +138,7 @@ namespace etl
     //*************************************************************************
     // Construct from const lambda or functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate(const TLambda& instance)
     {
       assign((void*)(&instance), const_lambda_stub<TLambda>);
@@ -148,7 +157,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create(TLambda& instance)
     {
@@ -158,7 +167,7 @@ namespace etl
     //*************************************************************************
     /// Create from const Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_NODISCARD
       static ETL_CONSTEXPR14 delegate create(const TLambda& instance)
     {
@@ -266,7 +275,7 @@ namespace etl
     //*************************************************************************
     /// Set from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 void set(TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -275,7 +284,7 @@ namespace etl
     //*************************************************************************
     /// Set from const Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 void set(const TLambda& instance)
     {
       assign((void*)(&instance), const_lambda_stub<TLambda>);
@@ -436,7 +445,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate& operator =(TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -446,7 +455,7 @@ namespace etl
     //*************************************************************************
     /// Create from const Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_base_of<delegate_tag, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate& operator =(const TLambda& instance)
     {
       assign((void*)(&instance), const_lambda_stub<TLambda>);
