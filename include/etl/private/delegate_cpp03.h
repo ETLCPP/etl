@@ -168,6 +168,23 @@ namespace etl
     }
   };
 
+  //*****************************************************************
+  /// The tag to identify an etl::delegate.
+  ///\ingroup delegate
+  //*****************************************************************
+  struct delegate_tag
+  {
+  };
+
+  //***************************************************************************
+  /// is_delegate
+  //***************************************************************************
+  template <typename T>
+  struct is_delegate
+  {
+    static const bool value = etl::is_base_of<delegate_tag, T>::value;
+  };
+
   //*************************************************************************
   /// Declaration.
   //*************************************************************************
@@ -175,10 +192,10 @@ namespace etl
   class delegate;
 
   template <typename TReturn, typename TParam>
-  class delegate<TReturn(TParam)> : public private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>
+  class delegate<TReturn(TParam)> : public private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>, public delegate_tag
   {
   private:
-
+  
     typedef delegate<TReturn(TParam)> delegate_type;
 
   public:
@@ -204,7 +221,7 @@ namespace etl
     // Construct from a functor.
     //*************************************************************************
     template <typename TFunctor>
-    delegate(TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, int>::type = 0)
+    delegate(TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, int>::type = 0)
     {
       assign((void*)(&instance), functor_stub<TFunctor>);
     }
@@ -213,7 +230,7 @@ namespace etl
     // Construct from a const functor.
     //*************************************************************************
     template <typename TFunctor>
-    delegate(const TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, int>::type = 0)
+    delegate(const TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, int>::type = 0)
     {
       assign((void*)(&instance), const_functor_stub<TFunctor>);
     }
@@ -232,7 +249,7 @@ namespace etl
     //*************************************************************************
     template <typename TFunctor>
     static 
-      typename etl::enable_if<etl::is_class<TFunctor>::value &&!etl::is_same<delegate_type, TFunctor>::value, delegate>::type
+      typename etl::enable_if<etl::is_class<TFunctor>::value &&!is_delegate<TFunctor>::value, delegate>::type
       create(TFunctor& instance)
     {
       return delegate((void*)(&instance), functor_stub<TFunctor>);
@@ -243,7 +260,7 @@ namespace etl
     //*************************************************************************
     template <typename TFunctor>
     static
-      typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate>::type
+      typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate>::type
       create(const TFunctor& instance)
     {
       return delegate((void*)(&instance), const_functor_stub<TFunctor>);
@@ -330,7 +347,7 @@ namespace etl
     /// Set from Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, void>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, void>::type
       set(TFunctor& instance)
     {
       assign((void*)(&instance), functor_stub<TFunctor>);
@@ -340,7 +357,7 @@ namespace etl
     /// Set from const Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, void>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, void>::type
       set(const TFunctor& instance)
     {
       assign((void*)(&instance), const_functor_stub<TFunctor>);
@@ -467,7 +484,7 @@ namespace etl
     /// Create from Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate&>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate&>::type
       operator =(TFunctor& instance)
     {
       assign((void*)(&instance), functor_stub<TFunctor>);
@@ -478,7 +495,7 @@ namespace etl
     /// Create from const Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate&>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate&>::type
       operator =(const TFunctor& instance)
     {
       assign((void*)(&instance), const_functor_stub<TFunctor>);
@@ -705,7 +722,7 @@ namespace etl
     // Construct from functor.
     //*************************************************************************
     template <typename TFunctor>
-    delegate(TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, int>::type = 0)
+    delegate(TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, int>::type = 0)
     {
       assign((void*)(&instance), functor_stub<TFunctor>);
     }
@@ -714,7 +731,7 @@ namespace etl
     // Construct from const functor.
     //*************************************************************************
     template <typename TFunctor>
-    delegate(const TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, int>::type = 0)
+    delegate(const TFunctor& instance, typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, int>::type = 0)
     {
       assign((void*)(&instance), const_functor_stub<TFunctor>);
     }
@@ -733,7 +750,7 @@ namespace etl
     //*************************************************************************
     template <typename TFunctor>
     static 
-      typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate>::type
+      typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate>::type
       create(TFunctor& instance)
     {
       return delegate((void*)(&instance), functor_stub<TFunctor>);
@@ -744,7 +761,7 @@ namespace etl
     //*************************************************************************
     template <typename TFunctor>
     static
-      typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate>::type
+      typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate>::type
       create(const TFunctor& instance)
     {
       return delegate((void*)(&instance), const_functor_stub<TFunctor>);
@@ -831,7 +848,7 @@ namespace etl
     /// Set from Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, void>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, void>::type
       set(TFunctor& instance)
     {
       assign((void*)(&instance), functor_stub<TFunctor>);
@@ -841,7 +858,7 @@ namespace etl
     /// Set from const Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, void>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, void>::type
       set(const TFunctor& instance)
     {
       assign((void*)(&instance), const_functor_stub<TFunctor>);
@@ -968,7 +985,7 @@ namespace etl
     /// Create from Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate&>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate&>::type
       operator =(TFunctor& instance)
     {
       assign((void*)(&instance), functor_stub<TFunctor>);
@@ -979,7 +996,7 @@ namespace etl
     /// Create from const Functor.
     //*************************************************************************
     template <typename TFunctor>
-    typename etl::enable_if<etl::is_class<TFunctor>::value && !etl::is_same<delegate_type, TFunctor>::value, delegate&>::type
+    typename etl::enable_if<etl::is_class<TFunctor>::value && !is_delegate<TFunctor>::value, delegate&>::type
       operator =(const TFunctor& instance)
     {
       assign((void*)(&instance), const_functor_stub<TFunctor>);
