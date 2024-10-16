@@ -160,13 +160,11 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_const)>;
 
-      CHECK_FALSE((std::is_same<void(void),       traits::function_type>::value));
       CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
       CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
       CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
-      CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_function);
       CHECK_TRUE(traits::is_member_function);
       CHECK_TRUE(traits::is_const);

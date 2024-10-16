@@ -183,6 +183,10 @@ namespace etl
 
   public:
 
+    typedef TReturn (*function_type)(TParam);
+    typedef TReturn return_type;
+    typedef TParam  argument_type;
+
     using private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>::call_if;
 
     //*************************************************************************
@@ -683,6 +687,10 @@ namespace etl
     typedef delegate<TReturn(void)> delegate_type;
 
   public:
+
+    typedef TReturn (*function_type)(void);
+    typedef TReturn return_type;
+    typedef void    argument_type;
 
     using private_delegate::call_if_impl< delegate<TReturn(void)>, TReturn, void>::call_if;
 

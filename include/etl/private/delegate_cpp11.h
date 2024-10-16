@@ -54,6 +54,8 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "../type_traits.h"
 #include "../utility.h"
 #include "../optional.h"
+#include "../function_traits.h"
+#include "../type_list.h"
 
 namespace etl
 {
@@ -95,6 +97,10 @@ namespace etl
   class delegate<TReturn(TParams...)> final
   {
   public:
+
+    using function_type  = TReturn(TParams...);
+    using return_type    = TReturn;
+    using argument_types = etl::type_list<TParams...>;
 
     //*************************************************************************
     /// Default constructor.
@@ -348,7 +354,7 @@ namespace etl
 
     //*************************************************************************
     /// Execute the delegate if valid.
-    /// 'void' return.
+    /// 'void' return delegate.
     //*************************************************************************
     template <typename TRet = TReturn>
     ETL_CONSTEXPR14
@@ -368,7 +374,7 @@ namespace etl
 
     //*************************************************************************
     /// Execute the delegate if valid.
-    /// Non 'void' return.
+    /// Non 'void' return delegate.
     //*************************************************************************
     template <typename TRet = TReturn>
     ETL_CONSTEXPR14
@@ -627,6 +633,85 @@ namespace etl
     //*************************************************************************
     invocation_element invocation;
   };
+
+#if ETL_USING_CPP17
+  //*************************************************************************
+  /// Make a delegate from a free function.
+  //*************************************************************************
+  template <auto Function>
+  constexpr auto make_delegate() ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(Function)>::function_type;
+
+    return etl::delegate<function_type>::template create<Function>();
+  }
+
+  //*************************************************************************
+  /// Make a delegate from a functor or lambda function.
+  //*************************************************************************
+  template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
+  constexpr auto make_delegate(TLambda& instance) ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(&TLambda::operator())>::function_type;
+
+    return etl::delegate<function_type>(instance);
+  }
+
+  //*************************************************************************
+  /// Make a delegate from a functor, compile time.
+  //*************************************************************************
+  template <typename T, T& Instance>
+  constexpr auto make_delegate() ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(&T::operator())>::function_type;
+
+    return etl::delegate<function_type>::template create<T, Instance>();
+  }
+
+  //*************************************************************************
+  /// Make a delegate from a member function at compile time.
+  //*************************************************************************
+  template <typename T, auto Method, T& Instance, typename = etl::enable_if_t<!function_traits<decltype(Method)>::is_const>>
+  constexpr auto make_delegate() ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+
+    return etl::delegate<function_type>::template create<T, Method, Instance>();
+  }
+
+  //*************************************************************************
+  /// Make a delegate from a const member function at compile time.
+  //*************************************************************************
+  template <typename T, auto Method, const T& Instance, typename = etl::enable_if_t<function_traits<decltype(Method)>::is_const>>
+  constexpr auto make_delegate() ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+
+    return etl::delegate<function_type>::template create<T, Method, Instance>();
+  }
+
+  //*************************************************************************
+  /// Make a delegate from a member function at run time.
+  //*************************************************************************
+  template <typename T, auto Method>
+  constexpr auto make_delegate(T& instance) ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+
+    return etl::delegate<function_type>::template create<T, Method>(instance);
+  }
+
+  //*************************************************************************
+  /// Make a delegate from a member function at run time.
+  //*************************************************************************
+  template <typename T, auto Method>
+  constexpr auto make_delegate(const T& instance) ETL_NOEXCEPT
+  {
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+
+    return etl::delegate<function_type>::template create<T, Method>(instance);
+  }
+#endif
 }
 
 #endif
