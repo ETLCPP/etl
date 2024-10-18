@@ -261,8 +261,10 @@ namespace
   Object object_static;
   const Object const_object_static;
 
+#if ETL_USING_CPP17
   Functor functor_static;
   const FunctorConst const_functor_static;
+#endif
 }
 
 namespace
@@ -677,7 +679,7 @@ namespace
     }
 #endif
 
-#if !defined(ETL_COMPILER_GCC)
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time)
     {

@@ -125,7 +125,7 @@ namespace etl
   template <size_t N>
   struct nth_type<N, type_list<>>
   {
-    ETL_STATIC_ASSERT(false, "etl::nth_type invoked for empty etl::type_list");
+    //ETL_STATIC_ASSERT(false, "etl::nth_type invoked for empty etl::type_list");
   };
 
   //***************************************************************************

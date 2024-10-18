@@ -39,7 +39,6 @@ namespace
     //*************************************************************************
     TEST(test_type_list_nth_type)
     {
-      using tl0 = etl::type_list<>;
       using tl1 = etl::type_list<char>;
       using tl2 = etl::type_list<char, short>;
       using tl3 = etl::type_list<char, short, int>;

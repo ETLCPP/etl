@@ -47,7 +47,7 @@ namespace
   //*****************************************************************************
   int free_int(int i, int j)
   {
-    return 0;
+    return i + j;
   }
 
   //*****************************************************************************
@@ -71,18 +71,19 @@ namespace
     // int
     int member_int(int i, int j)
     {
-      return 0;
+      return i + j;
     }
 
     int member_int_const(int i, int j) const
     {
-      return 0;
+      return i + j;
     }
 
     //*******************************************
     // static
     static void member_static(int j)
     {
+      (void)j;
     }
   };
 }
