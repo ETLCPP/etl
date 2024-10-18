@@ -111,6 +111,8 @@ namespace
     //*************************************************************************
     TEST(test_free_function_free_void)
     {
+      free_void(); // Keep clang happy
+
       using traits = etl::function_traits<decltype(&free_void)>;
 
       CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
@@ -127,6 +129,8 @@ namespace
     //*************************************************************************
     TEST(test_free_function_free_int)
     {
+      free_int(1, 2); // Keep clang happy
+
       using traits = etl::function_traits<decltype(&free_int)>;
 
       CHECK_TRUE((std::is_same<int(int, int),            traits::function_type>::value));

@@ -159,6 +159,7 @@ target_sources(t11 PRIVATE etl_profile.h
 		../fsm.h.t.cpp
 		../function.h.t.cpp
 		../functional.h.t.cpp
+		../function_traits.h.t.cpp
 		../gamma.h.t.cpp
 		../gcd.h.t.cpp
 		../generic_pool.h.t.cpp
@@ -283,6 +284,7 @@ target_sources(t11 PRIVATE etl_profile.h
 		../to_u8string.h.t.cpp
 		../to_wstring.h.t.cpp
 		../type_def.h.t.cpp
+		../type_list.h.t.cpp
 		../type_lookup.h.t.cpp
 		../type_select.h.t.cpp
 		../type_traits.h.t.cpp
