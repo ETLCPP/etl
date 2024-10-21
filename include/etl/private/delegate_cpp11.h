@@ -95,16 +95,13 @@ namespace etl
   /// is_delegate
   //***************************************************************************
   template <typename T>
-  struct is_delegate
+  struct is_delegate : etl::bool_constant<etl::is_base_of<delegate_tag, T>::value>
   {
-    static constexpr bool value = etl::is_base_of<delegate_tag, T>::value;
   };
 
 #if ETL_USING_CPP17
-
   template <typename T>
   inline constexpr bool is_delegate_v = is_delegate<T>::value;
-
 #endif
 
   //*************************************************************************

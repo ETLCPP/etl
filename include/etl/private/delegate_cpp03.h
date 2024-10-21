@@ -180,9 +180,8 @@ namespace etl
   /// is_delegate
   //***************************************************************************
   template <typename T>
-  struct is_delegate
+  struct is_delegate : etl::bool_constant<etl::is_base_of<delegate_tag, T>::value>
   {
-    static const bool value = etl::is_base_of<delegate_tag, T>::value;
   };
 
   //*************************************************************************
@@ -192,7 +191,8 @@ namespace etl
   class delegate;
 
   template <typename TReturn, typename TParam>
-  class delegate<TReturn(TParam)> : public private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>, public delegate_tag
+  class delegate<TReturn(TParam)> : public private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>, 
+                                    public delegate_tag
   {
   private:
   
