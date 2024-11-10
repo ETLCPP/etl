@@ -2821,7 +2821,7 @@ namespace
     {
       etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL(32, ETL_OR_STD::size(b));
+      CHECK_EQUAL(32, ETL_OR_STD17::size(b));
     }
   };
 }
