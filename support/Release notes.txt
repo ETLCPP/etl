@@ -8,6 +8,7 @@ Fixed static definition for etl::string
 Redefined ETL_DEPRECATED
 Updated nth_type to handle a type list of zero length
 Updated Github Actions to checkout@v4
+Added make_delegate for C++17
 
 Fixes:
 #956 Fix build error (etl::circular_buffer)
