@@ -679,7 +679,7 @@ namespace etl
 #if ETL_USING_CPP17
   //*****************************************************************************
   // Wraps a functor with a static free function at compile time.
-  // Creates a static member 'function' that calls the specified functor.
+  // Creates a static member 'call' that calls the specified functor.
   //*****************************************************************************
   template <auto& Instance>
   struct functor_as_static 
@@ -693,7 +693,7 @@ namespace etl
 
   //*****************************************************************************
   // Wraps a member function with a static free function at compile time.
-  // Creates a static member function that calls the specified member function.
+  // Creates a static member 'call' that calls the specified member function.
   //*****************************************************************************
   template <auto Method, auto& Instance>
   struct member_function_as_static 
