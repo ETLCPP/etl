@@ -315,9 +315,15 @@ SOFTWARE.
 //*************************************
 // C++14
 #if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-  #define ETL_CONSTEXPR14               constexpr
-  #define ETL_DEPRECATED                [[deprecated]]
-  #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
+  #define ETL_CONSTEXPR14  constexpr
+
+  #if !defined(ETL_IN_UNIT_TEST)   
+    #define ETL_DEPRECATED                [[deprecated]]
+    #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
+  #else
+    #define ETL_DEPRECATED
+    #define ETL_DEPRECATED_REASON(reason)
+  #endif
 #else
   #define ETL_CONSTEXPR14
   #define ETL_DEPRECATED
