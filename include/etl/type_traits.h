@@ -627,18 +627,13 @@ namespace etl
   struct is_base_of
   {
   private:
-
-    template<typename T> struct dummy {};
-    struct internal: TDerived, dummy<int>{};
-
     static TBase* check(TBase*) { return (TBase*)0; }
 
-    template<typename T>
-    static char check(dummy<T>*) { return 0; }
+    static char check(...) { return 0; }
 
   public:
 
-    static const bool value = (sizeof(check((internal*)0)) == sizeof(TBase*));
+    static const bool value = (sizeof(check((TDerived*)0)) == sizeof(TBase*));
   };
 
   // For when TBase or TDerived is a fundamental type.
