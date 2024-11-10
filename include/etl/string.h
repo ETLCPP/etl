@@ -72,6 +72,7 @@ namespace etl
     typedef istring interface_type;
 
     typedef istring::value_type value_type;
+    typedef istring::size_type  size_type;
 
     static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
@@ -261,7 +262,7 @@ namespace etl
   };
 
   template <size_t MAX_SIZE_>
-  ETL_CONSTANT size_t string<MAX_SIZE_>::MAX_SIZE;
+  ETL_CONSTANT typename string<MAX_SIZE_>::size_type string<MAX_SIZE_>::MAX_SIZE;
 
   //***************************************************************************
   /// A string implementation that uses a fixed size external buffer.
