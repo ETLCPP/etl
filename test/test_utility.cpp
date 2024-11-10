@@ -412,14 +412,14 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_functor)
+    TEST(test_functor_deprecated)
     {
       constexpr etl::functor<int, int> fw1(TestGlobal);
       CHECK_EQUAL(2, fw1(1));
     }
 
     //*************************************************************************
-    TEST(test_member_function_wrapper)
+    TEST(test_member_function_wrapper_deprecated)
     {
       constexpr int(*pf)(int) = &etl::member_function_wrapper<int(int)>::function<TestClass, test, &TestClass::MemberFunction>;
 
@@ -427,12 +427,62 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_functor_wrapper)
+    TEST(test_functor_wrapper_deprecated)
     {
       constexpr int(*pf)(int) = &etl::functor_wrapper<int(int)>::function<TestClass, test>;
 
       CHECK_EQUAL(2, pf(1));
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST(test_function_as_functor)
+    {
+      constexpr etl::function_as_functor<TestGlobal> faf;
+
+      CHECK_EQUAL(2, faf(1));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_function_ptr_as_functor)
+    {
+      constexpr decltype(TestGlobal)* fptr = TestGlobal;
+
+      constexpr etl::function_ptr_as_functor<decltype(TestGlobal)> fpaf(fptr);
+
+      CHECK_EQUAL(2, fpaf(1));
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST(test_functor_as_static)
+    {
+      using fas_t = etl::functor_as_static<test>;
+
+      CHECK_EQUAL(2, fas_t::call(1));
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST(test_member_function_as_static)
+    {
+      using mfas_t = etl::member_function_as_static<&TestClass::MemberFunction, test>;
+
+      CHECK_EQUAL(2, mfas_t::call(1));
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_member_function_as_functor)
+    {
+      constexpr etl::member_function_as_functor<&TestClass::MemberFunction, test> mfaf;
+
+      CHECK_EQUAL(2, mfaf(1));
+    }
+#endif
 
     //*************************************************************************
     struct SF
