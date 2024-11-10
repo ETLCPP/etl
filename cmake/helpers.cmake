@@ -13,7 +13,7 @@ function(determine_version_with_git)
     git_describe(VERSION ${ARGN})
     string(FIND ${VERSION} "." VALID_VERSION)
     if(VALID_VERSION EQUAL -1)
-        if(PROJECT_IS_TOP_LEVEL)
+        if(CMAKE_CURRENT_LIST_DIR STREQUAL PROJECT_SOURCE_DIR)
             # only warn if this is the top-level project, since we may be
             # building from a tarball as a subproject
             message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
