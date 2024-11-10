@@ -447,9 +447,11 @@ namespace
     //*************************************************************************
     TEST(test_function_ptr_as_functor)
     {
-      constexpr decltype(TestGlobal)* fptr = TestGlobal;
+      using function_type = decltype(TestGlobal);
 
-      constexpr etl::function_ptr_as_functor<decltype(TestGlobal)> fpaf(fptr);
+      constexpr function_type* fptr = TestGlobal;
+
+      constexpr etl::function_ptr_as_functor<function_type> fpaf(fptr);
 
       CHECK_EQUAL(2, fpaf(1));
     }
