@@ -1,8 +1,22 @@
 ﻿===============================================================================
 20.39.5
 
+Updates:
+Added new C++17 function wrappers
+Simplified definition of is_base_of
+Fixed static definition for etl::string
+Redefined ETL_DEPRECATED
+Updated nth_type to handle a type list of zero length
+Updated Github Actions to checkout@v4
+
 Fixes:
 #956 Fix build error (etl::circular_buffer)
+#957 Support heterogenous lookup for maps
+#959 Treat bitset with size_type
+
+Pull Requests:
+#947 Remove unused git submodule config
+#965 Fix accident creation of a delegate to an rvalue delegate when copying/assigning from delegate with mismatching signature
 
 ===============================================================================
 20.39.4

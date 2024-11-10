@@ -69,7 +69,7 @@ The library is intended for any compiler that supports C++98/03/11/14/17/20.
 - Checksums & hash functions
 - Variants (a type that can store many types in a type-safe interface)
 - Choice of asserts, exceptions, error handler or no checks on errors
-- Unit tested (currently over 6480 tests), using VS2019, GCC 8.1.0, , GCC 9.3.0, Clang 9.0.0 & 10.0.0
+- Unit tested (currently over 9400 tests), using VS2022, GCC 12, Clang 14.
 - Many utilities for template support.
 - Easy to read and documented source.
 - Free support via email, GitHub and Slack
