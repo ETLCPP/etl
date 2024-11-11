@@ -744,12 +744,12 @@ namespace etl
       return pbucket->begin()->key_value_pair.second;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     mapped_reference operator [](const K& key)
     {
@@ -773,7 +773,6 @@ namespace etl
           ++inode;
         }
       }
-#endif
 
       // Doesn't exist, so add a new one.
       // Get a new node.
@@ -789,6 +788,7 @@ namespace etl
 
       return pbucket->begin()->key_value_pair.second;
     }
+#endif
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
@@ -860,13 +860,13 @@ namespace etl
       return begin()->second;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
     /// If asserts or exceptions are enabled, emits an etl::unordered_map_out_of_range if the key is not in the range.
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     mapped_reference at(const K& key)
     {
@@ -1190,12 +1190,12 @@ namespace etl
       return n;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Erases an element.
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     size_t erase(const K& key)
     {
@@ -1326,12 +1326,12 @@ namespace etl
       return (find(key) == end()) ? 0 : 1;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Counts an element.
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     size_t count(const K& key) const
     {
@@ -1407,12 +1407,12 @@ namespace etl
       return end();
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     iterator find(const K& key)
     {
@@ -1444,12 +1444,12 @@ namespace etl
     }
 #endif
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     const_iterator find(const K& key) const
     {
@@ -1523,6 +1523,7 @@ namespace etl
       return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
     /// The range is defined by two iterators, the first pointing to the first
@@ -1531,7 +1532,6 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
     {
@@ -1547,6 +1547,7 @@ namespace etl
     }
 #endif
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
     /// The range is defined by two iterators, the first pointing to the first
@@ -1555,7 +1556,6 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-#if ETL_USING_CPP11
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
     {
