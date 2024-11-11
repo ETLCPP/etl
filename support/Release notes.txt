@@ -14,6 +14,7 @@ Fixes:
 #956 Fix build error (etl::circular_buffer)
 #957 Support heterogenous lookup for maps
 #959 Treat bitset with size_type
+#972 template not allowed warning in parameter pack
 
 Pull Requests:
 #947 Remove unused git submodule config
