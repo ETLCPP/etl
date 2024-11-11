@@ -590,6 +590,7 @@ namespace etl
       return key_hash_function(key) % number_of_buckets;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Returns the bucket index for the key.
     ///\return The bucket index for the key.
@@ -599,6 +600,7 @@ namespace etl
     {
       return key_hash_function(key) % number_of_buckets;
     }
+#endif
 
     //*********************************************************************
     /// Returns the size of the bucket key.
@@ -611,6 +613,7 @@ namespace etl
       return etl::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Returns the size of the bucket key.
     ///\return The bucket size of the bucket key.
@@ -622,6 +625,7 @@ namespace etl
 
       return etl::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
+#endif
 
     //*********************************************************************
     /// Returns the maximum number of the buckets the container can hold.
@@ -736,6 +740,7 @@ namespace etl
       return result;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
@@ -806,6 +811,7 @@ namespace etl
 
       return result;
     }
+#endif
 
 #if ETL_USING_CPP11
     //*********************************************************************
@@ -941,6 +947,7 @@ namespace etl
       return n;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Erases an element.
     ///\param key The key to erase.
@@ -975,6 +982,7 @@ namespace etl
 
       return n;
     }
+#endif
 
     //*********************************************************************
     /// Erases an element.
@@ -1093,6 +1101,7 @@ namespace etl
       return n;
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Counts an element.
     ///\param key The key to search for.
@@ -1119,6 +1128,7 @@ namespace etl
 
       return n;
     }
+#endif
 
     //*********************************************************************
     /// Finds an element.
@@ -1188,6 +1198,7 @@ namespace etl
       return end();
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
@@ -1222,7 +1233,9 @@ namespace etl
 
       return end();
     }
+#endif
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
@@ -1257,6 +1270,7 @@ namespace etl
 
       return end();
     }
+#endif
 
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
