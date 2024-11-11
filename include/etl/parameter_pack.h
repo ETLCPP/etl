@@ -134,17 +134,17 @@ namespace etl
   inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 #endif
 
-//#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER
-//  //***********************************
-//  template <typename... TTypes>
-//  template <typename T>
-//  constexpr size_t parameter_pack<TTypes...>::template index_of_type<T>::value;
-//#else
+#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER
+  //***********************************
+  template <typename... TTypes>
+  template <typename T>
+  constexpr size_t parameter_pack<TTypes...>::template index_of_type<T>::value;
+#else
   //***********************************
   template <typename... TTypes>
   template <typename T>
   constexpr size_t parameter_pack<TTypes...>::index_of_type<T>::value;
-//#endif
+#endif
 }
 #endif
 #endif
