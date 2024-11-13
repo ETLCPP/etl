@@ -272,6 +272,26 @@ namespace etl
     {
       pbegin = other.pbegin;
       return *this;
+    } 
+
+    //*************************************************************************
+    /// Returns a reference to the value at index 'i'.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i)
+    {
+      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+
+      return pbegin[i];
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the value at index 'i'.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const
+    {
+      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+
+      return pbegin[i];
     }
 
     //*************************************************************************
@@ -612,6 +632,26 @@ namespace etl
       pbegin = other.pbegin;
       pend = other.pend;
       return *this;
+    }
+
+    //*************************************************************************
+    /// Returns a reference to the value at index 'i'.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i)
+    {
+      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+
+      return pbegin[i];
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the value at index 'i'.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const
+    {
+      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+
+      return pbegin[i];
     }
 
     //*************************************************************************
