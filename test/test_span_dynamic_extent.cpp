@@ -446,6 +446,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_at)
+    {
+      View  view(etldata.begin(), etldata.end());
+      CView cview(etldata.begin(), etldata.end());
+
+      for (size_t i = 0UL; i < etldata.size(); ++i)
+      {
+        CHECK_EQUAL(etldata.at(i), view.at(i));
+        CHECK_EQUAL(etldata.at(i), cview.at(i));
+      }
+
+      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::array_out_of_range);
+      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::array_out_of_range);
+    }
+
+    //*************************************************************************
     TEST(test_index_operator)
     {
       View  view(etldata.begin(), etldata.end());
