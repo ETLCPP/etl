@@ -47,13 +47,13 @@ SOFTWARE.
 
 namespace etl
 {
-  template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <size_t Memory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_atomic_base
   {
   public:
 
     /// The type used for determining the size of queue.
-    typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
+    typedef typename etl::size_type_lookup<Memory_Model>::type size_type;
 
     //*************************************************************************
     /// Is the queue empty?
@@ -72,7 +72,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      size_type next_index = get_next_index(write.load(etl::memory_order_acquire), RESERVED);
+      size_type next_index = get_next_index(write.load(etl::memory_order_acquire), Reserved);
 
       return (next_index == read.load(etl::memory_order_acquire));
     }
@@ -94,7 +94,7 @@ namespace etl
       }
       else
       {
-        n = RESERVED - read_index + write_index;
+        n = Reserved - read_index + write_index;
       }
 
       return n;
@@ -106,7 +106,7 @@ namespace etl
     //*************************************************************************
     size_type available() const
     {
-      return RESERVED - size() - 1;
+      return Reserved - size() - 1;
     }
 
     //*************************************************************************
@@ -114,7 +114,7 @@ namespace etl
     //*************************************************************************
     size_type capacity() const
     {
-      return RESERVED - 1;
+      return Reserved - 1;
     }
 
     //*************************************************************************
@@ -122,7 +122,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return RESERVED - 1;
+      return Reserved - 1;
     }
 
   protected:
@@ -130,7 +130,7 @@ namespace etl
     queue_spsc_atomic_base(size_type reserved_)
       : write(0),
         read(0),
-        RESERVED(reserved_)
+        Reserved(reserved_)
     {
     }
 
@@ -151,7 +151,7 @@ namespace etl
 
     etl::atomic<size_type> write; ///< Where to input new data.
     etl::atomic<size_type> read;  ///< Where to get the oldest data.
-    const size_type RESERVED;     ///< The maximum number of items in the queue.
+    const size_type Reserved;     ///< The maximum number of items in the queue.
 
   private:
 
@@ -182,12 +182,12 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_atomic holds.
   //***************************************************************************
-  template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
-  class iqueue_spsc_atomic : public queue_spsc_atomic_base<MEMORY_MODEL>
+  template <typename T, const size_t Memory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
+  class iqueue_spsc_atomic : public queue_spsc_atomic_base<Memory_Model>
   {
   private:
 
-    typedef typename etl::queue_spsc_atomic_base<MEMORY_MODEL> base_t;
+    typedef typename etl::queue_spsc_atomic_base<Memory_Model> base_t;
 
   public:
 
@@ -201,7 +201,7 @@ namespace etl
 
     using base_t::write;
     using base_t::read;
-    using base_t::RESERVED;
+    using base_t::Reserved;
     using base_t::get_next_index;
 
     //*************************************************************************
@@ -210,7 +210,7 @@ namespace etl
     bool push(const_reference value)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index  = get_next_index(write_index, RESERVED);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -232,7 +232,7 @@ namespace etl
     bool push(rvalue_reference value)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index = get_next_index(write_index, RESERVED);
+      size_type next_index = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -257,7 +257,7 @@ namespace etl
     bool emplace(Args&&... args)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index  = get_next_index(write_index, RESERVED);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -279,7 +279,7 @@ namespace etl
     bool emplace()
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index = get_next_index(write_index, RESERVED);
+      size_type next_index = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -302,7 +302,7 @@ namespace etl
     bool emplace(const T1& value1)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index  = get_next_index(write_index, RESERVED);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -325,7 +325,7 @@ namespace etl
     bool emplace(const T1& value1, const T2& value2)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index  = get_next_index(write_index, RESERVED);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -348,7 +348,7 @@ namespace etl
     bool emplace(const T1& value1, const T2& value2, const T3& value3)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index  = get_next_index(write_index, RESERVED);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -371,7 +371,7 @@ namespace etl
     bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index  = get_next_index(write_index, RESERVED);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -418,7 +418,7 @@ namespace etl
         return false;
       }
 
-      size_type next_index = get_next_index(read_index, RESERVED);
+      size_type next_index = get_next_index(read_index, Reserved);
 
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[read_index]);
@@ -446,7 +446,7 @@ namespace etl
         return false;
       }
 
-      size_type next_index = get_next_index(read_index, RESERVED);
+      size_type next_index = get_next_index(read_index, Reserved);
 
       p_buffer[read_index].~T();
 
@@ -518,15 +518,15 @@ namespace etl
   /// A fixed capacity spsc queue.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T            The type this queue should support.
-  /// \tparam SIZE         The maximum capacity of the queue.
-  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \tparam Size         The maximum capacity of the queue.
+  /// \tparam Memory_Model The memory model for the queue. Determines the type of the internal counter variables.
   //***************************************************************************
-  template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
-  class queue_spsc_atomic : public iqueue_spsc_atomic<T, MEMORY_MODEL>
+  template <typename T, size_t Size, const size_t Memory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
+  class queue_spsc_atomic : public iqueue_spsc_atomic<T, Memory_Model>
   {
   private:
 
-    typedef typename etl::iqueue_spsc_atomic<T, MEMORY_MODEL> base_t;
+    typedef typename etl::iqueue_spsc_atomic<T, Memory_Model> base_t;
 
   public:
 
@@ -534,19 +534,19 @@ namespace etl
 
   private:
 
-    static ETL_CONSTANT size_type RESERVED_SIZE = size_type(SIZE + 1);
+    static ETL_CONSTANT size_type Reserved_Size = size_type(Size + 1);
 
   public:
 
-    ETL_STATIC_ASSERT((SIZE <= (etl::integral_limits<size_type>::max - 1)), "Size too large for memory model");
+    ETL_STATIC_ASSERT((Size <= (etl::integral_limits<size_type>::max - 1)), "Size too large for memory model");
 
-    static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type MAX_SIZE = size_type(Size);
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     queue_spsc_atomic()
-      : base_t(reinterpret_cast<T*>(&buffer[0]), RESERVED_SIZE)
+      : base_t(reinterpret_cast<T*>(&buffer[0]), Reserved_Size)
     {
     }
 
@@ -561,11 +561,11 @@ namespace etl
   private:
 
     /// The uninitialised buffer of T used in the queue_spsc.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[RESERVED_SIZE];
+    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[Reserved_Size];
   };
 
-  template <typename T, size_t SIZE, const size_t MEMORY_MODEL>
-  ETL_CONSTANT typename queue_spsc_atomic<T, SIZE, MEMORY_MODEL>::size_type queue_spsc_atomic<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
+  template <typename T, size_t Size, const size_t Memory_Model>
+  ETL_CONSTANT typename queue_spsc_atomic<T, Size, Memory_Model>::size_type queue_spsc_atomic<T, Size, Memory_Model>::MAX_SIZE;
 }
 
 #endif
