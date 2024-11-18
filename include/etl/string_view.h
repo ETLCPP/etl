@@ -43,6 +43,10 @@ SOFTWARE.
 #include "algorithm.h"
 #include "private/minmax_push.h"
 
+#if ETL_USING_STL && ETL_USING_CPP17
+  #include <string_view>
+#endif
+
 #include <stdint.h>
 
 namespace etl
@@ -162,6 +166,18 @@ namespace etl
       , mend(other.mend)
     {
     }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// Constructor from std::basic string_view
+    //*************************************************************************
+    template <typename TStdTraits>
+    ETL_CONSTEXPR basic_string_view(const std::basic_string_view<T, TTraits>& other) ETL_NOEXCEPT
+      : mbegin(other.data())
+      , mend(other.data() + other.size())
+    {
+    }
+#endif
 
     //*************************************************************************
     /// Returns a const reference to the first element.
