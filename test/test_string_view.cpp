@@ -162,6 +162,70 @@ namespace
       CHECK(isEqual);
     }
 
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_constructor_from_std_string_view)
+    {
+      std::string_view stdview(etltext.begin(), etltext.end());
+
+      View view(stdview);
+
+      CHECK(stdview.size() == view.size());
+      CHECK(stdview.size() == view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_constructor_from_std_wstring_view)
+    {
+      std::wstring_view stdview(wtext.begin(), wtext.end());
+
+      WView view(stdview);
+
+      CHECK(stdview.size() == view.size());
+      CHECK(stdview.size() == view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_constructor_from_std_u16string_view)
+    {
+      std::u16string_view stdview(u16text.begin(), u16text.end());
+
+      U16View view(stdview);
+
+      CHECK(stdview.size() == view.size());
+      CHECK(stdview.size() == view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_constructor_from_std_u32string_view)
+    {
+      std::u32string_view stdview(u32text.begin(), u32text.end());
+
+      U32View view(stdview);
+
+      CHECK(stdview.size() == view.size());
+      CHECK(stdview.size() == view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_constructor_pointer_size)
     {
