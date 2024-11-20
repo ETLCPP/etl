@@ -1178,6 +1178,38 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Inserts a string at the specified position.
+    ///\param position The position to insert before.
+    ///\param view     The view to insert.
+    //*********************************************************************
+    template <typename TTraits>
+    etl::ibasic_string<T>& insert(size_type position, const etl::basic_string_view<T, TTraits>& view)
+    {
+      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
+
+      insert(begin() + position, view.cbegin(), view.cend());
+
+      return *this;
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*********************************************************************
+    /// Inserts a string at the specified position.
+    ///\param position The position to insert before.
+    ///\param view     The view to insert.
+    //*********************************************************************
+    template <typename TTraits>
+    etl::ibasic_string<T>& insert(size_type position, const std::basic_string_view<T, TTraits>& view)
+    {
+      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
+
+      insert(begin() + position, view.cbegin(), view.cend());
+
+      return *this;
+    }
+#endif
+
+    //*********************************************************************
     /// Inserts a string at the specified position from subposition for sublength.
     ///\param position    The position to insert before.
     ///\param str         The string to insert.
@@ -1186,7 +1218,7 @@ namespace etl
     //*********************************************************************
     etl::ibasic_string<T>& insert(size_type position, const etl::ibasic_string<T>& str, size_type subposition, size_type sublength)
     {
-      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
+      ETL_ASSERT(position    <= size(),     ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
       if ((sublength == npos) || (subposition + sublength > str.size()))
@@ -1209,6 +1241,54 @@ namespace etl
 
       return *this;
     }
+
+    //*********************************************************************
+    /// Inserts a view at the specified position from subposition for sublength.
+    ///\param position    The position to insert before.
+    ///\param view        The view to insert.
+    ///\param subposition The subposition to start from.
+    ///\param sublength   The number of characters to insert.
+    //*********************************************************************
+    template <typename TTraits>
+    etl::ibasic_string<T>& insert(size_type position, const etl::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength)
+    {
+      ETL_ASSERT(position    <= size(),      ETL_ERROR(string_out_of_bounds));
+      ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
+
+      if ((sublength == npos) || (subposition + sublength > view.size()))
+      {
+        sublength = view.size() - subposition;
+      }
+
+      insert(begin() + position, view.cbegin() + subposition, view.cbegin() + subposition + sublength);
+
+      return *this;
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*********************************************************************
+    /// Inserts a view at the specified position from subposition for sublength.
+    ///\param position    The position to insert before.
+    ///\param view        The view to insert.
+    ///\param subposition The subposition to start from.
+    ///\param sublength   The number of characters to insert.
+    //*********************************************************************
+    template <typename TTraits>
+    etl::ibasic_string<T>& insert(size_type position, const std::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength)
+    {
+      ETL_ASSERT(position    <= size(),      ETL_ERROR(string_out_of_bounds));
+      ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
+
+      if ((sublength == npos) || (subposition + sublength > view.size()))
+      {
+        sublength = view.size() - subposition;
+      }
+
+      insert(begin() + position, view.cbegin() + subposition, view.cbegin() + subposition + sublength);
+
+      return *this;
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a string at the specified position from pointer.
@@ -1900,9 +1980,9 @@ namespace etl
     int compare(const etl::basic_string_view<T, TTraits>& view) const
     {
       return compare(p_buffer,
-                     p_buffer + view.size(),
+                     p_buffer + size(),
                      view.data(),
-                     view.size());
+                     view.data() + view.size());
     }
 
 #if ETL_USING_STL && ETL_USING_CPP17
@@ -1913,9 +1993,9 @@ namespace etl
     int compare(const std::basic_string_view<T, TTraits>& view) const
     {
       return compare(p_buffer,
-                     p_buffer + view.size(),
+                     p_buffer + size(),
                      view.data(),
-                     view.size());
+                     view.data() + view.size());
     }
 #endif
 
@@ -1943,8 +2023,8 @@ namespace etl
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
-                     view.p_buffer,
-                     view.p_buffer + view.size());
+                     view.data(),
+                     view.data() + view.size());
     }
 
 #if ETL_USING_STL && ETL_USING_CPP17
@@ -1956,8 +2036,8 @@ namespace etl
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
-                     view.p_buffer,
-                     view.p_buffer + view.size());
+                     view.data(),
+                     view.data() + view.size());
     }
 #endif
 
@@ -1994,8 +2074,8 @@ namespace etl
 
       return compare(p_buffer + position,
                      p_buffer + position + length_,
-                     view.p_buffer + subposition,
-                     view.p_buffer + subposition + sublength);
+                     view.data() + subposition,
+                     view.data() + subposition + sublength);
     }
 
 #if ETL_USING_STL && ETL_USING_CPP17
@@ -2014,8 +2094,8 @@ namespace etl
 
       return compare(p_buffer + position,
                      p_buffer + position + length_,
-                     view.p_buffer + subposition,
-                     view.p_buffer + subposition + sublength);
+                     view.data() + subposition,
+                     view.data() + subposition + sublength);
     }
 #endif
 
@@ -2168,7 +2248,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TTraits>
-    size_type find_last_of(const etl::basic_string_view<T, TTraits>& view, size_type position = 0) const
+    size_type find_last_of(const etl::basic_string_view<T, TTraits>& view, size_type position = npos) const
     {
       return find_last_of(view.data(), position, view.size());
     }
@@ -2180,7 +2260,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TTraits>
-    size_type find_last_of(const std::basic_string_view<T, TTraits>& view, size_type position = 0) const
+    size_type find_last_of(const std::basic_string_view<T, TTraits>& view, size_type position = npos) const
     {
       return find_last_of(view.data(), position, view.size());
     }
@@ -2373,7 +2453,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TTraits>
-    size_type find_last_not_of(const etl::basic_string_view<T, TTraits>& view, size_type position = 0) const
+    size_type find_last_not_of(const etl::basic_string_view<T, TTraits>& view, size_type position = npos) const
     {
       return find_last_not_of(view.data(), position, view.size());
     }
@@ -2385,7 +2465,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TTraits>
-    size_type find_last_not_of(const std::basic_string_view<T, TTraits>& view, size_type position = 0) const
+    size_type find_last_not_of(const std::basic_string_view<T, TTraits>& view, size_type position = npos) const
     {
       return find_last_not_of(view.data(), position, view.size());
     }
@@ -2482,6 +2562,30 @@ namespace etl
 
       return *this;
     }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    template <typename TTraits>
+    ibasic_string& operator = (const etl::basic_string_view<T, TTraits>& view)
+    {
+      assign(view);
+
+      return *this;
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    template <typename TTraits>
+    ibasic_string& operator = (const std::basic_string_view<T, TTraits>& view)
+    {
+      assign(view);
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// += operator.
@@ -2607,7 +2711,7 @@ namespace etl
     //*************************************************************************
     /// Compare helper function
     //*************************************************************************
-    int compare(const_pointer first1, const_pointer last1, const_pointer first2, const_pointer last2) const
+    int  compare(const_pointer first1, const_pointer last1, const_pointer first2, const_pointer last2) const
     {
       while ((first1 != last1) && (first2 != last2))
       {

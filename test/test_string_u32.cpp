@@ -66,12 +66,12 @@ namespace
   {
     static const size_t SIZE = 11;
 
-    using Text         = etl::u32string<SIZE>;
-    using IText        = etl::iu32string;
+    using Text        = etl::u32string<SIZE>;
+    using IText       = etl::iu32string;
     using CompareText = std::u32string;
-    using value_t      = Text::value_type;
-    using TextL        = etl::u32string<52>;
-    using TextS        = etl::u32string<4>;
+    using value_t     = Text::value_type;
+    using TextL       = etl::u32string<52>;
+    using TextS       = etl::u32string<4>;
 
     CompareText initial_text;
     CompareText less_text;
@@ -81,6 +81,10 @@ namespace
     CompareText insert_text;
     CompareText longer_text;
     CompareText short_text;
+    using ViewETL     = etl::u32string_view;
+#if ETL_USING_STL && ETL_USING_CPP17
+    using ViewSTD     = std::u32string_view;
+#endif
 
     const value_t* pinitial_text = STR("Hello World");
 
@@ -96,15 +100,15 @@ namespace
     {
       SetupFixture()
       {
-        initial_text = STR("Hello World");
-        initial_text = STR("Hello World");
-        insert_text = STR("Insert");
-        less_text = STR("Hello Vorld");
-        greater_text = STR("Hello Xorld");
-        shorter_text = STR("Hello Worl");
+        initial_text   = STR("Hello World");
+        initial_text   = STR("Hello World");
+        insert_text    = STR("Insert");
+        less_text      = STR("Hello Vorld");
+        greater_text   = STR("Hello Xorld");
+        shorter_text   = STR("Hello Worl");
         different_text = STR("Byee Planet");
-        longer_text = STR("Hello World There");
-        short_text = STR("Hello");
+        longer_text    = STR("Hello World There");
+        short_text     = STR("Hello");
       }
     };
 
@@ -304,9 +308,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_constructor_from_string_view)
+    TEST_FIXTURE(SetupFixture, test_constructor_from_etl_string_view)
     {
-      etl::u32string_view view(initial_text.data(), initial_text.size());
+      ViewETL view(initial_text.data(), initial_text.size());
       Text text(view);
 
       bool is_equal = Equal(initial_text, text);
@@ -314,6 +318,20 @@ namespace
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
     }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_std_string_view)
+    {
+      ViewSTD view(initial_text.data(), initial_text.size());
+      Text text(view);
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+      CHECK(text.size() == SIZE);
+      CHECK(!text.empty());
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
@@ -410,10 +428,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list_excess)
     {
       CompareText compare_text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
-                                    STR('W'), STR('o'), STR('r'), STR('l'), STR('d') };
+        STR('W'), STR('o'), STR('r'), STR('l'), STR('d') };
       Text text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
-                    STR('W'), STR('o'), STR('r'), STR('l'), STR('d'),  STR(' '),
-                    STR('T'), STR('h'), STR('e'), STR('r'), STR('e') };
+        STR('W'), STR('o'), STR('r'), STR('l'), STR('d'),  STR(' '),
+        STR('T'), STR('h'), STR('e'), STR('r'), STR('e') };
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -592,12 +610,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_etl_view)
+    {
+      Text text;
+
+      text = ViewETL(STR("Hello World"));
+
+      bool is_equal = Equal(std::u32string(STR("Hello World")), text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_std_view)
+    {
+      Text text;
+
+      text = ViewSTD(STR("Hello World"));
+
+      bool is_equal = Equal(std::u32string(STR("Hello World")), text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_begin)
     {
       Text text(initial_text.c_str());
-      const Text constText(initial_text.c_str());      
+      const Text constText(initial_text.c_str());
 
-      CHECK_EQUAL(&text[0],      text.begin());
+      CHECK_EQUAL(&text[0], text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
 
@@ -607,7 +655,7 @@ namespace
       Text text(initial_text.c_str());
       const Text constText(initial_text.c_str());
 
-      CHECK_EQUAL(&text[initial_text.size()],      text.end());
+      CHECK_EQUAL(&text[initial_text.size()], text.end());
       CHECK_EQUAL(&constText[initial_text.size()], constText.end());
     }
 
@@ -1022,6 +1070,48 @@ namespace
       CHECK(!text.is_truncated());
 #endif
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_etl_view)
+    {
+      CompareText compare_input(initial_text.c_str());
+      Text input(initial_text.c_str());
+      ViewETL view(input);
+
+      CompareText compare_text;
+      Text text;
+
+      compare_text.assign(compare_input);
+      text.assign(view);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_std_view)
+    {
+      CompareText compare_input(initial_text.c_str());
+      Text input(initial_text.c_str());
+      ViewSTD view(input.data(), input.data_end());
+
+      CompareText compare_text;
+      Text text;
+
+      compare_text.assign(compare_input);
+      text.assign(view);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_string_excess)
@@ -1541,6 +1631,50 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_size_t_position_etl_view)
+    {
+      for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
+      {
+        CompareText compare_text(short_text.cbegin(), short_text.cend());
+        Text text(short_text.cbegin(), short_text.cend());
+        ViewETL view(insert_text.data(), insert_text.data() + insert_text.size());
+
+        text.insert(offset, view);
+        compare_text.insert(offset, insert_text);
+        compare_text.resize(std::min(compare_text.size(), SIZE));
+
+        bool is_equal = Equal(compare_text, text);
+        CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+        CHECK(!text.is_truncated());
+#endif
+      }
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_size_t_position_std_view)
+    {
+      for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
+      {
+        CompareText compare_text(short_text.cbegin(), short_text.cend());
+        Text text(short_text.cbegin(), short_text.cend());
+        ViewSTD view(insert_text.data(), insert_text.data() + insert_text.size());
+
+        text.insert(offset, view);
+        compare_text.insert(offset, insert_text);
+        compare_text.resize(std::min(compare_text.size(), SIZE));
+
+        bool is_equal = Equal(compare_text, text);
+        CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+        CHECK(!text.is_truncated());
+#endif
+      }
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string_excess)
     {
       for (size_t offset = 0; offset <= initial_text.size(); ++offset)
@@ -1662,6 +1796,74 @@ namespace
       CHECK(text.is_truncated());
 #endif
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_append_etl_view)
+    {
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+      ViewETL view(insert_text.data(), insert_text.data() + insert_text.size());
+
+      // Non-overflow.
+      compare_text.append(insert_text);
+      text.append(view);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+      view.assign(initial_text.data(), initial_text.data() + initial_text.size());
+
+      compare_text.append(initial_text);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.append(view);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_append_std_view)
+    {
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+      ViewSTD append(insert_text.data(), insert_text.data() + insert_text.size());
+
+      // Non-overflow.
+      compare_text.append(insert_text);
+      text.append(append);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+      append = ViewSTD(initial_text.data(), initial_text.data() + initial_text.size());
+
+      compare_text.append(initial_text);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.append(append);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_truncated_string)
@@ -1974,6 +2176,212 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_replace_position_length_etl_view)
+    {
+      // Non-overflow short text, npos.
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());      
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace")));
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Non-overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, 2, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 2, ViewETL(STR("Replace")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, 2, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 2, ViewETL(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow short text, npos.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Non-overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 7, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 7, ViewETL(STR("Replace")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 2, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 2, ViewETL(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow, npos.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_replace_position_length_std_view)
+    {
+      // Non-overflow short text, npos.
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());      
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace")));
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Non-overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, 2, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 2, ViewSTD(STR("Replace")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, 2, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 2, ViewSTD(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow short text, npos.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Non-overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 7, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 7, ViewSTD(STR("Replace")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 2, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 2, ViewSTD(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow, npos.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_replace_first_last_string)
     {
       // Non-overflow short text.
@@ -2032,6 +2440,128 @@ namespace
       CHECK(text.is_truncated());
 #endif
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_replace_first_last_etl_view)
+    {
+      // Non-overflow short text.
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 4, ViewETL(STR("Replace")));
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 4, ViewETL(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Non-overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 9, ViewETL(STR("Replace")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 4, ViewETL(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_replace_first_last_std_view)
+    {
+      // Non-overflow short text.
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 4, ViewSTD(STR("Replace")));
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 4, ViewSTD(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Non-overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 9, ViewSTD(STR("Replace")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")));
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(text.begin() + 2, text.begin() + 4, ViewSTD(STR("Replace with some text")));
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_replace_position_length_string_subposition_sublength)
@@ -2148,6 +2678,240 @@ namespace
       CHECK(text.is_truncated());
 #endif
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_replace_position_length_etl_view_subposition_sublength)
+    {
+      // Non-overflow short text.
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+
+      compare_text.replace(2, 4, CompareText(STR("Replace")), 1, 5);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 4, ViewETL(STR("Replace")), 1, 5);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Non-overflow short text, npos.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")), 1, 15);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 4, ViewETL(STR("Replace with some text")), 1, 15);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow short text, npos.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace with some text")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Non-overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 7, CompareText(STR("Replace")), 1, 5);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 7, ViewETL(STR("Replace")), 1, 5);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Non-overflow, npos.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")), 1, 15);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 4, ViewETL(STR("Replace with some text")), 1, 15);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow, npos.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewETL(STR("Replace with some text")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_replace_position_length_std_view_subposition_sublength)
+    {
+      // Non-overflow short text.
+      CompareText compare_text(short_text.c_str());
+      Text text(short_text.c_str());
+
+      compare_text.replace(2, 4, CompareText(STR("Replace")), 1, 5);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 4, ViewSTD(STR("Replace")), 1, 5);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Non-overflow short text, npos.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow short text.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")), 1, 15);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 4, ViewSTD(STR("Replace with some text")), 1, 15);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow short text, npos.
+      compare_text.assign(short_text.c_str());
+      text.assign(short_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace with some text")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Non-overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 7, CompareText(STR("Replace")), 1, 5);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 7, ViewSTD(STR("Replace")), 1, 5);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Non-overflow, npos.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+
+      // Overflow.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")), 1, 15);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, 4, ViewSTD(STR("Replace with some text")), 1, 15);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+
+      // Overflow, npos.
+      compare_text.assign(initial_text.c_str());
+      text.assign(initial_text.c_str());
+
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")), 1, CompareText::npos);
+      compare_text.resize(std::min(compare_text.size(), SIZE));
+      text.replace(2, Text::npos, ViewSTD(STR("Replace with some text")), 1, Text::npos);
+
+      is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(text.is_truncated());
+#endif
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_replace_position_length_pointer)
@@ -3058,8 +3822,8 @@ namespace
 #endif
 
       bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+        buffer1 + length1,
+        buffer2);
       CHECK(is_equal);
     }
 
@@ -3099,8 +3863,8 @@ namespace
 #endif
 
       bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+        buffer1 + length1,
+        buffer2);
       CHECK(is_equal);
     }
 
@@ -3125,8 +3889,8 @@ namespace
 #endif
 
       bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+        buffer1 + length1,
+        buffer2);
       CHECK(is_equal);
     }
 
@@ -3159,6 +3923,72 @@ namespace
       position2 = haystack.find(pin);
       CHECK_EQUAL(etl::iu32string::npos, position2);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_etl_view)
+    {
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
+
+      std::u32string compare_needle(STR("needle"));
+      etl::u32string<50> needle(STR("needle"));
+      ViewETL needle_view(needle);
+
+      std::u32string compare_haystack(the_haystack);
+      etl::u32string<50> haystack(the_haystack);
+
+      size_t position1 = 0UL;
+      size_t position2 = 0UL;
+
+      position1 = compare_haystack.find(compare_needle, position1);
+      position2 = haystack.find(needle_view, position2);
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_haystack.find(compare_needle, position1 + 1);
+      position2 = haystack.find(needle_view, position2 + 1);
+      CHECK_EQUAL(position1, position2);
+
+      position2 = haystack.find(needle_view, position2 + 1);
+      CHECK_EQUAL(etl::u32string<50>::npos, position2);
+
+      etl::u32string<50> pin(STR("pin"));
+      ViewETL pin_view(pin);
+      position2 = haystack.find(pin_view);
+      CHECK_EQUAL(etl::iu32string::npos, position2);
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_std_view)
+    {
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
+
+      std::u32string compare_needle(STR("needle"));
+      std::u32string needle(STR("needle"));
+      ViewSTD needle_view(needle);
+
+      std::u32string compare_haystack(the_haystack);
+      etl::u32string<50> haystack(the_haystack);
+
+      size_t position1 = 0UL;
+      size_t position2 = 0UL;
+
+      position1 = compare_haystack.find(compare_needle, position1);
+      position2 = haystack.find(needle_view, position2);
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_haystack.find(compare_needle, position1 + 1);
+      position2 = haystack.find(needle_view, position2 + 1);
+      CHECK_EQUAL(position1, position2);
+
+      position2 = haystack.find(needle_view, position2 + 1);
+      CHECK_EQUAL(etl::u32string<50>::npos, position2);
+
+      std::u32string pin(STR("pin"));
+      ViewSTD pin_view(pin);
+      position2 = haystack.find(pin_view);
+      CHECK_EQUAL(etl::iu32string::npos, position2);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_pointer)
@@ -3244,6 +4074,66 @@ namespace
       position2 = haystack.rfind(pin);
       CHECK_EQUAL(etl::iu32string::npos, position2);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_rfind_etl_view)
+    {
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
+
+      std::u32string compare_needle(STR("needle"));
+      etl::u32string<50> needle(STR("needle"));
+      ViewETL needle_view(needle);
+
+      std::u32string compare_haystack(the_haystack);
+      etl::u32string<50> haystack(the_haystack);
+
+      size_t position1 = std::u32string::npos;
+      size_t position2 = etl::u32string<50>::npos;
+
+      position1 = compare_haystack.rfind(compare_needle, position1);
+      position2 = haystack.rfind(needle_view, position2);
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_haystack.rfind(compare_needle, compare_haystack.size() - 10);
+      position2 = haystack.rfind(needle, haystack.size() - 10);
+      CHECK_EQUAL(position1, position2);
+
+      etl::u32string<50> pin(STR("pin"));
+      ViewETL pin_view(pin);
+      position2 = haystack.rfind(pin);
+      CHECK_EQUAL(etl::iu32string::npos, position2);
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_rfind_std_view)
+    {
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
+
+      std::u32string compare_needle(STR("needle"));
+      std::u32string needle(STR("needle"));
+      ViewSTD needle_view(needle);
+
+      std::u32string compare_haystack(the_haystack);
+      etl::u32string<50> haystack(the_haystack);
+
+      size_t position1 = std::u32string::npos;
+      size_t position2 = etl::u32string<50>::npos;
+
+      position1 = compare_haystack.rfind(compare_needle, position1);
+      position2 = haystack.rfind(needle_view, position2);
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_haystack.rfind(compare_needle, compare_haystack.size() - 10);
+      position2 = haystack.rfind(needle_view, haystack.size() - 10);
+      CHECK_EQUAL(position1, position2);
+
+      std::u32string pin(STR("pin"));
+      ViewSTD pin_view(pin);
+      position2 = haystack.rfind(pin_view);
+      CHECK_EQUAL(etl::iu32string::npos, position2);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_rfind_pointer)
@@ -3393,6 +4283,78 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_etl_view)
+    {
+      CompareText compare_text(STR("ABCDEF"));
+      Text text(STR("ABCDEF"));
+
+      int compare_result;
+      int result;
+
+      // Equal.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEF")));
+      result = text.compare(ViewETL(STR("ABCDEF")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Less.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEE")));
+      result = text.compare(ViewETL(STR("ABCDEE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Greater.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEG")));
+      result = text.compare(ViewETL(STR("ABCDEG")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Shorter.
+      compare_result = compare_text.compare(CompareText(STR("ABCDE")));
+      result = text.compare(ViewETL(STR("ABCDE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Longer.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEFG")));
+      result = text.compare(ViewETL(STR("ABCDEFG")));
+      CHECK(compares_agree(compare_result, result));
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_std_view)
+    {
+      CompareText compare_text(STR("ABCDEF"));
+      Text text(STR("ABCDEF"));
+
+      int compare_result;
+      int result;
+
+      // Equal.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEF")));
+      result = text.compare(ViewSTD(STR("ABCDEF")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Less.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEE")));
+      result = text.compare(ViewSTD(STR("ABCDEE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Greater.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEG")));
+      result = text.compare(ViewSTD(STR("ABCDEG")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Shorter.
+      compare_result = compare_text.compare(CompareText(STR("ABCDE")));
+      result = text.compare(ViewSTD(STR("ABCDE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Longer.
+      compare_result = compare_text.compare(CompareText(STR("ABCDEFG")));
+      result = text.compare(ViewSTD(STR("ABCDEFG")));
+      CHECK(compares_agree(compare_result, result));
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_string)
     {
       CompareText compare_text(STR("xxxABCDEFyyy"));
@@ -3428,6 +4390,78 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_etl_view)
+    {
+      CompareText compare_text(STR("xxxABCDEFyyy"));
+      Text text(STR("xxxABCDEFyyy"));
+
+      int compare_result;
+      int result;
+
+      // Equal.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEF")));
+      result = text.compare(3, 6, ViewETL(STR("ABCDEF")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Less.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEE")));
+      result = text.compare(3, 6, ViewETL(STR("ABCDEE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Greater.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEG")));
+      result = text.compare(3, 6, ViewETL(STR("ABCDEG")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Shorter.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDE")));
+      result = text.compare(3, 6, ViewETL(STR("ABCDE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Longer.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEFG")));
+      result = text.compare(3, 6, ViewETL(STR("ABCDEFG")));
+      CHECK(compares_agree(compare_result, result));
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_std_view)
+    {
+      CompareText compare_text(STR("xxxABCDEFyyy"));
+      Text text(STR("xxxABCDEFyyy"));
+
+      int compare_result;
+      int result;
+
+      // Equal.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEF")));
+      result = text.compare(3, 6, ViewSTD(STR("ABCDEF")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Less.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEE")));
+      result = text.compare(3, 6, ViewSTD(STR("ABCDEE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Greater.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEG")));
+      result = text.compare(3, 6, ViewSTD(STR("ABCDEG")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Shorter.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDE")));
+      result = text.compare(3, 6, ViewSTD(STR("ABCDE")));
+      CHECK(compares_agree(compare_result, result));
+
+      // Longer.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEFG")));
+      result = text.compare(3, 6, ViewSTD(STR("ABCDEFG")));
+      CHECK(compares_agree(compare_result, result));
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_string_subposition_sublength)
     {
       CompareText compare_text(STR("xxxABCDEFyyy"));
@@ -3461,6 +4495,78 @@ namespace
       result = text.compare(3, 6, Text(STR("aaABCDEFGbb")), 2, 7);
       CHECK(compares_agree(compare_result, result));
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_etl_view_subposition_sublength)
+    {
+      CompareText compare_text(STR("xxxABCDEFyyy"));
+      Text text(STR("xxxABCDEFyyy"));
+
+      int compare_result;
+      int result;
+
+      // Equal.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEFbb")), 2, 6);
+      result = text.compare(3, 6, ViewETL(STR("aaABCDEFbb")), 2, 6);
+      CHECK(compares_agree(compare_result, result));
+
+      // Less.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEEbb")), 2, 6);
+      result = text.compare(3, 6, ViewETL(STR("aaABCDEEbb")), 2, 6);
+      CHECK(compares_agree(compare_result, result));
+
+      // Greater.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEGbb")), 2, 6);
+      result = text.compare(3, 6, ViewETL(STR("aaABCDEGbb")), 2, 6);
+      CHECK(compares_agree(compare_result, result));
+
+      // Shorter.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEbb")), 2, 5);
+      result = text.compare(3, 6, ViewETL(STR("aaABCDEbb")), 2, 5);
+      CHECK(compares_agree(compare_result, result));
+
+      // Longer.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEFGbb")), 2, 7);
+      result = text.compare(3, 6, ViewETL(STR("aaABCDEFGbb")), 2, 7);
+      CHECK(compares_agree(compare_result, result));
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_std_view_subposition_sublength)
+    {
+      CompareText compare_text(STR("xxxABCDEFyyy"));
+      Text text(STR("xxxABCDEFyyy"));
+
+      int compare_result;
+      int result;
+
+      // Equal.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEFbb")), 2, 6);
+      result = text.compare(3, 6, ViewSTD(STR("aaABCDEFbb")), 2, 6);
+      CHECK(compares_agree(compare_result, result));
+
+      // Less.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEEbb")), 2, 6);
+      result = text.compare(3, 6, ViewSTD(STR("aaABCDEEbb")), 2, 6);
+      CHECK(compares_agree(compare_result, result));
+
+      // Greater.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEGbb")), 2, 6);
+      result = text.compare(3, 6, ViewSTD(STR("aaABCDEGbb")), 2, 6);
+      CHECK(compares_agree(compare_result, result));
+
+      // Shorter.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEbb")), 2, 5);
+      result = text.compare(3, 6, ViewSTD(STR("aaABCDEbb")), 2, 5);
+      CHECK(compares_agree(compare_result, result));
+
+      // Longer.
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEFGbb")), 2, 7);
+      result = text.compare(3, 6, ViewSTD(STR("aaABCDEFGbb")), 2, 7);
+      CHECK(compares_agree(compare_result, result));
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_c_string)
@@ -3597,6 +4703,66 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_first_of_etl_view_position)
+    {
+      CompareText compare_text(STR("ABCDEF"));
+      Text text(STR("ABCDEF"));
+
+      size_t position1 = compare_text.find_first_of(CompareText(STR("ZCXF")));
+      size_t position2 = text.find_first_of(ViewETL(STR("ZCXF")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_of(CompareText(STR("WXYZ")));
+      position2 = text.find_first_of(ViewETL(STR("WXYZ")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_of(CompareText(STR("ZCXF")), 3);
+      position2 = text.find_first_of(ViewETL(STR("ZCXF")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_first_of(CompareText(STR("ZCXF")), 100);
+      position2 = text.find_first_of(ViewETL(STR("ZCXF")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_first_of_std_view_position)
+    {
+      CompareText compare_text(STR("ABCDEF"));
+      Text text(STR("ABCDEF"));
+
+      size_t position1 = compare_text.find_first_of(CompareText(STR("ZCXF")));
+      size_t position2 = text.find_first_of(ViewSTD(STR("ZCXF")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_of(CompareText(STR("WXYZ")));
+      position2 = text.find_first_of(ViewSTD(STR("WXYZ")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_of(CompareText(STR("ZCXF")), 3);
+      position2 = text.find_first_of(ViewSTD(STR("ZCXF")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_first_of(CompareText(STR("ZCXF")), 100);
+      position2 = text.find_first_of(ViewSTD(STR("ZCXF")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_of_pointer_position)
     {
       CompareText compare_text(STR("ABCDEF"));
@@ -3731,6 +4897,76 @@ namespace
       CHECK_EQUAL(position1, position2);
 #include "etl/private/diagnostic_pop.h"
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_last_of_etl_view_position)
+    {
+      CompareText compare_text(STR("ABCDEFABCDE"));
+      Text text(STR("ABCDEFABCDE"));
+
+      size_t position1 = compare_text.find_last_of(CompareText(STR("ZCXE")));
+      size_t position2 = text.find_last_of(ViewETL(STR("ZCXE")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_of(CompareText(STR("WXYZ")), 3);
+      position2 = text.find_last_of(ViewETL(STR("WXYZ")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), 5);
+      position2 = text.find_last_of(ViewETL(STR("ZCXE")), 5);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), compare_text.size());
+      position2 = text.find_last_of(ViewETL(STR("ZCXE")), text.size());
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), 100);
+      position2 = text.find_last_of(ViewETL(STR("ZCXE")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_last_of_std_view_position)
+    {
+      CompareText compare_text(STR("ABCDEFABCDE"));
+      Text text(STR("ABCDEFABCDE"));
+
+      size_t position1 = compare_text.find_last_of(CompareText(STR("ZCXE")));
+      size_t position2 = text.find_last_of(ViewSTD(STR("ZCXE")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_of(CompareText(STR("WXYZ")), 3);
+      position2 = text.find_last_of(ViewSTD(STR("WXYZ")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), 5);
+      position2 = text.find_last_of(ViewSTD(STR("ZCXE")), 5);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), compare_text.size());
+      position2 = text.find_last_of(ViewSTD(STR("ZCXE")), text.size());
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), 100);
+      position2 = text.find_last_of(ViewSTD(STR("ZCXE")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_of_pointer_position)
@@ -3882,6 +5118,76 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_first_not_of_etl_view_position)
+    {
+      CompareText compare_text(STR("ABCDEF"));
+      Text text(STR("ABCDEF"));
+
+      size_t position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")));
+      size_t position2 = text.find_first_not_of(ViewETL(STR("ZAXB")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")));
+      position2 = text.find_first_not_of(ViewETL(STR("ZAXB")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), 3);
+      position2 = text.find_first_not_of(ViewETL(STR("ZAXB")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), compare_text.size());
+      position2 = text.find_first_not_of(ViewETL(STR("ZAXB")), text.size());
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), 100);
+      position2 = text.find_first_not_of(ViewETL(STR("ZAXB")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_first_not_of_std_view_position)
+    {
+      CompareText compare_text(STR("ABCDEF"));
+      Text text(STR("ABCDEF"));
+
+      size_t position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")));
+      size_t position2 = text.find_first_not_of(ViewSTD(STR("ZAXB")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")));
+      position2 = text.find_first_not_of(ViewSTD(STR("ZAXB")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), 3);
+      position2 = text.find_first_not_of(ViewSTD(STR("ZAXB")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), compare_text.size());
+      position2 = text.find_first_not_of(ViewSTD(STR("ZAXB")), text.size());
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), 100);
+      position2 = text.find_first_not_of(ViewSTD(STR("ZAXB")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_not_of_pointer_position)
     {
       CompareText compare_text(STR("ABCDEF"));
@@ -4026,6 +5332,76 @@ namespace
       CHECK_EQUAL(position1, position2);
 #include "etl/private/diagnostic_pop.h"
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_last_not_of_etl_view_position)
+    {
+      CompareText compare_text(STR("ABCDEFABCDE"));
+      Text text(STR("ABCDEFABCDE"));
+
+      size_t position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")));
+      size_t position2 = text.find_last_not_of(ViewETL(STR("ZEXD")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 3);
+      position2 = text.find_last_not_of(ViewETL(STR("ZEXD")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 5);
+      position2 = text.find_last_not_of(ViewETL(STR("ZEXD")), 5);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), compare_text.size());
+      position2 = text.find_last_not_of(ViewETL(STR("ZEXD")), text.size());
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 100);
+      position2 = text.find_last_not_of(ViewETL(STR("ZEXD")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_last_not_of_std_view_position)
+    {
+      CompareText compare_text(STR("ABCDEFABCDE"));
+      Text text(STR("ABCDEFABCDE"));
+
+      size_t position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")));
+      size_t position2 = text.find_last_not_of(ViewSTD(STR("ZEXD")));
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 3);
+      position2 = text.find_last_not_of(ViewSTD(STR("ZEXD")), 3);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 5);
+      position2 = text.find_last_not_of(ViewSTD(STR("ZEXD")), 5);
+
+      CHECK_EQUAL(position1, position2);
+
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), compare_text.size());
+      position2 = text.find_last_not_of(ViewSTD(STR("ZEXD")), text.size());
+
+      CHECK_EQUAL(position1, position2);
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 100);
+      position2 = text.find_last_not_of(ViewSTD(STR("ZEXD")), 100);
+
+      CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_not_of_pointer_position)
