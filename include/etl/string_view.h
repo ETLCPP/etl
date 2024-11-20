@@ -172,7 +172,7 @@ namespace etl
     /// Constructor from std::basic string_view
     //*************************************************************************
     template <typename TStdTraits>
-    ETL_CONSTEXPR basic_string_view(const std::basic_string_view<T, TTraits>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR basic_string_view(const std::basic_string_view<T, TStdTraits>& other) ETL_NOEXCEPT
       : mbegin(other.data())
       , mend(other.data() + other.size())
     {

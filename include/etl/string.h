@@ -186,6 +186,18 @@ namespace etl
       this->assign(view.begin(), view.end());
     }
 
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit string(const std::string_view& view)
+      : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+    {
+      this->assign(view.begin(), view.end());
+    }
+#endif
+
     //*************************************************************************
     /// Returns a sub-string.
     ///\param position The position of the first character.  Default = 0.
@@ -243,6 +255,28 @@ namespace etl
 
       return *this;
     }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const etl::string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const std::string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
