@@ -186,7 +186,7 @@ namespace etl
       this->assign(view.begin(), view.end());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
+#if ETL_USING_STL && ETL_USING_CPP20
     //*************************************************************************
     /// From string_view.
     ///\param view The string_view.
@@ -266,7 +266,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
+#if ETL_USING_STL && ETL_USING_CPP20
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -430,6 +430,18 @@ namespace etl
       this->assign(view.begin(), view.end());
     }
 
+#if ETL_USING_STL && ETL_USING_CPP20
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit u8string_ext(const std::u8string_view& view, value_type* buffer, size_type buffer_size)
+      : iu8string(buffer, buffer_size - 1U)
+    {
+      this->assign(view.begin(), view.end());
+    }
+#endif
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -442,7 +454,6 @@ namespace etl
 
       return *this;
     }
-
 
     //*************************************************************************
     /// Assignment operator.
@@ -466,6 +477,28 @@ namespace etl
 
       return *this;
     }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u8string_ext& operator = (const etl::u8string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP20
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u8string_ext& operator = (const std::u8string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
