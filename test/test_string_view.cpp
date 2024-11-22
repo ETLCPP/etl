@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/string_view.h"
 #include "etl/string.h"
 #include "etl/wstring.h"
+#include "etl/u8string.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
 #include "etl/hash.h"
@@ -45,12 +46,18 @@ namespace
 {
   using View    = etl::string_view;
   using WView   = etl::wstring_view;
+#if ETL_USING_CPP20
+  using U8View  = etl::u8string_view;
+#endif
   using U16View = etl::u16string_view;
   using U32View = etl::u32string_view;
 
   etl::string<11> etltext    = "Hello World";
   std::string text           = "Hello World";
   std::wstring wtext         = L"Hello World";
+#if ETL_USING_CPP20
+  std::u8string u8text       = u8"Hello World";
+#endif
   std::u16string u16text     = u"Hello World";
   std::u32string u32text     = U"Hello World";
   std::string text_smaller   = "Hello Worlc";
@@ -166,7 +173,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_std_string_view)
     {
-      std::string_view stdview(etltext.begin(), etltext.end());
+      std::string_view stdview(text.data(), text.size());
 
       View view(stdview);
 
@@ -182,9 +189,25 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_std_wstring_view)
     {
-      std::wstring_view stdview(wtext.begin(), wtext.end());
+      std::wstring_view stdview(wtext.data(), wtext.size());
 
       WView view(stdview);
+
+      CHECK(stdview.size() == view.size());
+      CHECK(stdview.size() == view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP20
+    //*************************************************************************
+    TEST(test_constructor_from_std_u8string_view)
+    {
+      std::u8string_view stdview(u8text.begin(), u8text.end());
+
+      U8View view(stdview);
 
       CHECK(stdview.size() == view.size());
       CHECK(stdview.size() == view.max_size());
@@ -198,7 +221,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_std_u16string_view)
     {
-      std::u16string_view stdview(u16text.begin(), u16text.end());
+      std::u16string_view stdview(u16text.data(), u16text.size());
 
       U16View view(stdview);
 
@@ -214,7 +237,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_from_std_u32string_view)
     {
-      std::u32string_view stdview(u32text.begin(), u32text.end());
+      std::u32string_view stdview(u32text.data(), u32text.size());
 
       U32View view(stdview);
 

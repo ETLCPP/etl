@@ -397,6 +397,28 @@ namespace etl
     }
 
     //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit string_ext(const etl::string_view& view, value_type* buffer, size_type buffer_size)
+      : istring(buffer, buffer_size - 1U)
+    {
+      this->assign(view.begin(), view.end());
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit string_ext(const std::string_view& view, value_type* buffer, size_type buffer_size)
+      : istring(buffer, buffer_size - 1U)
+    {
+      this->assign(view.begin(), view.end());
+    }
+#endif
+
+    //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
     ///\param first The iterator to the first element.
@@ -421,16 +443,6 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// From string_view.
-    ///\param view The string_view.
-    //*************************************************************************
-    explicit string_ext(const etl::string_view& view, value_type* buffer, size_type buffer_size)
-      : istring(buffer, buffer_size - 1U)
-    {
-      this->assign(view.begin(), view.end());
-    }
-
-    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     string_ext& operator = (const string_ext& rhs)
@@ -442,7 +454,6 @@ namespace etl
 
       return *this;
     }
-
 
     //*************************************************************************
     /// Assignment operator.
@@ -466,6 +477,28 @@ namespace etl
 
       return *this;
     }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string_ext& operator = (const etl::string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string_ext& operator = (const std::string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
