@@ -488,18 +488,6 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_STL && ETL_USING_CPP20
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    u8string_ext& operator = (const std::u8string_view& view)
-    {
-      this->assign(view);
-
-      return *this;
-    }
-#endif
-
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
