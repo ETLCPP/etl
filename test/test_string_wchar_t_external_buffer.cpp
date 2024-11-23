@@ -3965,6 +3965,104 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_string)
+    {
+      TextBufferL buffer1{0};
+      TextBuffer buffer2{0};
+      TextBuffer buffer3{0};
+      TextBuffer buffer4{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text start(STR("A haystack"), buffer2.data(), buffer2.size());
+      Text not_start(STR("a needle"), buffer3.data(), buffer3.size());
+      Text excess(STR("Really gigantic text that's really really big"), buffer4.data(), buffer4.size());
+
+      CHECK_TRUE(haystack.starts_with(start));
+      CHECK_FALSE(haystack.starts_with(not_start));
+      CHECK_FALSE(haystack.starts_with(excess));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_view)
+    {
+      TextBufferL buffer1{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+
+      CHECK_TRUE(haystack.starts_with(View(STR("A haystack"))));
+      CHECK_FALSE(haystack.starts_with(View(STR("a needle"))));
+      CHECK_FALSE(haystack.starts_with(View(STR("Really gigantic text that's really really big"))));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_pointer)
+    {
+      TextBufferL buffer1{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+
+      CHECK_TRUE(haystack.starts_with(STR("A haystack")));
+      CHECK_FALSE(haystack.starts_with(STR("a needle")));
+      CHECK_FALSE(haystack.starts_with(STR("Really gigantic text that's really really big")));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_char)
+    {
+      TextBufferL buffer1{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+
+      CHECK_TRUE(haystack.starts_with(haystack[0]));
+      CHECK_FALSE(haystack.starts_with(haystack[1]));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_string)
+    {
+      TextBufferL buffer1{0};
+      TextBuffer buffer2{0};
+      TextBuffer buffer3{0};
+      TextBuffer buffer4{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text end(STR("else"), buffer2.data(), buffer2.size());
+      Text not_end(STR("needle"), buffer3.data(), buffer3.size());
+      Text excess(STR("Really gigantic text that's really really big"), buffer4.data(), buffer4.size());
+
+      CHECK_TRUE(haystack.ends_with(end));
+      CHECK_FALSE(haystack.ends_with(not_end));
+      CHECK_FALSE(haystack.ends_with(excess));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_view)
+    {
+      TextBufferL buffer1{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+
+      CHECK_TRUE(haystack.ends_with(View(STR("else"))));
+      CHECK_FALSE(haystack.ends_with(View(STR("needle"))));
+      CHECK_FALSE(haystack.ends_with(View(STR("Really gigantic text that's really really big"))));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_pointer)
+    {
+      TextBufferL buffer1{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+
+      CHECK_TRUE(haystack.ends_with(STR("else")));
+      CHECK_FALSE(haystack.ends_with(STR("needle")));
+      CHECK_FALSE(haystack.ends_with(STR("Really gigantic text that's really really big")));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_char)
+    {
+      TextBufferL buffer1{0};
+      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+
+      CHECK_TRUE(haystack.ends_with(haystack[haystack.size() - 1]));
+      CHECK_FALSE(haystack.ends_with(haystack[haystack.size() - 2]));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_rfind_string)
     {
       const value_t* the_haystack = STR("A haystack with a needle and another needle");

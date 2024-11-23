@@ -3645,6 +3645,90 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_string)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+      Text start(STR("A haystack"));
+      Text not_start(STR("a needle"));
+      Text excess(STR("Really gigantic text that's really really big"));
+
+      CHECK_TRUE(haystack.starts_with(start));
+      CHECK_FALSE(haystack.starts_with(not_start));
+      CHECK_FALSE(haystack.starts_with(excess));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_view)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+
+      CHECK_TRUE(haystack.starts_with(View(STR("A haystack"))));
+      CHECK_FALSE(haystack.starts_with(View(STR("a needle"))));
+      CHECK_FALSE(haystack.starts_with(View(STR("Really gigantic text that's really really big"))));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_pointer)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+
+      CHECK_TRUE(haystack.starts_with(STR("A haystack")));
+      CHECK_FALSE(haystack.starts_with(STR("a needle")));
+      CHECK_FALSE(haystack.starts_with(STR("Really gigantic text that's really really big")));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_starts_with_char)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+
+      CHECK_TRUE(haystack.starts_with(haystack[0]));
+      CHECK_FALSE(haystack.starts_with(haystack[1]));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_string)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+      Text end(STR("else"));
+      Text not_end(STR("needle"));
+      Text excess(STR("Really gigantic text that's really really big"));
+
+      CHECK_TRUE(haystack.ends_with(end));
+      CHECK_FALSE(haystack.ends_with(not_end));
+      CHECK_FALSE(haystack.ends_with(excess));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_view)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+
+      CHECK_TRUE(haystack.ends_with(View(STR("else"))));
+      CHECK_FALSE(haystack.ends_with(View(STR("needle"))));
+      CHECK_FALSE(haystack.ends_with(View(STR("Really gigantic text that's really really big"))));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_pointer)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+
+      CHECK_TRUE(haystack.ends_with(STR("else")));
+      CHECK_FALSE(haystack.ends_with(STR("needle")));
+      CHECK_FALSE(haystack.ends_with(STR("Really gigantic text that's really really big")));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_ends_with_char)
+    {
+      TextL haystack(STR("A haystack with a needle and nothing else"));
+
+      CHECK_TRUE(haystack.ends_with(haystack[haystack.size() - 1]));
+      CHECK_FALSE(haystack.ends_with(haystack[haystack.size() - 2]));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_rfind_string)
     {
       const value_t* the_haystack = STR("A haystack with a needle and another needle");
