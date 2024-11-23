@@ -183,18 +183,6 @@ namespace etl
       this->assign(view.begin(), view.end());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// From string_view.
-    ///\param view The string_view.
-    //*************************************************************************
-    explicit wstring(const std::wstring_view& view)
-      : iwstring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
-    {
-      this->assign(view.begin(), view.end());
-    }
-#endif
-
     //*************************************************************************
     /// Returns a sub-string.
     ///\param position The position of the first character. Default = 0.
@@ -248,18 +236,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    wstring& operator = (const std::wstring_view& view)
-    {
-      this->assign(view);
-
-      return *this;
-    }
-#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
@@ -409,18 +385,6 @@ namespace etl
       this->assign(view.begin(), view.end());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// From string_view.
-    ///\param view The string_view.
-    //*************************************************************************
-    explicit wstring_ext(const std::wstring_view& view, value_type* buffer, size_type buffer_size)
-      : iwstring(buffer, buffer_size - 1U)
-    {
-      this->assign(view.begin(), view.end());
-    }
-#endif
-
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -466,18 +430,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    wstring_ext& operator = (const std::wstring_view& view)
-    {
-      this->assign(view);
-
-      return *this;
-    }
-#endif
 
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.

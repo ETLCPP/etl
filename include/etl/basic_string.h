@@ -52,10 +52,6 @@ SOFTWARE.
 #include <stdint.h>
 #include <string.h>
 
-#if ETL_USING_STL && ETL_USING_CPP17
-  #include <string_view>
-#endif
-
 #include "private/minmax_push.h"
 
 //*****************************************************************************
@@ -711,17 +707,6 @@ namespace etl
       assign(view.begin(), view.end());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Assigns values to the string from a view.
-    //*********************************************************************
-    template <typename TTraits>
-    void assign(const std::basic_string_view<T, TTraits>& view)
-    {
-      assign(view.begin(), view.end());
-    }
-#endif
-
     //*********************************************************************
     /// Assigns values to the string.
     /// Truncates if the string does not have enough free space.
@@ -882,19 +867,6 @@ namespace etl
       insert(end(), view.begin(), view.end());
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Appends to the string.
-    ///\param view A std::string_view.
-    //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& append(const std::basic_string_view<T, TTraits>& view)
-    {
-      insert(end(), view.begin(), view.end());
-      return *this;
-    }
-#endif
 
     //*********************************************************************
     /// Inserts a value to the string.
@@ -1138,20 +1110,6 @@ namespace etl
       return insert(position, view.begin(), view.end());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Inserts a view to the string.
-    /// If asserts or exceptions are enabled, emits string_full if the string does not have enough free space.
-    ///\param position The position to insert before.
-    ///\param view     The view element to add.
-    //*********************************************************************
-    template <typename TTraits>
-    iterator insert(const_iterator position, const std::basic_string_view<T, TTraits>& view)
-    {
-      return insert(position, view.begin(), view.end());
-    }
-#endif
-
     //*********************************************************************
     /// Inserts a string at the specified position.
     ///\param position The position to insert before.
@@ -1191,23 +1149,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Inserts a string at the specified position.
-    ///\param position The position to insert before.
-    ///\param view     The view to insert.
-    //*********************************************************************
-    template <typename TTraits>
-    etl::ibasic_string<T>& insert(size_type position, const std::basic_string_view<T, TTraits>& view)
-    {
-      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
-
-      insert(begin() + position, view.cbegin(), view.cend());
-
-      return *this;
-    }
-#endif
 
     //*********************************************************************
     /// Inserts a string at the specified position from subposition for sublength.
@@ -1264,31 +1205,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Inserts a view at the specified position from subposition for sublength.
-    ///\param position    The position to insert before.
-    ///\param view        The view to insert.
-    ///\param subposition The subposition to start from.
-    ///\param sublength   The number of characters to insert.
-    //*********************************************************************
-    template <typename TTraits>
-    etl::ibasic_string<T>& insert(size_type position, const std::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength)
-    {
-      ETL_ASSERT(position    <= size(),      ETL_ERROR(string_out_of_bounds));
-      ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
-
-      if ((sublength == npos) || (subposition + sublength > view.size()))
-      {
-        sublength = view.size() - subposition;
-      }
-
-      insert(begin() + position, view.cbegin() + subposition, view.cbegin() + subposition + sublength);
-
-      return *this;
-    }
-#endif
 
     //*********************************************************************
     /// Inserts a string at the specified position from pointer.
@@ -1461,19 +1377,6 @@ namespace etl
       return find_impl(view.begin(), view.end(), view.size(), pos);
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find(const std::basic_string_view<T, TTraits>& view, size_type pos = 0) const
-    {
-      return find_impl(view.begin(), view.end(), view.size(), pos);
-    }
-#endif
-
     //*********************************************************************
     /// Find content within the string
     ///\param s   Pointer to the content to find
@@ -1539,19 +1442,6 @@ namespace etl
       return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type rfind(const std::basic_string_view<T, TTraits>& view, size_type pos = 0) const
-    {
-      return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
-    }
-#endif
-
     //*********************************************************************
     /// Find content within the string
     ///\param str The content to find
@@ -1607,6 +1497,39 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Checks that the string is within the string
+    //*********************************************************************
+    bool contains(const etl::ibasic_string<T>& str) const 
+    {
+      return find(str) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that the view is within the string
+    //*********************************************************************
+    template <typename TTraits>
+    bool contains(const etl::basic_string_view<T, TTraits>& view) const 
+    {
+      return find(view) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that text is within the string
+    //*********************************************************************
+    bool contains(const_pointer s) const 
+    {
+      return find(s) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that character is within the string
+    //*********************************************************************
+    bool contains(value_type c) const 
+    {
+      return find(c) != npos;
+    }
+
+    //*********************************************************************
     /// Replace 'length' characters from 'position' with 'str'.
     ///\param position The position to start from.
     ///\param length   The number of characters to replace.
@@ -1650,31 +1573,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Replace 'length' characters from 'position' with 'view'.
-    ///\param position The position to start from.
-    ///\param length   The number of characters to replace.
-    ///\param view     The string to replace it with.
-    //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& replace(size_type position, size_type length_, const std::basic_string_view<T, TTraits>& view)
-    {
-      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
-
-      // Limit the length.
-      length_ = etl::min(length_, size() - position);
-
-      // Erase the bit we want to replace.
-      erase(position, length_);
-
-      // Insert the new stuff.
-      insert(position, view);
-
-      return *this;
-    }
-#endif
 
     //*********************************************************************
     /// Replace characters from 'first' to one before 'last' with 'str'.
@@ -1730,30 +1628,6 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Replace characters from 'first' to one before 'last' with 'view'.
-    ///\param first The position to start from.
-    ///\param last  The one after the position to end at.
-    ///\param view  The string view to replace it with.
-    //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& replace(const_iterator first, const_iterator last, const std::basic_string_view<T, TTraits>& view)
-    {
-      // Quick hack, as iterators are pointers.
-      iterator first_ = to_iterator(first);
-      iterator last_  = to_iterator(last);
-
-      // Erase the bit we want to replace.
-      erase(first_, last_);
-
-      // Insert the new stuff.
-      insert(first_, view.begin(), view.end());
-
-      return *this;
-    }
-#endif
-
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'str' from 'subposition' of 'sublength'.
     //*********************************************************************
@@ -1807,30 +1681,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Replace characters from 'position' of 'length' with 'view' from 'subposition' of 'sublength'.
-    //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& replace(size_type position, size_type length_, const std::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength)
-    {
-      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
-      ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
-
-      // Limit the lengths.
-      length_   = etl::min(length_, size() - position);
-      sublength = etl::min(sublength, view.size() - subposition);
-
-      // Erase the bit we want to replace.
-      erase(position, length_);
-
-      // Insert the new stuff.
-      insert(position, view, subposition, sublength);
-
-      return *this;
-    }
-#endif
 
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with pointed to string.
@@ -1985,20 +1835,6 @@ namespace etl
                      view.data() + view.size());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Compare with std::basic_string_view.
-    //*************************************************************************
-    template <typename TTraits>
-    int compare(const std::basic_string_view<T, TTraits>& view) const
-    {
-      return compare(p_buffer,
-                     p_buffer + size(),
-                     view.data(),
-                     view.data() + view.size());
-    }
-#endif
-
     //*************************************************************************
     /// Compare position / length with string.
     //*************************************************************************
@@ -2026,20 +1862,6 @@ namespace etl
                      view.data(),
                      view.data() + view.size());
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Compare position / length with std::basic_string_view.
-    //*************************************************************************
-    template <typename TTraits>
-    int compare(size_type position, size_type length_, const std::basic_string_view<T, TTraits>& view) const
-    {
-      return compare(p_buffer + position,
-                     p_buffer + position + length_,
-                     view.data(),
-                     view.data() + view.size());
-    }
-#endif
 
     //*************************************************************************
     /// Compare position / length with string / subposition / sublength.
@@ -2077,27 +1899,6 @@ namespace etl
                      view.data() + subposition,
                      view.data() + subposition + sublength);
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Compare position / length with std::basic_string_view. / subposition / sublength.
-    //*************************************************************************
-    template <typename TTraits>
-    int compare(size_type position, size_type length_, const std::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength) const
-    {
-      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
-      ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
-
-      // Limit the lengths.
-      length_   = etl::min(length_, size() - position);
-      sublength = etl::min(sublength, view.size() - subposition);
-
-      return compare(p_buffer + position,
-                     p_buffer + position + length_,
-                     view.data() + subposition,
-                     view.data() + subposition + sublength);
-    }
-#endif
 
     //*************************************************************************
     ///  Compare with C string
@@ -2162,19 +1963,6 @@ namespace etl
     {
       return find_first_of(view.data(), position, view.size());
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find first of any of content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find_first_of(const std::basic_string_view<T, TTraits>& view, size_type position = 0) const
-    {
-      return find_first_of(view.data(), position, view.size());
-    }
-#endif
 
     //*********************************************************************
     /// Find first of any of content within the string
@@ -2252,19 +2040,6 @@ namespace etl
     {
       return find_last_of(view.data(), position, view.size());
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find last of any of content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find_last_of(const std::basic_string_view<T, TTraits>& view, size_type position = npos) const
-    {
-      return find_last_of(view.data(), position, view.size());
-    }
-#endif
 
     //*********************************************************************
     /// Find last of any of content within the string
@@ -2361,19 +2136,6 @@ namespace etl
       return find_first_not_of(view.data(), position, view.size());
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find first not of any of content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find_first_not_of(const std::basic_string_view<T, TTraits>& view, size_type position = 0) const
-    {
-      return find_first_not_of(view.data(), position, view.size());
-    }
-#endif
-
     //*********************************************************************
     /// Find first not of any of content within the string
     ///\param s   Pointer to the content to not find
@@ -2457,19 +2219,6 @@ namespace etl
     {
       return find_last_not_of(view.data(), position, view.size());
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find last not of any of content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find_last_not_of(const std::basic_string_view<T, TTraits>& view, size_type position = npos) const
-    {
-      return find_last_not_of(view.data(), position, view.size());
-    }
-#endif
 
     //*********************************************************************
     /// Find last not of any of content within the string
@@ -2574,19 +2323,6 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Assignment operator.
-    //*************************************************************************
-    template <typename TTraits>
-    ibasic_string& operator = (const std::basic_string_view<T, TTraits>& view)
-    {
-      assign(view);
-
-      return *this;
-    }
-#endif
-
     //*************************************************************************
     /// += operator.
     //*************************************************************************
@@ -2607,19 +2343,6 @@ namespace etl
 
       return *this;
     }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// += operator.
-    //*************************************************************************
-    template <typename TTraits>
-    ibasic_string& operator += (const std::basic_string_view<T, TTraits>& rhs)
-    {
-      append(rhs);
-
-      return *this;
-    }
-#endif
 
     //*************************************************************************
     /// += operator.
