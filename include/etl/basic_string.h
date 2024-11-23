@@ -1497,7 +1497,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Checks that the string is within the string
+    /// Checks that the string is within this string
     //*********************************************************************
     bool contains(const etl::ibasic_string<T>& str) const 
     {
@@ -1505,7 +1505,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Checks that the view is within the string
+    /// Checks that the view is within this string
     //*********************************************************************
     template <typename TTraits>
     bool contains(const etl::basic_string_view<T, TTraits>& view) const 
@@ -1514,7 +1514,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Checks that text is within the string
+    /// Checks that text is within this string
     //*********************************************************************
     bool contains(const_pointer s) const 
     {
@@ -1522,11 +1522,96 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Checks that character is within the string
+    /// Checks that character is within this string
     //*********************************************************************
     bool contains(value_type c) const 
     {
       return find(c) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that the string is the start of this string
+    //*********************************************************************
+    bool starts_with(const ibasic_string<T>& str) const 
+    {
+      return compare(0, str.size(), str) == 0;
+    }
+
+    //*********************************************************************
+    /// Checks that the view is the start of this string
+    //*********************************************************************
+    template <typename TTraits>
+    bool starts_with(const basic_string_view<T, TTraits>& view) const 
+    {
+      return compare(0, view.size(), view) == 0;
+    }
+
+    //*********************************************************************
+    /// Checks that the string is the start of this string
+    //*********************************************************************
+    bool starts_with(const_pointer s) const 
+    {
+      size_t len = etl::strlen(s);
+
+      return compare(0, len, s, len) == 0;
+    }
+
+    //*********************************************************************
+    /// Checks that the character is the start of this string
+    //*********************************************************************
+    bool starts_with(value_type c) const 
+    {
+      return !empty() && (front() == c);
+    }
+
+    //*********************************************************************
+    /// Checks that the string is the end of this string
+    //*********************************************************************
+    bool ends_with(const ibasic_string<T>& str) const 
+    {
+      if (str.size() > size()) 
+      {
+        return false;
+      }
+
+      return compare(size() - str.size(), str.size(), str) == 0;
+    }
+
+    //*********************************************************************
+    /// Checks that the view is the end of this string
+    //*********************************************************************
+    template <typename TTraits>
+    bool ends_with(const basic_string_view<T, TTraits>& view) const 
+    {
+      if (view.size() > size()) 
+      {
+        return false;
+      }
+
+      return compare(size() - view.size(), view.size(), view) == 0;
+    }
+
+    //*********************************************************************
+    /// Checks that the string is the end of this string
+    //*********************************************************************
+    bool ends_with(const_pointer s) const 
+    {
+      size_t len = etl::strlen(s);
+
+      if (len > size()) 
+      {
+        return false;
+      }
+
+      return compare(size() - len, len, s, len) == 0;
+    }
+
+    //*********************************************************************
+    /// Checks that the character is the end of this string
+    //*********************************************************************
+    bool ends_with(value_type c) const 
+    {
+      return !empty() && (back() == c);
     }
 
     //*********************************************************************
