@@ -823,6 +823,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_contains)
+    {
+      const char* s1 = "Hello";
+      const char* s2 = "llo Wor";
+      const char* s3 = "World";
+      const char* s4 = "Xorld";
+      const char* s5 = "Hello Worldxxxxxx";
+
+      View view(text.c_str());
+      View v1(s1);
+      View v2(s2);
+      View v3(s3);
+      View v4(s4);
+      View v5(s5);
+
+      CHECK_TRUE(view.contains(v1));
+      CHECK_TRUE(view.contains(v2));
+      CHECK_TRUE(view.contains(v3));
+      CHECK_FALSE(view.contains(v4));
+      CHECK_FALSE(view.contains(v5));
+
+      CHECK_TRUE(view.contains('H'));
+      CHECK_TRUE(view.contains('l'));
+      CHECK_FALSE(view.contains('X'));
+
+      CHECK_TRUE(view.contains(s1));
+      CHECK_TRUE(view.contains(s2));
+      CHECK_TRUE(view.contains(s3));
+      CHECK_FALSE(view.contains(s4));
+      CHECK_FALSE(view.contains(s5));
+    }
+
+    //*************************************************************************
     TEST(test_find)
     {
       const char* s1 = "Hello";

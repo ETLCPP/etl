@@ -763,6 +763,31 @@ namespace etl
       return find_last_not_of(etl::basic_string_view<T, TTraits>(text), position);
     }
 
+    //*********************************************************************
+    /// Checks that the view is within this string
+    //*********************************************************************
+    template <typename TTraits>
+    bool contains(const etl::basic_string_view<T, TTraits>& view) const 
+    {
+      return find(view) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that text is within this string
+    //*********************************************************************
+    bool contains(const_pointer s) const 
+    {
+      return find(s) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that character is within this string
+    //*********************************************************************
+    bool contains(value_type c) const 
+    {
+      return find(c) != npos;
+    }
+
     //*************************************************************************
     /// Equality for string_view.
     //*************************************************************************
