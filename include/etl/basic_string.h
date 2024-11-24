@@ -497,6 +497,22 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the string and overwrites to data using the operation.
+    //*********************************************************************
+    template <typename TOperation>
+    void resize_and_overwrite(size_type new_size, TOperation operation)
+    {
+      if (new_size > CAPACITY)
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(string_out_of_bounds));
+      }
+
+      current_size = operation(p_buffer, new_size);
+      p_buffer[current_size] = '\0';
+      cleanup();
+    }
+
+    //*********************************************************************
     /// Resizes the string, but doesn't initialise the free space
     /// except for a terminator null.
     ///\param new_size The new size.
@@ -1532,7 +1548,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is the start of this string
     //*********************************************************************
-    bool starts_with(const ibasic_string<T>& str) const 
+    bool starts_with(const etl::ibasic_string<T>& str) const 
     {
       return compare(0, str.size(), str) == 0;
     }
@@ -1541,7 +1557,7 @@ namespace etl
     /// Checks that the view is the start of this string
     //*********************************************************************
     template <typename TTraits>
-    bool starts_with(const basic_string_view<T, TTraits>& view) const 
+    bool starts_with(const etl::basic_string_view<T, TTraits>& view) const 
     {
       return compare(0, view.size(), view) == 0;
     }
@@ -1567,7 +1583,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is the end of this string
     //*********************************************************************
-    bool ends_with(const ibasic_string<T>& str) const 
+    bool ends_with(const etl::ibasic_string<T>& str) const 
     {
       if (str.size() > size()) 
       {
@@ -1581,7 +1597,7 @@ namespace etl
     /// Checks that the view is the end of this string
     //*********************************************************************
     template <typename TTraits>
-    bool ends_with(const basic_string_view<T, TTraits>& view) const 
+    bool ends_with(const etl::basic_string_view<T, TTraits>& view) const 
     {
       if (view.size() > size()) 
       {

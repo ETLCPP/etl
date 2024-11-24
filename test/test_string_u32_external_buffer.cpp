@@ -934,6 +934,41 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_and_overwrite_down)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE     = 3UL;
+
+      TextBuffer buffer{0};
+      Text text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
+
+      // Overwrite from index 1 to one less than the new size and set to that size.
+      text.resize_and_overwrite(NEW_SIZE, [](Text::pointer p, size_t n) 
+        {
+          size_t i = 1;
+          while (i < (n - 1))
+          {
+            p[i] = '1' + Text::value_type(i);
+            ++i;
+          }   
+
+          return i;
+        });
+
+      CHECK_EQUAL(NEW_SIZE - 1, text.size());
+      CHECK_TRUE(Equal(TextSTD(STR("H2")), text));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_and_overwrite_up_excess)
+    {
+      TextBuffer buffer{0};
+      Text text(initial_text.c_str(), initial_text.size(), buffer.data(), buffer.size());
+
+      CHECK_THROW(text.resize_and_overwrite(text.capacity() + 1, [](Text::pointer /*p*/, size_t n) { return n; }), etl::string_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty_full)
     {
       TextBuffer buffer{0};
@@ -1751,7 +1786,7 @@ namespace
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
         TextSTD compare_text(short_text.cbegin(), short_text.cend());
-        TextBuffer buffer;
+        TextBuffer buffer{0};
         buffer.fill(0);
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
@@ -1776,7 +1811,7 @@ namespace
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
         TextSTD compare_text(short_text.cbegin(), short_text.cend());
-        TextBuffer buffer;
+        TextBuffer buffer{0};
         buffer.fill(0);
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
         View view(insert_text.data(), insert_text.size());
