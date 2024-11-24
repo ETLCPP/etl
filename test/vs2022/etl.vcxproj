@@ -9031,6 +9031,7 @@
     <None Include="..\..\cmake\GetGitRevisionDescription.cmake" />
     <None Include="..\..\cmake\GetGitRevisionDescription.cmake.in" />
     <None Include="..\..\cmake\helpers.cmake" />
+    <None Include="..\..\CONTRIBUTING.md" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />
