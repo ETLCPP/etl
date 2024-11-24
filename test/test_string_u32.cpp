@@ -784,6 +784,64 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_and_overwrite_up)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE     = 8UL;
+
+      Text text(initial_text.c_str(), INITIAL_SIZE);
+
+      // Overwrite from index 1 to one less than the new size and set to that size.
+      text.resize_and_overwrite(NEW_SIZE, [](Text::pointer p, size_t n) noexcept
+        {
+          size_t i = 1;
+          while (i < (n - 1))
+          {
+            p[i] = '1' + Text::value_type(i);
+            ++i;
+          }   
+
+          return i;
+        });
+
+      CHECK_EQUAL(NEW_SIZE - 1, text.size());
+      CHECK_TRUE(Equal(TextSTD(STR("H234567")), text));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_and_overwrite_down)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE     = 3UL;
+
+      Text text(initial_text.c_str(), INITIAL_SIZE);
+
+      // Overwrite from index 1 to one less than the new size and set to that size.
+      text.resize_and_overwrite(NEW_SIZE, [](Text::pointer p, size_t n) noexcept
+        {
+          size_t i = 1;
+          while (i < (n - 1))
+          {
+            p[i] = '1' + Text::value_type(i);
+            ++i;
+          }   
+
+          return i;
+        });
+
+      CHECK_EQUAL(NEW_SIZE - 1, text.size());
+      CHECK_TRUE(Equal(TextSTD(STR("H2")), text));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_resize_and_overwrite_up_excess)
+    {
+      Text text(initial_text.c_str(), initial_text.size());
+
+      CHECK_THROW(text.resize_and_overwrite(text.capacity() + 1, [](Text::pointer /*p*/, size_t n) { return n; }), etl::string_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_fill)
     {
       Text text(SIZE, STR('A'));
