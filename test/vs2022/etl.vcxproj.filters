@@ -3541,6 +3541,9 @@
     <None Include="..\list_test_files.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\..\CONTRIBUTING.md">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
