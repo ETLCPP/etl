@@ -717,8 +717,8 @@ namespace etl
     //*********************************************************************
     /// Assigns values to the string from a view.
     //*********************************************************************
-    template <typename TTraits>
-    void assign(const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    void assign(const etl::basic_string_view<T, TOtherTraits>& view)
     {
       assign(view.begin(), view.end());
     }
@@ -877,8 +877,8 @@ namespace etl
     /// Appends to the string.
     ///\param view An etl::string_view.
     //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& append(const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    ibasic_string& append(const etl::basic_string_view<T, TOtherTraits>& view)
     {
       insert(end(), view.begin(), view.end());
       return *this;
@@ -1120,8 +1120,8 @@ namespace etl
     ///\param position The position to insert before.
     ///\param view     The view element to add.
     //*********************************************************************
-    template <typename TTraits>
-    iterator insert(const_iterator position, const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    iterator insert(const_iterator position, const etl::basic_string_view<T, TOtherTraits>& view)
     {
       return insert(position, view.begin(), view.end());
     }
@@ -1156,8 +1156,8 @@ namespace etl
     ///\param position The position to insert before.
     ///\param view     The view to insert.
     //*********************************************************************
-    template <typename TTraits>
-    etl::ibasic_string<T>& insert(size_type position, const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    etl::ibasic_string<T>& insert(size_type position, const etl::basic_string_view<T, TOtherTraits>& view)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1206,8 +1206,8 @@ namespace etl
     ///\param subposition The subposition to start from.
     ///\param sublength   The number of characters to insert.
     //*********************************************************************
-    template <typename TTraits>
-    etl::ibasic_string<T>& insert(size_type position, const etl::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength)
+    template <typename TOtherTraits>
+    etl::ibasic_string<T>& insert(size_type position, const etl::basic_string_view<T, TOtherTraits>& view, size_type subposition, size_type sublength)
     {
       ETL_ASSERT(position    <= size(),      ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
@@ -1387,8 +1387,8 @@ namespace etl
     ///\param view The content to find
     ///\param pos  The position to start searching from.
     //*********************************************************************
-    template <typename TTraits>
-    size_type find(const etl::basic_string_view<T, TTraits>& view, size_type pos = 0) const
+    template <typename TOtherTraits>
+    size_type find(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
     {
       return find_impl(view.begin(), view.end(), view.size(), pos);
     }
@@ -1452,8 +1452,8 @@ namespace etl
     ///\param view The content to find
     ///\param pos  The position to start searching from.
     //*********************************************************************
-    template <typename TTraits>
-    size_type rfind(const etl::basic_string_view<T, TTraits>& view, size_type pos = 0) const
+    template <typename TOtherTraits>
+    size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
     {
       return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
     }
@@ -1523,8 +1523,8 @@ namespace etl
     //*********************************************************************
     /// Checks that the view is within this string
     //*********************************************************************
-    template <typename TTraits>
-    bool contains(const etl::basic_string_view<T, TTraits>& view) const 
+    template <typename TOtherTraits>
+    bool contains(const etl::basic_string_view<T, TOtherTraits>& view) const 
     {
       return find(view) != npos;
     }
@@ -1556,8 +1556,8 @@ namespace etl
     //*********************************************************************
     /// Checks that the view is the start of this string
     //*********************************************************************
-    template <typename TTraits>
-    bool starts_with(const etl::basic_string_view<T, TTraits>& view) const 
+    template <typename TOtherTraits>
+    bool starts_with(const etl::basic_string_view<T, TOtherTraits>& view) const 
     {
       return compare(0, view.size(), view) == 0;
     }
@@ -1596,8 +1596,8 @@ namespace etl
     //*********************************************************************
     /// Checks that the view is the end of this string
     //*********************************************************************
-    template <typename TTraits>
-    bool ends_with(const etl::basic_string_view<T, TTraits>& view) const 
+    template <typename TOtherTraits>
+    bool ends_with(const etl::basic_string_view<T, TOtherTraits>& view) const 
     {
       if (view.size() > size()) 
       {
@@ -1658,8 +1658,8 @@ namespace etl
     ///\param length   The number of characters to replace.
     ///\param view     The string to replace it with.
     //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& replace(size_type position, size_type length_, const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    ibasic_string& replace(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1713,8 +1713,8 @@ namespace etl
     ///\param last  The one after the position to end at.
     ///\param view  The string view to replace it with.
     //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& replace(const_iterator first, const_iterator last, const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    ibasic_string& replace(const_iterator first, const_iterator last, const etl::basic_string_view<T, TOtherTraits>& view)
     {
       // Quick hack, as iterators are pointers.
       iterator first_ = to_iterator(first);
@@ -1764,8 +1764,8 @@ namespace etl
     //*********************************************************************
     /// Replace characters from 'position' of 'length' with 'view' from 'subposition' of 'sublength'.
     //*********************************************************************
-    template <typename TTraits>
-    ibasic_string& replace(size_type position, size_type length_, const etl::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength)
+    template <typename TOtherTraits>
+    ibasic_string& replace(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view, size_type subposition, size_type sublength)
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
@@ -1927,8 +1927,8 @@ namespace etl
     //*************************************************************************
     /// Compare with etl::basic_string_view.
     //*************************************************************************
-    template <typename TTraits>
-    int compare(const etl::basic_string_view<T, TTraits>& view) const
+    template <typename TOtherTraits>
+    int compare(const etl::basic_string_view<T, TOtherTraits>& view) const
     {
       return compare(p_buffer,
                      p_buffer + size(),
@@ -1955,8 +1955,8 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with etl::basic_string_view.
     //*************************************************************************
-    template <typename TTraits>
-    int compare(size_type position, size_type length_, const etl::basic_string_view<T, TTraits>& view) const
+    template <typename TOtherTraits>
+    int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -1985,8 +1985,8 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with etl::basic_string_view. / subposition / sublength.
     //*************************************************************************
-    template <typename TTraits>
-    int compare(size_type position, size_type length_, const etl::basic_string_view<T, TTraits>& view, size_type subposition, size_type sublength) const
+    template <typename TOtherTraits>
+    int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view, size_type subposition, size_type sublength) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
@@ -2059,8 +2059,8 @@ namespace etl
     ///\param view The content to find
     ///\param pos  The position to start searching from.
     //*********************************************************************
-    template <typename TTraits>
-    size_type find_first_of(const etl::basic_string_view<T, TTraits>& view, size_type position = 0) const
+    template <typename TOtherTraits>
+    size_type find_first_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = 0) const
     {
       return find_first_of(view.data(), position, view.size());
     }
@@ -2136,8 +2136,8 @@ namespace etl
     ///\param view The content to find
     ///\param pos  The position to start searching from.
     //*********************************************************************
-    template <typename TTraits>
-    size_type find_last_of(const etl::basic_string_view<T, TTraits>& view, size_type position = npos) const
+    template <typename TOtherTraits>
+    size_type find_last_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = npos) const
     {
       return find_last_of(view.data(), position, view.size());
     }
@@ -2231,8 +2231,8 @@ namespace etl
     ///\param view The content to find
     ///\param pos  The position to start searching from.
     //*********************************************************************
-    template <typename TTraits>
-    size_type find_first_not_of(const etl::basic_string_view<T, TTraits>& view, size_type position = 0) const
+    template <typename TOtherTraits>
+    size_type find_first_not_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = 0) const
     {
       return find_first_not_of(view.data(), position, view.size());
     }
@@ -2315,8 +2315,8 @@ namespace etl
     ///\param view The content to find
     ///\param pos  The position to start searching from.
     //*********************************************************************
-    template <typename TTraits>
-    size_type find_last_not_of(const etl::basic_string_view<T, TTraits>& view, size_type position = npos) const
+    template <typename TOtherTraits>
+    size_type find_last_not_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = npos) const
     {
       return find_last_not_of(view.data(), position, view.size());
     }
@@ -2416,8 +2416,8 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    template <typename TTraits>
-    ibasic_string& operator = (const etl::basic_string_view<T, TTraits>& view)
+    template <typename TOtherTraits>
+    ibasic_string& operator = (const etl::basic_string_view<T, TOtherTraits>& view)
     {
       assign(view);
 
@@ -2437,8 +2437,8 @@ namespace etl
     //*************************************************************************
     /// += operator.
     //*************************************************************************
-    template <typename TTraits>
-    ibasic_string& operator += (const etl::basic_string_view<T, TTraits>& rhs)
+    template <typename TOtherTraits>
+    ibasic_string& operator += (const etl::basic_string_view<T, TOtherTraits>& rhs)
     {
       append(rhs);
 

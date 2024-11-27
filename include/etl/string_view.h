@@ -100,9 +100,9 @@ namespace etl
   {
   public:
 
-    typedef T                                     value_type;
-    typedef TTraits                               traits_type;
-    typedef size_t                                size_type;
+    typedef T        value_type;
+    typedef TTraits  traits_type;
+    typedef size_t   size_type;
     typedef const T& const_reference;
     typedef const T* const_pointer;
     typedef const T* const_iterator;
@@ -766,7 +766,6 @@ namespace etl
     //*********************************************************************
     /// Checks that the view is within this string
     //*********************************************************************
-    template <typename TTraits>
     bool contains(const etl::basic_string_view<T, TTraits>& view) const 
     {
       return find(view) != npos;
