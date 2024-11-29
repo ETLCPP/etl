@@ -52,8 +52,6 @@ public:
 
   typedef etl::message_router<Router, Message1, Message2, Message3> Base_t;
 
-  using Base_t::receive;
-
   //***************************************************************************
   Router()
     : message_router(1)
