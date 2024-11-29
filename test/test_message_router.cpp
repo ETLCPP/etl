@@ -717,7 +717,6 @@ namespace
     TEST(message_router_with_overloaded_receive)
     {
       Router3 router;
-      etl::imessage_router& irouter = router;
 
       Message1 message1(router);
       Message2 message2(router);
