@@ -44,7 +44,7 @@ namespace etl
 
 namespace
 {
-  using Value = char;
+  using Value = int8_t;
 
   using Point = etl::coordinate_2d<Value>;
 

@@ -210,7 +210,7 @@ namespace
     TEST(test_read_int8_t)
     {
       std::array<char, 4U> storage = { char(0x01), char(0x5A), char(0xA5), char(0xFF) };
-      std::array<char, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
+      std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
 
@@ -246,7 +246,7 @@ namespace
     TEST(test_read_checked_int8_t_using_non_member_function)
     {
       std::array<char, 4U> storage = { char(0x01), char(0x5A), char(0xA5), char(0xFF) };
-      std::array<char, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
+      std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
 
@@ -282,7 +282,7 @@ namespace
     TEST(test_read_unchecked_int8_t_using_non_member_function)
     {
       std::array<char, 4U> storage = { char(0x01), char(0x5A), char(0xA5), char(0xFF) };
-      std::array<char, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
+      std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
 
@@ -307,7 +307,7 @@ namespace
     TEST(test_read_int8_t_5bits)
     {
       std::array<char, 3U> storage = { char(0x0E), char(0x8B), char(0xF0) };
-      std::array<char, 4U> expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
+      std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
 
