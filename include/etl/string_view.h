@@ -43,6 +43,10 @@ SOFTWARE.
 #include "algorithm.h"
 #include "private/minmax_push.h"
 
+#if ETL_USING_STL && ETL_USING_CPP17
+  #include <string_view>
+#endif
+
 #include <stdint.h>
 
 namespace etl
@@ -96,9 +100,9 @@ namespace etl
   {
   public:
 
-    typedef T                                     value_type;
-    typedef TTraits                               traits_type;
-    typedef size_t                                size_type;
+    typedef T        value_type;
+    typedef TTraits  traits_type;
+    typedef size_t   size_type;
     typedef const T& const_reference;
     typedef const T* const_pointer;
     typedef const T* const_iterator;
@@ -162,6 +166,18 @@ namespace etl
       , mend(other.mend)
     {
     }
+
+#if ETL_USING_STL && ETL_USING_CPP17
+    //*************************************************************************
+    /// Constructor from std::basic string_view
+    //*************************************************************************
+    template <typename TStdTraits>
+    explicit ETL_CONSTEXPR basic_string_view(const std::basic_string_view<T, TStdTraits>& other) ETL_NOEXCEPT
+      : mbegin(other.data())
+      , mend(other.data() + other.size())
+    {
+    }
+#endif
 
     //*************************************************************************
     /// Returns a const reference to the first element.
@@ -745,6 +761,30 @@ namespace etl
     ETL_CONSTEXPR14 size_type find_last_not_of(const T* text, size_type position = npos) const
     {
       return find_last_not_of(etl::basic_string_view<T, TTraits>(text), position);
+    }
+
+    //*********************************************************************
+    /// Checks that the view is within this string
+    //*********************************************************************
+    bool contains(const etl::basic_string_view<T, TTraits>& view) const 
+    {
+      return find(view) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that text is within this string
+    //*********************************************************************
+    bool contains(const_pointer s) const 
+    {
+      return find(s) != npos;
+    }
+
+    //*********************************************************************
+    /// Checks that character is within this string
+    //*********************************************************************
+    bool contains(value_type c) const 
+    {
+      return find(c) != npos;
     }
 
     //*************************************************************************
