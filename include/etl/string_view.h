@@ -167,18 +167,6 @@ namespace etl
     {
     }
 
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*************************************************************************
-    /// Constructor from std::basic string_view
-    //*************************************************************************
-    template <typename TStdTraits>
-    explicit ETL_CONSTEXPR basic_string_view(const std::basic_string_view<T, TStdTraits>& other) ETL_NOEXCEPT
-      : mbegin(other.data())
-      , mend(other.data() + other.size())
-    {
-    }
-#endif
-
     //*************************************************************************
     /// Returns a const reference to the first element.
     //*************************************************************************

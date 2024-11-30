@@ -730,47 +730,6 @@ namespace etl
     //*********************************************************************
     /// Assigns values to the string.
     /// Truncates if the string does not have enough free space.
-    ///\param other The other string.
-    //*********************************************************************
-    void assign(const_pointer other)
-    {
-      assign(other, other + etl::strlen(other));
-    }
-
-    //*********************************************************************
-    /// Assigns values to the string.
-    /// Truncates if the string does not have enough free space.
-    ///\param other The other string.
-    ///\param length The length to copy.
-    //*********************************************************************
-    void assign(const_pointer other, size_type length_)
-    {
-      assign(other, other + length_);
-    }
-
-    //*********************************************************************
-    /// Assigns values to the string from a view.
-    //*********************************************************************
-    template <typename TTraits>
-    void assign(const etl::basic_string_view<T, TTraits>& view)
-    {
-      assign(view.begin(), view.end());
-    }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Assigns values to the string from a view.
-    //*********************************************************************
-    template <typename TTraits>
-    void assign(const std::basic_string_view<T, TTraits>& view)
-    {
-      assign(view.begin(), view.end());
-    }
-#endif
-
-    //*********************************************************************
-    /// Assigns values to the string.
-    /// Truncates if the string does not have enough free space.
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
@@ -1440,30 +1399,6 @@ namespace etl
 
     //*********************************************************************
     /// Find content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find(const etl::basic_string_view<T, TTraits>& view, size_type pos = 0) const
-    {
-      return find_impl(view.begin(), view.end(), view.size(), pos);
-    }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type find(const std::basic_string_view<T, TTraits>& view, size_type pos = 0) const
-    {
-      return find_impl(view.begin(), view.end(), view.size(), pos);
-    }
-#endif
-
-    //*********************************************************************
-    /// Find content within the string
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
@@ -1526,30 +1461,6 @@ namespace etl
     {
       return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
     }
-
-    //*********************************************************************
-    /// Find content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type rfind(const etl::basic_string_view<T, TTraits>& view, size_type pos = 0) const
-    {
-      return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
-    }
-
-#if ETL_USING_STL && ETL_USING_CPP17
-    //*********************************************************************
-    /// Find content within the string
-    ///\param view The content to find
-    ///\param pos  The position to start searching from.
-    //*********************************************************************
-    template <typename TTraits>
-    size_type rfind(const std::basic_string_view<T, TTraits>& view, size_type pos = 0) const
-    {
-      return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
-    }
-#endif
 
     //*********************************************************************
     /// Find content within the string
