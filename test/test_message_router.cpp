@@ -302,15 +302,15 @@ namespace
       }
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
-    void on_receive(const Message2& msg)
+    void on_receive(const Message2&)
     {
     }
 
-    void on_receive(const Message3& msg)
+    void on_receive(const Message3&)
     {
     }
 
