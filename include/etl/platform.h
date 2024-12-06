@@ -455,6 +455,14 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Determine if the ETL should use __attribute__((packed).
+#if defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_INTEL)
+  #define ETL_PACKED __attribute__((packed))
+#else
+  #define ETL_PACKED
+#endif
+
+//*************************************
 // Check for availability of certain builtins
 #include "profiles/determine_builtin_support.h"
 
