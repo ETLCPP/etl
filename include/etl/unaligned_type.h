@@ -227,7 +227,7 @@ namespace etl
   ///\tparam Endian The endianness of the arithmetic type.
   //*************************************************************************
   template <typename T, int Endian_>
-  class unaligned_type : public private_unaligned_type::unaligned_type_common<sizeof(T)>
+  class ETL_PACKED unaligned_type : public private_unaligned_type::unaligned_type_common<sizeof(T)>
   {
   public:
 
