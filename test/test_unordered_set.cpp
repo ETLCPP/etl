@@ -909,5 +909,14 @@ namespace
       CHECK_TRUE(set1 == set2a);
       CHECK_FALSE(set1 == set2b);
     }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_TRUE(data.contains(NDC("FF")));
+      CHECK_FALSE(data.contains(NDC("ZZ")));
+    }
   };
 }

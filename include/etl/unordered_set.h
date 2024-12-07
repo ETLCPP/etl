@@ -166,6 +166,14 @@ namespace etl
       return !(lhs == rhs);
     }
 
+    //*************************************************************************
+    /// Check if the unordered_set contains the key.
+    //*************************************************************************
+    bool contains(const TKey& key) const
+    {
+      return find(key) != end();
+    }
+
   protected:
 
     typedef etl::intrusive_forward_list<node_t, link_t> bucket_t;
