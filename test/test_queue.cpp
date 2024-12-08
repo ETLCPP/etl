@@ -369,11 +369,17 @@ namespace
     {
       etl::queue<Item, 5> queue;
 
-      queue.emplace();
-      queue.emplace('b', 2, 2.3); 
-      queue.emplace('c', 3, 3.4);
-      queue.emplace('d', 4, 4.5);
-      queue.emplace('e', 5, 5.6);
+      Item& item_a = queue.emplace();
+      Item& item_b = queue.emplace('b', 2, 2.3);
+      Item& item_c = queue.emplace('c', 3, 3.4);
+      Item& item_d = queue.emplace('d', 4, 4.5);
+      Item& item_e = queue.emplace('e', 5, 5.6);
+
+      CHECK(item_a == Item('a', 1, 1.2));
+      CHECK(item_b == Item('b', 2, 2.3));
+      CHECK(item_c == Item('c', 3, 3.4));
+      CHECK(item_d == Item('d', 4, 4.5));
+      CHECK(item_e == Item('e', 5, 5.6));
 
       CHECK(queue.front() == Item('a', 1, 1.2));
       queue.pop();
