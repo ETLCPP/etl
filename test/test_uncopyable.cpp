@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -28,30 +26,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_UNCOPYABLE_INCLUDED
-#define ETL_UNCOPYABLE_INCLUDED
+#include "unit_test_framework.h"
 
-#include "platform.h"
+#include "etl/uncopyable.h"
 
-namespace etl
+namespace
 {
-#if ETL_USING_CPP11
-  //***************************************************************************
-  /// An uncopyable base class.
-  /// Can be used to make a class uncopyable by deriving from it.
-  //***************************************************************************
-  class uncopyable
+  class UncopyableClass: public etl::uncopyable
   {
-  public:
-    uncopyable(uncopyable const&)            = delete;
-    uncopyable& operator=(uncopyable const&) = delete;
-
-  protected:
-    uncopyable() = default;
-    ~uncopyable() = default;
   };
 
-#endif
-}
+  SUITE(test_uncopyable)
+  {
+    //*************************************************************************
+    TEST(test_construct)
+    {
+      UncopyableClass uc;
 
+      (void) uc;
+    }
+
+    //*************************************************************************
+    // This code is intentionally not compilable when activated
+#if 0
+    TEST(test_copy)
+    {
+      UncopyableClass uc1;
+
+      // Can't be copied by construction
+      UncopyableClass uc2{uc1}; // compile error
+      (void) uc2;
+
+      // Can't be copied by copy assignment
+      UncopyableClass uc3;
+      uc3 = uc1; // compile error
+    }
 #endif
+  };
+}

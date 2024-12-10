@@ -288,6 +288,7 @@ add_executable(etl_tests
 	test_type_traits.cpp
 	test_unaligned_type.cpp
 	test_unaligned_type_constexpr.cpp
+	test_uncopyable.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp
