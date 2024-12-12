@@ -1413,6 +1413,9 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_cxx_20_compat_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\uncopyable.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3384,6 +3387,12 @@
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\stringify.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_uncopyable.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\uncopyable.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
