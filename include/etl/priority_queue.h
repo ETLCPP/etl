@@ -306,14 +306,24 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Removes the oldest value from the back of the priority queue.
+    /// Removes the highest priority value from the top of the priority queue.
     /// Does nothing if the priority queue is already empty.
     //*************************************************************************
     void pop()
     {
-      // Move largest element to end
+      // Move largest (highest priority) element to end
       etl::pop_heap(container.begin(), container.end(), compare);
       // Actually remove largest element at end
+      container.pop_back();
+    }
+
+    //*************************************************************************
+    /// Removes the lowest priority value from the back of the priority queue.
+    /// Does nothing if the priority queue is already empty.
+    //*************************************************************************
+    void pop_back()
+    {
+      // Remove largest element at end
       container.pop_back();
     }
 
