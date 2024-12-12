@@ -296,6 +296,7 @@ target_sources(t20 PRIVATE etl_profile.h
 		../u8string.h.t.cpp
 		../u8string_stream.h.t.cpp
 		../unaligned_type.h.t.cpp
+		../uncopyable.h.t.cpp
 		../unordered_map.h.t.cpp
 		../unordered_multimap.h.t.cpp
 		../unordered_multiset.h.t.cpp

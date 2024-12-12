@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2024 BMW AG
+Copyright(c) 2024 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,32 +26,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_UNCOPYABLE_INCLUDED
-#define ETL_UNCOPYABLE_INCLUDED
-
-#include "platform.h"
-
-namespace etl
-{
-#if ETL_USING_CPP11
-  //***************************************************************************
-  /// An uncopyable base class.
-  /// Can be used to make a class uncopyable by deriving from it.
-  //***************************************************************************
-  class uncopyable
-  {
-  public:
-
-    uncopyable(uncopyable const&)            = delete;
-    uncopyable& operator=(uncopyable const&) = delete;
-
-  protected:
-    
-    uncopyable()  = default;
-    ~uncopyable() = default;
-  };
-
-#endif
-}
-
-#endif
+#include <etl/uncopyable.h>
