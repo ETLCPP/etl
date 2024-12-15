@@ -1213,8 +1213,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK(data.contains(std::string("FF")));
-      CHECK(!data.contains(std::string("ZZ")));
+      const char* not_inserted  = "ZZ";
+
+      CHECK(data.contains(std::string(K0)));
+      CHECK(!data.contains(std::string(not_inserted)));
     }
   };
 }

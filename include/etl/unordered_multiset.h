@@ -1569,6 +1569,15 @@ namespace etl
     }
 #endif
 
+    //*************************************************************************
+    /// Check if the unordered_multiset contains the key.
+    //*************************************************************************
+    bool contains(const TKey& key) const
+    {
+      return find(key) != end();
+    }
+
+
   private:
 
     /// The pool of nodes used for the unordered_multiset.

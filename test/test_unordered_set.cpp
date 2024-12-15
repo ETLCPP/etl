@@ -915,8 +915,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_TRUE(data.contains(NDC("FF")));
-      CHECK_FALSE(data.contains(NDC("ZZ")));
+      NDC not_inserted  = NDC("ZZ");
+
+      CHECK_TRUE(data.contains(N0));
+      CHECK_FALSE(data.contains(not_inserted));
     }
   };
 }

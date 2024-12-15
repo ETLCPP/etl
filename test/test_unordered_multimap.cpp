@@ -1068,5 +1068,16 @@ namespace
       CHECK_TRUE(map1 == map2a);
       CHECK_FALSE(map1 == map2b);
     }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK(data.contains(K0));
+      CHECK(!data.contains(not_inserted));
+    }
   };
 }
