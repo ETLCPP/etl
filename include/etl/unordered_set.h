@@ -1217,7 +1217,7 @@ namespace etl
     //*************************************************************************
     /// Check if the unordered_set contains the key.
     //*************************************************************************
-    bool contains(const TKey& key) const
+    bool contains(key_parameter_t key) const
     {
       return find(key) != end();
     }

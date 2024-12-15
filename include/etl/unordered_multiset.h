@@ -1194,6 +1194,14 @@ namespace etl
     }
 #endif
 
+    //*************************************************************************
+    /// Check if the unordered_multiset contains the key.
+    //*************************************************************************
+    bool contains(key_parameter_t key) const
+    {
+      return find(key) != end();
+    }
+
   protected:
 
     //*********************************************************************
@@ -1568,15 +1576,6 @@ namespace etl
       return *this;
     }
 #endif
-
-    //*************************************************************************
-    /// Check if the unordered_multiset contains the key.
-    //*************************************************************************
-    bool contains(const TKey& key) const
-    {
-      return find(key) != end();
-    }
-
 
   private:
 

@@ -1364,7 +1364,7 @@ namespace etl
     //*************************************************************************
     /// Check if the unordered_map contains the key.
     //*************************************************************************
-    bool contains(const TKey& key) const
+    bool contains(const_key_reference key) const
     {
       return find(key) != end();
     }
