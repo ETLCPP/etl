@@ -77,6 +77,7 @@ namespace
       CHECK_EQUAL((ETL_HAS_IDEQUE_REPAIR == 1),                etl::traits::has_ideque_repair);
       CHECK_EQUAL((ETL_HAS_MUTABLE_ARRAY_VIEW == 1),           etl::traits::has_mutable_array_view);
       CHECK_EQUAL((ETL_HAS_VIRTUAL_MESSAGES == 1),             etl::traits::has_virtual_messages);
+      CHECK_EQUAL((ETL_HAS_PACKED == 1),                       etl::traits::has_packed);
 
       CHECK_EQUAL((ETL_IS_DEBUG_BUILD == 1),                   etl::traits::is_debug_build);
       CHECK_EQUAL(__cplusplus,                                 etl::traits::cplusplus);

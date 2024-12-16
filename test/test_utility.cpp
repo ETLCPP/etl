@@ -718,5 +718,31 @@ namespace
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<TFL&&>(etl::move(u4)));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u4)));
     }
+
+#if ETL_HAS_PACKED
+    //*********************************
+    TEST(test_packed)
+    {
+      struct Unpacked
+      {
+        uint32_t a = 0x12345678;
+        uint8_t  b = 0x9A;
+        uint32_t c = 0x87654321;
+      };
+
+      struct ETL_PACKED Packed
+      {
+        uint32_t a = 0x12345678;
+        uint8_t  b = 0x9A;
+        uint32_t c = 0x87654321;
+      }; ETL_END_PACKED
+
+      Unpacked unpacked;
+      Packed   packed;
+
+      CHECK_TRUE(sizeof(unpacked) > sizeof(packed));
+      CHECK_EQUAL(9U, sizeof(packed));
+    }
+#endif
   };
 }
