@@ -456,10 +456,18 @@ SOFTWARE.
 
 //*************************************
 // Determine if the ETL should use __attribute__((packed).
-#if defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_INTEL)
-  #define ETL_PACKED __attribute__((packed))
+#if defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_INTEL) || defined(ETL_COMPILER_ARM6)
+  #define ETL_PACKED     __attribute__((packed))
+  #define ETL_END_PACKED
+  #define ETL_HAS_PACKED 1
+#elif defined(ETL_COMPILER_MICROSOFT)
+  #define ETL_PACKED     __pragma(pack(push, 1))
+  #define ETL_END_PACKED __pragma(pack(pop))
+  #define ETL_HAS_PACKED 1
 #else
   #define ETL_PACKED
+  #define ETL_END_PACKED
+  #define ETL_HAS_PACKED 0
 #endif
 
 //*************************************
@@ -520,6 +528,7 @@ namespace etl
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
+    static ETL_CONSTANT bool has_packed                       = (ETL_HAS_PACKED == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
