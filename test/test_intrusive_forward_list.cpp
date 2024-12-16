@@ -556,6 +556,101 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_back)
+    {
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
+
+      {
+        std::list<ItemNDCNode> compare_data;
+        DataNDC0 data0;
+
+        compare_data.push_back(node1);
+        compare_data.push_back(node2);
+        compare_data.push_back(node3);
+        compare_data.push_back(node4);
+        compare_data.push_back(node5);
+        compare_data.push_back(node6);
+
+        CHECK_NO_THROW(data0.push_back(node1));
+        CHECK_NO_THROW(data0.push_back(node2));
+        CHECK_NO_THROW(data0.push_back(node3));
+        CHECK_NO_THROW(data0.push_back(node4));
+        CHECK_NO_THROW(data0.push_back(node5));
+        CHECK_NO_THROW(data0.push_back(node6));
+
+        bool are_equal = std::equal(data0.begin(), data0.end(), compare_data.begin());
+        CHECK(are_equal);
+        CHECK_EQUAL(6U, data0.size());
+        CHECK_EQUAL(6, std::distance(data0.begin(), data0.end()));
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_front_pop_back)
+    {
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
+
+      {
+        DataNDC0 data0;
+        DataNDC1 data1;
+
+        data0.push_front(node1);
+        data0.push_front(node2);
+        data0.push_front(node3);
+        data0.push_front(node4);
+        data0.push_front(node5);
+        data0.push_front(node6);
+
+        data1.push_front(node1);
+        data1.push_front(node2);
+        data1.push_front(node3);
+        data1.push_front(node4);
+        data1.push_front(node5);
+        data1.push_front(node6);
+
+        CHECK_EQUAL(6U, data0.size());
+        CHECK_EQUAL(6, std::distance(data0.begin(), data0.end()));
+        CHECK(!data0.empty());
+
+        CHECK_EQUAL(data0.front().data.value, node6.data.value);
+        data0.pop_back();
+        CHECK_EQUAL(data0.front().data.value, node6.data.value);
+        data0.pop_back();
+        CHECK_EQUAL(data0.front().data.value, node6.data.value);
+        data0.pop_back();
+        CHECK_EQUAL(data0.front().data.value, node6.data.value);
+        data0.pop_back();
+        CHECK_EQUAL(data0.front().data.value, node6.data.value);
+        data0.pop_back();
+        CHECK_EQUAL(data0.front().data.value, node6.data.value);
+
+        CHECK_EQUAL(1U, data0.size());
+        CHECK_EQUAL(1, std::distance(data0.begin(), data0.end()));
+        CHECK(!data0.empty());
+
+        data0.pop_back();
+
+        CHECK_EQUAL(0U, data0.size());
+        CHECK_EQUAL(0, std::distance(data0.begin(), data0.end()));
+        CHECK(data0.empty());
+
+        CHECK_EQUAL(6U, data1.size());
+        CHECK_EQUAL(6, std::distance(data1.begin(), data1.end()));
+        CHECK(!data1.empty());
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_after_single)
     {
       std::forward_list<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());

@@ -213,6 +213,38 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Pushes a value to the back of the intrusive_forward_list.
+    //*************************************************************************
+    void push_back(link_type& value)
+    {
+      ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked));
+
+      link_type* current = &start;
+      while (current->etl_next != &terminator)
+      {
+        current = current->etl_next;
+      }
+      insert_link_after(*current, value);
+    }
+
+    //*************************************************************************
+    /// Removes a value from the back of the intrusive_forward_list.
+    //*************************************************************************
+    void pop_back()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_forward_list_empty));
+#endif
+
+      link_type* current = &start;
+      while (current->etl_next->etl_next != &terminator)
+      {
+        current = current->etl_next;
+      }
+      disconnect_link_after(*current);
+    }
+
+    //*************************************************************************
     /// Reverses the intrusive_forward_list.
     //*************************************************************************
     void reverse()
