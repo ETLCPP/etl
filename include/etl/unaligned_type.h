@@ -53,7 +53,7 @@ namespace etl
     /// Contains all functionality that doesn't require the type.
     //*************************************************************************
     template <size_t Size_>
-    class unaligned_type_common
+    class ETL_PACKED unaligned_type_common
     {
     public:
 
@@ -214,7 +214,7 @@ namespace etl
     protected:
 
       unsigned char storage[Size];
-    };
+    }; ETL_END_PACKED
 
     template <size_t Size_>
     ETL_CONSTANT size_t unaligned_type_common<Size_>::Size;
@@ -729,7 +729,7 @@ namespace etl
         }
       }
     };
-  };
+  }; ETL_END_PACKED
 
   template <typename T, int Endian_>
   ETL_CONSTANT int unaligned_type<T, Endian_>::Endian;
