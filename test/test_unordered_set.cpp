@@ -45,8 +45,8 @@ SOFTWARE.
 
 namespace
 {
-  typedef TestDataDC<std::string>  DC;
-  typedef TestDataNDC<std::string> NDC;
+  using DC  = TestDataDC<std::string>;
+  using NDC = TestDataNDC<std::string>;
 }
 
 namespace etl
@@ -178,10 +178,10 @@ namespace
 
     using DataM = etl::unordered_set<ItemM, SIZE, SIZE, simple_hash>;
 
-    typedef etl::unordered_set<DC,  SIZE, SIZE / 2, simple_hash> DataDC;
-    typedef etl::unordered_set<NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
-    typedef etl::iunordered_set<NDC, simple_hash> IDataNDC;
-    typedef etl::unordered_set<std::string, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>> DataTransparent;
+    using DataDC          = etl::unordered_set<DC,  SIZE, SIZE / 2, simple_hash>;
+    using DataNDC         = etl::unordered_set<NDC, SIZE, SIZE / 2, simple_hash>;
+    using IDataNDC        = etl::iunordered_set<NDC, simple_hash>;
+    using DataTransparent = etl::unordered_set<std::string, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
 
     const char* CK0  = "FF"; // 0
     const char* CK1  = "FG"; // 1
@@ -520,23 +520,23 @@ namespace
       }
     }
 
-      //*************************************************************************
-      TEST_FIXTURE(SetupFixture, test_insert_range_using_transparent_comparator)
-      {
-        std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_range_using_transparent_comparator)
+    {
+      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
 
-        DataTransparent data;
+      DataTransparent data;
         
-        data.insert(initial.begin(), initial.end());
+      data.insert(initial.begin(), initial.end());
 
-        DataTransparent::iterator idata;
+      DataTransparent::iterator idata;
 
-        for (size_t i = 0UL; i < 8; ++i)
-        {
-          idata = data.find(initial[i]);
-          CHECK(idata != data.end());
-        } 
-      }
+      for (size_t i = 0UL; i < 8; ++i)
+      {
+        idata = data.find(initial[i]);
+        CHECK(idata != data.end());
+      } 
+    }
  
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_range_excess)

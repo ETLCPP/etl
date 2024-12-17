@@ -104,11 +104,11 @@ namespace
     }
   };
 
-  typedef TestDataDC<std::string>  DC;
-  typedef TestDataNDC<std::string> NDC;
+  using DC  = TestDataDC<std::string>;
+  using NDC = TestDataNDC<std::string>;
 
-  typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
-  typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
+  using ElementDC  = ETL_OR_STD::pair<std::string, DC>;
+  using ElementNDC = ETL_OR_STD::pair<std::string, NDC>;
 
   //***************************************************************************
   struct CustomHashFunction
