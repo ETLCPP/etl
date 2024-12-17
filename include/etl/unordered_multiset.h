@@ -1164,6 +1164,43 @@ namespace etl
       return end();
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Finds an element.
+    ///\param key The key to search for.
+    ///\return An iterator to the element if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    iterator find(const K& key)
+    {
+      size_t index = get_bucket_index(key);
+
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
+
+      // Is the bucket not empty?
+      if (!bucket.empty())
+      {
+        // Step though the list until we find the end or an equivalent key.
+        local_iterator inode = bucket.begin();
+        local_iterator iend = bucket.end();
+
+        while (inode != iend)
+        {
+          // Do we have this one?
+          if (key_equal_function(key, inode->key))
+          {
+            return iterator((pbuckets + number_of_buckets), pbucket, inode);
+          }
+
+          ++inode;
+        }
+      }
+
+      return end();
+    }
+#endif
+
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
@@ -1205,43 +1242,6 @@ namespace etl
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
     template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
-    iterator find(const K& key)
-    {
-      size_t index = get_bucket_index(key);
-
-      bucket_t* pbucket = pbuckets + index;
-      bucket_t& bucket = *pbucket;
-
-      // Is the bucket not empty?
-      if (!bucket.empty())
-      {
-        // Step though the list until we find the end or an equivalent key.
-        local_iterator inode = bucket.begin();
-        local_iterator iend = bucket.end();
-
-        while (inode != iend)
-        {
-          // Do we have this one?
-          if (key_equal_function(key, inode->key))
-          {
-            return iterator(pbuckets + number_of_buckets, pbucket, inode);
-          }
-
-          ++inode;
-        }
-      }
-
-      return end();
-    }
-#endif
-
-#if ETL_USING_CPP11
-    //*********************************************************************
-    /// Finds an element.
-    ///\param key The key to search for.
-    ///\return An iterator to the element if the key exists, otherwise end().
-    //*********************************************************************
-    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
     const_iterator find(const K& key) const
     {
       size_t index = get_bucket_index(key);
@@ -1261,7 +1261,7 @@ namespace etl
           // Do we have this one?
           if (key_equal_function(key, inode->key))
           {
-            return iterator(pbuckets + number_of_buckets, pbucket, inode);
+            return iterator((pbuckets + number_of_buckets), pbucket, inode);
           }
 
           ++inode;
@@ -1271,7 +1271,7 @@ namespace etl
       return end();
     }
 #endif
-
+    
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
     /// The range is defined by two iterators, the first pointing to the first
@@ -1298,6 +1298,35 @@ namespace etl
       return ETL_OR_STD::pair<iterator, iterator>(f, l);
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a range containing all elements with key key in the container.
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
+    /// element of the range.
+    ///\param key The key to search for.
+    ///\return An iterator pair to the range of elements if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
+    {
+      iterator f = find(key);
+      iterator l = f;
+
+      if (l != end())
+      {
+        ++l;
+
+        while ((l != end()) && key_equal_function(key, *l))
+        {
+          ++l;
+        }
+      }
+
+      return ETL_OR_STD::pair<iterator, iterator>(f, l);
+    }
+#endif
+
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
     /// The range is defined by two iterators, the first pointing to the first
@@ -1323,6 +1352,35 @@ namespace etl
 
       return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a range containing all elements with key key in the container.
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
+    /// element of the range.
+    ///\param key The key to search for.
+    ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
+    {
+      const_iterator f = find(key);
+      const_iterator l = f;
+
+      if (l != end())
+      {
+        ++l;
+
+        while ((l != end()) && key_equal_function(key, *l))
+        {
+          ++l;
+        }
+      }
+
+      return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
+    }
+#endif
 
     //*************************************************************************
     /// Gets the size of the unordered_multiset.

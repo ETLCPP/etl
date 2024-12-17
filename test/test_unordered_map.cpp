@@ -149,11 +149,11 @@ namespace
     }
   };
 
-  typedef TestDataDC<std::string>  DC;
-  typedef TestDataNDC<std::string> NDC;
+  using DC  = TestDataDC<std::string>;
+  using NDC = TestDataNDC<std::string>;
 
-  typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
-  typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
+  using ElementDC  = ETL_OR_STD::pair<std::string, DC>;
+  using ElementNDC = ETL_OR_STD::pair<std::string, NDC>;
 }
 
 namespace etl
@@ -220,11 +220,11 @@ namespace
     using ItemM = TestDataM<int>;
     using DataM = etl::unordered_map<std::string, ItemM, SIZE, SIZE, std::hash<std::string>>;
 
-    typedef etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
-    typedef etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
-    typedef etl::iunordered_map<std::string, NDC, simple_hash> IDataNDC;
-    typedef etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>> DataNDCTransparent;
-    typedef etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, transparent_hash, etl::equal_to<>> DataDCTransparent;
+    using DataDC             = etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash>;
+    using DataNDC            = etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash>;
+    using IDataNDC           = etl::iunordered_map<std::string, NDC, simple_hash>;
+    using DataNDCTransparent = etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
+    using DataDCTransparent  = etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
 
     NDC N0  = NDC("A");
     NDC N1  = NDC("B");
