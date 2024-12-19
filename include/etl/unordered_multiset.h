@@ -1493,6 +1493,25 @@ namespace etl
     }
 #endif
 
+    //*************************************************************************
+    /// Check if the unordered_multiset contains the key.
+    //*************************************************************************
+    bool contains(key_parameter_t key) const
+    {
+      return find(key) != end();
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Check if the unordered_map contains the key.
+    //*************************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    bool contains(const K& key) const
+    {
+      return find(key) != end();
+    }
+#endif
+
   protected:
 
     //*********************************************************************

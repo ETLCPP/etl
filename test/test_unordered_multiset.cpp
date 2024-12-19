@@ -1079,5 +1079,29 @@ namespace
       CHECK_TRUE(set1 == set2a);
       CHECK_FALSE(set1 == set2b);
     }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      NDC not_inserted  = NDC("ZZ");
+
+      CHECK_TRUE(data.contains(N0));
+      CHECK_FALSE(data.contains(not_inserted));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator)
+    {
+      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+
+      DataTransparent data(initial.begin(), initial.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains("FF"));
+      CHECK_FALSE(data.contains(not_inserted));
+    }
   };
 }

@@ -1409,5 +1409,27 @@ namespace
       CHECK_TRUE(map1 == map2a);
       CHECK_FALSE(map1 == map2b);
     }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains(K0));
+      CHECK_FALSE(data.contains(std::string(not_inserted)));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator)
+    {
+      DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains("FF"));
+      CHECK_FALSE(data.contains(not_inserted));
+    }
   };
 }
