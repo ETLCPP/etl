@@ -1207,5 +1207,16 @@ namespace
       CHECK_TRUE(map1 == map2a);
       CHECK_FALSE(map1 == map2b);
     }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK(data.contains(std::string(K0)));
+      CHECK(!data.contains(std::string(not_inserted)));
+    }
   };
 }
