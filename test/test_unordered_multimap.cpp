@@ -1234,8 +1234,19 @@ namespace
 
       const char* not_inserted  = "ZZ";
 
-      CHECK(data.contains(K0));
-      CHECK(!data.contains(not_inserted));
+      CHECK_TRUE(data.contains(K0));
+      CHECK_FALSE(data.contains(not_inserted));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator)
+    {
+      DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains("FF"));
+      CHECK_FALSE(data.contains(not_inserted));
     }
   };
 }
