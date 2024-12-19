@@ -204,26 +204,26 @@ namespace
     const char* CK18 = "FX"; // 8
     const char* CK19 = "FY"; // 9
 
-    NDC N0  = NDC("FF");
-    NDC N1  = NDC("FG");
-    NDC N2  = NDC("FH");
-    NDC N3  = NDC("FI");
-    NDC N4  = NDC("FJ");
-    NDC N5  = NDC("FK");
-    NDC N6  = NDC("FL");
-    NDC N7  = NDC("FM");
-    NDC N8  = NDC("FN");
-    NDC N9  = NDC("FO");
-    NDC N10 = NDC("FP");
-    NDC N11 = NDC("FQ");
-    NDC N12 = NDC("FR");
-    NDC N13 = NDC("FS");
-    NDC N14 = NDC("FT");
-    NDC N15 = NDC("FU");
-    NDC N16 = NDC("FV");
-    NDC N17 = NDC("FW");
-    NDC N18 = NDC("FX");
-    NDC N19 = NDC("FY");
+    NDC N0  = NDC(CK0);
+    NDC N1  = NDC(CK1);
+    NDC N2  = NDC(CK2);
+    NDC N3  = NDC(CK3);
+    NDC N4  = NDC(CK4);
+    NDC N5  = NDC(CK5);
+    NDC N6  = NDC(CK6);
+    NDC N7  = NDC(CK7);
+    NDC N8  = NDC(CK8);
+    NDC N9  = NDC(CK9);
+    NDC N10 = NDC(CK10);
+    NDC N11 = NDC(CK11);
+    NDC N12 = NDC(CK12);
+    NDC N13 = NDC(CK13);
+    NDC N14 = NDC(CK14);
+    NDC N15 = NDC(CK15);
+    NDC N16 = NDC(CK16);
+    NDC N17 = NDC(CK17);
+    NDC N18 = NDC(CK18);
+    NDC N19 = NDC(CK19);
 
     std::vector<NDC> initial_data;
     std::vector<NDC> excess_data;
