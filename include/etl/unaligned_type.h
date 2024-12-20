@@ -60,10 +60,10 @@ namespace etl
       static ETL_CONSTANT size_t Size = Size_;
 
       typedef unsigned char                         storage_type;
-      typedef storage_type* pointer;
-      typedef const storage_type* const_pointer;
-      typedef storage_type* iterator;
-      typedef const storage_type* const_iterator;
+      typedef storage_type*                         pointer;
+      typedef const storage_type*                   const_pointer;
+      typedef storage_type*                         iterator;
+      typedef const storage_type*                   const_iterator;
       typedef etl::reverse_iterator<iterator>       reverse_iterator;
       typedef etl::reverse_iterator<const_iterator> const_reverse_iterator;
 
