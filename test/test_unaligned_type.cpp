@@ -981,6 +981,26 @@ namespace
       CHECK_EQUAL(0x12, bev0);
       CHECK_EQUAL(0x34, bev1);
     }
+
+    //*************************************************************************
+    TEST(test_at_address)
+    {
+      uint8_t data[] = {0x01, 0x02, 0x03, 0x04};
+
+      CHECK_EQUAL(etl::be_uint32_t::at_address(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data), 0x04030201);
+
+      etl::be_uint32_t::at_address(data) = 0x12345678;
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data), 0x78563412);
+    }
+
+    TEST(test_const_at_address)
+    {
+      const uint8_t data[] = {0x01, 0x02, 0x03, 0x04};
+
+      CHECK_EQUAL(etl::be_uint32_t::at_address(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data), 0x04030201);
+    }
   };
 }
 

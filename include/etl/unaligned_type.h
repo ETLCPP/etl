@@ -729,6 +729,28 @@ namespace etl
         }
       }
     };
+
+    //*******************************************
+    /// at_address
+    ///\brief Helps to reinterprete memory as unaligned_type. Overload for write access.
+    ///\tparam address   Pointer to memory to be reinterpreted.
+    ///\return Reference to unaligned_type object at location specified by address
+    //*******************************************
+    static unaligned_type<T, Endian_>& at_address(void* address)
+    {
+      return *reinterpret_cast<unaligned_type<T, Endian_>*>(address);
+    }
+
+    //*******************************************
+    /// at_address
+    ///\brief Helps to reinterprete memory as unaligned_type. Overload for read only access to const memory.
+    ///\tparam address   Pointer to memory to be reinterpreted.
+    ///\return Reference to unaligned_type object at location specified by address
+    //*******************************************
+    static const unaligned_type<T, Endian_>& at_address(const void* address)
+    {
+      return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
+    }
   };
 
   template <typename T, int Endian_>
