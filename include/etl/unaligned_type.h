@@ -38,6 +38,8 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "endianness.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "iterator.h"
 #include "algorithm.h"
 #include "bit.h"
@@ -46,6 +48,34 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for unaligned_type exceptions.
+  ///\ingroup pool
+  //***************************************************************************
+  struct unaligned_type_exception : public etl::exception
+  {
+  public:
+
+    unaligned_type_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The base class for unaligned_type buffer overflow.
+  ///\ingroup pool
+  //***************************************************************************
+  class unaligned_type_buffer_size : public unaligned_type_exception
+  {
+  public:
+
+    unaligned_type_buffer_size(string_type file_name_, numeric_type line_number_)
+      : unaligned_type_exception(ETL_ERROR_TEXT("unaligned_type:buffer size", ETL_UNALIGNED_TYPE_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   namespace private_unaligned_type
   {
     //*************************************************************************
@@ -733,7 +763,7 @@ namespace etl
     //*******************************************
     /// at_address
     ///\brief Helps to reinterprete memory as unaligned_type. Overload for write access.
-    ///\tparam address   Pointer to memory to be reinterpreted.
+    ///\param address   Pointer to memory to be reinterpreted.
     ///\return Reference to unaligned_type object at location specified by address
     //*******************************************
     static unaligned_type<T, Endian_>& at_address(void* address)
@@ -744,11 +774,69 @@ namespace etl
     //*******************************************
     /// at_address
     ///\brief Helps to reinterprete memory as unaligned_type. Overload for read only access to const memory.
-    ///\tparam address   Pointer to memory to be reinterpreted.
+    ///\param address   Pointer to memory to be reinterpreted.
     ///\return Reference to unaligned_type object at location specified by address
     //*******************************************
     static const unaligned_type<T, Endian_>& at_address(const void* address)
     {
+      return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
+    }
+
+    //*******************************************
+    /// at_address
+    ///\brief Helps to reinterprete memory as unaligned_type. Overload for write access.
+    ///\param address     Pointer to memory to be reinterpreted.
+    ///\param buffer_size Size in bytes for run time size check
+    ///\return Reference to unaligned_type object at location specified by address
+    //*******************************************
+    static unaligned_type<T, Endian_>& at_address(void* address, size_t buffer_size)
+    {
+      ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      return *reinterpret_cast<unaligned_type<T, Endian_>*>(address);
+    }
+
+    //*******************************************
+    /// at_address
+    ///\brief Helps to reinterprete memory as unaligned_type. Overload for read only access to const memory.
+    ///\param address     Pointer to memory to be reinterpreted.
+    ///\param buffer_size Size in bytes for runtime size check
+    ///\return Reference to unaligned_type object at location specified by address
+    //*******************************************
+    static const unaligned_type<T, Endian_>& at_address(const void* address, size_t buffer_size)
+    {
+      ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
+    }
+
+    //*******************************************
+    /// at_address
+    ///\brief Helps to reinterprete memory as unaligned_type. Overload for write access.
+    ///\tparam BufferSize   Size in bytes for compile time size check
+    ///\param address       Pointer to memory to be reinterpreted.
+    ///\return Reference to unaligned_type object at location specified by address
+    //*******************************************
+    template <size_t BufferSize>
+    static unaligned_type<T, Endian_>& at_address(void* address)
+    {
+      ETL_STATIC_ASSERT(sizeof(T) <= BufferSize, "Buffer size to small for type");
+
+      return *reinterpret_cast<unaligned_type<T, Endian_>*>(address);
+    }
+
+    //*******************************************
+    /// at_address
+    ///\brief Helps to reinterprete memory as unaligned_type. Overload for read only access to const memory.
+    ///\tparam BufferSize   Size in bytes for compile size check
+    ///\param address       Pointer to memory to be reinterpreted.
+    ///\return Reference to unaligned_type object at location specified by address
+    //*******************************************
+    template <size_t BufferSize>
+    static unaligned_type<T, Endian_>& at_address(const void* address)
+    {
+      ETL_STATIC_ASSERT(sizeof(T) <= BufferSize, "Buffer size to small for type");
+
       return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
     }
   };
