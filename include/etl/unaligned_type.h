@@ -833,7 +833,7 @@ namespace etl
     ///\return Reference to unaligned_type object at location specified by address
     //*******************************************
     template <size_t BufferSize>
-    static unaligned_type<T, Endian_>& at_address(const void* address)
+    static const unaligned_type<T, Endian_>& at_address(const void* address)
     {
       ETL_STATIC_ASSERT(sizeof(T) <= BufferSize, "Buffer size to small for type");
 

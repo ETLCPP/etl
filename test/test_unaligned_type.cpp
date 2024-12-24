@@ -990,6 +990,27 @@ namespace
       CHECK_EQUAL(etl::be_uint32_t::at_address(data), 0x01020304);
       CHECK_EQUAL(etl::le_uint32_t::at_address(data), 0x04030201);
 
+      // with overflow checks: at runtime
+      CHECK_EQUAL(etl::be_uint32_t::at_address(data, sizeof(data)), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data, sizeof(data)), 0x04030201);
+      CHECK_EQUAL(etl::be_uint32_t::at_address(data, sizeof(data) + 1), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data, sizeof(data) + 1), 0x04030201);
+      CHECK_THROW(etl::be_uint32_t::at_address(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_uint32_t::at_address(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint32_t::at_address(data, 0), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_uint32_t::at_address(data, 0), etl::unaligned_type_buffer_size);
+
+      // with overflow checks: at compile time
+      CHECK_EQUAL(etl::be_uint32_t::at_address<sizeof(data)>(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address<sizeof(data)>(data), 0x04030201);
+      CHECK_EQUAL(etl::be_uint32_t::at_address<sizeof(data) + 1>(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address<sizeof(data) + 1>(data), 0x04030201);
+      // static_assert:
+      //CHECK_THROW(etl::be_uint32_t::at_address<sizeof(data) - 1>(data), etl::unaligned_type_buffer_size);
+      //CHECK_THROW(etl::le_uint32_t::at_address<sizeof(data) - 1>(data), etl::unaligned_type_buffer_size);
+      //CHECK_THROW(etl::be_uint32_t::at_address<0>(data), etl::unaligned_type_buffer_size);
+      //CHECK_THROW(etl::le_uint32_t::at_address<0>(data), etl::unaligned_type_buffer_size);
+
       etl::be_uint32_t::at_address(data) = 0x12345678;
       CHECK_EQUAL(etl::le_uint32_t::at_address(data), 0x78563412);
     }
@@ -1000,6 +1021,27 @@ namespace
 
       CHECK_EQUAL(etl::be_uint32_t::at_address(data), 0x01020304);
       CHECK_EQUAL(etl::le_uint32_t::at_address(data), 0x04030201);
+
+      // with overflow checks: at runtime
+      CHECK_EQUAL(etl::be_uint32_t::at_address(data, sizeof(data)), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data, sizeof(data)), 0x04030201);
+      CHECK_EQUAL(etl::be_uint32_t::at_address(data, sizeof(data) + 1), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address(data, sizeof(data) + 1), 0x04030201);
+      CHECK_THROW(etl::be_uint32_t::at_address(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_uint32_t::at_address(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint32_t::at_address(data, 0), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_uint32_t::at_address(data, 0), etl::unaligned_type_buffer_size);
+
+      // with overflow checks: at compile time
+      CHECK_EQUAL(etl::be_uint32_t::at_address<sizeof(data)>(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address<sizeof(data)>(data), 0x04030201);
+      CHECK_EQUAL(etl::be_uint32_t::at_address<sizeof(data) + 1>(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t::at_address<sizeof(data) + 1>(data), 0x04030201);
+      // static_assert:
+      //CHECK_THROW(etl::be_uint32_t::at_address<sizeof(data) - 1>(data), etl::unaligned_type_buffer_size);
+      //CHECK_THROW(etl::le_uint32_t::at_address<sizeof(data) - 1>(data), etl::unaligned_type_buffer_size);
+      //CHECK_THROW(etl::be_uint32_t::at_address<0>(data), etl::unaligned_type_buffer_size);
+      //CHECK_THROW(etl::le_uint32_t::at_address<0>(data), etl::unaligned_type_buffer_size);
     }
   };
 }
