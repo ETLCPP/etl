@@ -828,7 +828,7 @@ namespace etl
     //*******************************************
     /// at_address
     ///\brief Helps to reinterprete memory as unaligned_type. Overload for read only access to const memory.
-    ///\tparam BufferSize   Size in bytes for compile size check
+    ///\tparam BufferSize   Size in bytes for compile time size check
     ///\param address       Pointer to memory to be reinterpreted.
     ///\return Reference to unaligned_type object at location specified by address
     //*******************************************
