@@ -2323,9 +2323,9 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memcmp.
-  /// \param source begin
-  /// \param source end
-  /// \param destination begin
+  /// \param sb Source begin
+  /// \param se Source end
+  /// \param db Destination begin
   /// \return < 0	The first byte that does not match in both memory blocks has a lower value in 'sb' than in 'db' when evaluated as unsigned char values.
   ///   0 The contents of both memory blocks are equal
   /// > 0	The first byte that does not match in both memory blocks has a greater value in 'sb' than in 'db' when evaluated as unsigned char values.

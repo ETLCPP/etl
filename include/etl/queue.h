@@ -337,7 +337,7 @@ namespace etl
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
+    ///\param args The arguments to use to construct the item in the queue.
     //*************************************************************************
     template <typename ... Args>
     void emplace(Args && ... args)
@@ -352,7 +352,6 @@ namespace etl
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
     void emplace()
     {
