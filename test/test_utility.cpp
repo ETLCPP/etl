@@ -678,7 +678,7 @@ namespace
         uint32_t c = 0x87654321;
       };
 
-      struct ETL_PACKED Packed
+      ETL_PACKED_STRUCT(Packed)
       {
         uint32_t a = 0x12345678;
         uint8_t  b = 0x9A;
