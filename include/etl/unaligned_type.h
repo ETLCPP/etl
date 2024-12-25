@@ -41,19 +41,48 @@ SOFTWARE.
 #include "iterator.h"
 #include "algorithm.h"
 #include "bit.h"
+#include "array.h"
+#include "exception.h"
+#include "file_error_numbers.h"
+
+#include <bit>
 
 #include <string.h>
 
 namespace etl
 {
+  struct unaligned_type_exception : public etl::exception
+  {
+  public:
+
+    unaligned_type_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Buffer size exception.
+  //***************************************************************************
+  class unaligned_type_buffer_size : public unaligned_type_exception
+  {
+  public:
+
+    unaligned_type_buffer_size(string_type file_name_, numeric_type line_number_)
+      : unaligned_type_exception(ETL_ERROR_TEXT("unaligned_type:buffer size", ETL_UNALIGNED_TYPE_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   namespace private_unaligned_type
   {
     //*************************************************************************
     /// unaligned_type_common
     /// Contains all functionality that doesn't require the type.
+    /// ETL_PACKED ensures that GCC does not complain when used in a packed object.
     //*************************************************************************
     template <size_t Size_>
-    class ETL_PACKED unaligned_type_common
+    ETL_PACKED_CLASS(unaligned_type_common)
     {
     public:
 
@@ -227,7 +256,7 @@ namespace etl
   ///\tparam Endian The endianness of the arithmetic type.
   //*************************************************************************
   template <typename T, int Endian_>
-  class ETL_PACKED unaligned_type : public private_unaligned_type::unaligned_type_common<sizeof(T)>
+  ETL_PACKED_CLASS(unaligned_type) : public private_unaligned_type::unaligned_type_common<sizeof(T)>
   {
   public:
 
@@ -243,8 +272,8 @@ namespace etl
     typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::reverse_iterator       reverse_iterator;
     typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::const_reverse_iterator const_reverse_iterator;
 
-    static ETL_CONSTANT int Endian = Endian_;
-    static ETL_CONSTANT size_t Size = private_unaligned_type::unaligned_type_common<sizeof(T)>::Size;
+    static ETL_CONSTANT int    Endian = Endian_;
+    static ETL_CONSTANT size_t Size   = private_unaligned_type::unaligned_type_common<sizeof(T)>::Size;
 
     //*************************************************************************
     /// Default constructor
@@ -261,6 +290,24 @@ namespace etl
       unaligned_copy<T>::copy(value, this->storage);
     }
 
+    //*************************************************************************
+    /// Construct from an address.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_type(const void* address)
+    {
+      etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from an address and size.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_type(const void* address, size_t buffer_size)
+    {
+      ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
+    }
+    
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
@@ -314,6 +361,7 @@ namespace etl
 
       return value;
     }
+
 
     //*************************************************************************
     /// Unaligned copy
