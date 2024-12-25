@@ -391,3 +391,5 @@ test/test_file_list.txt
 examples/QueuedMessageRouter/vs2022/.vs/QueuedMessageRouter/CopilotIndices
 examples/QueuedMessageRouter/vs2022/.vs/QueuedMessageRouter/FileContentIndex
 examples/QueuedMessageRouter/vs2022/.vs/QueuedMessageRouter/v17
+test/etl_error_handler/assert_errors/build-make
+test/etl_error_handler/assert_function/build-make
