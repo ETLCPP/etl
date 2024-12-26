@@ -34,7 +34,7 @@ SOFTWARE.
 #include <string>
 #include <type_traits>
 
-class Test_Singleton: public ::etl::singleton_base<Test_Singleton>
+class Test_Singleton: public etl::singleton_base<Test_Singleton>
 {
 public:
 
@@ -62,7 +62,6 @@ namespace
     //*************************************************************************
     TEST(test1)
     {
-
       CHECK(!Test_Singleton::is_valid());
       CHECK_THROW(Test_Singleton::instance(), etl::singleton_base_not_created);
 
