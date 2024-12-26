@@ -463,15 +463,19 @@ SOFTWARE.
 //*************************************
 // Determine if the ETL should use __attribute__((packed).
 #if defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_INTEL) || defined(ETL_COMPILER_ARM6)
-  #define ETL_PACKED     __attribute__((packed))
+  #define ETL_PACKED_CLASS(class_type)   class  __attribute__((packed)) class_type
+  #define ETL_PACKED_STRUCT(struct_type) struct __attribute__((packed)) struct_type
   #define ETL_END_PACKED
   #define ETL_HAS_PACKED 1
 #elif defined(ETL_COMPILER_MICROSOFT)
-  #define ETL_PACKED     __pragma(pack(push, 1))
+  #define ETL_PACKED_CLASS(class_type)   __pragma(pack(push, 1)) class  class_type
+  #define ETL_PACKED_STRUCT(struct_type) __pragma(pack(push, 1)) struct struct_type
+  #define ETL_PACKED     
   #define ETL_END_PACKED __pragma(pack(pop))
   #define ETL_HAS_PACKED 1
 #else
-  #define ETL_PACKED
+  #define ETL_PACKED_CLASS(class_type)   class  class_type
+  #define ETL_PACKED_STRUCT(struct_type) struct struct_type
   #define ETL_END_PACKED
   #define ETL_HAS_PACKED 0
 #endif
