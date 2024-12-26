@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "error_handler.h"
+#include "nullptr.h"
 #include "file_error_numbers.h"
 
 namespace etl
@@ -93,7 +94,7 @@ namespace etl
   /// Usage example:
   ///
   /// class Origin
-  /// :   singleton<Origin>
+  ///   : singleton<Origin>
   /// {
   /// public:
   ///     Origin(int x, int y)
@@ -112,9 +113,29 @@ namespace etl
   /// to be created by the user before calling instance(). This way, the user has better control
   /// over the instance lifetime instead of e.g. lazy initialization.
   //***********************************************************************
-  template<class T>
+  template <typename T>
   class singleton_base
   {
+  public:
+
+    //***********************************************************************
+    // Returns a reference to the instance.
+    //***********************************************************************
+    static T& instance()
+    {
+      ETL_ASSERT(m_self != ETL_NULLPTR, ETL_ERROR(etl::singleton_base_not_created));
+
+      return *m_self;
+    }
+
+    //***********************************************************************
+    /// Returns whether an instance has been attached to singleton<T> or not.
+    //***********************************************************************
+    static bool is_valid() 
+    { 
+      return (m_self != ETL_NULLPTR); 
+    }
+
   protected:
 
     //***********************************************************************
@@ -123,32 +144,21 @@ namespace etl
     //***********************************************************************
     explicit singleton_base(T& theInstance)
     {
-      ETL_ASSERT(m_self == nullptr, ETL_ERROR(etl::singleton_base_already_created));
+      ETL_ASSERT(m_self == ETL_NULLPTR, ETL_ERROR(etl::singleton_base_already_created));
+
       m_self = &theInstance;
     }
 
     //***********************************************************************
     /// Removes the internal reference to the instance passed in the constructor.
     //***********************************************************************
-    ~singleton_base() { m_self = nullptr; }
-
-  public:
-
-    //***********************************************************************
-    // Returns a reference to the instance.
-    //***********************************************************************
-    static T& instance()
-    {
-      ETL_ASSERT(m_self != nullptr, ETL_ERROR(etl::singleton_base_not_created));
-      return *m_self;
+    ~singleton_base() 
+    { 
+      m_self = ETL_NULLPTR; 
     }
 
-    //***********************************************************************
-    /// Returns whether an instance has been attached to singleton<T> or not.
-    //***********************************************************************
-    static bool is_valid() { return (m_self != nullptr); }
-
   private:
+
     static T* m_self;
   };
 
@@ -156,7 +166,7 @@ namespace etl
   /// No violation of one definition rule as this is a class template
   //***********************************************************************
   template<class T>
-  T* singleton_base<T>::m_self = nullptr;
+  T* singleton_base<T>::m_self = ETL_NULLPTR;
 }
 
 #endif

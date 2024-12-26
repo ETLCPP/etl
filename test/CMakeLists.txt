@@ -233,6 +233,7 @@ add_executable(etl_tests
 	test_set.cpp
 	test_shared_message.cpp
 	test_singleton.cpp
+	test_singleton_base.cpp
 	test_smallest.cpp
 	test_span_dynamic_extent.cpp
 	test_span_fixed_extent.cpp
