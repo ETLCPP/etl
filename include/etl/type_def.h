@@ -58,10 +58,9 @@ namespace etl
     typedef TIdType id_type;
 
     //*********************************************************************
-    ETL_CONSTEXPR type_def()
-      : value(TValue())
-    {
-    }
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR type_def() = default;
+#endif
 
     //*********************************************************************
     ETL_CONSTEXPR type_def(TValue value_)
@@ -70,10 +69,9 @@ namespace etl
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR type_def(const type_def& other)
-      : value(other.value)
-    {
-    }
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR type_def(const type_def& other) = default;
+#endif
 
     //*********************************************************************
     ETL_CONSTEXPR operator TValue() const
@@ -245,11 +243,9 @@ namespace etl
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator =(const type_def& rhs)
-    {
-      value = rhs.value;
-      return *this;
-    }
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 type_def& operator =(const type_def& rhs) = default;
+#endif
 
     //*********************************************************************
     TValue& get()
