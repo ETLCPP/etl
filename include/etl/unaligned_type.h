@@ -299,7 +299,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from an address and size.
+    /// Construct from an address and buffer size.
     //*************************************************************************
     ETL_CONSTEXPR14 unaligned_type(const void* address, size_t buffer_size)
     {
@@ -307,7 +307,7 @@ namespace etl
 
       etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
     }
-    
+
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
@@ -361,7 +361,6 @@ namespace etl
 
       return value;
     }
-
 
     //*************************************************************************
     /// Unaligned copy
