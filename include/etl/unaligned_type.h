@@ -299,7 +299,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from an address and size.
+    /// Construct from an address and buffer size.
     //*************************************************************************
     ETL_CONSTEXPR14 unaligned_type(const void* address, size_t buffer_size)
     {
@@ -307,7 +307,7 @@ namespace etl
 
       etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
     }
-    
+
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
@@ -360,56 +360,6 @@ namespace etl
       unaligned_copy<T>::copy(this->storage, value);
 
       return value;
-    }
-
-    // For run time pointer
-    static unaligned_type<T, Endian_>& at_address(void* address)
-    {
-      //auto p = (::new(address) unaligned_type<T, Endian_>());
-
-      //return *p;
-
-      return *reinterpret_cast<unaligned_type<T, Endian_>*>(address);
-    }
-
-    // For const run time pointer
-    static const unaligned_type<T, Endian_>& at_address(const void* address)
-    {
-      return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
-    }
-
-    // For run time pointer and size
-    static unaligned_type<T, Endian_>& at_address(void* address, size_t buffer_size)
-    {
-      ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
-
-      return *reinterpret_cast<unaligned_type<T, Endian_>*>(address);
-    }
-
-    // For const run time pointer and size
-    static const unaligned_type<T, Endian_>& at_address(const void* address, size_t buffer_size)
-    {
-      ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
-
-      return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
-    }
-
-    // For run time pointer and compile time size
-    template <size_t Size>
-    static unaligned_type<T, Endian_>& at_address(void* address)
-    {
-      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Buffer size to small for type");
-
-      return *reinterpret_cast<unaligned_type<T, Endian_>*>(address);
-    }
-
-    // For const run time pointer and compile time size
-    template <size_t Size>
-    static unaligned_type<T, Endian_>& at_address(const void* address)
-    {
-      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Buffer size to small for type");
-
-      return *reinterpret_cast<const unaligned_type<T, Endian_>*>(address);
     }
 
     //*************************************************************************
