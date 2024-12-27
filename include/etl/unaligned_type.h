@@ -821,7 +821,7 @@ namespace etl
     //*************************************************************************
     /// Const storage access.
     //*************************************************************************
-    ETL_CONSTEXPR const storage_value_type* data() const
+    ETL_CONSTEXPR14 const storage_value_type* data() const
     {
       return storage;
     }
@@ -829,7 +829,7 @@ namespace etl
     //*************************************************************************
     /// Storage access.
     //*************************************************************************
-    ETL_CONSTEXPR storage_value_type* data()
+    ETL_CONSTEXPR14 storage_value_type* data()
     {
       return storage;
     }
@@ -897,7 +897,7 @@ namespace etl
     //*************************************************************************
     /// Constructor from const pointer.
     //*************************************************************************
-    ETL_CONSTEXPR explicit unaligned_type_ext(const void* address, size_t buffer_size = sizeof(T))
+    ETL_CONSTEXPR14 explicit unaligned_type_ext(const void* address, size_t buffer_size = sizeof(T))
     : storage(static_cast<const storage_value_type*>(address))
     {
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
@@ -906,7 +906,7 @@ namespace etl
     //*************************************************************************
     /// Constructor from pointer.
     //*************************************************************************
-    ETL_CONSTEXPR explicit unaligned_type_ext(void* address, size_t buffer_size = sizeof(T))
+    ETL_CONSTEXPR14 explicit unaligned_type_ext(void* address, size_t buffer_size = sizeof(T))
     : storage(static_cast<storage_value_type*>(address))
     {
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
@@ -977,7 +977,7 @@ namespace etl
     //*************************************************************************
     /// Const storage access.
     //*************************************************************************
-    ETL_CONSTEXPR const storage_value_type* data() const
+    ETL_CONSTEXPR14 const storage_value_type* data() const
     {
       return storage;
     }
@@ -985,7 +985,7 @@ namespace etl
     //*************************************************************************
     /// Storage access.
     //*************************************************************************
-    ETL_CONSTEXPR storage_value_type* data()
+    ETL_CONSTEXPR14 storage_value_type* data()
     {
       return storage;
     }
