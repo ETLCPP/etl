@@ -981,6 +981,75 @@ namespace
       CHECK_EQUAL(0x12, bev0);
       CHECK_EQUAL(0x34, bev1);
     }
+
+    //*************************************************************************
+    TEST(test_unaligned_type_ext)
+    {
+      uint8_t data[] = {0x01, 0x02, 0x03, 0x04};
+
+      CHECK_EQUAL(etl::be_uint32_t_ext(data), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t_ext(data), 0x04030201);
+
+      // with overflow checks: at runtime
+      CHECK_EQUAL(etl::be_uint32_t_ext(data, sizeof(data)), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t_ext(data, sizeof(data)), 0x04030201);
+      CHECK_EQUAL(etl::be_uint32_t_ext(data, sizeof(data) + 1), 0x01020304);
+      CHECK_EQUAL(etl::le_uint32_t_ext(data, sizeof(data) + 1), 0x04030201);
+      CHECK_THROW(etl::be_uint32_t_ext(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_uint32_t_ext(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint32_t_ext(data, 0), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_uint32_t_ext(data, 0), etl::unaligned_type_buffer_size);
+
+      etl::be_uint32_t_ext{data} = 0x12345678;
+      CHECK_EQUAL(etl::le_uint32_t_ext(data), 0x78563412);
+    }
+
+    TEST(test_unaligned_type_ext_set_storage)
+    {
+      uint8_t data1[] = {0x12, 0x34, 0x56, 0x78};
+      uint8_t data2[] = {0x78, 0x56, 0x34, 0x12};
+
+      etl::be_uint32_t_ext be_u32_data;
+
+      be_u32_data.set_storage(data1);
+      CHECK_EQUAL(be_u32_data, 0x12345678);
+
+      be_u32_data.set_storage(data2);
+      CHECK_EQUAL(be_u32_data, 0x78563412);
+
+      // static assert:
+      //be_u32_data.set_storage<0>(data1);
+      //be_u32_data.set_storage<3>(data1);
+      be_u32_data.set_storage<4>(data1);
+      CHECK_EQUAL(be_u32_data, 0x12345678);
+      be_u32_data.set_storage<5>(data2);
+      CHECK_EQUAL(be_u32_data, 0x78563412);
+
+      CHECK_THROW(be_u32_data.set_storage(data1, 0), etl::unaligned_type_buffer_size);
+      CHECK_THROW(be_u32_data.set_storage(data1, 3), etl::unaligned_type_buffer_size);
+      be_u32_data.set_storage(data1, 4);
+      CHECK_EQUAL(be_u32_data, 0x12345678);
+      be_u32_data.set_storage(data2, 5);
+      CHECK_EQUAL(be_u32_data, 0x78563412);
+    }
+
+    TEST(test_const_unaligned_type_ext)
+    {
+      const uint8_t data[] = {0x01, 0x02, 0x03, 0x04};
+
+      CHECK_EQUAL(etl::be_const_uint32_t_ext(data), 0x01020304);
+      CHECK_EQUAL(etl::le_const_uint32_t_ext(data), 0x04030201);
+
+      // with overflow checks: at runtime
+      CHECK_EQUAL(etl::be_const_uint32_t_ext(data, sizeof(data)), 0x01020304);
+      CHECK_EQUAL(etl::le_const_uint32_t_ext(data, sizeof(data)), 0x04030201);
+      CHECK_EQUAL(etl::be_const_uint32_t_ext(data, sizeof(data) + 1), 0x01020304);
+      CHECK_EQUAL(etl::le_const_uint32_t_ext(data, sizeof(data) + 1), 0x04030201);
+      CHECK_THROW(etl::be_const_uint32_t_ext(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_const_uint32_t_ext(data, sizeof(data) - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_const_uint32_t_ext(data, 0), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::le_const_uint32_t_ext(data, 0), etl::unaligned_type_buffer_size);
+    }
   };
 }
 
