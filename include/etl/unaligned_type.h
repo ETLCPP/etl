@@ -37,6 +37,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
+#include "nullptr.h"
 #include "endianness.h"
 #include "error_handler.h"
 #include "exception.h"
@@ -790,7 +791,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    template <int Endian_Other, typename StorageContainer_Other = unaligned_type<T, Endian_> >
+    template <int Endian_Other, typename StorageContainer_Other>
     ETL_CONSTEXPR14 unaligned_type(const unaligned_type_base<T, Endian_Other, StorageContainer_Other>& other)
     : storage()
     {
@@ -890,7 +891,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR unaligned_type_ext()
-    : storage(nullptr)
+    : storage(ETL_NULLPTR)
     {
     }
 
