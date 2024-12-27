@@ -264,7 +264,7 @@ namespace etl
     ETL_STATIC_ASSERT(etl::is_integral<T>::value || etl::is_floating_point<T>::value, "Unaligned type must be integral or floating point");
 
     typedef T                                                                          value_type;
-    typedef etl::remove_cv_t<T>                                                        base_value_type;
+    typedef typename etl::remove_cv<T>::type                                           base_value_type;
     typedef private_unaligned_type::unaligned_type_common<sizeof(T), StorageContainer> base_type;
     typedef StorageContainer                                                           storage_container_type;
 
@@ -299,7 +299,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator from other endianness.
     //*************************************************************************
-    template <int Endian_Other, typename StorageContainer_Other = StorageContainer>
+    template <int Endian_Other, typename StorageContainer_Other>
     ETL_CONSTEXPR14 unaligned_type_base& operator =(const unaligned_type_base<T, Endian_Other, StorageContainer_Other>& other)
     {
       unaligned_copy<T>::copy(other.data(), Endian_Other, static_cast<storage_container_type*>(this)->data());
@@ -761,12 +761,12 @@ namespace etl
   //*************************************************************************
   template<typename T, int Endian_>
   class unaligned_type
-  : public unaligned_type_base<T, Endian_, unaligned_type<T, Endian_>>
+  : public unaligned_type_base<T, Endian_, unaligned_type<T, Endian_> >
   {
   public:
 
-    typedef unaligned_type_base<T, Endian_, unaligned_type<T, Endian_>> base_type;
-    typedef unsigned char                                               storage_value_type;
+    typedef unaligned_type_base<T, Endian_, unaligned_type<T, Endian_> > base_type;
+    typedef unsigned char                                                storage_value_type;
 
     static ETL_CONSTANT size_t Size = sizeof(T);
 
@@ -790,7 +790,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    template <int Endian_Other, typename StorageContainer_Other = unaligned_type<T, Endian_>>
+    template <int Endian_Other, typename StorageContainer_Other = unaligned_type<T, Endian_> >
     ETL_CONSTEXPR14 unaligned_type(const unaligned_type_base<T, Endian_Other, StorageContainer_Other>& other)
     : storage()
     {
@@ -877,12 +877,12 @@ namespace etl
   //*************************************************************************
   template<typename T, int Endian_>
   class unaligned_type_ext
-  : public unaligned_type_base<T, Endian_, unaligned_type_ext<T, Endian_>>
+  : public unaligned_type_base<T, Endian_, unaligned_type_ext<T, Endian_> >
   {
   public:
 
-    typedef unaligned_type_base<T, Endian_, unaligned_type_ext<T, Endian_>> base_type;
-    typedef typename storage_type<T>::type                                  storage_value_type;
+    typedef unaligned_type_base<T, Endian_, unaligned_type_ext<T, Endian_> > base_type;
+    typedef typename storage_type<T>::type                                   storage_value_type;
 
     static ETL_CONSTANT size_t Size = sizeof(T);
 
