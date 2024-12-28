@@ -164,12 +164,12 @@ namespace
     make_instance_slot(), 
     make_functor_slot()
   };
-  signal_type test_object_;
 
   SUITE(signal_test)
   {
     TEST(construct)
     {
+      signal_type test_object_;
       CHECK_EQUAL(0U, test_object_.size());
       CHECK_EQUAL(total_output_methods_, test_object_.max_size());
       CHECK_TRUE(test_object_.empty());
@@ -183,6 +183,7 @@ namespace
 
     TEST(connect)
     {
+      signal_type test_object_;
       const auto free_slot = make_free_slot();
       test_object_.connect(free_slot);
       CHECK_EQUAL(1U, test_object_.size());
@@ -212,6 +213,7 @@ namespace
 
     TEST(disconnect)
     {
+      signal_type test_object_;
       const auto free_slot = make_free_slot();
       const auto lambda_slot = make_lambda_slot();
       const auto static_slot = make_static_slot();
@@ -252,6 +254,7 @@ namespace
 
   TEST(disconnect_all)
   {
+    signal_type test_object_;
     const auto free_slot = make_free_slot();
     const auto lambda_slot = make_lambda_slot();
     const auto static_slot = make_static_slot();
@@ -276,12 +279,14 @@ namespace
   TEST(call_empty)
   {
     std::stringstream ss;
+    signal_type test_object_;
     test_object_(ss);
     CHECK_EQUAL(std::string{""}, ss.str());
   }
 
   TEST(call)
   {
+    signal_type test_object_;
     test_object_.connect(make_free_slot());
     test_object_.connect(make_lambda_slot());
     test_object_.connect(make_static_slot());
