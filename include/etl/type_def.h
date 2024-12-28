@@ -70,12 +70,6 @@ namespace etl
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR type_def(const type_def& other)
-      : value(other.value)
-    {
-    }
-
-    //*********************************************************************
     ETL_CONSTEXPR operator TValue() const
     {
       return value;
@@ -241,13 +235,6 @@ namespace etl
     ETL_CONSTEXPR14 type_def& operator =(TValue rhs)
     {
       value = rhs;
-      return *this;
-    }
-
-    //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator =(const type_def& rhs)
-    {
-      value = rhs.value;
       return *this;
     }
 
