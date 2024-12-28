@@ -175,10 +175,10 @@ namespace
       CHECK_TRUE(test_object_.empty());
       CHECK_FALSE(test_object_.full());
 
-      CHECK_EQUAL(0U, constexpr_test_object_.size());
+      CHECK_EQUAL(total_output_methods_, constexpr_test_object_.size());
       CHECK_EQUAL(total_output_methods_, constexpr_test_object_.max_size());
-      CHECK_TRUE(constexpr_test_object_.empty());
-      CHECK_FALSE(constexpr_test_object_.full());
+      CHECK_FALSE(constexpr_test_object_.empty());
+      CHECK_TRUE(constexpr_test_object_.full());
     }
 
     TEST(connect)
