@@ -43,9 +43,9 @@ SOFTWARE.
   #include <algorithm>
   #include <iterator>
 
-  #if ETL_CPP11_NOT_SUPPORTED
+#if ETL_CPP11_NOT_SUPPORTED
     #include "algorithm.h"
-  #endif
+#endif // ETL_CPP11_NOT_SUPPORTED
 #else 
   #include "algorithm.h"
   #include "iterator.h"
@@ -177,13 +177,13 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR bool connected(const slot_type& slot) const ETL_NOEXCEPT
     {
-      #ifdef ETL_CPP11_SUPPORTED
+#ifdef ETL_CPP11_SUPPORTED
         return ETL_OR_STD::any_of(begin(), end(), [&slot](const slot_type& s){return s == slot;});
-      #else
+#else
         return any_of(begin(), end(), [&slot](const slot_type& s) {
             return s == slot;
         });
-      #endif // ETL_CPP11_SUPPORTED
+#endif // ETL_CPP11_SUPPORTED
     }
 
     //*************************************************************************
