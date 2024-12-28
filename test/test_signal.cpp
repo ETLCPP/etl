@@ -208,6 +208,45 @@ namespace
       CHECK_TRUE(test_object_.connected(functor_slot));
       CHECK_TRUE(test_object_.full());
     }
+
+    TEST(disconnect)
+    {
+      const auto free_slot = make_free_slot();
+      const auto lambda_slot = make_lambda_slot();
+      const auto static_slot = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot = make_functor_slot();
+      test_object_.connect(free_slot);
+      test_object_.connect(lambda_slot);
+      test_object_.connect(static_slot);
+      test_object_.connect(instance_slot);
+      test_object_.connect(functor_slot);
+
+      test_object_.disconnect(free_slot);
+      CHECK_EQUAL(4U, test_object_.size());
+      CHECK_FALSE(test_object_.connected(free_slot));
+
+      // Try to remove it again - nothing should change.
+      test_object_.disconnect(free_slot);
+      CHECK_EQUAL(4U, test_object_.size());
+      CHECK_FALSE(test_object_.connected(free_slot));
+
+      test_object_.disconnect(lambda_slot);
+      CHECK_EQUAL(3U, test_object_.size());
+      CHECK_FALSE(test_object_.connected(lambda_slot));
+
+      test_object_.disconnect(static_slot);
+      CHECK_EQUAL(2U, test_object_.size());
+      CHECK_FALSE(test_object_.connected(static_slot));
+
+      test_object_.disconnect(instance_slot);
+      CHECK_EQUAL(1U, test_object_.size());
+      CHECK_FALSE(test_object_.connected(instance_slot));
+
+      test_object_.disconnect(functor_slot);
+      CHECK_EQUAL(0U, test_object_.size());
+      CHECK_FALSE(test_object_.connected(functor_slot));
+    }
   }
 
 }
