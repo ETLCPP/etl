@@ -285,11 +285,12 @@ namespace
     test_object_(ss);
 
     // expect all signals got called
-    CHECK_ARRAY_EQUAL("freelambdastaticmethodfunctor", ss.str().c_str(), ss.str().length());
+    const std::string expected_string{"freelambdastaticmethodfunctor"};
+    CHECK_EQUAL(expected_string, ss.str());
 
     std::stringstream ss2;
     constexpr_test_object_(ss2);
-    CHECK_ARRAY_EQUAL("freelambdastaticmethodfunctor", ss2.str().c_str(), ss.str().length());
+    CHECK_EQUAL(expected_string, ss2.str());
   }
 
 }
