@@ -26,6 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include "UnitTest++/CheckMacros.h"
 #include "unit_test_framework.h"
 
 #include <sstream>
@@ -270,6 +271,25 @@ namespace
     CHECK_FALSE(test_object_.connected(static_slot));
     CHECK_FALSE(test_object_.connected(instance_slot));
     CHECK_FALSE(test_object_.connected(functor_slot));
+  }
+
+  TEST(call)
+  {
+    test_object_.connect(make_free_slot());
+    test_object_.connect(make_lambda_slot());
+    test_object_.connect(make_static_slot());
+    test_object_.connect(make_instance_slot());
+    test_object_.connect(make_functor_slot());
+
+    std::stringstream ss;
+    test_object_(ss);
+
+    // expect all signals got called
+    CHECK_ARRAY_EQUAL("freelambdastaticmethodfunctor", ss.str().c_str(), ss.str().length());
+
+    std::stringstream ss2;
+    constexpr_test_object_(ss2);
+    CHECK_ARRAY_EQUAL("freelambdastaticmethodfunctor", ss2.str().c_str(), ss.str().length());
   }
 
 }
