@@ -217,7 +217,7 @@ namespace etl
     //*************************************************************************
     ///\return Iterator to the beginning of the connected slots.
     //*************************************************************************
-    ETL_CONSTEXPR iterator begin() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 iterator begin() ETL_NOEXCEPT
     {
       return _slots;
     }
@@ -225,7 +225,7 @@ namespace etl
     //*************************************************************************
     ///\return Const Iterator to the beginning of the connected slots.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator begin() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 const_iterator begin() const ETL_NOEXCEPT
     {
       return _slots;
     }
@@ -233,7 +233,7 @@ namespace etl
     //*************************************************************************
     ///\return Iterator to the end of the connected slots.
     //*************************************************************************
-    ETL_CONSTEXPR iterator end() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 iterator end() ETL_NOEXCEPT
     {
       return _end;
     }
@@ -241,7 +241,7 @@ namespace etl
     //*************************************************************************
     ///\return Const Iterator to the end of the connected slots.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 const_iterator end() const ETL_NOEXCEPT
     {
       return _end;
     }
