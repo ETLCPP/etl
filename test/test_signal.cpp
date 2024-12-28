@@ -273,6 +273,13 @@ namespace
     CHECK_FALSE(test_object_.connected(functor_slot));
   }
 
+  TEST(call_empty)
+  {
+    std::stringstream ss;
+    test_object_(ss);
+    CHECK_EQUAL(std::string{""}, ss.str());
+  }
+
   TEST(call)
   {
     test_object_.connect(make_free_slot());
