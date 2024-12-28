@@ -232,6 +232,7 @@ add_executable(etl_tests
 	test_scaled_rounding.cpp
 	test_set.cpp
 	test_shared_message.cpp
+	test_signal.cpp
 	test_singleton.cpp
 	test_smallest.cpp
 	test_span_dynamic_extent.cpp
