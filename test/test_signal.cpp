@@ -112,7 +112,7 @@ namespace
   ///
   ///\return constexpr slot_type
   //*************************************************************************
-  constexpr slot_type make_free_slot() 
+  ETL_CONSTEXPR14 slot_type make_free_slot() 
   {
     return slot_type::create<output_free>();
   }
@@ -122,7 +122,7 @@ namespace
   ///
   ///\return constexpr slot_type
   //*************************************************************************
-  constexpr slot_type make_lambda_slot() 
+  ETL_CONSTEXPR14 slot_type make_lambda_slot() 
   {
     return slot_type::create<output_lambda>();
   }
@@ -132,7 +132,7 @@ namespace
   ///
   ///\return constexpr slot_type
   //*************************************************************************
-  constexpr slot_type make_static_slot() 
+  ETL_CONSTEXPR14 slot_type make_static_slot() 
   {
     return slot_type::create<&example_class::static_method>();
   }
@@ -142,7 +142,7 @@ namespace
   ///
   ///\return constexpr slot_type
   //*************************************************************************
-  constexpr slot_type make_instance_slot() 
+  ETL_CONSTEXPR14 slot_type make_instance_slot() 
   {
     return slot_type::create<example_class, example_, &example_class::method>();
   }
@@ -152,11 +152,12 @@ namespace
   ///
   ///\return constexpr slot_type
   //*************************************************************************
-  constexpr slot_type make_functor_slot() 
+  ETL_CONSTEXPR14 slot_type make_functor_slot() 
   {
     return slot_type::create<example_class, example_>();
   }
 
+#if ETL_USING_CPP14
   constexpr signal_type constexpr_test_object_{
     make_free_slot(), 
     make_lambda_slot(), 
@@ -164,6 +165,7 @@ namespace
     make_instance_slot(), 
     make_functor_slot()
   };
+#endif // ETL_USING_CPP14
 
   SUITE(signal_test)
   {
@@ -174,11 +176,12 @@ namespace
       CHECK_EQUAL(total_output_methods_, test_object_.max_size());
       CHECK_TRUE(test_object_.empty());
       CHECK_FALSE(test_object_.full());
-
+#if ETL_USING_CPP14
       CHECK_EQUAL(total_output_methods_, constexpr_test_object_.size());
       CHECK_EQUAL(total_output_methods_, constexpr_test_object_.max_size());
       CHECK_FALSE(constexpr_test_object_.empty());
       CHECK_TRUE(constexpr_test_object_.full());
+#endif // ETL_USING_CPP14
     }
 
     TEST(connect)
@@ -300,9 +303,11 @@ namespace
     const std::string expected_string{"freelambdastaticmethodfunctor"};
     CHECK_EQUAL(expected_string, ss.str());
 
+#if ETL_USING_CPP14
     std::stringstream ss2;
     constexpr_test_object_(ss2);
     CHECK_EQUAL(expected_string, ss2.str());
+#endif // ETL_USING_CPP14
   }
 
 }
