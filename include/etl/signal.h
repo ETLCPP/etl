@@ -163,6 +163,19 @@ namespace etl
     }
 
     //*************************************************************************
+    ///\brief Checks if a slot is connected to the signal.
+    ///
+    ///\param slot: To check.
+    ///\return true if the slot is connected.
+    //*************************************************************************
+    ETL_CONSTEXPR bool connected(const slot_type& slot) const ETL_NOEXCEPT
+    {
+      return ETL_OR_STD::any_of(begin(), end(), [&slot](const slot_type& s) {
+          return s == slot;
+      });
+    }
+
+    //*************************************************************************
     ///\return true if the signal has no slots connected.
     //*************************************************************************
     ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
