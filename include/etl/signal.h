@@ -39,8 +39,10 @@ SOFTWARE.
 #include "platform.h"
 
 #if ETL_USING_STL
+  #include <algorithm>
   #include <iterator>
 #else 
+  #include "algorithm.h"
   #include "iterator.h"
 #endif // ETL_USING_STL
 
