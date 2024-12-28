@@ -178,14 +178,12 @@ namespace etl
     ETL_CONSTEXPR bool connected(const slot_type& slot) const ETL_NOEXCEPT
     {
       #ifdef ETL_CPP11_SUPPORTED
-        using ETL_OR_STD::any_of;
+        return ETL_OR_STD::any_of(begin(), end(), [&slot](const slot_type& s){return s == slot;});
       #else
-        using etl::any_of;
+        return any_of(begin(), end(), [&slot](const slot_type& s) {
+            return s == slot;
+        });
       #endif // ETL_CPP11_SUPPORTED
-
-      return any_of(begin(), end(), [&slot](const slot_type& s) {
-          return s == slot;
-      });
     }
 
     //*************************************************************************
