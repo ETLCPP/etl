@@ -2264,13 +2264,13 @@ namespace etl
   /// \param destination begin
   /// \return A pointer to the destination.
   //***************************************************************************
-  template <typename TPointer>
-  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_copy(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+  template <typename T>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<T*>::value_type>::value, T*>::type
+    mem_copy(const T* sb, const T* se, T* db) ETL_NOEXCEPT
   {
-    return reinterpret_cast<TPointer>(memcpy(reinterpret_cast<void*>(db), 
-                                             reinterpret_cast<void*>(sb), 
-                                             sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb)));
+    return reinterpret_cast<T*>(memcpy(reinterpret_cast<void*>(db),
+                                       reinterpret_cast<const void*>(sb),
+                                       sizeof(typename etl::iterator_traits<T*>::value_type) * static_cast<size_t>(se - sb)));
   }
 
   //***************************************************************************
@@ -2280,13 +2280,13 @@ namespace etl
   /// \param source length
   /// \param destination begin
   //***************************************************************************
-  template <typename TPointer>
-  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_copy(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+  template <typename T>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<T*>::value_type>::value, T*>::type
+    mem_copy(const T* sb, size_t n, T* db) ETL_NOEXCEPT
   {
-    return reinterpret_cast<TPointer>(memcpy(reinterpret_cast<void*>(db), 
-                                             reinterpret_cast<void*>(sb), 
-                                             sizeof(typename etl::iterator_traits<TPointer>::value_type) * n));
+    return reinterpret_cast<T*>(memcpy(reinterpret_cast<void*>(db),
+                                       reinterpret_cast<const void*>(sb),
+                                       sizeof(typename etl::iterator_traits<T*>::value_type) * n));
   }
 
   //***************************************************************************
@@ -2296,13 +2296,13 @@ namespace etl
   /// \param source end
   /// \param destination begin
   //***************************************************************************
-  template <typename TPointer>
-  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_move(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+  template <typename T>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<T*>::value_type>::value, T*>::type
+    mem_move(const T* sb, const T* se, T* db) ETL_NOEXCEPT
   {
-    return reinterpret_cast<TPointer>(memmove(reinterpret_cast<void*>(db), 
-                                              reinterpret_cast<void*>(sb), 
-                                              sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb)));
+    return reinterpret_cast<T*>(memmove(reinterpret_cast<void*>(db),
+                                        reinterpret_cast<const void*>(sb),
+                                        sizeof(typename etl::iterator_traits<T*>::value_type) * static_cast<size_t>(se - sb)));
   }
 
   //***************************************************************************
@@ -2312,13 +2312,13 @@ namespace etl
   /// \param source length
   /// \param destination begin
   //***************************************************************************
-  template <typename TPointer>
-  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_move(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+  template <typename T>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<T*>::value_type>::value, T*>::type
+    mem_move(const T* sb, size_t n, T* db) ETL_NOEXCEPT
   {
-    return reinterpret_cast<TPointer>(memmove(reinterpret_cast<void*>(db), 
-                                              reinterpret_cast<void*>(sb), 
-                                              sizeof(typename etl::iterator_traits<TPointer>::value_type) * n));
+    return reinterpret_cast<T*>(memmove(reinterpret_cast<void*>(db),
+                                        reinterpret_cast<const void*>(sb),
+                                        sizeof(typename etl::iterator_traits<T*>::value_type) * n));
   }
 
   //***************************************************************************
@@ -2330,14 +2330,14 @@ namespace etl
   ///   0 The contents of both memory blocks are equal
   /// > 0	The first byte that does not match in both memory blocks has a greater value in 'sb' than in 'db' when evaluated as unsigned char values.
   //***************************************************************************
-  template <typename TPointer>
+  template <typename T>
   ETL_NODISCARD
-    typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, int>::type
-    mem_compare(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+    typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<T*>::value_type>::value, int>::type
+    mem_compare(const T* sb, const T* se, const T* db) ETL_NOEXCEPT
   {
-    return memcmp(reinterpret_cast<void*>(db), 
-                  reinterpret_cast<void*>(sb), 
-                  sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
+    return memcmp(reinterpret_cast<const void*>(db),
+                  reinterpret_cast<const void*>(sb),
+                  sizeof(typename etl::iterator_traits<T*>::value_type) * static_cast<size_t>(se - sb));
   }
 
   //***************************************************************************
@@ -2349,14 +2349,14 @@ namespace etl
   ///   0 The contents of both memory blocks are equal
   /// > 0	The first byte that does not match in both memory blocks has a greater value in 'sb' than in 'db' when evaluated as unsigned char values.
   //***************************************************************************
-  template <typename TPointer>
+  template <typename T>
   ETL_NODISCARD
-    typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, int>::type
-    mem_compare(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+    typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<T*>::value_type>::value, int>::type
+    mem_compare(const T* sb, size_t n, const T* db) ETL_NOEXCEPT
   {
-    return memcmp(reinterpret_cast<void*>(db), 
-                  reinterpret_cast<void*>(sb), 
-                  sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+    return memcmp(reinterpret_cast<const void*>(db),
+                  reinterpret_cast<const void*>(sb),
+                  sizeof(typename etl::iterator_traits<T*>::value_type) * n);
   }
 
   //***************************************************************************
@@ -2384,7 +2384,7 @@ namespace etl
   //***************************************************************************
   template <typename TPointer, typename T>
   typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_set(const TPointer db, size_t n, T value) ETL_NOEXCEPT
+    mem_set(TPointer db, size_t n, T value) ETL_NOEXCEPT
   {
     return reinterpret_cast<TPointer>(memset(reinterpret_cast<void*>(db),
                                              static_cast<char>(value),
