@@ -52,6 +52,7 @@ namespace
     typedef etl::span<int, 10U> View;
     typedef etl::span<int, 9U> SView;
     typedef etl::span<const int, 10U> CView;
+    typedef etl::span<int, 0U> EView;
 
 #if ETL_USING_CPP20
     using StdView = std::span<int, 10U>;
@@ -484,6 +485,9 @@ namespace
     {
       View view1(etldata.begin(), etldata.begin());
       CHECK(!view1.empty());
+
+      EView view2(etldata.begin(), etldata.begin());
+      CHECK(view2.empty());
     }
 
     //*************************************************************************
