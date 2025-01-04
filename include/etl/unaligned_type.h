@@ -45,7 +45,9 @@ SOFTWARE.
 #include "exception.h"
 #include "file_error_numbers.h"
 
-#include <bit>
+#if ETL_USING_CPP20 && ETL_USING_STL
+  #include <bit>
+#endif
 
 #include <string.h>
 
