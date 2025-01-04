@@ -37,13 +37,12 @@ SOFTWARE.
 #include "error_handler.h"
 #include "delegate.h"
 #include "platform.h"
-#include "algorithm.h"
 
-#if ETL_USING_STL
+#if defined(ETL_USING_STL)
   #include <algorithm>
   #include <iterator>
 
-#if ETL_CPP11_NOT_SUPPORTED
+#if defined(ETL_CPP11_NOT_SUPPORTED)
     #include "algorithm.h"
 #endif // ETL_CPP11_NOT_SUPPORTED
 #else 
@@ -177,13 +176,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR bool connected(const slot_type& slot) const ETL_NOEXCEPT
     {
-#ifdef ETL_CPP11_SUPPORTED
-        return ETL_OR_STD::any_of(begin(), end(), [&slot](const slot_type& s){return s == slot;});
-#else
-        return any_of(begin(), end(), [&slot](const slot_type& s) {
-            return s == slot;
-        });
-#endif // ETL_CPP11_SUPPORTED
+        return etl::any_of(begin(), end(), [&slot](const slot_type& s){return s == slot;});
     }
 
     //*************************************************************************
