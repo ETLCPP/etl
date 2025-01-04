@@ -238,7 +238,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
-      return false;
+      return Extent == 0;
     }
 
     //*************************************************************************
