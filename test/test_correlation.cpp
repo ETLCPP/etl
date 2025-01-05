@@ -86,7 +86,7 @@ namespace
     //*************************************************************************
     TEST(test_char_correlation_default_constructor)
     {
-      etl::correlation<etl::correlation_type::Population, char, int32_t> correlation;
+      etl::correlation<etl::correlation_type::Population, signed char, int32_t> correlation;
 
       double correlation_result = correlation;
 

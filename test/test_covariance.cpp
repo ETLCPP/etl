@@ -86,7 +86,7 @@ namespace
     //*************************************************************************
     TEST(test_char_covariance_default_constructor)
     {
-      etl::covariance<etl::covariance_type::Population, char, int32_t> covariance;
+      etl::covariance<etl::covariance_type::Population, signed char, int32_t> covariance;
 
       double covariance_result = covariance;
 
