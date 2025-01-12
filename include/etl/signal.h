@@ -106,7 +106,7 @@ namespace etl
     template <typename... TArgs>
     ETL_CONSTEXPR14 explicit signal(TArgs&&... args) ETL_NOEXCEPT
       : _slots{ETL_OR_STD::forward<TArgs>(args)...}
-      , _end{std::next(_slots, sizeof...(args))}
+      , _end{_slots + sizeof... (args)}
     {
     };
 
