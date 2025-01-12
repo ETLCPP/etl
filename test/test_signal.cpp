@@ -124,7 +124,7 @@ namespace
   //*************************************************************************
   ETL_CONSTEXPR14 slot_type make_lambda_slot() 
   {
-    return slot_type::create<output_lambda>();
+    return slot_type{output_lambda};
   }
 
   //*************************************************************************
