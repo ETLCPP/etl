@@ -142,11 +142,6 @@ namespace etl
     //*************************************************************************
     void disconnect(const slot_type& slot) ETL_NOEXCEPT
     {
-        if(empty())
-        {
-          return;
-        }
-
         const auto end_it = end();
         const auto it = ETL_OR_STD::find(begin(), end_it, slot);
         if(it == end_it)
