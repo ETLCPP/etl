@@ -30,11 +30,11 @@ SOFTWARE.
 
 #include "etl/ratio.h"
 
+#if ETL_USING_CPP14
 namespace
 {
   SUITE(test_ratio)
   {
-#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_ratio_add)
     {
@@ -138,7 +138,7 @@ namespace
       CHECK((etl::ratio_greater_equal_v<r1, r1>));
       CHECK((etl::ratio_greater_equal_v<r1, r2>));
     }
-#endif
   };
 
 }
+#endif
