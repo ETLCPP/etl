@@ -1416,6 +1416,9 @@
     <ClInclude Include="..\..\include\etl\uncopyable.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton_base.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3394,6 +3397,15 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\uncopyable.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\singleton_base.h.t.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_singleton_base.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unaligned_type_ext.cpp">
+      <Filter>Tests\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
