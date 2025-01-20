@@ -233,6 +233,7 @@ add_executable(etl_tests
 	test_set.cpp
 	test_shared_message.cpp
 	test_singleton.cpp
+	test_singleton_base.cpp
 	test_smallest.cpp
 	test_span_dynamic_extent.cpp
 	test_span_fixed_extent.cpp
@@ -288,6 +289,7 @@ add_executable(etl_tests
 	test_type_traits.cpp
 	test_unaligned_type.cpp
 	test_unaligned_type_constexpr.cpp
+	test_unaligned_type_ext.cpp
 	test_uncopyable.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp

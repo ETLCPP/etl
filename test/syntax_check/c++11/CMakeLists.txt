@@ -260,6 +260,7 @@ target_sources(t11 PRIVATE etl_profile.h
 		../set.h.t.cpp
 		../shared_message.h.t.cpp
 		../singleton.h.t.cpp
+		../singleton_base.h.t.cpp
 		../smallest.h.t.cpp
 		../span.h.t.cpp
 		../sqrt.h.t.cpp
