@@ -33,8 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "gcd.h"
-#include "lcm.h"
+#include "type_traits.h"
 
 #include <stddef.h>
 #include <stdint.h>
