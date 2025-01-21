@@ -101,114 +101,151 @@ namespace etl
   /// An approximation of e.
   typedef ratio<326, 120> ratio_e;
 
-#if ETL_USING_CPP14
-  namespace internal
+#if ETL_USING_CPP11
+  namespace private_ratio
   {
-    template<class R1>
-    struct _ratio_reduce
+    // Primary template for GCD calculation
+    template <typename T, T A, T B, bool = (B == 0)>
+    struct ratio_gcd;
+
+    // Specialisation for the case when B is not zero
+    template <typename T, T A, T B>
+    struct ratio_gcd<T, A, B, false>
+    {
+      static constexpr T value = ratio_gcd<T, B, A % B>::value;
+    };
+
+    // Specialisation for the case when B is zero
+    template <typename T, T A, T B>
+    struct ratio_gcd<T, A, B, true>
+    {
+      static constexpr T value = (A < 0) ? -A : A;
+    };
+
+    // Primary template for LCM calculation
+    template <typename T, T A, T B>
+    struct ratio_lcm
     {
     private:
-      static ETL_CONSTEXPR14 intmax_t gcd = etl::gcd(R1::num, R1::den);
+
+      static constexpr T product = ((A * B) < 0) ? -(A * B) : A * B;
+
     public:
+
+      static constexpr T value = product / ratio_gcd<T, A, B>::value;
+    };
+
+    template<typename R1>
+    struct ratio_reduce
+    {
+    private:
+
+      static ETL_CONSTEXPR11 intmax_t gcd = etl::private_ratio::ratio_gcd<intmax_t, R1::num, R1::den>::value;
+
+    public:
+
       using value = ratio<R1::num / gcd, R1::den / gcd>;
     };
 
-    template<class R1, class R2>
-    struct _ratio_add
+    template<typename R1, typename R2>
+    struct ratio_add
     {
     private:
-      static ETL_CONSTEXPR14 intmax_t lcm = etl::lcm(R1::den, R2::den);
+
+      static ETL_CONSTEXPR11 intmax_t lcm = etl::private_ratio::ratio_lcm<intmax_t, R1::den, R2::den>::value;
 
     public:
-      using value = typename _ratio_reduce<ratio<R1::num * lcm / R1::den + R2::num * lcm / R2::den, lcm>>::value;
+
+      using value = typename ratio_reduce<ratio<R1::num * lcm / R1::den + R2::num * lcm / R2::den, lcm>>::value;
     };
 
-    template<class R1, class R2>
-    struct _ratio_subtract
+    template<typename R1, typename R2>
+    struct ratio_subtract
     {
     public:
-      using value = typename _ratio_add<R1, ratio<-R2::num, R2::den>>::value;
+      using value = typename ratio_add<R1, ratio<-R2::num, R2::den>>::value;
     };
 
-    template<class R1, class R2>
-    struct _ratio_multiply
+    template<typename R1, typename R2>
+    struct ratio_multiply
     {
     private:
-      static ETL_CONSTEXPR14 intmax_t gcd1 = etl::gcd(R1::num, R2::den);
-      static ETL_CONSTEXPR14 intmax_t gcd2 = etl::gcd(R2::num, R1::den);
+      static ETL_CONSTEXPR11 intmax_t gcd1 = etl::private_ratio::ratio_gcd<intmax_t, R1::num, R2::den>::value;
+      static ETL_CONSTEXPR11 intmax_t gcd2 = etl::private_ratio::ratio_gcd<intmax_t, R2::num, R1::den>::value;
 
     public:
       using value = ratio<(R1::num / gcd1) * (R2::num / gcd2), (R1::den / gcd2) * (R2::den / gcd1)>;
     };
 
-    template<class R1, class R2>
-    struct _ratio_divide
+    template<typename R1, typename R2>
+    struct ratio_divide
     {
     public:
-      using value = typename _ratio_multiply<R1, ratio<R2::den, R2::num>>::value;
+      using value = typename ratio_multiply<R1, ratio<R2::den, R2::num>>::value;
     };
   }
 
-  template<class R1, class R2>
-  using ratio_add = typename internal::_ratio_add<R1, R2>::value;
+  template<typename R1, typename R2>
+  using ratio_add = typename private_ratio::ratio_add<R1, R2>::value;
 
-  template<class R1, class R2>
-  using ratio_subtract = typename internal::_ratio_subtract<R1, R2>::value;
+  template<typename R1, typename R2>
+  using ratio_subtract = typename private_ratio::ratio_subtract<R1, R2>::value;
 
-  template<class R1, class R2>
-  using ratio_multiply = typename internal::_ratio_multiply<R1, R2>::value;
+  template<typename R1, typename R2>
+  using ratio_multiply = typename private_ratio::ratio_multiply<R1, R2>::value;
 
-  template<class R1, class R2>
-  using ratio_divide = typename internal::_ratio_divide<R1, R2>::value;
+  template<typename R1, typename R2>
+  using ratio_divide = typename private_ratio::ratio_divide<R1, R2>::value;
 
-  template<class R1, class R2>
+  template<typename R1, typename R2>
   struct ratio_equal: etl::integral_constant<bool, (R1::num == R2::num && R1::den == R2::den)>
   {
   };
 
-  template<class R1, class R2>
-  ETL_CONSTEXPR14 bool ratio_equal_v = ratio_equal<R1, R2>::value;
-
-  template<class R1, class R2>
+  template<typename R1, typename R2>
   struct ratio_not_equal: etl::integral_constant<bool, (R1::num != R2::num || R1::den != R2::den)>
   {
   };
 
-  template<class R1, class R2>
-  ETL_CONSTEXPR14 bool ratio_not_equal_v = ratio_not_equal<R1, R2>::value;
-
-  template<class R1, class R2>
+  template<typename R1, typename R2>
   struct ratio_less: etl::integral_constant<bool, (R1::num * R2::den < R2::num * R1::den)>
   {
   };
 
-  template<class R1, class R2>
-  ETL_CONSTEXPR14 bool ratio_less_v = ratio_less<R1, R2>::value;
-
-  template<class R1, class R2>
+  template<typename R1, typename R2>
   struct ratio_less_equal: etl::integral_constant<bool, (R1::num * R2::den <= R2::num * R1::den)>
   {
   };
 
-  template<class R1, class R2>
-  ETL_CONSTEXPR14 bool ratio_less_equal_v = ratio_less_equal<R1, R2>::value;
-
-  template<class R1, class R2>
+  template<typename R1, typename R2>
   struct ratio_greater: etl::integral_constant<bool, (R1::num * R2::den > R2::num * R1::den)>
   {
   };
 
-  template<class R1, class R2>
-  ETL_CONSTEXPR14 bool ratio_greater_v = ratio_greater<R1, R2>::value;
-
-  template<class R1, class R2>
+  template<typename R1, typename R2>
   struct ratio_greater_equal: etl::integral_constant<bool, (R1::num * R2::den >= R2::num * R1::den)>
   {
   };
 
-  template<class R1, class R2>
-  ETL_CONSTEXPR14 bool ratio_greater_equal_v = ratio_greater_equal<R1, R2>::value;
+#if ETL_USING_CPP14
+  template<typename R1, typename R2>
+  ETL_CONSTEXPR14 bool ratio_equal_v = ratio_equal<R1, R2>::value;
 
+  template<typename R1, typename R2>
+  ETL_CONSTEXPR14 bool ratio_not_equal_v = ratio_not_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  ETL_CONSTEXPR14 bool ratio_less_v = ratio_less<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  ETL_CONSTEXPR14 bool ratio_less_equal_v = ratio_less_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  ETL_CONSTEXPR14 bool ratio_greater_v = ratio_greater<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  ETL_CONSTEXPR14 bool ratio_greater_equal_v = ratio_greater_equal<R1, R2>::value;
+#endif
 #endif
 }
 

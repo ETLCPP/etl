@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include "etl/ratio.h"
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP11
 namespace
 {
   SUITE(test_ratio)
@@ -42,8 +42,8 @@ namespace
       using r2 = etl::ratio<2, 3>;
       using r3 = etl::ratio_add<r1, r2>;
 
-      CHECK((etl::ratio_equal_v<r3, etl::ratio<7, 6>>));
-      CHECK((!etl::ratio_equal_v<r3, etl::ratio<1, 6>>));
+      CHECK((etl::ratio_equal<r3, etl::ratio<7, 6>>::value));
+      CHECK((!etl::ratio_equal<r3, etl::ratio<1, 6>>::value));
     }
 
     //*************************************************************************
@@ -53,8 +53,8 @@ namespace
       using r2 = etl::ratio<2, 3>;
       using r3 = etl::ratio_subtract<r1, r2>;
 
-      CHECK((etl::ratio_equal_v<r3, etl::ratio<-1, 6>>));
-      CHECK((!etl::ratio_equal_v<r3, etl::ratio<-2, 6>>));
+      CHECK((etl::ratio_equal<r3, etl::ratio<-1, 6>>::value));
+      CHECK((!etl::ratio_equal<r3, etl::ratio<-2, 6>>::value));
     }
 
     //*************************************************************************
@@ -64,8 +64,8 @@ namespace
       using r2 = etl::ratio<2, 3>;
       using r3 = etl::ratio_multiply<r1, r2>;
 
-      CHECK((etl::ratio_equal_v<r3, etl::ratio<1, 3>>));
-      CHECK((!etl::ratio_equal_v<r3, etl::ratio<1, 4>>));
+      CHECK((etl::ratio_equal<r3, etl::ratio<1, 3>>::value));
+      CHECK((!etl::ratio_equal<r3, etl::ratio<1, 4>>::value));
     }
 
     //*************************************************************************
@@ -75,8 +75,8 @@ namespace
       using r2 = etl::ratio<2, 3>;
       using r3 = etl::ratio_divide<r1, r2>;
 
-      CHECK((!etl::ratio_not_equal_v<r3, etl::ratio<3, 4>>));
-      CHECK((etl::ratio_not_equal_v<r3, etl::ratio<4, 3>>));
+      CHECK((!etl::ratio_not_equal<r3, etl::ratio<3, 4>>::value));
+      CHECK((etl::ratio_not_equal<r3, etl::ratio<4, 3>>::value));
     }
 
     //*************************************************************************
@@ -85,8 +85,8 @@ namespace
       using r1 = etl::ratio<1, 2>;
       using r2 = etl::ratio<2, 3>;
 
-      CHECK((etl::ratio_equal_v<r1, r1>));
-      CHECK((!etl::ratio_equal_v<r1, r2>));
+      CHECK((etl::ratio_equal<r1, r1>::value));
+      CHECK((!etl::ratio_equal<r1, r2>::value));
     }
 
     //*************************************************************************
@@ -95,8 +95,8 @@ namespace
       using r1 = etl::ratio<1, 2>;
       using r2 = etl::ratio<2, 3>;
 
-      CHECK((!etl::ratio_not_equal_v<r1, r1>));
-      CHECK((etl::ratio_not_equal_v<r1, r2>));
+      CHECK((!etl::ratio_not_equal<r1, r1>::value));
+      CHECK((etl::ratio_not_equal<r1, r2>::value));
     }
 
     //*************************************************************************
@@ -105,8 +105,8 @@ namespace
       using r1 = etl::ratio<1, 2>;
       using r2 = etl::ratio<2, 3>;
 
-      CHECK((etl::ratio_less_v<r1, r2>));
-      CHECK((!etl::ratio_less_v<r2, r1>));
+      CHECK((etl::ratio_less<r1, r2>::value));
+      CHECK((!etl::ratio_less<r2, r1>::value));
     }
 
     //*************************************************************************
@@ -115,8 +115,8 @@ namespace
       using r1 = etl::ratio<1, 2>;
       using r2 = etl::ratio<2, 3>;
 
-      CHECK((etl::ratio_less_equal_v<r1, r1>));
-      CHECK((etl::ratio_less_equal_v<r1, r2>));
+      CHECK((etl::ratio_less_equal<r1, r1>::value));
+      CHECK((etl::ratio_less_equal<r1, r2>::value));
     }
 
     //*************************************************************************
@@ -125,8 +125,8 @@ namespace
       using r1 = etl::ratio<4, 3>;
       using r2 = etl::ratio<2, 3>;
 
-      CHECK((etl::ratio_greater_v<r1, r2>));
-      CHECK((!etl::ratio_greater_v<r2, r1>));
+      CHECK((etl::ratio_greater<r1, r2>::value));
+      CHECK((!etl::ratio_greater<r2, r1>::value));
     }
 
     //*************************************************************************
@@ -135,8 +135,8 @@ namespace
       using r1 = etl::ratio<4, 3>;
       using r2 = etl::ratio<2, 3>;
 
-      CHECK((etl::ratio_greater_equal_v<r1, r1>));
-      CHECK((etl::ratio_greater_equal_v<r1, r2>));
+      CHECK((etl::ratio_greater_equal<r1, r1>::value));
+      CHECK((etl::ratio_greater_equal<r1, r2>::value));
     }
   };
 
