@@ -107,7 +107,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 frame_check_sequence() : frame_check{}
+    ETL_CONSTEXPR14 frame_check_sequence() : frame_check()
     {
       reset();
     }
@@ -118,7 +118,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    ETL_CONSTEXPR14 frame_check_sequence(TIterator begin, const TIterator end) : frame_check{}
+    ETL_CONSTEXPR14 frame_check_sequence(TIterator begin, const TIterator end) : frame_check()
     {
       ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
