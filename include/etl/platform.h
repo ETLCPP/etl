@@ -274,7 +274,7 @@ SOFTWARE.
 //*************************************
 // The macros below are dependent on the profile.
 // C++11
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
   #define ETL_CONSTEXPR                   constexpr
   #define ETL_CONSTEXPR11                 constexpr // Synonym for ETL_CONSTEXPR
   #define ETL_CONSTANT                    constexpr
@@ -314,7 +314,7 @@ SOFTWARE.
 
 //*************************************
 // C++14
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
   #define ETL_CONSTEXPR14  constexpr
 
   #if !defined(ETL_IN_UNIT_TEST)   
@@ -332,7 +332,7 @@ SOFTWARE.
 
 //*************************************
 // C++17
-#if ETL_USING_CPP17 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP17
   #define ETL_CONSTEXPR17  constexpr
   #define ETL_IF_CONSTEXPR constexpr
   #define ETL_NODISCARD    [[nodiscard]]
@@ -350,7 +350,7 @@ SOFTWARE.
 
 //*************************************
 // C++20
-#if ETL_USING_CPP20 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP20
   #define ETL_LIKELY             [[likely]]
   #define ETL_UNLIKELY           [[unlikely]]
   #define ETL_CONSTEXPR20        constexpr
@@ -376,7 +376,7 @@ SOFTWARE.
 
 //*************************************
 // C++23
-#if ETL_USING_CPP23 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP23
   #define ETL_ASSUME(expression) [[assume(expression)]]
 #else
   #define ETL_ASSUME ETL_DO_NOTHING
