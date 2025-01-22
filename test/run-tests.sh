@@ -482,6 +482,30 @@ else
 fi
 
 #******************************************************************************
+compiler=$gcc_compiler
+SetConfigurationName "Error macros 'assert function' test"
+PrintHeader
+cd ../../../etl_error_handler/assert_function
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+rm * -rf
+cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+cmake --build .
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
+
+#******************************************************************************
 compiler=$clang_compiler
 SetConfigurationName "Error macros 'log_errors' test"
 PrintHeader
@@ -534,6 +558,30 @@ compiler=$clang_compiler
 SetConfigurationName "Error macros 'log_errors and exceptions' test"
 PrintHeader
 cd ../../../etl_error_handler/log_errors_and_exceptions
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+rm * -rf
+cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+cmake --build .
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
+
+#******************************************************************************
+compiler=$clang_compiler
+SetConfigurationName "Error macros 'assert function' test"
+PrintHeader
+cd ../../../etl_error_handler/assert_function
 mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
