@@ -640,7 +640,7 @@ namespace etl
   // See etl::member_function_as_static
   //*****************************************************************************
   template <typename T>
-  class ETL_DEPRECATED member_function_wrapper;
+  class member_function_wrapper;
 
   template <typename TReturn, typename... TParams>
   class ETL_DEPRECATED member_function_wrapper<TReturn(TParams...)>
