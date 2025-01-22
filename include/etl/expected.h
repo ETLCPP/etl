@@ -350,7 +350,7 @@ namespace etl
     //*******************************************
     template <typename... Args>
     ETL_CONSTEXPR14 explicit expected(etl::in_place_t, Args&&... args)
-      : storage(etl::forward<Args>(args)...)
+      : storage(etl::in_place_index_t<Value_Type>(), etl::forward<Args>(args)...)
     {
     }
 
@@ -360,7 +360,7 @@ namespace etl
     //*******************************************
     template <typename U, typename... Args>
     ETL_CONSTEXPR14 explicit expected(etl::in_place_t, std::initializer_list<U> il, Args&&... args)
-      : storage(il, etl::forward<Args>(args)...)
+      : storage(etl::in_place_index_t<Value_Type>(), il, etl::forward<Args>(args)...)
     {
     }
 #endif
