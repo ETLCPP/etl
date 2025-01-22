@@ -241,7 +241,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 4U>
     {
       //*************************************************************************
-#if !ETL_USING_CPP11 || defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if !ETL_USING_CPP11
       TAccumulator add(TAccumulator crc, uint8_t value) const
       {
 #endif
@@ -252,7 +252,7 @@ namespace etl
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 2U, Chunk_Bits>::value,
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 3U, Chunk_Bits>::value
         };
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
       ETL_CONSTEXPR14 TAccumulator add(TAccumulator crc, uint8_t value) const
       {
 #endif
@@ -274,7 +274,7 @@ namespace etl
         return crc;
       }
     };
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
     template <typename TAccumulator, size_t Accumulator_Bits, size_t Chunk_Bits, uint8_t Chunk_Mask, TAccumulator Polynomial, bool Reflect>
     ETL_CONSTANT TAccumulator crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 4U>::table[4U];
 #endif
@@ -285,7 +285,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 16U>
     {
       //*************************************************************************
-#if !ETL_USING_CPP11 || defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if !ETL_USING_CPP11
       TAccumulator add(TAccumulator crc, uint8_t value) const
       {
 #endif
@@ -308,7 +308,7 @@ namespace etl
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 14U, Chunk_Bits>::value,
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 15U, Chunk_Bits>::value
         };
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
       ETL_CONSTEXPR14 TAccumulator add(TAccumulator crc, uint8_t value) const
       {
 #endif
@@ -326,7 +326,7 @@ namespace etl
         return crc;
       }
     };
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
     template <typename TAccumulator, size_t Accumulator_Bits, size_t Chunk_Bits, uint8_t Chunk_Mask, TAccumulator Polynomial, bool Reflect>
     ETL_CONSTANT TAccumulator crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 16U>::table[16U];
 #endif
@@ -337,7 +337,7 @@ namespace etl
     struct crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 256U>
     {
       //*************************************************************************
-#if !ETL_USING_CPP11 || defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if !ETL_USING_CPP11
       TAccumulator add(TAccumulator crc, uint8_t value) const
       {
 #endif
@@ -600,7 +600,7 @@ namespace etl
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 254U, Chunk_Bits>::value,
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 255U, Chunk_Bits>::value
         };
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
       ETL_CONSTEXPR14 TAccumulator add(TAccumulator crc, uint8_t value) const
       {
 #endif
@@ -610,7 +610,7 @@ namespace etl
         return crc;
       }
     };
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
     template <typename TAccumulator, size_t Accumulator_Bits, size_t Chunk_Bits, uint8_t Chunk_Mask, TAccumulator Polynomial, bool Reflect>
     ETL_CONSTANT TAccumulator crc_table<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Polynomial, Reflect, 256U>::table[256U];
 #endif
