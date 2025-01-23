@@ -388,3 +388,4 @@ support/time remaining test.xlsx
 test/vs2022/Debug MSVC C++20 - Force C++03
 test/vs2022/Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser
 test/test_file_list.txt
+test/etl_error_handler/assert_function/build-make
