@@ -8960,6 +8960,7 @@
     <ClCompile Include="..\test_quantize.cpp" />
     <ClCompile Include="..\test_queue_lockable.cpp" />
     <ClCompile Include="..\test_queue_lockable_small.cpp" />
+    <ClCompile Include="..\test_ratio.cpp" />
     <ClCompile Include="..\test_rescale.cpp" />
     <ClCompile Include="..\test_result.cpp" />
     <ClCompile Include="..\test_rms.cpp" />
