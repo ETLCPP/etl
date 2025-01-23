@@ -143,7 +143,7 @@ namespace etl
 
     public:
 
-      using value = ratio<R1::num / gcd, R1::den / gcd>;
+      using type = ratio<R1::num / gcd, R1::den / gcd>;
     };
 
     template<typename R1, typename R2>
@@ -155,14 +155,14 @@ namespace etl
 
     public:
 
-      using value = typename ratio_reduce<ratio<R1::num * lcm / R1::den + R2::num * lcm / R2::den, lcm>>::value;
+      using type = typename ratio_reduce<ratio<R1::num * lcm / R1::den + R2::num * lcm / R2::den, lcm>>::type;
     };
 
     template<typename R1, typename R2>
     struct ratio_subtract
     {
     public:
-      using value = typename ratio_add<R1, ratio<-R2::num, R2::den>>::value;
+      using type = typename ratio_add<R1, ratio<-R2::num, R2::den>>::type;
     };
 
     template<typename R1, typename R2>
@@ -173,51 +173,51 @@ namespace etl
       static ETL_CONSTEXPR11 intmax_t gcd2 = etl::private_ratio::ratio_gcd<intmax_t, R2::num, R1::den>::value;
 
     public:
-      using value = ratio<(R1::num / gcd1) * (R2::num / gcd2), (R1::den / gcd2) * (R2::den / gcd1)>;
+      using type = ratio<(R1::num / gcd1) * (R2::num / gcd2), (R1::den / gcd2) * (R2::den / gcd1)>;
     };
 
     template<typename R1, typename R2>
     struct ratio_divide
     {
     public:
-      using value = typename ratio_multiply<R1, ratio<R2::den, R2::num>>::value;
+      using type = typename ratio_multiply<R1, ratio<R2::den, R2::num>>::type;
     };
   }
 
   template<typename R1, typename R2>
-  using ratio_add = typename private_ratio::ratio_add<R1, R2>::value;
+  using ratio_add = typename private_ratio::ratio_add<R1, R2>::type;
 
   template<typename R1, typename R2>
-  using ratio_subtract = typename private_ratio::ratio_subtract<R1, R2>::value;
+  using ratio_subtract = typename private_ratio::ratio_subtract<R1, R2>::type;
 
   template<typename R1, typename R2>
-  using ratio_multiply = typename private_ratio::ratio_multiply<R1, R2>::value;
+  using ratio_multiply = typename private_ratio::ratio_multiply<R1, R2>::type;
 
   template<typename R1, typename R2>
-  using ratio_divide = typename private_ratio::ratio_divide<R1, R2>::value;
+  using ratio_divide = typename private_ratio::ratio_divide<R1, R2>::type;
 
   template<typename R1, typename R2>
-  struct ratio_equal: etl::integral_constant<bool, (R1::num == R2::num && R1::den == R2::den)>
+  struct ratio_equal : etl::integral_constant<bool, (R1::num == R2::num && R1::den == R2::den)>
   {
   };
 
   template<typename R1, typename R2>
-  struct ratio_not_equal: etl::integral_constant<bool, (R1::num != R2::num || R1::den != R2::den)>
+  struct ratio_not_equal : etl::integral_constant<bool, (R1::num != R2::num || R1::den != R2::den)>
   {
   };
 
   template<typename R1, typename R2>
-  struct ratio_less: etl::integral_constant<bool, (R1::num * R2::den < R2::num * R1::den)>
+  struct ratio_less : etl::integral_constant<bool, (R1::num * R2::den < R2::num * R1::den)>
   {
   };
 
   template<typename R1, typename R2>
-  struct ratio_less_equal: etl::integral_constant<bool, (R1::num * R2::den <= R2::num * R1::den)>
+  struct ratio_less_equal : etl::integral_constant<bool, (R1::num * R2::den <= R2::num * R1::den)>
   {
   };
 
   template<typename R1, typename R2>
-  struct ratio_greater: etl::integral_constant<bool, (R1::num * R2::den > R2::num * R1::den)>
+  struct ratio_greater : etl::integral_constant<bool, (R1::num * R2::den > R2::num * R1::den)>
   {
   };
 

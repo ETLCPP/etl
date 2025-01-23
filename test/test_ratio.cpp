@@ -87,6 +87,11 @@ namespace
 
       CHECK((etl::ratio_equal<r1, r1>::value));
       CHECK((!etl::ratio_equal<r1, r2>::value));
+
+#if ETL_USING_CPP14
+      CHECK((etl::ratio_equal_v<r1, r1>));
+      CHECK((!etl::ratio_equal_v<r1, r2>));
+#endif
     }
 
     //*************************************************************************
@@ -97,6 +102,11 @@ namespace
 
       CHECK((!etl::ratio_not_equal<r1, r1>::value));
       CHECK((etl::ratio_not_equal<r1, r2>::value));
+
+#if ETL_USING_CPP14
+      CHECK((!etl::ratio_not_equal_v<r1, r1>));
+      CHECK((etl::ratio_not_equal_v<r1, r2>));
+#endif
     }
 
     //*************************************************************************
@@ -107,6 +117,11 @@ namespace
 
       CHECK((etl::ratio_less<r1, r2>::value));
       CHECK((!etl::ratio_less<r2, r1>::value));
+
+#if ETL_USING_CPP14
+      CHECK((etl::ratio_less_v<r1, r2>));
+      CHECK((!etl::ratio_less_v<r1, r1>));
+#endif
     }
 
     //*************************************************************************
@@ -117,6 +132,11 @@ namespace
 
       CHECK((etl::ratio_less_equal<r1, r1>::value));
       CHECK((etl::ratio_less_equal<r1, r2>::value));
+
+#if ETL_USING_CPP14
+      CHECK((etl::ratio_less_equal_v<r1, r1>));
+      CHECK((etl::ratio_less_equal_v<r1, r1>));
+#endif
     }
 
     //*************************************************************************
@@ -127,6 +147,11 @@ namespace
 
       CHECK((etl::ratio_greater<r1, r2>::value));
       CHECK((!etl::ratio_greater<r2, r1>::value));
+
+#if ETL_USING_CPP14
+      CHECK((etl::ratio_greater_v<r1, r2>));
+      CHECK((!etl::ratio_greater_v<r2, r1>));
+#endif
     }
 
     //*************************************************************************
@@ -137,6 +162,11 @@ namespace
 
       CHECK((etl::ratio_greater_equal<r1, r1>::value));
       CHECK((etl::ratio_greater_equal<r1, r2>::value));
+
+#if ETL_USING_CPP14
+      CHECK((etl::ratio_greater_equal_v<r1, r1>));
+      CHECK((etl::ratio_greater_equal_v<r1, r2>));
+#endif
     }
   };
 
