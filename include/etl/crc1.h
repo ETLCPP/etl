@@ -52,19 +52,19 @@ namespace etl
     };
 
     //*********************************
-    value_type initial() const
+    ETL_CONSTEXPR14 value_type initial() const
     {
       return even_parity;
     }
 
     //*********************************
-    uint8_t add(int parity, uint8_t value) const
+    ETL_CONSTEXPR14 uint8_t add(int parity, uint8_t value) const
     {
       return parity ^ etl::parity(value);
     }
 
     //*********************************
-    uint8_t final(uint8_t parity) const
+    ETL_CONSTEXPR14 uint8_t final(uint8_t parity) const
     {
       return parity;
     }
@@ -83,7 +83,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc1()
+    ETL_CONSTEXPR14 crc1()
     {
       this->reset();
     }
@@ -94,7 +94,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    crc1(TIterator begin, const TIterator end)
+    ETL_CONSTEXPR14 crc1(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
