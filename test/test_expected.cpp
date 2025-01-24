@@ -184,7 +184,7 @@ namespace
 
       using ExpectedInPlace = etl::expected<ValueInPlace,  Error>;
 
-      ExpectedInPlace expected(etl::in_place, 1, 2);
+      ExpectedInPlace expected(etl::in_place_t(), 1, 2);
 
       ValueInPlace output = expected.value();
 
