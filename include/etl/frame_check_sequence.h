@@ -107,7 +107,8 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 frame_check_sequence() : frame_check()
+    ETL_CONSTEXPR14 frame_check_sequence() 
+      : frame_check()
     {
       reset();
     }
