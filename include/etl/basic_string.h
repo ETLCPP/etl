@@ -2701,6 +2701,39 @@ namespace etl
     }
 
     //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(char).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type 
+      get_string_length(const U* src)
+    {
+      return ::strlen(reinterpret_cast<const char*>(src));
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
+      get_string_length(const U* src)
+    {
+      return ::wcslen(reinterpret_cast<const wchar_t*>(src));
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for anything else.
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type 
+      get_string_length(const U* src)
+    {
+      return etl::strlen(src);
+    }
+
+    //*********************************************************************
     /// Common implementation for 'assign' and 'append' for iterators.
     //*********************************************************************
     template <typename TIterator>
