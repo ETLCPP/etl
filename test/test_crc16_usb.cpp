@@ -55,7 +55,7 @@ namespace
       CHECK_EQUAL(0xB4C8U, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc16_usb_constexpr)
     {
@@ -138,7 +138,7 @@ namespace
       CHECK_EQUAL(0xB4C8U, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc16_usb_16_constexpr)
     {
@@ -221,7 +221,7 @@ namespace
       CHECK_EQUAL(0xB4C8U, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc16_usb_4_constexpr)
     {

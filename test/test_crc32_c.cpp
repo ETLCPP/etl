@@ -55,7 +55,7 @@ namespace
       CHECK_EQUAL(0xE3069283UL, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc32_c_constexpr)
     {

@@ -55,7 +55,7 @@ namespace
       CHECK_EQUAL(0x9ECFU, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc16_dds110_constexpr)
     {
@@ -138,7 +138,7 @@ namespace
       CHECK_EQUAL(0x9ECFU, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc16_dds110_16_constexpr)
     {
@@ -221,7 +221,7 @@ namespace
       CHECK_EQUAL(0x9ECFU, crc);
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc16_dds110_4_constexpr)
     {

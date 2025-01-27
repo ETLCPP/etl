@@ -66,7 +66,7 @@ namespace
       CHECK_EQUAL(calculate_parity(data.begin(), data.end()), int(crc));
     }
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_crc1_constructor_constexpr)
     {
