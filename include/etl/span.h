@@ -86,7 +86,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator, typename TSize>
     ETL_CONSTEXPR explicit span(const TIterator begin_, const TSize /*size_*/) ETL_NOEXCEPT
-      : pbegin(etl::addressof(*begin_))
+      : pbegin(etl::to_address(begin_))
     {
     }
 
@@ -95,7 +95,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR explicit span(const TIterator begin_, const TIterator /*end_*/)
-      : pbegin(etl::addressof(*begin_))
+      : pbegin(etl::to_address(begin_))
     {
     }
 
@@ -471,8 +471,8 @@ namespace etl
     //*************************************************************************
     template <typename TIterator, typename TSize>
     ETL_CONSTEXPR span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
-      : pbegin(etl::addressof(*begin_))
-      , pend(etl::addressof(*begin_) + size_)
+      : pbegin(etl::to_address(begin_))
+      , pend(etl::to_address(begin_) + size_)
     {
     }
 
@@ -481,8 +481,8 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
-      : pbegin(etl::addressof(*begin_))
-      , pend(etl::addressof(*begin_) + etl::distance(begin_, end_))
+      : pbegin(etl::to_address(begin_))
+      , pend(etl::to_address(begin_) + etl::distance(begin_, end_))
     {
     }
 

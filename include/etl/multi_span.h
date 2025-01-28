@@ -498,7 +498,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR14 multi_span(TIterator begin_, TIterator end_)
-      : span_list(etl::addressof(*begin_), etl::distance(begin_, end_))
+      : span_list(etl::to_address(begin_), etl::distance(begin_, end_))
     {
     }
 
@@ -507,7 +507,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR14 multi_span(TIterator begin_, size_t length_)
-      : span_list(etl::addressof(*begin_), length_)
+      : span_list(etl::to_address(begin_), length_)
     {
     }
 
