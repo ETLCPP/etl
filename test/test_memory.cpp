@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/memory.h"
+#include "etl/list.h"
 #include "etl/debug_count.h"
 
 #include "data.h"
@@ -1450,7 +1451,7 @@ namespace
       CHECK(ptr.get() == ETL_NULLPTR);
     }
 
-    //*************************************************************************
+    
     struct Flags
     {
       Flags()
@@ -1622,6 +1623,21 @@ namespace
       CHECK_THROW(etl::get_object_at<Data>(pbuffer1), etl::alignment_error);
 
       CHECK_THROW(etl::destroy_object_at<Data>(pbuffer1), etl::alignment_error);
+    }
+
+    //*************************************************************************
+    TEST(test_to_address)
+    {
+      int  i;
+      int* pi = &i;
+
+      etl::list<int, 4> container = { 1, 2, 3, 4 };
+      etl::list<int, 4>::iterator itr = container.begin();
+      std::advance(itr, 2);
+      int* plist_item = &*itr;
+
+      CHECK_EQUAL(&i, etl::to_address(pi));
+      CHECK_EQUAL(plist_item, etl::to_address(itr));
     }
   };
 }

@@ -54,6 +54,49 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_USING_STL && ETL_USING_CPP20
+  //*****************************************************************************
+  /// Obtain the address represented by p without forming a reference to the object pointed to by p.
+  /// Defined when using the STL and C++20
+  //*****************************************************************************
+  template <typename TPtr>
+  constexpr auto to_address(const TPtr& p) noexcept
+  {
+    return std::to_address(p);
+  }
+
+  //*****************************************************************************
+  /// Obtain the address represented by p without forming a reference to the object pointed to by p.
+  /// Defined when using the STL and C++20
+  //*****************************************************************************
+  template <typename T>
+  constexpr T* to_address(T* p) noexcept
+  {
+    return std::to_address(p);
+  }
+#else
+  //*****************************************************************************
+  /// Obtain the address represented by p without forming a reference to the object pointed to by p.
+  /// Defined when not using the STL or C++20
+  //*****************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR T* to_address(T* p) 
+  { 
+    return p; 
+  }
+
+  //*****************************************************************************
+  /// Obtain the address represented by itr without forming a reference to the object pointed to by itr.
+  /// Requires that the iterator defines operator->()
+  /// Defined when not using the STL or C++20
+  //*****************************************************************************
+  template <typename Iterator>
+  ETL_CONSTEXPR typename Iterator::pointer to_address(const Iterator& itr)
+  {
+    return itr.operator->();
+  }
+#endif
+
 #if ETL_USING_STL
   //*****************************************************************************
   /// Fills uninitialised memory range with a value.
@@ -112,7 +155,7 @@ namespace etl
 
     while (o_begin != o_end)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type(value);
+      ::new (static_cast<void*>(etl::to_address(o_begin))) value_type(value);
       ++o_begin;
     }
 
@@ -259,7 +302,7 @@ namespace etl
 
     while (i_begin != i_end)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_end))) value_type(*i_begin);
+      ::new (static_cast<void*>(etl::to_address(o_end))) value_type(*i_begin);
       ++i_begin;
       ++o_end;
     }
@@ -407,7 +450,7 @@ namespace etl
 
     while (i_begin != i_end)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_end))) value_type(etl::move(*i_begin));
+      ::new (static_cast<void*>(etl::to_address(o_end))) value_type(etl::move(*i_begin));
       ++i_begin;
       ++o_end;
     }
@@ -532,7 +575,7 @@ namespace etl
 
     while (n-- != 0)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_end))) value_type(etl::move(*i_begin));
+      ::new (static_cast<void*>(etl::to_address(o_end))) value_type(etl::move(*i_begin));
       ++i_begin;
       ++o_end;
     }
@@ -665,7 +708,7 @@ namespace etl
 
     while (o_begin != o_end)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type;
+      ::new (static_cast<void*>(etl::to_address(o_begin))) value_type;
       ++o_begin;
     }
   }
@@ -844,7 +887,7 @@ namespace etl
 
     while (o_begin != o_end)
     {
-      ::new (static_cast<void*>(etl::addressof(*o_begin))) value_type();
+      ::new (static_cast<void*>(etl::to_address(o_begin))) value_type();
       ++o_begin;
     }
   }
@@ -1095,7 +1138,7 @@ namespace etl
   {
     while (i_begin != i_end)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
+      etl::destroy_at(etl::to_address(i_begin));
       ++i_begin;
     }
   }
@@ -1127,7 +1170,7 @@ namespace etl
 
     while (i_begin != i_end)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
+      etl::destroy_at(etl::to_address(i_begin));
       ++i_begin;
     }
   }
@@ -1182,7 +1225,7 @@ namespace etl
   {
     while (n > 0)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
+      etl::destroy_at(etl::to_address(i_begin));
       ++i_begin;
       --n;
     }
@@ -1218,7 +1261,7 @@ namespace etl
 
     while (n > 0)
     {
-      etl::destroy_at(etl::addressof(*i_begin));
+      etl::destroy_at(etl::to_address(i_begin));
       ++i_begin;
       --n;
     }
