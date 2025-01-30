@@ -368,11 +368,30 @@ namespace etl
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
-    TReturn operator()(TParams... args) const
+    template <typename TRet = TReturn>
+    ETL_CONSTEXPR14
+    typename etl::enable_if_t<etl::is_same<TRet, void>::value>
+     operator()(TParams... args) const
     {
-      ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
+      if (is_valid())
+      {
+        (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      }
+    }
 
-      return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+    template <typename TRet = TReturn>
+    ETL_CONSTEXPR14
+    typename etl::enable_if_t<!etl::is_same<TRet, void>::value, TReturn>
+     operator()(TParams... args) const
+    {
+      if (is_valid())
+      {
+        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      }
+      else
+      {
+        return {};
+      }
     }
 
     //*************************************************************************
