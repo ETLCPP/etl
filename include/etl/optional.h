@@ -484,14 +484,16 @@ namespace etl
       //*************************************************************************
       template <typename... TArgs>
       ETL_CONSTEXPR20_STL
-      void emplace(TArgs&& ... args)
+      T& emplace(TArgs&& ... args)
       {
         storage.construct(etl::forward<TArgs>(args)...);
+
+        return storage.u.value;
       }
 #else
       //*************************************************************************
       /// Emplaces a value.
-      /// 1 parameter.
+      /// 0 parameters.
       //*************************************************************************
       T& emplace()
       {
@@ -1048,14 +1050,16 @@ namespace etl
       //*************************************************************************
       template <typename... TArgs>
       ETL_CONSTEXPR14
-      void emplace(TArgs&& ... args)
+      T& emplace(TArgs&& ... args)
       {
         storage.construct(etl::forward<TArgs>(args)...);
+
+        return storage.value;
       }
 #else
       //*************************************************************************
       /// Emplaces a value.
-      /// 1 parameter.
+      /// 0 parameters.
       //*************************************************************************
       T& emplace()
       {

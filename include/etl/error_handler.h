@@ -255,6 +255,38 @@ namespace etl
     }
   };
 }
+#elif defined(ETL_USE_ASSERT_FUNCTION)
+namespace etl
+{
+  namespace private_error_handler
+  {
+    typedef void(*assert_function_ptr_t)(const etl::exception&);
+
+    // Stores the assert function pointer and default assert function.
+    template <size_t N>
+    struct assert_handler
+    {
+      static assert_function_ptr_t assert_function_ptr;
+
+      static void default_assert(const etl::exception&)
+      {
+        assert(false);
+      }
+    };
+
+    template <size_t N>
+    assert_function_ptr_t assert_handler<N>::assert_function_ptr = assert_handler<N>::default_assert;
+  }
+
+  //***************************************************************************
+  /// Sets the assert function.
+  /// The argument function signature is void(*)(const etl::exception&)
+  //***************************************************************************
+  void set_assert_function(etl::private_error_handler::assert_function_ptr_t afptr)
+  {
+    etl::private_error_handler::assert_handler<0>::assert_function_ptr = afptr;
+  }
+}
 #endif
 
 //***************************************************************************
@@ -264,6 +296,7 @@ namespace etl
 /// If ETL_NO_CHECKS is defined then no runtime checks are executed at all.
 /// If asserts or exceptions are enabled then the error is thrown if the assert fails. The return value is always 'true'.
 /// If ETL_LOG_ERRORS is defined then the error is logged if the assert fails. The return value is the value of the boolean test.
+/// If ETL_USE_ASSERT_FUNCTION is defined then the error is sent to the assert function.
 /// Otherwise 'assert' is called. The return value is always 'true'.
 ///\ingroup error_handler
 //***************************************************************************
@@ -275,6 +308,14 @@ namespace etl
   #define ETL_ASSERT_FAIL(e)                     ETL_DO_NOTHING // Does nothing.
   #define ETL_ASSERT_FAIL_AND_RETURN(e)          ETL_DO_NOTHING // Does nothing.
   #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) ETL_DO_NOTHING // Does nothing.
+#elif defined(ETL_USE_ASSERT_FUNCTION)
+  #define ETL_ASSERT(b, e) {if(!(b)) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}}                                 // If the condition fails, calls the assert function
+  #define ETL_ASSERT_OR_RETURN(b, e) {if(!(b)) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}}               // If the condition fails, calls the assert function and return
+  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if(!(b)) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return (v);}}  // If the condition fails, calls the assert function and return a value
+
+  #define ETL_ASSERT_FAIL(e) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}                                          // Calls the assert function
+  #define ETL_ASSERT_FAIL_AND_RETURN(e) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}                       // Calls the assert function and return
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return (v);}          // Calls the assert function and return a value
 #elif ETL_USING_EXCEPTIONS
   #if defined(ETL_LOG_ERRORS)
     #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}                                // If the condition fails, calls the error handler then throws an exception.
@@ -292,7 +333,6 @@ namespace etl
     #define ETL_ASSERT_FAIL(e) {throw((e));}                              // Throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN(e) {throw((e));}                   // Throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {throw((e));}          // Throws an exception.
-
   #endif
 #else
   #if defined(ETL_LOG_ERRORS)
@@ -314,8 +354,8 @@ namespace etl
       #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {assert(false);  return(v);} // Asserts.
     #else
       #define ETL_ASSERT(b, e)                                                    // Does nothing.
-      #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) return;}                     // Returns.
-      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) return(v);}         // Returns a value.
+      #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) return;}                      // Returns.
+      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) return(v);}          // Returns a value.
       
       #define ETL_ASSERT_FAIL(e)                                                  // Does nothing.
       #define ETL_ASSERT_FAIL_AND_RETURN(e) {return;}                             // Returns.

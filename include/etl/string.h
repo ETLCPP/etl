@@ -72,6 +72,7 @@ namespace etl
     typedef istring interface_type;
 
     typedef istring::value_type value_type;
+    typedef istring::size_type  size_type;
 
     static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
@@ -244,6 +245,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string& operator = (const etl::string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #if ETL_HAS_ISTRING_REPAIR
@@ -261,7 +272,7 @@ namespace etl
   };
 
   template <size_t MAX_SIZE_>
-  ETL_CONSTANT size_t string<MAX_SIZE_>::MAX_SIZE;
+  ETL_CONSTANT typename string<MAX_SIZE_>::size_type string<MAX_SIZE_>::MAX_SIZE;
 
   //***************************************************************************
   /// A string implementation that uses a fixed size external buffer.
@@ -362,6 +373,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// From string_view.
+    ///\param view The string_view.
+    //*************************************************************************
+    explicit string_ext(const etl::string_view& view, value_type* buffer, size_type buffer_size)
+      : istring(buffer, buffer_size - 1U)
+    {
+      this->assign(view.begin(), view.end());
+    }
+
+    //*************************************************************************
     /// Constructor, from an iterator range.
     ///\tparam TIterator The iterator type.
     ///\param first The iterator to the first element.
@@ -386,16 +407,6 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// From string_view.
-    ///\param view The string_view.
-    //*************************************************************************
-    explicit string_ext(const etl::string_view& view, value_type* buffer, size_type buffer_size)
-      : istring(buffer, buffer_size - 1U)
-    {
-      this->assign(view.begin(), view.end());
-    }
-
-    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     string_ext& operator = (const string_ext& rhs)
@@ -407,7 +418,6 @@ namespace etl
 
       return *this;
     }
-
 
     //*************************************************************************
     /// Assignment operator.
@@ -428,6 +438,16 @@ namespace etl
     string_ext& operator = (const value_type* text)
     {
       this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    string_ext& operator = (const etl::string_view& view)
+    {
+      this->assign(view);
 
       return *this;
     }

@@ -158,6 +158,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_return)
+    {
+      etl::optional<DataM> data;
+
+      DataM* datam = &data.emplace(1U);
+      CHECK_EQUAL(datam, &data.value());
+      CHECK(datam != nullptr);
+    }
+
+    //*************************************************************************
     TEST(test_moveable)
     {
 #include "etl/private/diagnostic_pessimizing_move_push.h"

@@ -256,7 +256,7 @@ namespace
       CHECK_EQUAL(0x6FU, int(value));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_rotate_left8_constexpr)
     {
@@ -357,7 +357,7 @@ namespace
       CHECK_EQUAL(0x6E79U, int(value));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_rotate_left16_constexpr)
     {
@@ -422,7 +422,7 @@ namespace
       CHECK_EQUAL(0xDBU, int(value));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_rotate_right8_constexpr)
     {
@@ -523,7 +523,7 @@ namespace
       CHECK_EQUAL(0x5B9EU, int(value));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_rotate_right16_constexpr)
     {
@@ -550,7 +550,7 @@ namespace
       CHECK_EQUAL(0xCB73U, int(value));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_rotate16_constexpr)
     {
@@ -591,7 +591,7 @@ namespace
       CHECK_EQUAL(0x35U, int(value));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bits8_constexpr)
     {
@@ -620,7 +620,7 @@ namespace
       CHECK_EQUAL(0xA5A5U, value);
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bits16_constexpr)
     {
@@ -649,7 +649,7 @@ namespace
       CHECK_EQUAL(uint32_t(0x5A5A5A5AUL), value);
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bits32_constexpr)
     {
@@ -678,7 +678,7 @@ namespace
       CHECK_EQUAL(uint64_t(0x5A5A5A5A5A5A5A5AULL), value);
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bits64_constexpr)
     {
@@ -707,7 +707,7 @@ namespace
       CHECK_EQUAL(0x5AA5U, value);
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bytes16_constexpr)
     {
@@ -736,7 +736,7 @@ namespace
       CHECK_EQUAL(0xA5A55A5AUL, value);
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bytes32_constexpr)
     {
@@ -765,7 +765,7 @@ namespace
       CHECK_EQUAL(0xA5A55A5AA5A55A5AULL, value);
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_reverse_bytes64_constexpr)
     {
@@ -794,7 +794,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_binary_to_gray8_constexpr)
     {
@@ -823,7 +823,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_binary_to_gray16_constexpr)
     {
@@ -858,7 +858,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_binary_to_gray32_constexpr)
     {
@@ -893,7 +893,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_binary_to_gray64_constexpr)
     {
@@ -914,7 +914,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_gray_to_binary8_constexpr)
     {
@@ -935,7 +935,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_gray_to_binary16_constexpr)
     {
@@ -961,7 +961,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_gray_to_binary32_constexpr)
     {
@@ -987,7 +987,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_gray_to_binary64_constexpr)
     {
@@ -1008,7 +1008,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_bits_8_constexpr)
     {
@@ -1029,7 +1029,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_bits_16_constexpr)
     {
@@ -1056,7 +1056,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_bits_32_constexpr)
     {
@@ -1083,7 +1083,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_bits_64_constexpr)
     {
@@ -1104,7 +1104,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_parity_8_constexpr)
     {
@@ -1125,7 +1125,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_parity_16_constexpr)
     {
@@ -1152,7 +1152,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_parity_32_constexpr)
     {
@@ -1179,7 +1179,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_parity_64_constexpr)
     {
@@ -1260,7 +1260,7 @@ namespace
       CHECK_EQUAL(test_fold_bits<uint64_t>(data, 63), (etl::fold_bits<uint64_t, 63>(data)));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_fold_bits_constexpr)
     {
@@ -1459,7 +1459,7 @@ namespace
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t, 30>(value32)));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_sign_extend_template1_constexpr)
     {
@@ -1521,7 +1521,7 @@ namespace
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 26>(value)));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_sign_extend_template1b_constexpr)
     {
@@ -1578,7 +1578,7 @@ namespace
       CHECK_EQUAL(178956970, (etl::sign_extend<int64_t>(value32, 30)));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_sign_extend_template2_constexpr)
     {
@@ -1640,7 +1640,7 @@ namespace
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 26)));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_sign_extend_template2b_constexpr)
     {
@@ -2183,7 +2183,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_zeros_8_constexpr)
     {
@@ -2210,7 +2210,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_zeros_16_constexpr)
     {
@@ -2241,7 +2241,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_zeros_32_constexpr)
     {
@@ -2272,7 +2272,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_zeros_64_constexpr)
     {
@@ -2299,7 +2299,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_ones_8_constexpr)
     {
@@ -2326,7 +2326,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_ones_16_constexpr)
     {
@@ -2357,7 +2357,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_ones_32_constexpr)
     {
@@ -2387,7 +2387,7 @@ namespace
         }
       }
     }
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_trailing_ones_64_constexpr)
     {
@@ -2414,7 +2414,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_zeros_8_constexpr)
     {
@@ -2441,7 +2441,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_zeros_16_constexpr)
     {
@@ -2472,7 +2472,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_zeros_32_constexpr)
     {
@@ -2503,7 +2503,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_zeros_64_constexpr)
     {
@@ -2530,7 +2530,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_ones_8_constexpr)
     {
@@ -2557,7 +2557,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_ones_16_constexpr)
     {
@@ -2588,7 +2588,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_ones_32_constexpr)
     {
@@ -2619,7 +2619,7 @@ namespace
       }
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_count_leading_ones_64_constexpr)
     {

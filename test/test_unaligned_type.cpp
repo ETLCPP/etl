@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include "etl/private/diagnostic_useless_cast_push.h"
 
+#include <array>
+
 namespace
 {
   SUITE(test_unaligned_type)
@@ -147,6 +149,30 @@ namespace
       CHECK_EQUAL(3.1415927L, be_v2);
       CHECK_EQUAL(3.1415927L, le_v3);
       CHECK_EQUAL(3.1415927L, be_v3);
+    }
+
+    //*************************************************************************
+    TEST(test_construction_from_buffer)
+    {
+      const std::array<char, 4> buffer = { 0x12, 0x34, 0x56, 0x78 };
+
+      const uint32_t le_value = 0x78563412;
+      const uint32_t be_value = 0x12345678;
+
+      etl::le_uint32_t le_v1(buffer.data());
+      etl::be_uint32_t be_v1(buffer.data());
+
+      etl::le_uint32_t le_v2(buffer.data(), buffer.size());
+      etl::be_uint32_t be_v2(buffer.data(), buffer.size());
+
+      CHECK_EQUAL(le_value, le_v1);
+      CHECK_EQUAL(be_value, be_v1);
+
+      CHECK_EQUAL(le_value, le_v2);
+      CHECK_EQUAL(be_value, be_v2);
+
+      CHECK_THROW(etl::le_uint32_t le_v3(buffer.data(), buffer.size() - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint32_t be_v3(buffer.data(), buffer.size() - 1), etl::unaligned_type_buffer_size);
     }
 
     //*************************************************************************

@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/string_view.h"
 #include "etl/string.h"
 #include "etl/wstring.h"
+#include "etl/u8string.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
 #include "etl/hash.h"
@@ -45,12 +46,18 @@ namespace
 {
   using View    = etl::string_view;
   using WView   = etl::wstring_view;
+#if ETL_USING_CPP20
+  using U8View  = etl::u8string_view;
+#endif
   using U16View = etl::u16string_view;
   using U32View = etl::u32string_view;
 
   etl::string<11> etltext    = "Hello World";
   std::string text           = "Hello World";
   std::wstring wtext         = L"Hello World";
+#if ETL_USING_CPP20
+  std::u8string u8text       = u8"Hello World";
+#endif
   std::u16string u16text     = u"Hello World";
   std::u32string u32text     = U"Hello World";
   std::string text_smaller   = "Hello Worlc";
@@ -733,6 +740,39 @@ namespace
       CHECK(view.ends_with("World"));
       CHECK(!view.ends_with("Xorld"));
       CHECK(!view.ends_with("Hello Worldxxxxxx"));
+    }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      const char* s1 = "Hello";
+      const char* s2 = "llo Wor";
+      const char* s3 = "World";
+      const char* s4 = "Xorld";
+      const char* s5 = "Hello Worldxxxxxx";
+
+      View view(text.c_str());
+      View v1(s1);
+      View v2(s2);
+      View v3(s3);
+      View v4(s4);
+      View v5(s5);
+
+      CHECK_TRUE(view.contains(v1));
+      CHECK_TRUE(view.contains(v2));
+      CHECK_TRUE(view.contains(v3));
+      CHECK_FALSE(view.contains(v4));
+      CHECK_FALSE(view.contains(v5));
+
+      CHECK_TRUE(view.contains('H'));
+      CHECK_TRUE(view.contains('l'));
+      CHECK_FALSE(view.contains('X'));
+
+      CHECK_TRUE(view.contains(s1));
+      CHECK_TRUE(view.contains(s2));
+      CHECK_TRUE(view.contains(s3));
+      CHECK_FALSE(view.contains(s4));
+      CHECK_FALSE(view.contains(s5));
     }
 
     //*************************************************************************

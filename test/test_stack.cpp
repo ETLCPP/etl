@@ -231,28 +231,38 @@ namespace
     {
       etl::stack<Item, 5> stack;
 
-      stack.emplace();
+      Item& item1 = stack.emplace();
       CHECK_EQUAL(1U, stack.size());
 
-      stack.emplace('b', 2, 2.3);
+      Item& item2 = stack.emplace('b', 2, 2.3);
       CHECK_EQUAL(2U, stack.size());
 
-      stack.emplace('c', 3, 3.4);
+      Item& item3 = stack.emplace('c', 3, 3.4);
       CHECK_EQUAL(3U, stack.size());
 
-      stack.emplace('d', 4, 4.5);
+      Item& item4 = stack.emplace('d', 4, 4.5);
       CHECK_EQUAL(4U, stack.size());
 
-      stack.emplace('e', 5, 5.6);
+      Item& item5 = stack.emplace('e', 5, 5.6);
       CHECK_EQUAL(5U, stack.size());
 
+      CHECK(item1 == Item('a', 1, 1.2));
+      CHECK(item2 == Item('b', 2, 2.3));
+      CHECK(item3 == Item('c', 3, 3.4));
+      CHECK(item4 == Item('d', 4, 4.5));
+      CHECK(item5 == Item('e', 5, 5.6));
+
       CHECK(stack.top() == Item('e', 5, 5.6));
+      
       stack.pop();
       CHECK(stack.top() == Item('d', 4, 4.5));
+      
       stack.pop();
       CHECK(stack.top() == Item('c', 3, 3.4));
+      
       stack.pop();
       CHECK(stack.top() == Item('b', 2, 2.3));
+      
       stack.pop();
       CHECK(stack.top() == Item('a', 1, 1.2));
     }

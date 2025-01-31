@@ -229,6 +229,9 @@
     <Filter Include="Tests\Codecs\Base64">
       <UniqueIdentifier>{e2e649e4-10ee-4ed7-baa3-eb889e552ba1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Error Handler\Assert Function">
+      <UniqueIdentifier>{f51cb264-5376-47db-89d9-a515e1ac4af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1412,6 +1415,15 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\diagnostic_cxx_20_compat_push.h">
       <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\uncopyable.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\assert_function\etl_profile.h">
+      <Filter>Tests\Error Handler\Assert Function</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton_base.h">
+      <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3386,6 +3398,30 @@
     <ClCompile Include="..\syntax_check\stringify.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_ratio.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_uncopyable.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\uncopyable.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\singleton_base.h.t.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_singleton_base.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unaligned_type_ext.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\assert_function\assert_function.cpp">
+      <Filter>Tests\Error Handler\Assert Function</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\assert_function\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Assert Function</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3541,6 +3577,9 @@
     <None Include="..\list_test_files.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\..\CONTRIBUTING.md">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
@@ -3587,6 +3626,9 @@
     </Text>
     <Text Include="..\syntax_check\log.txt">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\assert_function\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Assert Function</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

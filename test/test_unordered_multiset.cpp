@@ -45,8 +45,8 @@ SOFTWARE.
 
 namespace
 {
-  typedef TestDataDC<std::string>  DC;
-  typedef TestDataNDC<std::string> NDC;
+  using DC  = TestDataDC<std::string>;
+  using NDC = TestDataNDC<std::string>;
 }
 
 namespace etl
@@ -135,6 +135,23 @@ namespace
     }
   };
 
+  //*************************************************************************
+  struct transparent_hash
+  {
+    typedef int is_transparent;
+
+    size_t operator ()(const char* s) const
+    {
+      return std::accumulate(s, s + etl::strlen(s), 0);
+    }
+
+    size_t operator ()(const std::string& s) const
+    {
+      return std::accumulate(s.begin(), s.end(), 0);
+    }
+  };
+
+  //***************************************************************************
   SUITE(test_unordered_multiset)
   {
     static const size_t SIZE = 10;
@@ -161,30 +178,52 @@ namespace
 
     using DataM = etl::unordered_multiset<ItemM, SIZE, SIZE, simple_hash>;
 
-    typedef etl::unordered_multiset<DC,  SIZE, SIZE / 2, simple_hash> DataDC;
-    typedef etl::unordered_multiset<NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
-    typedef etl::iunordered_multiset<NDC, simple_hash>      IDataNDC;
+    using DataDC          = etl::unordered_multiset<DC,  SIZE, SIZE / 2, simple_hash>;
+    using DataNDC         = etl::unordered_multiset<NDC, SIZE, SIZE / 2, simple_hash>;
+    using IDataNDC        = etl::iunordered_multiset<NDC, simple_hash>;
+    using DataTransparent = etl::unordered_multiset<std::string, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
 
-    NDC N0  = NDC("FF");
-    NDC N1  = NDC("FG");
-    NDC N2  = NDC("FH");
-    NDC N3  = NDC("FI");
-    NDC N4  = NDC("FJ");
-    NDC N5  = NDC("FK");
-    NDC N6  = NDC("FL");
-    NDC N7  = NDC("FM");
-    NDC N8  = NDC("FN");
-    NDC N9  = NDC("FO");
-    NDC N10 = NDC("FP");
-    NDC N11 = NDC("FQ");
-    NDC N12 = NDC("FR");
-    NDC N13 = NDC("FS");
-    NDC N14 = NDC("FT");
-    NDC N15 = NDC("FU");
-    NDC N16 = NDC("FV");
-    NDC N17 = NDC("FW");
-    NDC N18 = NDC("FX");
-    NDC N19 = NDC("FY");
+    const char* CK0  = "FF"; // 0
+    const char* CK1  = "FG"; // 1
+    const char* CK2  = "FH"; // 2
+    const char* CK3  = "FI"; // 3
+    const char* CK4  = "FJ"; // 4
+    const char* CK5  = "FK"; // 5
+    const char* CK6  = "FL"; // 6
+    const char* CK7  = "FM"; // 7
+    const char* CK8  = "FN"; // 8
+    const char* CK9  = "FO"; // 9
+    const char* CK10 = "FP"; // 0
+    const char* CK11 = "FQ"; // 1
+    const char* CK12 = "FR"; // 2
+    const char* CK13 = "FS"; // 3
+    const char* CK14 = "FT"; // 4
+    const char* CK15 = "FU"; // 5
+    const char* CK16 = "FV"; // 6
+    const char* CK17 = "FW"; // 7
+    const char* CK18 = "FX"; // 8
+    const char* CK19 = "FY"; // 9
+
+    NDC N0  = NDC(CK0);
+    NDC N1  = NDC(CK1);
+    NDC N2  = NDC(CK2);
+    NDC N3  = NDC(CK3);
+    NDC N4  = NDC(CK4);
+    NDC N5  = NDC(CK5);
+    NDC N6  = NDC(CK6);
+    NDC N7  = NDC(CK7);
+    NDC N8  = NDC(CK8);
+    NDC N9  = NDC(CK9);
+    NDC N10 = NDC(CK10);
+    NDC N11 = NDC(CK11);
+    NDC N12 = NDC(CK12);
+    NDC N13 = NDC(CK13);
+    NDC N14 = NDC(CK14);
+    NDC N15 = NDC(CK15);
+    NDC N16 = NDC(CK16);
+    NDC N17 = NDC(CK17);
+    NDC N18 = NDC(CK18);
+    NDC N19 = NDC(CK19);
 
     std::vector<NDC> initial_data;
     std::vector<NDC> excess_data;
@@ -395,6 +434,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_range_using_transparent_comparator)
+    {
+      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+
+      DataTransparent data;
+
+      data.assign(initial.begin(), initial.end());
+
+      DataTransparent::iterator idata;
+
+      for (size_t i = 0UL; i < 8; ++i)
+      {
+        idata = data.find(initial[i]);
+        CHECK(idata != data.end());
+      } 
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value)
     {
       DataNDC data;
@@ -432,6 +489,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_value_using_transparent_comparator)
+    {
+      DataTransparent data;
+
+      data.insert(CK0);  // Inserted
+      data.insert(CK2);  // Inserted
+      data.insert(CK1);  // Inserted
+      data.insert(CK11); // Duplicate hash. Inserted
+      data.insert(CK3);  // Inserted
+
+      CHECK_EQUAL(5U, data.size());
+
+      DataTransparent::iterator idata;
+
+      idata = data.find(CK0);
+      CHECK(idata != data.end());
+      CHECK(*idata == CK0);
+
+      idata = data.find(CK1);
+      CHECK(idata != data.end());
+      CHECK(*idata == CK1);
+
+      idata = data.find(CK2);
+      CHECK(idata != data.end());
+      CHECK(*idata == CK2);
+
+      idata = data.find(CK11);
+      CHECK(idata != data.end());
+      CHECK(*idata == CK11);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value_excess)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -451,6 +540,24 @@ namespace
         DataNDC::iterator idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_range_using_transparent_comparator)
+    {
+      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+
+      DataTransparent data;
+
+      data.insert(initial.begin(), initial.end());
+
+      DataTransparent::iterator idata;
+
+      for (size_t i = 0UL; i < 8; ++i)
+      {
+        idata = data.find(initial[i]);
+        CHECK(idata != data.end());
+      } 
     }
 
     //*************************************************************************
@@ -502,6 +609,21 @@ namespace
       CHECK_EQUAL(3U, count);
 
       idata = data.find(N1);
+      CHECK(idata == data.end());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparator)
+    {
+      std::array<std::string, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+
+      DataTransparent data(initial.begin(), initial.end());
+
+      size_t count = data.erase("CC");
+
+      CHECK_EQUAL(1U, count);
+
+      DataTransparent::iterator idata = data.find("CC");
       CHECK(idata == data.end());
     }
 
@@ -662,6 +784,20 @@ namespace
       CHECK_EQUAL(3U, count);
 
       count = data.count(N10);
+      CHECK_EQUAL(0U, count);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_count_key_using_transparent_comparator)
+    {
+      std::array<std::string, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+
+      DataTransparent data(initial.begin(), initial.end());
+
+      size_t count = data.count("CC");
+      CHECK_EQUAL(1U, count);
+
+      count = data.count("II");
       CHECK_EQUAL(0U, count);
     }
 
@@ -942,6 +1078,30 @@ namespace
 
       CHECK_TRUE(set1 == set2a);
       CHECK_FALSE(set1 == set2b);
+    }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      NDC not_inserted  = NDC("ZZ");
+
+      CHECK_TRUE(data.contains(N0));
+      CHECK_FALSE(data.contains(not_inserted));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator)
+    {
+      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+
+      DataTransparent data(initial.begin(), initial.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains("FF"));
+      CHECK_FALSE(data.contains(not_inserted));
     }
   };
 }

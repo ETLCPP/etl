@@ -215,7 +215,7 @@ namespace
     TEST(test_read_int8_t)
     {
       std::array<char, 4U> storage  = { char(0x80), char(0x5A), char(0xA5), char(0xFF) };
-      std::array<char, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
+      std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::little);
 

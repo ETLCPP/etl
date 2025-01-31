@@ -148,6 +148,8 @@ namespace etl
 
   public:
 
+    typedef size_t size_type;
+
     typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_type;
     typedef element_type element_t; // Backward compatibility
 

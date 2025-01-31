@@ -1449,16 +1449,20 @@ namespace etl
                         TCompare  compare)
   {
     TIterator minimum = begin;
-    ++begin;
 
-    while (begin != end)
+    if (begin != end)
     {
-      if (compare(*begin, *minimum))
-      {
-        minimum = begin;
-      }
-
       ++begin;
+
+      while (begin != end)
+      {
+        if (compare(*begin, *minimum))
+        {
+          minimum = begin;
+        }
+
+        ++begin;
+      }
     }
 
     return minimum;
@@ -1493,16 +1497,20 @@ namespace etl
                         TCompare  compare)
   {
     TIterator maximum = begin;
-    ++begin;
 
-    while (begin != end)
+    if (begin != end)
     {
-      if (!compare(*begin, *maximum))
-      {
-        maximum = begin;
-      }
-
       ++begin;
+
+      while (begin != end)
+      {
+        if (!compare(*begin, *maximum))
+        {
+          maximum = begin;
+        }
+
+        ++begin;
+      }
     }
 
     return maximum;
@@ -1538,21 +1546,25 @@ namespace etl
   {
     TIterator minimum = begin;
     TIterator maximum = begin;
-    ++begin;
 
-    while (begin != end)
+    if (begin != end)
     {
-      if (compare(*begin, *minimum))
-      {
-        minimum = begin;
-      }
-
-      if (compare(*maximum, *begin))
-      {
-        maximum = begin;
-      }
-
       ++begin;
+
+      while (begin != end)
+      {
+        if (compare(*begin, *minimum))
+        {
+          minimum = begin;
+        }
+
+        if (compare(*maximum, *begin))
+        {
+          maximum = begin;
+        }
+
+        ++begin;
+      }
     }
 
     return ETL_OR_STD::pair<TIterator, TIterator>(minimum, maximum);

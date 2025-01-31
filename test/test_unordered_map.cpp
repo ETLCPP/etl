@@ -130,11 +130,30 @@ namespace
     return true;
   }
 
-  typedef TestDataDC<std::string>  DC;
-  typedef TestDataNDC<std::string> NDC;
+  //*************************************************************************
+  struct transparent_hash
+  {
+    typedef int is_transparent;
 
-  typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
-  typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
+    size_t operator ()(const char* s) const
+    {
+      size_t sum = 0U;
+      size_t length = etl::strlen(s);
+
+      return std::accumulate(s, s + length, sum);
+    }
+
+    size_t operator ()(const std::string& text) const
+    {
+      return std::accumulate(text.begin(), text.end(), 0);
+    }
+  };
+
+  using DC  = TestDataDC<std::string>;
+  using NDC = TestDataNDC<std::string>;
+
+  using ElementDC  = ETL_OR_STD::pair<std::string, DC>;
+  using ElementNDC = ETL_OR_STD::pair<std::string, NDC>;
 }
 
 namespace etl
@@ -201,20 +220,22 @@ namespace
     using ItemM = TestDataM<int>;
     using DataM = etl::unordered_map<std::string, ItemM, SIZE, SIZE, std::hash<std::string>>;
 
-    typedef etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
-    typedef etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
-    typedef etl::iunordered_map<std::string, NDC, simple_hash> IDataNDC;
+    using DataDC             = etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, simple_hash>;
+    using DataNDC            = etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, simple_hash>;
+    using IDataNDC           = etl::iunordered_map<std::string, NDC, simple_hash>;
+    using DataNDCTransparent = etl::unordered_map<std::string, NDC, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
+    using DataDCTransparent  = etl::unordered_map<std::string, DC,  SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
 
-    NDC N0 = NDC("A");
-    NDC N1 = NDC("B");
-    NDC N2 = NDC("C");
-    NDC N3 = NDC("D");
-    NDC N4 = NDC("E");
-    NDC N5 = NDC("F");
-    NDC N6 = NDC("G");
-    NDC N7 = NDC("H");
-    NDC N8 = NDC("I");
-    NDC N9 = NDC("J");
+    NDC N0  = NDC("A");
+    NDC N1  = NDC("B");
+    NDC N2  = NDC("C");
+    NDC N3  = NDC("D");
+    NDC N4  = NDC("E");
+    NDC N5  = NDC("F");
+    NDC N6  = NDC("G");
+    NDC N7  = NDC("H");
+    NDC N8  = NDC("I");
+    NDC N9  = NDC("J");
     NDC N10 = NDC("K");
     NDC N11 = NDC("L");
     NDC N12 = NDC("M");
@@ -226,16 +247,16 @@ namespace
     NDC N18 = NDC("S");
     NDC N19 = NDC("T");
 
-    DC M0 = DC("A");
-    DC M1 = DC("B");
-    DC M2 = DC("C");
-    DC M3 = DC("D");
-    DC M4 = DC("E");
-    DC M5 = DC("F");
-    DC M6 = DC("G");
-    DC M7 = DC("H");
-    DC M8 = DC("I");
-    DC M9 = DC("J");
+    DC M0  = DC("A");
+    DC M1  = DC("B");
+    DC M2  = DC("C");
+    DC M3  = DC("D");
+    DC M4  = DC("E");
+    DC M5  = DC("F");
+    DC M6  = DC("G");
+    DC M7  = DC("H");
+    DC M8  = DC("I");
+    DC M9  = DC("J");
     DC M10 = DC("K");
     DC M11 = DC("L");
     DC M12 = DC("M");
@@ -247,26 +268,47 @@ namespace
     DC M18 = DC("S");
     DC M19 = DC("T");
 
-    const char* K0  = "FF"; // 0
-    const char* K1  = "FG"; // 1
-    const char* K2  = "FH"; // 2
-    const char* K3  = "FI"; // 3
-    const char* K4  = "FJ"; // 4
-    const char* K5  = "FK"; // 5
-    const char* K6  = "FL"; // 6
-    const char* K7  = "FM"; // 7
-    const char* K8  = "FN"; // 8
-    const char* K9  = "FO"; // 9
-    const char* K10 = "FP"; // 0
-    const char* K11 = "FQ"; // 1
-    const char* K12 = "FR"; // 2
-    const char* K13 = "FS"; // 3
-    const char* K14 = "FT"; // 4
-    const char* K15 = "FU"; // 5
-    const char* K16 = "FV"; // 6
-    const char* K17 = "FW"; // 7
-    const char* K18 = "FX"; // 8
-    const char* K19 = "FY"; // 9
+    const char* CK0  = "FF"; // 0
+    const char* CK1  = "FG"; // 1
+    const char* CK2  = "FH"; // 2
+    const char* CK3  = "FI"; // 3
+    const char* CK4  = "FJ"; // 4
+    const char* CK5  = "FK"; // 5
+    const char* CK6  = "FL"; // 6
+    const char* CK7  = "FM"; // 7
+    const char* CK8  = "FN"; // 8
+    const char* CK9  = "FO"; // 9
+    const char* CK10 = "FP"; // 0
+    const char* CK11 = "FQ"; // 1
+    const char* CK12 = "FR"; // 2
+    const char* CK13 = "FS"; // 3
+    const char* CK14 = "FT"; // 4
+    const char* CK15 = "FU"; // 5
+    const char* CK16 = "FV"; // 6
+    const char* CK17 = "FW"; // 7
+    const char* CK18 = "FX"; // 8
+    const char* CK19 = "FY"; // 9
+
+    std::string K0  = CK0;  // 0
+    std::string K1  = CK1;  // 1
+    std::string K2  = CK2;  // 2
+    std::string K3  = CK3;  // 3
+    std::string K4  = CK4;  // 4
+    std::string K5  = CK5;  // 5
+    std::string K6  = CK6;  // 6
+    std::string K7  = CK7;  // 7
+    std::string K8  = CK8;  // 8
+    std::string K9  = CK9;  // 9
+    std::string K10 = CK10; // 0
+    std::string K11 = CK11; // 1
+    std::string K12 = CK12; // 2
+    std::string K13 = CK13; // 3
+    std::string K14 = CK14; // 4
+    std::string K15 = CK15; // 5
+    std::string K16 = CK16; // 6
+    std::string K17 = CK17; // 7
+    std::string K18 = CK18; // 8
+    std::string K19 = CK19; // 9
 
     std::string K[] = { K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14, K15, K16, K17, K18, K19 };
 
@@ -503,6 +545,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_index_read_using_transparent_comparator_and_hasher)
+    {
+      DataDCTransparent data(initial_data_dc.begin(), initial_data_dc.end());
+
+      CHECK_EQUAL(M0, data[CK0]);
+      CHECK_EQUAL(M1, data[CK1]);
+      CHECK_EQUAL(M2, data[CK2]); 
+      CHECK_EQUAL(M3, data[CK3]);
+      CHECK_EQUAL(M4, data[CK4]);
+      CHECK_EQUAL(M5, data[CK5]);
+      CHECK_EQUAL(M6, data[CK6]);
+      CHECK_EQUAL(M7, data[CK7]);
+      CHECK_EQUAL(M8, data[CK8]);
+      CHECK_EQUAL(M9, data[CK9]);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_write)
     {
       DataDC data(initial_data_dc.begin(), initial_data_dc.end());
@@ -531,6 +590,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_index_write_using_transparent_comparator_and_hasher)
+    {
+      DataDCTransparent data(initial_data_dc.begin(), initial_data_dc.end());
+
+      data[CK0] = M9;
+      data[CK1] = M8;
+      data[CK2] = M7;
+      data[CK3] = M6;
+      data[CK4] = M5;
+      data[CK5] = M4;
+      data[CK6] = M3;
+      data[CK7] = M2;
+      data[CK8] = M1;
+      data[CK9] = M0;
+
+      CHECK_EQUAL(M9, data[CK0]);
+      CHECK_EQUAL(M8, data[CK1]);
+      CHECK_EQUAL(M7, data[CK2]);
+      CHECK_EQUAL(M6, data[CK3]);
+      CHECK_EQUAL(M5, data[CK4]);
+      CHECK_EQUAL(M4, data[CK5]);
+      CHECK_EQUAL(M3, data[CK6]);
+      CHECK_EQUAL(M2, data[CK7]);
+      CHECK_EQUAL(M1, data[CK8]);
+      CHECK_EQUAL(M0, data[CK9]);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -548,6 +635,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_at_using_transparent_comparator_and_hasher)
+    {
+      DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      CHECK_EQUAL(data.at(CK0), N0);
+      CHECK_EQUAL(data.at(CK1), N1);
+      CHECK_EQUAL(data.at(CK2), N2);
+      CHECK_EQUAL(data.at(CK3), N3);
+      CHECK_EQUAL(data.at(CK4), N4);
+      CHECK_EQUAL(data.at(CK5), N5);
+      CHECK_EQUAL(data.at(CK6), N6);
+      CHECK_EQUAL(data.at(CK7), N7);
+      CHECK_EQUAL(data.at(CK8), N8);
+      CHECK_EQUAL(data.at(CK9), N9);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
@@ -562,6 +666,23 @@ namespace
       CHECK_EQUAL(data.at(K7), N7);
       CHECK_EQUAL(data.at(K8), N8);
       CHECK_EQUAL(data.at(K9), N9);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_at_const_using_transparent_comparator_and_hasher)
+    {
+      const DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      CHECK_EQUAL(data.at(CK0), N0);
+      CHECK_EQUAL(data.at(CK1), N1);
+      CHECK_EQUAL(data.at(CK2), N2);
+      CHECK_EQUAL(data.at(CK3), N3);
+      CHECK_EQUAL(data.at(CK4), N4);
+      CHECK_EQUAL(data.at(CK5), N5);
+      CHECK_EQUAL(data.at(CK6), N6);
+      CHECK_EQUAL(data.at(CK7), N7);
+      CHECK_EQUAL(data.at(CK8), N8);
+      CHECK_EQUAL(data.at(CK9), N9);
     }
 
     //*************************************************************************
@@ -680,6 +801,23 @@ namespace
       CHECK_EQUAL(1U, count);
 
       DataNDC::iterator idata = data.find(K5);
+      CHECK(idata == data.end());
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparator)
+    {
+      DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      size_t count = data.erase(CK5);
+
+      CHECK_EQUAL(1U, count);
+
+      DataNDCTransparent::iterator idata = data.find(CK5);
       CHECK(idata == data.end());
 
       // Test that erase really does erase from the pool.
@@ -838,6 +976,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_count_key_using_transparent_comparator)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      size_t count = data.count(CK5);
+      CHECK_EQUAL(1U, count);
+
+      count = data.count(CK12);
+      CHECK_EQUAL(0U, count);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -864,6 +1014,32 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_equal_range_using_transparent_comparator)
+    {
+      DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      ETL_OR_STD::pair<DataNDCTransparent::iterator, DataNDCTransparent::iterator> result;
+
+      result = data.equal_range("FF");
+      CHECK(result.first  == data.begin());
+      CHECK(result.second != data.end());
+      CHECK_EQUAL(std::distance(result.first, result.second), 1);
+      CHECK_EQUAL(result.first->first, "FF");
+
+      result = data.equal_range("FJ");
+      CHECK(result.first  != data.begin());
+      CHECK(result.second != data.end());
+      CHECK_EQUAL(std::distance(result.first, result.second), 1);
+      CHECK_EQUAL(result.first->first, "FJ");
+
+      result = data.equal_range("FO");
+      CHECK(result.first  != data.begin());
+      CHECK(result.second == data.end());
+      CHECK_EQUAL(std::distance(result.first, result.second), 1);
+      CHECK_EQUAL(result.first->first, "FO");
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range_const)
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
@@ -887,6 +1063,32 @@ namespace
       CHECK(result.second == data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
       CHECK_EQUAL(result.first->first, K9);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_equal_range_const_using_transparent_comparator)
+    {
+      const DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      ETL_OR_STD::pair<DataNDCTransparent::const_iterator, DataNDCTransparent::const_iterator> result;
+
+      result = data.equal_range("FF");
+      CHECK(result.first  == data.begin());
+      CHECK(result.second != data.end());
+      CHECK_EQUAL(std::distance(result.first, result.second), 1);
+      CHECK_EQUAL(result.first->first, "FF");
+
+      result = data.equal_range("FJ");
+      CHECK(result.first  != data.begin());
+      CHECK(result.second != data.end());
+      CHECK_EQUAL(std::distance(result.first, result.second), 1);
+      CHECK_EQUAL(result.first->first, "FJ");
+
+      result = data.equal_range("FO");
+      CHECK(result.first  != data.begin());
+      CHECK(result.second == data.end());
+      CHECK_EQUAL(std::distance(result.first, result.second), 1);
+      CHECK_EQUAL(result.first->first, "FO");
     }
 
     //*************************************************************************
@@ -1206,6 +1408,28 @@ namespace
       
       CHECK_TRUE(map1 == map2a);
       CHECK_FALSE(map1 == map2b);
+    }
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains(K0));
+      CHECK_FALSE(data.contains(std::string(not_inserted)));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator)
+    {
+      DataNDCTransparent data(initial_data.begin(), initial_data.end());
+
+      const char* not_inserted  = "ZZ";
+
+      CHECK_TRUE(data.contains("FF"));
+      CHECK_FALSE(data.contains(not_inserted));
     }
   };
 }

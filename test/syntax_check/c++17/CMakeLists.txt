@@ -260,6 +260,7 @@ target_sources(t17 PRIVATE etl_profile.h
 		../set.h.t.cpp
 		../shared_message.h.t.cpp
 		../singleton.h.t.cpp
+		../singleton_base.h.t.cpp
 		../smallest.h.t.cpp
 		../span.h.t.cpp
 		../sqrt.h.t.cpp
@@ -296,6 +297,7 @@ target_sources(t17 PRIVATE etl_profile.h
 		../u8string.h.t.cpp
 		../u8string_stream.h.t.cpp
 		../unaligned_type.h.t.cpp
+		../uncopyable.h.t.cpp
 		../unordered_map.h.t.cpp
 		../unordered_multimap.h.t.cpp
 		../unordered_multiset.h.t.cpp
