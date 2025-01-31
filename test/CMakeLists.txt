@@ -407,6 +407,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wuseless-cast
 			-Wshadow
 			-Wnull-dereference
+			-g
 			)
 endif ()
 
