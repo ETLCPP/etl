@@ -481,6 +481,19 @@ namespace etl
       }
 
       //***************************************************************************
+      /// Constructor that catches any types that are not supported.
+      /// Forces a ETL_STATIC_ASSERT.
+      //***************************************************************************
+      template <size_t Index, typename T>
+      explicit variant(etl::in_place_index_t<Index>, T const& value)
+        : type_id(Index)
+      {
+        ETL_STATIC_ASSERT(Type_Id_Lookup<T>::type_id == Index, "Missmatched type");
+        ::new (static_cast<T*>(data)) T(value);
+        type_id = Index;
+      }
+
+      //***************************************************************************
       /// Copy constructor.
       ///\param other The other variant object to copy.
       //***************************************************************************
