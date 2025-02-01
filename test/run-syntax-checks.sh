@@ -8,6 +8,7 @@ configuration_name="Configuration Name Not Set"
 FailColour='\033[38;2;255;128;128m'
 PassColour='\033[38;2;128;255;128m'
 TitleColour='\033[38;2;107;210;255m'
+HelpColour='\033[38;2;250;180;250m'
 NoColour='\033[0m'
 
 ParseGitBranch() 
@@ -36,6 +37,17 @@ PrintHeader()
 	echo " Git branch    : $(ParseGitBranch)  " | tee -a log.txt
 	echo " Processes     : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
+	echo "$NoColour"
+}
+
+PrintHelp()
+{
+	echo "$HelpColour"
+	echo "----------------------------------------------------------------------------------"
+	echo " Syntax       : ./runtests.sh <C++ Standard> <Threads>                            "
+	echo " C++ Standard : a, 03, 11, 14, 17 or 20 (a = All standards)                       "
+	echo " Threads      : Number of threads to use. Default = 4                             "
+	echo "----------------------------------------------------------------------------------"
 	echo "$NoColour"
 }
 
@@ -69,10 +81,14 @@ ChecksCompleted()
 cd syntax_check || exit 1
 echo "" > log.txt
 
+
+
 #******************************************************************************
 # Set the language standard.
 #******************************************************************************
 if [ "$1" = "03" ]; then
+  requested_cxx_standard="03"
+if [ "$1" = "3" ]; then
   requested_cxx_standard="03"
 elif [ "$1" = "11" ]; then
   requested_cxx_standard="11"
@@ -82,9 +98,12 @@ elif [ "$1" = "17" ]; then
   requested_cxx_standard="17"
 elif [ "$1" = "20" ]; then
   requested_cxx_standard="20"
-else
+elif [ "$1" = "A" ]; then
   requested_cxx_standard="All"
-  exit
+elif [ "$1" = "a" ]; then
+  requested_cxx_standard="All"
+else
+  PrintHelp
 fi
 
 #******************************************************************************
@@ -109,7 +128,7 @@ gcc_compiler=$(g++ --version | grep g++)
 clang_compiler=$(clang++ --version | grep clang)
 
 ###############################################################################
-if [ "$requested_cxx_standard" = "03" ]; then
+if [ "$requested_cxx_standard" = "03" ] || [ "$requested_cxx_standard" = "All" ]; then
 SetCxxStandard "03 (98)"
 
 SetConfigurationName "STL"
@@ -265,7 +284,7 @@ fi
 fi
 
 ###############################################################################
-if [ "$requested_cxx_standard" = "11" ]; then
+if [ "$requested_cxx_standard" = "11" ] || [ "$requested_cxx_standard" = "All" ]; then
 
 SetCxxStandard "11"
 
@@ -482,7 +501,7 @@ fi
 fi
 
 ###############################################################################
-if [ "$requested_cxx_standard" =  "14" ]; then
+if [ "$requested_cxx_standard" =  "14" ] || [ "$requested_cxx_standard" = "All" ]; then
 SetCxxStandard "14"
 
 SetConfigurationName "STL"
@@ -698,7 +717,7 @@ fi
 fi
 
 ###############################################################################
-if [ "$requested_cxx_standard" =  "17" ]; then
+if [ "$requested_cxx_standard" =  "17" ] || [ "$requested_cxx_standard" = "All" ]; then
 SetCxxStandard "17"
 
 SetConfigurationName "STL"
@@ -914,7 +933,7 @@ fi
 fi
 
 ###############################################################################
-if [ "$requested_cxx_standard" =  "20" ]; then
+if [ "$requested_cxx_standard" =  "20" ] || [ "$requested_cxx_standard" = "All" ]; then
 SetCxxStandard "20"
 
 SetConfigurationName "STL"

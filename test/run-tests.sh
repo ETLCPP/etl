@@ -58,7 +58,7 @@ PrintHelp()
 	echo " C++ Standard : 11, 14, 17 or 20                                                  "
 	echo " Optimisation : 0, 1, 2 or 3. Default = 0                                         "
 	echo " Threads      : Number of threads to use. Default = 4                             "
-	echo " Sanitizer    : S enables sanitizer checks. Default disabled                      "
+	echo " Sanitizer    : s enables sanitizer checks. Default disabled                      "
 	echo "----------------------------------------------------------------------------------"
 	echo "$NoColour"
 }
@@ -153,7 +153,7 @@ fi
 #******************************************************************************
 # Set the sanitizer enable. Default OFF
 #******************************************************************************
-if [ "$4" = "S" ]; then
+if [ "$4" = "S" ] || [ "$4" = "s" ]; then
   sanitize="On"
 else
   sanitize="Off"
