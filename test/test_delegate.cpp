@@ -310,7 +310,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_true)
     {
-      etl::delegate<void(void)> d([] {});
+      auto lambda = [] {};
+
+      etl::delegate<void(void)> d(lambda);
 
       CHECK(d.is_valid());
       CHECK(d);
@@ -320,7 +322,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_after_clear)
     {
-      etl::delegate<void(void)> d([] {});
+      auto lambda = [] {};
+
+      etl::delegate<void(void)> d(lambda);
 
       CHECK_TRUE(d.is_valid());
       d.clear();
@@ -550,7 +554,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_int)
     {
-      etl::delegate<void(int, int)> d([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); });
+      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+
+      etl::delegate<void(int, int)> d(lambda);
 
       d(VALUE1, VALUE2);
 

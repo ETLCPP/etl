@@ -149,6 +149,12 @@ namespace etl
     }
 
     //*************************************************************************
+    // Delete construction from rvalue reference lambda or functor.
+    //*************************************************************************
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, void>>
+    ETL_CONSTEXPR14 delegate(TLambda&& instance) = delete;
+
+    //*************************************************************************
     /// Create from function (Compile time).
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
