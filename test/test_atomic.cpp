@@ -96,7 +96,7 @@ namespace
 //#endif
     }
 
-//#if ETL_NOT_USING_STL && (defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
+//#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
 //    //*************************************************************************
 //    TEST(test_atomic_is_always_lock_free)
 //    {
