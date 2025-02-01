@@ -75,6 +75,11 @@ namespace
       etl::atomic<int> test;
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+
+#if defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)
+      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
+      CHECK_TRUE(test.is_always_lock_free);
+#endif
     }
 
     //*************************************************************************
@@ -84,7 +89,28 @@ namespace
       etl::atomic<int*> test;
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+
+#if defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)
+      CHECK_TRUE(etl::atomic<int*>::is_always_lock_free);
+      CHECK_TRUE(test.is_always_lock_free);
+#endif
     }
+
+#if defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)
+    //*************************************************************************
+    TEST(test_atomic_is_always_lock_free)
+    {
+      struct S 
+      {
+        int a;
+        int b;
+      };
+
+      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
+      CHECK_TRUE(etl::atomic<int*>::is_always_lock_free);
+      CHECK_FALSE(etl::atomic<S>::is_always_lock_free);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_atomic_integer_load)
