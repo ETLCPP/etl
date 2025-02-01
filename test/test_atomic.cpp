@@ -76,7 +76,7 @@ namespace
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
 
-#if defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)
+#if ETL_NOT_USING_STL && (defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
       CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
       CHECK_TRUE(test.is_always_lock_free);
 #endif
@@ -90,13 +90,13 @@ namespace
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
 
-#if defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)
+#if ETL_NOT_USING_STL && (defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
       CHECK_TRUE(etl::atomic<int*>::is_always_lock_free);
       CHECK_TRUE(test.is_always_lock_free);
 #endif
     }
 
-#if defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)
+#if ETL_NOT_USING_STL && (defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
     //*************************************************************************
     TEST(test_atomic_is_always_lock_free)
     {
@@ -104,6 +104,7 @@ namespace
       {
         int a;
         int b;
+        int c;
       };
 
       CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
