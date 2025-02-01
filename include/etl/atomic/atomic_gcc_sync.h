@@ -377,6 +377,8 @@ namespace etl
       return __atomic_compare_exchange_n(&value, &expected, desired, false, success, failure);
     }
 
+    static ETL_CONSTANT bool is_always_lock_free = true;
+
   private:
 
     atomic& operator =(const atomic&) ETL_DELETE;
@@ -619,6 +621,8 @@ namespace etl
       return __atomic_compare_exchange_n(&value, &expected_v, uintptr_t(desired), false, success, failure);
     }
 
+    static ETL_CONSTANT bool is_always_lock_free = true;
+
   private:
 
     atomic& operator =(const atomic&) ETL_DELETE;
@@ -780,6 +784,8 @@ namespace etl
 
       return __atomic_compare_exchange_n(&value, &expected_v, desired_v, false, success, failure);
     }
+
+    static ETL_CONSTANT bool is_always_lock_free = true;
 
   private:
 
@@ -998,6 +1004,8 @@ namespace etl
       (void)failure;
       return compare_exchange_weak(expected, desired);
     }
+
+    static ETL_CONSTANT bool is_always_lock_free = false;
 
   private:
 
@@ -1428,6 +1436,8 @@ namespace etl
       return true;
     }
 
+    static ETL_CONSTANT bool is_always_lock_free = true;
+
   private:
 
     atomic& operator =(const atomic&) ETL_DELETE;
@@ -1738,6 +1748,8 @@ namespace etl
       return true;
     }
 
+    static ETL_CONSTANT bool is_always_lock_free = true;
+
   private:
 
     atomic& operator =(const atomic&) ETL_DELETE;
@@ -1960,6 +1972,8 @@ namespace etl
       return true;
     }
 
+    static ETL_CONSTANT bool is_always_lock_free = true;
+
   private:
 
     atomic& operator =(const atomic&) ETL_DELETE;
@@ -2159,6 +2173,8 @@ namespace etl
     {
       return compare_exchange_weak(expected, desired);
     }
+
+    static ETL_CONSTANT bool is_always_lock_free = false;
 
   private:
 
