@@ -39,6 +39,7 @@ SOFTWARE.
 #include "hash.h"
 #include "type_traits.h"
 #include "integral_limits.h"
+#include "memory.h"
 #include "array.h"
 #include "byte.h"
 #include "static_assert.h"
