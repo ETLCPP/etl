@@ -70,12 +70,30 @@ cd syntax_check || exit 1
 echo "" > log.txt
 
 #******************************************************************************
-# Set the number of concurrent processes to use.
+# Set the language standard.
 #******************************************************************************
-if [ $# -eq 0 ]; then
+if [ "$1" = "03" ]; then
+  requested_cxx_standard="03"
+elif [ "$1" = "11" ]; then
+  requested_cxx_standard="11"
+elif [ "$1" = "14" ]; then
+  requested_cxx_standard="14"
+elif [ "$1" = "17" ]; then
+  requested_cxx_standard="17"
+elif [ "$1" = "20" ]; then
+  requested_cxx_standard="20"
+else
+  requested_cxx_standard="All"
+  exit
+fi
+
+#******************************************************************************
+# Set the number of concurrent processes to use. Default 4
+#******************************************************************************
+if [ $# -le 1 ]; then
   export CMAKE_BUILD_PARALLEL_LEVEL=4
 else
-  export CMAKE_BUILD_PARALLEL_LEVEL=$1
+  export CMAKE_BUILD_PARALLEL_LEVEL=$2
 fi
 
 #******************************************************************************
@@ -91,8 +109,7 @@ gcc_compiler=$(g++ --version | grep g++)
 clang_compiler=$(clang++ --version | grep clang)
 
 ###############################################################################
-cd c++03 || exit 1
-
+if [ "$requested_cxx_standard" = "03" ]; then
 SetCxxStandard "03 (98)"
 
 SetConfigurationName "STL"
@@ -101,7 +118,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -116,7 +133,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -131,7 +148,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bgcc
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -146,7 +163,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -161,7 +178,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -176,7 +193,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -191,7 +208,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -206,7 +223,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bclang
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -221,7 +238,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -236,7 +253,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -245,8 +262,10 @@ else
   exit $?
 fi
 
+fi
+
 ###############################################################################
-cd ../c++11 || exit 1
+if [ "$requested_cxx_standard" = "11" ]; then
 
 SetCxxStandard "11"
 
@@ -256,7 +275,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -271,7 +290,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -286,7 +305,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -301,7 +320,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -316,7 +335,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bgcc
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -331,7 +350,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -346,7 +365,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -361,7 +380,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -376,7 +395,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -391,7 +410,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -406,7 +425,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -421,7 +440,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-##CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+##CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bclang
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -436,7 +455,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -451,7 +470,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -460,9 +479,10 @@ else
   exit $?
 fi
 
-###############################################################################
-cd ../c++14 || exit 1
+fi
 
+###############################################################################
+if [ "$requested_cxx_standard" =  "14" ]; then
 SetCxxStandard "14"
 
 SetConfigurationName "STL"
@@ -471,7 +491,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -486,7 +506,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -501,7 +521,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -516,7 +536,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -531,7 +551,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bgcc
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -546,7 +566,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -561,7 +581,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -576,7 +596,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -591,7 +611,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -606,7 +626,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -621,7 +641,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -636,7 +656,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-##CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+##CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bclang
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -651,7 +671,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -666,7 +686,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -675,9 +695,10 @@ else
   exit $?
 fi
 
-###############################################################################
-cd ../c++17 || exit 1
+fi
 
+###############################################################################
+if [ "$requested_cxx_standard" =  "17" ]; then
 SetCxxStandard "17"
 
 SetConfigurationName "STL"
@@ -686,7 +707,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -701,7 +722,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -716,7 +737,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -731,7 +752,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -746,7 +767,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bgcc
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -761,7 +782,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -776,7 +797,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -791,7 +812,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -806,7 +827,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -821,7 +842,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -836,7 +857,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -851,7 +872,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bclang
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -866,7 +887,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -881,7 +902,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -890,9 +911,10 @@ else
   exit $?
 fi
 
-###############################################################################
-cd ../c++20 || exit 1
+fi
 
+###############################################################################
+if [ "$requested_cxx_standard" =  "20" ]; then
 SetCxxStandard "20"
 
 SetConfigurationName "STL"
@@ -901,7 +923,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -916,7 +938,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -931,7 +953,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -946,7 +968,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -961,7 +983,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bgcc
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -976,7 +998,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -991,7 +1013,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -1006,7 +1028,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -1021,7 +1043,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -1036,7 +1058,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -1051,7 +1073,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -1066,7 +1088,7 @@ fi
 #rm -rdf bgcc
 #rm -rdf bclang
 #cmake -E make_directory bgcc bclang
-#CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+#CC=clang CXX=clang++ cmake -E chdir bclang cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 #cmake --build bclang
 #if [ $? -eq 0 ]; then
 #  PassedCompilation
@@ -1081,7 +1103,7 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
@@ -1096,13 +1118,15 @@ PrintHeader
 rm -rdf bgcc
 rm -rdf bclang
 cmake -E make_directory bgcc bclang
-CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=$cxx_standard ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
   FailedCompilation
   exit $?
+fi
+
 fi
 
 ChecksCompleted

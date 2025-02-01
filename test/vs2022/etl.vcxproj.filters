@@ -3630,6 +3630,9 @@
     <Text Include="..\etl_error_handler\assert_function\CMakeLists.txt">
       <Filter>Tests\Error Handler\Assert Function</Filter>
     </Text>
+    <Text Include="..\syntax_check\CMakeLists.txt">
+      <Filter>Tests\Syntax Checks</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\etl.ico">

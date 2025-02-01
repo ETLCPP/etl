@@ -9321,6 +9321,7 @@
     <Text Include="..\syntax_check\c++14\CMakeLists.txt" />
     <Text Include="..\syntax_check\c++17\CMakeLists.txt" />
     <Text Include="..\syntax_check\c++20\CMakeLists.txt" />
+    <Text Include="..\syntax_check\CMakeLists.txt" />
     <Text Include="..\syntax_check\log.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">true</ExcludedFromBuild>
