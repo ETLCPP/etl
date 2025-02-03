@@ -54,6 +54,27 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_USING_STL && ETL_USING_CPP20
+  //*****************************************************************************
+  /// Obtain the address represented by p without forming a reference to the object pointed to by p.
+  /// Defined when using the STL and C++20
+  //*****************************************************************************
+  template <typename TPtr>
+  constexpr auto to_address(const TPtr& p) noexcept
+  {
+    return std::to_address(p);
+  }
+
+  //*****************************************************************************
+  /// Obtain the address represented by p without forming a reference to the object pointed to by p.
+  /// Defined when using the STL and C++20
+  //*****************************************************************************
+  template <typename T>
+  constexpr T* to_address(T* p) noexcept
+  {
+    return std::to_address(p);
+  }
+#else
   //*****************************************************************************
   /// Obtain the address represented by p without forming a reference to the object pointed to by p.
   /// Defined when not using the STL or C++20
@@ -74,6 +95,7 @@ namespace etl
   {
     return itr.operator->();
   }
+#endif
 
 #if ETL_USING_STL
   //*****************************************************************************
