@@ -174,6 +174,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP11
     TEST(test_typed_storage)
     {
       etl::typed_storage<A_t> a;
@@ -196,5 +197,6 @@ namespace
       a.destroy();
       CHECK_EQUAL(false, a.has_value());
     }
+#endif
   };
 }

@@ -347,7 +347,6 @@ namespace etl
 #if ETL_USING_CPP11
   template <size_t Length, typename T>
   using aligned_storage_as_t = typename aligned_storage_as<Length, T>::type;
-#endif
 
   //***************************************************************************
   /// Wrapper class that provides a memory area and lets the user emplace and
@@ -451,6 +450,7 @@ namespace etl
     typename aligned_storage_as<sizeof(value_type), value_type>::type data;
     bool valid;
   };
+#endif
 }
 
 #endif
