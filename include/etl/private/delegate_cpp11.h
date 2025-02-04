@@ -475,6 +475,7 @@ namespace etl
     //*************************************************************************
     /// Checks equality.
     //*************************************************************************
+    ETL_NODISCARD
     ETL_CONSTEXPR14 bool operator == (const delegate& rhs) const
     {
       return invocation == rhs.invocation;
@@ -500,6 +501,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the delegate is valid.
     //*************************************************************************
+    ETL_NODISCARD
     ETL_CONSTEXPR14 operator bool() const
     {
       return is_valid();
@@ -712,6 +714,7 @@ namespace etl
   /// Make a delegate from a free function.
   //*************************************************************************
   template <auto Function>
+  ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(Function)>::function_type;
@@ -723,6 +726,7 @@ namespace etl
   /// Make a delegate from a functor or lambda function.
   //*************************************************************************
   template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
+  ETL_NODISCARD
   constexpr auto make_delegate(TLambda& instance) ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(&TLambda::operator())>::function_type;
@@ -734,6 +738,7 @@ namespace etl
   /// Make a delegate from a functor, compile time.
   //*************************************************************************
   template <typename T, T& Instance>
+  ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(&T::operator())>::function_type;
@@ -745,6 +750,7 @@ namespace etl
   /// Make a delegate from a member function at compile time.
   //*************************************************************************
   template <typename T, auto Method, T& Instance, typename = etl::enable_if_t<!private_delegate::function_traits<decltype(Method)>::is_const>>
+  ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
@@ -756,6 +762,7 @@ namespace etl
   /// Make a delegate from a const member function at compile time.
   //*************************************************************************
   template <typename T, auto Method, const T& Instance, typename = etl::enable_if_t<private_delegate::function_traits<decltype(Method)>::is_const>>
+  ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
@@ -767,6 +774,7 @@ namespace etl
   /// Make a delegate from a member function at run time.
   //*************************************************************************
   template <typename T, auto Method>
+  ETL_NODISCARD
   constexpr auto make_delegate(T& instance) ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
@@ -778,6 +786,7 @@ namespace etl
   /// Make a delegate from a member function at run time.
   //*************************************************************************
   template <typename T, auto Method>
+  ETL_NODISCARD
   constexpr auto make_delegate(const T& instance) ETL_NOEXCEPT
   {
     using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
