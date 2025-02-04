@@ -56,6 +56,7 @@ add_executable(etl_tests
 	test_callback_timer_atomic.cpp
 	test_callback_timer_interrupt.cpp
 	test_callback_timer_locked.cpp
+	test_callback_timer_deferred_locked.cpp
 	test_const_map.cpp
 	test_const_map_constexpr.cpp
 	test_const_multimap.cpp
