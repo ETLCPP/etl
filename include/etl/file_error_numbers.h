@@ -103,5 +103,6 @@ SOFTWARE.
 #define ETL_EXPECTED_FILE_ID "70"
 #define ETL_ALIGNMENT_FILE_ID "71"
 #define ETL_BASE64_FILE_ID "72"
+#define ETL_SPAN_FILE_ID "73"
 
 #endif
