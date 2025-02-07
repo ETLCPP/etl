@@ -1004,6 +1004,7 @@ namespace etl
         if (&i_item == element)
         {
           i_item = erase_after(i_last_item);
+          return;
         }
         else
         {
