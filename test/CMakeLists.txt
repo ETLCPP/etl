@@ -143,6 +143,7 @@ add_executable(etl_tests
 	test_fsm.cpp
 	test_function.cpp
 	test_functional.cpp
+	test_function_traits.cpp
 	test_gamma.cpp
 	test_hash.cpp
 	test_hfsm.cpp

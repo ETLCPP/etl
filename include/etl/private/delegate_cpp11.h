@@ -52,6 +52,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "../error_handler.h"
 #include "../exception.h"
 #include "../type_traits.h"
+#include "../function_traits.h"
 #include "../utility.h"
 #include "../optional.h"
 
@@ -659,57 +660,6 @@ namespace etl
   };
 
 #if ETL_USING_CPP17
-  namespace private_delegate
-  {
-    //***************************************************************************
-    /// A template to extract the function type traits.
-    //***************************************************************************
-    template <typename T>
-    struct function_traits;
-
-    //***************************************************************************
-    /// Specialisation for function pointers
-    //***************************************************************************
-    template <typename TReturn, typename... TArgs>
-    struct function_traits<TReturn(*)(TArgs...)>
-    {
-      using function_type  = TReturn(TArgs...);
-
-      enum : bool
-      {
-        is_const = false
-      };
-    };
-
-    //***************************************************************************
-    /// Specialisation for member function pointers
-    //***************************************************************************
-    template <typename TReturn, typename TObject, typename... TArgs>
-    struct function_traits<TReturn(TObject::*)(TArgs...)>
-    {
-      using function_type  = TReturn(TArgs...);
-
-      enum : bool
-      {
-        is_const = false
-      };
-    };
-
-    //***************************************************************************
-    /// Specialisation for const member function pointers
-    //***************************************************************************
-    template <typename TReturn, typename TObject, typename... TArgs>
-    struct function_traits<TReturn(TObject::*)(TArgs...) const>
-    {
-      using function_type  = TReturn(TArgs...);
-
-      enum : bool
-      {
-        is_const = true
-      };
-    };
-  }
-
   //*************************************************************************
   /// Make a delegate from a free function.
   //*************************************************************************
@@ -717,7 +667,7 @@ namespace etl
   ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(Function)>::function_type;
+    using function_type = typename etl::function_traits<decltype(Function)>::function_type;
 
     return etl::delegate<function_type>::template create<Function>();
   }
@@ -729,7 +679,7 @@ namespace etl
   ETL_NODISCARD
   constexpr auto make_delegate(TLambda& instance) ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(&TLambda::operator())>::function_type;
+    using function_type = typename etl::function_traits<decltype(&TLambda::operator())>::function_type;
 
     return etl::delegate<function_type>(instance);
   }
@@ -741,7 +691,7 @@ namespace etl
   ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(&T::operator())>::function_type;
+    using function_type = typename etl::function_traits<decltype(&T::operator())>::function_type;
 
     return etl::delegate<function_type>::template create<T, Instance>();
   }
@@ -749,11 +699,11 @@ namespace etl
   //*************************************************************************
   /// Make a delegate from a member function at compile time.
   //*************************************************************************
-  template <typename T, auto Method, T& Instance, typename = etl::enable_if_t<!private_delegate::function_traits<decltype(Method)>::is_const>>
+  template <typename T, auto Method, T& Instance, typename = etl::enable_if_t<!etl::function_traits<decltype(Method)>::is_const>>
   ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
 
     return etl::delegate<function_type>::template create<T, Method, Instance>();
   }
@@ -761,11 +711,11 @@ namespace etl
   //*************************************************************************
   /// Make a delegate from a const member function at compile time.
   //*************************************************************************
-  template <typename T, auto Method, const T& Instance, typename = etl::enable_if_t<private_delegate::function_traits<decltype(Method)>::is_const>>
+  template <typename T, auto Method, const T& Instance, typename = etl::enable_if_t<etl::function_traits<decltype(Method)>::is_const>>
   ETL_NODISCARD
   constexpr auto make_delegate() ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
 
     return etl::delegate<function_type>::template create<T, Method, Instance>();
   }
@@ -777,7 +727,7 @@ namespace etl
   ETL_NODISCARD
   constexpr auto make_delegate(T& instance) ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
 
     return etl::delegate<function_type>::template create<T, Method>(instance);
   }
@@ -789,7 +739,7 @@ namespace etl
   ETL_NODISCARD
   constexpr auto make_delegate(const T& instance) ETL_NOEXCEPT
   {
-    using function_type = typename etl::private_delegate::function_traits<decltype(Method)>::function_type;
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
 
     return etl::delegate<function_type>::template create<T, Method>(instance);
   }

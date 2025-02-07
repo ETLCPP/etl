@@ -63,7 +63,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Finds the 0thth type in a variadic type parameter.
+  /// Finds the 0th type in a variadic type parameter.
   //***************************************************************************
   template <size_t N>
   struct nth_type<N>
