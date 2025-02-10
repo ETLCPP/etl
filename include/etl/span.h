@@ -377,6 +377,16 @@ namespace etl
     pointer pbegin;
   };
 
+  //*************************************************************************
+  /// Pseudo constructor for constructing from C array without explicitly
+  /// specifying type and size
+  //*************************************************************************
+  template <typename T, size_t Extent>
+  ETL_CONSTEXPR span<T, Extent> make_span(T (&data)[Extent])
+  {
+    return span<T, Extent>(data);
+  }
+
   //***************************************************************************
   /// Span - Dynamic Extent
   //***************************************************************************
@@ -699,6 +709,26 @@ namespace etl
     pointer pbegin;
     pointer pend;
   };
+
+  //*************************************************************************
+  /// Pseudo constructor for constructing from container without explicitly
+  /// specifying type and size
+  //*************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR span<typename T::value_type, etl::dynamic_extent> make_span(T& data)
+  {
+    return span<typename T::value_type, etl::dynamic_extent>(data);
+  }
+
+  //*************************************************************************
+  /// Pseudo constructor for constructing from const container without
+  /// explicitly specifying type and size
+  //*************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR span<typename T::value_type const, etl::dynamic_extent> make_span(const T& data)
+  {
+    return span<typename T::value_type const, etl::dynamic_extent>(data);
+  }
 
   template <typename T, size_t Extent>
   ETL_CONSTANT size_t span<T, Extent>::extent;

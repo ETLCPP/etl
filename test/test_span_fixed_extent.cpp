@@ -1123,6 +1123,25 @@ namespace
       }
     }
 
+    //*************************************************************************
+    TEST(test_make_span_c_array)
+    {
+      {
+        auto s = etl::make_span(cdata);
+
+        CHECK_EQUAL(s.size(), 10);
+        View view(etldata);
+        CHECK_TRUE(etl::equal(s, view));
+      }
+      {
+        auto s = etl::make_span(ccdata);
+
+        CHECK_EQUAL(s.size(), 10);
+        View view(etldata);
+        CHECK_TRUE(etl::equal(s, view));
+      }
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }
