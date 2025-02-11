@@ -34,17 +34,17 @@ SOFTWARE.
 
 namespace
 {
-  std::array<char, 10> input_c
+  std::array<int8_t, 10> input_c
   {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9
   };
 
-  std::array<char, 10> input_c_flat
+  std::array<int8_t, 10> input_c_flat
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
-  std::array<char, 10> input_c_inv
+  std::array<int8_t, 10> input_c_inv
   {
     0, -1, -2, -3, -4, -5, -6, -7, -8, -9
   };
@@ -86,7 +86,7 @@ namespace
     //*************************************************************************
     TEST(test_char_covariance_default_constructor)
     {
-      etl::covariance<etl::covariance_type::Population, char, int32_t> covariance;
+      etl::covariance<etl::covariance_type::Population, signed char, int32_t> covariance;
 
       double covariance_result = covariance;
 
@@ -119,17 +119,17 @@ namespace
       double covariance_result;
 
       // Negative covariance.
-      etl::covariance<etl::covariance_type::Population, char, int32_t> covariance1(input_c.begin(), input_c.end(), input_c_inv.begin());
+      etl::covariance<etl::covariance_type::Population, int8_t, int32_t> covariance1(input_c.begin(), input_c.end(), input_c_inv.begin());
       covariance_result = covariance1.get_covariance();
       CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero covariance
-      etl::covariance<etl::covariance_type::Population, char, int32_t> covariance2(input_c.begin(), input_c.end(), input_c_flat.begin());
+      etl::covariance<etl::covariance_type::Population, int8_t, int32_t> covariance2(input_c.begin(), input_c.end(), input_c_flat.begin());
       covariance_result = covariance2.get_covariance();
       CHECK_CLOSE(0.0, covariance_result, 0.1);
 
       // Positive covariance.
-      etl::covariance<etl::covariance_type::Population, char, int32_t> covariance3(input_c.begin(), input_c.end(), input_c.begin());
+      etl::covariance<etl::covariance_type::Population, int8_t, int32_t> covariance3(input_c.begin(), input_c.end(), input_c.begin());
       covariance_result = covariance3.get_covariance();
       CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
@@ -140,17 +140,17 @@ namespace
       double covariance_result;
 
       // Negative covariance.
-      etl::covariance<etl::covariance_type::Sample, char, int32_t> covariance1(input_c.begin(), input_c.end(), input_c_inv.begin());
+      etl::covariance<etl::covariance_type::Sample, int8_t, int32_t> covariance1(input_c.begin(), input_c.end(), input_c_inv.begin());
       covariance_result = covariance1.get_covariance();
       CHECK_CLOSE(-9.17, covariance_result, 0.1);
 
       // Zero covariance
-      etl::covariance<etl::covariance_type::Sample, char, int32_t> covariance2(input_c.begin(), input_c.end(), input_c_flat.begin());
+      etl::covariance<etl::covariance_type::Sample, int8_t, int32_t> covariance2(input_c.begin(), input_c.end(), input_c_flat.begin());
       covariance_result = covariance2.get_covariance();
       CHECK_CLOSE(0.0, covariance_result, 0.1);
 
       // Positive covariance.
-      etl::covariance<etl::covariance_type::Sample, char, int32_t> covariance3(input_c.begin(), input_c.end(), input_c.begin());
+      etl::covariance<etl::covariance_type::Sample, int8_t, int32_t> covariance3(input_c.begin(), input_c.end(), input_c.begin());
       covariance_result = covariance3.get_covariance();
       CHECK_CLOSE(9.17, covariance_result, 0.1);
     }

@@ -66,7 +66,7 @@ namespace
     ETL_END_ENUM_TYPE
   };
 
-  SUITE(test_atomic_std)
+  SUITE(test_atomic)
   {
     //*************************************************************************
     TEST(test_atomic_integer_is_lock_free)
@@ -75,6 +75,11 @@ namespace
       etl::atomic<int> test;
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+
+//#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+//      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
+//      CHECK_TRUE(test.is_always_lock_free);
+//#endif
     }
 
     //*************************************************************************
@@ -84,7 +89,29 @@ namespace
       etl::atomic<int*> test;
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+
+#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+      CHECK_TRUE(etl::atomic<int*>::is_always_lock_free);
+      CHECK_TRUE(test.is_always_lock_free);
+#endif
     }
+
+//#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+//    //*************************************************************************
+//    TEST(test_atomic_is_always_lock_free)
+//    {
+//      struct S 
+//      {
+//        int a;
+//        int b;
+//        int c;
+//      };
+//
+//      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
+//      CHECK_TRUE(etl::atomic<int*>::is_always_lock_free);
+//      CHECK_FALSE(etl::atomic<S>::is_always_lock_free);
+//    }
+//#endif
 
     //*************************************************************************
     TEST(test_atomic_integer_load)

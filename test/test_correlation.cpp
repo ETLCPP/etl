@@ -34,17 +34,17 @@ SOFTWARE.
 
 namespace
 {
-  std::array<char, 10> input_c
+  std::array<int8_t, 10> input_c
   {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9
   };
 
-  std::array<char, 10> input_c_flat
+  std::array<int8_t, 10> input_c_flat
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
-  std::array<char, 10> input_c_inv
+  std::array<int8_t, 10> input_c_inv
   {
     0, -1, -2, -3, -4, -5, -6, -7, -8, -9
   };
@@ -86,7 +86,7 @@ namespace
     //*************************************************************************
     TEST(test_char_correlation_default_constructor)
     {
-      etl::correlation<etl::correlation_type::Population, char, int32_t> correlation;
+      etl::correlation<etl::correlation_type::Population, signed char, int32_t> correlation;
 
       double correlation_result = correlation;
 
@@ -120,21 +120,21 @@ namespace
       double covariance_result;
 
       // Negative correlation.
-      etl::correlation<etl::correlation_type::Population, char, int32_t> correlation1(input_c.begin(), input_c.end(), input_c_inv.begin());
+      etl::correlation<etl::correlation_type::Population, int8_t, int32_t> correlation1(input_c.begin(), input_c.end(), input_c_inv.begin());
       correlation_result = correlation1;
       CHECK_CLOSE(-1.0, correlation_result, 0.1);
       covariance_result = correlation1.get_covariance();
       CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero correlation
-      etl::correlation<etl::correlation_type::Population, char, int32_t> correlation2(input_c.begin(), input_c.end(), input_c_flat.begin());
+      etl::correlation<etl::correlation_type::Population, int8_t, int32_t> correlation2(input_c.begin(), input_c.end(), input_c_flat.begin());
       correlation_result = correlation2;
       CHECK_CLOSE(0.0, correlation_result, 0.1);
       covariance_result = correlation2.get_covariance();
       CHECK_CLOSE(0.0, covariance_result, 0.1);
 
       // Positive correlation.
-      etl::correlation<etl::correlation_type::Population, char, int32_t> correlation3(input_c.begin(), input_c.end(), input_c.begin());
+      etl::correlation<etl::correlation_type::Population, int8_t, int32_t> correlation3(input_c.begin(), input_c.end(), input_c.begin());
       correlation_result = correlation3;
       CHECK_CLOSE(1.0, correlation_result, 0.1);
       covariance_result = correlation3.get_covariance();
@@ -148,21 +148,21 @@ namespace
       double covariance_result;
 
       // Negative correlation.
-      etl::correlation<etl::correlation_type::Sample, char, int32_t> correlation1(input_c.begin(), input_c.end(), input_c_inv.begin());
+      etl::correlation<etl::correlation_type::Sample, int8_t, int32_t> correlation1(input_c.begin(), input_c.end(), input_c_inv.begin());
       correlation_result = correlation1;
       CHECK_CLOSE(-1.0, correlation_result, 0.1);
       covariance_result = correlation1.get_covariance();
       CHECK_CLOSE(-9.17, covariance_result, 0.1);
 
       // Zero correlation
-      etl::correlation<etl::correlation_type::Sample, char, int32_t> correlation2(input_c.begin(), input_c.end(), input_c_flat.begin());
+      etl::correlation<etl::correlation_type::Sample, int8_t, int32_t> correlation2(input_c.begin(), input_c.end(), input_c_flat.begin());
       correlation_result = correlation2;
       CHECK_CLOSE(0.0, correlation_result, 0.1);
       covariance_result = correlation2.get_covariance();
       CHECK_CLOSE(0.0, covariance_result, 0.1);
 
       // Positive correlation.
-      etl::correlation<etl::correlation_type::Sample, char, int32_t> correlation3(input_c.begin(), input_c.end(), input_c.begin());
+      etl::correlation<etl::correlation_type::Sample, int8_t, int32_t> correlation3(input_c.begin(), input_c.end(), input_c.begin());
       correlation_result = correlation3;
       CHECK_CLOSE(1.0, correlation_result, 0.1);
       covariance_result = correlation3.get_covariance();

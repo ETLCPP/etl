@@ -274,7 +274,7 @@ SOFTWARE.
 //*************************************
 // The macros below are dependent on the profile.
 // C++11
-#if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP11
   #define ETL_CONSTEXPR                   constexpr
   #define ETL_CONSTEXPR11                 constexpr // Synonym for ETL_CONSTEXPR
   #define ETL_CONSTANT                    constexpr
@@ -314,10 +314,16 @@ SOFTWARE.
 
 //*************************************
 // C++14
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-  #define ETL_CONSTEXPR14               constexpr
-  #define ETL_DEPRECATED                [[deprecated]]
-  #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
+#if ETL_USING_CPP14
+  #define ETL_CONSTEXPR14  constexpr
+
+  #if !defined(ETL_IN_UNIT_TEST)   
+    #define ETL_DEPRECATED                [[deprecated]]
+    #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
+  #else
+    #define ETL_DEPRECATED
+    #define ETL_DEPRECATED_REASON(reason)
+  #endif
 #else
   #define ETL_CONSTEXPR14
   #define ETL_DEPRECATED
@@ -326,7 +332,7 @@ SOFTWARE.
 
 //*************************************
 // C++17
-#if ETL_USING_CPP17 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP17
   #define ETL_CONSTEXPR17  constexpr
   #define ETL_IF_CONSTEXPR constexpr
   #define ETL_NODISCARD    [[nodiscard]]
@@ -344,7 +350,7 @@ SOFTWARE.
 
 //*************************************
 // C++20
-#if ETL_USING_CPP20 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP20
   #define ETL_LIKELY             [[likely]]
   #define ETL_UNLIKELY           [[unlikely]]
   #define ETL_CONSTEXPR20        constexpr
@@ -370,7 +376,7 @@ SOFTWARE.
 
 //*************************************
 // C++23
-#if ETL_USING_CPP23 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP23
   #define ETL_ASSUME(expression) [[assume(expression)]]
 #else
   #define ETL_ASSUME ETL_DO_NOTHING
@@ -455,6 +461,26 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Determine if the ETL should use __attribute__((packed).
+#if defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_INTEL) || defined(ETL_COMPILER_ARM6)
+  #define ETL_PACKED_CLASS(class_type)   class  __attribute__((packed)) class_type
+  #define ETL_PACKED_STRUCT(struct_type) struct __attribute__((packed)) struct_type
+  #define ETL_END_PACKED
+  #define ETL_HAS_PACKED 1
+#elif defined(ETL_COMPILER_MICROSOFT)
+  #define ETL_PACKED_CLASS(class_type)   __pragma(pack(push, 1)) class  class_type
+  #define ETL_PACKED_STRUCT(struct_type) __pragma(pack(push, 1)) struct struct_type
+  #define ETL_PACKED     
+  #define ETL_END_PACKED __pragma(pack(pop))
+  #define ETL_HAS_PACKED 1
+#else
+  #define ETL_PACKED_CLASS(class_type)   class  class_type
+  #define ETL_PACKED_STRUCT(struct_type) struct struct_type
+  #define ETL_END_PACKED
+  #define ETL_HAS_PACKED 0
+#endif
+
+//*************************************
 // Check for availability of certain builtins
 #include "profiles/determine_builtin_support.h"
 
@@ -512,6 +538,7 @@ namespace etl
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
+    static ETL_CONSTANT bool has_packed                       = (ETL_HAS_PACKED == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);

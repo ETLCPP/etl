@@ -52,6 +52,8 @@ SOFTWARE.
 #include "placement_new.h"
 #include "initializer_list.h"
 
+#include "private/comparator_is_transparent.h"
+
 #include <stddef.h>
 
 //*****************************************************************************
@@ -599,6 +601,18 @@ namespace etl
       return key_hash_function(key) % number_of_buckets;
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns the bucket index for the key.
+    ///\return The bucket index for the key.
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    size_type get_bucket_index(const K& key) const
+    {
+      return key_hash_function(key) % number_of_buckets;
+    }
+#endif
+
     //*********************************************************************
     /// Returns the size of the bucket key.
     ///\return The bucket size of the bucket key.
@@ -609,6 +623,20 @@ namespace etl
 
       return etl::distance(pbuckets[index].begin(), pbuckets[index].end());
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns the size of the bucket key.
+    ///\return The bucket size of the bucket key.
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    size_type bucket_size(const K& key) const
+    {
+      size_t index = bucket(key);
+
+      return etl::distance(pbuckets[index].begin(), pbuckets[index].end());
+    }
+#endif
 
     //*********************************************************************
     /// Returns the maximum number of the buckets the container can hold.
@@ -716,6 +744,52 @@ namespace etl
       return pbucket->begin()->key_value_pair.second;
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a reference to the value at index 'key'
+    ///\param key The key.
+    ///\return A reference to the value at index 'key'
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    mapped_reference operator [](const K& key)
+    {
+      // Find the bucket.
+      bucket_t* pbucket = pbuckets + get_bucket_index(key);
+
+      // Find the first node in the bucket.
+      local_iterator inode = pbucket->begin();
+
+      // Walk the list looking for the right one.
+      while (inode != pbucket->end())
+      {
+        // Equal keys?
+        if (key_equal_function(key, inode->key_value_pair.first))
+        {
+          // Found a match.
+          return inode->key_value_pair.second;
+        }
+        else
+        {
+          ++inode;
+        }
+      }
+
+      // Doesn't exist, so add a new one.
+      // Get a new node.
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new ((void*)etl::addressof(node->key_value_pair.first))  key_type(key);
+      ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type();
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      pbucket->insert_after(pbucket->before_begin(), *node);
+
+      adjust_first_last_markers_after_insert(pbucket);
+
+      return pbucket->begin()->key_value_pair.second;
+    }
+#endif
+
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
     /// If asserts or exceptions are enabled, emits an etl::unordered_map_out_of_range if the key is not in the range.
@@ -785,6 +859,82 @@ namespace etl
 
       return begin()->second;
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a reference to the value at index 'key'
+    /// If asserts or exceptions are enabled, emits an etl::unordered_map_out_of_range if the key is not in the range.
+    ///\param key The key.
+    ///\return A reference to the value at index 'key'
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    mapped_reference at(const K& key)
+    {
+      // Find the bucket.
+      bucket_t* pbucket = pbuckets + get_bucket_index(key);
+
+      // Find the first node in the bucket.
+      local_iterator inode = pbucket->begin();
+
+      // Walk the list looking for the right one.
+      while (inode != pbucket->end())
+      {
+        // Equal keys?
+        if (key_equal_function(key, inode->key_value_pair.first))
+        {
+          // Found a match.
+          return inode->key_value_pair.second;
+        }
+        else
+        {
+          ++inode;
+        }
+      }
+
+      // Doesn't exist.
+      ETL_ASSERT(false, ETL_ERROR(unordered_map_out_of_range));
+
+      return begin()->second;
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a const reference to the value at index 'key'
+    /// If asserts or exceptions are enabled, emits an etl::unordered_map_out_of_range if the key is not in the range.
+    ///\param key The key.
+    ///\return A const reference to the value at index 'key'
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    const_mapped_reference at(const K& key) const
+    {
+      // Find the bucket.
+      bucket_t* pbucket = pbuckets + get_bucket_index(key);
+
+      // Find the first node in the bucket.
+      local_iterator inode = pbucket->begin();
+
+      // Walk the list looking for the right one.
+      while (inode != pbucket->end())
+      {
+        // Equal keys?
+        if (key_equal_function(key, inode->key_value_pair.first))
+        {
+          // Found a match.
+          return inode->key_value_pair.second;
+        }
+        else
+        {
+          ++inode;
+        }
+      }
+
+      // Doesn't exist.
+      ETL_ASSERT(false, ETL_ERROR(unordered_map_out_of_range));
+
+      return begin()->second;
+    }
+#endif
 
     //*********************************************************************
     /// Assigns values to the unordered_map.
@@ -1040,6 +1190,41 @@ namespace etl
       return n;
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Erases an element.
+    ///\param key The key to erase.
+    ///\return The number of elements erased. 0 or 1.
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    size_t erase(const K& key)
+    {
+      size_t n = 0UL;
+      size_t index = get_bucket_index(key);
+
+      bucket_t& bucket = pbuckets[index];
+
+      local_iterator iprevious = bucket.before_begin();
+      local_iterator icurrent = bucket.begin();
+
+      // Search for the key, if we have it.
+      while ((icurrent != bucket.end()) && (!key_equal_function(icurrent->key_value_pair.first, key)))
+      {
+        ++iprevious;
+        ++icurrent;
+      }
+
+      // Did we find it?
+      if (icurrent != bucket.end())
+      {
+        delete_data_node(iprevious, icurrent, bucket);
+        n = 1;
+      }
+
+      return n;
+    }
+#endif
+
     //*********************************************************************
     /// Erases an element.
     ///\param ielement Iterator to the element.
@@ -1141,6 +1326,19 @@ namespace etl
       return (find(key) == end()) ? 0 : 1;
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Counts an element.
+    ///\param key The key to search for.
+    ///\return 1 if the key exists, otherwise 0.
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    size_t count(const K& key) const
+    {
+      return (find(key) == end()) ? 0 : 1;
+    }
+#endif
+
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
@@ -1209,6 +1407,80 @@ namespace etl
       return end();
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Finds an element.
+    ///\param key The key to search for.
+    ///\return An iterator to the element if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    iterator find(const K& key)
+    {
+      size_t index = get_bucket_index(key);
+
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
+
+      // Is the bucket not empty?
+      if (!bucket.empty())
+      {
+        // Step though the list until we find the end or an equivalent key.
+        local_iterator inode = bucket.begin();
+        local_iterator iend = bucket.end();
+
+        while (inode != iend)
+        {
+          // Do we have this one?
+          if (key_equal_function(key, inode->key_value_pair.first))
+          {
+            return iterator((pbuckets + number_of_buckets), pbucket, inode);
+          }
+
+          ++inode;
+        }
+      }
+
+      return end();
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Finds an element.
+    ///\param key The key to search for.
+    ///\return An iterator to the element if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    const_iterator find(const K& key) const
+    {
+      size_t index = get_bucket_index(key);
+
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
+
+      // Is the bucket not empty?
+      if (!bucket.empty())
+      {
+        // Step though the list until we find the end or an equivalent key.
+        local_iterator inode = bucket.begin();
+        local_iterator iend = bucket.end();
+
+        while (inode != iend)
+        {
+          // Do we have this one?
+          if (key_equal_function(key, inode->key_value_pair.first))
+          {
+            return iterator((pbuckets + number_of_buckets), pbucket, inode);
+          }
+
+          ++inode;
+        }
+      }
+
+      return end();
+    }
+#endif
+
     //*********************************************************************
     /// Returns a range containing all elements with key key in the container.
     /// The range is defined by two iterators, the first pointing to the first
@@ -1250,6 +1522,54 @@ namespace etl
 
       return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a range containing all elements with key key in the container.
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
+    /// element of the range.
+    ///\param key The key to search for.
+    ///\return An iterator pair to the range of elements if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
+    {
+      iterator f = find(key);
+      iterator l = f;
+
+      if (l != end())
+      {
+        ++l;
+      }
+
+      return ETL_OR_STD::pair<iterator, iterator>(f, l);
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    /// Returns a range containing all elements with key key in the container.
+    /// The range is defined by two iterators, the first pointing to the first
+    /// element of the wanted range and the second pointing past the last
+    /// element of the range.
+    ///\param key The key to search for.
+    ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
+    //*********************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
+    {
+      const_iterator f = find(key);
+      const_iterator l = f;
+
+      if (l != end())
+      {
+        ++l;
+      }
+
+      return ETL_OR_STD::pair<const_iterator, const_iterator>(f, l);
+    }
+#endif
 
     //*************************************************************************
     /// Gets the size of the unordered_map.
@@ -1358,6 +1678,25 @@ namespace etl
       }
 
       return *this;
+    }
+#endif
+
+    //*************************************************************************
+    /// Check if the unordered_map contains the key.
+    //*************************************************************************
+    bool contains(const_key_reference key) const
+    {
+      return find(key) != end();
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Check if the unordered_map contains the key.
+    //*************************************************************************
+    template <typename K, typename KE = TKeyEqual, etl::enable_if_t<comparator_is_transparent<KE>::value, int> = 0>
+    bool contains(const K& key) const
+    {
+      return find(key) != end();
     }
 #endif
 

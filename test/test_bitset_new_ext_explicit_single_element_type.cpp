@@ -2619,5 +2619,13 @@ namespace
       CHECK_EQUAL(test_bit(6), t6);
       CHECK_EQUAL(test_bit(7), t7);
     }
+
+    //*************************************************************************
+    TEST(test_global_size)
+    {
+      etl::bitset<32, uint32_t> b(0x12345678UL);
+
+      CHECK_EQUAL(32, ETL_OR_STD17::size(b));
+    }
   };
 }

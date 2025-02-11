@@ -83,7 +83,7 @@ namespace etl
   // Only integral and pointer types are supported.
   //***************************************************************************
 
-  enum memory_order
+  typedef enum memory_order
   {
     memory_order_relaxed = __ATOMIC_RELAXED,
     memory_order_consume = __ATOMIC_CONSUME,
@@ -91,13 +91,22 @@ namespace etl
     memory_order_release = __ATOMIC_RELEASE,
     memory_order_acq_rel = __ATOMIC_ACQ_REL,
     memory_order_seq_cst = __ATOMIC_SEQ_CST
+  } memory_order;
+
+  template <bool Is_Always_Lock_Free>
+  struct atomic_traits
+  {
+    static ETL_CONSTANT bool is_always_lock_free = Is_Always_Lock_Free;
   };
+
+  template <bool Is_Always_Lock_Free>
+  ETL_CONSTANT bool atomic_traits<Is_Always_Lock_Free>::is_always_lock_free;
 
   //***************************************************************************
   /// For all types except bool, pointers and types that are always lock free.
   //***************************************************************************
   template <typename T, bool integral_type = etl::is_integral<T>::value>
-  class atomic
+  class atomic : public atomic_traits<integral_type>
   {
   public:
 
@@ -389,7 +398,7 @@ namespace etl
   /// Specialisation for pointers
   //***************************************************************************
   template <typename T>
-  class atomic<T*, false>
+  class atomic<T*, false> : public atomic_traits<true>
   {
   public:
 
@@ -631,7 +640,7 @@ namespace etl
   /// Specialisation for bool
   //***************************************************************************
   template <>
-  class atomic<bool, true>
+  class atomic<bool, true> : public atomic_traits<true>
   {
   public:
 
@@ -794,7 +803,7 @@ namespace etl
   /// Uses a mutex to control access.
   //***************************************************************************
   template <typename T>
-  class atomic<T, false>
+  class atomic<T, false> : public atomic_traits<false>
   {
   public:
 
@@ -1030,11 +1039,20 @@ namespace etl
     memory_order_seq_cst
   } memory_order;
 
+  template <bool Is_Always_Lock_Free>
+  struct atomic_traits
+  {
+    static ETL_CONSTANT bool is_always_lock_free = Is_Always_Lock_Free;
+  };
+
+  template <bool Is_Always_Lock_Free>
+  ETL_CONSTANT bool atomic_traits<Is_Always_Lock_Free>::is_always_lock_free;
+
   //***************************************************************************
   /// For all types except bool and pointers
   //***************************************************************************
   template <typename T, bool integral_type = etl::is_integral<T>::value>
-  class atomic
+  class atomic : public atomic_traits<integral_type>
   {
   public:
 
@@ -1440,7 +1458,7 @@ namespace etl
   /// Specialisation for pointers
   //***************************************************************************
   template <typename T>
-  class atomic<T*, false>
+  class atomic<T*, false> : public atomic_traits<true>
   {
   public:
 
@@ -1750,7 +1768,7 @@ namespace etl
   /// Specialisation for bool
   //***************************************************************************
   template <>
-  class atomic<bool, true>
+  class atomic<bool, true> : public atomic_traits<true>
   {
   public:
 
@@ -1973,7 +1991,7 @@ namespace etl
   /// Uses a mutex to control access.
   //***************************************************************************
   template <typename T>
-  class atomic<T, false>
+  class atomic<T, false> : public atomic_traits<false>
   {
   public:
 
@@ -2234,3 +2252,4 @@ namespace etl
 }
 
 #endif
+

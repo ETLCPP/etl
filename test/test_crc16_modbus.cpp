@@ -55,6 +55,17 @@ namespace
       CHECK_EQUAL(0x4B37U, crc);
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_modbus_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_modbus(data, data + 9);
+
+      CHECK_EQUAL(0x4B37U, crc);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc16_modbus_add_values)
     {
@@ -127,6 +138,17 @@ namespace
       CHECK_EQUAL(0x4B37U, crc);
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_modbus_16_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_modbus_t16(data, data + 9);
+
+      CHECK_EQUAL(0x4B37U, crc);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc16_modbus_16_add_values)
     {
@@ -198,6 +220,17 @@ namespace
 
       CHECK_EQUAL(0x4B37U, crc);
     }
+
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_modbus_4_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_modbus_t4(data, data + 9);
+
+      CHECK_EQUAL(0x4B37U, crc);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_crc16_modbus_4_add_values)

@@ -143,6 +143,7 @@ add_executable(etl_tests
 	test_fsm.cpp
 	test_function.cpp
 	test_functional.cpp
+	test_function_traits.cpp
 	test_gamma.cpp
 	test_hash.cpp
 	test_hfsm.cpp
@@ -222,6 +223,7 @@ add_executable(etl_tests
 	test_queue_spsc_locked.cpp
 	test_queue_spsc_locked_small.cpp
 	test_random.cpp
+	test_ratio.cpp
 	test_reference_flat_map.cpp
 	test_reference_flat_multimap.cpp
 	test_reference_flat_multiset.cpp
@@ -233,6 +235,7 @@ add_executable(etl_tests
 	test_set.cpp
 	test_shared_message.cpp
 	test_singleton.cpp
+	test_singleton_base.cpp
 	test_smallest.cpp
 	test_span_dynamic_extent.cpp
 	test_span_fixed_extent.cpp
@@ -288,6 +291,8 @@ add_executable(etl_tests
 	test_type_traits.cpp
 	test_unaligned_type.cpp
 	test_unaligned_type_constexpr.cpp
+	test_unaligned_type_ext.cpp
+	test_uncopyable.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp
@@ -403,6 +408,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wuseless-cast
 			-Wshadow
 			-Wnull-dereference
+			-g
 			)
 endif ()
 

@@ -55,6 +55,17 @@ namespace
       CHECK_EQUAL(0x44C2U, crc);
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_maxim_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_maxim(data, data + 9);
+
+      CHECK_EQUAL(0x44C2U, crc);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc16_maxim_add_values)
     {
@@ -127,6 +138,17 @@ namespace
       CHECK_EQUAL(0x44C2U, crc);
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_maxim_16_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_maxim_t16(data, data + 9);
+
+      CHECK_EQUAL(0x44C2U, crc);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc16_maxim_16_add_values)
     {
@@ -198,6 +220,17 @@ namespace
 
       CHECK_EQUAL(0x44C2U, crc);
     }
+
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_maxim_4_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_maxim_t4(data, data + 9);
+
+      CHECK_EQUAL(0x44C2U, crc);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_crc16_maxim_4_add_values)

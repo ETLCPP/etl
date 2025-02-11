@@ -51,6 +51,7 @@ namespace
       uint32_t i2 = t2.get();
 
       CHECK_EQUAL(i1, i2);
+      CHECK_TRUE(std::is_trivially_copyable<type1_t>::value);
     }
 
     //*************************************************************************

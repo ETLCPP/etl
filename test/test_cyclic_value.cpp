@@ -287,7 +287,7 @@ namespace
 
       int expected[8] = { 2, 7, 6, 5, 4, 3, 2, 7 };
 
-      for (int i = 0; i > 8; ++i)
+      for (int i = 0; i < 8; ++i)
       {
         CHECK_EQUAL(expected[i], value);
         --value;
@@ -303,7 +303,7 @@ namespace
 
       int expected[8] = { 2, 7, 6, 5, 4, 3, 2, 7 };
 
-      for (int i = 0; i > 8; ++i)
+      for (int i = 0; i < 8; ++i)
       {
         CHECK_EQUAL(expected[i], value);
         --value;

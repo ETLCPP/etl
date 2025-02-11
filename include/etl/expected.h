@@ -350,7 +350,7 @@ namespace etl
     //*******************************************
     template <typename... Args>
     ETL_CONSTEXPR14 explicit expected(etl::in_place_t, Args&&... args)
-      : storage(etl::forward<Args>(args)...)
+      : storage(etl::in_place_index_t<Value_Type>(), etl::forward<Args>(args)...)
     {
     }
 
@@ -360,7 +360,7 @@ namespace etl
     //*******************************************
     template <typename U, typename... Args>
     ETL_CONSTEXPR14 explicit expected(etl::in_place_t, std::initializer_list<U> il, Args&&... args)
-      : storage(il, etl::forward<Args>(args)...)
+      : storage(etl::in_place_index_t<Value_Type>(), il, etl::forward<Args>(args)...)
     {
     }
 #endif
@@ -511,7 +511,7 @@ namespace etl
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    bool has_value() const
+    bool has_value() const ETL_NOEXCEPT
     {
       return (storage.index() == Value_Type);
     }
@@ -521,7 +521,8 @@ namespace etl
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    operator bool() const
+    ETL_EXPLICIT
+    operator bool() const ETL_NOEXCEPT
     {
       return has_value();
     }
@@ -865,8 +866,8 @@ namespace etl
     /// Returns true if expected has a value
     //*******************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR14
-      bool has_value() const
+    ETL_CONSTEXPR14
+    bool has_value() const ETL_NOEXCEPT
     {
       return (storage.index() != Error_Type);
     }
@@ -875,8 +876,9 @@ namespace etl
     /// Returns true if expected has a value
     //*******************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR14
-      operator bool() const
+    ETL_CONSTEXPR14
+    ETL_EXPLICIT
+    operator bool() const ETL_NOEXCEPT
     {
       return has_value();
     }
@@ -887,8 +889,8 @@ namespace etl
     /// Undefined behaviour if an error has not been set.
     //*******************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR14
-      error_type& error()& ETL_NOEXCEPT
+    ETL_CONSTEXPR14
+    error_type& error()& ETL_NOEXCEPT
     {
       return etl::get<Error_Type>(storage);
     }
@@ -898,8 +900,8 @@ namespace etl
     /// Undefined behaviour if an error has not been set.
     //*******************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR14
-      const error_type& error() const& ETL_NOEXCEPT
+    ETL_CONSTEXPR14
+    const error_type& error() const& ETL_NOEXCEPT
     {
       return etl::get<Error_Type>(storage);
     }
@@ -909,8 +911,8 @@ namespace etl
     /// Undefined behaviour if an error has not been set.
     //*******************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR14
-      error_type&& error() && ETL_NOEXCEPT
+    ETL_CONSTEXPR14
+    error_type&& error() && ETL_NOEXCEPT
     {
       return etl::move(etl::get<Error_Type>(storage));
     }
@@ -920,8 +922,8 @@ namespace etl
     /// Undefined behaviour if an error has not been set.
     //*******************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR14
-      const error_type&& error() const&& ETL_NOEXCEPT
+    ETL_CONSTEXPR14
+    const error_type&& error() const&& ETL_NOEXCEPT
     {
       return etl::move(etl::get<Error_Type>(storage));
     }

@@ -189,13 +189,22 @@ namespace
     {
       MemCast memCast; 
 
-      memCast.emplace<char>(123);
+      char mc1 = memCast.emplace<char>(123);
       CHECK_EQUAL(123, memCast.ref<char>());
+      CHECK_EQUAL(123, mc1);
 
-      memCast.emplace<double>(1.23);
+      double mc2 = memCast.emplace<double>(1.23);
       CHECK_EQUAL(1.23, memCast.ref<double>());
+      CHECK_EQUAL(1.23, mc2);
 
-      memCast.emplace<Data>(123, 1.23, std::array<int, 3>{ 1, 2, 3 });
+      Data& mc3 = memCast.emplace<Data>(123, 1.23, std::array<int, 3>{ 1, 2, 3 });
+
+      CHECK_EQUAL(123,  mc3.c);
+      CHECK_EQUAL(1.23, mc3.d);
+      CHECK_EQUAL(1,    mc3.a[0]);
+      CHECK_EQUAL(2,    mc3.a[1]);
+      CHECK_EQUAL(3,    mc3.a[2]);
+
       CHECK_EQUAL(123,  memCast.ref<Data>().c);
       CHECK_EQUAL(1.23, memCast.ref<Data>().d);
       CHECK_EQUAL(1,    memCast.ref<Data>().a[0]);
@@ -209,14 +218,32 @@ namespace
       MemCast memCast; 
 
       using Array = std::array<int, 3>;
-      Array a{ 1, 2, 3 };
+      Array compare{ 4, 5, 6 };
 
-      size_t offset = offsetof(Data, a);
+      constexpr size_t ArrayOffset = offsetof(Data, a);
 
-      memCast.emplace_at_offset<Array>(offset, a);
-      CHECK_EQUAL(a[0], memCast.ref<Data>().a[0]);
-      CHECK_EQUAL(a[1], memCast.ref<Data>().a[1]);
-      CHECK_EQUAL(a[2], memCast.ref<Data>().a[2]);
+      Array& data = memCast.emplace_at_offset<Array>(ArrayOffset, compare);
+      const MemCast& constMemCastRef = memCast;
+
+      CHECK_EQUAL(compare[0], memCast.ref<Data>().a[0]);
+      CHECK_EQUAL(compare[1], memCast.ref<Data>().a[1]);
+      CHECK_EQUAL(compare[2], memCast.ref<Data>().a[2]);
+
+      CHECK_EQUAL(compare[0], (memCast.ref_at_offset<Array>(ArrayOffset)[0]));
+      CHECK_EQUAL(compare[1], (memCast.ref_at_offset<Array>(ArrayOffset)[1]));
+      CHECK_EQUAL(compare[2], (memCast.ref_at_offset<Array>(ArrayOffset)[2]));
+
+      CHECK_EQUAL(compare[0], constMemCastRef.ref<Data>().a[0]);
+      CHECK_EQUAL(compare[1], constMemCastRef.ref<Data>().a[1]);
+      CHECK_EQUAL(compare[2], constMemCastRef.ref<Data>().a[2]);
+
+      CHECK_EQUAL(compare[0], (constMemCastRef.ref_at_offset<Array>(ArrayOffset)[0]));
+      CHECK_EQUAL(compare[1], (constMemCastRef.ref_at_offset<Array>(ArrayOffset)[1]));
+      CHECK_EQUAL(compare[2], (constMemCastRef.ref_at_offset<Array>(ArrayOffset)[2]));
+
+      CHECK_EQUAL(compare[0], data[0]);
+      CHECK_EQUAL(compare[1], data[1]);
+      CHECK_EQUAL(compare[2], data[2]);
     }
 
     //*************************************************************************
@@ -225,14 +252,32 @@ namespace
       MemCast memCast; 
 
       using Array = std::array<int, 3>;
-      Array a{ 1, 2, 3 };
+      Array compare{ 4, 5, 6 };
 
-      constexpr size_t Offset = offsetof(Data, a);
+      constexpr size_t ArrayOffset = offsetof(Data, a);
 
-      memCast.emplace_at_offset<Array, Offset>(a);
-      CHECK_EQUAL(a[0], memCast.ref<Data>().a[0]);
-      CHECK_EQUAL(a[1], memCast.ref<Data>().a[1]);
-      CHECK_EQUAL(a[2], memCast.ref<Data>().a[2]);
+      Array& data = memCast.emplace_at_offset<Array, ArrayOffset>(compare);
+      const MemCast& constMemCastRef = memCast;
+
+      CHECK_EQUAL(compare[0], memCast.ref<Data>().a[0]);
+      CHECK_EQUAL(compare[1], memCast.ref<Data>().a[1]);
+      CHECK_EQUAL(compare[2], memCast.ref<Data>().a[2]);
+
+      CHECK_EQUAL(compare[0], (memCast.ref_at_offset<Array, ArrayOffset>()[0]));
+      CHECK_EQUAL(compare[1], (memCast.ref_at_offset<Array, ArrayOffset>()[1]));
+      CHECK_EQUAL(compare[2], (memCast.ref_at_offset<Array, ArrayOffset>()[2]));
+
+      CHECK_EQUAL(compare[0], constMemCastRef.ref<Data>().a[0]);
+      CHECK_EQUAL(compare[1], constMemCastRef.ref<Data>().a[1]);
+      CHECK_EQUAL(compare[2], constMemCastRef.ref<Data>().a[2]);
+
+      CHECK_EQUAL(compare[0], (constMemCastRef.ref_at_offset<Array, ArrayOffset>()[0]));
+      CHECK_EQUAL(compare[1], (constMemCastRef.ref_at_offset<Array, ArrayOffset>()[1]));
+      CHECK_EQUAL(compare[2], (constMemCastRef.ref_at_offset<Array, ArrayOffset>()[2]));
+
+      CHECK_EQUAL(compare[0], data[0]);
+      CHECK_EQUAL(compare[1], data[1]);
+      CHECK_EQUAL(compare[2], data[2]);
     }
 
     //*************************************************************************

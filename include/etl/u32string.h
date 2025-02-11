@@ -228,6 +228,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u32string& operator = (const etl::u32string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #if ETL_HAS_ISTRING_REPAIR
@@ -366,8 +376,8 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// From u32string_view.
-    ///\param view The u32string_view.
+    /// From string_view.
+    ///\param view The string_view.
     //*************************************************************************
     explicit u32string_ext(const etl::u32string_view& view, value_type* buffer, size_type buffer_size)
       : iu32string(buffer, buffer_size - 1U)
@@ -388,7 +398,6 @@ namespace etl
       return *this;
     }
 
-
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -408,6 +417,16 @@ namespace etl
     u32string_ext& operator = (const value_type* text)
     {
       this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u32string_ext& operator = (const etl::u32string_view& view)
+    {
+      this->assign(view);
 
       return *this;
     }

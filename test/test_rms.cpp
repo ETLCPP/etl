@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace
 {
-  std::array<char, 18> input_c
+  std::array<int8_t, 18> input_c
   {
     // Sawtooth wave
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -8, -7, -6, -5, -4, -3, -2, -1
@@ -52,7 +52,7 @@ namespace
     //*************************************************************************
     TEST(test_char_rms)
     {
-      etl::rms<char, int> rms(input_c.begin(), input_c.end());
+      etl::rms<int8_t, int> rms(input_c.begin(), input_c.end());
       double result = rms.get_rms();
 
       CHECK_CLOSE(5.21, result, 0.05);

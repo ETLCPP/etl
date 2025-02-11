@@ -221,13 +221,31 @@ namespace
       parameter_correct = (data.d == VALUE1) && (j == VALUE2);
     }
 
-    //*******************************************
-    // operator()
     void operator()()
     {
       function_called = FunctionCalled::Operator_Called;
     }
 
+    void operator()() const
+    {
+      function_called = FunctionCalled::Operator_Const_Called;
+    }
+  };
+
+  //*******************************************
+  // Functor with non-const operator()
+  struct Functor
+  {
+    void operator()()
+    {
+      function_called = FunctionCalled::Operator_Called;
+    }
+  };
+
+  //*******************************************
+  // Functor with const operator()
+  struct FunctorConst
+  {
     void operator()() const
     {
       function_called = FunctionCalled::Operator_Const_Called;
@@ -242,6 +260,11 @@ namespace
 
   Object object_static;
   const Object const_object_static;
+
+#if ETL_USING_CPP17
+  Functor functor_static;
+  const FunctorConst const_functor_static;
+#endif
 }
 
 namespace
@@ -287,7 +310,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_true)
     {
-      etl::delegate<void(void)> d([] {});
+      auto lambda = [] {};
+
+      etl::delegate<void(void)> d(lambda);
 
       CHECK(d.is_valid());
       CHECK(d);
@@ -297,7 +322,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_after_clear)
     {
-      etl::delegate<void(void)> d([] {});
+      auto lambda = [] {};
+
+      etl::delegate<void(void)> d(lambda);
 
       CHECK_TRUE(d.is_valid());
       d.clear();
@@ -315,10 +342,34 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_void)
+    {
+      auto d = etl::make_delegate<&free_void>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Free_Void_Called);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_free_void_constexpr)
     {
       constexpr auto d = etl::delegate<void(void)>::create<free_void>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Free_Void_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_void_constexpr)
+    {
+      constexpr auto d = etl::make_delegate<&free_void>();
 
       d();
 
@@ -338,10 +389,36 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_int)
+    {
+      auto d = etl::make_delegate<&free_int>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Free_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_free_int_constexpr)
     {
       constexpr auto d = etl::delegate<void(int, int)>::create<free_int>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Free_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_int_constexpr)
+    {
+      constexpr auto d = etl::make_delegate<&free_int>();
 
       d(VALUE1, VALUE2);
 
@@ -365,10 +442,42 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_reference)
+    {
+      etl::delegate<void(const Data&, int)> d = etl::make_delegate<&free_reference>();
+
+      Data data;
+      data.d = VALUE1;
+
+      d(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Free_Reference_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_free_reference_constexpr)
     {
       constexpr etl::delegate<void(const Data&, int)> d = etl::delegate<void(const Data&, int)>::create<free_reference>();
+
+      Data data;
+      data.d = VALUE1;
+
+      d(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Free_Reference_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_reference_constexpr)
+    {
+      constexpr etl::delegate<void(const Data&, int)> d = etl::make_delegate<&free_reference>();
 
       Data data;
       data.d = VALUE1;
@@ -395,6 +504,22 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_moveableonly)
+    {
+      auto d = etl::make_delegate<&free_moveableonly>();
+
+      MoveableOnlyData data;
+      data.d = VALUE1;
+
+      d(std::move(data));
+
+      CHECK(function_called == FunctionCalled::Free_Moveableonly_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_free_moveableonly_constexpr)
     {
@@ -411,9 +536,41 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_free_moveableonly_constexpr)
+    {
+      constexpr auto d = etl::make_delegate<&free_moveableonly>);
+
+      MoveableOnlyData data;
+      data.d = VALUE1;
+
+      d(std::move(data));
+
+      CHECK(function_called == FunctionCalled::Free_Moveableonly_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_int)
     {
-      etl::delegate<void(int, int)> d([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); });
+      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+
+      etl::delegate<void(int, int)> d(lambda);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constexpr_lambda_int)
+    {
+      constexpr auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+      constexpr void(*func_ptr)(int, int) = lambda;
+
+      auto d = etl::delegate<void(int, int)>::create<func_ptr>();
 
       d(VALUE1, VALUE2);
 
@@ -434,6 +591,21 @@ namespace
       CHECK(parameter_correct);
     }
 
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_delegate_lambda_int_create)
+    {
+      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+
+      auto d = etl::make_delegate(lambda);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void)
     {
@@ -445,6 +617,20 @@ namespace
 
       CHECK(function_called == FunctionCalled::Operator_Called);
     }
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void)
+    {
+      Functor object;
+
+      auto d = etl::make_delegate(object);
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Called);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_create)
@@ -459,7 +645,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_USING_CPP14
+#if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_member_operator_void_create_constexpr)
     {
       static Object object;
@@ -484,7 +670,21 @@ namespace
       CHECK(function_called == FunctionCalled::Operator_Const_Called);
     }
 
-#if !defined(ETL_COMPILER_GCC)
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void_const)
+    {
+      const FunctorConst object;
+
+      auto d = etl::make_delegate(object);
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Const_Called);
+    }
+#endif
+
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time)
     {
@@ -496,10 +696,34 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void_compile_time)
+    {
+      auto d = etl::make_delegate<Functor, functor_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Called);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time_constexpr)
     {
       constexpr auto d = etl::delegate<void(void)>::create<Object, object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void_compile_time_constexpr)
+    {
+      constexpr auto d = etl::make_delegate<Functor, functor_static>();
 
       d();
 
@@ -518,10 +742,34 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void_compile_time_const)
+    {
+      auto d = etl::make_delegate<const FunctorConst, const_functor_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Const_Called);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_operator_void_compile_time_const_constexpr)
     {
       constexpr auto d = etl::delegate<void(void)>::create<const Object, const_object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Const_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void_compile_time_const_constexpr)
+    {
+      constexpr auto d = etl::make_delegate<const FunctorConst, const_functor_static>();
 
       d();
 
@@ -556,6 +804,20 @@ namespace
       CHECK(function_called == FunctionCalled::Member_Void_Called);
     }
 
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void)
+    {
+      Object object;
+
+      auto d = etl::make_delegate<Object, &Object::member_void>(object);
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Called);
+    }
+#endif
+
     //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_constexpr)
@@ -563,6 +825,20 @@ namespace
       static Object object;
 
       constexpr auto d = etl::delegate<void(void)>::create<Object, &Object::member_void>(object);
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_constexpr)
+    {
+      static Object object;
+
+      constexpr auto d = etl::make_delegate<Object, &Object::member_void>(object);
 
       d();
 
@@ -583,12 +859,40 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_const)
+    {
+      const Object object;
+
+      auto d = etl::make_delegate<Object, &Object::member_void_const>(object);
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_const_constexpr)
     {
       static const Object object;
 
       constexpr auto d = etl::delegate<void(void)>::create<Object, &Object::member_void_const>(object);
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_const_constexpr)
+    {
+      static const Object object;
+
+      constexpr auto d = etl::make_delegate<Object, &Object::member_void_const>(object);
 
       d();
 
@@ -610,12 +914,42 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int)
+    {
+      Object object;
+
+      auto d = etl::make_delegate<Object, &Object::member_int>(object);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_constexpr)
     {
       static Object object;
 
       constexpr auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_constexpr)
+    {
+      static Object object;
+
+      constexpr auto d = etl::make_delegate<Object, &Object::member_int>(object);
 
       d(VALUE1, VALUE2);
 
@@ -638,12 +972,42 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_const)
+    {
+      const Object object;
+
+      auto d = etl::make_delegate<Object, &Object::member_int_const>(object);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_const_constexpr)
     {
       static const Object object;
 
       constexpr auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_const_constexpr)
+    {
+      static const Object object;
+
+      constexpr auto d = etl::make_delegate<Object, &Object::member_int_const>(object);
 
       d(VALUE1, VALUE2);
 
@@ -763,6 +1127,22 @@ namespace
     }
 
     //*************************************************************************
+//#if ETL_USING_CPP17
+//    TEST_FIXTURE(SetupFixture, test_make_delegate_member_static)
+//    {
+//      auto d = etl::make_delegate<Object::member_static>();
+//
+//      Data data;
+//      data.d = VALUE1;
+//
+//      d(data, VALUE2);
+//
+//      CHECK(function_called == FunctionCalled::Member_Static_Called);
+//      CHECK(parameter_correct);
+//    }
+//#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_static_constexpr)
     {
@@ -777,6 +1157,22 @@ namespace
       CHECK(parameter_correct);
     }
 #endif
+
+    //*************************************************************************
+//#if ETL_USING_CPP17
+//    TEST_FIXTURE(SetupFixture, test_make_delegate_member_static_constexpr)
+//    {
+//      constexpr auto d = etl::make_delegate<Object::member_static>();
+//
+//      Data data;
+//      data.d = VALUE1;
+//
+//      d(data, VALUE2);
+//
+//      CHECK(function_called == FunctionCalled::Member_Static_Called);
+//      CHECK(parameter_correct);
+//    }
+//#endif
 
 #if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 5))
     //*************************************************************************
@@ -800,6 +1196,18 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_compile_time_new_api)
+    {
+      auto d = etl::make_delegate<Object, &Object::member_void, object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Called);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time_constexpr)
     {
@@ -816,6 +1224,18 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time_constexpr_new_api)
     {
       constexpr auto d = etl::delegate<void(void)>::create<Object, &Object::member_void, object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_compile_time_constexpr_new_api)
+    {
+      constexpr auto d = etl::make_delegate<Object, &Object::member_void, object_static>();
 
       d();
 
@@ -844,6 +1264,18 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_const_compile_time_new_api)
+    {
+      auto d = etl::make_delegate<Object, &Object::member_void_const, const_object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_void_const_compile_time_constexpr)
     {
@@ -860,6 +1292,18 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_void_const_compile_time_constexpr_new_api)
     {
       constexpr auto d = etl::delegate<void(void)>::create<Object, &Object::member_void_const, const_object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_void_const_compile_time_constexpr_new_api)
+    {
+      constexpr auto d = etl::make_delegate<Object, &Object::member_void_const, const_object_static>();
 
       d();
 
@@ -890,6 +1334,19 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_compile_time_new_api)
+    {
+      auto d = etl::make_delegate<Object, &Object::member_int, object_static>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_compile_time_constexpr)
     {
@@ -907,6 +1364,19 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_int_compile_time_constexpr_new_api)
     {
       constexpr auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int, object_static>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_compile_time_constexpr_new_api)
+    {
+      constexpr auto d = etl::make_delegate<Object, &Object::member_int, object_static>();
 
       d(VALUE1, VALUE2);
 
@@ -938,6 +1408,19 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_const_compile_tim1e_new_api)
+    {
+      auto d = etl::make_delegate<Object, &Object::member_int_const, const_object_static>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST_FIXTURE(SetupFixture, test_member_int_const_compile_time_constexpr)
     {
@@ -955,6 +1438,19 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_int_const_compile_time_constexpr_new_api)
     {
       constexpr auto d = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const, const_object_static>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_delegate_member_int_const_compile_time_constexpr_new_api)
+    {
+      constexpr auto d = etl::make_delegate<Object, &Object::member_int_const, const_object_static>();
 
       d(VALUE1, VALUE2);
 

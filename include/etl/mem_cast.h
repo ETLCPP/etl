@@ -139,7 +139,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(Size >= sizeof(T), "Type size is too large");
 
-      ::new (static_cast<void*>(buffer)) T(value);
+      ::new (static_cast<void*>(buffer.raw)) T(value);
     }
 
     //***********************************
@@ -148,7 +148,7 @@ namespace etl
     template <typename T>
     void assign_at_offset(size_t offset, const T& value)
     {
-      char* p = static_cast<char*>(buffer) + offset;
+      char* p = static_cast<char*>(buffer.raw) + offset;
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(value);
@@ -160,7 +160,7 @@ namespace etl
     template <typename T, size_t Offset>
     void assign_at_offset(const T& value)
     {
-      char* p = static_cast<char*>(buffer) + Offset;
+      char* p = static_cast<char*>(buffer.raw) + Offset;
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Type size is too large");
 
       ::new (p) T(value);
@@ -171,35 +171,41 @@ namespace etl
     /// Emplace from parameters
     //***********************************
     template <typename T, typename... TArgs>
-    void emplace(TArgs... args)
+    T& emplace(TArgs... args)
     {
       ETL_STATIC_ASSERT(Size >= sizeof(T), "Type size is too large");
 
-      ::new (static_cast<void*>(buffer)) T(etl::forward<TArgs>(args)...);
+      ::new (static_cast<void*>(buffer.raw)) T(etl::forward<TArgs>(args)...);
+
+      return ref<T>();
     }
 
     //***********************************
     /// Emplace from parameters at offset
     //***********************************
     template <typename T, typename... TArgs>
-    void emplace_at_offset(size_t offset, TArgs... args)
+    T& emplace_at_offset(size_t offset, TArgs... args)
     {
-      char* p = static_cast<char*>(buffer) + offset;
+      char* p = static_cast<char*>(buffer.raw) + offset;
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(etl::forward<TArgs>(args)...);
+
+      return ref_at_offset<T>(offset);
     }
 
     //***********************************
     /// Emplace from parameters at offset
     //***********************************
     template <typename T, size_t Offset, typename... TArgs>
-    void emplace_at_offset(TArgs... args)
+    T& emplace_at_offset(TArgs... args)
     {
-      char* p = static_cast<char*>(buffer) + Offset;
+      char* p = static_cast<char*>(buffer.raw) + Offset;
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Type size is too large");
 
       ::new (p) T(etl::forward<TArgs>(args)...);
+
+      return ref_at_offset<T, Offset>();
     }
 #endif
 
@@ -209,9 +215,9 @@ namespace etl
     template <typename T>
     ETL_NODISCARD T& ref()
     {
-      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
+      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of type too large for storage");
 
-      return *static_cast<T*>(buffer);
+      return *reinterpret_cast<T*>(buffer.raw);
     }
 
     //***********************************
@@ -220,9 +226,9 @@ namespace etl
     template <typename T>
     ETL_NODISCARD const T& ref() const
     {
-      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
+      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of type too large for storage");
 
-      return *static_cast<const T*>(buffer);
+      return *reinterpret_cast<const T*>(buffer.raw);
     }
 
     //***********************************
@@ -233,9 +239,7 @@ namespace etl
     {
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
-      char* p = buffer + offset;
-
-      return *static_cast<T*>(p);
+      return *reinterpret_cast<T*>(buffer.raw + offset);
     }
 
     //***********************************
@@ -246,9 +250,7 @@ namespace etl
     {
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
-      char* p = buffer + offset;
-
-      return *static_cast<const T*>(p);
+      return *reinterpret_cast<const T*>(buffer.raw + offset);
     }
 
     //***********************************
@@ -257,11 +259,9 @@ namespace etl
     template <typename T, size_t Offset>
     ETL_NODISCARD T& ref_at_offset()
     {
-      ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of T is too large");
+      ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of type too large for storage");
 
-      char* p = buffer + Offset;
-
-      return *static_cast<T*>(p);
+      return *reinterpret_cast<T*>(buffer.raw + Offset);
     }
 
     //***********************************
@@ -270,11 +270,9 @@ namespace etl
     template <typename T, size_t Offset>
     ETL_NODISCARD const T& ref_at_offset() const
     {
-      ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of T is too large");
+      ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of type too large for storage");
 
-      char* p = buffer + Offset;
-
-      return *static_cast<const T*>(p);
+      return *reinterpret_cast<const T*>(buffer.raw + Offset);
     }
 
     //***********************************
@@ -411,38 +409,44 @@ namespace etl
     /// Emplace from parameters
     //***********************************
     template <typename T, typename... TArgs>
-    void emplace(TArgs... args)
+    T& emplace(TArgs... args)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (pbuffer) T(etl::forward<TArgs>(args)...);
+
+      return ref<T>();
     }
 
     //***********************************
     /// Emplace from parameters at offset
     //***********************************
     template <typename T, typename... TArgs>
-    void emplace_at_offset(size_t offset, TArgs... args)
+    T& emplace_at_offset(size_t offset, TArgs... args)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + offset;
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(etl::forward<TArgs>(args)...);
+
+      return ref_at_offset<T>(offset);
     }
 
     //***********************************
     /// Emplace from parameters at offset
     //***********************************
     template <typename T, size_t Offset, typename... TArgs>
-    void emplace_at_offset(TArgs... args)
+    T& emplace_at_offset(TArgs... args)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + Offset;
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(etl::forward<TArgs>(args)...);
+
+      return ref_at_offset<T, Offset>();
     }
 #endif
 
@@ -455,7 +459,9 @@ namespace etl
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
-      return *reinterpret_cast<T*>(pbuffer);
+      T* p = reinterpret_cast<T*>(pbuffer);
+
+      return *p;
     }
 
     //***********************************
@@ -467,7 +473,9 @@ namespace etl
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
-      return *reinterpret_cast<const T*>(pbuffer);
+      const T* p = reinterpret_cast<const T*>(pbuffer);
+
+      return *p;
     }
 
     //***********************************
@@ -477,10 +485,11 @@ namespace etl
     ETL_NODISCARD T& ref_at_offset(size_t offset)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      char* p = pbuffer + offset;
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
-      return *reinterpret_cast<T*>(p);
+      T* p = reinterpret_cast<T*>(pbuffer + offset);
+
+      return *p;
     }
 
     //***********************************
@@ -490,10 +499,11 @@ namespace etl
     ETL_NODISCARD const T& ref_at_offset(size_t offset) const
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      char* p = pbuffer + offset;
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
-      return *reinterpret_cast<const T*>(p);
+      const T* p = reinterpret_cast<const T*>(pbuffer + offset);
+
+      return *p;
     }
 
     //***********************************
@@ -503,10 +513,11 @@ namespace etl
     ETL_NODISCARD T& ref_at_offset()
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      char* p = pbuffer + Offset;
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
-      return *reinterpret_cast<T*>(p);
+      T* p = reinterpret_cast<T*>(pbuffer + Offset);
+
+      return *p;
     }
 
     //***********************************
@@ -516,10 +527,11 @@ namespace etl
     ETL_NODISCARD const T& ref_at_offset() const
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      char* p = pbuffer + Offset;
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
-      return *reinterpret_cast<const T*>(p);
+      const T* p = reinterpret_cast<const T*>(pbuffer + Offset);
+
+      return *p;
     }
 
     //***********************************

@@ -388,3 +388,11 @@ support/time remaining test.xlsx
 test/vs2022/Debug MSVC C++20 - Force C++03
 test/vs2022/Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser
 test/test_file_list.txt
+examples/QueuedMessageRouter/vs2022/.vs/QueuedMessageRouter/CopilotIndices
+examples/QueuedMessageRouter/vs2022/.vs/QueuedMessageRouter/FileContentIndex
+examples/QueuedMessageRouter/vs2022/.vs/QueuedMessageRouter/v17
+test/etl_error_handler/assert_errors/build-make
+test/etl_error_handler/assert_function/build-make
+test/syntax_check/bgcc
+test/syntax_check/bclang
+test/vs2022/Debug Clang C++20

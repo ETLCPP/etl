@@ -162,6 +162,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_in_place_result_with_value)
+    {
+      struct ValueInPlace
+      { 
+        ValueInPlace()
+          : a(0)
+          , b(0)
+        {
+        }
+
+        ValueInPlace(int a_, int b_)
+          : a(a_)
+          , b(b_)
+        {
+        }
+
+        int a;
+        int b;
+      };
+
+      using ExpectedInPlace = etl::expected<ValueInPlace,  Error>;
+
+      ExpectedInPlace expected(etl::in_place_t(), 1, 2);
+
+      ValueInPlace output = expected.value();
+
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_TRUE(output.a == 1);
+      CHECK_TRUE(output.b == 2);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_for_const_result_with_value)
     {
       Value          input = { "value 1" };

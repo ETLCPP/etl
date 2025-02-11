@@ -409,15 +409,19 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
+      CHECK_EQUAL(etldata.cbegin(), view.cbegin());
       CHECK_EQUAL(etldata.begin(), view.begin());
       CHECK_EQUAL(etldata.begin(), cview.begin());
 
+      CHECK_EQUAL(etldata.cend(), view.crbegin().base());
       CHECK_EQUAL(etldata.end(), view.rbegin().base());
       CHECK_EQUAL(etldata.end(), cview.rbegin().base());
 
+      CHECK_EQUAL(etldata.cend(), view.cend());
       CHECK_EQUAL(etldata.end(), view.end());
       CHECK_EQUAL(etldata.end(), cview.end());
 
+      CHECK_EQUAL(etldata.cbegin(), view.crend().base());
       CHECK_EQUAL(etldata.begin(), view.rend().base());
       CHECK_EQUAL(etldata.begin(), cview.rend().base());
     }
@@ -443,6 +447,22 @@ namespace
 
       CHECK_EQUAL(etldata.data(), view.data());
       CHECK_EQUAL(etldata.data(), cview.data());
+    }
+
+    //*************************************************************************
+    TEST(test_at)
+    {
+      View  view(etldata.begin(), etldata.end());
+      CView cview(etldata.begin(), etldata.end());
+
+      for (size_t i = 0UL; i < etldata.size(); ++i)
+      {
+        CHECK_EQUAL(etldata.at(i), view.at(i));
+        CHECK_EQUAL(etldata.at(i), cview.at(i));
+      }
+
+      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::array_out_of_range);
+      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************

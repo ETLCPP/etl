@@ -86,13 +86,13 @@ namespace etl
   //***************************************************************************
   /// The common base for a bip_buffer_spsc_atomic_base.
   //***************************************************************************
-  template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <size_t Memory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class bip_buffer_spsc_atomic_base
   {
   public:
 
     /// The type used for determining the size of buffer.
-    typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
+    typedef typename etl::size_type_lookup<Memory_Model>::type size_type;
 
     //*************************************************************************
     /// Returns true if the buffer is empty.
@@ -168,7 +168,7 @@ namespace etl
     //*************************************************************************
     size_type capacity() const
     {
-      return RESERVED;
+      return Reserved;
     }
 
     //*************************************************************************
@@ -176,7 +176,7 @@ namespace etl
     //*************************************************************************
     size_type max_size() const
     {
-      return RESERVED;
+      return Reserved;
     }
 
   protected:
@@ -188,7 +188,7 @@ namespace etl
      : read(0)
      , write(0)
      , last(0)
-     , RESERVED(reserved_)
+     , Reserved(reserved_)
     {
     }
 
@@ -341,7 +341,7 @@ namespace etl
     etl::atomic<size_type> read;
     etl::atomic<size_type> write;
     etl::atomic<size_type> last;
-    const size_type RESERVED;
+    const size_type Reserved;
 
 #if defined(ETL_POLYMORPHIC_SPSC_BIP_BUFFER_ATOMIC) || defined(ETL_POLYMORPHIC_CONTAINERS)
   public:
@@ -361,12 +361,12 @@ namespace etl
   //***************************************************************************
   /// A fixed capacity bipartite buffer.
   //***************************************************************************
-  template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
-  class ibip_buffer_spsc_atomic : public bip_buffer_spsc_atomic_base<MEMORY_MODEL>
+  template <typename T, const size_t Memory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
+  class ibip_buffer_spsc_atomic : public bip_buffer_spsc_atomic_base<Memory_Model>
   {
   private:
 
-    typedef typename etl::bip_buffer_spsc_atomic_base<MEMORY_MODEL> base_t;
+    typedef typename etl::bip_buffer_spsc_atomic_base<Memory_Model> base_t;
     using base_t::reset;
     using base_t::get_read_reserve;
     using base_t::apply_read_reserve;
@@ -486,15 +486,15 @@ namespace etl
   /// A fixed capacity bipartite buffer.
   /// This buffer supports concurrent access by one producer and one consumer.
   /// \tparam T            The type this buffer should support.
-  /// \tparam SIZE         The maximum capacity of the buffer.
-  /// \tparam MEMORY_MODEL The memory model for the buffer. Determines the type of the internal counter variables.
+  /// \tparam Size         The maximum capacity of the buffer.
+  /// \tparam Memory_Model The memory model for the buffer. Determines the type of the internal counter variables.
   //***************************************************************************
-  template <typename T, const size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
-  class bip_buffer_spsc_atomic : public ibip_buffer_spsc_atomic<T, MEMORY_MODEL>
+  template <typename T, const size_t Size, const size_t Memory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
+  class bip_buffer_spsc_atomic : public ibip_buffer_spsc_atomic<T, Memory_Model>
   {
   private:
 
-    typedef typename etl::ibip_buffer_spsc_atomic<T, MEMORY_MODEL> base_t;
+    typedef typename etl::ibip_buffer_spsc_atomic<T, Memory_Model> base_t;
 
   public:
 
@@ -502,19 +502,19 @@ namespace etl
 
   private:
 
-    static ETL_CONSTANT size_type RESERVED_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type Reserved_Size = size_type(Size);
 
   public:
 
-    ETL_STATIC_ASSERT((SIZE <= (etl::integral_limits<size_type>::max)), "Size too large for memory model");
+    ETL_STATIC_ASSERT((Size <= (etl::integral_limits<size_type>::max)), "Size too large for memory model");
 
-    static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type MAX_SIZE = size_type(Size);
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     bip_buffer_spsc_atomic()
-      : base_t(reinterpret_cast<T*>(buffer.raw), RESERVED_SIZE)
+      : base_t(reinterpret_cast<T*>(buffer.raw), Reserved_Size)
     {
     }
 
@@ -529,11 +529,11 @@ namespace etl
   private: 
 
     /// The uninitialised buffer of T used in the bip_buffer_spsc.
-    etl::uninitialized_buffer_of<T, RESERVED_SIZE> buffer;
+    etl::uninitialized_buffer_of<T, Reserved_Size> buffer;
   };
 
-  template <typename T, const size_t SIZE, const size_t MEMORY_MODEL> 
-  ETL_CONSTANT typename bip_buffer_spsc_atomic<T, SIZE, MEMORY_MODEL>::size_type bip_buffer_spsc_atomic<T, SIZE, MEMORY_MODEL>::RESERVED_SIZE;
+  template <typename T, const size_t Size, const size_t Memory_Model> 
+  ETL_CONSTANT typename bip_buffer_spsc_atomic<T, Size, Memory_Model>::size_type bip_buffer_spsc_atomic<T, Size, Memory_Model>::Reserved_Size;
 }
 
 #endif /* ETL_HAS_ATOMIC && ETL_USING_CPP11 */

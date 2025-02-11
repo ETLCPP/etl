@@ -204,7 +204,7 @@ namespace
 
   typedef etl::legacy::variant<D1, D2, D3, D4> test_variant_emplace;
 
-  SUITE(test_variant)
+  SUITE(test_variant_legacy)
   {
     TEST(test_alignment)
     {
@@ -252,6 +252,34 @@ namespace
       // String.
       std::string text("Some Text");
       test_variant_3a variant_text(text);
+
+      CHECK(variant_text.is_type<std::string>());
+      CHECK(variant_text.is_valid());
+      CHECK_EQUAL(text, variant_text.get<std::string>());
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_in_place_value)
+    {
+      // Char.
+      char c = 'a';
+      test_variant_3a variant_char(etl::in_place_index_t<0>(), c);
+
+      CHECK(variant_char.is_type<char>());
+      CHECK(variant_char.is_valid());
+      CHECK_EQUAL(c, variant_char.get<char>());
+
+      // Int.
+      int i = 1;
+      test_variant_3a variant_int(etl::in_place_index_t<1>(), i);
+
+      CHECK(variant_int.is_type<int>());
+      CHECK(variant_int.is_valid());
+      CHECK_EQUAL(i, variant_int.get<int>());
+
+      // String.
+      std::string text("Some Text");
+      test_variant_3a variant_text(etl::in_place_index_t<2>(), text);
 
       CHECK(variant_text.is_type<std::string>());
       CHECK(variant_text.is_valid());
