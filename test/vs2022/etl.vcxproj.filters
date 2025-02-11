@@ -534,7 +534,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h">
+    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h">
@@ -804,7 +804,7 @@
     <ClInclude Include="..\..\include\etl\flags.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
+    <ClInclude Include="..\..\include\etl\atomic\atomic_clang.h">
       <Filter>ETL\Utilities\Atomic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
@@ -1423,6 +1423,12 @@
       <Filter>Tests\Error Handler\Assert Function</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\singleton_base.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\function_traits.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_list.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -3421,6 +3427,12 @@
     </ClCompile>
     <ClCompile Include="..\etl_error_handler\assert_function\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Assert Function</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\function_traits.h.t.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_function_traits.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2196,60 +2196,79 @@ namespace etl
     static ETL_CONSTANT size_t Alignment   = etl::alignment_of<T>::value;
 
     /// Index operator.
-    T& operator [](int i)
+    /// Warning: The element may not be initialised.
+    reference operator [](int i)
     {
-      return reinterpret_cast<T*>(this->raw)[i];
+      return reinterpret_cast<pointer>(this->raw)[i];
     }
 
     /// Index operator.
-    const T& operator [](int i) const
+    /// Warning: The element may not be initialised.
+    const_reference operator [](int i) const
     {
-      return reinterpret_cast<const T*>(this->raw)[i];
+      return reinterpret_cast<const_pointer>(this->raw)[i];
     }
 
     /// Convert to T reference.
-    operator T& ()
+    operator reference ()
     {
-      return *reinterpret_cast<T*>(raw);
+      return *reinterpret_cast<pointer>(raw);
     }
 
     /// Convert to const T reference.
-    operator const T& () const
+    operator const_reference () const
     {
-      return *reinterpret_cast<const T*>(raw);
+      return *reinterpret_cast<const_pointer>(raw);
     }
 
     /// Convert to T pointer.
-    operator T* ()
-
+    operator pointer ()
     {
-      return reinterpret_cast<T*>(raw);
+      return reinterpret_cast<pointer>(raw);
     }
 
     /// Convert to const T pointer.
-    operator const T* () const
+    operator const_pointer () const
     {
-      return reinterpret_cast<const T*>(raw);
+      return reinterpret_cast<const_pointer>(raw);
     }
 
-    T* begin()
+    /// Get an iterator to the first element.
+    /// Warning: The element may not be initialised.
+    iterator begin()
     {
-      return reinterpret_cast<T*>(raw);
+      return reinterpret_cast<pointer>(raw);
     }
 
-    const T* begin() const
+    /// Get a const iterator to the first element.
+    /// Warning: The element may not be initialised.
+    const_iterator begin() const
     {
-      return reinterpret_cast<const T*>(raw);
+      return reinterpret_cast<const_pointer>(raw);
     }
 
-    T* end()
+    /// Get an iterator to one past the last element.
+    iterator end()
     {
-      return reinterpret_cast<T*>(raw + (sizeof(T) * N_Objects));
+      return reinterpret_cast<pointer>(raw + (sizeof(T) * N_Objects));
     }
 
-    const T* end() const
+    /// Get a const iterator to one past the last element.
+    const_iterator end() const
     {
-      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
+      return reinterpret_cast<const_pointer>(raw + (sizeof(T) * N_Objects));
+    }
+
+    /// Get a char* to the raw storage data.
+    char* data()
+    {
+      return raw;
+    }
+
+    /// Get a const char* to the raw storage data.
+    const char* data() const
+    {
+      return raw;
     }
 
 #if ETL_USING_CPP11 && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)

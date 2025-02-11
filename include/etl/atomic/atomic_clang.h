@@ -29,6 +29,6 @@ SOFTWARE.
 #ifndef ETL_ATOMIC_CLANG_INCLUDED
 #define ETL_ATOMIC_CLANG_INCLUDED
 
-#include "atomic_gcc_sync.h"
+#include "atomic_gcc.h"
 
 #endif

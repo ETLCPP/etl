@@ -32,16 +32,16 @@ SOFTWARE.
 #include "platform.h"
 
 #if ETL_HAS_ATOMIC
-  #if (ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) 
+  #if (ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST)) || defined(ETL_USE_ATOMIC_STD)) 
     #include "atomic/atomic_std.h"
-  #elif defined(ETL_COMPILER_ARM5)
+  #elif defined(ETL_COMPILER_ARM5) || defined(ETL_USE_ATOMIN_ARM5)
     #include "atomic/atomic_arm.h"
-  #elif defined(ETL_COMPILER_ARM6)
+  #elif defined(ETL_COMPILER_ARM6) || defined(ETL_USE_ATOMIN_ARM6)
     #include "atomic/atomic_arm.h"
-  #elif defined(ETL_COMPILER_GCC)
-    #include "atomic/atomic_gcc_sync.h"
-  #elif defined(ETL_COMPILER_CLANG)
-    #include "atomic/atomic_clang_sync.h"
+  #elif defined(ETL_COMPILER_GCC) || defined(ETL_USE_ATOMIN_GCC)
+    #include "atomic/atomic_gcc.h"
+  #elif defined(ETL_COMPILER_CLANG) || defined(ETL_USE_ATOMIN_CLANG)
+    #include "atomic/atomic_clang.h"
   #endif
 #endif
 

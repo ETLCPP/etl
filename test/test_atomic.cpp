@@ -33,10 +33,14 @@ SOFTWARE.
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #include "etl/atomic/atomic_std.h"
+#elif defined(ETL_COMPILER_ARM5)
+  #include "atomic/atomic_arm.h"
+#elif defined(ETL_COMPILER_ARM6)
+  #include "atomic/atomic_arm.h"
 #elif defined(ETL_COMPILER_GCC)
-  #include "etl/atomic/atomic_gcc_sync.h"
+  #include "etl/atomic/atomic_gcc.h"
 #elif defined(ETL_COMPILER_CLANG)
-  #include "etl/atomic/atomic_clang_sync.h"
+  #include "etl/atomic/atomic_clang.h"
 #endif
 
 #include <atomic>
@@ -76,10 +80,10 @@ namespace
 
       CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
 
-//#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
-//      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
-//      CHECK_TRUE(test.is_always_lock_free);
-//#endif
+#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
+      CHECK_TRUE(test.is_always_lock_free);
+#endif
     }
 
     //*************************************************************************
@@ -96,22 +100,57 @@ namespace
 #endif
     }
 
-//#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
-//    //*************************************************************************
-//    TEST(test_atomic_is_always_lock_free)
-//    {
-//      struct S 
-//      {
-//        int a;
-//        int b;
-//        int c;
-//      };
-//
-//      CHECK_TRUE(etl::atomic<int>::is_always_lock_free);
-//      CHECK_TRUE(etl::atomic<int*>::is_always_lock_free);
-//      CHECK_FALSE(etl::atomic<S>::is_always_lock_free);
-//    }
-//#endif
+    //*************************************************************************
+    TEST(test_atomic_float_is_lock_free)
+    {
+      std::atomic<float> compare;
+      etl::atomic<float> test;
+
+      CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+
+#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+      CHECK_TRUE(etl::atomic<float>::is_always_lock_free);
+      CHECK_TRUE(test.is_always_lock_free);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_double_is_lock_free)
+    {
+      std::atomic<double> compare;
+      etl::atomic<double> test;
+
+      CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+
+#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+      CHECK_TRUE(etl::atomic<double>::is_always_lock_free);
+      CHECK_TRUE(test.is_always_lock_free);
+#endif
+    }
+
+#if ETL_NOT_USING_STL && ETL_HAS_ATOMIC
+    //*************************************************************************
+    TEST(test_atomic_is_always_lock_free)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      constexpr bool ialf_int    = etl::atomic<int>::is_always_lock_free;
+      constexpr bool ialf_pint   = etl::atomic<int*>::is_always_lock_free;
+      constexpr bool ialf_s      = etl::atomic<S>::is_always_lock_free;
+      constexpr bool ialf_double = etl::atomic<double>::is_always_lock_free;
+
+      CHECK_TRUE(ialf_int);
+      CHECK_TRUE(ialf_pint);
+      CHECK_TRUE(ialf_s);
+      CHECK_TRUE(ialf_double);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_atomic_integer_load)
@@ -149,6 +188,144 @@ namespace
       etl::atomic<bool> test(true);
 
       CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_float_load)
+    {
+      std::atomic<float> compare(1.23f);
+      etl::atomic<float> test(1.23f);
+
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_double_load)
+    {
+      std::atomic<double> compare(1.23);
+      etl::atomic<double> test(1.23);
+
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_struct_load)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      S s1 = { char(0xA5), char(0x5A), short(0x55AA), int(0xFF5511AA) };
+
+      etl::atomic<S> test(s1);
+
+      S s2 = test.load();
+
+      CHECK_EQUAL(s1.a, s2.a);
+      CHECK_EQUAL(s1.b, s2.b);
+      CHECK_EQUAL(s1.c, s2.c);
+      CHECK_EQUAL(s1.d, s2.d);
+    }
+    
+    //*************************************************************************
+    TEST(test_atomic_integer_implicit_conversion)
+    {
+      std::atomic<int> compare(1);
+      etl::atomic<int> test(1);
+
+      int c = compare;
+      int t = test;
+
+      CHECK_EQUAL(c, t);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_enum_implicit_conversion)
+    {
+      std::atomic<Enum> compare(Enum::One);
+      etl::atomic<Enum> test(Enum::One);
+
+      Enum c = compare;
+      Enum t = test;
+
+      CHECK_EQUAL(c, t);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_pointer_implicit_conversion)
+    {
+      int i;
+
+      std::atomic<int*> compare(&i);
+      etl::atomic<int*> test(&i);
+
+      int* c = compare;
+      int* t = test;
+
+      CHECK_EQUAL(c, t);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_bool_implicit_conversion)
+    {
+      std::atomic<bool> compare(true);
+      etl::atomic<bool> test(true);
+
+      bool c = compare;
+      bool t = test;
+
+      CHECK_EQUAL(c, t);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_float_implicit_conversion)
+    {
+      std::atomic<float> compare(1.23f);
+      etl::atomic<float> test(1.23f);
+
+      float c = compare;
+      float t = test;
+
+      CHECK_EQUAL(c, t);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_double_implicit_conversion)
+    {
+      std::atomic<double> compare(1.23);
+      etl::atomic<double> test(1.23);
+
+      double c = compare;
+      double t = test;
+
+      CHECK_EQUAL(c, t);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_struct_implicit_conversion)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      S s1 = { char(0xA5), char(0x5A), short(0x55AA), int(0xFF5511AA) };
+
+      etl::atomic<S> test(s1);
+
+      S s2 = test;
+
+      CHECK_EQUAL(s1.a, s2.a);
+      CHECK_EQUAL(s1.b, s2.b);
+      CHECK_EQUAL(s1.c, s2.c);
+      CHECK_EQUAL(s1.d, s2.d);
     }
 
     //*************************************************************************
@@ -199,6 +376,52 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_float_store)
+    {
+      std::atomic<float> compare(1.23f);
+      etl::atomic<float> test(1.23f);
+
+      compare.store(1.23f);
+      test.store(1.23f);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_double_store)
+    {
+      std::atomic<double> compare(1.23);
+      etl::atomic<double> test(1.23);
+
+      compare.store(1.23);
+      test.store(1.23);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_struct_store)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      S s1 = { char(0xA5), char(0x5A), short(0x55AA), int(0xFF5511AA) };
+
+      etl::atomic<S> test;
+      test.store(s1);
+
+      S s2 = test.load();
+
+      CHECK_EQUAL(s1.a, s2.a);
+      CHECK_EQUAL(s1.b, s2.b);
+      CHECK_EQUAL(s1.c, s2.c);
+      CHECK_EQUAL(s1.d, s2.d);
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_assignment)
     {
       std::atomic<int> compare(1);
@@ -243,6 +466,53 @@ namespace
       compare = true;
       test = true;
       CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_float_assignment)
+    {
+      std::atomic<double> compare(1.23f);
+      etl::atomic<double> test(1.23f);
+
+      compare = 1.23f;
+      test = 1.23f;
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_double_assignment)
+    {
+      std::atomic<double> compare(1.23f);
+      etl::atomic<double> test(1.23f);
+
+      compare = 1.23f;
+      test = 1.23f;
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_struct_assignment)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      S s1 = { char(0x00), char(0x00), 0x0000, 0x00000000 };
+      S s2 = { char(0xA5), char(0x5A), short(0x55AA), int(0xFF5511AA) };
+
+      etl::atomic<S> test(s1);
+      test = s2;
+
+      S s3 = test.load();
+
+      CHECK_EQUAL(s2.a, s3.a);
+      CHECK_EQUAL(s2.b, s3.b);
+      CHECK_EQUAL(s2.c, s3.c);
+      CHECK_EQUAL(s2.d, s3.d);
     }
 
     //*************************************************************************
@@ -528,7 +798,37 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_atomic_compare_exchange_weak_fail)
+    TEST(test_atomic_struct_exchange)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      S s1 = { char(0x00), char(0x00), 0x0000, 0x00000000 };
+      S s2 = { char(0xA5), char(0x5A), short(0x55AA), int(0xFF5511AA) };
+
+      etl::atomic<S> test(s1);
+
+      S s3 = test.exchange(s2);
+      S s4 = test.load();
+
+      CHECK_EQUAL(s1.a, s3.a);
+      CHECK_EQUAL(s1.b, s3.b);
+      CHECK_EQUAL(s1.c, s3.c);
+      CHECK_EQUAL(s1.d, s3.d);
+
+      CHECK_EQUAL(s2.a, s4.a);
+      CHECK_EQUAL(s2.b, s4.b);
+      CHECK_EQUAL(s2.c, s4.c);
+      CHECK_EQUAL(s2.d, s4.d);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_weak_fail_for_integer)
     {
       std::atomic<int> compare;
       etl::atomic<int> test;
@@ -551,7 +851,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_atomic_compare_exchange_weak_pass)
+    TEST(test_atomic_compare_exchange_weak_pass_for_integer)
     {
       std::atomic<int> compare;
       etl::atomic<int> test;
@@ -620,7 +920,87 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_atomic_compare_exchange_strong_fail)
+    TEST(test_atomic_compare_exchange_weak_pass_for_float)
+    {
+      std::atomic<float> compare;
+      etl::atomic<float> test;
+
+      float actual = 1.23f;
+
+      compare = actual;
+      test = actual;
+
+      float compare_expected = actual;
+      float test_expected = actual;
+      float desired = 2.34f;
+
+      bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
+      bool test_result = test.compare_exchange_weak(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_weak_pass_for_double)
+    {
+      std::atomic<double> compare;
+      etl::atomic<double> test;
+
+      double actual = 1.23;
+
+      compare = actual;
+      test = actual;
+
+      double compare_expected = actual;
+      double test_expected = actual;
+      double desired = 2.34;
+
+      bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
+      bool test_result = test.compare_exchange_weak(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_weak_pass_for_struct)
+    {
+      struct S 
+      {
+        char a;
+        char b;
+        short c;
+        int d;
+      };
+
+      S s1 = { char(0x00), char(0x00), 0x0000, 0x00000000 };
+      S s2 = { char(0xA5), char(0x5A), short(0x55AA), int(0xFF5511AA) };
+
+      etl::atomic<S> test;
+
+      S actual = s1;
+      test = actual;
+
+      S test_expected = actual;
+      S desired = s2;
+
+      bool test_result = test.compare_exchange_weak(test_expected, desired);
+
+      S result = test.load();
+
+      CHECK_TRUE(test_result);
+      CHECK_EQUAL(result.a, desired.a);
+      CHECK_EQUAL(result.b, desired.b);
+      CHECK_EQUAL(result.c, desired.c);
+      CHECK_EQUAL(result.d, desired.d);
+
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_strong_fail_for_integer)
     {
       std::atomic<int> compare;
       etl::atomic<int> test;
@@ -643,7 +1023,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_atomic_compare_exchange_strong_pass)
+    TEST(test_atomic_compare_exchange_strong_pass_for_integer)
     {
       std::atomic<int> compare;
       etl::atomic<int> test;
@@ -702,6 +1082,52 @@ namespace
       bool compare_expected = actual;
       bool test_expected = actual;
       bool desired = true;
+
+      bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
+      bool test_result = test.compare_exchange_strong(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_strong_pass_for_float)
+    {
+      std::atomic<float> compare;
+      etl::atomic<float> test;
+
+      float actual = 1.23f;
+
+      compare = actual;
+      test = actual;
+
+      float compare_expected = actual;
+      float test_expected = actual;
+      float desired = 2.34f;
+
+      bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
+      bool test_result = test.compare_exchange_strong(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_strong_pass_for_double)
+    {
+      std::atomic<double> compare;
+      etl::atomic<double> test;
+
+      double actual = 1.23;
+
+      compare = actual;
+      test = actual;
+
+      double compare_expected = actual;
+      double test_expected = actual;
+      double desired = 2.34f;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result = test.compare_exchange_strong(test_expected, desired);
