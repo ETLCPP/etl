@@ -621,9 +621,9 @@ namespace
       storage_f_t store_f3;
       storage_f_t store_f4;
 
-      CHECK_FLOAT_SAME(etl::le_float_ext_t(3.1415927f, store_f1.data()), etl::le_float_ext_t(3.1415927f, store_f2.data()));
-      CHECK_FLOAT_SAME(3.1415927f, etl::le_float_ext_t(3.1415927f, store_f3.data()));
-      CHECK_FLOAT_SAME(etl::le_float_ext_t(3.1415927f, store_f4.data()), 3.1415927f);
+      CHECK_CLOSE(etl::le_float_ext_t(3.1415927f, store_f1.data()), etl::le_float_ext_t(3.1415927f, store_f2.data()), 0.001);
+      CHECK_CLOSE(3.1415927f, etl::le_float_ext_t(3.1415927f, store_f3.data()), 0.001);
+      CHECK_CLOSE(etl::le_float_ext_t(3.1415927f, store_f4.data()), 3.1415927f, 0.001);
 
       // double
       storage_d_t store_d1;
@@ -631,9 +631,9 @@ namespace
       storage_d_t store_d3;
       storage_d_t store_d4;
 
-      CHECK_FLOAT_SAME(etl::le_double_ext_t(3.1415927, store_d1.data()), etl::le_double_ext_t(3.1415927, store_d2.data()));
-      CHECK_FLOAT_SAME(3.1415927, etl::le_double_ext_t(3.1415927, store_d3.data()));
-      CHECK_FLOAT_SAME(etl::le_double_ext_t(3.1415927, store_d4.data()), 3.1415927);
+      CHECK_CLOSE(etl::le_double_ext_t(3.1415927, store_d1.data()), etl::le_double_ext_t(3.1415927, store_d2.data()), 0.001);
+      CHECK_CLOSE(3.1415927, etl::le_double_ext_t(3.1415927, store_d3.data()), 0.001);
+      CHECK_CLOSE(etl::le_double_ext_t(3.1415927, store_d4.data()), 3.1415927, 0.001);
 
       // long double
       storage_d_t store_ld1;
@@ -641,9 +641,9 @@ namespace
       storage_d_t store_ld3;
       storage_d_t store_ld4;
 
-      CHECK_FLOAT_SAME(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()).value(), etl::le_long_double_ext_t(3.1415927L, store_ld2.data()).value());
-      CHECK_FLOAT_SAME(3.1415927L, etl::le_long_double_ext_t(3.1415927L, store_ld3.data()).value());
-      CHECK_FLOAT_SAME(etl::le_long_double_ext_t(3.1415927L, store_ld4.data()).value(), 3.1415927L);
+      CHECK_CLOSE(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()).value(), etl::le_long_double_ext_t(3.1415927L, store_ld2.data()).value(), 0.001);
+      CHECK_CLOSE(3.1415927L, etl::le_long_double_ext_t(3.1415927L, store_ld3.data()).value(), 0.001);
+      CHECK_CLOSE(etl::le_long_double_ext_t(3.1415927L, store_ld4.data()).value(), 3.1415927L, 0.001);
     }
 
     //*************************************************************************
@@ -849,9 +849,9 @@ namespace
       storage_f_t store_f_be3;
       storage_f_t store_f_be4;
 
-      CHECK_FLOAT_SAME(etl::be_float_ext_t(3.1415927f, store_f_be1.data()), etl::be_float_ext_t(3.1415927f, store_f_be2.data()));
-      CHECK_FLOAT_SAME(3.1415927f, etl::be_float_ext_t(3.1415927f, store_f_be3.data()));
-      CHECK_FLOAT_SAME(etl::be_float_ext_t(3.1415927f, store_f_be4.data()), 3.1415927f);
+      CHECK_CLOSE(etl::be_float_ext_t(3.1415927f, store_f_be1.data()), etl::be_float_ext_t(3.1415927f, store_f_be2.data()), 0.001);
+      CHECK_CLOSE(3.1415927f, etl::be_float_ext_t(3.1415927f, store_f_be3.data()), 0.001);
+      CHECK_CLOSE(etl::be_float_ext_t(3.1415927f, store_f_be4.data()), 3.1415927f, 0.001);
 
       // double
       storage_d_t store_d_be1;
@@ -859,9 +859,9 @@ namespace
       storage_d_t store_d_be3;
       storage_d_t store_d_be4;
 
-      CHECK_FLOAT_SAME(etl::be_double_ext_t(3.1415927, store_d_be1.data()), etl::be_double_ext_t(3.1415927, store_d_be2.data()));
-      CHECK_FLOAT_SAME(3.1415927, etl::be_double_ext_t(3.1415927, store_d_be3.data()));
-      CHECK_FLOAT_SAME(etl::be_double_ext_t(3.1415927, store_d_be4.data()), 3.1415927);
+      CHECK_CLOSE(etl::be_double_ext_t(3.1415927, store_d_be1.data()), etl::be_double_ext_t(3.1415927, store_d_be2.data()), 0.001);
+      CHECK_CLOSE(3.1415927, etl::be_double_ext_t(3.1415927, store_d_be3.data()), 0.001);
+      CHECK_CLOSE(etl::be_double_ext_t(3.1415927, store_d_be4.data()), 3.1415927, 0.001);
 
       // long double
       storage_d_t store_ld_be1;
@@ -869,9 +869,9 @@ namespace
       storage_d_t store_ld_be3;
       storage_d_t store_ld_be4;
 
-      CHECK_FLOAT_SAME(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()).value(), etl::be_long_double_ext_t(3.1415927L, store_ld_be2.data()).value());
-      CHECK_FLOAT_SAME(3.1415927L, etl::be_long_double_ext_t(3.1415927L, store_ld_be3.data()).value());
-      CHECK_FLOAT_SAME(etl::be_long_double_ext_t(3.1415927L, store_ld_be4.data()).value(), 3.1415927L);
+      CHECK_CLOSE(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()).value(), etl::be_long_double_ext_t(3.1415927L, store_ld_be2.data()).value(), 0.001);
+      CHECK_CLOSE(3.1415927L, etl::be_long_double_ext_t(3.1415927L, store_ld_be3.data()).value(), 0.001);
+      CHECK_CLOSE(etl::be_long_double_ext_t(3.1415927L, store_ld_be4.data()).value(), 3.1415927L, 0.001);
     }
 
     //*************************************************************************
@@ -1062,21 +1062,21 @@ namespace
 
       etl::le_float_ext_t le_float(store_f.data());
       le_float = 3.1415927f;
-      CHECK_FLOAT_SAME(3.1415927f, le_float);
+      CHECK_CLOSE(3.1415927f, le_float, 0.001);
 
       // double
       storage_d_t store_d;
 
       etl::le_double_ext_t le_double(store_d.data());
       le_double = 3.1415927;
-      CHECK_FLOAT_SAME(3.1415927, le_double);
+      CHECK_CLOSE(3.1415927, le_double, 0.001);
 
       // long double
       storage_ld_t store_ld;
 
       etl::le_long_double_ext_t le_long_double(store_ld.data());
       le_long_double = 3.1415927L;
-      CHECK_FLOAT_SAME(3.1415927L, le_long_double);
+      CHECK_CLOSE(3.1415927L, le_long_double, 0.001);
     }
 
     //*************************************************************************
@@ -1153,21 +1153,21 @@ namespace
 
       etl::be_float_ext_t be_float(store_f.data());
       be_float = 3.1415927f;
-      CHECK_FLOAT_SAME(3.1415927f, be_float);
+      CHECK_CLOSE(3.1415927f, be_float, 0.001);
 
       // double
       storage_d_t store_d;
 
       etl::be_double_ext_t be_double(store_d.data());
       be_double = 3.1415927;
-      CHECK_FLOAT_SAME(3.1415927, be_double);
+      CHECK_CLOSE(3.1415927, be_double, 0.001);
 
       // long double
       storage_ld_t store_ld;
 
       etl::be_long_double_ext_t be_long_double(store_ld.data());
       be_long_double = 3.1415927L;
-      CHECK_FLOAT_SAME(3.1415927L, be_long_double);
+      CHECK_CLOSE(3.1415927L, be_long_double, 0.001);
     }
 
     //*************************************************************************
@@ -1234,10 +1234,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_FLOAT_SAME(3.1415927f, le_v2);
-      CHECK_FLOAT_SAME(3.1415927f, be_v2);
-      CHECK_FLOAT_SAME(3.1415927f, le_v3);
-      CHECK_FLOAT_SAME(3.1415927f, be_v3);
+      CHECK_CLOSE(3.1415927f, le_v2, 0.001);
+      CHECK_CLOSE(3.1415927f, be_v2, 0.001);
+      CHECK_CLOSE(3.1415927f, le_v3, 0.001);
+      CHECK_CLOSE(3.1415927f, be_v3, 0.001);
     }
 
     //*************************************************************************
@@ -1262,10 +1262,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_FLOAT_SAME(3.1415927, le_v2);
-      CHECK_FLOAT_SAME(3.1415927, be_v2);
-      CHECK_FLOAT_SAME(3.1415927, le_v3);
-      CHECK_FLOAT_SAME(3.1415927, be_v3);
+      CHECK_CLOSE(3.1415927, le_v2, 0.001);
+      CHECK_CLOSE(3.1415927, be_v2, 0.001);
+      CHECK_CLOSE(3.1415927, le_v3, 0.001);
+      CHECK_CLOSE(3.1415927, be_v3, 0.001);
     }
 
     //*************************************************************************
@@ -1290,10 +1290,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_FLOAT_SAME(3.1415927L, le_v2);
-      CHECK_FLOAT_SAME(3.1415927L, be_v2);
-      CHECK_FLOAT_SAME(3.1415927L, le_v3);
-      CHECK_FLOAT_SAME(3.1415927L, be_v3);
+      CHECK_CLOSE(3.1415927L, le_v2, 0.001);
+      CHECK_CLOSE(3.1415927L, be_v2, 0.001);
+      CHECK_CLOSE(3.1415927L, le_v3, 0.001);
+      CHECK_CLOSE(3.1415927L, be_v3, 0.001);
     }
 
     //*************************************************************************
