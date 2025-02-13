@@ -265,6 +265,8 @@ namespace
   Functor functor_static;
   const FunctorConst const_functor_static;
 #endif
+
+  static auto global_lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
 }
 
 namespace
@@ -539,7 +541,7 @@ namespace
 #if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_make_delegate_free_moveableonly_constexpr)
     {
-      constexpr auto d = etl::make_delegate<&free_moveableonly>);
+      constexpr auto d = etl::make_delegate<&free_moveableonly>();
 
       MoveableOnlyData data;
       data.d = VALUE1;
@@ -567,10 +569,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_lambda_int)
     {
-      constexpr auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
-      constexpr void(*func_ptr)(int, int) = lambda;
+      static constexpr void(*global_func_ptr)(int, int) = global_lambda;
 
-      auto d = etl::delegate<void(int, int)>::create<func_ptr>();
+      auto d = etl::delegate<void(int, int)>::create<global_func_ptr>();
 
       d(VALUE1, VALUE2);
 
