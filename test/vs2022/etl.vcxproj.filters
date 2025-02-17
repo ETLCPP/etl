@@ -3410,12 +3410,6 @@
     <ClCompile Include="..\syntax_check\uncopyable.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\syntax_check\singleton_base.h.t.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_singleton_base.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_unaligned_type_ext.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
@@ -3425,11 +3419,17 @@
     <ClCompile Include="..\etl_error_handler\assert_function\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Assert Function</Filter>
     </ClCompile>
-    <ClCompile Include="..\syntax_check\function_traits.h.t.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_function_traits.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_singleton_base.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\function_traits.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\singleton_base.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
