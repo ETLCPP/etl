@@ -266,7 +266,9 @@ namespace
   const FunctorConst const_functor_static;
 #endif
 
-  static auto global_lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+#if ETL_USING_CPP17
+  static auto global_lambda = [](int i, int j) { return i + j; };
+#endif
 }
 
 namespace
@@ -566,18 +568,19 @@ namespace
       CHECK(parameter_correct);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_lambda_int)
     {
-      static constexpr void(*global_func_ptr)(int, int) = global_lambda;
+      static constexpr int(*global_func_ptr)(int, int) = global_lambda;
 
-      auto d = etl::delegate<void(int, int)>::create<global_func_ptr>();
+      auto d = etl::delegate<int(int, int)>::create<global_func_ptr>();
 
-      d(VALUE1, VALUE2);
+      int result = d(VALUE1, VALUE2);
 
-      CHECK(function_called == FunctionCalled::Lambda_Called);
-      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE2);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_int_create)
