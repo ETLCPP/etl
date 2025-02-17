@@ -19,6 +19,8 @@ Global
 		Debug MSVC C++17|x64 = Debug MSVC C++17|x64
 		Debug MSVC C++20 - Force C++03|Win32 = Debug MSVC C++20 - Force C++03|Win32
 		Debug MSVC C++20 - Force C++03|x64 = Debug MSVC C++20 - Force C++03|x64
+		Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32 = Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32
+		Debug MSVC C++20 - Forve C++03 - No virtual messages|x64 = Debug MSVC C++20 - Forve C++03 - No virtual messages|x64
 		Debug MSVC C++20 - No STL|Win32 = Debug MSVC C++20 - No STL|Win32
 		Debug MSVC C++20 - No STL|x64 = Debug MSVC C++20 - No STL|x64
 		Debug MSVC C++20 - No virtual messages|Win32 = Debug MSVC C++20 - No virtual messages|Win32
@@ -57,6 +59,10 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Force C++03|Win32.Build.0 = Debug MSVC C++20 - Force C++03|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Force C++03|x64.ActiveCfg = Debug MSVC C++20 - Force C++03|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Force C++03|x64.Build.0 = Debug MSVC C++20 - Force C++03|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32.ActiveCfg = Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32.Build.0 = Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Forve C++03 - No virtual messages|x64.ActiveCfg = Debug MSVC C++20 - Forve C++03 - No virtual messages|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - Forve C++03 - No virtual messages|x64.Build.0 = Debug MSVC C++20 - Forve C++03 - No virtual messages|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - No STL|Win32.ActiveCfg = Debug MSVC C++20 - No STL|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - No STL|Win32.Build.0 = Debug MSVC C++20 - No STL|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - No STL|x64.ActiveCfg = Debug MSVC C++20 - No STL|x64

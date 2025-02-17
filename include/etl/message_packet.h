@@ -53,8 +53,6 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_HAS_VIRTUAL_MESSAGES
-
 #include "message.h"
 #include "error_handler.h"
 #include "static_assert.h"
@@ -286,10 +284,38 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
 #include "private/diagnostic_pop.h"
+
+#if !ETL_HAS_VIRTUAL_MESSAGES
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      (delete_message_type<TMessageTypes>(pmsg) || ...);
+    }
+
+    //********************************************
+    template <typename TType>
+    bool delete_message_type(etl::imessage* pmsg)
+    {
+      if (TType::ID == pmsg->get_message_id())
+      {
+        TType* p = static_cast<TType*>(pmsg);
+        p->~TType();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+#endif
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -584,10 +610,39 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        case T11::ID: static_cast<const T11*>(pmsg)->~T11(); break;
+        case T12::ID: static_cast<const T12*>(pmsg)->~T12(); break;
+        case T13::ID: static_cast<const T13*>(pmsg)->~T13(); break;
+        case T14::ID: static_cast<const T14*>(pmsg)->~T14(); break;
+        case T15::ID: static_cast<const T15*>(pmsg)->~T15(); break;
+        case T16::ID: static_cast<const T16*>(pmsg)->~T16(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -879,10 +934,38 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        case T11::ID: static_cast<const T11*>(pmsg)->~T11(); break;
+        case T12::ID: static_cast<const T12*>(pmsg)->~T12(); break;
+        case T13::ID: static_cast<const T13*>(pmsg)->~T13(); break;
+        case T14::ID: static_cast<const T14*>(pmsg)->~T14(); break;
+        case T15::ID: static_cast<const T15*>(pmsg)->~T15(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1172,10 +1255,37 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        case T11::ID: static_cast<const T11*>(pmsg)->~T11(); break;
+        case T12::ID: static_cast<const T12*>(pmsg)->~T12(); break;
+        case T13::ID: static_cast<const T13*>(pmsg)->~T13(); break;
+        case T14::ID: static_cast<const T14*>(pmsg)->~T14(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1463,10 +1573,36 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        case T11::ID: static_cast<const T11*>(pmsg)->~T11(); break;
+        case T12::ID: static_cast<const T12*>(pmsg)->~T12(); break;
+        case T13::ID: static_cast<const T13*>(pmsg)->~T13(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1748,10 +1884,35 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        case T11::ID: static_cast<const T11*>(pmsg)->~T11(); break;
+        case T12::ID: static_cast<const T12*>(pmsg)->~T12(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2031,10 +2192,34 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        case T11::ID: static_cast<const T11*>(pmsg)->~T11(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2312,10 +2497,33 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        case T10::ID: static_cast<const T10*>(pmsg)->~T10(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2591,10 +2799,32 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        case T9::ID: static_cast<const T9*>(pmsg)->~T9(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2864,10 +3094,31 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        case T8::ID: static_cast<const T8*>(pmsg)->~T8(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3135,10 +3386,30 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        case T7::ID: static_cast<const T7*>(pmsg)->~T7(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3404,10 +3675,29 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        case T6::ID: static_cast<const T6*>(pmsg)->~T6(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3671,10 +3961,28 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+ #endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        case T5::ID: static_cast<const T5*>(pmsg)->~T5(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3932,10 +4240,27 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        case T4::ID: static_cast<const T4*>(pmsg)->~T4(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4191,10 +4516,26 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        case T3::ID: static_cast<const T3*>(pmsg)->~T3(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4448,10 +4789,25 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        case T2::ID: static_cast<const T2*>(pmsg)->~T2(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4703,10 +5059,24 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
+#if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
+#else
+        delete_message(pmsg);
+#endif
       }
     }
     #include "private/diagnostic_pop.h"
+
+    //********************************************
+    void delete_message(etl::imessage* pmsg)
+    {
+      switch (pmsg->get_message_id())
+      {
+        case T1::ID: static_cast<const T1*>(pmsg)->~T1(); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4741,8 +5111,4 @@ namespace etl
   };
 #endif
 }
-#else
-  #error "etl::message_packet is not compatible with non-virtual etl::imessage"
-#endif
-
 #endif
