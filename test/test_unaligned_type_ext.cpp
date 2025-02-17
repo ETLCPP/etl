@@ -636,10 +636,10 @@ namespace
       CHECK_CLOSE(etl::le_double_ext_t(3.1415927, store_d4.data()), 3.1415927, 0.001);
 
       // long double
-      storage_d_t store_ld1;
-      storage_d_t store_ld2;
-      storage_d_t store_ld3;
-      storage_d_t store_ld4;
+      storage_ld_t store_ld1;
+      storage_ld_t store_ld2;
+      storage_ld_t store_ld3;
+      storage_ld_t store_ld4;
 
       CHECK_CLOSE(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()).value(), etl::le_long_double_ext_t(3.1415927L, store_ld2.data()).value(), 0.001);
       CHECK_CLOSE(3.1415927L, etl::le_long_double_ext_t(3.1415927L, store_ld3.data()).value(), 0.001);
@@ -750,10 +750,10 @@ namespace
       CHECK_FLOAT_DIFFERENT(etl::le_double_ext_t(3.1415927, store_d4.data()), 2.1415927);
 
       // long double
-      storage_d_t store_ld1;
-      storage_d_t store_ld2;
-      storage_d_t store_ld3;
-      storage_d_t store_ld4; 
+      storage_ld_t store_ld1;
+      storage_ld_t store_ld2;
+      storage_ld_t store_ld3;
+      storage_ld_t store_ld4; 
 
       CHECK_FLOAT_DIFFERENT(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()), etl::le_long_double_ext_t(2.1415927L, store_ld2.data()));
       CHECK_FLOAT_DIFFERENT(3.1415927L, etl::le_long_double_ext_t(2.1415927L, store_ld3.data()));
@@ -864,10 +864,10 @@ namespace
       CHECK_CLOSE(etl::be_double_ext_t(3.1415927, store_d_be4.data()), 3.1415927, 0.001);
 
       // long double
-      storage_d_t store_ld_be1;
-      storage_d_t store_ld_be2;
-      storage_d_t store_ld_be3;
-      storage_d_t store_ld_be4;
+      storage_ld_t store_ld_be1;
+      storage_ld_t store_ld_be2;
+      storage_ld_t store_ld_be3;
+      storage_ld_t store_ld_be4;
 
       CHECK_CLOSE(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()).value(), etl::be_long_double_ext_t(3.1415927L, store_ld_be2.data()).value(), 0.001);
       CHECK_CLOSE(3.1415927L, etl::be_long_double_ext_t(3.1415927L, store_ld_be3.data()).value(), 0.001);
@@ -978,10 +978,10 @@ namespace
       CHECK_FLOAT_DIFFERENT(etl::be_double_ext_t(3.1415927, store_d_be4.data()), 2.1415927);
 
       // long double
-      storage_d_t store_ld_be1;
-      storage_d_t store_ld_be2;
-      storage_d_t store_ld_be3;
-      storage_d_t store_ld_be4; 
+      storage_ld_t store_ld_be1;
+      storage_ld_t store_ld_be2;
+      storage_ld_t store_ld_be3;
+      storage_ld_t store_ld_be4; 
 
       CHECK_FLOAT_DIFFERENT(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()), etl::be_long_double_ext_t(2.1415927L, store_ld_be2.data()));
       CHECK_FLOAT_DIFFERENT(3.1415927L, etl::be_long_double_ext_t(2.1415927L, store_ld_be3.data()));
