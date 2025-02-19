@@ -66,9 +66,7 @@ cog.outl("//********************************************************************
 #include "platform.h"
 #include "message.h"
 #include "shared_message.h"
-#if ETL_HAS_VIRTUAL_MESSAGES
-  #include "message_packet.h"
-#endif
+#include "message_packet.h"
 #include "message_types.h"
 #include "alignment.h"
 #include "error_handler.h"
@@ -424,9 +422,7 @@ namespace etl
   {
   public:
 
-#if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<TMessageTypes...> message_packet;
-#endif
 
     //**********************************************
     message_router()
@@ -584,12 +580,10 @@ namespace etl
       cog.outl("{")
       cog.outl("public:")
       cog.outl("")
-      cog.outl("#if ETL_HAS_VIRTUAL_MESSAGES")
       cog.out("  typedef etl::message_packet<")
       for n in range(1, int(Handlers)):
           cog.out("T%s, " % n)
       cog.outl(" T%s> message_packet;" % int(Handlers))
-      cog.outl("#endif")
       cog.outl("")
       cog.outl("  //**********************************************")
       cog.outl("  message_router(etl::message_router_id_t id_)")
@@ -754,12 +748,10 @@ namespace etl
           cog.outl("{")
           cog.outl("public:")
           cog.outl("")
-          cog.outl("#if ETL_HAS_VIRTUAL_MESSAGES")
           cog.out("  typedef etl::message_packet<")
           for t in range(1, n):
               cog.out("T%s, " % t)
           cog.outl(" T%s> message_packet;" % n)
-          cog.outl("#endif")
           cog.outl("")
           cog.outl("  //**********************************************")
           cog.outl("  message_router(etl::message_router_id_t id_)")
