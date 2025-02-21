@@ -2313,6 +2313,9 @@ typedef integral_constant<bool, true>  true_type;
                                                                etl::true_type,
                                                                has_duplicates<TRest...>> {};
 
+  template <typename T>
+  struct has_duplicates<T> : etl::false_type {};
+
   template <>
   struct has_duplicates<> : etl::false_type {};
 #endif
