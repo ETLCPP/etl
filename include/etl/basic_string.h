@@ -662,7 +662,10 @@ namespace etl
     //*********************************************************************
     void assign(const etl::ibasic_string<T>& other)
     {
-      assign_impl(other.begin(), other.end(), other.is_truncated(), other.is_secure());
+      if (&other != this)
+      {
+        assign_impl(other.begin(), other.end(), other.is_truncated(), other.is_secure());
+      }
     }
 
     //*********************************************************************
@@ -702,9 +705,9 @@ namespace etl
     /// Truncates if the string does not have enough free space.
     ///\param other The other string.
     //*********************************************************************
-    void assign(const_pointer other)
+    void assign(const_pointer text)
     {
-      assign(other, other + etl::strlen(other));
+      assign_impl(text, text + etl::strlen(text), false, false);
     }
 
     //*********************************************************************
@@ -713,9 +716,9 @@ namespace etl
     ///\param other The other string.
     ///\param length The length to copy.
     //*********************************************************************
-    void assign(const_pointer other, size_type length_)
+    void assign(const_pointer text, size_type length_)
     {
-      assign(other, other + length_);
+      assign_impl(text, text + length_, false, false);
     }
 
     //*********************************************************************
@@ -724,7 +727,7 @@ namespace etl
     template <typename TOtherTraits>
     void assign(const etl::basic_string_view<T, TOtherTraits>& view)
     {
-      assign(view.begin(), view.end());
+      assign_impl(view.begin(), view.end(), false, false);
     }
 
     //*********************************************************************
@@ -2641,7 +2644,15 @@ namespace etl
       ETL_ASSERT(d >= 0, ETL_ERROR(string_iterator));
 #endif
 
-      initialise();
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
+      if (secure)
+      {
+        set_secure();
+      }
+#endif
+
+      current_size = 0U;
+      cleanup();
 
       while ((first != last) && (current_size != CAPACITY))
       {
@@ -2657,15 +2668,6 @@ namespace etl
       ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
-
-#if ETL_HAS_STRING_CLEAR_AFTER_USE
-      if (secure)
-      {
-        set_secure();
-      }
-#endif
-
-      cleanup();
     }
 
     //*************************************************************************

@@ -1083,6 +1083,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assign_string)
+    {
+      Text text(initial_text.c_str());
+
+      text.assign(text);
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+    #if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+    #endif
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_view)
     {
       TextSTD compare_input(initial_text.c_str());
@@ -1100,6 +1114,21 @@ namespace
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text.is_truncated());
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assign_view)
+    {
+      Text text(initial_text.c_str());
+      View view(text);
+
+      text.assign(view);
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+    #if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+    #endif
     }
 
     //*************************************************************************
