@@ -1248,6 +1248,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_self_assign_string)
+    {
+      TextBuffer buffer{0};
+      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+
+      text.assign(text);
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+    #if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+    #endif
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_view)
     {
       TextSTD compare_input(initial_text.c_str());

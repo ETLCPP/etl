@@ -138,7 +138,7 @@ namespace etl
   public:
 
     string_truncation(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"D"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:truncation", ETL_BASIC_STRING_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -677,14 +677,17 @@ namespace etl
     //*********************************************************************
     void assign(const etl::ibasic_string<T>& other, size_type subposition, size_type sublength)
     {
-      if (sublength == npos)
+      if (&other != this)
       {
-        sublength = other.size() - subposition;
+        if (sublength == npos)
+        {
+          sublength = other.size() - subposition;
+        }
+
+        ETL_ASSERT(subposition <= other.size(), ETL_ERROR(string_out_of_bounds));
+
+        assign_impl(other.begin() + subposition, other.begin() + subposition + sublength, other.is_truncated(), other.is_secure());
       }
-
-      ETL_ASSERT(subposition <= other.size(), ETL_ERROR(string_out_of_bounds));
-
-      assign_impl(other.begin() + subposition, other.begin() + subposition + sublength, other.is_truncated(), other.is_secure());
     }
 
     //*********************************************************************
@@ -721,7 +724,7 @@ namespace etl
       assign_impl(text, text + length_, false, false);
     }
 
-    //*********************************************************************
+    //********************************************************************* 
     /// Assigns values to the string from a view.
     //*********************************************************************
     template <typename TOtherTraits>
@@ -2644,15 +2647,7 @@ namespace etl
       ETL_ASSERT(d >= 0, ETL_ERROR(string_iterator));
 #endif
 
-#if ETL_HAS_STRING_CLEAR_AFTER_USE
-      if (secure)
-      {
-        set_secure();
-      }
-#endif
-
-      current_size = 0U;
-      cleanup();
+      initialise();
 
       while ((first != last) && (current_size != CAPACITY))
       {
@@ -2668,6 +2663,15 @@ namespace etl
       ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
+
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
+      if (secure)
+      {
+        set_secure();
+      }
+#endif
+
+      cleanup();
     }
 
     //*************************************************************************
