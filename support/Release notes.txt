@@ -42,6 +42,7 @@ Fixes:
 #1022 Request: Add option to disable non-lock-free atomics - Added is_always_lock_free member constant to etl::atomic
 #1030 Modify etl::message_packet to not require polymorphic messages
 #1031 etl::string is invalid if calling assign() with itself. Added additional checks for self assignment.
+#1032 Tasking Compiler Failure For parameter_pack.h
 
 Pull Requests:
 #947  Remove unused git submodule config
