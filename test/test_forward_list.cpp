@@ -1075,14 +1075,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_reverse_empty)
     {
-      CompareDataNDC compare_data;
       DataNDC data;
 
-      compare_data.reverse();
       data.reverse();
 
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-      CHECK(are_equal);
+      CHECK_TRUE(data.empty());
+      CHECK_FALSE(data.full());
+      CHECK_EQUAL(0, data.size());
     }
 
     //*************************************************************************

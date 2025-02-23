@@ -2010,10 +2010,10 @@ namespace
       {
         std::shuffle(data.begin(), data.end(), urng);
 
-        std::forward_list<int> data1(data.begin(), data.end());
+        std::vector<int>       data1(data.begin(), data.end());
         std::forward_list<int> data2(data.begin(), data.end());
 
-        data1.sort();
+        std::sort(data1.begin(), data1.end());
         etl::selection_sort(data2.begin(), data2.end());
 
         bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());

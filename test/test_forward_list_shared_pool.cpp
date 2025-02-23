@@ -1478,20 +1478,20 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_reverse_empty)
     {
-      CompareDataNDC compare_data;
       PoolNDC2 pool;
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      compare_data.reverse();
       data1.reverse();
       data2.reverse();
 
-      are_equal = std::equal(data1.begin(), data1.end(), compare_data.begin());
-      CHECK(are_equal);
+      CHECK_TRUE(data1.empty());
+      CHECK_FALSE(data1.full());
+      CHECK_EQUAL(0, data1.size());
 
-      are_equal = std::equal(data1.begin(), data1.end(), compare_data.begin());
-      CHECK(are_equal);
+      CHECK_TRUE(data2.empty());
+      CHECK_FALSE(data2.full());
+      CHECK_EQUAL(0, data2.size());
     }
 
     //*************************************************************************
