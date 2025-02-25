@@ -860,6 +860,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_remove_by_pointer)
+    {
+      std::forward_list<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+
+      auto it = data0.begin();
+      for (int i = 0; i < 7; ++i)
+      {
+        it++;
+      }
+      ItemNDCNode* element = &it;
+
+      compare_data.remove(ItemNDCNode("7"));
+      data0.remove(*element);
+
+      bool are_equal = std::equal(data0.begin(), data0.end(), compare_data.begin());
+
+      CHECK(are_equal);
+      CHECK_EQUAL(size_t(std::distance(compare_data.begin(), compare_data.end())), data0.size());
+      CHECK_EQUAL(std::distance(compare_data.begin(), compare_data.end()), std::distance(data0.begin(), data0.end()));
+
+      are_equal = std::equal(data1.begin(), data1.end(), sorted_data.begin());
+      CHECK(are_equal);
+      CHECK_EQUAL(sorted_data.size(), data1.size());
+      CHECK_EQUAL(sorted_data.size(), size_t(std::distance(data1.begin(), data1.end())));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_remove_if)
     {
       std::forward_list<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
