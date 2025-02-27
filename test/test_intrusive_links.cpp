@@ -32,6 +32,8 @@ SOFTWARE.
 
 #include "etl/intrusive_links.h"
 
+#include <vector>
+
 namespace
 {
   //*******************************************************
@@ -155,6 +157,166 @@ namespace
       CHECK_EQUAL(1, pdata->value);
       pdata = static_cast<FData*>(pdata->FLink1::etl_next);
       CHECK_EQUAL(0, pdata->value);
+    }
+
+    //*************************************************************************
+    TEST(test_create_linked_list_multiple_forward_links_as_references)
+    {
+      FData data0(0);
+      FData data1(1);
+      FData data2(2);
+      FData data3(3);
+
+      FLink0* last0 = etl::create_linked_list<FLink0>(data0, data1, data2, data3);
+      CHECK(last0 == &data3);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data2);
+      CHECK(data2.FLink0::etl_next == &data3);
+      CHECK(data3.FLink0::etl_next == ETL_NULLPTR);
+
+      FLink1* last1 = etl::create_linked_list<FLink1>(data3, data2, data1, data0);
+      CHECK(last1 == &data0);
+      CHECK(data3.FLink1::etl_next == &data2);
+      CHECK(data2.FLink1::etl_next == &data1);
+      CHECK(data1.FLink1::etl_next == &data0);
+      CHECK(data0.FLink1::etl_next == ETL_NULLPTR);
+
+      FData* pdata;
+
+      pdata = static_cast<FData*>(data0.FLink0::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink0::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink0::etl_next);
+      CHECK_EQUAL(3, pdata->value);
+
+      pdata = static_cast<FData*>(data3.FLink1::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink1::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink1::etl_next);
+      CHECK_EQUAL(0, pdata->value);
+
+      FData data4(4);
+      FData data5(5);
+      FData data6(6);
+      FData data7(7);
+
+      auto last2 = etl::create_linked_list<FLink0>(*last0, data4, data5, data6, data7);
+      CHECK(last2 == &data7);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data2);
+      CHECK(data2.FLink0::etl_next == &data3);
+      CHECK(data3.FLink0::etl_next == &data4);
+      CHECK(data4.FLink0::etl_next == &data5);
+      CHECK(data5.FLink0::etl_next == &data6);
+      CHECK(data6.FLink0::etl_next == &data7);
+      CHECK(data7.FLink0::etl_next == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_create_linked_list_multiple_forward_links_as_pointers)
+    {
+      FData data0(0);
+      FData data1(1);
+      FData data2(2);
+      FData data3(3);
+
+      FLink0* last0 = etl::create_linked_list<FLink0>(&data0, &data1, &data2, &data3);
+      CHECK(last0 == &data3);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data2);
+      CHECK(data2.FLink0::etl_next == &data3);
+      CHECK(data3.FLink0::etl_next == ETL_NULLPTR);
+
+      FLink1* last1 = etl::create_linked_list<FLink1>(&data3, &data2, &data1, &data0);
+      CHECK(last1 == &data0);
+      CHECK(data3.FLink1::etl_next == &data2);
+      CHECK(data2.FLink1::etl_next == &data1);
+      CHECK(data1.FLink1::etl_next == &data0);
+      CHECK(data0.FLink1::etl_next == ETL_NULLPTR);
+
+      FData* pdata;
+
+      pdata = static_cast<FData*>(data0.FLink0::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink0::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink0::etl_next);
+      CHECK_EQUAL(3, pdata->value);
+
+      pdata = static_cast<FData*>(data3.FLink1::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink1::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<FData*>(pdata->FLink1::etl_next);
+      CHECK_EQUAL(0, pdata->value);
+
+      FData data4(4);
+      FData data5(5);
+      FData data6(6);
+      FData data7(7);
+
+      auto last2 = etl::create_linked_list<FLink0>(last0, &data4, &data5, &data6, &data7);
+      CHECK(last2 == &data7);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data2);
+      CHECK(data2.FLink0::etl_next == &data3);
+      CHECK(data3.FLink0::etl_next == &data4);
+      CHECK(data4.FLink0::etl_next == &data5);
+      CHECK(data5.FLink0::etl_next == &data6);
+      CHECK(data6.FLink0::etl_next == &data7);
+      CHECK(data7.FLink0::etl_next == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_detach_linked_list_multiple_forward_links_as_references)
+    {
+      FData data0(0);
+      FData data1(1);
+      FData data2(2);
+      FData data3(3);
+
+      etl::create_linked_list<FLink0>(data0, data1, data2, data3);
+      etl::create_linked_list<FLink1>(data3, data2, data1, data0);
+
+      etl::detach_linked_list<FLink0>(data0);
+      etl::detach_linked_list<FLink1>(data3);
+
+      CHECK(data0.FLink0::etl_next == ETL_NULLPTR);
+      CHECK(data1.FLink0::etl_next == ETL_NULLPTR);
+      CHECK(data2.FLink0::etl_next == ETL_NULLPTR);
+      CHECK(data3.FLink0::etl_next == ETL_NULLPTR);
+
+      CHECK(data0.FLink1::etl_next == ETL_NULLPTR);
+      CHECK(data1.FLink1::etl_next == ETL_NULLPTR);
+      CHECK(data2.FLink1::etl_next == ETL_NULLPTR);
+      CHECK(data3.FLink1::etl_next == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_detach_linked_list_multiple_forward_links_as_pointers)
+    {
+      FData data0(0);
+      FData data1(1);
+      FData data2(2);
+      FData data3(3);
+
+      etl::create_linked_list<FLink0>(data0, data1, data2, data3);
+      etl::create_linked_list<FLink1>(data3, data2, data1, data0);
+
+      etl::detach_linked_list<FLink0>(&data0);
+      etl::detach_linked_list<FLink1>(&data3);
+
+      CHECK(data0.FLink0::etl_next == ETL_NULLPTR);
+      CHECK(data1.FLink0::etl_next == ETL_NULLPTR);
+      CHECK(data2.FLink0::etl_next == ETL_NULLPTR);
+      CHECK(data3.FLink0::etl_next == ETL_NULLPTR);
+
+      CHECK(data0.FLink1::etl_next == ETL_NULLPTR);
+      CHECK(data1.FLink1::etl_next == ETL_NULLPTR);
+      CHECK(data2.FLink1::etl_next == ETL_NULLPTR);
+      CHECK(data3.FLink1::etl_next == ETL_NULLPTR);
     }
 
     //*************************************************************************
@@ -535,6 +697,181 @@ namespace
       CHECK(data2.BLink1::etl_previous    != nullptr);
 
       data2.BLink0::unlink();
+    }
+
+    //*************************************************************************
+    TEST(test_create_linked_list_multiple_bidirectional_links_as_references)
+    {
+      BData data0(0);
+      BData data1(1);
+      BData data2(2);
+      BData data3(3);
+
+      BLink0* last0 = etl::create_linked_list<BLink0>(data0, data1, data2, data3);
+      CHECK(last0 == &data3);
+      CHECK(data0.BLink0::etl_previous == ETL_NULLPTR);
+      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data1.BLink0::etl_previous == &data0);
+      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data2.BLink0::etl_previous == &data1);
+      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data3.BLink0::etl_previous == &data2);
+      CHECK(data3.BLink0::etl_next     == ETL_NULLPTR);
+
+      BLink1* last1 = etl::create_linked_list<BLink1>(data3, data2, data1, data0);
+      CHECK(last1 == &data0);
+      CHECK(data3.BLink1::etl_previous == ETL_NULLPTR);
+      CHECK(data3.BLink1::etl_next     == &data2);
+      CHECK(data2.BLink1::etl_previous == &data3);
+      CHECK(data2.BLink1::etl_next     == &data1);
+      CHECK(data1.BLink1::etl_previous == &data2);
+      CHECK(data1.BLink1::etl_next     == &data0);
+      CHECK(data0.BLink1::etl_previous == &data1);
+      CHECK(data0.BLink1::etl_next     == ETL_NULLPTR);
+
+      BData* pdata;
+
+      pdata = static_cast<BData*>(data0.BLink0::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink0::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink0::etl_next);
+      CHECK_EQUAL(3, pdata->value);
+
+      pdata = static_cast<BData*>(data3.BLink1::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink1::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink1::etl_next);
+      CHECK_EQUAL(0, pdata->value);
+
+      BData data4(4);
+      BData data5(5);
+      BData data6(6);
+      BData data7(7);
+
+      auto last2 = etl::create_linked_list<BLink0>(*last0, data4, data5, data6, data7);
+      CHECK(last2 == &data7);
+      CHECK(data0.BLink0::etl_previous == ETL_NULLPTR);
+      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data1.BLink0::etl_previous == &data0);
+      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data2.BLink0::etl_previous == &data1);
+      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data3.BLink0::etl_previous == &data2);
+      CHECK(data3.BLink0::etl_next     == &data4);
+      CHECK(data4.BLink0::etl_previous == &data3);
+      CHECK(data4.BLink0::etl_next     == &data5);
+      CHECK(data5.BLink0::etl_previous == &data4);
+      CHECK(data5.BLink0::etl_next     == &data6);
+      CHECK(data6.BLink0::etl_previous == &data5);
+      CHECK(data6.BLink0::etl_next     == &data7);
+      CHECK(data7.BLink0::etl_next     == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_create_linked_list_multiple_bidirectional_links_as_pointers)
+    {
+      BData data0(0);
+      BData data1(1);
+      BData data2(2);
+      BData data3(3);
+
+      BLink0* last0 = etl::create_linked_list<BLink0>(&data0, &data1, &data2, &data3);
+      CHECK(last0 == &data3);
+      CHECK(data0.BLink0::etl_next == &data1);
+      CHECK(data1.BLink0::etl_next == &data2);
+      CHECK(data2.BLink0::etl_next == &data3);
+      CHECK(data3.BLink0::etl_next == ETL_NULLPTR);
+
+      BLink1* last1 = etl::create_linked_list<BLink1>(&data3, &data2, &data1, &data0);
+      CHECK(last1 == &data0);
+      CHECK(data3.BLink1::etl_next == &data2);
+      CHECK(data2.BLink1::etl_next == &data1);
+      CHECK(data1.BLink1::etl_next == &data0);
+      CHECK(data0.BLink1::etl_next == ETL_NULLPTR);
+
+      BData* pdata;
+
+      pdata = static_cast<BData*>(data0.BLink0::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink0::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink0::etl_next);
+      CHECK_EQUAL(3, pdata->value);
+
+      pdata = static_cast<BData*>(data3.BLink1::etl_next);
+      CHECK_EQUAL(2, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink1::etl_next);
+      CHECK_EQUAL(1, pdata->value);
+      pdata = static_cast<BData*>(pdata->BLink1::etl_next);
+      CHECK_EQUAL(0, pdata->value);
+
+      BData data4(4);
+      BData data5(5);
+      BData data6(6);
+      BData data7(7);
+
+      auto last2 = etl::create_linked_list<BLink0>(last0, &data4, &data5, &data6, &data7);
+      CHECK(last2 == &data7);
+      CHECK(data0.BLink0::etl_next == &data1);
+      CHECK(data1.BLink0::etl_next == &data2);
+      CHECK(data2.BLink0::etl_next == &data3);
+      CHECK(data3.BLink0::etl_next == &data4);
+      CHECK(data4.BLink0::etl_next == &data5);
+      CHECK(data5.BLink0::etl_next == &data6);
+      CHECK(data6.BLink0::etl_next == &data7);
+      CHECK(data7.BLink0::etl_next == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_detach_linked_list_multiple_bidirectional_links_as_references)
+    {
+      BData data0(0);
+      BData data1(1);
+      BData data2(2);
+      BData data3(3);
+
+      etl::create_linked_list<BLink0>(data0, data1, data2, data3);
+      etl::create_linked_list<BLink1>(data3, data2, data1, data0);
+
+      etl::detach_linked_list<BLink0>(data0);
+      etl::detach_linked_list<BLink1>(data3);
+
+      CHECK(data0.BLink0::etl_next == ETL_NULLPTR);
+      CHECK(data1.BLink0::etl_next == ETL_NULLPTR);
+      CHECK(data2.BLink0::etl_next == ETL_NULLPTR);
+      CHECK(data3.BLink0::etl_next == ETL_NULLPTR);
+
+      CHECK(data0.BLink1::etl_next == ETL_NULLPTR);
+      CHECK(data1.BLink1::etl_next == ETL_NULLPTR);
+      CHECK(data2.BLink1::etl_next == ETL_NULLPTR);
+      CHECK(data3.BLink1::etl_next == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_detach_linked_list_multiple_bidirectional_links_as_pointers)
+    {
+      BData data0(0);
+      BData data1(1);
+      BData data2(2);
+      BData data3(3);
+
+      etl::create_linked_list<BLink0>(data0, data1, data2, data3);
+      etl::create_linked_list<BLink1>(data3, data2, data1, data0);
+
+      etl::detach_linked_list<BLink0>(&data0);
+      etl::detach_linked_list<BLink1>(&data3);
+
+      CHECK(data0.BLink0::etl_next == ETL_NULLPTR);
+      CHECK(data1.BLink0::etl_next == ETL_NULLPTR);
+      CHECK(data2.BLink0::etl_next == ETL_NULLPTR);
+      CHECK(data3.BLink0::etl_next == ETL_NULLPTR);
+
+      CHECK(data0.BLink1::etl_next == ETL_NULLPTR);
+      CHECK(data1.BLink1::etl_next == ETL_NULLPTR);
+      CHECK(data2.BLink1::etl_next == ETL_NULLPTR);
+      CHECK(data3.BLink1::etl_next == ETL_NULLPTR);
     }
 
     //*************************************************************************
