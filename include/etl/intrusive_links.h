@@ -945,7 +945,8 @@ namespace etl
   {
     TLink* current = &first;
     ((current->etl_next = &links, static_cast<TLink&>(links).etl_previous = current, current = &links), ...);
- 
+    current->etl_next = ETL_NULLPTR;
+
     return current;
   }
 
@@ -958,10 +959,12 @@ namespace etl
   {
     TLink* current = first;
     ((current->etl_next = links, static_cast<TLink*>(links)->etl_previous = current, current = links), ...);
+    current->etl_next = ETL_NULLPTR;
 
     return current;
   }
 #elif ETL_USING_CPP11
+
   //***************************************************************************
   /// Create a linked list from a number of bidirectional_link nodes.
   //***************************************************************************
