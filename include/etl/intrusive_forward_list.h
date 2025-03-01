@@ -351,11 +351,7 @@ namespace etl
         }
 
         p_previous = p_link;
-
-        if (p_link != ETL_NULLPTR)
-        {
-          p_link = p_link->link_type::etl_next;
-        }
+        p_link = p_link->link_type::etl_next;
       }
 
       return ETL_NULLPTR;
