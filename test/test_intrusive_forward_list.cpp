@@ -184,6 +184,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_variadic_list_single)
+    {
+      DataNDC0 data0(sorted_data[0]);
+
+      CHECK(!data0.empty());
+      CHECK_EQUAL(1, data0.size());
+      CHECK_EQUAL(sorted_data[0], data0.front());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_variadic_list_multiple)
+    {
+      DataNDC0 data0(sorted_data[0], sorted_data[1], sorted_data[2], sorted_data[3], sorted_data[4],
+                     sorted_data[5], sorted_data[6], sorted_data[7], sorted_data[8], sorted_data[9]);
+
+      CHECK(!data0.empty());
+      CHECK_EQUAL(10, data0.size());
+
+      bool are_equal = std::equal(data0.begin(), data0.end(), sorted_data.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty_begin_end)
     {
       DataNDC0 data0;
