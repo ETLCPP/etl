@@ -992,6 +992,29 @@ namespace etl
     }
 
     //*************************************************************************
+    // Removes the element specified by pointer.
+    //*************************************************************************
+    void remove(const_pointer element)
+    {
+      iterator i_item = begin();
+      iterator i_last_item = before_begin();
+
+      while (i_item != end())
+      {
+        if (&i_item == element)
+        {
+          i_item = erase_after(i_last_item);
+          return;
+        }
+        else
+        {
+          ++i_item;
+          ++i_last_item;
+        }
+      }
+    }
+
+    //*************************************************************************
     /// Removes according to a predicate.
     //*************************************************************************
     template <typename TPredicate>
