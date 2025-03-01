@@ -629,6 +629,20 @@ namespace etl
       this->assign(first, last);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Constructor from variadic list of nodes.
+    //*************************************************************************
+    template <typename... TLinks>
+    intrusive_forward_list(link_type& first, TLinks&... links)
+    {
+      current_size         = 0;
+      this->start.etl_next = &first;
+      link_type* last      = make_linked_list(current_size, first, static_cast<link_type&>(links)...);
+      last->etl_next       = &this->terminator;
+    }
+#endif
+
     //*************************************************************************
     /// Gets the beginning of the intrusive_forward_list.
     //*************************************************************************
@@ -1168,6 +1182,41 @@ namespace etl
     }
 
   private:
+
+#if ETL_USING_CPP17
+    //***************************************************************************
+    /// Create a linked list from a number of forward_link nodes.
+    //***************************************************************************
+    template <typename TLink, typename... TLinks>
+    TLink* make_linked_list(size_t& count, TLink& first, TLinks&... links)
+    {
+      TLink* current = &first;
+      ++count;
+      ((current->etl_next = &links, current = &links, ++count), ...);
+      
+      return current;
+    }
+#elif ETL_USING_CPP11
+    //***************************************************************************
+    /// Create a counted linked list from a number of forward_link nodes.
+    //***************************************************************************
+    link_type* make_linked_list(size_t& count, link_type& first)
+    {
+      ++count;
+      return &first;
+    }
+
+    //***************************************************************************
+    /// Create a counted linked list from a number of forward_link nodes.
+    //***************************************************************************
+    template <typename... TLinks>
+    link_type* make_linked_list(size_t& count, link_type& first, link_type& next, TLinks&... links)
+    {
+      ++count;
+      first.etl_next = &next;
+      return make_linked_list(count, next, static_cast<link_type&>(links)...);
+    }
+#endif
 
     //*************************************************************************
     /// Get the next value.
