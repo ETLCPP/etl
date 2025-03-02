@@ -259,19 +259,16 @@ namespace etl
     //*************************************************************************
     bool contains_node(const link_type& search_link) const
     {
-      const link_type* p_link = start.etl_next;
+      return is_link_in_list(&search_link);
+    }
 
-      while (p_link != ETL_NULLPTR)
-      {
-        if (&search_link == p_link)
-        {
-          return true;
-        }
-
-        p_link = p_link->link_type::etl_next;
-      }
-
-      return false;
+    //*************************************************************************
+    /// Detects existence of specified node in list.
+    ///\param search_link The node to find in list
+    //*************************************************************************
+    bool contains_node(const link_type* search_link) const
+    {
+      return is_link_in_list(search_link);
     }
 
   protected:
@@ -359,10 +356,10 @@ namespace etl
     /// Tests if the link is in this list.
     /// Returns the previous link to it, if found, otherwise ETL_NULLPTR.
     //*************************************************************************
-    link_type* is_link_in_list(const link_type* search_link)
+    link_type* is_link_in_list(const link_type* search_link) const
     {
       link_type* p_link     = start.etl_next;
-      link_type* p_previous = &start;
+      link_type* p_previous = const_cast<link_type*>(&start);
 
       while (p_link != ETL_NULLPTR)
       {
