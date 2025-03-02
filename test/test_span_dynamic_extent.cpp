@@ -1291,14 +1291,37 @@ namespace
     //*************************************************************************
     TEST(test_reinterpret_as)
     {
-      uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
-      etl::span<uint8_t> data0 = data;
+      {
+        uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        etl::span<uint8_t> data0 = data;
 
-      etl::span<etl::be_uint16_t> data1 = data0.reinterpret_as<etl::be_uint16_t>();
+        etl::span<etl::be_uint16_t> data1 = data0.reinterpret_as<etl::be_uint16_t>();
 
-      CHECK_EQUAL(data1.size(), 2);
-      CHECK(data1[0] == 0x102);
-      CHECK(data1[1] == 0x304);
+        CHECK_EQUAL(data1.size(), 2);
+        CHECK(data1[0] == 0x102);
+        CHECK(data1[1] == 0x304);
+      }
+      {
+        uint32_t data[] = { 0x01020304 };
+        etl::span<uint32_t> data0 = data;
+        etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+        data1 = data1.first(3);
+        etl::span<int32_t> data2 = data1.reinterpret_as<int32_t>();
+        CHECK_EQUAL(data2.size(), 0);
+      }
+      {
+        uint32_t data[] = { 0x01020304, 0x06070809 };
+        etl::span<uint32_t> data0 = data;
+        etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+        data1 = data1.first(6);
+        etl::span<int32_t> data2 = data1.reinterpret_as<int32_t>();
+        CHECK_EQUAL(data2.size(), 1);
+
+        auto it = data2.begin();
+        CHECK_NOT_EQUAL(it, data2.end());
+        ++it;
+        CHECK_EQUAL(it, data2.end());
+      }
     }
 
     //*************************************************************************
