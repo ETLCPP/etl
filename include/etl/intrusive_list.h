@@ -692,9 +692,11 @@ namespace etl
     template <typename... TLinks>
     intrusive_list(link_type& first, TLinks&... links)
     {
-      current_size                     = 0;
+      ETL_STATIC_ASSERT((etl::is_base_of_all<link_type, TLinks...>::value), "Mixed link types");
+
+      this->current_size               = 0;
       this->terminal_link.etl_next     = &first;
-      link_type* last                  = make_linked_list(current_size, first, static_cast<link_type&>(links)...);
+      link_type* last                  = make_linked_list(this->current_size, first, static_cast<link_type&>(links)...);
       first.etl_previous               = &this->terminal_link;
       last->etl_next                   = &this->terminal_link;
       this->terminal_link.etl_previous = last;
