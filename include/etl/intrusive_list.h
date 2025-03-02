@@ -398,16 +398,36 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Tests if the link is in this list.
+    //*************************************************************************
+    bool is_link_in_list(const link_type* search_link) const
+    {
+      link_type* p_link = terminal_link.link_type::etl_next;
+
+      while (p_link != &terminal_link)
+      {
+        if (search_link == p_link)
+        {
+          return true;
+        }
+
+        p_link = p_link->link_type::etl_next;
+      }
+
+      return false;
+    }
+
+    //*************************************************************************
     /// Remove the specified node from the list.
     /// Returns ETL_NULLPTR if the link was not in this list or was the last in the list.
     //*************************************************************************
-    link_type* remove_link(link_type& link)
+    link_type* remove_link(link_type* link)
     {
       link_type* result = ETL_NULLPTR;
 
       if (contains_node(link))
       {
-        link_type* p_next = link.etl_next;
+        link_type* p_next = link->etl_next;
 
         disconnect_link(link);
 
@@ -686,6 +706,24 @@ namespace etl
       this->assign(first, last);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Constructor from variadic list of nodes.
+    //*************************************************************************
+    template <typename... TLinks>
+    intrusive_list(link_type& first, TLinks&... links)
+    {
+      ETL_STATIC_ASSERT((etl::is_base_of_all<link_type, TLinks...>::value), "Mixed link types");
+
+      this->current_size               = 0;
+      this->terminal_link.etl_next     = &first;
+      link_type* last                  = make_linked_list(this->current_size, first, static_cast<link_type&>(links)...);
+      first.etl_previous               = &this->terminal_link;
+      last->etl_next                   = &this->terminal_link;
+      this->terminal_link.etl_previous = last;
+    }
+#endif
+
     //*************************************************************************
     /// Gets the beginning of the intrusive_list.
     //*************************************************************************
@@ -844,9 +882,17 @@ namespace etl
     //*************************************************************************
     /// Erases the specified node.
     //*************************************************************************
-    node_type* erase(node_type& node)
+    node_type* erase(const node_type& node)
     {
-      return static_cast<node_type*>(this->remove_link(node));
+      return static_cast<node_type*>(this->remove_link(const_cast<node_type*>(&node)));
+    }
+
+    //*************************************************************************
+    /// Erases the specified node.
+    //*************************************************************************
+    node_type* erase(const node_type* p_node)
+    {
+      return static_cast<node_type*>(this->remove_link(const_cast<node_type*>(p_node)));
     }
 
     //*************************************************************************
@@ -1215,6 +1261,44 @@ namespace etl
     }
 
   private:
+
+#if ETL_USING_CPP17
+    //***************************************************************************
+    /// Create a linked list from a number of bidirectional_link nodes.
+    //***************************************************************************
+    template <typename... TLinks>
+    link_type* make_linked_list(size_t& count, link_type& first, TLinks&... links)
+    {
+      TLink* current = &first;
+      ++count;
+      ((current->etl_next = &links, static_cast<TLink&>(links).etl_previous = current, current = &links, ++count), ...);
+
+      return current;
+    }
+#elif ETL_USING_CPP11
+    //***************************************************************************
+    /// Create a linked list from a number of bidirectional_link nodes.
+    //***************************************************************************
+    link_type*  make_linked_list(size_t& count, link_type& first)
+    {
+      ++count;
+
+      return &first;
+    }
+
+    //***************************************************************************
+    /// Create a linked list from a number of bidirectional_link nodes.
+    //***************************************************************************
+    template <typename... TLinks>
+    link_type* make_linked_list(size_t& count, link_type& first, link_type& next, TLinks&... links)
+    {
+      ++count;
+      first.etl_next    = &next;
+      next.etl_previous = &first;
+
+      return make_linked_list(count, next, static_cast<link_type&>(links)...);
+    }
+#endif
 
     // Disabled.
     intrusive_list(const intrusive_list& other);

@@ -1405,19 +1405,19 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   /// Template to determine if a type is a base of all types in a specified list.
   ///\ingroup types
-  template <typename T, typename T1, typename... TRest>
-  struct is_base_of_all
+  template <typename TBase, typename... TDerived>
+  struct is_base_of_all;
+
+  template <typename Base>
+  struct is_base_of_all<Base> : etl::true_type 
   {
-    static const bool value = etl::is_base_of<T, T1>::value &&
-                              etl::is_base_of_all<T, TRest...>::value;
   };
 
-  template <typename T, typename T1>
-  struct is_base_of_all<T, T1>
+  template <typename TBase, typename TFirst, typename... TRest>
+  struct is_base_of_all<TBase, TFirst, TRest...> : etl::integral_constant<bool, etl::is_base_of<TBase, TFirst>::value && 
+                                                                                etl::is_base_of_all<TBase, TRest...>::value> 
   {
-    static const bool value = etl::is_base_of<T, T1>::value;
   };
-#endif
 
 #if ETL_USING_CPP17
   template <typename T, typename... TRest>
