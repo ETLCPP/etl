@@ -253,6 +253,24 @@ namespace etl
       return current_size;
     }
 
+    //*************************************************************************
+    /// Detects existence of specified node in list.
+    ///\param search_link The node to find in list
+    //*************************************************************************
+    bool contains_node(const link_type& search_link) const
+    {
+      return is_link_in_list(&search_link);
+    }
+
+    //*************************************************************************
+    /// Detects existence of specified node in list.
+    ///\param search_link The node to find in list
+    //*************************************************************************
+    bool contains_node(const link_type* search_link) const
+    {
+      return is_link_in_list(search_link);
+    }
+
   protected:
 
     link_type start;             ///< The link pointer that acts as the intrusive_forward_list start.
@@ -338,10 +356,10 @@ namespace etl
     /// Tests if the link is in this list.
     /// Returns the previous link to it, if found, otherwise ETL_NULLPTR.
     //*************************************************************************
-    link_type* is_link_in_list(const link_type* search_link)
+    link_type* is_link_in_list(const link_type* search_link) const
     {
       link_type* p_link     = start.etl_next;
-      link_type* p_previous = &start;
+      link_type* p_previous = const_cast<link_type*>(&start);
 
       while (p_link != ETL_NULLPTR)
       {
@@ -1208,6 +1226,27 @@ namespace etl
 
         other.initialise();
       }
+    }
+
+    //*************************************************************************
+    /// Detects existence of specified value in list.
+    ///\param value The value to find in list
+    //*************************************************************************
+    bool contains(const_reference value) const
+    {
+      const_iterator i_item = begin();
+
+      while (i_item != end())
+      {
+        if (*i_item == value)
+        {
+          return true;
+        }
+
+        ++i_item;
+      }
+
+      return false;
     }
 
   private:
