@@ -1320,9 +1320,11 @@ namespace
     struct D4 {};
 
 #if ETL_USING_CPP17
+    CHECK_TRUE(bool(etl::is_base_of_all_v<Base, D1>));
     CHECK_TRUE(bool(etl::is_base_of_all_v<Base, D1, D2, D3>));
     CHECK_FALSE(bool(etl::is_base_of_all_v<Base, D1, D2, D3, D4>));
 #else
+    CHECK_TRUE(bool(etl::is_base_of_all<Base, D1>::value));
     CHECK_TRUE(bool(etl::is_base_of_all<Base, D1, D2, D3>::value));
     CHECK_FALSE(bool(etl::is_base_of_all<Base, D1, D2, D3, D4>::value));
 #endif
