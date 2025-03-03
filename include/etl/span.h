@@ -459,6 +459,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Moves the pointer to the first element of the span further by a specified number of elements.
+    ///\tparam elements Number of elements to move forward
+    //*************************************************************************
+    void advance(size_t elements) ETL_NOEXCEPT
+    {
+      elements = etl::min(elements, size());
+      pbegin += elements;
+    }
+
+    //*************************************************************************
     /// Reinterpret the span as a span with different element type.
     //*************************************************************************
     template<typename TNew>
@@ -467,7 +477,7 @@ namespace etl
       ETL_ASSERT(etl::is_aligned<etl::alignment_of<TNew>::value>(pbegin), ETL_ERROR(span_alignment_exception));
 
       return etl::span<TNew, etl::dynamic_extent>(reinterpret_cast<TNew*>(pbegin),
-        Extent * sizeof(element_type) / sizeof(TNew));
+                       Extent * sizeof(element_type) / sizeof(TNew));
     }
 
   private:
@@ -875,7 +885,7 @@ namespace etl
       ETL_ASSERT(etl::is_aligned<etl::alignment_of<TNew>::value>(pbegin), ETL_ERROR(span_alignment_exception));
 
       return etl::span<TNew, etl::dynamic_extent>(reinterpret_cast<TNew*>(pbegin),
-        (pend - pbegin) * sizeof(element_type) / sizeof(TNew));
+                                                  (pend - pbegin) * sizeof(element_type) / sizeof(TNew));
     }
 
   private:
