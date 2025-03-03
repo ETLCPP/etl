@@ -459,16 +459,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Moves the pointer to the first element of the span further by a specified number of elements.
-    ///\tparam elements Number of elements to move forward
-    //*************************************************************************
-    void advance(size_t elements) ETL_NOEXCEPT
-    {
-      elements = etl::min(elements, size());
-      pbegin += elements;
-    }
-
-    //*************************************************************************
     /// Reinterpret the span as a span with different element type.
     //*************************************************************************
     template<typename TNew>
