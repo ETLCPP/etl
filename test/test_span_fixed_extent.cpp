@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/span.h"
 #include "etl/array.h"
+#include "etl/unaligned_type.h"
 
 #include <array>
 #include <vector>
@@ -1163,6 +1164,75 @@ namespace
         CHECK_EQUAL(s.size(), 10);
         View view(etldata);
         CHECK_TRUE(etl::equal(s, view));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_reinterpret_as)
+    {
+      uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+      etl::span<uint8_t, 5> data0 = data;
+
+      etl::span<etl::be_uint16_t> data1 = data0.reinterpret_as<etl::be_uint16_t>();
+
+      CHECK_EQUAL(data1.size(), 2);
+      CHECK(data1[0] == 0x102);
+      CHECK(data1[1] == 0x304);
+    }
+
+    //*************************************************************************
+    TEST(test_reinterpret_as_aligned)
+    {
+      uint32_t data[] = { 0x01020304, 0x020406080, 0x03400560};
+      etl::span<uint32_t, 3> data0 = data;
+      CHECK_EQUAL(data0.size(), 3);
+
+      etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+      CHECK_EQUAL(data1.size(), 12);
+
+      etl::span<uint16_t> data2 = data1.subspan(2).reinterpret_as<uint16_t>();
+      CHECK_EQUAL(data2.size(), 5);
+
+      CHECK_THROW(data2 = data1.subspan(1).reinterpret_as<uint16_t>(), etl::span_alignment_exception);
+    }
+
+    //*************************************************************************
+    TEST(test_copy)
+    {
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+      uint8_t dst[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+      {
+        etl::span<uint8_t, 5> data0 = src;
+        etl::span<uint8_t, 6> data1 = dst;
+
+        CHECK_EQUAL(etl::copy(data0, data1), true);
+        CHECK(std::equal(data0.begin(), data0.end(), data1.begin()));
+      }
+      {
+        etl::span<uint8_t, 5> data0 = src;
+        etl::span<uint8_t, 5> data1(&dst[1], 5);
+
+        CHECK_EQUAL(etl::copy(data0, data1), true);
+        CHECK(std::equal(data0.begin(), data0.end(), data1.begin()));
+      }
+
+      {
+        etl::span<uint8_t, 5> data0 = src;
+        etl::span<uint8_t, 4> data1(&dst[2], 4);
+
+        CHECK_EQUAL(etl::copy(data0, data1), false);
+      }
+      {
+        etl::span<uint8_t, 0> data0(&src[0], 0);
+        etl::span<uint8_t, 6> data1 = dst;
+
+        CHECK_EQUAL(etl::copy(data0, data1), true);
+      }
+      {
+        etl::span<uint8_t, 5> data0 = src;
+        etl::span<uint8_t, 5> data1 = src;
+
+        CHECK_EQUAL(etl::copy(data0, data1), true);
       }
     }
 
