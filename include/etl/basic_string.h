@@ -54,6 +54,10 @@ SOFTWARE.
   #include <string_view>
 #endif
 
+#if ETL_USING_STL
+  #include <ostream>
+#endif
+
 #include "private/minmax_push.h"
 
 //*****************************************************************************
@@ -2962,6 +2966,23 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+
+  //***************************************************************************
+  /// Operator overload to write to std basic_ostream
+  ///\param os Reference to the output stream.
+  ///\param str Reference to the string to write.
+  ///\return Reference to the output stream, for chaining write operations.
+  ///\ingroup string
+  //***************************************************************************
+#if ETL_USING_STL
+  template <typename T>
+  std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
+                                                          const etl::ibasic_string<T>& str)
+  {
+    os.write(str.data(), str.size());
+    return os;
+  }
+#endif
 }
 
 #include "private/minmax_pop.h"
