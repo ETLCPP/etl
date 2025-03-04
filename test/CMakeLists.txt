@@ -220,6 +220,7 @@ add_executable(etl_tests
 	test_observer.cpp
 	test_optional.cpp
 	test_overload.cpp
+	test_owning_callable.cpp
 	test_packet.cpp
 	test_parameter_pack.cpp
 	test_parameter_type.cpp
