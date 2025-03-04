@@ -30,6 +30,8 @@ SOFTWARE.
 #define ETL_TYPE_LIST_INCLUDED
 
 #include "platform.h"
+
+#include "algorithm.h"
 #include "nth_type.h"
 #include "static_assert.h"
 #include "type_traits.h"
@@ -38,6 +40,7 @@ SOFTWARE.
 #if ETL_USING_CPP11
 namespace etl
 {
+
   //***************************************************************************
   /// Type list forward declaration.
   //***************************************************************************
@@ -61,6 +64,18 @@ namespace etl
     type_list& operator =(const type_list&) ETL_DELETE;
   };
 
+  namespace private_type_list
+  {
+
+    // helper to solve the issue that recursed-rest can't be put directly in type_list::tail definition
+    template <typename... TTypes>
+    struct recursion_helper
+    {
+      using type = type_list<TTypes...>;
+    };
+
+  }
+
   //***************************************************************************
   /// Recursive type list implementation for multiple types.
   //***************************************************************************
@@ -68,6 +83,7 @@ namespace etl
   struct type_list<THead, TTail...> : type_list<TTail...>
   {
     using type = THead;
+    using tail = typename private_type_list::recursion_helper<TTail...>::type;
 
     static constexpr size_t size = sizeof...(TTail) + 1U;
 
@@ -87,6 +103,7 @@ namespace etl
   struct type_list<THead> : type_list<>
   {
     using type = THead;
+    using tail = typename private_type_list::recursion_helper<>::type;
 
     static constexpr size_t size = 1U;
 
@@ -180,6 +197,56 @@ namespace etl
   {
     using type = typename type_list_cat<etl::type_list<TTypes1..., TTypes2...>, TTail...>::type;
   };
+
+  template<typename TL, typename T>
+  struct type_list_contains
+    : public etl::integral_constant<bool, etl::is_same<typename TL::type, T>::value ? true : type_list_contains<typename TL::tail, T>::value>
+  {
+  };
+
+  template<typename T>
+  struct type_list_contains<type_list<>, T>
+    : public etl::integral_constant<bool, false>
+  {
+  };
+
+  template<typename TL, typename T>
+  struct type_list_index_of
+    : public etl::integral_constant<size_t, etl::is_same<typename TL::type, T>::value ? 0 : (type_list_index_of<typename TL::tail, T>::value + 1)>
+  {
+  };
+
+  template<typename T>
+  struct type_list_index_of<type_list<>, T>
+    : public etl::integral_constant<size_t, 0>
+  {
+  };
+
+  template<typename TL>
+  struct type_list_max_sizeof_type
+    : public etl::integral_constant<size_t, etl::max(sizeof(typename TL::type), type_list_max_sizeof_type<typename TL::tail>::value)>
+  {
+  };
+
+  template<>
+  struct type_list_max_sizeof_type<type_list<>>
+    : public etl::integral_constant<size_t, 0>
+  {
+  };
+
+  template<typename TL>
+  struct type_list_max_alignment
+    : public etl::integral_constant<size_t, etl::max(etl::alignment_of<typename TL::type>::value,
+        type_list_max_alignment<typename TL::tail>::value)>
+  {
+  };
+
+  template<>
+  struct type_list_max_alignment<type_list<>>
+    : public etl::integral_constant<size_t, 1>
+  {
+  };
+
 }
 #endif
 
