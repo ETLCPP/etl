@@ -2972,7 +2972,7 @@ namespace etl
   //***************************************************************************
   /// Operator overload to write to std basic_ostream
   ///\param os Reference to the output stream.
-  ///\param str Reference to the second string.
+  ///\param str Reference to the string to write.
   ///\return Reference to the output stream, for chaining write operations.
   ///\ingroup string
   //***************************************************************************
