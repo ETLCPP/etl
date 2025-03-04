@@ -5324,5 +5324,23 @@ namespace
 #endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
+
+    //*************************************************************************
+#if ETL_USING_STL
+    TEST_FIXTURE(SetupFixture, test_write_string_to_std_basic_ostream)
+    {
+      Text text1 = STR("Hello World");
+
+      std::basic_stringstream<char16_t> sstream;
+
+      sstream << text1;
+
+      TextSTD sstream_string = sstream.str();
+
+      View sstream_view(sstream_string.data(), sstream_string.size());
+
+      CHECK(text1 == sstream_view);
+    }
+#endif
   };
 }
