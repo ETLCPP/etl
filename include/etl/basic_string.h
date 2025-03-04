@@ -38,13 +38,11 @@ SOFTWARE.
 #include "char_traits.h"
 #include "alignment.h"
 #include "array.h"
-#include "algorithm.h"
 #include "type_traits.h"
 #include "error_handler.h"
 #include "integral_limits.h"
 #include "exception.h"
 #include "memory.h"
-#include "exception.h"
 #include "binary.h"
 #include "flags.h"
 
