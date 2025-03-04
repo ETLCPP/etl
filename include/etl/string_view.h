@@ -47,6 +47,10 @@ SOFTWARE.
   #include <string_view>
 #endif
 
+#if ETL_USING_STL
+  #include <ostream>
+#endif
+
 #include <stdint.h>
 
 namespace etl
@@ -971,6 +975,19 @@ void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_strin
 {
   lhs.swap(rhs);
 }
+
+//*************************************************************************
+/// Operator overload to write to std basic_ostream
+//*************************************************************************
+#if ETL_USING_STL
+template <typename T>
+std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
+                                                        etl::basic_string_view<T, etl::char_traits<T> > text)
+{
+  os.write(text.data(), text.size());
+  return os;
+}
+#endif
 
 #include "private/minmax_pop.h"
 
