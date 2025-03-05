@@ -376,7 +376,7 @@ namespace etl
         return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
       }
 
-      return TReturn{};
+      return TReturn();
     }
 
     //*************************************************************************
