@@ -161,9 +161,9 @@ namespace etl
       typedef typename etl::conditional<is_const, const ipool, ipool>::type         pool_type;
       typedef typename etl::conditional<is_const, const char* const*, char**>::type pointer_type;
 
-      ipool_iterator(const ipool_iterator& other):
-        p_current(other.p_current),
-        p_pool(other.p_pool)
+      ipool_iterator(const ipool_iterator& other)
+        : p_current(other.p_current)
+        , p_pool(other.p_pool)
       {
         find_allocated();
       }
@@ -234,9 +234,9 @@ namespace etl
         }
       }
 
-      ipool_iterator(value_type p, pool_type* pool_):
-        p_current(p),
-        p_pool(pool_)
+      ipool_iterator(value_type p, pool_type* pool_)
+        : p_current(p)
+        , p_pool(pool_)
       {
         find_allocated();
       }
