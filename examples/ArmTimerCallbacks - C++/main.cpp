@@ -36,10 +36,10 @@ const int N_TIMERS = 4;
 
 etl::callback_timer<N_TIMERS> callback_timer;
 
-etl::timer::id::type short_toggle;
-etl::timer::id::type long_toggle;
-etl::timer::id::type start_timers;
-etl::timer::id::type swap_timers;
+etl::timer<>::id::type short_toggle;
+etl::timer<>::id::type long_toggle;
+etl::timer<>::id::type start_timers;
+etl::timer<>::id::type swap_timers;
 
 /*----------------------------------------------------------------------------
  * SystemCoreClockConfigure: configure SystemCoreClock using HSI
@@ -131,10 +131,10 @@ int main()
 
   // The LEDs will start flashing fast after 2 seconds.
   // After another 5 seconds they will start flashing slower.
-  short_toggle = callback_timer.register_timer(LedToggle,   50,  etl::timer::mode::REPEATING);
-  long_toggle  = callback_timer.register_timer(LedToggle,   100,  etl::timer::mode::REPEATING);
-  start_timers = callback_timer.register_timer(StartTimers, 2000, etl::timer::mode::SINGLE_SHOT);
-  swap_timers  = callback_timer.register_timer(SwapTimers,  1500, etl::timer::mode::SINGLE_SHOT);
+  short_toggle = callback_timer.register_timer(LedToggle,   50,  etl::timer<>::mode::REPEATING);
+  long_toggle  = callback_timer.register_timer(LedToggle,   100,  etl::timer<>::mode::REPEATING);
+  start_timers = callback_timer.register_timer(StartTimers, 2000, etl::timer<>::mode::SINGLE_SHOT);
+  swap_timers  = callback_timer.register_timer(SwapTimers,  1500, etl::timer<>::mode::SINGLE_SHOT);
 
   SysTick_Config(SystemCoreClock / 1000);
 
