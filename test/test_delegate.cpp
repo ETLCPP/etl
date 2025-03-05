@@ -287,6 +287,29 @@ namespace
 
   SUITE(test_delegate)
   {
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_false)
+    {
+      etl::delegate<void(void)> d;
+
+      CHECK(!d.is_valid());
+      CHECK(!d);
+
+      d();
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP14
+    TEST_FIXTURE(SetupFixture, test_constexpr_is_valid_false)
+    {
+      constexpr etl::delegate<void(void)> d;
+
+      CHECK(!d.is_valid());
+      CHECK(!d);
+
+      d();
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_true)
