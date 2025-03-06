@@ -1379,4 +1379,27 @@ namespace
     CHECK_EQUAL(2, (etl::count_of<char, int, char, double, char>::value));
 #endif
   }
+#if ETL_USING_CPP11
+  TEST(test_is_invocable_r)
+  {
+    auto func2 = [](char) -> int (*)()
+    {
+      return nullptr;
+    };
+#if ETL_USING_CPP17
+    CHECK_TRUE((etl::is_invocable_r_v<int, int()>));
+    CHECK_TRUE((etl::is_invocable_r_v<void, void(int), int>));
+    CHECK_TRUE((etl::is_invocable_r_v<int(*)(), decltype(func2), char>));
+    CHECK_FALSE((etl::is_invocable_r_v<int*, int()>));
+    CHECK_FALSE((etl::is_invocable_r_v<void, void(int), void>));
+    CHECK_FALSE((etl::is_invocable_r_v<int(*)(), decltype(func2), void>));
+#endif
+    CHECK_TRUE((etl::is_invocable_r<int, int()>::value));
+    CHECK_TRUE((etl::is_invocable_r<void, void(int), int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int(*)(), decltype(func2), char>::value));
+    CHECK_FALSE((etl::is_invocable_r<int*, int()>::value));
+    CHECK_FALSE((etl::is_invocable_r<void, void(int), void>::value));
+    CHECK_FALSE((etl::is_invocable_r<int(*)(), decltype(func2), void>::value));
+  }
+#endif
 }
