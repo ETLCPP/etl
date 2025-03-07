@@ -30,7 +30,10 @@ SOFTWARE.
 #define ETL_TYPE_LIST_INCLUDED
 
 #include "platform.h"
+
+#include "algorithm.h"
 #include "nth_type.h"
+#include "integral_limits.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
@@ -38,6 +41,9 @@ SOFTWARE.
 #if ETL_USING_CPP11
 namespace etl
 {
+
+  static ETL_CONSTEXPR size_t type_list_npos = etl::integral_limits<size_t>::max;
+
   //***************************************************************************
   /// Type list forward declaration.
   //***************************************************************************
@@ -61,6 +67,18 @@ namespace etl
     type_list& operator =(const type_list&) ETL_DELETE;
   };
 
+  namespace private_type_list
+  {
+
+    // helper to solve the issue that recursed-rest can't be put directly in type_list::tail definition
+    template <typename... TTypes>
+    struct recursion_helper
+    {
+      using type = type_list<TTypes...>;
+    };
+
+  }
+
   //***************************************************************************
   /// Recursive type list implementation for multiple types.
   //***************************************************************************
@@ -68,6 +86,7 @@ namespace etl
   struct type_list<THead, TTail...> : type_list<TTail...>
   {
     using type = THead;
+    using tail = typename private_type_list::recursion_helper<TTail...>::type;
 
     static constexpr size_t size = sizeof...(TTail) + 1U;
 
@@ -87,6 +106,7 @@ namespace etl
   struct type_list<THead> : type_list<>
   {
     using type = THead;
+    using tail = typename private_type_list::recursion_helper<>::type;
 
     static constexpr size_t size = 1U;
 
@@ -180,6 +200,77 @@ namespace etl
   {
     using type = typename type_list_cat<etl::type_list<TTypes1..., TTypes2...>, TTail...>::type;
   };
+
+  template<typename TypeList, typename T>
+  struct type_list_contains
+    : public etl::integral_constant<bool, etl::is_same<typename TypeList::type, T>::value ? true : type_list_contains<typename TypeList::tail, T>::value>
+  {
+  };
+
+  template<typename T>
+  struct type_list_contains<type_list<>, T>
+    : public etl::integral_constant<bool, false>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template<typename TypeList, typename T>
+  inline constexpr bool type_list_contains_v = etl::type_list_contains<TypeList, T>::value;
+#endif
+
+  template<typename TypeList, typename T>
+  struct type_list_index_of
+    : public etl::integral_constant<size_t, etl::is_same<typename TypeList::type, T>::value ? 0 :
+    (type_list_index_of<typename TypeList::tail, T>::value == type_list_npos ?
+     type_list_npos : type_list_index_of<typename TypeList::tail, T>::value + 1)>
+  {
+  };
+
+  template<typename T>
+  struct type_list_index_of<type_list<>, T>
+    : public etl::integral_constant<size_t, type_list_npos>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template<typename TypeList, typename T>
+  inline constexpr size_t type_list_index_of_v = etl::type_list_index_of<TypeList, T>::value;
+#endif
+
+  template<typename TypeList>
+  struct type_list_max_sizeof_type
+    : public etl::integral_constant<size_t, etl::max(sizeof(typename TypeList::type), type_list_max_sizeof_type<typename TypeList::tail>::value)>
+  {
+  };
+
+  template<>
+  struct type_list_max_sizeof_type<type_list<>>
+    : public etl::integral_constant<size_t, 0>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template<typename TypeList>
+  inline constexpr size_t type_list_max_sizeof_type_v = etl::type_list_max_sizeof_type<TypeList>::value;
+#endif
+
+  template<typename TypeList>
+  struct type_list_max_alignment
+    : public etl::integral_constant<size_t, etl::max(etl::alignment_of<typename TypeList::type>::value,
+        type_list_max_alignment<typename TypeList::tail>::value)>
+  {
+  };
+
+  template<>
+  struct type_list_max_alignment<type_list<>>
+    : public etl::integral_constant<size_t, 1>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template<typename TypeList>
+  inline constexpr size_t type_list_max_alignment_v = etl::type_list_max_alignment<TypeList>::value;
+#endif
 }
 #endif
 
