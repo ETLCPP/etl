@@ -9453,6 +9453,7 @@
     <ClCompile Include="..\test_to_u8string.cpp" />
     <ClCompile Include="..\test_to_wstring.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
+    <ClCompile Include="..\test_type_list.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />
