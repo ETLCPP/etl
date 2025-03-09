@@ -126,6 +126,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_type_list_type_at_index)
+    {
+      typedef etl::type_list<char, int, uint32_t> t1;
+
+      CHECK_TRUE((std::is_same<char,     etl::type_list_type_at_index<t1, 0>::type>::value));
+      CHECK_TRUE((std::is_same<int,      etl::type_list_type_at_index<t1, 1>::type>::value));
+      CHECK_TRUE((std::is_same<uint32_t, etl::type_list_type_at_index<t1, 2>::type>::value));
+
+      CHECK_TRUE((std::is_same<char,     etl::type_list_type_at_index_t<t1, 0>>::value));
+      CHECK_TRUE((std::is_same<int,      etl::type_list_type_at_index_t<t1, 1>>::value));
+      CHECK_TRUE((std::is_same<uint32_t, etl::type_list_type_at_index_t<t1, 2>>::value));
+    }
+
+    //*************************************************************************
     TEST(test_type_list_max_sizeof_type)
     {
       typedef etl::type_list<char, int16_t, uint32_t> t1;
