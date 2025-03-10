@@ -405,7 +405,7 @@ namespace etl
     /// \returns the instance of T which has been constructed in the internal byte array.
     //***************************************************************************
     template<typename... Args>
-    reference emplace(Args&&... args)
+    reference create(Args&&... args)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
       valid = true;

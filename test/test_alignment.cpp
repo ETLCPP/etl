@@ -181,7 +181,7 @@ namespace
 
       CHECK_EQUAL(false, a.has_value());
 
-      auto& b = a.emplace(123, 4);
+      auto& b = a.create(123, 4);
 
       CHECK_EQUAL(true, a.has_value());
 
