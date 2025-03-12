@@ -2285,11 +2285,15 @@ namespace etl
           TOutputIterator o_begin,
           TOutputIterator o_end)
   {
-    ptrdiff_t s_size = etl::distance(i_begin, i_end);
+    using s_size_type = typename iterator_traits<TInputIterator>::difference_type;
+    using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
+    using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
+
+    s_size_type s_size = etl::distance(i_begin, i_end);
     ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
-    ptrdiff_t d_size = etl::distance(o_begin, o_end);
+    d_size_type d_size = etl::distance(o_begin, o_end);
     ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
-    ptrdiff_t size = etl::min(s_size, d_size);
+    min_size_type size = etl::min<min_size_type>(s_size, d_size);
 
     return etl::copy(i_begin, i_begin + size, o_begin);
   }
@@ -2454,11 +2458,15 @@ namespace etl
          TOutputIterator o_begin,
          TOutputIterator o_end)
   {
-    ptrdiff_t s_size = etl::distance(i_begin, i_end);
+    using s_size_type = typename iterator_traits<TInputIterator>::difference_type;
+    using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
+    using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
+
+    s_size_type s_size = etl::distance(i_begin, i_end);
     ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
-    ptrdiff_t d_size = etl::distance(o_begin, o_end);
+    d_size_type d_size = etl::distance(o_begin, o_end);
     ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
-    ptrdiff_t size = etl::min(s_size, d_size);
+    min_size_type size = etl::min<min_size_type>(s_size, d_size);
 
     return etl::move(i_begin, i_begin + size, o_begin);
   }
