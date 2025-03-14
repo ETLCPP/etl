@@ -107,15 +107,15 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_type_list_index_of)
+    TEST(test_type_list_index_of_type)
     {
       typedef etl::type_list<char, int, uint32_t> t1;
       typedef etl::type_list<> t2;
 
-      CHECK_EQUAL((etl::type_list_index_of<t1, char>::value), 0);
-      CHECK_EQUAL((etl::type_list_index_of<t1, int>::value), 1);
-      CHECK_EQUAL((etl::type_list_index_of<t1, uint32_t>::value), 2);
-      CHECK_EQUAL((etl::type_list_index_of<t2, uint32_t>::value), etl::type_list_npos);
+      CHECK_EQUAL((etl::type_list_index_of_type<t1, char>::value), 0);
+      CHECK_EQUAL((etl::type_list_index_of_type<t1, int>::value), 1);
+      CHECK_EQUAL((etl::type_list_index_of_type<t1, uint32_t>::value), 2);
+      CHECK_EQUAL((etl::type_list_index_of_type<t2, uint32_t>::value), etl::type_list_npos);
 
 #if ETL_USING_CPP17
       CHECK_EQUAL((etl::type_list_index_of_v<t1, char>), 0);
