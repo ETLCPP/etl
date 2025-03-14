@@ -204,20 +204,20 @@ namespace etl
   //***************************************************************************
   /// Defines a bool constant that is true if the type_list contains the specified type, otherwise false.
   //***************************************************************************
-  template<typename TypeList, typename T>
+  template <typename TypeList, typename T>
   struct type_list_contains
     : public etl::integral_constant<bool, etl::is_same<typename TypeList::type, T>::value ? true : type_list_contains<typename TypeList::tail, T>::value>
   {
   };
 
-  template<typename T>
+  template <typename T>
   struct type_list_contains<type_list<>, T>
     : public etl::integral_constant<bool, false>
   {
   };
 
 #if ETL_USING_CPP17
-  template<typename TypeList, typename T>
+  template <typename TypeList, typename T>
   inline constexpr bool type_list_contains_v = etl::type_list_contains<TypeList, T>::value;
 #endif
 
@@ -225,30 +225,30 @@ namespace etl
   /// Defines an integral constant that is the index of the specified type in the type_list.
   /// If the type is not in the type_list, then defined as etl::type_list_npos.
   //***************************************************************************
-  template<typename TypeList, typename T>
-  struct type_list_index_of
+  template <typename TypeList, typename T>
+  struct type_list_index_of_type
     : public etl::integral_constant<size_t, etl::is_same<typename TypeList::type, T>::value ? 0 :
-                                            (type_list_index_of<typename TypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos : 
-                                             type_list_index_of<typename TypeList::tail, T>::value + 1)>
+                                            (type_list_index_of_type<typename TypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos : 
+                                             type_list_index_of_type<typename TypeList::tail, T>::value + 1)>
   {
   };
 
-  template<typename T>
-  struct type_list_index_of<type_list<>, T>
+  template <typename T>
+  struct type_list_index_of_type<type_list<>, T>
     : public etl::integral_constant<size_t, etl::type_list_npos>
   {
   };
 
 #if ETL_USING_CPP17
-  template<typename TypeList, typename T>
-  inline constexpr size_t type_list_index_of_v = etl::type_list_index_of<TypeList, T>::value;
+  template <typename TypeList, typename T>
+  inline constexpr size_t type_list_index_of_v = etl::type_list_index_of_type<TypeList, T>::value;
 #endif
 
   //***************************************************************************
   /// Defines type as the type found at Index in the type_list.
   /// Static asserts if Index is out of range.
   //***************************************************************************
-  template<typename TypeList, size_t Index>
+  template <typename TypeList, size_t Index>
   struct type_list_type_at_index
   {
     ETL_STATIC_ASSERT(Index <= type_list_size<TypeList>::value, "etl::type_list_type_at_index out of range");
@@ -256,27 +256,27 @@ namespace etl
     using type = nth_type_t<Index, TypeList>;
   };
 
-  template<typename TypeList, size_t Index>
+  template <typename TypeList, size_t Index>
   using type_list_type_at_index_t = typename type_list_type_at_index<TypeList, Index>::type;
 
   //***************************************************************************
   /// Defines an integral constant that is maximum sizeof all types in the type_list.
   /// If the type_list is empty, then defined as 0.
   //***************************************************************************
-  template<typename TypeList>
+  template <typename TypeList>
   struct type_list_max_sizeof_type
     : public etl::integral_constant<size_t, etl::max(sizeof(typename TypeList::type), type_list_max_sizeof_type<typename TypeList::tail>::value)>
   {
   };
 
-  template<>
+  template <>
   struct type_list_max_sizeof_type<type_list<>>
     : public etl::integral_constant<size_t, 0>
   {
   };
 
 #if ETL_USING_CPP17
-  template<typename TypeList>
+  template <typename TypeList>
   inline constexpr size_t type_list_max_sizeof_type_v = etl::type_list_max_sizeof_type<TypeList>::value;
 #endif
 
@@ -284,21 +284,21 @@ namespace etl
   /// Defines an integral constant that is maximum alignment all types in the type_list.
   /// If the type_list is empty, then defined as 1.
   //***************************************************************************
-  template<typename TypeList>
+  template <typename TypeList>
   struct type_list_max_alignment
     : public etl::integral_constant<size_t, etl::max(etl::alignment_of<typename TypeList::type>::value,
                                                      type_list_max_alignment<typename TypeList::tail>::value)>
   {
   };
 
-  template<>
+  template <>
   struct type_list_max_alignment<type_list<>>
     : public etl::integral_constant<size_t, 1>
   {
   };
 
 #if ETL_USING_CPP17
-  template<typename TypeList>
+  template <typename TypeList>
   inline constexpr size_t type_list_max_alignment_v = etl::type_list_max_alignment<TypeList>::value;
 #endif
 }
