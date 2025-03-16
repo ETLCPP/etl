@@ -3169,6 +3169,7 @@
     <ClInclude Include="..\..\include\etl\expected.h" />
     <ClInclude Include="..\..\include\etl\function_traits.h" />
     <ClInclude Include="..\..\include\etl\gcd.h" />
+    <ClInclude Include="..\..\include\etl\index_of_type.h" />
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
@@ -8477,6 +8478,7 @@
     <ClCompile Include="..\test_expected.cpp" />
     <ClCompile Include="..\test_function_traits.cpp" />
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
+    <ClCompile Include="..\test_index_of_type.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
     <ClCompile Include="..\test_math.cpp" />
@@ -9453,6 +9455,7 @@
     <ClCompile Include="..\test_to_u8string.cpp" />
     <ClCompile Include="..\test_to_wstring.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
+    <ClCompile Include="..\test_type_list.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />
     <ClCompile Include="..\test_type_traits.cpp" />

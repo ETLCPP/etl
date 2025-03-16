@@ -1429,7 +1429,10 @@
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\type_list.h">
-      <Filter>UnitTest++\Header Files</Filter>
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\index_of_type.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3430,6 +3433,12 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\singleton_base.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_list.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_index_of_type.cpp">
+      <Filter>Tests\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
