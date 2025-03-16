@@ -32,11 +32,12 @@ SOFTWARE.
 #include "platform.h"
 
 #include "algorithm.h"
-#include "nth_type.h"
+#include "index_of_type.h"
 #include "integral_limits.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
+#include "largest.h"
 
 #if ETL_USING_CPP11
 namespace etl
@@ -85,7 +86,7 @@ namespace etl
   template <typename THead, typename... TTail>
   struct type_list<THead, TTail...> : type_list<TTail...>
   {
-    using type = THead;
+    using head = THead;
     using tail = typename private_type_list::recursion_helper<TTail...>::type;
 
     static constexpr size_t size = sizeof...(TTail) + 1U;
@@ -105,7 +106,7 @@ namespace etl
   template <typename THead>
   struct type_list<THead> : type_list<>
   {
-    using type = THead;
+    using head = THead;
     using tail = typename private_type_list::recursion_helper<>::type;
 
     static constexpr size_t size = 1U;
@@ -120,49 +121,9 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Specialisation of etl::nth_type for etl::type_list
-  //***************************************************************************
-  template <size_t N, typename THead, typename... TTail>
-  struct nth_type<N, type_list<THead, TTail...>>
-  {
-    ETL_STATIC_ASSERT(N <= sizeof...(TTail), "etl::nth_type out of range for etl::type_list");
-
-    using type = typename nth_type<N - 1, type_list<TTail...>>::type;
-  };
-
-  //***************************************************************************
-  /// Specialisation of etl::nth_type for etl::type_list with index of 0
-  //***************************************************************************
-  template <typename THead, typename... TTail>
-  struct nth_type<0, type_list<THead, TTail...>>
-  {
-    using type = THead;
-  };
-
-  //***************************************************************************
-  /// Specialisation of etl::nth_type for empty etl::type_list 
-  //***************************************************************************
-  template <size_t N>
-  struct nth_type<N, type_list<>>
-  {
-  };
-
-  //***************************************************************************
-  /// Declares a new type_list by selecting types from a given type_list, according to an index sequence.
-  //***************************************************************************
-  template <typename TTypeList, size_t... Indices>
-  struct type_list_select
-  {
-    using type = type_list<nth_type_t<Indices, TTypeList>...>;
-  };
-
-  template <typename TTypeList, size_t... Indices>
-  using type_list_select_t = typename type_list_select<TTypeList, Indices...>::type;
-
-  //***************************************************************************
   /// Type list size.
   //***************************************************************************
-  template <typename... TTypes>
+  template <typename TTypes>
   struct type_list_size;
 
   template <typename... TTypes>
@@ -176,37 +137,60 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Concatenates two or more type_lists.
+  /// Defines type as the type found at Index in the type_list.
+  /// Static asserts if Index is out of range.
   //***************************************************************************
-  template <typename... TypeLists>
-  struct type_list_cat;
-
-  //***************************************************************************
-  /// Concatenates two or more type_lists.
-  /// Specialisation for a single type_list (base case)
-  //***************************************************************************
-  template <typename TypeList>
-  struct type_list_cat<TypeList>
+  template <typename TTypeList, size_t Index>
+  struct type_list_type_at_index
   {
-    using type = TypeList;
+    ETL_STATIC_ASSERT(Index < type_list_size<TTypeList>::value,              "etl::type_list_type_at_index out of range");
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::type_list<>, TTypeList>::value), "TTypeList must be an etl::type_list");
+
+    using type = typename type_list_type_at_index<typename TTypeList::tail, Index - 1>::type;
   };
 
-  //***************************************************************************
-  /// Concatenates two or more type_lists.
-  /// Specialisation for two or more type_lists
-  //***************************************************************************
-  template <typename... TTypes1, typename... TTypes2, typename... TTail>
-  struct type_list_cat<etl::type_list<TTypes1...>, etl::type_list<TTypes2...>, TTail...>
+  template <typename TTypeList>
+  struct type_list_type_at_index<TTypeList, 0>
   {
-    using type = typename type_list_cat<etl::type_list<TTypes1..., TTypes2...>, TTail...>::type;
+    using type = typename TTypeList::head;
   };
+
+  template <typename TTypeList, size_t Index>
+  using type_list_type_at_index_t = typename type_list_type_at_index<TTypeList, Index>::type;
+
+  //***************************************************************************
+  /// Defines an integral constant that is the index of the specified type in the type_list.
+  /// If the type is not in the type_list, then defined as etl::type_list_npos.
+  //***************************************************************************
+  template <typename TTypeList, typename T>
+  struct type_list_index_of_type
+    : public etl::integral_constant<size_t, etl::is_same<typename TTypeList::head, T>::value ? 0 :
+                                            (type_list_index_of_type<typename TTypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos : 
+                                                                                                                                  type_list_index_of_type<typename TTypeList::tail, T>::value + 1)>
+  {
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::type_list<>, TTypeList>::value), "TTypeList must be an etl::type_list");
+  };
+
+  template <typename T>
+  struct type_list_index_of_type<type_list<>, T>
+    : public etl::integral_constant<size_t, etl::type_list_npos>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList, typename T>
+  inline constexpr size_t type_list_index_of_v = etl::type_list_index_of_type<TTypeList, T>::value;
+#endif
 
   //***************************************************************************
   /// Defines a bool constant that is true if the type_list contains the specified type, otherwise false.
   //***************************************************************************
-  template <typename TypeList, typename T>
-  struct type_list_contains
-    : public etl::integral_constant<bool, etl::is_same<typename TypeList::type, T>::value ? true : type_list_contains<typename TypeList::tail, T>::value>
+  template <typename T, typename TTypes>
+  struct type_list_contains;
+
+  template <typename T, typename... TTypes>
+  struct type_list_contains<etl::type_list<TTypes...>, T>
+    : public etl::integral_constant<bool, etl::is_one_of<T, TTypes...>::value>
   {
   };
 
@@ -217,77 +201,44 @@ namespace etl
   };
 
 #if ETL_USING_CPP17
-  template <typename TypeList, typename T>
-  inline constexpr bool type_list_contains_v = etl::type_list_contains<TypeList, T>::value;
+  template <typename TTypeList, typename T>
+  inline constexpr bool type_list_contains_v = etl::type_list_contains<TTypeList, T>::value;
 #endif
-
-  //***************************************************************************
-  /// Defines an integral constant that is the index of the specified type in the type_list.
-  /// If the type is not in the type_list, then defined as etl::type_list_npos.
-  //***************************************************************************
-  template <typename TypeList, typename T>
-  struct type_list_index_of_type
-    : public etl::integral_constant<size_t, etl::is_same<typename TypeList::type, T>::value ? 0 :
-                                            (type_list_index_of_type<typename TypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos : 
-                                             type_list_index_of_type<typename TypeList::tail, T>::value + 1)>
-  {
-  };
-
-  template <typename T>
-  struct type_list_index_of_type<type_list<>, T>
-    : public etl::integral_constant<size_t, etl::type_list_npos>
-  {
-  };
-
-#if ETL_USING_CPP17
-  template <typename TypeList, typename T>
-  inline constexpr size_t type_list_index_of_v = etl::type_list_index_of_type<TypeList, T>::value;
-#endif
-
-  //***************************************************************************
-  /// Defines type as the type found at Index in the type_list.
-  /// Static asserts if Index is out of range.
-  //***************************************************************************
-  template <typename TypeList, size_t Index>
-  struct type_list_type_at_index
-  {
-    ETL_STATIC_ASSERT(Index <= type_list_size<TypeList>::value, "etl::type_list_type_at_index out of range");
-
-    using type = nth_type_t<Index, TypeList>;
-  };
-
-  template <typename TypeList, size_t Index>
-  using type_list_type_at_index_t = typename type_list_type_at_index<TypeList, Index>::type;
 
   //***************************************************************************
   /// Defines an integral constant that is maximum sizeof all types in the type_list.
   /// If the type_list is empty, then defined as 0.
   //***************************************************************************
-  template <typename TypeList>
-  struct type_list_max_sizeof_type
-    : public etl::integral_constant<size_t, etl::max(sizeof(typename TypeList::type), type_list_max_sizeof_type<typename TypeList::tail>::value)>
+  template <typename T>
+  struct type_list_max_size;
+
+  template <typename... TTypes>
+  struct type_list_max_size<etl::type_list<TTypes...>>
+    : public etl::integral_constant<size_t, etl::largest<TTypes...>::size>
   {
   };
 
   template <>
-  struct type_list_max_sizeof_type<type_list<>>
+  struct type_list_max_size<type_list<>>
     : public etl::integral_constant<size_t, 0>
   {
   };
 
 #if ETL_USING_CPP17
-  template <typename TypeList>
-  inline constexpr size_t type_list_max_sizeof_type_v = etl::type_list_max_sizeof_type<TypeList>::value;
+  template <typename TTypeList>
+  inline constexpr size_t type_list_max_size_v = etl::type_list_max_size<TTypeList>::value;
 #endif
 
   //***************************************************************************
   /// Defines an integral constant that is maximum alignment all types in the type_list.
   /// If the type_list is empty, then defined as 1.
   //***************************************************************************
-  template <typename TypeList>
-  struct type_list_max_alignment
-    : public etl::integral_constant<size_t, etl::max(etl::alignment_of<typename TypeList::type>::value,
-                                                     type_list_max_alignment<typename TypeList::tail>::value)>
+  template <typename T>
+  struct type_list_max_alignment;
+
+  template <typename... TTypes>
+  struct type_list_max_alignment<etl::type_list<TTypes...>>
+    : public etl::integral_constant<size_t, etl::largest<TTypes...>::alignment>
   {
   };
 
@@ -298,9 +249,44 @@ namespace etl
   };
 
 #if ETL_USING_CPP17
-  template <typename TypeList>
-  inline constexpr size_t type_list_max_alignment_v = etl::type_list_max_alignment<TypeList>::value;
+  template <typename TTypeList>
+  inline constexpr size_t type_list_max_alignment_v = etl::type_list_max_alignment<TTypeList>::value;
 #endif
+
+  //***************************************************************************
+  /// Declares a new type_list by selecting types from a given type_list, according to an index sequence.
+  //***************************************************************************
+  template <typename TTypeList, size_t... Indices>
+  struct type_list_select
+  {
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::type_list<>, TTypeList>::value), "TTypeList must be an etl::type_list");
+
+    using type = type_list<type_list_type_at_index_t<TTypeList, Indices>...>;
+  };
+
+  template <typename TTypeList, size_t... Indices>
+  using type_list_select_t = typename type_list_select<TTypeList, Indices...>::type;
+
+  //***************************************************************************
+  /// Concatenates two or more type_lists.
+  //***************************************************************************
+  template <typename... TTypes>
+  struct type_list_cat;
+
+  template <typename... TTypes1, typename... TTypes2, typename... TTail>
+  struct type_list_cat<etl::type_list<TTypes1...>, etl::type_list<TTypes2...>, TTail...>
+  {
+    using type = typename type_list_cat<etl::type_list<TTypes1..., TTypes2...>, TTail...>::type;
+  };
+
+  template <typename T>
+  struct type_list_cat<T>
+  {
+    using type = T;
+  };
+
+  template <typename... TypeLists>
+  using type_list_cat_t = typename type_list_cat<TypeLists...>::type;
 }
 #endif
 

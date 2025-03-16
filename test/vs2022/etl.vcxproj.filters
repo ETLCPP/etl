@@ -1431,6 +1431,9 @@
     <ClInclude Include="..\..\include\etl\type_list.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\index_of_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3432,6 +3435,9 @@
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_type_list.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_index_of_type.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
   </ItemGroup>
