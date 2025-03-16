@@ -322,7 +322,10 @@ namespace etl
       if (p_next != &this->terminator)
       {
         link_type* p_unlinked = etl::unlink_after<link_type>(link);
-        p_unlinked->clear();
+        if (p_unlinked != ETL_NULLPTR)
+        {
+          p_unlinked->clear();
+        }
         --current_size;
       }
     }
