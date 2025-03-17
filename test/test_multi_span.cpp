@@ -341,7 +341,14 @@ namespace
       etl::multi_span<int>::iterator ms_itr     = ms_int.begin();
       etl::multi_span<int>::iterator ms_end_itr = ms_int.end();
 
-      std::copy(ms_itr, ms_end_itr, exp_itr);
+      while (ms_itr != ms_end_itr)
+      {
+        //  Fill the multi span
+        *ms_itr++ = *exp_itr++;
+      }
+
+      ms_itr  = ms_int.begin();
+      exp_itr = expected.begin();
 
       while (ms_itr != ms_end_itr)
       {
@@ -547,7 +554,11 @@ namespace
       multi_span_type::reverse_iterator ms_itr     = ms_int.rbegin();
       multi_span_type::reverse_iterator ms_end_itr = ms_int.rend();
 
-      std::copy(ms_itr, ms_end_itr, exp_itr);
+      while (ms_itr != ms_end_itr)
+      {
+        //  Fill the multi span
+        *ms_itr++ = *exp_itr++;
+      }
 
       while (ms_itr != ms_end_itr)
       {
