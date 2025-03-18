@@ -70,16 +70,16 @@ namespace etl
     //*******************************************
     // The traits an object may have.
     //*******************************************
-    static constexpr bool Copyable     = true;
+    static constexpr bool Copyable = true;
     static constexpr bool Non_Copyable = false;
-    static constexpr bool Moveable     = true;
+    static constexpr bool Moveable = true;
     static constexpr bool Non_Moveable = false;
 
     //*******************************************
     // The types of operations we can perform.
     //*******************************************
-    static constexpr int Copy    = 0;
-    static constexpr int Move    = 1;
+    static constexpr int Copy = 0;
+    static constexpr int Move = 1;
     static constexpr int Destroy = 2;
 
     //*******************************************
@@ -93,7 +93,7 @@ namespace etl
     template <>
     struct operation_type<void, Non_Copyable, Non_Moveable>
     {
-      static void do_operation(int , char* , const char* )
+      static void do_operation(int, char*, const char*)
       {
         // This should never occur.
 #if defined(ETL_IN_UNIT_TEST)
@@ -120,9 +120,9 @@ namespace etl
           default:
           {
             // This should never occur.
-  #if defined(ETL_IN_UNIT_TEST)
+#if defined(ETL_IN_UNIT_TEST)
             assert(false);
-  #endif
+#endif
             break;
           }
         }
@@ -153,9 +153,9 @@ namespace etl
           default:
           {
             // This should never occur.
-  #if defined(ETL_IN_UNIT_TEST)
+#if defined(ETL_IN_UNIT_TEST)
             assert(false);
-  #endif
+#endif
             break;
           }
         }
@@ -186,9 +186,9 @@ namespace etl
           default:
           {
             // This should never occur.
-  #if defined(ETL_IN_UNIT_TEST)
+#if defined(ETL_IN_UNIT_TEST)
             assert(false);
-  #endif
+#endif
             break;
           }
         }
@@ -245,14 +245,14 @@ namespace etl
 
   //***************************************************************************
   /// variant_alternative
-  //***************************************************************************
+  //*************************************************************************** 
   template <size_t Index, typename T>
   struct variant_alternative;
 
   template <size_t Index, typename... TTypes>
   struct variant_alternative<Index, etl::variant<TTypes...>>
   {
-    using type = nth_type_t<Index, TTypes...>;
+    using type = etl::nth_type_t<Index, TTypes...>;
   };
 
   template <size_t Index, typename T>
@@ -298,6 +298,11 @@ namespace etl
 
   template <typename T, typename... VTypes>
   ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
+
+#if ETL_NOT_USING_CPP17
+  #include "variant_select_do_visitor.h"
+  #include "variant_select_do_operator.h"
+#endif
 
   //***************************************************************************
   /// Monostate for variants.
@@ -672,7 +677,7 @@ namespace etl
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
     template <size_t Index, typename... TArgs>
-    typename etl::variant_alternative<Index, variant<TTypes...>>::type& emplace(TArgs&&... args)
+    typename etl::variant_alternative_t<Index, variant<TTypes...>>& emplace(TArgs&&... args)
     {
       static_assert(Index < sizeof...(TTypes), "Index out of range");
 
@@ -694,7 +699,7 @@ namespace etl
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
     template <size_t Index, typename U, typename... TArgs>
-    typename etl::variant_alternative<Index, variant<TTypes...>>::type& emplace(std::initializer_list<U> il, TArgs&&... args)
+    typename etl::variant_alternative_t<Index, variant<TTypes...>>& emplace(std::initializer_list<U> il, TArgs&&... args)
     {
       static_assert(Index < sizeof...(TTypes), "Index out of range");
 
@@ -862,7 +867,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_visitor(v);
+      do_visitor<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -876,7 +881,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_visitor(v);
+      do_visitor<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -890,7 +895,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_operator(v);
+      do_operator<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -904,7 +909,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_operator(v);
+      do_operator<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -921,7 +926,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_visitor(v);
+      do_visitor<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -938,7 +943,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_visitor(v);
+      do_visitor<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -955,7 +960,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_operator(v);
+      do_operator<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -972,7 +977,7 @@ namespace etl
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_operator(v);
+      do_operator<sizeof...(TTypes)>(v);
 #endif
     }
 
@@ -1045,103 +1050,21 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// /// Call the relevant visitor.
+    /// Call the relevant visitor.
     //***************************************************************************
-    template <typename TVisitor>
+    template <size_t NTypes, typename TVisitor>
     void do_visitor(TVisitor& visitor)
     {
-      switch (index())
-      {
-        case 0: { visitor.visit(etl::get<0>(*this)); break; }
-        case 1: { visitor.visit(etl::get<1>(*this)); break; }
-        case 2: { visitor.visit(etl::get<2>(*this)); break; }
-        case 3: { visitor.visit(etl::get<3>(*this)); break; }
-        case 4: { visitor.visit(etl::get<4>(*this)); break; }
-        case 5: { visitor.visit(etl::get<5>(*this)); break; }
-        case 6: { visitor.visit(etl::get<6>(*this)); break; }
-        case 7: { visitor.visit(etl::get<7>(*this)); break; }
-#if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-        case 8: { visitor.visit(etl::get<8>(*this)); break; }
-        case 9: { visitor.visit(etl::get<9>(*this)); break; }
-        case 10: { visitor.visit(etl::get<10>(*this)); break; }
-        case 11: { visitor.visit(etl::get<11>(*this)); break; }
-        case 12: { visitor.visit(etl::get<12>(*this)); break; }
-        case 13: { visitor.visit(etl::get<13>(*this)); break; }
-        case 14: { visitor.visit(etl::get<14>(*this)); break; }
-        case 15: { visitor.visit(etl::get<15>(*this)); break; }
-#if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-        case 16: { visitor.visit(etl::get<16>(*this)); break; }
-        case 17: { visitor.visit(etl::get<17>(*this)); break; }
-        case 18: { visitor.visit(etl::get<18>(*this)); break; }
-        case 19: { visitor.visit(etl::get<19>(*this)); break; }
-        case 20: { visitor.visit(etl::get<20>(*this)); break; }
-        case 21: { visitor.visit(etl::get<21>(*this)); break; }
-        case 22: { visitor.visit(etl::get<22>(*this)); break; }
-        case 23: { visitor.visit(etl::get<23>(*this)); break; }
-#if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-        case 24: { visitor.visit(etl::get<24>(*this)); break; }
-        case 25: { visitor.visit(etl::get<25>(*this)); break; }
-        case 26: { visitor.visit(etl::get<26>(*this)); break; }
-        case 27: { visitor.visit(etl::get<27>(*this)); break; }
-        case 28: { visitor.visit(etl::get<28>(*this)); break; }
-        case 29: { visitor.visit(etl::get<29>(*this)); break; }
-        case 30: { visitor.visit(etl::get<30>(*this)); break; }
-        case 31: { visitor.visit(etl::get<31>(*this)); break; }
-#endif
-#endif
-#endif
-        default: break;
-      }
+      etl::private_variant::select_do_visitor<NTypes>::do_visitor(*this, visitor);
     }
 
     //***************************************************************************
-    /// /// Call the relevant visitor.
+    /// Call the relevant visitor.
     //***************************************************************************
-    template <typename TVisitor>
+    template <size_t NTypes, typename TVisitor>
     void do_visitor(TVisitor& visitor) const
     {
-      switch (index())
-      {
-        case 0: { visitor.visit(etl::get<0>(*this)); break; }
-        case 1: { visitor.visit(etl::get<1>(*this)); break; }
-        case 2: { visitor.visit(etl::get<2>(*this)); break; }
-        case 3: { visitor.visit(etl::get<3>(*this)); break; }
-        case 4: { visitor.visit(etl::get<4>(*this)); break; }
-        case 5: { visitor.visit(etl::get<5>(*this)); break; }
-        case 6: { visitor.visit(etl::get<6>(*this)); break; }
-        case 7: { visitor.visit(etl::get<7>(*this)); break; }
-#if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-        case 8: { visitor.visit(etl::get<8>(*this)); break; }
-        case 9: { visitor.visit(etl::get<9>(*this)); break; }
-        case 10: { visitor.visit(etl::get<10>(*this)); break; }
-        case 11: { visitor.visit(etl::get<11>(*this)); break; }
-        case 12: { visitor.visit(etl::get<12>(*this)); break; }
-        case 13: { visitor.visit(etl::get<13>(*this)); break; }
-        case 14: { visitor.visit(etl::get<14>(*this)); break; }
-        case 15: { visitor.visit(etl::get<15>(*this)); break; }
-#if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-        case 16: { visitor.visit(etl::get<16>(*this)); break; }
-        case 17: { visitor.visit(etl::get<17>(*this)); break; }
-        case 18: { visitor.visit(etl::get<18>(*this)); break; }
-        case 19: { visitor.visit(etl::get<19>(*this)); break; }
-        case 20: { visitor.visit(etl::get<20>(*this)); break; }
-        case 21: { visitor.visit(etl::get<21>(*this)); break; }
-        case 22: { visitor.visit(etl::get<22>(*this)); break; }
-        case 23: { visitor.visit(etl::get<23>(*this)); break; }
-#if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-        case 24: { visitor.visit(etl::get<24>(*this)); break; }
-        case 25: { visitor.visit(etl::get<25>(*this)); break; }
-        case 26: { visitor.visit(etl::get<26>(*this)); break; }
-        case 27: { visitor.visit(etl::get<27>(*this)); break; }
-        case 28: { visitor.visit(etl::get<28>(*this)); break; }
-        case 29: { visitor.visit(etl::get<29>(*this)); break; }
-        case 30: { visitor.visit(etl::get<30>(*this)); break; }
-        case 31: { visitor.visit(etl::get<31>(*this)); break; }
-#endif
-#endif
-#endif
-        default: break;
-      }
+      etl::private_variant::select_do_visitor<NTypes>::do_visitor(*this, visitor);
     }
 #endif
 
@@ -1207,9 +1130,9 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// Call the relevant visitor.
+    /// Call the relevant operator.
     //***************************************************************************
-    template <typename TVisitor>
+    template <size_t NTypes, typename TVisitor>
     void do_operator(TVisitor& visitor)
     {
 #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
@@ -1226,54 +1149,13 @@ namespace etl
 
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
 
-      switch (index())
-      {
-        case 0: visitor(etl::get<0>(*this)); break;
-        case 1: visitor(etl::get<1>(*this)); break;
-        case 2: visitor(etl::get<2>(*this)); break;
-        case 3: visitor(etl::get<3>(*this)); break;
-        case 4: visitor(etl::get<4>(*this)); break;
-        case 5: visitor(etl::get<5>(*this)); break;
-        case 6: visitor(etl::get<6>(*this)); break;
-        case 7: visitor(etl::get<7>(*this)); break;
-#if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-        case 8: visitor(etl::get<8>(*this)); break;
-        case 9: visitor(etl::get<9>(*this)); break;
-        case 10: visitor(etl::get<10>(*this)); break;
-        case 11: visitor(etl::get<11>(*this)); break;
-        case 12: visitor(etl::get<12>(*this)); break;
-        case 13: visitor(etl::get<13>(*this)); break;
-        case 14: visitor(etl::get<14>(*this)); break;
-        case 15: visitor(etl::get<15>(*this)); break;
-#if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-        case 16: visitor(etl::get<16>(*this)); break;
-        case 17: visitor(etl::get<17>(*this)); break;
-        case 18: visitor(etl::get<18>(*this)); break;
-        case 19: visitor(etl::get<19>(*this)); break;
-        case 20: visitor(etl::get<20>(*this)); break;
-        case 21: visitor(etl::get<21>(*this)); break;
-        case 22: visitor(etl::get<22>(*this)); break;
-        case 23: visitor(etl::get<23>(*this)); break;
-#if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-        case 24: visitor(etl::get<24>(*this)); break;
-        case 25: visitor(etl::get<25>(*this)); break;
-        case 26: visitor(etl::get<26>(*this)); break;
-        case 27: visitor(etl::get<27>(*this)); break;
-        case 28: visitor(etl::get<28>(*this)); break;
-        case 29: visitor(etl::get<29>(*this)); break;
-        case 30: visitor(etl::get<30>(*this)); break;
-        case 31: visitor(etl::get<31>(*this)); break;
-#endif
-#endif
-#endif
-        default: break;
-      }
+      etl::private_variant::select_do_operator<NTypes>::do_operator(*this, visitor);
     }
 
     //***************************************************************************
-    /// Call the relevant visitor.
+    /// Call the relevant operator.
     //***************************************************************************
-    template <typename TVisitor>
+    template <size_t NTypes, typename TVisitor>
     void do_operator(TVisitor& visitor) const
     {
 #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
@@ -1290,48 +1172,7 @@ namespace etl
 
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
 
-      switch (index())
-      {
-        case 0: visitor(etl::get<0>(*this)); break;
-        case 1: visitor(etl::get<1>(*this)); break;
-        case 2: visitor(etl::get<2>(*this)); break;
-        case 3: visitor(etl::get<3>(*this)); break;
-        case 4: visitor(etl::get<4>(*this)); break;
-        case 5: visitor(etl::get<5>(*this)); break;
-        case 6: visitor(etl::get<6>(*this)); break;
-        case 7: visitor(etl::get<7>(*this)); break;
-#if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-        case 8: visitor(etl::get<8>(*this)); break;
-        case 9: visitor(etl::get<9>(*this)); break;
-        case 10: visitor(etl::get<10>(*this)); break;
-        case 11: visitor(etl::get<11>(*this)); break;
-        case 12: visitor(etl::get<12>(*this)); break;
-        case 13: visitor(etl::get<13>(*this)); break;
-        case 14: visitor(etl::get<14>(*this)); break;
-        case 15: visitor(etl::get<15>(*this)); break;
-#if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-        case 16: visitor(etl::get<16>(*this)); break;
-        case 17: visitor(etl::get<17>(*this)); break;
-        case 18: visitor(etl::get<18>(*this)); break;
-        case 19: visitor(etl::get<19>(*this)); break;
-        case 20: visitor(etl::get<20>(*this)); break;
-        case 21: visitor(etl::get<21>(*this)); break;
-        case 22: visitor(etl::get<22>(*this)); break;
-        case 23: visitor(etl::get<23>(*this)); break;
-#if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-        case 24: visitor(etl::get<24>(*this)); break;
-        case 25: visitor(etl::get<25>(*this)); break;
-        case 26: visitor(etl::get<26>(*this)); break;
-        case 27: visitor(etl::get<27>(*this)); break;
-        case 28: visitor(etl::get<28>(*this)); break;
-        case 29: visitor(etl::get<29>(*this)); break;
-        case 30: visitor(etl::get<30>(*this)); break;
-        case 31: visitor(etl::get<31>(*this)); break;
-#endif
-#endif
-#endif
-        default: break;
-      }
+      etl::private_variant::select_do_operator<NTypes>::do_operator(*this, visitor);
     }
 #endif
 
