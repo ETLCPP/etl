@@ -3185,6 +3185,8 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_unused_function_push.h" />
+    <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h" />
+    <ClInclude Include="..\..\include\etl\private\variant_select_do_visitor.h" />
     <ClInclude Include="..\..\include\etl\pseudo_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
