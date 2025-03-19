@@ -131,6 +131,14 @@ namespace etl
   using forward_like_t = decltype(etl::forward_like<T>(etl::declval<U&>()));
 #endif
 
+#if ETL_USING_BUILTIN_UNDERLYING_TYPE && ETL_USING_CPP11
+template <typename T>
+ETL_CONSTEXPR underlying_type_t<T> to_underlying(T val) ETL_NOEXCEPT
+{
+  return static_cast<underlying_type_t<T>>(val);
+}
+#endif
+
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
   // as the compiler will be unable to decide which one to use, due to ADL.
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)

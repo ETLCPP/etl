@@ -2302,6 +2302,35 @@ typedef integral_constant<bool, true>  true_type;
   using type_identity_t = typename type_identity<T>::type;
 #endif
 
+#if ETL_USING_BUILTIN_UNDERLYING_TYPE
+namespace private_type_traits
+{
+  template <typename T, bool = is_enum<T>::value>
+  struct __underlying_type_impl;
+
+  template <typename T>
+  struct __underlying_type_impl<T, false>
+  {
+  };
+
+  template <typename T>
+  struct __underlying_type_impl<T, true>
+  {
+    using type = __underlying_type(T);
+  };
+}
+
+template <typename T>
+struct underlying_type : private_type_traits::__underlying_type_impl<T, is_enum<T>::value>
+{
+};
+
+#if ETL_USING_CPP11
+template <typename T>
+using underlying_type_t = typename underlying_type<T>::type;
+#endif
+#endif
+
 #if ETL_USING_CPP11
   //*********************************************
   // has_duplicates

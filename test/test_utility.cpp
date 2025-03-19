@@ -719,6 +719,49 @@ namespace
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u4)));
     }
 
+#if ETL_USING_BUILTIN_UNDERLYING_TYPE && ETL_USING_CPP11
+    TEST(test_to_underlying)
+    {
+      enum enum0_t : char
+      {
+        a0 = 'e',
+        a1 = 't',
+        a2 = 'l',
+        a3 = '3'
+      };
+
+      enum enum1_t : uint32_t
+      {
+        b0 = 2,
+        b1 = 3,
+        b2 = 5,
+      };
+
+      enum enum2_t : signed
+      {
+        c0 = -2,
+        c1 = 100,
+      };
+
+      using enum3_t = enum1_t;
+
+      enum0_t e0 = enum0_t::a1;
+      enum1_t e1 = enum1_t::b2;
+      enum2_t e2 = enum2_t::c0;
+      enum3_t e3 = enum3_t::b0;
+
+      CHECK_EQUAL(etl::to_underlying(e0), 't');
+      CHECK_EQUAL(etl::to_underlying(e1), 5);
+      CHECK_EQUAL(etl::to_underlying(e2), -2);
+      CHECK_EQUAL(etl::to_underlying(e3), 2);
+      CHECK_EQUAL(etl::to_underlying(enum0_t::a0), 'e');
+      CHECK_EQUAL(etl::to_underlying(enum0_t::a2), 'l');
+      CHECK_EQUAL(etl::to_underlying(enum0_t::a3), '3');
+      CHECK_EQUAL(etl::to_underlying(enum3_t::b1), 3);
+      CHECK_EQUAL(etl::to_underlying(enum2_t::c1), 100);
+    }
+#endif
+
 #if ETL_HAS_PACKED
     //*********************************
     TEST(test_packed)
