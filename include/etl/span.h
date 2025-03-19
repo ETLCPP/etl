@@ -61,7 +61,7 @@ namespace etl
   /// Span - Fixed Extent
   //***************************************************************************
   template <typename T, size_t Extent = etl::dynamic_extent>
-  class span : span_base
+  class span : public span_base
   {
   public:
 
