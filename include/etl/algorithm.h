@@ -44,6 +44,8 @@ SOFTWARE.
 #include "functional.h"
 #include "utility.h"
 #include "gcd.h"
+#include "error_handler.h"
+#include "exception.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -82,6 +84,27 @@ namespace etl
 
   template <typename TIterator, typename TCompare>
   ETL_CONSTEXPR14 void insertion_sort(TIterator first, TIterator last, TCompare compare);
+
+  class algorithm_exception : public etl::exception
+  {
+  public:
+
+    algorithm_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  class algorithm_error : public algorithm_exception
+  {
+  public:
+
+    algorithm_error(string_type file_name_, numeric_type line_number_)
+      : algorithm_exception(ETL_ERROR_TEXT("algorithm:error", ETL_ALGORITHM_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
 }
 
 //*****************************************************************************
@@ -2262,11 +2285,17 @@ namespace etl
           TOutputIterator o_begin,
           TOutputIterator o_end)
   {
-      size_t s_size = etl::distance(i_begin, i_end);
-      size_t d_size = etl::distance(o_begin, o_end);
-      size_t size   = (s_size < d_size) ? s_size : d_size;
+    using s_size_type = typename iterator_traits<TInputIterator>::difference_type;
+    using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
+    using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
 
-      return etl::copy(i_begin, i_begin + size, o_begin);
+    s_size_type s_size = etl::distance(i_begin, i_end);
+    ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
+    d_size_type d_size = etl::distance(o_begin, o_end);
+    ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
+    min_size_type size = etl::min<min_size_type>(s_size, d_size);
+
+    return etl::copy(i_begin, i_begin + size, o_begin);
   }
 
   //***************************************************************************
@@ -2429,9 +2458,15 @@ namespace etl
          TOutputIterator o_begin,
          TOutputIterator o_end)
   {
-    size_t s_size = etl::distance(i_begin, i_end);
-    size_t d_size = etl::distance(o_begin, o_end);
-    size_t size = (s_size < d_size) ? s_size : d_size;
+    using s_size_type = typename iterator_traits<TInputIterator>::difference_type;
+    using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
+    using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
+
+    s_size_type s_size = etl::distance(i_begin, i_end);
+    ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
+    d_size_type d_size = etl::distance(o_begin, o_end);
+    ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
+    min_size_type size = etl::min<min_size_type>(s_size, d_size);
 
     return etl::move(i_begin, i_begin + size, o_begin);
   }
