@@ -59,6 +59,8 @@ SOFTWARE.
 
 namespace etl
 {
+  //empty base optimization means this has zero size
+  class span_base {};
   //***************************************************************************
   ///\ingroup span
   /// Exception base for span
@@ -91,7 +93,7 @@ namespace etl
   /// Span - Fixed Extent
   //***************************************************************************
   template <typename T, size_t Extent = etl::dynamic_extent>
-  class span
+  class span : public span_base
   {
   public:
 
@@ -145,7 +147,8 @@ namespace etl
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_base_of<span_base, etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
                                                                       !etl::is_array<etl::remove_reference_t<TContainer>>::value&&
                                                                       etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
       ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
@@ -190,7 +193,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<(Extent == etl::dynamic_extent) || (N == etl::dynamic_extent) || (N == Extent), void>::type) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<(Extent == etl::dynamic_extent) || (N == etl::dynamic_extent) || (N == Extent), void>::type* = 0) ETL_NOEXCEPT
       : pbegin(other.data())
     {
     }
@@ -565,7 +568,8 @@ namespace etl
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_base_of<span_base, etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
                                                                       !etl::is_array<etl::remove_reference_t<TContainer>>::value &&
                                                                       etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
       ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
