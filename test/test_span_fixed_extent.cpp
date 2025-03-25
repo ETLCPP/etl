@@ -1166,6 +1166,15 @@ namespace
       }
     }
 
+    //*************************************************************************
+    TEST(test_span_issue_1050_questions_on_span_constructors)
+    {
+      int arr[5]{};
+      etl::span<int, 5> span1(arr);
+      etl::span<int, 5> span2(span1);
+      //etl::span<int, 10> span3(span1); // This line should fail to compile.
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }
