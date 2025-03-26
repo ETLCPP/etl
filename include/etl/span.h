@@ -50,16 +50,16 @@ SOFTWARE.
 
 #include "private/dynamic_extent.h"
 
-#if ETL_USING_CPP20 && ETL_USING_STL
-  #include <span>
-#endif
-
 ///\defgroup span span
 ///\ingroup containers
 
 namespace etl
 {
   //***************************************************************************
+  // Tag to indicate a class is a span.
+  //***************************************************************************
+  class span_tag {};
+
   ///\ingroup span
   /// Exception base for span
   //***************************************************************************
@@ -91,7 +91,7 @@ namespace etl
   /// Span - Fixed Extent
   //***************************************************************************
   template <typename T, size_t Extent = etl::dynamic_extent>
-  class span
+  class span : public span_tag
   {
   public:
 
@@ -145,10 +145,11 @@ namespace etl
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_base_of<span_tag, etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
                                                                       !etl::is_array<etl::remove_reference_t<TContainer>>::value&&
                                                                       etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
-      ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -158,7 +159,8 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    span(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
+    span(TContainer& a, typename etl::enable_if<!etl::is_base_of<span_tag, typename etl::remove_reference<TContainer>::type>::value &&
+                                                !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                 !etl::is_array<TContainer>::value &&
                                                 etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
@@ -170,9 +172,10 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    ETL_CONSTEXPR span(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
-                                                                    !etl::is_array<TContainer>::value&&
-                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
+    span(const TContainer& a, typename etl::enable_if<!etl::is_base_of<span_tag, typename etl::remove_reference<TContainer>::type>::value &&
+                                                      !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
+                                                      !etl::is_array<TContainer>::value&&
+                                                      etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -190,7 +193,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<(Extent == etl::dynamic_extent) || (N == etl::dynamic_extent) || (N == Extent), void>::type) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<(Extent == etl::dynamic_extent) || (N == etl::dynamic_extent) || (N == Extent), void>::type* = 0) ETL_NOEXCEPT
       : pbegin(other.data())
     {
     }
@@ -414,14 +417,14 @@ namespace etl
     //*************************************************************************
     template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR
-    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
+      etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
       // If Extent is static, check that OFFSET is within the original span
       ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) ? OFFSET <= Extent : true, "OFFSET is not within the original span");
 
       // If count is also static, check that OFFSET + COUNT is within the original span
       ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) && (COUNT != etl::dynamic_extent) ? COUNT <= (Extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
-      
+
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, (pbegin + Extent))
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
     }
@@ -437,7 +440,7 @@ namespace etl
 
       // If count is also static, check that OFFSET + COUNT is within the original span
       ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) && (COUNT != etl::dynamic_extent) ? COUNT <= (Extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
-      
+
       if (COUNT == etl::dynamic_extent)
       {
         return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET)>(pbegin + OFFSET, (pbegin + Extent));
@@ -500,7 +503,7 @@ namespace etl
     typedef const T& const_reference;
     typedef T*       pointer;
     typedef const T* const_pointer;
-    
+
     typedef T*                                           iterator;
     typedef const T*                                     const_iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
@@ -555,10 +558,11 @@ namespace etl
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_base_of<span_tag, etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
                                                                       !etl::is_array<etl::remove_reference_t<TContainer>>::value &&
                                                                       etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
-      ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , pend(a.data() + a.size())
     {
@@ -824,7 +828,7 @@ namespace etl
     //*************************************************************************
     template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR
-    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
+      etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend)
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
