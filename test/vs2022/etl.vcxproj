@@ -3173,6 +3173,7 @@
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
+    <ClInclude Include="..\..\include\etl\monostate.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />

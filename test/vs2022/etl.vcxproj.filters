@@ -1440,6 +1440,9 @@
     <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\monostate.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">

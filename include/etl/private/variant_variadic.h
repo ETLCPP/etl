@@ -44,6 +44,7 @@ SOFTWARE.
 #include "../memory.h"
 #include "../compare.h"
 #include "../initializer_list.h"
+#include "../monostate.h"
 
 #include <stdint.h>
 
@@ -303,14 +304,6 @@ namespace etl
   #include "variant_select_do_visitor.h"
   #include "variant_select_do_operator.h"
 #endif
-
-  //***************************************************************************
-  /// Monostate for variants.
-  ///\ingroup variant
-  //***************************************************************************
-  struct monostate
-  {
-  };
 
   constexpr bool operator >(etl::monostate, etl::monostate) noexcept { return false; }
 	constexpr bool operator <(etl::monostate, etl::monostate) noexcept { return false; }
