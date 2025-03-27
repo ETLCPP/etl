@@ -102,7 +102,7 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<size_t Array_Size>
+    template<size_t Array_Size, typename = typename etl::enable_if<(Extent == etl::dynamic_extent) || (Array_Size == Extent), void>::type>
     ETL_CONSTEXPR span(element_type(&begin_)[Array_Size]) ETL_NOEXCEPT
       : pbegin(begin_)
     {
