@@ -1245,6 +1245,21 @@ namespace
       }
     }
 
+    //*************************************************************************
+    TEST(test_dynamic_span_to_larger_fixed_span)
+    {
+      int data[5] = { 0, 1, 2, 3, 4 };
+      etl::span<int> sp1(data);
+
+      using span_4 = etl::span<int, 4>;
+      using span_5 = etl::span<int, 5>;
+      using span_8 = etl::span<int, 8>;
+
+      CHECK_NO_THROW({ span_5 sp2(sp1); });
+      CHECK_THROW({ span_4 sp3(sp1); }, etl::span_size_mismatch);
+      CHECK_THROW({ span_8 sp4(sp1); }, etl::span_size_mismatch);
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }
