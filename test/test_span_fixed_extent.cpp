@@ -1168,6 +1168,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_span_issue_1050_questions_on_span_constructors)
+    {
+      int arr[5]{};
+      etl::span<int, 5> span1(arr);
+      etl::span<int, 5> span2(span1);
+      //etl::span<int, 10> span3(span1); // This line should fail to compile.
+    }
+    
+    //*************************************************************************
     TEST(test_reinterpret_as)
     {
       uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
@@ -1235,14 +1244,20 @@ namespace
         CHECK_EQUAL(etl::copy(data0, data1), true);
       }
     }
-    
+
     //*************************************************************************
-    TEST(test_span_issue_1050_questions_on_span_constructors)
+    TEST(test_dynamic_span_to_fixed_span)
     {
-      int arr[5]{};
-      etl::span<int, 5> span1(arr);
-      etl::span<int, 5> span2(span1);
-      //etl::span<int, 10> span3(span1); // This line should fail to compile.
+      int data[5] = { 0, 1, 2, 3, 4 };
+      etl::span<int> sp1(data);
+
+      using span_4 = etl::span<int, 4>;
+      using span_5 = etl::span<int, 5>;
+      using span_8 = etl::span<int, 8>;
+
+      CHECK_NO_THROW({ span_5 sp2(sp1); });
+      CHECK_THROW({ span_4 sp3(sp1); }, etl::span_size_mismatch);
+      CHECK_THROW({ span_8 sp4(sp1); }, etl::span_size_mismatch);
     }
 
 #include "etl/private/diagnostic_pop.h"
