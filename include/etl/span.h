@@ -230,7 +230,7 @@ namespace etl
     /// From dynamic extent span.
     //*************************************************************************
     template <typename U, size_t N>
-    span(const etl::span<U, N>& other, typename etl::enable_if<N == etl::dynamic_extent, void>::type* = 0)
+    ETL_CONSTEXPR14 span(const etl::span<U, N>& other, typename etl::enable_if<N == etl::dynamic_extent, void>::type* = 0)
       : pbegin(other.data())
     {
       ETL_ASSERT(other.size() == Extent, ETL_ERROR(span_size_mismatch));
