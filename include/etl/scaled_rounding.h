@@ -154,7 +154,6 @@ namespace etl
   T round_half_up_unscaled(T value) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
-    ETL_STATIC_ASSERT((Scaling == 1) || (((Scaling / 2U) * 2U) == Scaling), "Scaling must be divisible by 2");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
@@ -202,16 +201,20 @@ namespace etl
   T round_half_down_unscaled(T value) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
-    ETL_STATIC_ASSERT((Scaling == 1) || (((Scaling / 2U) * 2U) == Scaling), "Scaling must be divisible by 2");
     typedef typename scaled_rounding_t<T>::type scale_t;
+
+    if (Scaling == 1)
+    {
+      return value;
+    }
 
     if (value >= 0)
     {
-      return T((value + scale_t(((Scaling - 1) / 2U))) / scale_t(Scaling));
+      return T((value + scale_t((Scaling - 1) / 2U)) / scale_t(Scaling));
     }
     else
     {
-      return T((value - scale_t(((Scaling - 1) / 2U))) / scale_t(Scaling));
+      return T((value - scale_t((Scaling - 1) / 2U)) / scale_t(Scaling));
     }
   }
 
