@@ -1801,80 +1801,36 @@ namespace
       CHECK_EQUAL(expected[39], etl::round_half_odd_unscaled<Scale>(source[39]));
     }
 
-    ////*************************************************************************
-    //TEST(round_half_odd_scaled)
-    //{
-    //  std::array<int, 12> expected = { 50, 50, 60, 60, 70, 70, -50, -50, -60, -60, -70, -70 };
+    //*************************************************************************
+    TEST(round_constexpr_scaled_rounding)
+    {
+      constexpr int round_ceiling          = etl::round_ceiling_scaled<10>(10);
+      constexpr int round_floor            = etl::round_floor_scaled<10>(10);
+      constexpr int round_half_down_scaled = etl::round_half_down_scaled<10>(10);
+      constexpr int round_half_even_scaled = etl::round_half_even_scaled<10>(10);
+      constexpr int round_half_odd_scaled  = etl::round_half_odd_scaled<10>(10);
+      constexpr int round_half_up_scaled   = etl::round_half_up_scaled<10>(10);
+      constexpr int round_infinity         = etl::round_infinity_scaled<10>(10);
+      constexpr int round_zero             = etl::round_zero_scaled<10>(10);
 
-    //  CHECK_EQUAL(expected[0],  etl::round_half_odd_scaled<Scale>(source[0]));
-    //  CHECK_EQUAL(expected[1],  etl::round_half_odd_scaled<Scale>(source[1]));
-    //  CHECK_EQUAL(expected[2],  etl::round_half_odd_scaled<Scale>(source[2]));
-    //  CHECK_EQUAL(expected[3],  etl::round_half_odd_scaled<Scale>(source[3]));
-    //  CHECK_EQUAL(expected[4],  etl::round_half_odd_scaled<Scale>(source[4]));
-    //  CHECK_EQUAL(expected[5],  etl::round_half_odd_scaled<Scale>(source[5]));
-    //  CHECK_EQUAL(expected[6],  etl::round_half_odd_scaled<Scale>(source[6]));
-    //  CHECK_EQUAL(expected[7],  etl::round_half_odd_scaled<Scale>(source[7]));
-    //  CHECK_EQUAL(expected[8],  etl::round_half_odd_scaled<Scale>(source[8]));
-    //  CHECK_EQUAL(expected[9],  etl::round_half_odd_scaled<Scale>(source[9]));
-    //  CHECK_EQUAL(expected[10], etl::round_half_odd_scaled<Scale>(source[10]));
-    //  CHECK_EQUAL(expected[11], etl::round_half_odd_scaled<Scale>(source[11]));
-    //}
+      // Ensure that the value are constexpr.
+      std::array<char, round_ceiling>          a{};
+      std::array<char, round_floor>            b{};
+      std::array<char, round_half_down_scaled> c{};
+      std::array<char, round_half_even_scaled> d{};
+      std::array<char, round_half_odd_scaled>  e{};
+      std::array<char, round_half_up_scaled>   f{};
+      std::array<char, round_infinity>         g{};
+      std::array<char, round_zero>             h{};
 
-    ////*************************************************************************
-    //TEST(round_half_odd_scaled_of_2)
-    //{
-    //  std::array<int, 12> expected = { 54, 55, 56, 64, 65, 66, -54, -55, -56, -64, -65, -66 };
-
-    //  CHECK_EQUAL(expected[0],  etl::round_half_odd_scaled<1>(source[0]));
-    //  CHECK_EQUAL(expected[1],  etl::round_half_odd_scaled<1>(source[1]));
-    //  CHECK_EQUAL(expected[2],  etl::round_half_odd_scaled<1>(source[2]));
-    //  CHECK_EQUAL(expected[3],  etl::round_half_odd_scaled<1>(source[3]));
-    //  CHECK_EQUAL(expected[4],  etl::round_half_odd_scaled<1>(source[4]));
-    //  CHECK_EQUAL(expected[5],  etl::round_half_odd_scaled<1>(source[5]));
-    //  CHECK_EQUAL(expected[6],  etl::round_half_odd_scaled<1>(source[6]));
-    //  CHECK_EQUAL(expected[7],  etl::round_half_odd_scaled<1>(source[7]));
-    //  CHECK_EQUAL(expected[8],  etl::round_half_odd_scaled<1>(source[8]));
-    //  CHECK_EQUAL(expected[9],  etl::round_half_odd_scaled<1>(source[9]));
-    //  CHECK_EQUAL(expected[10], etl::round_half_odd_scaled<1>(source[10]));
-    //  CHECK_EQUAL(expected[11], etl::round_half_odd_scaled<1>(source[11]));
-    //}
-
-    ////*************************************************************************
-    //TEST(round_half_odd_unscaled)
-    //{
-    //  std::array<int, 12> expected = { 5, 5, 6, 6, 7, 7, -5, -5, -6, -6, -7, -7 };
-
-    //  CHECK_EQUAL(expected[0],  etl::round_half_odd_unscaled<Scale>(source[0]));
-    //  CHECK_EQUAL(expected[1],  etl::round_half_odd_unscaled<Scale>(source[1]));
-    //  CHECK_EQUAL(expected[2],  etl::round_half_odd_unscaled<Scale>(source[2]));
-    //  CHECK_EQUAL(expected[3],  etl::round_half_odd_unscaled<Scale>(source[3]));
-    //  CHECK_EQUAL(expected[4],  etl::round_half_odd_unscaled<Scale>(source[4]));
-    //  CHECK_EQUAL(expected[5],  etl::round_half_odd_unscaled<Scale>(source[5]));
-    //  CHECK_EQUAL(expected[6],  etl::round_half_odd_unscaled<Scale>(source[6]));
-    //  CHECK_EQUAL(expected[7],  etl::round_half_odd_unscaled<Scale>(source[7]));
-    //  CHECK_EQUAL(expected[8],  etl::round_half_odd_unscaled<Scale>(source[8]));
-    //  CHECK_EQUAL(expected[9],  etl::round_half_odd_unscaled<Scale>(source[9]));
-    //  CHECK_EQUAL(expected[10], etl::round_half_odd_unscaled<Scale>(source[10]));
-    //  CHECK_EQUAL(expected[11], etl::round_half_odd_unscaled<Scale>(source[11]));
-    //}
-
-    ////*************************************************************************
-    //TEST(round_half_odd_unscaled_of_2)
-    //{
-    //  std::array<int, 12> expected = { 54, 55, 56, 64, 65, 66, -54, -55, -56, -64, -65, -66 };
-
-    //  CHECK_EQUAL(expected[0],  etl::round_half_odd_unscaled<1>(source[0]));
-    //  CHECK_EQUAL(expected[1],  etl::round_half_odd_unscaled<1>(source[1]));
-    //  CHECK_EQUAL(expected[2],  etl::round_half_odd_unscaled<1>(source[2]));
-    //  CHECK_EQUAL(expected[3],  etl::round_half_odd_unscaled<1>(source[3]));
-    //  CHECK_EQUAL(expected[4],  etl::round_half_odd_unscaled<1>(source[4]));
-    //  CHECK_EQUAL(expected[5],  etl::round_half_odd_unscaled<1>(source[5]));
-    //  CHECK_EQUAL(expected[6],  etl::round_half_odd_unscaled<1>(source[6]));
-    //  CHECK_EQUAL(expected[7],  etl::round_half_odd_unscaled<1>(source[7]));
-    //  CHECK_EQUAL(expected[8],  etl::round_half_odd_unscaled<1>(source[8]));
-    //  CHECK_EQUAL(expected[9],  etl::round_half_odd_unscaled<1>(source[9]));
-    //  CHECK_EQUAL(expected[10], etl::round_half_odd_unscaled<1>(source[10]));
-    //  CHECK_EQUAL(expected[11], etl::round_half_odd_unscaled<1>(source[11]));
-    //}
+      CHECK_EQUAL(10, round_ceiling);
+      CHECK_EQUAL(10, round_floor);
+      CHECK_EQUAL(10, round_half_down_scaled);
+      CHECK_EQUAL(10, round_half_even_scaled);
+      CHECK_EQUAL(10, round_half_odd_scaled);
+      CHECK_EQUAL(10, round_half_up_scaled);
+      CHECK_EQUAL(10, round_infinity);
+      CHECK_EQUAL(10, round_zero);
+    }
   };
 }
