@@ -67,7 +67,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_ceiling_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
@@ -110,7 +109,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_floor_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
     if (Scaling == 1)
     {
@@ -153,7 +151,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_half_up_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
@@ -200,7 +197,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_half_down_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
@@ -244,7 +240,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_zero_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
@@ -282,8 +277,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_infinity_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
-
     if (value >= 0)
     {
       return etl::round_ceiling_unscaled<Scaling>(value);
@@ -320,7 +313,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_half_even_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
@@ -376,7 +368,6 @@ namespace etl
   ETL_CONSTEXPR14
   T round_half_odd_unscaled(T value) ETL_NOEXCEPT
   {
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     if (Scaling == 1)
