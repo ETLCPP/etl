@@ -1801,6 +1801,7 @@ namespace
       CHECK_EQUAL(expected[39], etl::round_half_odd_unscaled<Scale>(source[39]));
     }
 
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(round_constexpr_scaled_rounding)
     {
@@ -1832,5 +1833,6 @@ namespace
       CHECK_EQUAL(10, round_infinity);
       CHECK_EQUAL(10, round_zero);
     }
+#endif
   };
 }
