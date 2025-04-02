@@ -1824,6 +1824,15 @@ namespace
       std::array<char, round_infinity>         g{};
       std::array<char, round_zero>             h{};
 
+      (void)a;
+      (void)b;
+      (void)c;
+      (void)d;
+      (void)e;
+      (void)f;
+      (void)g;
+      (void)h;
+
       CHECK_EQUAL(10, round_ceiling);
       CHECK_EQUAL(10, round_floor);
       CHECK_EQUAL(10, round_half_down_scaled);
