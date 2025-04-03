@@ -1,4 +1,4 @@
-function(determine_version_with_file VER_FILE_NAME)
+function(etl_determine_version_with_file VER_FILE_NAME)
     file(READ ${VER_FILE_NAME} ETL_VERSION_RAW)
     # Remove trailing whitespaces and/or newline
     string(STRIP ${ETL_VERSION_RAW} ETL_VERSION)
@@ -8,9 +8,9 @@ function(determine_version_with_file VER_FILE_NAME)
     message(STATUS "${MSG_PREFIX} Determined ETL version ${ETL_VERSION} from version.txt file")
 endfunction()
 
-function(determine_version_with_git)
+function(etl_determine_version_with_git)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetGitRevisionDescription.cmake)
-    git_describe(VERSION ${ARGN})
+    etl_git_describe(VERSION ${ARGN})
     string(FIND ${VERSION} "." VALID_VERSION)
     if(VALID_VERSION EQUAL -1)
         if(CMAKE_CURRENT_LIST_DIR STREQUAL PROJECT_SOURCE_DIR)
