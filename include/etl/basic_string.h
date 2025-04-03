@@ -270,15 +270,19 @@ namespace etl
     {
       flags.set<CLEAR_AFTER_USE>();
     }
+#endif
 
     //*************************************************************************
     /// Gets the 'secure' state flag.
     //*************************************************************************
     bool is_secure() const
     {
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
       return flags.test<CLEAR_AFTER_USE>();
-    }
+#else
+      return false;
 #endif
+    }
 
   protected:
 
