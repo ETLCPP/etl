@@ -12,23 +12,6 @@
 # Returns the results of git describe on the source tree, and adjusting
 # the output so that it tests false if an error occurs.
 #
-#  git_describe_working_tree(<var> [<additional arguments to git describe> ...])
-#
-# Returns the results of git describe on the working tree (--dirty option),
-# and adjusting the output so that it tests false if an error occurs.
-#
-#  git_get_exact_tag(<var> [<additional arguments to git describe> ...])
-#
-# Returns the results of git describe --exact-match on the source tree,
-# and adjusting the output so that it tests false if there was no exact
-# matching tag.
-#
-#  git_local_changes(<var>)
-#
-# Returns either "CLEAN" or "DIRTY" with respect to uncommitted changes.
-# Uses the return code of "git diff-index --quiet HEAD --".
-# Does not regard untracked files.
-#
 # Requires CMake 2.6 or newer (uses the 'function' command)
 #
 # Original Author:
@@ -213,72 +196,4 @@ function(etl_git_describe _var)
     set(${_var}
         "${out}"
         PARENT_SCOPE)
-endfunction()
-
-function(git_describe_working_tree _var)
-    if(NOT GIT_FOUND)
-        find_package(Git QUIET)
-    endif()
-    if(NOT GIT_FOUND)
-        set(${_var}
-            "GIT-NOTFOUND"
-            PARENT_SCOPE)
-        return()
-    endif()
-
-    execute_process(
-        COMMAND "${GIT_EXECUTABLE}" describe --dirty ${ARGN}
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        RESULT_VARIABLE res
-        OUTPUT_VARIABLE out
-        ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if(NOT res EQUAL 0)
-        set(out "${out}-${res}-NOTFOUND")
-    endif()
-
-    set(${_var}
-        "${out}"
-        PARENT_SCOPE)
-endfunction()
-
-function(git_get_exact_tag _var)
-    git_describe(out --exact-match ${ARGN})
-    set(${_var}
-        "${out}"
-        PARENT_SCOPE)
-endfunction()
-
-function(git_local_changes _var)
-    if(NOT GIT_FOUND)
-        find_package(Git QUIET)
-    endif()
-    get_git_head_revision(refspec hash)
-    if(NOT GIT_FOUND)
-        set(${_var}
-            "GIT-NOTFOUND"
-            PARENT_SCOPE)
-        return()
-    endif()
-    if(NOT hash)
-        set(${_var}
-            "HEAD-HASH-NOTFOUND"
-            PARENT_SCOPE)
-        return()
-    endif()
-
-    execute_process(
-        COMMAND "${GIT_EXECUTABLE}" diff-index --quiet HEAD --
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        RESULT_VARIABLE res
-        OUTPUT_VARIABLE out
-        ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if(res EQUAL 0)
-        set(${_var}
-            "CLEAN"
-            PARENT_SCOPE)
-    else()
-        set(${_var}
-            "DIRTY"
-            PARENT_SCOPE)
-    endif()
 endfunction()
