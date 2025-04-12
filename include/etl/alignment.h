@@ -347,6 +347,7 @@ namespace etl
 #if ETL_USING_CPP11
   template <size_t Length, typename T>
   using aligned_storage_as_t = typename aligned_storage_as<Length, T>::type;
+#endif
 
   //***************************************************************************
   /// Wrapper class that provides a memory area and lets the user emplace and
@@ -398,9 +399,10 @@ namespace etl
       return valid;
     }
 
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructs the instance of T forwarding the given \p args to its constructor and
-    /// asserts if has_value() is true before calling emplace().
+    /// asserts if has_value() is false.
     ///
     /// \returns the instance of T which has been constructed in the internal byte array.
     //***************************************************************************
@@ -411,6 +413,63 @@ namespace etl
       valid = true;
       return *::new (data.template get_address<char>()) value_type(etl::forward<Args>(args)...);
     }
+#else
+    //***************************************************************************
+    /// Constructs the instance of T with type T1
+    /// asserts if has_value() is false.
+    ///
+    /// \returns the instance of T which has been constructed in the internal byte array.
+    //***************************************************************************
+    template<typename T1>
+    reference create(const T1& t1)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      valid = true;
+      return *::new (data.template get_address<char>()) value_type(t1);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2
+    /// asserts if has_value() is false.
+    ///
+    /// \returns the instance of T which has been constructed in the internal byte array.
+    //***************************************************************************
+    template<typename T1, typename T2>
+    reference create(const T1& t1, const T2& t2)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      valid = true;
+      return *::new (data.template get_address<char>()) value_type(t1, t2);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3
+    /// asserts if has_value() is false.
+    ///
+    /// \returns the instance of T which has been constructed in the internal byte array.
+    //***************************************************************************
+    template<typename T1, typename T2, typename T3>
+    reference create(const T1& t1, const T2& t2, const T3& t3)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      valid = true;
+      return *::new (data.template get_address<char>()) value_type(t1, t2, t3);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3, T4
+    /// asserts if has_value() is false.
+    ///
+    /// \returns the instance of T which has been constructed in the internal byte array.
+    //***************************************************************************
+    template<typename T1, typename T2, typename T3, typename T4>
+    reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      valid = true;
+      return *::new (data.template get_address<char>()) value_type(t1, t2, t3, t4);
+    }
+#endif
 
     //***************************************************************************
     /// \returns a pointer of type T and asserts if has_value() is false.
@@ -450,7 +509,6 @@ namespace etl
     typename aligned_storage_as<sizeof(value_type), value_type>::type data;
     bool valid;
   };
-#endif
 }
 
 #endif
