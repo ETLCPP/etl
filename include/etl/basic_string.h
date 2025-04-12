@@ -245,7 +245,6 @@ namespace etl
       return max_size() - size();
     }
 
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
     //*************************************************************************
     /// Returns whether the string was truncated by the last operation.
     /// Deprecated. Use is_truncated()
@@ -254,7 +253,11 @@ namespace etl
     ETL_DEPRECATED
     bool truncated() const
     {
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       return flags.test<IS_TRUNCATED>();
+#else
+      return false;
+#endif
     }
 
     //*************************************************************************
@@ -263,9 +266,14 @@ namespace etl
     //*************************************************************************
     bool is_truncated() const
     {
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       return flags.test<IS_TRUNCATED>();
+#else
+      return false;
+#endif
     }
 
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
     //*************************************************************************
     /// Clears the 'truncated' flag.
     //*************************************************************************
