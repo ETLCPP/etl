@@ -1443,6 +1443,15 @@
     <ClInclude Include="..\..\include\etl\monostate.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\tuple.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\tuple_element.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\tuple_size.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3448,6 +3457,9 @@
     </ClCompile>
     <ClCompile Include="..\test_index_of_type.cpp">
       <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_tuple.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

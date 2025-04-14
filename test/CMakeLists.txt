@@ -286,6 +286,7 @@ add_executable(etl_tests
 	test_to_u32string.cpp
 	test_to_u8string.cpp
 	test_to_wstring.cpp
+	test_tuple.cpp
 	test_type_def.cpp
 	test_type_list.cpp
 	test_type_lookup.cpp

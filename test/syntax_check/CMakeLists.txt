@@ -303,6 +303,7 @@ target_sources(tests PRIVATE
 		to_u32string.h.t.cpp
 		to_u8string.h.t.cpp
 		to_wstring.h.t.cpp
+		tuple.h.t.cpp
 		type_def.h.t.cpp
 		type_lookup.h.t.cpp
 		type_select.h.t.cpp
