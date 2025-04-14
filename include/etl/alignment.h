@@ -350,7 +350,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Wrapper class that provides a memory area and lets the user emplace and
+  /// Wrapper class that provides a memory area and lets the user create and
   /// instance of T in this memory at runtime. This class also erases the
   /// destructor call of T, i.e. if typed_storage goes out of scope, the
   /// destructor if the wrapped type will not be called. This can be done
@@ -362,11 +362,11 @@ namespace etl
   {
   public:
 
-    using value_type      = T;
-    using reference       = T&;
-    using const_reference = T const&;
-    using pointer         = T*;
-    using const_pointer   = T const*;
+    typedef T        value_type;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
 
     // Constructor
     typed_storage()
@@ -376,7 +376,7 @@ namespace etl
 
     //***************************************************************************
     /// Default destructor which will NOT call the destructor of the object which
-    /// was created by calling emplace().
+    /// was created by calling create().
     //***************************************************************************
     ~typed_storage() = default;
 
@@ -391,8 +391,8 @@ namespace etl
     }
 
     //***************************************************************************
-    /// \returns true if object has been constructed using emplace().
-    /// \returns false otherwise.
+    /// \returns <b>true</b> if object has been constructed using create().
+    /// \returns <b>false</b> otherwise.
     //***************************************************************************
     bool has_value() const
     {
