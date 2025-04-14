@@ -627,8 +627,8 @@ namespace etl
   struct is_base_of
   {
   private:
-    static TBase* check(TBase*) { return (TBase*)0; }
 
+    static TBase* check(TBase*) { return (TBase*)0; }
     static char check(...) { return 0; }
 
   public:
@@ -1394,10 +1394,6 @@ typedef integral_constant<bool, true>  true_type;
 
 #if ETL_USING_CPP11
   //***************************************************************************
-  /// Template to determine if a type is one of a specified list.
-  ///\ingroup types
-
-  //***************************************************************************
   /// Template to determine if a type is a base of all types in a specified list.
   ///\ingroup types
   template <typename T, typename... TRest>
@@ -1438,6 +1434,39 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T, typename... TRest>
   inline constexpr bool is_one_of_v = etl::is_one_of<T, TRest...>::value;
+#endif
+
+#if ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    //***************************************************************************
+    // Helper to count occurrences of a type in a list of types
+    template<typename T, typename... TTypes>
+    struct count_type;
+
+    // Base case: zero occurrences
+    template<typename T>
+    struct count_type<T> : etl::integral_constant<size_t, 0>
+    {
+    };
+
+    // Recursive case: increment count if head is the same as T, otherwise continue with tail
+    template<typename T, typename THead, typename... TTail>
+    struct count_type<T, THead, TTail...> : etl::integral_constant<size_t, (etl::is_same<T, THead>::value ? 1 : 0) + count_type<T, TTail...>::value>
+    {
+    };
+  }
+
+  template<typename T, typename... TTypes>
+  struct has_duplicates_of
+    : etl::integral_constant<bool, (private_type_traits::count_type<T, TTypes...>::value > 1)>
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TRest>
+  inline constexpr bool has_duplicates_of_v = etl::has_duplicates_of<T, TRest...>::value;
 #endif
 
 #if ETL_USING_CPP11
@@ -2334,18 +2363,6 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T, typename... TTypes>
   inline constexpr size_t count_of_v = etl::count_of<T, TTypes...>::value;
-#endif
-
-#if ETL_USING_CPP11
-  //*********************************************
-  // has_duplicates_of
-  template <typename T, typename... TTypes>
-  struct has_duplicates_of : etl::bool_constant<(etl::count_of<T, TTypes...>::value > 1U)> {};
-#endif
-
-#if ETL_USING_CPP17
-  template <typename T, typename... TTypes>
-  inline constexpr bool has_duplicates_of_v = etl::has_duplicates_of<T, TTypes...>::value;
 #endif
 }
 
