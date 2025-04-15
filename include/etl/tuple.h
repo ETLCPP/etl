@@ -76,8 +76,9 @@ namespace etl
     struct ignore_t
     {
       template <typename T>
-      ETL_CONSTEXPR void operator =(T&&) const ETL_NOEXCEPT
+      ETL_CONSTEXPR ignore_t operator =(T&&) const ETL_NOEXCEPT
       {
+        return *this;
       }
     };
   }
@@ -158,36 +159,36 @@ namespace etl
     friend class tuple;
 
     template <size_t Index, typename... TTypes>
-    ETL_CONSTEXPR14 
-    friend auto& get(tuple<TTypes...>&);
+    ETL_CONSTEXPR14
+    friend etl::tuple_element_t<Index, etl::tuple<TTypes...>>& get(tuple<TTypes...>&);
 
     template <size_t Index, typename... TTypes>
     ETL_CONSTEXPR14 
-    friend auto&& get(tuple<TTypes...>&&);
+    friend etl::tuple_element_t<Index, etl::tuple<TTypes...>>&& get(tuple<TTypes...>&&);
 
     template <size_t Index, typename... TTypes>
     ETL_CONSTEXPR14 
-    friend const auto& get(const tuple<TTypes...>&);
+    friend const etl::tuple_element_t<Index, etl::tuple<TTypes...>>& get(const tuple<TTypes...>&);
         
     template <size_t Index, typename... TTypes>
     ETL_CONSTEXPR14 
-    friend const auto&& get(const tuple<TTypes...>&&);
+    friend const etl::tuple_element_t<Index, etl::tuple<TTypes...>>&& get(const tuple<TTypes...>&&);
 
     template <typename T, typename... TTypes>
-    ETL_CONSTEXPR14 
-    friend auto& get(tuple<TTypes...>&);
+    ETL_CONSTEXPR14
+    friend T& get(tuple<TTypes...>&);
 
     template <typename T, typename... TTypes>
-    ETL_CONSTEXPR14 
-    friend auto&& get(tuple<TTypes...>&&);
+    ETL_CONSTEXPR14
+    friend T&& get(tuple<TTypes...>&&);
 
     template <typename T, typename... TTypes>
-    ETL_CONSTEXPR14 
-    friend const auto& get(const tuple<TTypes...>&);
+    ETL_CONSTEXPR14
+    friend const T& get(const tuple<TTypes...>&);
 
     template <typename T, typename... TTypes>
-    ETL_CONSTEXPR14 
-    friend const auto&& get(const tuple<TTypes...>&&);
+    ETL_CONSTEXPR14
+    friend const T&& get(const tuple<TTypes...>&&);
 
     //*********************************
     /// Types
@@ -728,7 +729,7 @@ namespace etl
   template <size_t Index, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  auto& get(tuple<TTypes...>& t)
+  etl::tuple_element_t<Index, etl::tuple<TTypes...>>& get(tuple<TTypes...>& t)
   {
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
@@ -747,7 +748,7 @@ namespace etl
   template <size_t Index, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  const auto& get(const tuple<TTypes...>& t)
+  const etl::tuple_element_t<Index, etl::tuple<TTypes...>>& get(const tuple<TTypes...>& t)
   {
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
@@ -766,7 +767,7 @@ namespace etl
   template <size_t Index, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  auto&& get(tuple<TTypes...>&& t)
+  etl::tuple_element_t<Index, etl::tuple<TTypes...>>&& get(tuple<TTypes...>&& t)
   {
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
@@ -774,7 +775,7 @@ namespace etl
     using tuple_type = etl::nth_base_t<Index, tuple<TTypes...>>&&;
 
     // Cast the tuple to the selected type and get the value.
-    return static_cast<tuple_type>(t).get_value();
+    return etl::forward<etl::tuple_element_t<Index, etl::tuple<TTypes...>>>(static_cast<tuple_type&&>(t).get_value());
   }
 
   //***************************************************************************
@@ -785,15 +786,15 @@ namespace etl
   template <size_t Index, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  const auto&& get(const tuple<TTypes...>&& t)
+  const etl::tuple_element_t<Index, etl::tuple<TTypes...>>&& get(const tuple<TTypes...>&& t)
   {
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
     // Get the type at this index.
-    using tuple_type = const etl::nth_base_t<Index, tuple<TTypes...>>&&;
+    using tuple_type = const etl::nth_base_t<Index, etl::tuple<TTypes...>>&&;
 
     // Cast the tuple to the selected type and get the value.
-    return static_cast<tuple_type>(t).get_value();
+    return etl::forward<etl::tuple_element_t<Index, etl::tuple<TTypes...>>>(static_cast<tuple_type&&>(t).get_value());
   }
 
   //***************************************************************************
@@ -804,10 +805,10 @@ namespace etl
   template <typename T, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  auto& get(tuple<TTypes...>& t)
+  T& get(tuple<TTypes...>& t)
   {
     ETL_STATIC_ASSERT(!(etl::has_duplicates_of<T, TTypes...>::value), "etl::get<Type> - Tuple contains duplicate instances of T");
-    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value), "etl::get<Type> - Tuple does not contain the specified type");
+    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
     using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
@@ -824,10 +825,10 @@ namespace etl
   template <typename T, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  const auto& get(const tuple<TTypes...>& t)
+  const T& get(const tuple<TTypes...>& t)
   {
     ETL_STATIC_ASSERT(!(etl::has_duplicates_of<T, TTypes...>::value), "etl::get<Type> - Tuple contains duplicate instances of T");
-    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value), "etl::get<Type> - Tuple does not contain the specified type");
+    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
     using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
@@ -844,16 +845,16 @@ namespace etl
   template <typename T, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  auto&& get(tuple<TTypes...>&& t)
+  T&& get(tuple<TTypes...>&& t)
   {
     ETL_STATIC_ASSERT(!(etl::has_duplicates_of<T, TTypes...>::value), "etl::get<Type> - Tuple contains duplicate instances of T");
-    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value), "etl::get<Type> - Tuple does not contain the specified type");
+    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
     using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
 
     // Cast the tuple to the selected type and get the value.
-    return static_cast<tuple_type&&>(t).get_value();
+    return etl::forward<T&&>(static_cast<tuple_type&&>(t).get_value());
   }
 
   //***************************************************************************
@@ -864,16 +865,16 @@ namespace etl
   template <typename T, typename... TTypes>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  const auto&& get(const tuple<TTypes...>&& t)
+  const T&& get(const tuple<TTypes...>&& t)
   {
     ETL_STATIC_ASSERT(!(etl::has_duplicates_of<T, TTypes...>::value), "etl::get<Type> - Tuple contains duplicate instances of T");
-    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value), "etl::get<Type> - Tuple does not contain the specified type");
+    ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
     using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
 
     // Cast the tuple to the selected type and get the value.
-    return static_cast<const tuple_type&&>(t).get_value();
+    return etl::forward<T&&>(static_cast<const tuple_type&&>(t).get_value());
   }
 
 #if ETL_USING_CPP17
@@ -886,7 +887,8 @@ namespace etl
   /// Creates a tuple of references to the provided arguments.
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR etl::tuple<TTypes&...> tie(TTypes&... args)
+  ETL_CONSTEXPR 
+  etl::tuple<TTypes&...> tie(TTypes&... args)
   {
     return { args... };
   }
@@ -910,6 +912,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto select_from_tuple(TTuple&& tuple, etl::index_sequence<Indices...>)
+    -> etl::tuple<etl::tuple_element_t<Indices, etl::decay_t<TTuple>>...> 
   {
     ETL_STATIC_ASSERT(sizeof...(Indices) <= etl::tuple_size<etl::decay_t<TTuple>>::value, "Number of indices is greater than the tuple size");
 
@@ -924,6 +927,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto select_from_tuple(TTuple&& tuple)
+    -> etl::tuple<etl::tuple_element_t<Indices, etl::decay_t<TTuple>>...> 
   {
     return select_from_tuple(etl::forward<TTuple>(tuple), etl::index_sequence<Indices...>{});
   }
@@ -947,6 +951,7 @@ namespace etl
     template <typename Tuple1, typename Tuple2, size_t... Index1, size_t... Index2>
     ETL_CONSTEXPR14
     auto tuple_cat_impl(Tuple1&& t1, etl::index_sequence<Index1...>, Tuple2&& t2, etl::index_sequence<Index2...>)
+      -> etl::tuple<etl::tuple_element_t<Index1, etl::decay_t<Tuple1>>..., etl::tuple_element_t<Index2, etl::decay_t<Tuple2>>...>
     {
       return etl::tuple<etl::tuple_element_t<Index1, etl::decay_t<Tuple1>>...,
                         etl::tuple_element_t<Index2, etl::decay_t<Tuple2>>...>
@@ -960,7 +965,7 @@ namespace etl
   template <typename Tuple>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  auto tuple_cat(Tuple&& t)
+  auto tuple_cat(Tuple&& t) -> Tuple
   {
     return etl::forward<Tuple>(t);
   }
@@ -972,6 +977,10 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto tuple_cat(Tuple1&& t1, Tuple2&& t2, Tuples&&... ts)
+    -> decltype(private_tuple::tuple_cat_impl(etl::forward<Tuple1>(t1), 
+                                              etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple1>>::value>{},
+                                              etl::forward<Tuple2>(t2),
+                                              etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple2>>::value>{}))
   {
     auto concatenated = private_tuple::tuple_cat_impl(etl::forward<Tuple1>(t1), 
                                                       etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple1>>::value>{},
@@ -993,6 +1002,7 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     auto to_std_impl(const TEtl_Tuple& etl_tuple, etl::index_sequence<Indices...>)
+      -> std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>
     {
       return std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>(etl::get<Indices>(etl_tuple)...);
     }
@@ -1002,6 +1012,7 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     auto to_std_impl(TEtl_Tuple&& etl_tuple, etl::index_sequence<Indices...>)
+      -> std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>
     {
       return std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>(etl::move(etl::get<Indices>(etl_tuple))...);
     }
@@ -1014,6 +1025,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_std(const etl::tuple<TTypes...>& etl_tuple)
+    -> std::tuple<typename std::decay<TTypes>::type...>
   {
     return private_tuple::to_std_impl(etl_tuple, etl::make_index_sequence_for<TTypes...>());
   }
@@ -1025,6 +1037,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_std(etl::tuple<TTypes...>&& etl_tuple)
+    -> std::tuple<typename std::decay<TTypes>::type...>
   {
     return private_tuple::to_std_impl(etl::move(etl_tuple), etl::make_index_sequence_for<TTypes...>());
   }
@@ -1040,6 +1053,7 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     auto to_etl_impl(const TStd_Tuple& std_tuple, etl::index_sequence<Indices...>)
+      -> etl::tuple<typename std::tuple_element<Indices, TStd_Tuple>::type...>
     {
       return etl::tuple<typename std::tuple_element<Indices, TStd_Tuple>::type...>(std::get<Indices>(std_tuple)...);
     }
@@ -1048,7 +1062,8 @@ namespace etl
     template<typename TStd_Tuple, size_t... Indices>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    auto to_etl_impl(TStd_Tuple&& std_tuple, etl::index_sequence<Indices...>)
+    auto to_etl_impl(TStd_Tuple&& std_tuple, etl::index_sequence<Indices...>) 
+      -> etl::tuple<typename std::tuple_element<Indices, TStd_Tuple>::type...>
     {
       return etl::tuple<typename std::tuple_element<Indices, TStd_Tuple>::type...>(std::move(std::get<Indices>(std_tuple))...);
     }
@@ -1061,6 +1076,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_etl(const std::tuple<TTypes...>& std_tuple)
+    -> etl::tuple<typename std::decay<TTypes>::type...>
   {
     return private_tuple::to_etl_impl(std_tuple, etl::make_index_sequence_for<TTypes...>());
   }
@@ -1072,6 +1088,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_etl(std::tuple<TTypes...>&& std_tuple)
+    -> etl::tuple<typename std::decay<TTypes>::type...>
   {
     return private_tuple::to_etl_impl(etl::move(std_tuple), etl::make_index_sequence_for<TTypes...>());
   }
@@ -1086,7 +1103,7 @@ namespace etl
     template <typename TTuple1, typename TTuple2>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-      bool tuple_equality(const TTuple1& /*lhs*/, const TTuple2& /*rhs*/, etl::index_sequence<>)
+    bool tuple_equality(const TTuple1& /*lhs*/, const TTuple2& /*rhs*/, etl::index_sequence<>)
     {
       return true;
     }

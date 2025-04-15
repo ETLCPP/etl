@@ -44,6 +44,7 @@ namespace
 
   template <std::size_t... Indices>
   auto to_array(etl::index_sequence<Indices...>)
+    -> std::array<std::size_t, sizeof...(Indices)>
   {
     return std::array<std::size_t, sizeof...(Indices)>{Indices...};
   }
