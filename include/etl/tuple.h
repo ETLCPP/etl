@@ -1002,9 +1002,9 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     auto to_std_impl(const TEtl_Tuple& etl_tuple, etl::index_sequence<Indices...>)
-      -> std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>
+      -> std::tuple<typename etl::tuple_element_t<Indices, TEtl_Tuple>...>
     {
-      return std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>(etl::get<Indices>(etl_tuple)...);
+      return std::tuple<etl::tuple_element_t<Indices, TEtl_Tuple>...>(etl::get<Indices>(etl_tuple)...);
     }
 
     ///*********************************
@@ -1012,9 +1012,9 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     auto to_std_impl(TEtl_Tuple&& etl_tuple, etl::index_sequence<Indices...>)
-      -> std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>
+      -> std::tuple<etl::tuple_element_t<Indices, TEtl_Tuple>...>
     {
-      return std::tuple<typename etl::tuple_element<Indices, TEtl_Tuple>::type...>(etl::move(etl::get<Indices>(etl_tuple))...);
+      return std::tuple<etl::tuple_element_t<Indices, TEtl_Tuple>...>(etl::move(etl::get<Indices>(etl_tuple))...);
     }
   }
 
@@ -1025,7 +1025,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_std(const etl::tuple<TTypes...>& etl_tuple)
-    -> std::tuple<typename std::decay<TTypes>::type...>
+    -> std::tuple<etl::decay_t<TTypes>...>
   {
     return private_tuple::to_std_impl(etl_tuple, etl::make_index_sequence_for<TTypes...>());
   }
@@ -1037,7 +1037,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_std(etl::tuple<TTypes...>&& etl_tuple)
-    -> std::tuple<typename std::decay<TTypes>::type...>
+    -> std::tuple<etl::decay_t<TTypes>...>
   {
     return private_tuple::to_std_impl(etl::move(etl_tuple), etl::make_index_sequence_for<TTypes...>());
   }
@@ -1076,7 +1076,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_etl(const std::tuple<TTypes...>& std_tuple)
-    -> etl::tuple<typename std::decay<TTypes>::type...>
+    -> etl::tuple<etl::decay_t<TTypes>...>
   {
     return private_tuple::to_etl_impl(std_tuple, etl::make_index_sequence_for<TTypes...>());
   }
@@ -1088,7 +1088,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto to_etl(std::tuple<TTypes...>&& std_tuple)
-    -> etl::tuple<typename std::decay<TTypes>::type...>
+    -> etl::tuple<etl::decay_t<TTypes>...>
   {
     return private_tuple::to_etl_impl(etl::move(std_tuple), etl::make_index_sequence_for<TTypes...>());
   }
