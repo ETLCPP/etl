@@ -239,7 +239,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_get)
+    TEST(test_get_using_index_lvalue)
     {
       etl::tuple<Data, DataM>       data(Data("1"), DataM("3"));
       const etl::tuple<Data, DataM> const_data(Data("2"), DataM("4"));
@@ -248,6 +248,57 @@ namespace
       Data  d1 = etl::get<0>(const_data);
       DataM d2 = etl::move(etl::get<1>(data));
       DataM d3 = etl::move(etl::get<1>(const_data));
+
+      CHECK_EQUAL(std::string("1"), d0.value);
+      CHECK_EQUAL(std::string("2"), d1.value);
+      CHECK_EQUAL(std::string("3"), d2.value);
+      CHECK_EQUAL(std::string("4"), d3.value);
+    }
+
+    //*************************************************************************
+    TEST(test_get_using_index_rvalue)
+    {
+      etl::tuple<Data, DataM>       data(Data("1"), DataM("3"));
+      const etl::tuple<Data, DataM> const_data(Data("2"), DataM("4"));
+
+      Data&&        d0 = etl::get<0>(etl::move(data));
+      const Data&&  d1 = etl::get<0>(etl::move(const_data));
+      DataM&&       d2 = etl::move(etl::get<1>(etl::move(data)));
+      const DataM&& d3 = etl::move(etl::get<1>(etl::move(const_data)));
+
+      CHECK_EQUAL(std::string("1"), d0.value);
+      CHECK_EQUAL(std::string("2"), d1.value);
+      CHECK_EQUAL(std::string("3"), d2.value);
+      CHECK_EQUAL(std::string("4"), d3.value);
+    }
+
+    //*************************************************************************
+    TEST(test_get_using_type_lvalue)
+    {
+      etl::tuple<Data, DataM>       data(Data("1"), DataM("3"));
+      const etl::tuple<Data, DataM> const_data(Data("2"), DataM("4"));
+
+      Data  d0 = etl::get<Data>(data);
+      Data  d1 = etl::get<Data>(const_data);
+      DataM d2 = etl::move(etl::get<DataM>(data));
+      DataM d3 = etl::move(etl::get<DataM>(const_data));
+
+      CHECK_EQUAL(std::string("1"), d0.value);
+      CHECK_EQUAL(std::string("2"), d1.value);
+      CHECK_EQUAL(std::string("3"), d2.value);
+      CHECK_EQUAL(std::string("4"), d3.value);
+    }
+
+    //*************************************************************************
+    TEST(test_get_using_type_rvalue)
+    {
+      etl::tuple<Data, DataM>       data(Data("1"), DataM("3"));
+      const etl::tuple<Data, DataM> const_data(Data("2"), DataM("4"));
+
+      Data&&        d0 = etl::get<Data>(etl::move(data));
+      const Data&&  d1 = etl::get<Data>(etl::move(const_data));
+      DataM&&       d2 = etl::move(etl::get<DataM>(etl::move(data)));
+      const DataM&& d3 = etl::move(etl::get<DataM>(etl::move(const_data)));
 
       CHECK_EQUAL(std::string("1"), d0.value);
       CHECK_EQUAL(std::string("2"), d1.value);

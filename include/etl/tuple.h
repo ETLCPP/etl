@@ -775,7 +775,7 @@ namespace etl
     using tuple_type = etl::nth_base_t<Index, tuple<TTypes...>>&&;
 
     // Cast the tuple to the selected type and get the value.
-    return etl::forward<etl::tuple_element_t<Index, etl::tuple<TTypes...>>>(static_cast<tuple_type&&>(t).get_value());
+    return etl::move(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -794,7 +794,7 @@ namespace etl
     using tuple_type = const etl::nth_base_t<Index, etl::tuple<TTypes...>>&&;
 
     // Cast the tuple to the selected type and get the value.
-    return etl::forward<etl::tuple_element_t<Index, etl::tuple<TTypes...>>>(static_cast<tuple_type&&>(t).get_value());
+    return etl::move(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -811,10 +811,10 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
-    using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
+    using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&;
 
     // Cast the tuple to the selected type and get the value.
-    return static_cast<tuple_type&>(t).get_value();
+    return static_cast<tuple_type>(t).get_value();
   }
 
   //***************************************************************************
@@ -831,10 +831,10 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
-    using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
+    using tuple_type = const etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&;
 
     // Cast the tuple to the selected type and get the value.
-    return static_cast<const tuple_type&>(t).get_value();
+    return static_cast<tuple_type>(t).get_value();
   }
 
   //***************************************************************************
@@ -851,10 +851,10 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
-    using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
+    using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&&;
 
     // Cast the tuple to the selected type and get the value.
-    return etl::forward<T&&>(static_cast<tuple_type&&>(t).get_value());
+    return etl::move(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -871,10 +871,10 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_one_of<T, TTypes...>::value),          "etl::get<Type> - Tuple does not contain the specified type");
 
     // Get the tuple base type that contains a T
-    using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>;
+    using tuple_type = const etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&&;
 
     // Cast the tuple to the selected type and get the value.
-    return etl::forward<T&&>(static_cast<const tuple_type&&>(t).get_value());
+    return etl::move(static_cast<tuple_type>(t).get_value());
   }
 
 #if ETL_USING_CPP17
