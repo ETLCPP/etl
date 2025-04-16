@@ -34,11 +34,11 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  template <typename TTuple>
+  template <typename T>
   struct tuple_size;
 
   //***************************************************************************
-  template<class T>
+  template <typename T>
   struct tuple_size<const T> : etl::integral_constant<size_t, tuple_size<T>::value>
   {
   };
