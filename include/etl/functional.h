@@ -121,10 +121,10 @@ namespace etl
     typedef T type;
   };
 
-  template <typename U>
-  struct unwrap_reference<etl::reference_wrapper<U> >
+  template <typename T>
+  struct unwrap_reference<etl::reference_wrapper<T> >
   {
-    typedef U& type;
+    typedef T& type;
   };
 
 #if ETL_USING_CPP11
