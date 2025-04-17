@@ -1119,6 +1119,20 @@ namespace
   }
 
   //*************************************************************************
+  TEST(test_exclusive_disjunction)
+  {
+#if ETL_USING_CPP17
+    CHECK_TRUE((etl::exclusive_disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
+    CHECK_FALSE((etl::exclusive_disjunction_v<etl::true_type, etl::false_type, etl::true_type>));
+    CHECK_FALSE((etl::exclusive_disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
+#else
+    CHECK_TRUE((etl::exclusive_disjunction<etl::false_type, etl::true_type, etl::false_type>::value));
+    CHECK_FALSE((etl::exclusive_disjunction<etl::true_type, etl::false_type, etl::true_type>::value));
+    CHECK_FALSE((etl::exclusive_disjunction<etl::false_type, etl::false_type, etl::false_type>::value));
+#endif
+  }
+
+  //*************************************************************************
   TEST(test_is_assignable)
   {
 #if ETL_USING_CPP17

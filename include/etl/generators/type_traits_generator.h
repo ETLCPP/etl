@@ -1385,6 +1385,29 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
   //***************************************************************************
+  /// exclusive_disjunction
+#if ETL_USING_CPP11
+  template <typename... TTypes>
+  struct exclusive_disjunction;
+
+  template <typename T>
+  struct exclusive_disjunction<T> : public etl::bool_constant<T::value>
+  {
+  };
+
+  // Recursive case: XOR the first two values and recurse
+  template <typename T1, typename T2, typename... TRest>
+  struct exclusive_disjunction<T1, T2, TRest...> : public etl::exclusive_disjunction<etl::integral_constant<bool, etl::disjunction<T1, T2>::value && !etl::conjunction<T1, T2>::value>, TRest...>
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr bool exclusive_disjunction_v = etl::exclusive_disjunction<T...>::value;
+#endif
+
+  //***************************************************************************
   /// conditional_integral_constant
   // /\ingroup type_traits
   template <bool B, typename T, T TRUE_VALUE, T FALSE_VALUE>
