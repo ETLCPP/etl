@@ -350,7 +350,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Wrapper class that provides a memory area and lets the user create and
+  /// Wrapper class that provides a memory area and lets the user create an
   /// instance of T in this memory at runtime. This class also erases the
   /// destructor call of T, i.e. if typed_storage goes out of scope, the
   /// destructor if the wrapped type will not be called. This can be done
