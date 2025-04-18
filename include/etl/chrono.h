@@ -49,7 +49,9 @@ SOFTWARE.
 #include "private/chrono/weekday_indexed.h"
 #include "private/chrono/weekday_last.h"
 #include "private/chrono/month.h"
-#include "private/chrono/year.h" 
+#include "private/chrono/month_day.h"
+#include "private/chrono/year.h"
+#include "private/chrono/operators.h" 
 #endif
 
 #undef ETL_IN_CHRONO_H

@@ -272,8 +272,8 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if etl::literals::chrono_literals has weekdays (_day)
-#if defined(ETL_DISABLE_CHRONO_LITERALS_WEEKDAY)
+// Indicate if etl::literals::chrono_literals has days (_days)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_DAY)
   #define ETL_HAS_CHRONO_LITERALS_DAY 0
 #else
   #define ETL_HAS_CHRONO_LITERALS_DAY 1
@@ -288,7 +288,7 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if etl::literals::chrono_literals has month (_month)
+// Indicate if etl::literals::chrono_literals has month (_months)
 #if defined(ETL_DISABLE_CHRONO_LITERALS_MONTH)
   #define ETL_HAS_CHRONO_LITERALS_MONTH 0
 #else
@@ -296,11 +296,19 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if etl::literals::chrono_literals has year (_year)
+// Indicate if etl::literals::chrono_literals has year (_years)
 #if defined(ETL_DISABLE_CHRONO_LITERALS_YEAR)
   #define ETL_HAS_CHRONO_LITERALS_YEAR 0
 #else
   #define ETL_HAS_CHRONO_LITERALS_YEAR 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has year (_hours, _minutes, _seconds, _milliseconds, _microseconds, _nanoseconds)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_DURATION)
+#define ETL_HAS_CHRONO_LITERALS_DURATION 0
+#else
+#define ETL_HAS_CHRONO_LITERALS_DURATION 1
 #endif
 
 //*************************************

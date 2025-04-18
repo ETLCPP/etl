@@ -311,7 +311,6 @@ namespace etl
 }
 
 #if ETL_HAS_CHRONO_LITERALS_DAY
-#if ETL_USING_CPP11
 namespace etl
 {
   namespace literals
@@ -321,12 +320,11 @@ namespace etl
       //***********************************************************************
       /// Literal for days
       //***********************************************************************
-      constexpr etl::chrono::day operator ""_day(unsigned long long d) noexcept
+      inline constexpr etl::chrono::day operator ""_day(unsigned long long d) noexcept
       {
         return etl::chrono::day(static_cast<unsigned>(d));
       }
     }
   }
 }
-#endif
 #endif

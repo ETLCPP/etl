@@ -362,7 +362,6 @@ namespace etl
 }
 
 #if ETL_HAS_CHRONO_LITERALS_MONTH
-#if ETL_USING_CPP11
 namespace etl
 {
   namespace literals
@@ -372,12 +371,11 @@ namespace etl
       //***********************************************************************
       /// Literal for months
       //***********************************************************************
-      constexpr etl::chrono::month operator ""_month(unsigned long long m) noexcept
+      inline constexpr etl::chrono::month operator ""_month(unsigned long long m) noexcept
       {
         return etl::chrono::month(static_cast<unsigned char>(m));
       }
     }
   }
 }
-#endif
 #endif

@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include <chrono>
 
+#include <vector>
 #include <array>
 #include <algorithm>
 
@@ -262,6 +263,7 @@ namespace
       }
     }
 
+#if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_weekday_minus_weekday)
     {
@@ -283,6 +285,7 @@ namespace
         CHECK_EQUAL(std_days21.count(), days21.count());
       }
     }
+#endif
 
     //*************************************************************************
     TEST(test_min_max_weekday)

@@ -30,128 +30,112 @@ SOFTWARE.
 
 #include "etl/platform.h"
 
-#if ETL_USING_CPP20
-
 #include "unit_test_framework.h"
 
 #include "etl/chrono.h"
 
-#include <chrono>
-#include <array>
+#include <vector>
 #include <algorithm>
 
 namespace
 {
+  //*************************************************************************
+  bool is_day_ok(etl::chrono::day day)
+  {
+    unsigned d = unsigned(day);
+
+    if ((d < 1) || (d > 31))
+    {
+      return (day.ok() == false);
+    }
+    else
+    { 
+      return (day.ok() == true);
+    }
+  }
+
   SUITE(test_chrono_day)
   {
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      std::chrono::day std_day;
       etl::chrono::day day;
 
-      CHECK_EQUAL(std_day.ok(), day.ok());
+      CHECK_FALSE(day.ok());
     }
 
     //*************************************************************************
     TEST(test_constructor_in_range)
     {
-      for (unsigned i = 0U; i < 256; ++i)
+      for (unsigned expected = 1U; expected < 31; ++expected)
       {
-        std::chrono::day std_day(i);
-        etl::chrono::day day(i);
+        etl::chrono::day day(expected);
 
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_pre_increment)
     {
-      std::chrono::day std_day(0);
       etl::chrono::day day(0);
 
-      for (int i = 0; i < 255; ++i)
+      for (int expected = 0; expected < 256; ++expected, ++day)
       {
-        ++std_day;
-        ++day;
-
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_TRUE(is_day_ok(day));       
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_post_increment)
     {
-      std::chrono::day std_day(0);
       etl::chrono::day day(0);
 
-      for (int i = 0; i < 255; ++i)
+      for (int expected = 0; expected < 256; expected++, day++)
       {
-        std::chrono::day std_last_day = std_day++;
-        etl::chrono::day last_day     = day++;
-
-        CHECK_EQUAL(std_last_day.ok(), last_day.ok());
-        CHECK_EQUAL(unsigned(std_last_day), unsigned(last_day));
-
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_pre_decrement)
     {
-      std::chrono::day std_day(256);
-      etl::chrono::day day(256);
+      etl::chrono::day day(255);
 
-      for (int i = 0; i < 255; ++i)
+      for (int expected = 255; expected > 0; --expected, --day)
       {
-        --std_day;
-        --day;
-
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_post_decrement)
     {
-      std::chrono::day std_day(256);
-      etl::chrono::day day(256);
+      etl::chrono::day day(255);
 
-      for (int i = 0; i < 255; ++i)
+      for (int expected = 255; expected > 0; expected--, day--)
       {
-        std::chrono::day std_last_day = std_day--;
-        etl::chrono::day last_day = day--;
-
-        CHECK_EQUAL(std_last_day.ok(), last_day.ok());
-        CHECK_EQUAL(unsigned(std_last_day), unsigned(last_day));
-
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_plus_equal_days)
     {
-      std::chrono::day std_day(0);
       etl::chrono::day day(0);
-
-      std::chrono::days std_days(2);
       etl::chrono::days days(2);
 
-      for (int i = 0; i < 128; ++i)
+      for (int expected = 2; expected < 256; expected += 2)
       {
-        std_day += std_days;
-        day     += days;
+        day += days;
 
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
@@ -162,17 +146,15 @@ namespace
       {
         for (int ds = 0; ds < 256; ++ds)
         {
-          std::chrono::day std_day(d);
           etl::chrono::day day(d);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
 
-          std_day = std_day + std_days;
-          day     = day + days;
+          day = day + days;
 
-          CHECK_EQUAL(std_day.ok(), day.ok());
-          CHECK_EQUAL(unsigned(std_day), unsigned(day));
+          unsigned expected = (d + ds) % 256;
+
+          CHECK_TRUE(is_day_ok(day));
+          CHECK_EQUAL(expected, unsigned(day));
         }
       }
     }
@@ -182,19 +164,17 @@ namespace
     {
       for (int d = 0; d < 256; ++d)
       {
-        for (int ds = 0; ds < 256; ++ds)
+        for (int ds = 0; ds < d; ++ds)
         {
-          std::chrono::day std_day(d);
           etl::chrono::day day(d);
-
-          std::chrono::days std_days(ds);
           etl::chrono::days days(ds);
 
-          std_day = std_days + std_day;
-          day     = days + day;
+          day = days + day;
 
-          CHECK_EQUAL(std_day.ok(), day.ok());
-          CHECK_EQUAL(unsigned(std_day), unsigned(day));
+          unsigned expected = (d + ds) % 256;
+
+          CHECK_TRUE(is_day_ok(day));
+          CHECK_EQUAL(expected, unsigned(day));
         }
       }
     }
@@ -202,66 +182,47 @@ namespace
     //*************************************************************************
     TEST(test_minus_equal_days)
     {
-      for (int d = 0; d <= 256; ++d)
+      etl::chrono::day day(255);
+      etl::chrono::days days(2);
+
+      for (int expected = 253; expected > 0; expected -= 2)
       {
-        for (int ds = 0; ds <= 256; ++ds)
-        {
-          std::chrono::day std_day(d);
-          etl::chrono::day day(d);
+        day -= days;
 
-          std::chrono::days std_days(ds);
-          etl::chrono::days days(ds);
-
-          std_day -= std_days;
-          day     -= days;
-
-          CHECK_EQUAL(std_day.ok(), day.ok());
-          CHECK_EQUAL(unsigned(std_day), unsigned(day));
-        }
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_day_minus_days)
     {
-      for (int d = 0; d <= 256; ++d)
+      etl::chrono::day day(255);
+      etl::chrono::days days(2);
+
+      for (int expected = 253; expected > 0; expected -= 2)
       {
-        for (int ds = 0; ds <= 256; ++ds)
-        {
-          std::chrono::day std_day(d);
-          etl::chrono::day day(d);
+        day = day - days;
 
-          std::chrono::days std_days(ds);
-          etl::chrono::days days(ds);
-
-          std_day = std_day - std_days;
-          day     = day - days;
-
-          CHECK_EQUAL(std_day.ok(), day.ok());
-          CHECK_EQUAL(unsigned(std_day), unsigned(day));
-        }
+        CHECK_TRUE(is_day_ok(day));
+        CHECK_EQUAL(expected, unsigned(day));
       }
     }
 
     //*************************************************************************
     TEST(test_day_minus_day)
     {
-      for (int d = 0; d < 256; ++d)
+      for (int d1 = 0; d1 < 256; ++d1)
       {
-        std::chrono::day std_day1(d);
-        std::chrono::day std_day2(255 - d);
+        for (int d2 = 0; d2 < 256; ++d2)
+        {
+          etl::chrono::day day1(d1);
+          etl::chrono::day day2(d2);
 
-        std::chrono::day day1(d);
-        std::chrono::day day2(255 - d);
-
-        auto std_days12 = std_day1 - std_day2;
-        auto std_days21 = std_day2 - std_day1;
-
-        auto days12 = day1 - day2;
-        auto days21 = day2 - day1;
-
-        CHECK_EQUAL(std_days12.count(), days12.count());
-        CHECK_EQUAL(std_days21.count(), days21.count());
+          etl::chrono::days result_days = day1 - day2;
+          int expected_days = d1 - d2;
+          CHECK_EQUAL(expected_days, result_days.count());
+        }
       }
     }
 
@@ -275,14 +236,12 @@ namespace
     //*************************************************************************
     TEST(test_literal_day)
     {
-      using namespace std::literals::chrono_literals;
       using namespace etl::literals::chrono_literals;
 
-      std::chrono::day std_day = 25d;
-      etl::chrono::day day     = 25_day;
+      etl::chrono::day day = 25_day;
 
-      CHECK_EQUAL(std_day.ok(), day.ok());
-      CHECK_EQUAL(unsigned(std_day), unsigned(day));
+      CHECK_TRUE(day.ok());
+      CHECK_EQUAL(25, unsigned(day));
     }
 
     //*************************************************************************
@@ -329,5 +288,3 @@ namespace
     }
   };
 }
-
-#endif

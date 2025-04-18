@@ -311,7 +311,6 @@ namespace etl
 }
 
 #if ETL_HAS_CHRONO_LITERALS_YEAR
-#if ETL_USING_CPP11
 namespace etl
 {
   namespace literals
@@ -321,12 +320,11 @@ namespace etl
       //***********************************************************************
       /// Literal for years
       //***********************************************************************
-      constexpr etl::chrono::year operator ""_year(unsigned long long y) noexcept
+      inline constexpr etl::chrono::year operator ""_year(unsigned long long y) noexcept
       {
         return etl::chrono::year(static_cast<int16_t>(y));
       }
     }
   }
 }
-#endif
 #endif

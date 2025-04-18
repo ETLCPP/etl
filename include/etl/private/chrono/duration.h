@@ -258,11 +258,17 @@ namespace etl
   {
     ETL_CONSTEXPR14 size_t operator()(const etl::chrono::duration<TRep, TPeriod>& d) const
     {
-      TRep value = d.count();
-      size_t num = TPeriod::num;
-      size_t den = TPeriod::den;
+      uint8_t buffer[sizeof(TRep) + sizeof(intmax_t) + sizeof(intmax_t)];
 
-      return 0; //etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      TRep value = d.count();
+      intmax_t num = TPeriod::num;
+      intmax_t den = TPeriod::den;
+      
+      memcpy(buffer, &value, sizeof(TRep));
+      memcpy(buffer + sizeof(TRep), &num, sizeof(intmax_t));
+      memcpy(buffer + sizeof(TRep) + sizeof(intmax_t), &den, sizeof(intmax_t));
+
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(TRep) + sizeof(intmax_t) + sizeof(intmax_t));
     }
   };
 #endif
@@ -349,8 +355,7 @@ namespace etl
   }
 }
 
-#if ETL_HAS_CHRONO_LITERALS_DAY
-#if ETL_USING_CPP11
+#if ETL_HAS_CHRONO_LITERALS_DURATION
 namespace etl
 {
   namespace literals
@@ -360,7 +365,7 @@ namespace etl
       //***********************************************************************
       /// Literal for hours duration
       //***********************************************************************
-      ETL_IF_CONSTEXPR etl::chrono::hours operator ""_hours(unsigned long long h) noexcept
+      inline ETL_CONSTEXPR etl::chrono::hours operator ""_hours(unsigned long long h) noexcept
       {
         return etl::chrono::hours(static_cast<etl::chrono::hours::rep>(h));
       }
@@ -368,7 +373,7 @@ namespace etl
       //***********************************************************************
       /// Literal for minutes duration
       //***********************************************************************
-      ETL_IF_CONSTEXPR etl::chrono::minutes operator ""_minutes(unsigned long long m) noexcept
+      inline ETL_CONSTEXPR etl::chrono::minutes operator ""_minutes(unsigned long long m) noexcept
       {
         return etl::chrono::minutes(static_cast<etl::chrono::minutes::rep>(m));
       }
@@ -376,7 +381,7 @@ namespace etl
       //***********************************************************************
       /// Literal for seconds duration
       //***********************************************************************
-      ETL_IF_CONSTEXPR etl::chrono::seconds operator ""_seconds(unsigned long long s) noexcept
+      inline ETL_CONSTEXPR etl::chrono::seconds operator ""_seconds(unsigned long long s) noexcept
       {
         return etl::chrono::seconds(static_cast<etl::chrono::seconds::rep>(s));
       }
@@ -384,7 +389,7 @@ namespace etl
       //***********************************************************************
       /// Literal for milliseconds duration
       //***********************************************************************
-      ETL_IF_CONSTEXPR etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) noexcept
+      inline ETL_CONSTEXPR etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) noexcept
       {
         return etl::chrono::milliseconds(static_cast<etl::chrono::milliseconds::rep>(s));
       }
@@ -392,7 +397,7 @@ namespace etl
       //***********************************************************************
       /// Literal for microseconds duration
       //***********************************************************************
-      ETL_IF_CONSTEXPR etl::chrono::microseconds operator ""_microseconds(unsigned long long s) noexcept
+      inline ETL_CONSTEXPR etl::chrono::microseconds operator ""_microseconds(unsigned long long s) noexcept
       {
         return etl::chrono::microseconds(static_cast<etl::chrono::microseconds::rep>(s));
       }
@@ -400,12 +405,11 @@ namespace etl
       //***********************************************************************
       /// Literal for nanoseconds duration
       //***********************************************************************
-      ETL_IF_CONSTEXPR etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) noexcept
+      inline ETL_CONSTEXPR etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) noexcept
       {
         return etl::chrono::nanoseconds(static_cast<etl::chrono::nanoseconds::rep>(s));
       }
     }
   }
 }
-#endif
 #endif

@@ -370,7 +370,6 @@ namespace etl
 }
 
 #if ETL_HAS_CHRONO_LITERALS_WEEKDAY
-#if ETL_USING_CPP11
 namespace etl
 {
   namespace literals
@@ -380,12 +379,11 @@ namespace etl
       //***********************************************************************
       /// Literal for weekdays
       //***********************************************************************
-      constexpr etl::chrono::weekday operator ""_weekday(unsigned long long m) noexcept
+      inline constexpr etl::chrono::weekday operator ""_weekday(unsigned long long wd) noexcept
       {
-        return etl::chrono::weekday(static_cast<unsigned char>(m));
+        return etl::chrono::weekday(static_cast<unsigned char>(wd));
       }
     }
   }
 }
-#endif
 #endif

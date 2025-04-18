@@ -1449,6 +1449,12 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_cxx_20_compat_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\month_day.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\operators.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3446,6 +3452,9 @@
     <ClCompile Include="..\test_ratio.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_chrono_month_day.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3647,6 +3656,9 @@
     </Text>
     <Text Include="..\syntax_check\log.txt">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </Text>
+    <Text Include="..\cppcheck_macro_definitions.txt">
+      <Filter>Tests\Test Support</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

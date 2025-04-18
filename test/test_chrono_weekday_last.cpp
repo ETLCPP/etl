@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include <chrono>
 
+#include <vector>
 #include <array>
 #include <algorithm>
 
