@@ -374,7 +374,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 basic_string_view substr(size_type position = 0, size_type count = npos) const
     {
-      basic_string_view view;
+      basic_string_view view = basic_string_view();
 
       if (position < size())
       {
