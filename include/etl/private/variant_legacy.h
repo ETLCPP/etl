@@ -40,6 +40,7 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../null_type.h"
 #include "../placement_new.h"
+#include "../monostate.h"
 
 #include <stdint.h>
 
@@ -75,9 +76,7 @@ namespace etl
     /// Monostate for variants.
     ///\ingroup variant
     //***************************************************************************
-    struct monostate
-    {
-    };
+    typedef etl::monostate monostate;
 
     //***************************************************************************
     /// Base exception for the variant class.
@@ -478,6 +477,19 @@ namespace etl
 
         ::new (static_cast<T*>(data)) T(value);
         type_id = Type_Id_Lookup<T>::type_id;
+      }
+
+      //***************************************************************************
+      /// Constructor that catches any types that are not supported.
+      /// Forces a ETL_STATIC_ASSERT.
+      //***************************************************************************
+      template <size_t Index, typename T>
+      explicit variant(etl::in_place_index_t<Index>, T const& value)
+        : type_id(Index)
+      {
+        ETL_STATIC_ASSERT(Type_Id_Lookup<T>::type_id == Index, "Missmatched type");
+        ::new (static_cast<T*>(data)) T(value);
+        type_id = Index;
       }
 
       //***************************************************************************

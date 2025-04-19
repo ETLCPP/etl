@@ -46,7 +46,7 @@ namespace etl
   {
     inline namespace string_literals
     {
-      constexpr etl::u16string_view operator ""_sv(const char16_t* str, size_t length) noexcept
+      inline constexpr etl::u16string_view operator ""_sv(const char16_t* str, size_t length) noexcept
       {
         return etl::u16string_view{ str, length };
       }
@@ -228,6 +228,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u16string& operator = (const etl::u16string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #if ETL_HAS_ISTRING_REPAIR
@@ -366,8 +376,8 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// From u16string_view.
-    ///\param view The u16string_view.
+    /// From string_view.
+    ///\param view The string_view.
     //*************************************************************************
     explicit u16string_ext(const etl::u16string_view& view, value_type* buffer, size_type buffer_size)
       : iu16string(buffer, buffer_size - 1U)
@@ -388,7 +398,6 @@ namespace etl
       return *this;
     }
 
-
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -408,6 +417,16 @@ namespace etl
     u16string_ext& operator = (const value_type* text)
     {
       this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u16string_ext& operator = (const etl::u16string_view& view)
+    {
+      this->assign(view);
 
       return *this;
     }

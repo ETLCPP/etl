@@ -33,6 +33,8 @@ SOFTWARE.
 
 #include "etl/private/diagnostic_useless_cast_push.h"
 
+#include <array>
+
 namespace
 {
   SUITE(test_unaligned_type)
@@ -150,6 +152,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_construction_from_buffer)
+    {
+      const std::array<char, 4> buffer = { 0x12, 0x34, 0x56, 0x78 };
+
+      const uint32_t le_value = 0x78563412;
+      const uint32_t be_value = 0x12345678;
+
+      etl::le_uint32_t le_v1(buffer.data());
+      etl::be_uint32_t be_v1(buffer.data());
+
+      etl::le_uint32_t le_v2(buffer.data(), buffer.size());
+      etl::be_uint32_t be_v2(buffer.data(), buffer.size());
+
+      CHECK_EQUAL(le_value, le_v1);
+      CHECK_EQUAL(be_value, be_v1);
+
+      CHECK_EQUAL(le_value, le_v2);
+      CHECK_EQUAL(be_value, be_v2);
+
+      CHECK_THROW(etl::le_uint32_t le_v3(buffer.data(), buffer.size() - 1), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint32_t be_v3(buffer.data(), buffer.size() - 1), etl::unaligned_type_buffer_size);
+    }
+
+    //*************************************************************************
     TEST(test_endianness)
     {
       CHECK_EQUAL(etl::endian::big,    etl::be_int16_t::Endian);
@@ -182,6 +208,16 @@ namespace
       CHECK_EQUAL(sizeof(uint32_t), etl::le_uint32_t::Size);
       CHECK_EQUAL(sizeof(int64_t),  etl::le_int64_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::le_uint64_t::Size);
+
+      // check if net size equals gross size on platform
+      CHECK_EQUAL(sizeof(int8_t),   sizeof(etl::le_int8_t));
+      CHECK_EQUAL(sizeof(uint8_t),  sizeof(etl::le_uint8_t));
+      CHECK_EQUAL(sizeof(int16_t),  sizeof(etl::le_int16_t));
+      CHECK_EQUAL(sizeof(uint16_t), sizeof(etl::le_uint16_t));
+      CHECK_EQUAL(sizeof(int32_t),  sizeof(etl::le_int32_t));
+      CHECK_EQUAL(sizeof(uint32_t), sizeof(etl::le_uint32_t));
+      CHECK_EQUAL(sizeof(int64_t),  sizeof(etl::le_int64_t));
+      CHECK_EQUAL(sizeof(uint64_t), sizeof(etl::le_uint64_t));
     }
 
     //*************************************************************************
@@ -210,6 +246,16 @@ namespace
       CHECK_EQUAL(sizeof(uint32_t), etl::be_uint32_t::Size);
       CHECK_EQUAL(sizeof(int64_t),  etl::be_int64_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::be_uint64_t::Size);
+
+      // check if net size equals gross size on platform
+      CHECK_EQUAL(sizeof(int8_t),   sizeof(etl::be_int8_t));
+      CHECK_EQUAL(sizeof(uint8_t),  sizeof(etl::be_uint8_t));
+      CHECK_EQUAL(sizeof(int16_t),  sizeof(etl::be_int16_t));
+      CHECK_EQUAL(sizeof(uint16_t), sizeof(etl::be_uint16_t));
+      CHECK_EQUAL(sizeof(int32_t),  sizeof(etl::be_int32_t));
+      CHECK_EQUAL(sizeof(uint32_t), sizeof(etl::be_uint32_t));
+      CHECK_EQUAL(sizeof(int64_t),  sizeof(etl::be_int64_t));
+      CHECK_EQUAL(sizeof(uint64_t), sizeof(etl::be_uint64_t));
     }
 
     //*************************************************************************
@@ -329,19 +375,19 @@ namespace
       }
 
       // float
-      CHECK_FLOAT_SAME(etl::le_float_t(3.1415927f), etl::le_float_t(3.1415927f));
-      CHECK_FLOAT_SAME(3.1415927f, etl::le_float_t(3.1415927f));
-      CHECK_FLOAT_SAME(etl::le_float_t(3.1415927f), 3.1415927f);
+      CHECK_CLOSE(etl::le_float_t(3.1415927f), etl::le_float_t(3.1415927f), 0.001);
+      CHECK_CLOSE(3.1415927f, etl::le_float_t(3.1415927f), 0.001);
+      CHECK_CLOSE(etl::le_float_t(3.1415927f), 3.1415927f, 0.001);
 
       // double
-      CHECK_FLOAT_SAME(etl::le_double_t(3.1415927), etl::le_double_t(3.1415927));
-      CHECK_FLOAT_SAME(3.1415927, etl::le_double_t(3.1415927));
-      CHECK_FLOAT_SAME(etl::le_double_t(3.1415927), 3.1415927);
+      CHECK_CLOSE(etl::le_double_t(3.1415927), etl::le_double_t(3.1415927), 0.001);
+      CHECK_CLOSE(3.1415927, etl::le_double_t(3.1415927), 0.001);
+      CHECK_CLOSE(etl::le_double_t(3.1415927), 3.1415927, 0.001);
 
       // long double
-      CHECK_FLOAT_SAME(etl::le_long_double_t(3.1415927L), etl::le_long_double_t(3.1415927L));
-      CHECK_FLOAT_SAME(3.1415927L, etl::le_long_double_t(3.1415927L));
-      CHECK_FLOAT_SAME(etl::le_long_double_t(3.1415927L), 3.1415927L);
+      CHECK_CLOSE(etl::le_long_double_t(3.1415927L), etl::le_long_double_t(3.1415927L), 0.001);
+      CHECK_CLOSE(3.1415927L, etl::le_long_double_t(3.1415927L), 0.001);
+      CHECK_CLOSE(etl::le_long_double_t(3.1415927L), 3.1415927L, 0.001);
     }
 
     //*************************************************************************
@@ -477,19 +523,19 @@ namespace
       }
 
       // float
-      CHECK_FLOAT_SAME(etl::be_float_t(3.1415927f), etl::be_float_t(3.1415927f));
-      CHECK_FLOAT_SAME(3.1415927f, etl::be_float_t(3.1415927f));
-      CHECK_FLOAT_SAME(etl::be_float_t(3.1415927f), 3.1415927f);
+      CHECK_CLOSE(etl::be_float_t(3.1415927f), etl::be_float_t(3.1415927f), 0.001);
+      CHECK_CLOSE(3.1415927f, etl::be_float_t(3.1415927f), 0.001);
+      CHECK_CLOSE(etl::be_float_t(3.1415927f), 3.1415927f, 0.001);
 
       // double
-      CHECK_FLOAT_SAME(etl::be_double_t(3.1415927), etl::be_double_t(3.1415927));
-      CHECK_FLOAT_SAME(3.1415927, etl::be_double_t(3.1415927));
-      CHECK_FLOAT_SAME(etl::be_double_t(3.1415927), 3.1415927);
+      CHECK_CLOSE(etl::be_double_t(3.1415927), etl::be_double_t(3.1415927), 0.001);
+      CHECK_CLOSE(3.1415927, etl::be_double_t(3.1415927), 0.001);
+      CHECK_CLOSE(etl::be_double_t(3.1415927), 3.1415927, 0.001);
 
       // long double
-      CHECK_FLOAT_SAME(etl::be_long_double_t(3.1415927L), etl::be_long_double_t(3.1415927L));
-      CHECK_FLOAT_SAME(3.1415927L, etl::be_long_double_t(3.1415927L));
-      CHECK_FLOAT_SAME(etl::be_long_double_t(3.1415927L), 3.1415927L);
+      CHECK_CLOSE(etl::be_long_double_t(3.1415927L), etl::be_long_double_t(3.1415927L), 0.001);
+      CHECK_CLOSE(3.1415927L, etl::be_long_double_t(3.1415927L), 0.001);
+      CHECK_CLOSE(etl::be_long_double_t(3.1415927L), 3.1415927L, 0.001);
     }
 
     //*************************************************************************
@@ -622,17 +668,17 @@ namespace
       // float
       etl::le_float_t le_float;
       le_float = 3.1415927f;
-      CHECK_FLOAT_SAME(3.1415927f, le_float);
+      CHECK_CLOSE(3.1415927f, le_float, 0.001);
 
       // double
       etl::le_double_t le_double;
       le_double = 3.1415927;
-      CHECK_FLOAT_SAME(3.1415927, le_double);
+      CHECK_CLOSE(3.1415927, le_double, 0.001);
 
       // long double
       etl::le_long_double_t le_long_double;
       le_long_double = 3.1415927L;
-      CHECK_FLOAT_SAME(3.1415927L, le_long_double);
+      CHECK_CLOSE(3.1415927L, le_long_double, 0.001);
     }
 
     //*************************************************************************
@@ -691,17 +737,17 @@ namespace
       // float
       etl::be_float_t be_float;
       be_float = 3.1415927f;
-      CHECK_FLOAT_SAME(3.1415927f, be_float);
+      CHECK_CLOSE(3.1415927f, be_float, 0.001);
 
       // double
       etl::be_double_t be_double;
       be_double = 3.1415927;
-      CHECK_FLOAT_SAME(3.1415927, be_double);
+      CHECK_CLOSE(3.1415927, be_double, 0.001);
 
       // long double
       etl::be_long_double_t be_long_double;
       be_long_double = 3.1415927L;
-      CHECK_FLOAT_SAME(3.1415927L, be_long_double);
+      CHECK_CLOSE(3.1415927L, be_long_double, 0.001);
     }
 
     //*************************************************************************
@@ -740,10 +786,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_FLOAT_SAME(3.1415927f, le_v2);
-      CHECK_FLOAT_SAME(3.1415927f, be_v2);
-      CHECK_FLOAT_SAME(3.1415927f, le_v3);
-      CHECK_FLOAT_SAME(3.1415927f, be_v3);
+      CHECK_CLOSE(3.1415927f, le_v2, 0.001);
+      CHECK_CLOSE(3.1415927f, be_v2, 0.001);
+      CHECK_CLOSE(3.1415927f, le_v3, 0.001);
+      CHECK_CLOSE(3.1415927f, be_v3, 0.001);
     }
 
     //*************************************************************************
@@ -761,10 +807,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_FLOAT_SAME(3.1415927, le_v2);
-      CHECK_FLOAT_SAME(3.1415927, be_v2);
-      CHECK_FLOAT_SAME(3.1415927, le_v3);
-      CHECK_FLOAT_SAME(3.1415927, be_v3);
+      CHECK_CLOSE(3.1415927, le_v2, 0.001);
+      CHECK_CLOSE(3.1415927, be_v2, 0.001);
+      CHECK_CLOSE(3.1415927, le_v3, 0.001);
+      CHECK_CLOSE(3.1415927, be_v3, 0.001);
     }
 
     //*************************************************************************
@@ -782,10 +828,10 @@ namespace
       le_v3 = be_v1; // Assign le from be.
       be_v3 = le_v1; // Assign be from le.
 
-      CHECK_FLOAT_SAME(3.1415927L, le_v2);
-      CHECK_FLOAT_SAME(3.1415927L, be_v2);
-      CHECK_FLOAT_SAME(3.1415927L, le_v3);
-      CHECK_FLOAT_SAME(3.1415927L, be_v3);
+      CHECK_CLOSE(3.1415927L, le_v2, 0.001);
+      CHECK_CLOSE(3.1415927L, be_v2, 0.001);
+      CHECK_CLOSE(3.1415927L, le_v3, 0.001);
+      CHECK_CLOSE(3.1415927L, be_v3, 0.001);
     }
 
     //*************************************************************************

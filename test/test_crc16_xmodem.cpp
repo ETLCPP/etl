@@ -55,6 +55,17 @@ namespace
       CHECK_EQUAL(0x31C3U, crc);
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc16_xmodem_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_xmodem(data, data + 9);
+
+      CHECK_EQUAL(0x31C3U, crc);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc16_xmodem_add_values)
     {
@@ -127,6 +138,17 @@ namespace
       CHECK_EQUAL(0x31C3U, crc);
     }
 
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_crc16_xmodem_16_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_xmodem_t16(data, data + 9);
+
+      CHECK_EQUAL(0x31C3U, crc);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc16_xmodem_16_add_values)
     {
@@ -198,6 +220,17 @@ namespace
 
       CHECK_EQUAL(0x31C3U, crc);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_crc16_xmodem_4_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint16_t crc = etl::crc16_xmodem_t4(data, data + 9);
+
+      CHECK_EQUAL(0x31C3U, crc);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_crc16_xmodem_4_add_values)

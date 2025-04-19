@@ -55,6 +55,17 @@ namespace
       CHECK_EQUAL(0x4BU, int(crc));
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc8_j1850_4_constructor_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint8_t crc = etl::crc8_j1850_t4(data, data + 9);
+
+      CHECK_EQUAL(0x4BU, int(crc));
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc8_j1850_4_add_values)
     {
@@ -127,6 +138,17 @@ namespace
       CHECK_EQUAL(0x4BU, int(crc));
     }
 
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc8_j1850_16_constructor_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint8_t crc = etl::crc8_j1850_t16(data, data + 9);
+
+      CHECK_EQUAL(0x4BU, int(crc));
+    }
+#endif
+
     //*************************************************************************
     TEST(test_crc8_j1850_16_add_values)
     {
@@ -198,6 +220,17 @@ namespace
 
       CHECK_EQUAL(0x4BU, int(crc));
     }
+
+#if ETL_USING_CPP14 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_crc8_j1850_256_constructor_constexpr)
+    {
+      constexpr char data[] = "123456789";
+      constexpr uint8_t crc = etl::crc8_j1850(data, data + 9);
+
+      CHECK_EQUAL(0x4BU, int(crc));
+    }
+#endif
 
     //*************************************************************************
     TEST(test_crc8_j1850_256_add_values)

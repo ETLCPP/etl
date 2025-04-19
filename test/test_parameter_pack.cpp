@@ -34,7 +34,7 @@ namespace
 {
   using Pack = etl::parameter_pack<char, short, int>;
 
-  SUITE(test_type_lookup)
+  SUITE(test_parameter_pack)
   {
     //*************************************************************************
     TEST(test_index_of_type)

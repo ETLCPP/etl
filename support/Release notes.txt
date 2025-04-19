@@ -1,4 +1,68 @@
 ﻿===============================================================================
+20.40.0
+
+Updates:
+Added new C++17 function wrappers
+Simplified definition of is_base_of
+Fixed static definition for etl::string
+Redefined ETL_DEPRECATED
+Updated nth_type to handle a type list of zero length
+Updated Github Actions to checkout@v4
+Added make_delegate for C++17
+Added starts_with and ends_with to basic_string
+Made construction from std::basic_string_view explicit
+Added contains member function to string_view
+Fixed possible null dereference for etl::multi_span operator ->
+Fixed shadowing warnings
+Changed etl::mem_cast to support bidirectional iterators
+Make 'packed' have better cross platform functionality
+
+Fixes:
+#937  ETL_USING_LEGACY_VARIANT Is always getting evaluated to 1
+#940  Allow etl::observer notification without argument
+#942  Warning on pragma c++20-compat
+#951  Can't get call_if to work because of etl::optional
+#956  Fix build error (etl::circular_buffer)
+#957  Support heterogenous lookup for maps
+#959  Treat bitset with size_type
+#972  Template not allowed warning in parameter pack
+#979  QueuedMessageRouter does not work : message are not sent to queue 
+#980  Documentation clarification: Add link from endianess to unaligned_type
+#982  Added return to etl::optional emplace, fixed typo
+#984  Update Base64 Documentation
+#986  Added const iterators to span
+#987  Fix test loop
+#992  Return reference from emplace() in etl::queue. Added return reference from stack::emplace
+#993  Need "lighter weight" ETL_ASSERT
+#997  Request: operator[ ] for containers can be configured to emit an exception
+#1000 Make ETL_TYPEDEF Trivially Copyable
+#1017 etl::max_element has undefined behavior if the range is empty
+#1016 Allow compile time CRC calculation
+#1019 UB when passing a temporary lambda to a delegate
+#1022 Request: Add option to disable non-lock-free atomics - Added is_always_lock_free member constant to etl::atomic
+#1030 Modify etl::message_packet to not require polymorphic messages
+#1031 etl::string is invalid if calling assign() with itself. Added additional checks for self assignment.
+#1032 Tasking Compiler Failure For parameter_pack.h
+
+Pull Requests:
+#947  Remove unused git submodule config
+#965  Fix accident creation of a delegate to an rvalue delegate when copying/assigning from delegate with mismatching signature
+#985  Add uncopyable.h, class uncopyable
+#986  Added const iterators to span
+#989  Packed unaligned_type
+#990  Add contains() method to etl::unordered_map and etl::unordered_set
+#992  Return reference from emplace() in etl::queue
+#999  Add at_address() to etl::unaligned_type. Added etl::unaligned_type_ext instead at_address()
+#1001 Add max_item_size() to etl::ipool
+#1002 Add singleton_base
+#1005 Fixed memory.h: mem_copy, mem_move, mem_compare for pointers to const
+#1006 Fix arm64 signed char
+#1007 Fix fixed extent span empty()
+#1021 Some minor cleanup changes
+#1014 Added missing rational arithmetic functions from <ratio>
+#1027 Add etl::make_span()
+
+===============================================================================
 20.39.4
 
 #948 Bug in queue pop can break queue.empty()
@@ -13,6 +77,8 @@ Removed C++11 restriction on etl::observer::notification
 
 Fixes:
 #917 unaligned_type doesn't compile with floating point types
+#923 Missing equality operator for class expected
+#930 Unused parameter warnings
 
 Pull Requests:
 #946 Make include paths to private files relative

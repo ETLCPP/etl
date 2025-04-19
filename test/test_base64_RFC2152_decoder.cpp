@@ -64,7 +64,7 @@ namespace
   std::vector<unsigned char> decoded_output;
   bool received_final_block = false;
 
-  codec::callback_type callback = [](const codec::span_type& sp)
+  auto lambda = [](const codec::span_type& sp)
     {
       if (sp.empty())
       {
@@ -75,6 +75,8 @@ namespace
         std::copy(sp.begin(), sp.end(), std::back_inserter(decoded_output));
       }
     };
+
+  codec::callback_type callback = lambda;
 
   std::array<unsigned char, 256> input_data =
   {

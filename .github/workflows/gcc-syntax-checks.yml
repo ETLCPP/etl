@@ -14,13 +14,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++03
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -32,13 +32,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++03
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -50,13 +50,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++11
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -68,13 +68,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++11
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -86,13 +86,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++11
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -104,13 +104,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++11
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -122,13 +122,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++14
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -140,13 +140,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++14
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -158,13 +158,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++14
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -176,13 +176,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++14
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -194,13 +194,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++17
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -212,13 +212,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++17
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -230,13 +230,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++17
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -248,13 +248,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++17
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -266,13 +266,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++20
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -284,13 +284,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check/c++20
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -302,13 +302,13 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++20
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -320,12 +320,12 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check/c++20
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax_check
         gcc --version
         make -j $(getconf _NPROCESSORS_ONLN)

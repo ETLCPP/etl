@@ -640,17 +640,12 @@ namespace etl
   {
   private:
 
-    template<typename T> struct dummy {};
-    struct internal: TDerived, dummy<int>{};
-
     static TBase* check(TBase*) { return (TBase*)0; }
-
-    template<typename T>
-    static char check(dummy<T>*) { return 0; }
+    static char check(...) { return 0; }
 
   public:
 
-    static const bool value = (sizeof(check((internal*)0)) == sizeof(TBase*));
+    static const bool value = (sizeof(check((TDerived*)0)) == sizeof(TBase*));
   };
 
   // For when TBase or TDerived is a fundamental type.
@@ -1339,6 +1334,79 @@ typedef integral_constant<bool, true>  true_type;
   // ETL extended type traits.
   //***************************************************************************
 
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// conjunction
+#if ETL_USING_CPP11
+  template <typename...>
+  struct conjunction : public etl::true_type
+  {
+  };
+
+  template <typename T1, typename... Tn>
+  struct conjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), etl::conjunction<Tn...>, T1>
+  {
+  };
+
+  template <typename T>
+  struct conjunction<T> : public T
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr bool conjunction_v = conjunction<T...>::value;
+#endif
+
+  //***************************************************************************
+  /// disjunction
+#if ETL_USING_CPP11
+  template <typename...>
+  struct disjunction : public etl::false_type
+  {
+  };
+
+  template <typename T1, typename... Tn>
+  struct disjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), T1, disjunction<Tn...>>
+  {
+  };
+
+  template <typename T1> struct disjunction<T1> : public T1
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr bool disjunction_v = etl::disjunction<T...>::value;
+#endif
+
+#endif
+
+  //***************************************************************************
+  /// exclusive_disjunction
+#if ETL_USING_CPP11
+  template <typename... TTypes>
+  struct exclusive_disjunction;
+
+  template <typename T>
+  struct exclusive_disjunction<T> : public etl::bool_constant<T::value>
+  {
+  };
+
+  // Recursive case: XOR the first two values and recurse
+  template <typename T1, typename T2, typename... TRest>
+  struct exclusive_disjunction<T1, T2, TRest...> : public etl::exclusive_disjunction<etl::integral_constant<bool, etl::disjunction<T1, T2>::value && !etl::conjunction<T1, T2>::value>, TRest...>
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr bool exclusive_disjunction_v = etl::exclusive_disjunction<T...>::value;
+#endif
+
   //***************************************************************************
   /// conditional_integral_constant
   // /\ingroup type_traits
@@ -1361,19 +1429,11 @@ typedef integral_constant<bool, true>  true_type;
 
 #if ETL_USING_CPP11
   //***************************************************************************
-  /// Template to determine if a type is one of a specified list.
+  /// Template to determine if a type is a base of all types in a specified list.
   ///\ingroup types
-  template <typename T, typename T1, typename... TRest>
-  struct is_one_of
+  template <typename T, typename... TRest>
+  struct is_one_of : etl::disjunction<etl::is_same<T, TRest>...>
   {
-    static const bool value = etl::is_same<T, T1>::value ||
-                              etl::is_one_of<T, TRest...>::value;
-  };
-
-  template <typename T, typename T1>
-  struct is_one_of<T, T1>
-  {
-    static const bool value = etl::is_same<T, T1>::value;
   };
 #else
   /*[[[cog
@@ -1407,20 +1467,45 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
 #if ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    //***************************************************************************
+    // Helper to count occurrences of a type in a list of types
+    template<typename T, typename... TTypes>
+    struct count_type;
+
+    // Base case: zero occurrences
+    template<typename T>
+    struct count_type<T> : etl::integral_constant<size_t, 0>
+    {
+    };
+
+    // Recursive case: increment count if head is the same as T, otherwise continue with tail
+    template<typename T, typename THead, typename... TTail>
+    struct count_type<T, THead, TTail...> : etl::integral_constant<size_t, (etl::is_same<T, THead>::value ? 1 : 0) + count_type<T, TTail...>::value>
+    {
+    };
+  }
+
+  template<typename T, typename... TTypes>
+  struct has_duplicates_of
+    : etl::integral_constant<bool, (private_type_traits::count_type<T, TTypes...>::value > 1)>
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TRest>
+  inline constexpr bool has_duplicates_of_v = etl::has_duplicates_of<T, TRest...>::value;
+#endif
+
+#if ETL_USING_CPP11
   //***************************************************************************
   /// Template to determine if a type is a base of all types in a specified list.
   ///\ingroup types
-  template <typename T, typename T1, typename... TRest>
-  struct is_base_of_all
+  template <typename TBase, typename... TDerived>
+  struct is_base_of_all : etl::conjunction<etl::is_base_of<TBase, TDerived>...>
   {
-    static const bool value = etl::is_base_of<T, T1>::value &&
-                              etl::is_base_of_all<T, TRest...>::value;
-  };
-
-  template <typename T, typename T1>
-  struct is_base_of_all<T, T1>
-  {
-    static const bool value = etl::is_base_of<T, T1>::value;
   };
 #endif
 
@@ -1433,23 +1518,38 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   /// Template to determine if a type is a base of any type in a specified list.
   ///\ingroup types
-  template <typename T, typename T1, typename... TRest>
-  struct is_base_of_any
+  template <typename TBase, typename... TDerived>
+  struct is_base_of_any : etl::disjunction<etl::is_base_of<TBase, TDerived>...>
   {
-    static const bool value = etl::is_base_of<T, T1>::value ||
-                              etl::is_base_of_any<T, TRest...>::value;
   };
 
-  template <typename T, typename T1>
-  struct is_base_of_any<T, T1>
-  {
-    static const bool value = etl::is_base_of<T, T1>::value;
-  };
 #endif
 
 #if ETL_USING_CPP17
   template <typename T, typename... TRest>
   inline constexpr bool is_base_of_any_v = etl::is_base_of_any<T, TRest...>::value;
+#endif
+
+  //***************************************************************************
+  /// Get the Nth base of a recursively inherited type.
+  /// Requires that the class has defined 'base_type'.
+  //*************************************************************************** 
+  // Recursive definition of the type.
+  template <size_t N, typename TType>
+  struct nth_base
+  {
+    typedef typename nth_base<N - 1U, typename TType::base_type>::type type;
+  };
+
+  template <typename TType>
+  struct nth_base<0, TType>
+  {
+    typedef TType type;
+  };
+
+#if ETL_USING_CPP11
+  template <size_t N, typename TType>
+  using nth_base_t = typename nth_base<N, TType>::type;
 #endif
 
   //***************************************************************************
@@ -1605,70 +1705,15 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP11
   //***************************************************************************
   /// are_all_same
-  template <typename T, typename T1, typename... TRest>
-  struct are_all_same
-  {
-    static const bool value = etl::is_same<T, T1>::value &&
-      etl::are_all_same<T, TRest...>::value;
-  };
-
-  template <typename T, typename T1>
-  struct are_all_same<T, T1>
-  {
-    static const bool value = etl::is_same<T, T1>::value;
-  };
-#endif
-
-#if ETL_USING_CPP17
-  template <typename T, typename T1, typename... TRest>
-  inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
-#endif
-
-  //***************************************************************************
-  /// conjunction
-#if ETL_USING_CPP11
-  template <typename...>
-  struct conjunction : public etl::true_type
-  {
-  };
-
-  template <typename T1, typename... Tn>
-  struct conjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), etl::conjunction<Tn...>, T1>
-  {
-  };
-
-  template <typename T>
-  struct conjunction<T> : public T
+  template <typename T, typename... TRest>
+  struct are_all_same : etl::conjunction<etl::is_same<T, TRest>...>
   {
   };
 #endif
 
 #if ETL_USING_CPP17
-  template <typename... T>
-  inline constexpr bool conjunction_v = conjunction<T...>::value;
-#endif
-
-  //***************************************************************************
-  /// disjunction
-#if ETL_USING_CPP11
-  template <typename...>
-  struct disjunction : public etl::false_type
-  {
-  };
-
-  template <typename T1, typename... Tn>
-  struct disjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), T1, disjunction<Tn...>>
-  {
-  };
-
-  template <typename T1> struct disjunction<T1> : public T1
-  {
-  };
-#endif
-
-#if ETL_USING_CPP17
-  template <typename... T>
-  inline constexpr bool disjunction_v = etl::disjunction<T...>::value;
+  template <typename T, typename... TRest>
+  inline constexpr bool are_all_same_v = are_all_same<T, TRest...>::value;
 #endif
 
   //***************************************************************************
@@ -2318,6 +2363,9 @@ typedef integral_constant<bool, true>  true_type;
                                                                etl::true_type,
                                                                has_duplicates<TRest...>> {};
 
+  template <typename T>
+  struct has_duplicates<T> : etl::false_type {};
+
   template <>
   struct has_duplicates<> : etl::false_type {};
 #endif
@@ -2345,18 +2393,6 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T, typename... TTypes>
   inline constexpr size_t count_of_v = etl::count_of<T, TTypes...>::value;
-#endif
-
-#if ETL_USING_CPP11
-  //*********************************************
-  // has_duplicates_of
-  template <typename T, typename... TTypes>
-  struct has_duplicates_of : etl::bool_constant<(etl::count_of<T, TTypes...>::value > 1U)> {};
-#endif
-
-#if ETL_USING_CPP17
-  template <typename T, typename... TTypes>
-  inline constexpr bool has_duplicates_of_v = etl::has_duplicates_of<T, TTypes...>::value;
 #endif
 }
 

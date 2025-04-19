@@ -181,7 +181,7 @@ namespace etl
 
     private:
 
-      unsigned char value;
+      uint_least8_t value;
     };
 
     //***********************************************************************

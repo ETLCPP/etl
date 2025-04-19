@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/span.h"
 #include "etl/array.h"
+#include "etl/unaligned_type.h"
 
 #include <array>
 #include <vector>
@@ -409,15 +410,19 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
+      CHECK_EQUAL(etldata.cbegin(), view.cbegin());
       CHECK_EQUAL(etldata.begin(), view.begin());
       CHECK_EQUAL(etldata.begin(), cview.begin());
 
+      CHECK_EQUAL(etldata.cend(), view.crbegin().base());
       CHECK_EQUAL(etldata.end(), view.rbegin().base());
       CHECK_EQUAL(etldata.end(), cview.rbegin().base());
 
+      CHECK_EQUAL(etldata.cend(), view.cend());
       CHECK_EQUAL(etldata.end(), view.end());
       CHECK_EQUAL(etldata.end(), cview.end());
 
+      CHECK_EQUAL(etldata.cbegin(), view.crend().base());
       CHECK_EQUAL(etldata.begin(), view.rend().base());
       CHECK_EQUAL(etldata.begin(), cview.rend().base());
     }
@@ -443,6 +448,22 @@ namespace
 
       CHECK_EQUAL(etldata.data(), view.data());
       CHECK_EQUAL(etldata.data(), cview.data());
+    }
+
+    //*************************************************************************
+    TEST(test_at)
+    {
+      View  view(etldata.begin(), etldata.end());
+      CView cview(etldata.begin(), etldata.end());
+
+      for (size_t i = 0UL; i < etldata.size(); ++i)
+      {
+        CHECK_EQUAL(etldata.at(i), view.at(i));
+        CHECK_EQUAL(etldata.at(i), cview.at(i));
+      }
+
+      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::array_out_of_range);
+      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -1203,6 +1224,150 @@ namespace
         writable_bytes[i] = ~writable_bytes[i];
         CHECK_EQUAL(int(pdata[i]), int(writable_bytes[i]));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_make_span_container)
+    {
+      {
+        auto s = etl::make_span(etldata);
+
+        CHECK_EQUAL(s.size(), 10);
+        View view(etldata);
+        CHECK_TRUE(etl::equal(s, view));
+      }
+      {
+        auto s = etl::make_span(cetldata);
+
+        CHECK_EQUAL(s.size(), 10);
+        View view(etldata);
+        CHECK_TRUE(etl::equal(s, view));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_advance)
+    {
+      {
+        uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        etl::span<uint8_t> data0 = data;
+
+        CHECK_EQUAL(data0.size(), 5);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 4);
+        CHECK_EQUAL(data0[0], 0x02);
+        data0.advance(2);
+        CHECK_EQUAL(data0.size(), 2);
+        CHECK_EQUAL(data0[0], 0x04);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 1);
+        CHECK_EQUAL(data0[0], 0x05);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 0);
+      }
+      {
+        const uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        etl::span<const uint8_t> data0 = data;
+
+        CHECK_EQUAL(data0.size(), 5);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 4);
+        CHECK_EQUAL(data0[0], 0x02);
+        data0.advance(2);
+        CHECK_EQUAL(data0.size(), 2);
+        CHECK_EQUAL(data0[0], 0x04);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 1);
+        CHECK_EQUAL(data0[0], 0x05);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 0);
+        data0.advance(1);
+        CHECK_EQUAL(data0.size(), 0);
+        data0.advance(100);
+        CHECK_EQUAL(data0.size(), 0);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_reinterpret_as)
+    {
+      {
+        uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+        etl::span<uint8_t> data0 = data;
+
+        etl::span<etl::be_uint16_t> data1 = data0.reinterpret_as<etl::be_uint16_t>();
+
+        CHECK_EQUAL(data1.size(), 2);
+        CHECK(data1[0] == 0x102);
+        CHECK(data1[1] == 0x304);
+      }
+      {
+        uint32_t data[] = { 0x01020304 };
+        etl::span<uint32_t> data0 = data;
+        etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+        data1 = data1.first(3);
+        etl::span<int32_t> data2 = data1.reinterpret_as<int32_t>();
+        CHECK_EQUAL(data2.size(), 0);
+      }
+      {
+        uint32_t data[] = { 0x01020304, 0x06070809 };
+        etl::span<uint32_t> data0 = data;
+        etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+        data1 = data1.first(6);
+        etl::span<int32_t> data2 = data1.reinterpret_as<int32_t>();
+        CHECK_EQUAL(data2.size(), 1);
+
+        auto it = data2.begin();
+        CHECK_NOT_EQUAL(it, data2.end());
+        ++it;
+        CHECK_EQUAL(it, data2.end());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_reinterpret_as_aligned)
+    {
+      uint32_t data[] = { 0x01020304, 0x020406080, 0x03400560};
+      etl::span<uint32_t> data0 = data;
+      CHECK_EQUAL(data0.size(), 3);
+
+      etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+      CHECK_EQUAL(data1.size(), 12);
+
+      etl::span<uint16_t> data2 = data1.subspan(2).reinterpret_as<uint16_t>();
+      CHECK_EQUAL(data2.size(), 5);
+
+      CHECK_THROW(data2 = data1.subspan(1).reinterpret_as<uint16_t>(), etl::span_alignment_exception);
+    }
+
+    //*************************************************************************
+    TEST(test_copy)
+    {
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+      uint8_t dst[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+      etl::span<uint8_t> data0 = src;
+      etl::span<uint8_t> data1 = dst;
+
+      CHECK_EQUAL(etl::copy(data0, data1), true);
+      CHECK(std::equal(data0.begin(), data0.end(), data1.begin()));
+
+      data1 = data1.subspan(1);
+
+      CHECK_EQUAL(etl::copy(data0, data1), true);
+      CHECK(std::equal(data0.begin(), data0.end(), data1.begin()));
+
+      data1 = data1.subspan(1);
+
+      CHECK_EQUAL(etl::copy(data0, data1), false);
+
+      data0 = data0.subspan(0, 0);
+
+      CHECK_EQUAL(etl::copy(data0, data1), true);
+
+      data0 = src;
+      data1 = src;
+
+      CHECK_EQUAL(etl::copy(data0, data1), true);
     }
 
 #include "etl/private/diagnostic_pop.h"

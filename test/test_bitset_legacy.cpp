@@ -1494,6 +1494,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_global_size)
+    {
+      etl::bitset<32> b(0x12345678UL);
+
+      CHECK_EQUAL(32, ETL_OR_STD17::size(b));
+    }
+
+    //*************************************************************************
     TEST(test_issue_497_count_inverted_bits)
     {
       etl::bitset<5U> bits;

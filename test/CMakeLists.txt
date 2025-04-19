@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(etl_unit_tests LANGUAGES CXX)
 
 #include(FetchContent)
@@ -410,6 +410,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wuseless-cast
 			-Wshadow
 			-Wnull-dereference
+			-g
 			)
 endif ()
 

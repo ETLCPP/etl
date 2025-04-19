@@ -30,8 +30,6 @@ SOFTWARE.
 
 #include "etl/platform.h"
 
-#if ETL_USING_CPP20
-
 #include "unit_test_framework.h"
 
 #include "etl/chrono.h"
@@ -313,5 +311,3 @@ namespace
     }
   };
 }
-
-#endif

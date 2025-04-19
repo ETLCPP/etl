@@ -38,7 +38,7 @@ SOFTWARE.
 #include "span.h"
 
 ///\defgroup multi_multi_span multi_span multi_span
-/// Scatter/Gather functionality
+/// Allows Scatter/Gather functionality
 ///\ingroup containers
 
 namespace etl
@@ -62,36 +62,56 @@ namespace etl
     //*************************************************************************
     /// Iterator
     //*************************************************************************
-    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, element_type>
+    class iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, element_type>
     {
     public:
 
       friend class multi_span;
+      friend class const_iterator;
 
-      iterator()
-        : p_current(ETL_NULLPTR)
-        , p_end(ETL_NULLPTR)
+      //*****************************************
+      ETL_CONSTEXPR14 iterator()
+        : p_span_list(ETL_NULLPTR)
+        , p_current_span(ETL_NULLPTR)
         , p_value(ETL_NULLPTR)
       {
       }
 
       //*****************************************
-      iterator& operator ++()
+      ETL_CONSTEXPR14 iterator(const iterator& other)
+        : p_span_list(other.p_span_list)
+        , p_current_span(other.p_current_span)
+        , p_value(other.p_value)
       {
-        if (p_current != p_end)
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 iterator& operator =(const iterator& rhs)
+      {
+        p_span_list    = rhs.p_span_list;
+        p_current_span = rhs.p_current_span;
+        p_value        = rhs.p_value;
+
+        return *this;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 iterator& operator ++()
+      {
+        if (p_current_span != p_span_list->end())
         {
           ++p_value;
 
-          if (p_value == p_current->end())
+          if (p_value == p_current_span->end())
           {
             do
             {
-              ++p_current;
-            } while ((p_current != p_end) && p_current->empty());
+              ++p_current_span;
+            } while ((p_current_span != p_span_list->end()) && p_current_span->empty());
 
-            if (p_current != p_end)
+            if (p_current_span != p_span_list->end())
             {
-              p_value = p_current->begin();
+              p_value = p_current_span->begin();
             }
             else
             {
@@ -104,7 +124,7 @@ namespace etl
       }
 
       //*****************************************
-      iterator operator ++(int)
+      ETL_CONSTEXPR14 iterator operator ++(int)
       {
         iterator temp = *this;
 
@@ -113,10 +133,54 @@ namespace etl
         return temp;
       }
 
+      //*****************************************
+      ETL_CONSTEXPR14 iterator& operator --()
+      {
+        if (p_current_span == p_span_list->end())
+        {
+          --p_current_span;
+          p_value = p_current_span->end();
+          --p_value;
+        }
+        else if ((p_current_span != p_span_list->begin()) || (p_value != p_current_span->begin()))
+        {
+          if (p_value == p_current_span->begin())
+          {
+            do
+            {
+              --p_current_span;
+            } while ((p_current_span != p_span_list->begin()) && p_current_span->empty());
+
+            p_value = p_current_span->end();
+            --p_value;
+          }
+          else
+          {
+            --p_value;
+          }
+        }
+        else
+        {
+          p_value = ETL_NULLPTR;
+        }
+
+        return *this;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 iterator operator --(int)
+      {
+        iterator temp = *this;
+
+        operator --();
+
+        return temp;
+      }
+
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      reference operator *()
+      ETL_CONSTEXPR14 reference operator *()
       {
         return *p_value;
       }
@@ -124,7 +188,7 @@ namespace etl
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      const_reference operator *() const
+      ETL_CONSTEXPR14 const_reference operator *() const
       {
         return *p_value;
       }
@@ -132,55 +196,57 @@ namespace etl
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      pointer operator ->()
+      ETL_CONSTEXPR14 pointer operator ->()
       {
-        return &operator*();
+        return p_value;
       }
 
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      const_pointer operator ->() const
+      ETL_CONSTEXPR14 const_pointer operator ->() const
       {
-        return &operator*();
+        return p_value;
       }
 
       //*************************************************************************
       /// == operator
       //*************************************************************************
-      friend bool operator ==(const iterator& lhs, const iterator& rhs)
+      ETL_CONSTEXPR14 friend bool operator ==(const iterator& lhs, const iterator& rhs)
       {
-        return (lhs.p_current == rhs.p_current);
+        return (lhs.p_current_span == rhs.p_current_span) && (lhs.p_value == rhs.p_value);
       }
 
       //*************************************************************************
       /// != operator
       //*************************************************************************
-      friend bool operator !=(const iterator& lhs, const iterator& rhs)
+      ETL_CONSTEXPR14 friend bool operator !=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
 
     private:
 
+      typedef const span_type*                  span_pointer;
+      typedef const span_list_type*             span_list_pointer;
       typedef typename span_list_type::iterator span_list_iterator;
 
       //*****************************************
-      iterator(span_list_iterator p_current_, span_list_iterator p_end_)
-        : p_current(p_current_)
-        , p_end(p_end_)
+      ETL_CONSTEXPR14 iterator(const span_list_type& span_list_, span_list_iterator p_current_span_)
+        : p_span_list(&span_list_)
+        , p_current_span(p_current_span_)
         , p_value(ETL_NULLPTR)
       {
-        if (p_current != p_end)
+        if (p_current_span != p_span_list->end())
         {
-          while ((p_current != p_end) && p_current->empty())
+          while ((p_current_span != p_span_list->end()) && p_current_span->empty())
           {
-            ++p_current;
+            ++p_current_span;
           }
           
-          if (p_current != p_end)
+          if (p_current_span != p_span_list->end())
           {
-            p_value = p_current->begin();
+            p_value = p_current_span->begin();
           }
           else
           {
@@ -189,12 +255,215 @@ namespace etl
         }
       }
 
-      typedef const span_type* span_list_pointer;
-
-      span_list_pointer p_current;
-      span_list_pointer p_end;
+      span_list_pointer p_span_list;
+      span_pointer      p_current_span;
       pointer           p_value;
     };
+
+    //*************************************************************************
+    /// Const Iterator
+    //*************************************************************************
+    class const_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, const element_type>
+    {
+    public:
+
+      friend class multi_span;
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator()
+        : p_span_list(ETL_NULLPTR)
+        , p_current_span(ETL_NULLPTR)
+        , p_value(ETL_NULLPTR)
+      {
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator(const const_iterator& other)
+        : p_span_list(other.p_span_list)
+        , p_current_span(other.p_current_span)
+        , p_value(other.p_value)
+      {
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator& operator =(const const_iterator& rhs)
+      {
+        p_span_list    = rhs.p_span_list;
+        p_current_span = rhs.p_current_span;
+        p_value        = rhs.p_value;
+
+        return *this;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator(const etl::multi_span<T>::iterator& other)
+        : p_span_list(other.p_span_list)
+        , p_current_span(other.p_current_span)
+        , p_value(other.p_value)
+      {
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator& operator =(const etl::multi_span<T>::iterator& rhs)
+      {
+        p_span_list    = rhs.p_span_list;
+        p_current_span = rhs.p_current_span;
+        p_value        = rhs.p_value;
+
+        return *this;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator& operator ++()
+      {
+        if (p_current_span != p_span_list->end())
+        {
+          ++p_value;
+
+          if (p_value == p_current_span->end())
+          {
+            do
+            {
+              ++p_current_span;
+            } while ((p_current_span != p_span_list->end()) && p_current_span->empty());
+
+            if (p_current_span != p_span_list->end())
+            {
+              p_value = p_current_span->begin();
+            }
+            else
+            {
+              p_value = ETL_NULLPTR;
+            }
+          }
+        }
+
+        return *this;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator operator ++(int)
+      {
+        const_iterator temp = *this;
+
+        operator ++();
+
+        return temp;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator& operator --()
+      {
+        if (p_current_span == p_span_list->end())
+        {
+          --p_current_span;
+          p_value = p_current_span->end();
+          --p_value;
+        }
+        else if ((p_current_span != p_span_list->begin()) || (p_value != p_current_span->begin()))
+        {
+          if (p_value == p_current_span->begin())
+          {
+            do
+            {
+              --p_current_span;
+            } while ((p_current_span != p_span_list->begin()) && p_current_span->empty());
+
+            p_value = p_current_span->end();
+            --p_value;
+          }
+          else
+          {
+            --p_value;
+          }
+        }
+        else
+        {
+          p_value = ETL_NULLPTR;
+        }
+
+        return *this;
+      }
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator operator --(int)
+      {
+        const_iterator temp = *this;
+
+        operator --();
+
+        return temp;
+      }
+
+      //*************************************************************************
+      /// * operator
+      //*************************************************************************
+      ETL_CONSTEXPR14 const_reference operator *() const
+      {
+        return *p_value;
+      }
+
+      //*************************************************************************
+      /// -> operator
+      //*************************************************************************
+      ETL_CONSTEXPR14 const_pointer operator ->() const
+      {
+        return p_value;
+      }
+
+      //*************************************************************************
+      /// == operator
+      //*************************************************************************
+      ETL_CONSTEXPR14 friend bool operator ==(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return (lhs.p_current_span == rhs.p_current_span) && (lhs.p_value == rhs.p_value);
+      }
+
+      //*************************************************************************
+      /// != operator
+      //*************************************************************************
+      ETL_CONSTEXPR14 friend bool operator !=(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      typedef const span_type*                        span_pointer;
+      typedef const span_list_type*                   span_list_pointer;
+      typedef const typename span_list_type::iterator span_list_iterator;
+
+      //*****************************************
+      ETL_CONSTEXPR14 const_iterator(const span_list_type& span_list_, span_list_iterator p_current_span_)
+        : p_span_list(&span_list_)
+        , p_current_span(p_current_span_)
+        , p_value(ETL_NULLPTR)
+      {
+        if (p_current_span != p_span_list->end())
+        {
+          while ((p_current_span != p_span_list->end()) && p_current_span->empty())
+          {
+            ++p_current_span;
+          }
+
+          if (p_current_span != p_span_list->end())
+          {
+            p_value = p_current_span->begin();
+          }
+          else
+          {
+            p_value = ETL_NULLPTR;
+          }
+        }
+      }
+
+      span_list_pointer p_span_list;
+      span_pointer      p_current_span;
+      const_pointer     p_value;
+    };
+
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     //*************************************************************************
     /// Constructor.
@@ -229,7 +498,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR14 multi_span(TIterator begin_, TIterator end_)
-      : span_list(etl::addressof(*begin_), etl::distance(begin_, end_))
+      : span_list(etl::to_address(begin_), etl::distance(begin_, end_))
     {
     }
 
@@ -238,7 +507,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR14 multi_span(TIterator begin_, size_t length_)
-      : span_list(etl::addressof(*begin_), length_)
+      : span_list(etl::to_address(begin_), length_)
     {
     }
 
@@ -253,7 +522,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator
     //*************************************************************************
-    ETL_CONSTEXPR14 multi_span& operator = (const multi_span & other)
+    ETL_CONSTEXPR14 multi_span& operator =(const multi_span & other)
     {
       span_list = other.span_list;
 
@@ -265,7 +534,15 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 iterator begin() const
     {
-      return iterator(span_list.begin(), span_list.end());
+      return iterator(span_list, span_list.begin());
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    ETL_CONSTEXPR14 const_iterator cbegin() const
+    {
+      return const_iterator(span_list, span_list.cbegin());
     }
 
     //*************************************************************************
@@ -273,7 +550,66 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 iterator end() const
     {
-      return iterator(span_list.end(), span_list.end());
+      return iterator(span_list, span_list.end());
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    ETL_CONSTEXPR14 const_iterator cend() const
+    {
+      return const_iterator(span_list, span_list.cend());
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    ETL_CONSTEXPR14 reverse_iterator rbegin() const
+    {
+      return reverse_iterator(end());
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    ETL_CONSTEXPR14 reverse_iterator crbegin() const
+    {
+      return const_reverse_iterator(cend());
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    ETL_CONSTEXPR14 reverse_iterator rend() const
+    {
+      return reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    ETL_CONSTEXPR14 const_reverse_iterator crend() const
+    {
+      return const_reverse_iterator(cbegin());
+    }
+
+    //*************************************************************************
+    /// Returns a reference to the indexed value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 reference operator[](size_t i) const
+    {      
+      // Find the span in the span list.
+      size_t number_of_spans = span_list.size();
+
+      size_t index = 0;
+
+      while ((i >= span_list[index].size()) && (index < number_of_spans))
+      {
+        i -= span_list[index].size();
+        ++index;
+      }
+
+      return span_list[index][i];
     }
 
     //*************************************************************************

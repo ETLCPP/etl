@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -44,7 +44,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -73,7 +73,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -99,10 +99,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-12]
+        os: [macos-13]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
@@ -121,10 +121,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-12]
+        os: [macos-13]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
@@ -143,10 +143,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-12]
+        os: [macos-13]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
@@ -165,10 +165,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-12]
+        os: [macos-13]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |

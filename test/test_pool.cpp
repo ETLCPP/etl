@@ -289,6 +289,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_max_item_size)
+    {
+      etl::pool<Test_Data, 4> pool;
+
+      CHECK(pool.max_item_size() == sizeof(Test_Data));
+    }
+
+    //*************************************************************************
     TEST(test_size)
     {
       etl::pool<Test_Data, 4> pool;

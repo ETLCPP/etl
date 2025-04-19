@@ -35,6 +35,8 @@ SOFTWARE.
 #include "static_assert.h"
 #include "gcd.h"
 
+#include "type_traits.h"
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -138,6 +140,26 @@ namespace etl
   {
   };
 
+#if ETL_USING_CPP17
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_equal_v = ratio_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_not_equal_v = ratio_not_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_less_v = ratio_less<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_less_equal_v = ratio_less_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_greater_v = ratio_greater<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_greater_equal_v = ratio_greater_equal<R1, R2>::value;
+#endif
+
   //***********************************************************************
   /// Predefined ration types.
   //***********************************************************************
@@ -182,7 +204,93 @@ namespace etl
   typedef ratio<169, 239> ratio_1_over_root2;
 
   /// An approximation of e.
-  typedef ratio<106, 39> ratio_e;
+  typedef ratio<326, 120> ratio_e;
+
+#if ETL_USING_CPP11
+  namespace private_ratio
+  {
+    // Primary template for GCD calculation
+    template <typename T, T A, T B, bool = (B == 0)>
+    struct ratio_gcd;
+
+    // Specialisation for the case when B is not zero
+    template <typename T, T A, T B>
+    struct ratio_gcd<T, A, B, false>
+    {
+      static constexpr T value = ratio_gcd<T, B, A % B>::value;
+    };
+
+    // Specialisation for the case when B is zero
+    template <typename T, T A, T B>
+    struct ratio_gcd<T, A, B, true>
+    {
+      static constexpr T value = (A < 0) ? -A : A;
+    };
+
+    // Primary template for LCM calculation
+    template <typename T, T A, T B>
+    struct ratio_lcm
+    {
+    private:
+
+      static constexpr T product = ((A * B) < 0) ? -(A * B) : A * B;
+
+    public:
+
+      static constexpr T value = product / ratio_gcd<T, A, B>::value;
+    };
+
+    template<typename R1>
+    struct ratio_reduce
+    {
+    private:
+
+      static ETL_CONSTEXPR11 intmax_t gcd = etl::private_ratio::ratio_gcd<intmax_t, R1::num, R1::den>::value;
+
+    public:
+
+      using type = ratio<R1::num / gcd, R1::den / gcd>;
+    };
+
+    template<typename R1, typename R2>
+    struct ratio_add
+    {
+    private:
+
+      static ETL_CONSTEXPR11 intmax_t lcm = etl::private_ratio::ratio_lcm<intmax_t, R1::den, R2::den>::value;
+
+    public:
+
+      using type = typename ratio_reduce<ratio<R1::num * lcm / R1::den + R2::num * lcm / R2::den, lcm>>::type;
+    };
+
+    template<typename R1, typename R2>
+    struct ratio_subtract
+    {
+    public:
+      using type = typename ratio_add<R1, ratio<-R2::num, R2::den>>::type;
+    };
+
+    template<typename R1, typename R2>
+    struct ratio_multiply
+    {
+    private:
+      static ETL_CONSTEXPR11 intmax_t gcd1 = etl::private_ratio::ratio_gcd<intmax_t, R1::num, R2::den>::value;
+      static ETL_CONSTEXPR11 intmax_t gcd2 = etl::private_ratio::ratio_gcd<intmax_t, R2::num, R1::den>::value;
+
+    public:
+      using type = ratio<(R1::num / gcd1) * (R2::num / gcd2), (R1::den / gcd2) * (R2::den / gcd1)>;
+    };
+
+    template<typename R1, typename R2>
+    struct ratio_divide
+    {
+    public:
+      using type = typename ratio_multiply<R1, ratio<R2::den, R2::num>>::type;
+    };
+  }
+
+#endif
 }
 
 #endif

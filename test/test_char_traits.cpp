@@ -61,7 +61,7 @@ namespace
       CHECK_EQUAL(6U, etl::strlen(U"qwerty"));
     }
 
-#if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_strlen_constexpr)
     {

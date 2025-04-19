@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/string_view.h"
 #include "etl/string.h"
 #include "etl/wstring.h"
+#include "etl/u8string.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
 #include "etl/hash.h"
@@ -45,12 +46,18 @@ namespace
 {
   using View    = etl::string_view;
   using WView   = etl::wstring_view;
+#if ETL_USING_CPP20
+  using U8View  = etl::u8string_view;
+#endif
   using U16View = etl::u16string_view;
   using U32View = etl::u32string_view;
 
   etl::string<11> etltext    = "Hello World";
   std::string text           = "Hello World";
   std::wstring wtext         = L"Hello World";
+#if ETL_USING_CPP20
+  std::u8string u8text       = u8"Hello World";
+#endif
   std::u16string u16text     = u"Hello World";
   std::u32string u32text     = U"Hello World";
   std::string text_smaller   = "Hello Worlc";
@@ -736,6 +743,39 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_contains)
+    {
+      const char* s1 = "Hello";
+      const char* s2 = "llo Wor";
+      const char* s3 = "World";
+      const char* s4 = "Xorld";
+      const char* s5 = "Hello Worldxxxxxx";
+
+      View view(text.c_str());
+      View v1(s1);
+      View v2(s2);
+      View v3(s3);
+      View v4(s4);
+      View v5(s5);
+
+      CHECK_TRUE(view.contains(v1));
+      CHECK_TRUE(view.contains(v2));
+      CHECK_TRUE(view.contains(v3));
+      CHECK_FALSE(view.contains(v4));
+      CHECK_FALSE(view.contains(v5));
+
+      CHECK_TRUE(view.contains('H'));
+      CHECK_TRUE(view.contains('l'));
+      CHECK_FALSE(view.contains('X'));
+
+      CHECK_TRUE(view.contains(s1));
+      CHECK_TRUE(view.contains(s2));
+      CHECK_TRUE(view.contains(s3));
+      CHECK_FALSE(view.contains(s4));
+      CHECK_FALSE(view.contains(s5));
+    }
+
+    //*************************************************************************
     TEST(test_find)
     {
       const char* s1 = "Hello";
@@ -1080,5 +1120,40 @@ namespace
       CHECK_TRUE((u16view == U16View{ u"Hello World", etl::strlen(u"Hello World") }));
       CHECK_TRUE((u32view == U32View{ U"Hello World", etl::strlen(U"Hello World") }));
     }
+
+    //*************************************************************************
+#if ETL_USING_STL
+    TEST(write_to_std_stream)
+    {
+      View view{ "Hello World" };
+      WView wview{ L"Hello World" };
+      U16View u16view{ u"Hello World" };
+      U32View u32view{ U"Hello World" };
+
+      std::stringstream sstream;
+      std::wstringstream wsstream;
+      std::basic_stringstream<char16_t> u16sstream;
+      std::basic_stringstream<char32_t> u32sstream;
+
+      sstream << view;
+      std::string sstream_string = sstream.str();
+      wsstream << wview;
+      std::wstring wsstream_string = wsstream.str();
+      u16sstream << u16view;
+      std::u16string u16sstream_string = u16sstream.str();
+      u32sstream << u32view;
+      std::u32string u32sstream_string = u32sstream.str();
+
+      View sstream_view(sstream_string.data(), sstream_string.size());
+      WView wsstream_view(wsstream_string.data(), wsstream_string.size());
+      U16View u16sstream_view(u16sstream_string.data(), u16sstream_string.size());
+      U32View u32sstream_view(u32sstream_string.data(), u32sstream_string.size());
+
+      CHECK_TRUE(view == sstream_view);
+      CHECK_TRUE(wview == wsstream_view);
+      CHECK_TRUE(u16view == u16sstream_view);
+      CHECK_TRUE(u32view == u32sstream_view);
+    }
+#endif
   };
 }

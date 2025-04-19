@@ -239,19 +239,19 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_)
-      : mbegin(etl::addressof(*begin_)),
-        mend(etl::addressof(*begin_) + etl::distance(begin_, end_))
+      : mbegin(etl::to_address(begin_)),
+        mend(etl::to_address(begin_) + etl::distance(begin_, end_))
     {
     }
 
     //*************************************************************************
-    /// Construct from C array
+    /// Construct from iterator and size
     //*************************************************************************
     template <typename TIterator,
               typename TSize>
     ETL_CONSTEXPR array_view(const TIterator begin_, const TSize size_)
-      : mbegin(etl::addressof(*begin_)),
-        mend(etl::addressof(*begin_) + size_)
+      : mbegin(etl::to_address(begin_)),
+        mend(etl::to_address(begin_) + size_)
     {
     }
 
@@ -458,8 +458,8 @@ namespace etl
     template <typename TIterator>
     void assign(const TIterator begin_, const TIterator end_)
     {
-      mbegin = etl::addressof(*begin_);
-      mend   = etl::addressof(*begin_) + etl::distance(begin_, end_);
+      mbegin = etl::to_address(begin_);
+      mend   = etl::to_address(begin_) + etl::distance(begin_, end_);
     }
 
     //*************************************************************************
@@ -469,8 +469,8 @@ namespace etl
               typename TSize>
     void assign(const TIterator begin_, const TSize size_)
     {
-      mbegin = etl::addressof(*begin_);
-      mend   = etl::addressof(*begin_) + size_;
+      mbegin = etl::to_address(begin_);
+      mend   = etl::to_address(begin_) + size_;
     }
 
 #if defined(ETL_ARRAY_VIEW_IS_MUTABLE)

@@ -30,25 +30,43 @@ SOFTWARE.
 #define ETL_NTH_TYPE_INCLUDED
 
 #include "platform.h"
+#include "static_assert.h"
 
+#if ETL_NOT_USING_CPP11
+  #if !defined(ETL_IN_UNIT_TEST)
+    #error NOT SUPPORTED FOR C++03 OR BELOW
+  #endif
+#else
 namespace etl
 {
-#if ETL_USING_CPP11
-  template <size_t N, typename T1, typename... TRest>
+  namespace private_nth_type
+  {
+    //***********************************
+    template <size_t N, typename T1, typename... TRest>
+    struct nth_type_helper
+    {
+      using type = typename nth_type_helper<N - 1U, TRest...>::type;
+    };
+
+    template <typename T1, typename... TRest>
+    struct nth_type_helper<0U, T1, TRest...>
+    {
+      using type = T1;
+    };
+  }
+
+  //***********************************
+  template <size_t N, typename... TTypes>
   struct nth_type
   {
-    using type = typename nth_type<N - 1U, TRest...>::type;
+    ETL_STATIC_ASSERT(N < sizeof...(TTypes), "etl::nth_type index 'N' out of bounds");
+
+    using type = typename private_nth_type::nth_type_helper<N, TTypes...>::type;
   };
 
-  template <typename T1, typename... TRest>
-  struct nth_type<0U, T1, TRest...>
-  {
-    using type = T1;
-  };
-
+  //***********************************
   template <size_t N, typename... TTypes>
   using nth_type_t = typename nth_type<N, TTypes...>::type;
-#endif
 }
-
+#endif
 #endif

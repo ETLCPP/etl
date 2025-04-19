@@ -30,8 +30,6 @@ SOFTWARE.
 
 #include "etl/platform.h"
 
-#if ETL_HAS_VIRTUAL_MESSAGES
-
 #include "etl/message_packet.h"
 
 #include <string>
@@ -52,21 +50,24 @@ namespace
   struct Message1 : public etl::message<MESSAGE1>
   {
     Message1(int x_)
-      : x(x_)
+      : etl::message<MESSAGE1>()
+      , x(x_)
       , moved(false)
       , copied(false)
     {
     }
 
     Message1(const Message1& other)
-      : x(other.x)
+      : etl::message<MESSAGE1>()
+      , x(other.x)
       , moved(false)
       , copied(true)
     {
     }
 
     Message1(Message1&& other)
-      : x(std::move(other.x))
+      : etl::message<MESSAGE1>()
+      , x(std::move(other.x))
       , moved(true)
       , copied(false)
     {
@@ -96,21 +97,24 @@ namespace
   struct Message2 : public etl::message<MESSAGE2>
   {
     Message2(double x_)
-      : x(x_)
+      : etl::message<MESSAGE2>()
+      , x(x_)
       , moved(false)
       , copied(false)
     {
     }
 
     Message2(const Message2& other)
-      : x(other.x)
+      : etl::message<MESSAGE2>()
+      , x(other.x)
       , moved(false)
       , copied(true)
     {
     }
 
     Message2(Message2&& other)
-      : x(std::move(other.x))
+      : etl::message<MESSAGE2>()
+      , x(std::move(other.x))
       , moved(true)
       , copied(false)
     {
@@ -140,28 +144,32 @@ namespace
   struct Message3 : public etl::message<MESSAGE3>
   {
     Message3(const std::string& x_)
-      : x(x_)
+      : etl::message<MESSAGE3>()
+      , x(x_)
       , moved(false)
       , copied(false)
     {
     }
 
     Message3(std::string&& x_)
-      : x(std::move(x_))
+      : etl::message<MESSAGE3>()
+      , x(std::move(x_))
       , moved(true)
       , copied(false)
     {
     }
 
     Message3(const Message3& other)
-      : x(other.x)
+      : etl::message<MESSAGE3>()
+      , x(other.x)
       , moved(false)
       , copied(true)
     {
     }
 
     Message3(Message3&& other)
-      : x(std::move(other.x))
+      : etl::message<MESSAGE3>()
+      , x(std::move(other.x))
       , moved(true)
       , copied(false)
     {
@@ -481,5 +489,3 @@ namespace
     }
   };
 }
-
-#endif

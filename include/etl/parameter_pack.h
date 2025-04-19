@@ -134,7 +134,7 @@ namespace etl
   inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 #endif
 
-#if ETL_USING_CPP17 && (!ETL_USING_GCC_COMPILER || (__GNUC__ > 7))
+#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER
   //***********************************
   template <typename... TTypes>
   template <typename T>

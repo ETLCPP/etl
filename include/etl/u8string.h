@@ -49,7 +49,7 @@ namespace etl
   {
     inline namespace string_literals
     {
-      constexpr etl::u8string_view operator ""_sv(const char8_t* str, size_t length) noexcept
+      inline constexpr etl::u8string_view operator ""_sv(const char8_t* str, size_t length) noexcept
       {
         return etl::u8string_view{ str, length };
       }
@@ -245,6 +245,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u8string& operator = (const etl::u8string_view& view)
+    {
+      this->assign(view);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #if ETL_HAS_ISTRING_REPAIR
@@ -409,7 +419,6 @@ namespace etl
       return *this;
     }
 
-
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -429,6 +438,16 @@ namespace etl
     u8string_ext& operator = (const value_type* text)
     {
       this->assign(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    u8string_ext& operator = (const etl::u8string_view& view)
+    {
+      this->assign(view);
 
       return *this;
     }

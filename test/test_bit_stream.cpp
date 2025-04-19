@@ -930,8 +930,8 @@ namespace
     //*************************************************************************
     TEST(put_get_multiple_variable_size)
     {
-      char c1 = 26;             // 6 bits
-      char c2 = -10;            // 7 bits
+      int8_t c1 = 26;             // 6 bits
+      int8_t c2 = -10;            // 7 bits
       unsigned short s1 = 6742; // 13 bits
       unsigned short s2 = 1878; // 11 bits
       int32_t i1 = 2448037L;     // 23 bits
@@ -983,8 +983,8 @@ namespace
 
       bit_stream.restart();
 
-      char rc1 = 0;
-      char rc2 = 0;
+      int8_t rc1 = 0;
+      int8_t rc2 = 0;
       unsigned short rs1 = 0;
       unsigned short rs2 = 0;
       int32_t ri1 = 0;

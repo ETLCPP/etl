@@ -181,15 +181,7 @@ namespace etl
 
     private:
 
-      //***********************************************************************
-      /// Normalise to a in-range month
-      //***********************************************************************
-      ETL_CONSTEXPR void normalise() ETL_NOEXCEPT
-      {
-        value = ((value % 12U) == 0U) ? 12U : value;
-      }
-
-      unsigned char value;
+      uint_least8_t value;
     };
 
     //***********************************************************************
@@ -302,9 +294,18 @@ namespace etl
     {
       if (m1.ok() && m2.ok())
       {
-        etl::chrono::months ms(static_cast<signed>(static_cast<unsigned>(m1)) - 
-                               static_cast<signed>(static_cast<unsigned>(m2)) % 12);
+        // Calculate the signed difference.
+        int difference = static_cast<int>(static_cast<unsigned>(m1)) - static_cast<int>(static_cast<unsigned>(m2));
 
+        // Adjust for wrap-around.
+        if (difference < 0)
+        {
+          difference += 12;
+        }
+
+        etl::chrono::months ms(difference);
+
+        // Check for validity.
         if (m1 == (m2 + ms))
         {
           return ms;
