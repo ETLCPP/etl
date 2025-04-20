@@ -185,6 +185,40 @@ namespace etl
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::max());
       }
 
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator ++()
+      {
+        ++value;
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration operator ++(int)
+      {
+        duration temp(*this);      
+        ++value;
+
+        return temp;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator --()
+      {
+        --value;
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration operator --(int)
+      {
+        duration temp(*this);
+        --value;
+
+        return temp;
+      }
+
     private:
 
       TRep value;
@@ -352,6 +386,130 @@ namespace etl
   ETL_CONSTEXPR14 bool operator >=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     return !(lhs < rhs);
+  }
+
+  //***********************************************************************
+  /// Operator +
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type 
+    operator +(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  {
+    // Determine the common type of the two durations.
+    using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
+
+    // Convert both durations to the common type.
+    common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(lhs);
+    common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(rhs);
+
+    // Return the sum of the two converted durations.
+    return common_duration(lhs_converted.count() + rhs_converted.count());
+  }
+
+  //***********************************************************************
+  /// Operator -
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type 
+    operator -(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  {
+    // Determine the common type of the two durations.
+    using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
+
+    // Convert both durations to the common type.
+    common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(lhs);
+    common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(rhs);
+
+    // Return the sum of the two converted durations.
+    return common_duration(lhs_converted.count() - rhs_converted.count());
+  }
+
+  //***********************************************************************
+  /// Operator *
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2>
+  ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
+    operator *(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs)
+  {
+    using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
+    using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
+
+    // Multiply the count of the duration by the scalar value
+    return result_duration(static_cast<common_rep>(lhs.count()) * static_cast<common_rep>(rhs));
+  }
+
+  //***********************************************************************
+  /// Operator *
+  //***********************************************************************
+  template <typename TRep1, typename TRep2, typename TPeriod2>
+  ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod2>
+    operator *(const TRep1& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  {
+    using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
+    using result_duration = etl::chrono::duration<common_rep, TPeriod2>;
+
+    // Multiply the count of the duration by the scalar value
+    return result_duration(static_cast<common_rep>(rhs.count()) * static_cast<common_rep>(lhs));
+  }
+
+  //***********************************************************************
+  /// Operator /
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2>
+  ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
+    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs)
+  {
+    using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
+    using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
+
+    // Multiply the count of the duration by the scalar value
+    return result_duration(static_cast<common_rep>(lhs.count()) / static_cast<common_rep>(rhs));
+  }
+
+  //***********************************************************************
+  /// Operator /
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+  ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type
+    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  {
+    // Determine the common type of the two durations.
+    using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
+
+    common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(lhs);
+    common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(rhs);
+
+    return typename etl::common_type<TRep1, TRep2>::type(lhs_converted.count() / rhs_converted.count());
+  }
+
+  //***********************************************************************
+  /// Operator %
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2>
+  ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
+    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs)
+  {
+    using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
+    using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
+
+    // Mod the count of the duration by the scalar value
+    return result_duration(static_cast<common_rep>(lhs.count()) % static_cast<common_rep>(rhs));
+  }
+
+  //***********************************************************************
+  /// Operator %
+  //***********************************************************************
+  template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+  ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type
+    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  {
+    // Determine the common type of the two durations.
+    using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
+
+    common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(lhs);
+    common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(rhs);
+
+    return typename etl::common_type<TRep1, TRep2>::type(lhs_converted.count() % rhs_converted.count());
   }
 }
 
