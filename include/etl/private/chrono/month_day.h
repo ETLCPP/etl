@@ -96,12 +96,72 @@ namespace etl
       }
 
       //*************************************************************************
-      /// Returns true if the two instances are equal.
+      /// Equality operator.
       //*************************************************************************
       friend ETL_CONSTEXPR bool operator ==(const etl::chrono::month_day& lhs, 
                                             const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
         return (lhs.d == rhs.d) && (lhs.m == rhs.m);
+      }
+
+      //*************************************************************************
+      /// Equality operator.
+      //*************************************************************************
+      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::month_day& lhs, 
+                                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      {
+        return !(lhs == rhs);
+      }
+
+      //*************************************************************************
+      /// Less-than operator.
+      //*************************************************************************
+      friend ETL_NODISCARD ETL_CONSTEXPR
+        bool operator <(const etl::chrono::month_day& lhs,
+                        const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      {
+        if (lhs.month() < rhs.month())
+        {
+          return true;
+        }
+        else if (lhs.month() == rhs.month())
+        {
+          return lhs.day() < rhs.day();
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+      //*************************************************************************
+      /// Less-than-equal operator.
+      //*************************************************************************
+      friend ETL_NODISCARD ETL_CONSTEXPR
+        bool operator <=(const etl::chrono::month_day& lhs,
+                         const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      {
+        return !(rhs < lhs);
+      }
+
+      //*************************************************************************
+      /// Greater-than operator.
+      //*************************************************************************
+      friend ETL_NODISCARD ETL_CONSTEXPR
+        bool operator >(const etl::chrono::month_day& lhs,
+                         const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      {
+        return rhs < lhs;
+      }
+
+      //*************************************************************************
+      /// Greater-than-equal operator.
+      //*************************************************************************
+      friend ETL_NODISCARD ETL_CONSTEXPR
+        bool operator >=(const etl::chrono::month_day& lhs,
+                         const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      {
+        return !(lhs < rhs);
       }
 
       //***********************************************************************
@@ -111,7 +171,7 @@ namespace etl
       friend [[nodiscard]] constexpr auto operator <=>(const etl::chrono::month_day& lhs, 
                                                        const etl::chrono::month_day& rhs) noexcept
       {
-        auto cmp = lhs.m <=> rhs.m;
+        auto cmp = lhs.month() <=> rhs.month();
 
         if (cmp != 0)
         {
@@ -119,10 +179,28 @@ namespace etl
         }
         else
         {
-          return lhs.d <=> rhs.d;
+          return lhs.day() <=> rhs.day();
         }
       }
 #endif
+
+      //***********************************************************************
+      /// Compare month_day with another.
+      /// if month < other.month, returns -1;
+      /// else if month > other.month, returns 1;
+      /// else if day < other.day, returns -1;
+      /// else if day > other.day, returns 1;
+      /// else returns 0;
+      //***********************************************************************
+      ETL_CONSTEXPR14 int compare(const month_day& other) const ETL_NOEXCEPT 
+      {
+        if (m < other.m) return -1;
+        if (m > other.m) return 1;
+        if (d < other.d) return -1;
+        if (d > other.d) return 1;
+      
+        return 0;
+      }
 
     private:
 

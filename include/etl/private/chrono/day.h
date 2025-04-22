@@ -164,6 +164,20 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Compare day with another.
+      /// if day < other, returns -1;
+      /// else if day > other, returns 1;
+      /// else returns 0;
+      //***********************************************************************
+      ETL_CONSTEXPR14 int compare(const day& other) const ETL_NOEXCEPT 
+      {
+        if (value < other.value) return -1;
+        if (value > other.value) return 1;
+
+        return 0;
+      }
+
+      //***********************************************************************
       /// The minimum day value for which ok() will return <b>true</b>
       //***********************************************************************
       static ETL_CONSTEXPR etl::chrono::day min() ETL_NOEXCEPT

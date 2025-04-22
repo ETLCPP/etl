@@ -520,7 +520,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_scalar_positive_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 5;              // Scalar value
 
       auto result = s1 * scalar;
@@ -531,7 +531,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_scalar_negative_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = -3;             // Negative scalar value
 
       auto result = s1 * scalar;
@@ -542,7 +542,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_scalar_zero_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 0;              // Scalar value
 
       auto result = s1 * scalar;
@@ -553,7 +553,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_large_scalar_duration_scalar)
     {
-      etl::chrono::seconds s1(1000); // 1,000 seconds
+      Chrono::seconds s1(1000); // 1,000 seconds
       int scalar = 1000000;          // Large scalar value
 
       auto result = s1 * scalar;
@@ -564,7 +564,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_floating_point_scalar_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       double scalar = 2.5;         // Floating-point scalar value
 
       auto result = s1 * scalar;
@@ -575,7 +575,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_different_representation_duration_scalar)
     {
-      etl::chrono::milliseconds ms1(500); // 500 milliseconds
+      Chrono::milliseconds ms1(500); // 500 milliseconds
       int scalar = 3;                     // Scalar value
 
       auto result = ms1 * scalar;
@@ -586,7 +586,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_scalar_positive_scalar_duration)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 5;              // Scalar value
 
       auto result = scalar * s1;
@@ -597,7 +597,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_scalar_negative_scalar_duration)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = -3;             // Negative scalar value
 
       auto result = scalar * s1;
@@ -608,7 +608,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_scalar_zero_scalar_duration)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 0;              // Scalar value
 
       auto result = scalar * s1;
@@ -619,7 +619,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_large_scalar_scalar_duration)
     {
-      etl::chrono::seconds s1(1000); // 1,000 seconds
+      Chrono::seconds s1(1000); // 1,000 seconds
       int scalar = 1000000;          // Large scalar value
 
       auto result = scalar * s1;
@@ -630,7 +630,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_floating_point_scalar_scalar_duration)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       double scalar = 2.5;         // Floating-point scalar value
 
       auto result = scalar * s1;
@@ -641,7 +641,7 @@ namespace
     //*************************************************************************
     TEST(test_multiplication_with_different_representation_scalar_duration)
     {
-      etl::chrono::milliseconds ms1(500); // 500 milliseconds
+      Chrono::milliseconds ms1(500); // 500 milliseconds
       int scalar = 3;                     // Scalar value
 
       auto result = scalar * ms1;
@@ -652,7 +652,7 @@ namespace
     //*************************************************************************
     TEST(test_division_with_scalar_positive_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 5;              // Scalar value
 
       auto result = s1 / scalar;
@@ -663,7 +663,7 @@ namespace
     //*************************************************************************
     TEST(test_division_with_scalar_negative_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = -2;             // Negative scalar value
 
       auto result = s1 / scalar;
@@ -674,7 +674,7 @@ namespace
     //*************************************************************************
     TEST(test_division_with_large_scalar_duration_scalar)
     {
-      etl::chrono::seconds s1(10000000); // 10,000,000 seconds
+      Chrono::seconds s1(10000000); // 10,000,000 seconds
       int scalar = 1000000;              // Large scalar value
 
       auto result = s1 / scalar;
@@ -685,7 +685,7 @@ namespace
     //*************************************************************************
     TEST(test_division_with_floating_point_scalar_duration_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       double scalar = 2.5;         // Floating-point scalar value
 
       auto result = s1 / scalar;
@@ -696,7 +696,7 @@ namespace
     //*************************************************************************
     TEST(test_division_with_different_representation_duration_scalar)
     {
-      etl::chrono::milliseconds ms1(500); // 500 milliseconds
+      Chrono::milliseconds ms1(500); // 500 milliseconds
       int scalar = 2;                     // Scalar value
 
       auto result = ms1 / scalar;
@@ -707,8 +707,8 @@ namespace
     //*************************************************************************
     TEST(test_division_same_type)
     {
-      etl::chrono::seconds s1(20); // 20 seconds
-      etl::chrono::seconds s2(10); // 10 seconds
+      Chrono::seconds s1(20); // 20 seconds
+      Chrono::seconds s2(10); // 10 seconds
 
       auto result = s1 / s2;
 
@@ -718,8 +718,8 @@ namespace
     //*************************************************************************
     TEST(test_division_different_types)
     {
-      etl::chrono::seconds s1(10);        // 10 seconds
-      etl::chrono::milliseconds ms1(500); // 500 milliseconds
+      Chrono::seconds s1(10);        // 10 seconds
+      Chrono::milliseconds ms1(500); // 500 milliseconds
 
       auto result = s1 / ms1;
 
@@ -730,8 +730,8 @@ namespace
     //*************************************************************************
     TEST(test_division_with_large_values)
     {
-      etl::chrono::seconds s1(1000000);      // 1,000,000 seconds
-      etl::chrono::milliseconds ms1(500000); // 500,000 milliseconds
+      Chrono::seconds s1(1000000);      // 1,000,000 seconds
+      Chrono::milliseconds ms1(500000); // 500,000 milliseconds
 
       auto result = s1 / ms1;
 
@@ -741,8 +741,8 @@ namespace
     //*************************************************************************
     TEST(test_division_resulting_in_fraction)
     {
-      etl::chrono::seconds s1(7); // 7 seconds
-      etl::chrono::seconds s2(3); // 3 seconds
+      Chrono::seconds s1(7); // 7 seconds
+      Chrono::seconds s2(3); // 3 seconds
 
       auto result = s1 / s2;
 
@@ -752,8 +752,8 @@ namespace
     //*************************************************************************
     TEST(test_division_by_larger_duration)
     {
-      etl::chrono::seconds s1(5);  // 5 seconds
-      etl::chrono::seconds s2(10); // 10 seconds
+      Chrono::seconds s1(5);  // 5 seconds
+      Chrono::seconds s2(10); // 10 seconds
 
       auto result = s1 / s2;
 
@@ -763,8 +763,8 @@ namespace
     //*************************************************************************
     TEST(test_division_by_one)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
-      etl::chrono::seconds s2(1);  // 1 second
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(1);  // 1 second
 
       auto result = s1 / s2;
 
@@ -774,7 +774,7 @@ namespace
     //*************************************************************************
     TEST(test_modulus_with_positive_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 3;              // Scalar value
 
       auto result = s1 % scalar;
@@ -785,7 +785,7 @@ namespace
     //*************************************************************************
     TEST(test_modulus_with_negative_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = -3;             // Negative scalar value
 
       auto result = s1 % scalar;
@@ -796,7 +796,7 @@ namespace
     //*************************************************************************
     TEST(test_modulus_with_large_scalar)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s1(10); // 10 seconds
       int scalar = 100;            // Scalar value larger than duration
 
       auto result = s1 % scalar;
@@ -807,7 +807,7 @@ namespace
     //*************************************************************************
     TEST(test_modulus_with_different_representation)
     {
-      etl::chrono::milliseconds ms1(1050); // 1050 milliseconds
+      Chrono::milliseconds ms1(1050); // 1050 milliseconds
       int scalar = 500;                    // Scalar value
 
       auto result = ms1 % scalar;
@@ -818,8 +818,8 @@ namespace
     //*************************************************************************
     TEST(test_modulus_same_type)
     {
-      etl::chrono::seconds s1(10); // 10 seconds
-      etl::chrono::seconds s2(3);  // 3 seconds
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(3);  // 3 seconds
 
       auto result = s1 % s2;
 
@@ -829,8 +829,8 @@ namespace
     //*************************************************************************
     TEST(test_modulus_different_types)
     {
-      etl::chrono::seconds s1(10);        // 10 seconds
-      etl::chrono::milliseconds ms1(3000); // 3000 milliseconds
+      Chrono::seconds s1(10);         // 10 seconds
+      Chrono::milliseconds ms1(3000); // 3000 milliseconds
 
       auto result = s1 % ms1;
 
@@ -841,8 +841,8 @@ namespace
     //*************************************************************************
     TEST(test_modulus_with_large_values)
     {
-      etl::chrono::seconds s1(1000000);      // 1,000,000 seconds
-      etl::chrono::milliseconds ms1(500000); // 500,000 milliseconds
+      Chrono::seconds s1(1000000);      // 1,000,000 seconds
+      Chrono::milliseconds ms1(500000); // 500,000 milliseconds
 
       auto result = s1 % ms1;
 
@@ -852,8 +852,8 @@ namespace
     //*************************************************************************
     TEST(test_modulus_resulting_in_fraction)
     {
-      etl::chrono::seconds s1(7); // 7 seconds
-      etl::chrono::seconds s2(3); // 3 seconds
+      Chrono::seconds s1(7); // 7 seconds
+      Chrono::seconds s2(3); // 3 seconds
 
       auto result = s1 % s2;
 
@@ -863,8 +863,8 @@ namespace
     //*************************************************************************
     TEST(test_modulus_by_larger_duration)
     {
-      etl::chrono::seconds s1(5);  // 5 seconds
-      etl::chrono::seconds s2(10); // 10 seconds
+      Chrono::seconds s1(5);  // 5 seconds
+      Chrono::seconds s2(10); // 10 seconds
 
       auto result = s1 % s2;
 
@@ -874,13 +874,169 @@ namespace
     //*************************************************************************
     TEST(test_modulus_with_different_periods)
     {
-      etl::chrono::seconds s1(10);        // 10 seconds
-      etl::chrono::milliseconds ms1(2500); // 2500 milliseconds
+      Chrono::seconds s1(10);         // 10 seconds
+      Chrono::milliseconds ms1(2500); // 2500 milliseconds
 
       auto result = s1 % ms1;
 
       // Result should be in the common type (milliseconds)
       CHECK_EQUAL(0, result); // 10 seconds % 2500 milliseconds = 0 milliseconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus_equals_positive_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(5);  // 5 seconds
+
+      s1 += s2;
+
+      CHECK_EQUAL(15, s1.count()); // 10 + 5 = 15 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus_equals_negative_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(-5); // -5 seconds
+
+      s1 += s2;
+
+      CHECK_EQUAL(5, s1.count()); // 10 + (-5) = 5 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus_equals_positive_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(5);  // 5 seconds
+
+      s1 -= s2;
+
+      CHECK_EQUAL(5, s1.count()); // 10 - 5 = 5 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus_equals_negative_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(-5); // -5 seconds
+
+      s1 -= s2;
+
+      CHECK_EQUAL(15, s1.count()); // 10 - (-5) = 15 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_times_equals_positive_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      int scalar = 5;
+
+      s1 *= scalar;
+
+      CHECK_EQUAL(50, s1.count()); // 10 * 5 = 50 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_times_equals_negative_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      int scalar = -5;
+
+      s1 *= scalar;
+
+      CHECK_EQUAL(-50, s1.count()); // 10 * (-5) = -50 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_divide_equals_positive_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      int scalar = 5;
+
+      s1 /= scalar;
+
+      CHECK_EQUAL(2, s1.count()); // 10 / 5 = 2 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_divide_equals_negative_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      int scalar = -5;
+
+      s1 /= scalar;
+
+      CHECK_EQUAL(-2, s1.count()); // 10 / (-5) = -2 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_mod_equals_positive_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      int scalar = 4;
+
+      s1 %= scalar;
+
+      CHECK_EQUAL(2, s1.count()); // 10 % 4 = 2 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_mod_equals_negative_value)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      int scalar = -4;
+
+      s1 %= scalar;
+
+      CHECK_EQUAL(2, s1.count()); // 10 % (-4) = 2 seconds
+    }
+
+    //*************************************************************************
+    TEST(test_operator_mod_equals_positive_duration)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(3);  // 3 seconds
+
+      s1 %= s2;
+
+      CHECK_EQUAL(1, s1.count()); // 10 seconds % 3 seconds = 1 second
+    }
+
+    //*************************************************************************
+    TEST(test_operator_mod_equals_negative_duration)
+    {
+      Chrono::seconds s1(10); // 10 seconds
+      Chrono::seconds s2(-3); // 3 seconds
+
+      s1 %= s2;
+
+      CHECK_EQUAL(1, s1.count()); // 10 seconds % (-3) seconds = 1 second
+    }
+
+#if ETL_USING_CPP20
+    //*************************************************************************
+    TEST(test_duration_spaceship_operator)
+    {
+      Chrono::seconds s1(2);          // 2 seconds
+      Chrono::milliseconds ms1(1500); // 1500 milliseconds
+
+      CHECK_TRUE(s1 <=> s1  == std::strong_ordering::equal);
+      CHECK_TRUE(ms1 <=> s1 == std::strong_ordering::less);
+      CHECK_TRUE(s1 <=> ms1 == std::strong_ordering::greater);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_duration_compare)
+    {
+      Chrono::seconds s1(2);          // 2 seconds
+      Chrono::milliseconds ms1(1500); // 1500 milliseconds
+
+      CHECK_EQUAL(0,  s1.compare(s1));
+      CHECK_EQUAL(-1, ms1.compare(s1));
+      CHECK_EQUAL(1,  s1.compare(ms1));
     }
   };
 }

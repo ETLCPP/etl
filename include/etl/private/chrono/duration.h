@@ -219,6 +219,75 @@ namespace etl
         return temp;
       }
 
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator +=(const duration<TRep, TPeriod>& d)
+      {
+        value += d.count();
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator -=(const duration<TRep, TPeriod>& d)
+      {
+        value -= d.count();
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator *=(const TRep& r)
+      {
+        value *= r;
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator /=(const TRep& r)
+      {
+        value /= r;
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator %=(const TRep& r)
+      {
+        value %= r;
+
+        return *this;
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR duration& operator %=(const duration<TRep, TPeriod>& d)
+      {
+        value %= d.count();
+
+        return *this;
+      }
+
+      //***********************************************************************
+      /// Compare duration with another.
+      /// if duration < other, returns -1;
+      /// else if duration > other, returns 1;
+      /// else returns 0;
+      //***********************************************************************
+      template <typename TRep2, typename TPeriod2>
+      ETL_CONSTEXPR14 int compare(const duration<TRep2, TPeriod2>& other) const ETL_NOEXCEPT 
+      {
+        // Determine the common type of the two durations.
+        using common_duration = typename etl::common_type<etl::chrono::duration<TRep, TPeriod>, etl::chrono::duration<TRep2, TPeriod2>>::type;
+
+        common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(*this);
+        common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(other);
+
+        if (lhs_converted.count() < rhs_converted.count()) return -1;
+        if (lhs_converted.count() > rhs_converted.count()) return 1;
+
+        return 0;
+      }
+
     private:
 
       TRep value;
@@ -387,6 +456,22 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+
+  //***********************************************************************
+  /// Spaceship operator
+  //***********************************************************************
+#if ETL_USING_CPP20
+  template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) noexcept
+  {
+    typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
+
+    common_t l = etl::chrono::duration_cast<common_t>(lhs);
+    common_t r = etl::chrono::duration_cast<common_t>(rhs);
+
+    return (l.count() <=> r.count());
+  }
+#endif
 
   //***********************************************************************
   /// Operator +

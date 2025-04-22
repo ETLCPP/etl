@@ -46,10 +46,9 @@ SOFTWARE.
 #include "private/chrono/duration.h"
 #include "private/chrono/day.h"
 #include "private/chrono/weekday.h"
-#include "private/chrono/weekday_indexed.h"
-#include "private/chrono/weekday_last.h"
 #include "private/chrono/month.h"
 #include "private/chrono/month_day.h"
+#include "private/chrono/month_weekday.h"
 #include "private/chrono/year.h"
 #include "private/chrono/operators.h" 
 #endif

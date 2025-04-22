@@ -283,6 +283,19 @@ namespace
 
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
+    TEST(test_month_compare)
+    {
+      Chrono::month month1(Chrono::January);
+      Chrono::month month2(Chrono::February);
+
+      CHECK_EQUAL(0,  month1.compare(month1));
+      CHECK_EQUAL(-1, month1.compare(month2));
+      CHECK_EQUAL(1,  month2.compare(month1));
+    }
+#endif
+
+#if ETL_USING_ETL_CHRONO
+    //*************************************************************************
     TEST(test_literal_month)
     {
       using namespace etl::literals::chrono_literals;

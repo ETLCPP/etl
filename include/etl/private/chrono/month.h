@@ -156,6 +156,20 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Compare month with another.
+      /// if month < other, returns -1;
+      /// else if month > other, returns 1;
+      /// else returns 0;
+      //***********************************************************************
+      ETL_CONSTEXPR14 int compare(const month& other) const ETL_NOEXCEPT 
+      {
+        if (value < other.value) return -1;
+        if (value > other.value) return 1;
+
+        return 0;
+      }
+
+      //***********************************************************************
       /// The minimum month value for which ok() will return <b>true</b>
       //***********************************************************************
       static ETL_CONSTEXPR etl::chrono::month min() ETL_NOEXCEPT
@@ -342,6 +356,68 @@ namespace etl
     static ETL_CONSTANT etl::chrono::month November{ 11 };
     static ETL_CONSTANT etl::chrono::month December{ 12 };
 #endif
+
+    //*************************************************************************
+    /// month_day_last
+    //*************************************************************************
+    class month_day_last
+    {
+    public:
+
+      //*************************************************************************
+      /// Construct from month.
+      //*************************************************************************
+      ETL_CONSTEXPR explicit month_day_last(const etl::chrono::month& m_) ETL_NOEXCEPT
+        : m(m_)
+      {
+      }
+
+      //*************************************************************************
+      /// Get the month.
+      //*************************************************************************
+      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      {
+        return m;
+      }
+
+      //*************************************************************************
+      /// Is the contained month OK?
+      //*************************************************************************
+      bool ok() const ETL_NOEXCEPT
+      {
+        return m.ok();
+      }
+
+    private:
+
+      etl::chrono::month m;
+    };
+
+    //***********************************************************************
+    /// Equality operator
+    //***********************************************************************
+    ETL_CONSTEXPR bool operator ==(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    {
+      return (static_cast<unsigned>(mdl1.month()) == static_cast<unsigned>(mdl2.month()));
+    }
+
+    //***********************************************************************
+    /// Inequality operator
+    //***********************************************************************
+    ETL_CONSTEXPR bool operator !=(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    {
+      return !(mdl1 == mdl2);
+    }
+
+    //***********************************************************************
+    /// Spaceship operator
+    //***********************************************************************
+#if ETL_USING_CPP20
+    [[nodiscard]] constexpr auto operator <=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) noexcept
+    {
+      return (static_cast<unsigned>(mdl1.month()) <=> static_cast<unsigned>(mdl2.month()));
+    }
+#endif
   }
 
   //*************************************************************************
@@ -354,6 +430,23 @@ namespace etl
     size_t operator()(const etl::chrono::month& m) const
     {
       unsigned value = m;
+      const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
+
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+    }
+  };
+#endif
+
+  //*************************************************************************
+  /// Hash function for etl::chrono::month_day_last
+  //*************************************************************************
+#if ETL_USING_8BIT_TYPES
+  template <>
+  struct hash<etl::chrono::month_day_last>
+  {
+    size_t operator()(const etl::chrono::month_day_last& mdl) const
+    {
+      unsigned value = (unsigned)mdl.month();
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
       return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));

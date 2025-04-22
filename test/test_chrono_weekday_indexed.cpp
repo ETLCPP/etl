@@ -34,11 +34,22 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <chrono>
-
 #include <vector>
-#include <array>
 #include <algorithm>
+
+// Set to 0 to reference against std::chrono
+#define ETL_USING_ETL_CHRONO 1
+
+#if ETL_USING_ETL_CHRONO
+  #define Chrono etl::chrono
+#else
+  #if ETL_USING_CPP20
+    #include <chrono>
+    #define Chrono std::chrono
+  #else
+    #error std::chrono not supported
+  #endif
+#endif
 
 namespace
 {
@@ -47,7 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      etl::chrono::weekday_indexed weekday_indexed;
+      Chrono::weekday_indexed weekday_indexed;
 
       CHECK_FALSE(weekday_indexed.ok());
     }
@@ -57,13 +68,13 @@ namespace
     {
       for (unsigned i = 1U; i < 5U; ++i)
       {
-        etl::chrono::weekday_indexed weekday_indexed_monday(etl::chrono::Monday,       i);
-        etl::chrono::weekday_indexed weekday_indexed_tuesday(etl::chrono::Tuesday,     i);
-        etl::chrono::weekday_indexed weekday_indexed_wednesday(etl::chrono::Wednesday, i);
-        etl::chrono::weekday_indexed weekday_indexed_thursday(etl::chrono::Thursday,   i);
-        etl::chrono::weekday_indexed weekday_indexed_friday(etl::chrono::Friday,       i);
-        etl::chrono::weekday_indexed weekday_indexed_saturday(etl::chrono::Saturday,   i);
-        etl::chrono::weekday_indexed weekday_indexed_sunday(etl::chrono::Sunday,       i);
+        Chrono::weekday_indexed weekday_indexed_monday(Chrono::Monday,       i);
+        Chrono::weekday_indexed weekday_indexed_tuesday(Chrono::Tuesday,     i);
+        Chrono::weekday_indexed weekday_indexed_wednesday(Chrono::Wednesday, i);
+        Chrono::weekday_indexed weekday_indexed_thursday(Chrono::Thursday,   i);
+        Chrono::weekday_indexed weekday_indexed_friday(Chrono::Friday,       i);
+        Chrono::weekday_indexed weekday_indexed_saturday(Chrono::Saturday,   i);
+        Chrono::weekday_indexed weekday_indexed_sunday(Chrono::Sunday,       i);
 
         CHECK_TRUE(weekday_indexed_monday.ok());
         CHECK_TRUE(weekday_indexed_tuesday.ok());
@@ -73,13 +84,13 @@ namespace
         CHECK_TRUE(weekday_indexed_saturday.ok());
         CHECK_TRUE(weekday_indexed_sunday.ok());
         
-        CHECK_EQUAL(etl::chrono::Monday.c_encoding(),    weekday_indexed_monday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Tuesday.c_encoding(),   weekday_indexed_tuesday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Wednesday.c_encoding(), weekday_indexed_wednesday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Thursday.c_encoding(),  weekday_indexed_thursday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Friday.c_encoding(),    weekday_indexed_friday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Saturday.c_encoding(),  weekday_indexed_saturday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Sunday.c_encoding(),    weekday_indexed_sunday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Monday.c_encoding(),    weekday_indexed_monday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Tuesday.c_encoding(),   weekday_indexed_tuesday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Wednesday.c_encoding(), weekday_indexed_wednesday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Thursday.c_encoding(),  weekday_indexed_thursday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Friday.c_encoding(),    weekday_indexed_friday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Saturday.c_encoding(),  weekday_indexed_saturday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Sunday.c_encoding(),    weekday_indexed_sunday.weekday().c_encoding());
         
         CHECK_EQUAL(i, weekday_indexed_monday.index());
         CHECK_EQUAL(i, weekday_indexed_tuesday.index());
@@ -96,13 +107,13 @@ namespace
     {
       for (unsigned i = 6U; i < 256U; ++i)
       {
-        etl::chrono::weekday_indexed weekday_indexed_monday(etl::chrono::Monday,       i);
-        etl::chrono::weekday_indexed weekday_indexed_tuesday(etl::chrono::Tuesday,     i);
-        etl::chrono::weekday_indexed weekday_indexed_wednesday(etl::chrono::Wednesday, i);
-        etl::chrono::weekday_indexed weekday_indexed_thursday(etl::chrono::Thursday,   i);
-        etl::chrono::weekday_indexed weekday_indexed_friday(etl::chrono::Friday,       i);
-        etl::chrono::weekday_indexed weekday_indexed_saturday(etl::chrono::Saturday,   i);
-        etl::chrono::weekday_indexed weekday_indexed_sunday(etl::chrono::Sunday,       i);
+        Chrono::weekday_indexed weekday_indexed_monday(Chrono::Monday,       i);
+        Chrono::weekday_indexed weekday_indexed_tuesday(Chrono::Tuesday,     i);
+        Chrono::weekday_indexed weekday_indexed_wednesday(Chrono::Wednesday, i);
+        Chrono::weekday_indexed weekday_indexed_thursday(Chrono::Thursday,   i);
+        Chrono::weekday_indexed weekday_indexed_friday(Chrono::Friday,       i);
+        Chrono::weekday_indexed weekday_indexed_saturday(Chrono::Saturday,   i);
+        Chrono::weekday_indexed weekday_indexed_sunday(Chrono::Sunday,       i);
 
         CHECK_FALSE(weekday_indexed_monday.ok());
         CHECK_FALSE(weekday_indexed_tuesday.ok());
@@ -117,16 +128,17 @@ namespace
     //*************************************************************************
     TEST(test_weekday_indexed_comparison_operators)
     {
-      etl::chrono::weekday_indexed weekday_indexed1(etl::chrono::Monday,  1);
-      etl::chrono::weekday_indexed weekday_indexed2(etl::chrono::Monday,  1);
-      etl::chrono::weekday_indexed weekday_indexed3(etl::chrono::Monday,  2);
-      etl::chrono::weekday_indexed weekday_indexed4(etl::chrono::Tuesday, 1);
+      Chrono::weekday_indexed weekday_indexed1(Chrono::Monday,  1);
+      Chrono::weekday_indexed weekday_indexed2(Chrono::Monday,  1);
+      Chrono::weekday_indexed weekday_indexed3(Chrono::Monday,  2);
+      Chrono::weekday_indexed weekday_indexed4(Chrono::Tuesday, 1);
 
-      CHECK_TRUE(weekday_indexed1  == weekday_indexed2);
+      CHECK_TRUE(weekday_indexed1  == weekday_indexed2); 
       CHECK_FALSE(weekday_indexed1 == weekday_indexed3);
       CHECK_FALSE(weekday_indexed1 == weekday_indexed4);
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_weekday_indexed_hashes_are_unique)
     {
@@ -134,17 +146,18 @@ namespace
 
       for (int i = 0; i < 6; ++i)
       {
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Monday,    i)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Tuesday,   i)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Wednesday, i)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Thursday,  i)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Friday,    i)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Saturday,  i)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_indexed>()(etl::chrono::weekday_indexed(etl::chrono::Sunday,    i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Monday,    i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Tuesday,   i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Wednesday, i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Thursday,  i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Friday,    i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Saturday,  i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Sunday,    i)));
       }
 
       std::sort(hashes.begin(), hashes.end());
       (void)std::unique(hashes.begin(), hashes.end());
     }
+#endif
   };
 }

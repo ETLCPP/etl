@@ -38,7 +38,7 @@ SOFTWARE.
 #include <algorithm>
 
 // Set to 0 to reference against std::chrono
-#define ETL_USING_ETL_CHRONO 0
+#define ETL_USING_ETL_CHRONO 1
 
 #if ETL_USING_ETL_CHRONO
   #define Chrono etl::chrono
@@ -289,6 +289,19 @@ namespace
         CHECK_TRUE((day20 <=> day10)  > 0);
 #endif
     }
+
+#if ETL_USING_ETL_CHRONO
+    //*************************************************************************
+    TEST(test_day_compare)
+    {
+      Chrono::day day10(10);
+      Chrono::day day20(20);
+
+      CHECK_EQUAL(0,  day10.compare(day10));
+      CHECK_EQUAL(-1, day10.compare(day20));
+      CHECK_EQUAL(1,  day20.compare(day10));
+    }
+#endif
 
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************

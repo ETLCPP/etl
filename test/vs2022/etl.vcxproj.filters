@@ -1398,12 +1398,6 @@
     <ClInclude Include="..\..\include\etl\private\chrono\weekday.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\chrono\weekday_indexed.h">
-      <Filter>ETL\Private\chrono</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\chrono\weekday_last.h">
-      <Filter>ETL\Private\chrono</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\chrono\last_spec.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
@@ -1492,6 +1486,9 @@
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\chrono\operators.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\month_weekday.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
   </ItemGroup>
@@ -3531,6 +3528,15 @@
       <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_chrono_month_day.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_day_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_weekday.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_weekday_last.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
   </ItemGroup>

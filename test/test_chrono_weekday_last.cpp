@@ -34,11 +34,23 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <chrono>
-
 #include <vector>
 #include <array>
 #include <algorithm>
+
+// Set to 0 to reference against std::chrono
+#define ETL_USING_ETL_CHRONO 1
+
+#if ETL_USING_ETL_CHRONO
+  #define Chrono etl::chrono
+#else
+  #if ETL_USING_CPP20
+    #include <chrono>
+    #define Chrono std::chrono
+  #else
+    #error std::chrono not supported
+  #endif
+#endif
 
 namespace
 {
@@ -49,13 +61,13 @@ namespace
     {
       for (unsigned i = 1U; i < 5U; ++i)
       {
-        etl::chrono::weekday_last weekday_last_monday(etl::chrono::Monday);
-        etl::chrono::weekday_last weekday_last_tuesday(etl::chrono::Tuesday);
-        etl::chrono::weekday_last weekday_last_wednesday(etl::chrono::Wednesday);
-        etl::chrono::weekday_last weekday_last_thursday(etl::chrono::Thursday);
-        etl::chrono::weekday_last weekday_last_friday(etl::chrono::Friday);
-        etl::chrono::weekday_last weekday_last_saturday(etl::chrono::Saturday);
-        etl::chrono::weekday_last weekday_last_sunday(etl::chrono::Sunday);
+        Chrono::weekday_last weekday_last_monday(Chrono::Monday);
+        Chrono::weekday_last weekday_last_tuesday(Chrono::Tuesday);
+        Chrono::weekday_last weekday_last_wednesday(Chrono::Wednesday);
+        Chrono::weekday_last weekday_last_thursday(Chrono::Thursday);
+        Chrono::weekday_last weekday_last_friday(Chrono::Friday);
+        Chrono::weekday_last weekday_last_saturday(Chrono::Saturday);
+        Chrono::weekday_last weekday_last_sunday(Chrono::Sunday);
 
         CHECK_TRUE(weekday_last_monday.ok());
         CHECK_TRUE(weekday_last_tuesday.ok());
@@ -65,13 +77,13 @@ namespace
         CHECK_TRUE(weekday_last_saturday.ok());
         CHECK_TRUE(weekday_last_sunday.ok());
 
-        CHECK_EQUAL(etl::chrono::Monday.c_encoding(),    weekday_last_monday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Tuesday.c_encoding(),   weekday_last_tuesday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Wednesday.c_encoding(), weekday_last_wednesday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Thursday.c_encoding(),  weekday_last_thursday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Friday.c_encoding(),    weekday_last_friday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Saturday.c_encoding(),  weekday_last_saturday.weekday().c_encoding());
-        CHECK_EQUAL(etl::chrono::Sunday.c_encoding(),    weekday_last_sunday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Monday.c_encoding(),    weekday_last_monday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Tuesday.c_encoding(),   weekday_last_tuesday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Wednesday.c_encoding(), weekday_last_wednesday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Thursday.c_encoding(),  weekday_last_thursday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Friday.c_encoding(),    weekday_last_friday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Saturday.c_encoding(),  weekday_last_saturday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Sunday.c_encoding(),    weekday_last_sunday.weekday().c_encoding());
       }
     }
 
@@ -80,8 +92,8 @@ namespace
     {
       for (unsigned i = 8U; i < 256U; ++i)
       {
-        auto wd = etl::chrono::weekday(i);
-        etl::chrono::weekday_last weekday_last(wd);
+        auto wd = Chrono::weekday(i);
+        Chrono::weekday_last weekday_last(wd);
 
         CHECK_FALSE(weekday_last.ok());
       }
@@ -90,9 +102,9 @@ namespace
     //*************************************************************************
     TEST(test_weekday_last_comparison_operators)
     {
-      etl::chrono::weekday_last weekday_last1(etl::chrono::Monday);
-      etl::chrono::weekday_last weekday_last2(etl::chrono::Monday);
-      etl::chrono::weekday_last weekday_last3(etl::chrono::Tuesday);
+      Chrono::weekday_last weekday_last1(Chrono::Monday);
+      Chrono::weekday_last weekday_last2(Chrono::Monday);
+      Chrono::weekday_last weekday_last3(Chrono::Tuesday);
 
       CHECK_TRUE(weekday_last1  == weekday_last2);
       CHECK_FALSE(weekday_last1 == weekday_last3);
@@ -105,13 +117,13 @@ namespace
 
       for (int i = 0; i < 6; ++i)
       {
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Monday)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Tuesday)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Wednesday)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Thursday)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Friday)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Saturday)));
-        hashes.push_back(etl::hash<etl::chrono::weekday_last>()(etl::chrono::weekday_last(etl::chrono::Sunday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Monday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Tuesday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Wednesday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Thursday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Friday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Saturday)));
+        hashes.push_back(etl::hash<Chrono::weekday_last>()(Chrono::weekday_last(Chrono::Sunday)));
       }
 
       std::sort(hashes.begin(), hashes.end());

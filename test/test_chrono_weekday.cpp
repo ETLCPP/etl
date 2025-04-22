@@ -34,11 +34,24 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <chrono>
-
 #include <vector>
-#include <array>
 #include <algorithm>
+
+#include <iostream>
+
+// Set to 0 to reference against std::chrono
+#define ETL_USING_ETL_CHRONO 1
+
+#if ETL_USING_ETL_CHRONO
+  #define Chrono etl::chrono
+#else
+  #if ETL_USING_CPP20
+    #include <chrono>
+    #define Chrono std::chrono
+  #else
+    #error std::chrono not supported
+  #endif
+#endif
 
 namespace
 {
@@ -47,7 +60,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      etl::chrono::weekday weekday;
+      Chrono::weekday weekday;
 
       CHECK_FALSE(weekday.ok());
     }
@@ -57,7 +70,7 @@ namespace
     {
       for (unsigned i = 0U; i < 7U; ++i)
       {
-        etl::chrono::weekday weekday(i);
+        Chrono::weekday weekday(i);
 
         CHECK_TRUE(weekday.ok());
         CHECK_EQUAL(i, weekday.c_encoding());
@@ -70,7 +83,7 @@ namespace
     {
       for (unsigned i = 8U; i < 256U; ++i)
       {
-        etl::chrono::weekday weekday(i);
+        Chrono::weekday weekday(i);
 
         CHECK_FALSE(weekday.ok());
         CHECK_EQUAL(i, weekday.c_encoding());
@@ -81,7 +94,7 @@ namespace
     //*************************************************************************
     TEST(test_pre_increment)
     {
-      etl::chrono::weekday weekday(0);
+      Chrono::weekday weekday(0);
       unsigned count = 0;
 
       for (int i = 0; i < 255; ++i)
@@ -98,12 +111,12 @@ namespace
     //*************************************************************************
     TEST(test_post_increment)
     {
-      etl::chrono::weekday weekday(0);
+      Chrono::weekday weekday(0);
       unsigned count = 0;
 
       for (int i = 0; i < 255; ++i)
       {
-        etl::chrono::weekday last_weekday = weekday++;
+        Chrono::weekday last_weekday = weekday++;
         unsigned last_count = count++;
 
         CHECK_TRUE(last_weekday.ok());
@@ -119,7 +132,7 @@ namespace
     //*************************************************************************
     TEST(test_pre_decrement)
     {
-      etl::chrono::weekday weekday(255U);
+      Chrono::weekday weekday(255U);
       unsigned count = 255U;
 
       for (int i = 0; i < 255; ++i)
@@ -136,12 +149,12 @@ namespace
     //*************************************************************************
     TEST(test_post_decrement)
     {
-      etl::chrono::weekday weekday(255U);
+      Chrono::weekday weekday(255U);
       unsigned count = 255U;
 
       for (int i = 0; i < 255; ++i)
       {
-        etl::chrono::weekday last_weekday = weekday--;
+        Chrono::weekday last_weekday = weekday--;
         unsigned last_count = count--;
 
         if (last_count == 255U)
@@ -170,8 +183,8 @@ namespace
       {
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          etl::chrono::weekday weekday(wd);
-          etl::chrono::days days(ds);
+          Chrono::weekday weekday(wd);
+          Chrono::days days(ds);
           weekday += days;
 
           unsigned expected = (wd + ds) % 7;
@@ -190,8 +203,8 @@ namespace
       {
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          etl::chrono::weekday weekday(wd);
-          etl::chrono::days days(ds);
+          Chrono::weekday weekday(wd);
+          Chrono::days days(ds);
           weekday = weekday + days;
 
           unsigned expected = (wd + ds) % 7;
@@ -210,8 +223,8 @@ namespace
       {
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          etl::chrono::weekday weekday(wd);
-          etl::chrono::days days(ds);
+          Chrono::weekday weekday(wd);
+          Chrono::days days(ds);
           weekday = weekday + days;
 
           unsigned expected = (ds + wd) % 7;
@@ -230,8 +243,8 @@ namespace
       {
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          etl::chrono::weekday weekday(wd);
-          etl::chrono::days days(ds);
+          Chrono::weekday weekday(wd);
+          Chrono::days days(ds);
           weekday -= days;
 
           unsigned expected = ((wd + 7U) - (ds % 7U)) % 7U;
@@ -250,8 +263,8 @@ namespace
       {
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
-          etl::chrono::weekday weekday(wd);
-          etl::chrono::days days(ds);
+          Chrono::weekday weekday(wd);
+          Chrono::days days(ds);
           weekday = weekday - days;
 
           unsigned expected = ((wd + 7U) - (ds % 7U)) % 7U;
@@ -268,11 +281,11 @@ namespace
     {
       for (int m = 0; m < 7; ++m)
       {
-        etl::chrono::weekday weekday1(m);
-        etl::chrono::weekday weekday2(7 - m);
+        Chrono::weekday weekday1(m);
+        Chrono::weekday weekday2(7 - m);
 
-        std::chrono::weekday std_weekday1(m);
-        std::chrono::weekday std_weekday2(7 - m);
+        Chrono::weekday std_weekday1(m);
+        Chrono::weekday std_weekday2(7 - m);
 
         auto days12 = weekday1 - weekday2;
         auto days21 = weekday2 - weekday1;
@@ -285,37 +298,48 @@ namespace
       }
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_min_max_weekday)
     {
-      CHECK_EQUAL(etl::chrono::Sunday.c_encoding(),   etl::chrono::weekday::min().c_encoding());
-      CHECK_EQUAL(etl::chrono::Saturday.c_encoding(), etl::chrono::weekday::max().c_encoding());
+      CHECK_EQUAL(Chrono::Sunday.c_encoding(),   Chrono::weekday::min());
+      CHECK_EQUAL(Chrono::Saturday.c_encoding(), Chrono::weekday::max());
     }
+#endif
 
     //*************************************************************************
     TEST(test_weekday_constants)
     {
-      CHECK_EQUAL(0U, etl::chrono::Sunday.c_encoding());
-      CHECK_EQUAL(1U, etl::chrono::Monday.c_encoding());
-      CHECK_EQUAL(2U, etl::chrono::Tuesday.c_encoding());
-      CHECK_EQUAL(3U, etl::chrono::Wednesday.c_encoding());
-      CHECK_EQUAL(4U, etl::chrono::Thursday.c_encoding());
-      CHECK_EQUAL(5U, etl::chrono::Friday.c_encoding());
-      CHECK_EQUAL(6U, etl::chrono::Saturday.c_encoding());
+      CHECK_EQUAL(0U, Chrono::Sunday.c_encoding());
+      CHECK_EQUAL(1U, Chrono::Monday.c_encoding());
+      CHECK_EQUAL(2U, Chrono::Tuesday.c_encoding());
+      CHECK_EQUAL(3U, Chrono::Wednesday.c_encoding());
+      CHECK_EQUAL(4U, Chrono::Thursday.c_encoding());
+      CHECK_EQUAL(5U, Chrono::Friday.c_encoding());
+      CHECK_EQUAL(6U, Chrono::Saturday.c_encoding());
+
+      CHECK_EQUAL(7U, Chrono::Sunday.iso_encoding());
+      CHECK_EQUAL(1U, Chrono::Monday.iso_encoding());
+      CHECK_EQUAL(2U, Chrono::Tuesday.iso_encoding());
+      CHECK_EQUAL(3U, Chrono::Wednesday.iso_encoding());
+      CHECK_EQUAL(4U, Chrono::Thursday.iso_encoding());
+      CHECK_EQUAL(5U, Chrono::Friday.iso_encoding());
+      CHECK_EQUAL(6U, Chrono::Saturday.iso_encoding());
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_weekday_literals)
     {
       using namespace etl::literals::chrono_literals;
 
-      etl::chrono::weekday weekday0 = 0_weekday;
-      etl::chrono::weekday weekday1 = 1_weekday;
-      etl::chrono::weekday weekday2 = 2_weekday;
-      etl::chrono::weekday weekday3 = 3_weekday;
-      etl::chrono::weekday weekday4 = 4_weekday;
-      etl::chrono::weekday weekday5 = 5_weekday;
-      etl::chrono::weekday weekday6 = 6_weekday;
+      Chrono::weekday weekday0 = 0_weekday;
+      Chrono::weekday weekday1 = 1_weekday;
+      Chrono::weekday weekday2 = 2_weekday;
+      Chrono::weekday weekday3 = 3_weekday;
+      Chrono::weekday weekday4 = 4_weekday;
+      Chrono::weekday weekday5 = 5_weekday;
+      Chrono::weekday weekday6 = 6_weekday;
 
       CHECK_TRUE(weekday0.ok());
       CHECK_TRUE(weekday1.ok());
@@ -333,35 +357,38 @@ namespace
       CHECK_EQUAL(5U, weekday5.c_encoding());
       CHECK_EQUAL(6U, weekday6.c_encoding());
     }
+#endif
 
     //*************************************************************************
     TEST(test_weekday_comparison_operators)
     {
-      etl::chrono::weekday weekday1(1);
-      etl::chrono::weekday weekday2(2);
+      Chrono::weekday weekday1(1);
+      Chrono::weekday weekday2(2);
 
       CHECK_TRUE(weekday1  == weekday1);
       CHECK_FALSE(weekday1 != weekday1);
-      CHECK_TRUE(weekday1   < weekday2);
-      CHECK_FALSE(weekday1  < weekday1);
-      CHECK_FALSE(weekday2  < weekday1);
-      CHECK_TRUE(weekday1  <= weekday2);
-      CHECK_TRUE(weekday1  <= weekday1);
-      CHECK_FALSE(weekday2 <= weekday1);
-      CHECK_FALSE(weekday1  > weekday2);
-      CHECK_FALSE(weekday1  > weekday1);
-      CHECK_TRUE(weekday2   > weekday1);
-      CHECK_FALSE(weekday1 >= weekday2);
-      CHECK_TRUE(weekday1  >= weekday1);
-      CHECK_TRUE(weekday2  >= weekday1);
-
-#if ETL_USING_CPP20
-      CHECK_TRUE((weekday1 <=> weekday1) == 0);
-      CHECK_TRUE((weekday1 <=> weekday2)  < 0);
-      CHECK_TRUE((weekday2 <=> weekday1)  > 0);
-#endif
     }
 
+    //*************************************************************************
+    TEST(test_weekday_index_operator_returning_weekday_indexed)
+    {
+      Chrono::weekday wd(Chrono::Friday);
+      Chrono::weekday_indexed wi = wd[2];
+
+      CHECK_EQUAL(2, wi.index());
+      CHECK_EQUAL(Chrono::Friday.c_encoding(), wi.weekday().c_encoding());
+    }
+
+    //*************************************************************************
+    TEST(test_weekday_index_operator_returning_weekday_last)
+    {
+      Chrono::weekday wd(Chrono::Friday);
+      Chrono::weekday_last wl = wd[Chrono::last];
+
+      CHECK_EQUAL(Chrono::Friday.c_encoding(), wl.weekday().c_encoding());
+    }
+
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_weekday_hashes_are_unique)
     {
@@ -369,12 +396,13 @@ namespace
 
       for (int i = 0; i < 256; ++i)
       {
-        hashes.push_back(etl::hash<etl::chrono::weekday>()(etl::chrono::weekday(i)));
+        hashes.push_back(etl::hash<Chrono::weekday>()(Chrono::weekday(i)));
       }
 
       std::sort(hashes.begin(), hashes.end());
       (void)std::unique(hashes.begin(), hashes.end());
       CHECK_EQUAL(256U, hashes.size());
     }
+#endif
   };
 }

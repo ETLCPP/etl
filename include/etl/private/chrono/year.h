@@ -282,13 +282,26 @@ namespace etl
     }
 
     //***********************************************************************
+    /// Subtract etl::chrono::year from etl::chrono::years
+    ///\return etl::chrono::years
+    //***********************************************************************
+    ETL_CONSTEXPR etl::chrono::year operator -(const etl::chrono::years& ys, const etl::chrono::year& y) ETL_NOEXCEPT
+    {
+      etl::chrono::year result(y);
+
+      result -= ys;
+
+      return result;
+    }
+
+    //***********************************************************************
     /// Subtract etl::chrono::year from etl::chrono::year
     ///\return etl::chrono::years
     //***********************************************************************
     ETL_CONSTEXPR etl::chrono::years operator -(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return etl::chrono::years(static_cast<int>(static_cast<unsigned>(y1)) - 
-                               static_cast<int>(static_cast<unsigned>(y2)));
+                                static_cast<int>(static_cast<unsigned>(y2)));
     }
   }
 
