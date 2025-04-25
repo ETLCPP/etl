@@ -1,0 +1,4 @@
+name: etl
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig
