@@ -1491,6 +1491,9 @@
     <ClInclude Include="..\..\include\etl\private\chrono\month_weekday.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\hh_mm_ss.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3512,9 +3515,6 @@
     <ClCompile Include="..\test_tuple.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\syntax_check\tuple.h.t.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_chrono_weekday_indexed.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
@@ -3538,6 +3538,12 @@
     </ClCompile>
     <ClCompile Include="..\test_chrono_month_weekday_last.cpp">
       <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_hh_mm_ss.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\tuple.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

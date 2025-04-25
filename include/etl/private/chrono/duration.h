@@ -130,20 +130,23 @@ namespace etl
       ETL_CONSTEXPR duration(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
         : value(etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count())
       {
-
-        bool b = etl::ratio_divide<TPeriod2, TPeriod>::den == 1;
-
         ETL_STATIC_ASSERT(!(etl::is_integral<TRep>::value && etl::is_floating_point<TRep2>::value), "Cannot convert duration from floating point to integral");
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR14 
+      etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+      {
+        value = other.count();
+
+        return *this;
       }
 
       //***********************************************************************
       template <typename TRep2, typename TPeriod2>
       ETL_CONSTEXPR14 
-      typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::den == 1, etl::chrono::duration<TRep, TPeriod>&>::type
-        operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
+      etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
       {
-        bool b = etl::ratio_divide<TPeriod2, TPeriod>::den == 1;
-
         value = etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count();
 
         return *this;
@@ -183,6 +186,12 @@ namespace etl
       static ETL_CONSTEXPR etl::chrono::duration<TRep, TPeriod> max()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::max());
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR etl::chrono::duration<TRep, TPeriod> absolute() const ETL_NOEXCEPT
+      {
+        return etl::chrono::duration<TRep, TPeriod>(value < 0 ? -value : value);
       }
 
       //***********************************************************************
@@ -350,6 +359,12 @@ namespace etl
         return TToDuration(static_cast<to_rep>((ct_count * ct_num) / ct_den));
       }
     }
+
+    template <typename T>
+    struct is_duration : etl::false_type {};
+
+    template <typename TRep, typename TPeriod>
+    struct is_duration<etl::chrono::duration<TRep, TPeriod>> : etl::true_type {};
   }
 
   //*************************************************************************

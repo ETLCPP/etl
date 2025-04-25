@@ -468,7 +468,7 @@ namespace etl
     //***********************************************************************
     /// Index operator from etl::chrono::last_spec
     //***********************************************************************
-    ETL_CONSTEXPR etl::chrono::weekday_last etl::chrono::weekday::operator[](etl::chrono::last_spec last) const ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::chrono::weekday_last etl::chrono::weekday::operator[](etl::chrono::last_spec) const ETL_NOEXCEPT
     {
       return etl::chrono::weekday_last(*this);
     }

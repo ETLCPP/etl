@@ -367,6 +367,8 @@ namespace
 
       CHECK_TRUE(weekday1  == weekday1);
       CHECK_FALSE(weekday1 != weekday1);
+      CHECK_FALSE(weekday1 == weekday2);
+      CHECK_TRUE(weekday1  != weekday2);
     }
 
     //*************************************************************************

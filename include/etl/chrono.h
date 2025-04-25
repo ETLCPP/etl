@@ -34,6 +34,7 @@ SOFTWARE.
 #define ETL_IN_CHRONO_H
 
 #include "platform.h"
+#include "type_traits.h"
 
 #if ETL_NOT_USING_CPP11
   #error NOT SUPPORTED FOR C++03 OR BELOW
@@ -41,6 +42,22 @@ SOFTWARE.
 #include "hash.h"
 
 #include <stdint.h>
+
+namespace etl
+{
+  namespace chrono
+  {
+    template <typename TRep>
+    struct treat_as_floating_point : etl::is_floating_point<TRep>
+    {
+    };
+
+#if ETL_USING_CPP17
+    template <typename TRep>
+    constexpr bool treat_as_floating_point_v = treat_as_floating_point<TRep>::value;
+#endif
+  }
+}
 
 #include "private/chrono/last_spec.h"
 #include "private/chrono/duration.h"
@@ -50,6 +67,7 @@ SOFTWARE.
 #include "private/chrono/month_day.h"
 #include "private/chrono/month_weekday.h"
 #include "private/chrono/year.h"
+#include "private/chrono/hh_mm_ss.h"
 #include "private/chrono/operators.h" 
 #endif
 

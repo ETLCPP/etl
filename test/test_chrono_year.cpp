@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
+#include <vector>
 #include <algorithm>
 
 // Set to 0 to reference against std::chrono

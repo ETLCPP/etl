@@ -90,7 +90,7 @@ namespace
 
       CHECK_TRUE(mwd1 == mwd1);  // January == January
       CHECK_FALSE(mwd1 == mwd2); // January != February
-      CHECK_FALSE(mwd1 == mwd2); // Friday != Saturday
+      CHECK_FALSE(mwd1 == mwd3); // Friday != Saturday
     }
 
     //*************************************************************************
@@ -102,7 +102,7 @@ namespace
 
       CHECK_FALSE(mwd1 != mwd1); // January == January
       CHECK_TRUE(mwd1 != mwd2);  // January != February
-      CHECK_TRUE(mwd1 != mwd2);  // Friday != Saturday
+      CHECK_TRUE(mwd1 != mwd3);  // Friday != Saturday
     }
 
 #if ETL_USING_ETL_CHRONO

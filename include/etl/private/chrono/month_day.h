@@ -116,7 +116,7 @@ namespace etl
       //*************************************************************************
       /// Less-than operator.
       //*************************************************************************
-      friend ETL_NODISCARD ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR
         bool operator <(const etl::chrono::month_day& lhs,
                         const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -137,7 +137,7 @@ namespace etl
       //*************************************************************************
       /// Less-than-equal operator.
       //*************************************************************************
-      friend ETL_NODISCARD ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR
         bool operator <=(const etl::chrono::month_day& lhs,
                          const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -147,7 +147,7 @@ namespace etl
       //*************************************************************************
       /// Greater-than operator.
       //*************************************************************************
-      friend ETL_NODISCARD ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR
         bool operator >(const etl::chrono::month_day& lhs,
                          const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -157,7 +157,7 @@ namespace etl
       //*************************************************************************
       /// Greater-than-equal operator.
       //*************************************************************************
-      friend ETL_NODISCARD ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR
         bool operator >=(const etl::chrono::month_day& lhs,
                          const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -168,7 +168,7 @@ namespace etl
       /// Spaceship operator
       //***********************************************************************
 #if ETL_USING_CPP20
-      friend [[nodiscard]] constexpr auto operator <=>(const etl::chrono::month_day& lhs, 
+      [[nodiscard]] friend constexpr auto operator <=>(const etl::chrono::month_day& lhs, 
                                                        const etl::chrono::month_day& rhs) noexcept
       {
         auto cmp = lhs.month() <=> rhs.month();

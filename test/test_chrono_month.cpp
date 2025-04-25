@@ -258,9 +258,6 @@ namespace
         Chrono::months months12 = month1 - month2;
         Chrono::months months21 = month2 - month1;
 
-        int m12 = months12.count();
-        int m21 = months21.count();
-
         int difference12 = expected_month(m1) - expected_month(m2);
         int difference21 = expected_month(m2) - expected_month(m1);
 

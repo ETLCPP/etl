@@ -87,7 +87,6 @@ namespace
     {
       Chrono::month_weekday mwd1{Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
       Chrono::month_weekday mwd2{Chrono::February, Chrono::weekday_indexed(Chrono::Friday, 2)};
-      Chrono::month_weekday mwd3{Chrono::January,  Chrono::weekday_indexed(Chrono::Saturday, 2)};
 
       CHECK_TRUE(mwd1 == mwd1);  // January == January
       CHECK_FALSE(mwd1 == mwd2); // January != February
@@ -99,7 +98,6 @@ namespace
     {
       Chrono::month_weekday mwd1{Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
       Chrono::month_weekday mwd2{Chrono::February, Chrono::weekday_indexed(Chrono::Friday, 2)};
-      Chrono::month_weekday mwd3{Chrono::January,  Chrono::weekday_indexed(Chrono::Saturday, 2)};
 
       CHECK_FALSE(mwd1 != mwd1); // January == January
       CHECK_TRUE(mwd1 != mwd2);  // January != February

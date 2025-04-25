@@ -126,7 +126,7 @@ namespace
 
       CHECK_TRUE(md1 == md1);  // January == January
       CHECK_FALSE(md1 == md2); // January != February
-      CHECK_FALSE(md1 == md2); // 20th != 15th in the same month
+      CHECK_FALSE(md1 == md3); // 20th != 15th in the same month
     }
 
     //*************************************************************************
@@ -138,7 +138,7 @@ namespace
 
       CHECK_FALSE(md1 != md1);  // January == January
       CHECK_TRUE(md1 != md2); // January != February
-      CHECK_TRUE(md1 != md2); // 20th != 15th in the same month
+      CHECK_TRUE(md1 != md3); // 20th != 15th in the same month
     }
 
     //*************************************************************************
