@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,9 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2023 John Wellbelove
+Documentation: 
+
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,51 +28,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CHRONO_INCLUDED
-#define ETL_CHRONO_INCLUDED
+#include "etl/platform.h"
 
-#define ETL_IN_CHRONO_H
+#include "unit_test_framework.h"
 
-#include "platform.h"
-#include "type_traits.h"
-#include "integral_limits.h"
+#include "etl/chrono.h"
 
-#if ETL_NOT_USING_CPP11
-  #error NOT SUPPORTED FOR C++03 OR BELOW
+#include <vector>
+#include <algorithm>
+
+// Set to 0 to reference against std::chrono
+#define ETL_USING_ETL_CHRONO 1
+
+#if ETL_USING_ETL_CHRONO
+  #define Chrono etl::chrono
 #else
-#include "hash.h"
+  #if ETL_USING_CPP20
+    #include <chrono>
+    #define Chrono std::chrono
+  #else
+    #error std::chrono not supported
+  #endif
+#endif
 
-#include <stdint.h>
-
-namespace etl
+namespace
 {
-  namespace chrono
+  SUITE(test_chrono_operators)
   {
-    template <typename TRep>
-    struct treat_as_floating_point : etl::is_floating_point<TRep>
+    //*************************************************************************
+    TEST(test_operator_for_year_month)
     {
-    };
 
-#if ETL_USING_CPP17
-    template <typename TRep>
-    constexpr bool treat_as_floating_point_v = treat_as_floating_point<TRep>::value;
-#endif
-  }
+    }
+  };
 }
-
-#include "private/chrono/last_spec.h"
-#include "private/chrono/duration.h"
-#include "private/chrono/day.h"
-#include "private/chrono/weekday.h"
-#include "private/chrono/month.h"
-#include "private/chrono/month_day.h"
-#include "private/chrono/month_weekday.h"
-#include "private/chrono/year.h"
-#include "private/chrono/year_month.h"
-#include "private/chrono/hh_mm_ss.h"
-#include "private/chrono/operators.h" 
-#endif
-
-#undef ETL_IN_CHRONO_H
-
-#endif

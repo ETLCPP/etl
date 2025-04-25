@@ -60,6 +60,8 @@ namespace etl
     {
     public:
 
+      ETL_STATIC_ASSERT(etl::chrono::is_duration<TDuration>::value, "TDuration not etl::chrono::duration");
+
       //***********************************************************************
       // Fractional width for the duration's subseconds
       //***********************************************************************

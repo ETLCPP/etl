@@ -70,6 +70,7 @@ add_executable(etl_tests
 	test_chrono_weekday_indexed.cpp
 	test_chrono_weekday_last.cpp
 	test_chrono_year.cpp
+	test_chrono_year_month.cpp
 #	test_circular_buffer.cpp
 #	test_circular_buffer_external_buffer.cpp
 #	test_circular_iterator.cpp

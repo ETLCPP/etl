@@ -144,7 +144,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
       {
-        return (value != -32768);
+        return (value != etl::integral_limits<int16_t>::min);
       }
 
       //***********************************************************************
