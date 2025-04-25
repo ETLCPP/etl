@@ -74,7 +74,7 @@ namespace etl
   //*****************************************************************************
   /// Check that 'p' has 'required_alignment'.
   //*****************************************************************************
-  inline bool is_aligned(void* p, size_t required_alignment)
+  inline bool is_aligned(const void* p, size_t required_alignment)
   {
     uintptr_t address = reinterpret_cast<uintptr_t>(p);
     return (address % required_alignment) == 0U;
@@ -84,7 +84,7 @@ namespace etl
   /// Check that 'p' has 'Alignment'.
   //*****************************************************************************
   template <size_t Alignment>
-  bool is_aligned(void* p)
+  bool is_aligned(const void* p)
   {
     uintptr_t address = reinterpret_cast<uintptr_t>(p);
     return (address % Alignment) == 0U;
@@ -94,7 +94,7 @@ namespace etl
   /// Check that 'p' has the alignment of 'T'.
   //*****************************************************************************
   template <typename T>
-  bool is_aligned(void* p)
+  bool is_aligned(const void* p)
   {
     return is_aligned<etl::alignment_of<T>::value>(p);
   }

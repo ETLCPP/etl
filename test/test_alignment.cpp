@@ -145,6 +145,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_is_aligned_tests_const)
+    {
+      alignas(uint32_t) const char buffer[2U * sizeof(uint32_t)] = {0, 1};
+
+      const char* p = buffer;
+
+      CHECK_TRUE(etl::is_aligned(p, std::alignment_of<const uint32_t>()));
+      CHECK_TRUE(etl::is_aligned<alignof(const uint32_t)>(p));
+      CHECK_TRUE(etl::is_aligned<const uint32_t>(p));
+
+      ++p;
+      CHECK_FALSE(etl::is_aligned(p, std::alignment_of<const uint32_t>()));
+      CHECK_FALSE(etl::is_aligned<alignof(const uint32_t)>(p));
+      CHECK_FALSE(etl::is_aligned<const uint32_t>(p));
+    }
+
+    //*************************************************************************
     TEST(test_type_with_alignment)
     {
       CHECK_EQUAL(1,  alignof(etl::type_with_alignment_t<1>));
