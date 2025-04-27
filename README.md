@@ -16,12 +16,14 @@ Embedded Template Library (ETL)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++14.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
@@ -44,13 +46,13 @@ The ETL is not designed to completely replace the STL, but complement it.
 Its design objective covers three areas.
 
 - Create a set of containers where the size or maximum size is determined at compile time. These containers are direct equivalents of those supplied in the STL.
-- Be compatible with C++ 03 but implement as many of the C++ 11/14/17/20 additions as possible.
+- Be compatible with C++ 03 but implement as many of the C++ 11/14/17/20/23 additions as possible.
 - Add other useful components that are not present in the standard library.
 
 The embedded template library has been designed for lower resource embedded applications.
 It contains a set of containers, algorithms and utilities, some of which emulate parts of the STL.
 There is no dynamic memory allocation. The library makes no use of the heap. All of the containers have a fixed capacity allowing all memory allocation to be determined at compile time.
-The library is intended for any compiler that supports C++98/03/11/14/17/20.
+The library is intended for any compiler that supports C++98/03/11/14/17/20/23.
 
 ## Main features
 

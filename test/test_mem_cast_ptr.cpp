@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/mem_cast.h"
 #include "etl/largest.h"
+#include "etl/alignment.h"
 
 #include <array>
 #include <vector>
@@ -72,7 +73,7 @@ namespace
     return reinterpret_cast<char*>(uintptr_t(i));
   }
 
-  typename std::aligned_storage<Size, Alignment>::type buffer;
+  typename etl::aligned_storage<Size, Alignment>::type buffer;
   
   SUITE(test_mem_cast_ptr)
   {

@@ -37,6 +37,8 @@ SOFTWARE.
 
 #include "etl/murmur3.h"
 
+#include "etl/alignment.h"
+
 namespace
 {
   SUITE(test_murmur3)
@@ -44,7 +46,7 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_constructor)
     {
-      typename std::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
+      typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
       std::string data("123456789");      
 
       char* begin = (char*)&storage[0];
@@ -61,7 +63,7 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_values)
     {
-      typename std::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
+      typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
       std::string data("123456789");
 
       char* begin = (char*)&storage[0];
@@ -85,7 +87,7 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_range)
     {
-      typename std::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
+      typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
       std::string data("123456789");
 
       char* begin = (char*)&storage[0];

@@ -56,10 +56,10 @@ PrintHelp()
 	echo "$HelpColour"
 	echo "-------------------------------------------------------------------------------------"
 	echo " Syntax          : ./runtests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> "
-	echo " C++ Standard    : 11, 14, 17 or 20                                                  "
+	echo " C++ Standard    : 11, 14, 17, 20 or 23                                              "
 	echo " Optimisation    : 0, 1, 2 or 3. Default = 0                                         "
 	echo " Threads         : Number of threads to use. Default = 4                             "
-	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled         "
+	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled          "
 	echo " Compiler select : gcc or clang. Default All compilers                               "
 	echo "-------------------------------------------------------------------------------------"
 	echo "$NoColour"
@@ -123,6 +123,8 @@ elif [ "$1" = "17" ]; then
   cxx_standard="17"
 elif [ "$1" = "20" ]; then
   cxx_standard="20"
+elif [ "$1" = "23" ]; then
+  cxx_standard="23"
 else
   PrintHelp
   exit
