@@ -36,154 +36,293 @@ namespace etl
 {
   namespace chrono
   {
-    //// year_month
-    //constexpr auto operator/(const etl::chrono::year& y,
-    //                         const etl::chrono::month& m ) noexcept
-    //  -> etl::chrono::year_month;
+    //*************************************************************************
+    // month_day
+    ETL_CONSTEXPR14 etl::chrono::month_day operator /(const etl::chrono::month& m,
+                                                      const etl::chrono::day& d) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day(m, d);
+    }
 
-    //constexpr auto operator/( const etl::chrono::year& y, int m ) noexcept
-    //  -> etl::chrono::year_month;
+    // month_day
+    ETL_CONSTEXPR14 etl::chrono::month_day operator /(const etl::chrono::month& m, 
+                                                      int d) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day(m, etl::chrono::day(d));
+    }
 
-    //// month_day
-    //constexpr auto operator/( const etl::chrono::month& m,
-    //                           const etl::chrono::day& d ) noexcept
-    //  -> etl::chrono::month_day;
+    // month_day
+    ETL_CONSTEXPR14 etl::chrono::month_day operator /(int m, 
+                                                      const etl::chrono::day& d) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day(etl::chrono::month(m), d);
+    }
 
-    //constexpr auto operator/( const etl::chrono::month& m, int d ) noexcept
-    //  -> etl::chrono::month_day;
+    // month_day
+    ETL_CONSTEXPR14 etl::chrono::month_day operator /(const etl::chrono::day& d, 
+                                                      const etl::chrono::month& m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day(m, d);
+    }
 
-    //constexpr auto operator/( int m, const etl::chrono::day& d ) noexcept
-    //  -> etl::chrono::month_day;
+    // month_day
+    ETL_CONSTEXPR14 etl::chrono::month_day operator /(const etl::chrono::day& d, 
+                                                      int m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day(etl::chrono::month(m), d);
+    }
 
-    //constexpr auto operator/( const etl::chrono::day& d,
-    //                           const etl::chrono::month& m ) noexcept
-    //  -> etl::chrono::month_day;
+    //*************************************************************************
+    // month_day_last
+    ETL_CONSTEXPR14 etl::chrono::month_day_last operator /(const etl::chrono::month& m,
+                                                           etl::chrono::last_spec) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day_last(m);
+    }
 
-    //constexpr auto operator/( const etl::chrono::day& d, int m ) noexcept
-    //  -> etl::chrono::month_day;
+    // month_day_last
+    ETL_CONSTEXPR14 etl::chrono::month_day_last operator /(int m, 
+                                                           etl::chrono::last_spec) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day_last(etl::chrono::month(m));
+    }
 
-    //// month_day_last
-    //constexpr auto operator/( const etl::chrono::month& m,
-    //                           etl::chrono::last_spec ) noexcept
-    //  -> etl::chrono::month_day_last;
+    // month_day_last
+    ETL_CONSTEXPR14 etl::chrono::month_day_last operator /(etl::chrono::last_spec,
+                                                           const etl::chrono::month& m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day_last(m);
+    }
+     
+    // month_day_last
+    ETL_CONSTEXPR14 etl::chrono::month_day_last operator/(etl::chrono::last_spec, 
+                                                          int m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_day_last(etl::chrono::month(m));
+    }
 
-    //constexpr auto operator/( int m, etl::chrono::last_spec ) noexcept
-    //  -> etl::chrono::month_day_last;
+    //*************************************************************************
+    // month_weekday
+    ETL_CONSTEXPR14 etl::chrono::month_weekday operator /(const etl::chrono::month& m,
+                                                          const etl::chrono::weekday_indexed& wdi) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday(m, wdi);
+    }
 
-    //constexpr auto operator/( etl::chrono::last_spec,
-    //                           const etl::chrono::month& m ) noexcept
-    //  -> etl::chrono::month_day_last;
+    // month_weekday
+    ETL_CONSTEXPR14 etl::chrono::month_weekday operator /(int m, 
+                                                          const etl::chrono::weekday_indexed& wdi) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday(etl::chrono::month(m), wdi);
+    }
 
-    //constexpr auto operator/( etl::chrono::last_spec, int m ) noexcept
-    //  -> etl::chrono::month_day_last;
+    // month_weekday
+    ETL_CONSTEXPR14 etl::chrono::month_weekday operator /(const etl::chrono::weekday_indexed& wdi,
+                                                          const etl::chrono::month& m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday(m, wdi);
+    }
 
-    //// month_weekday
-    //constexpr auto operator/( const etl::chrono::month& m,
-    //                           const etl::chrono::weekday_indexed& wdi ) noexcept
-    //  -> etl::chrono::month_weekday;
+    // month_weekday
+    ETL_CONSTEXPR14 etl::chrono::month_weekday operator /(const etl::chrono::weekday_indexed& wdi, 
+                                                          int m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday(etl::chrono::month(m), wdi);
+    }
 
-    //constexpr auto operator/( int m, const etl::chrono::weekday_indexed& wdi ) noexcept
-    //  -> etl::chrono::month_weekday;
+    //*************************************************************************
+    // month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::month_weekday_last operator /(const etl::chrono::month& m,
+                                                               const etl::chrono::weekday_last& wdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday_last(m, wdl);
+    }
 
-    //constexpr auto operator/(const etl::chrono::weekday_indexed& wdi,
-    //                         const etl::chrono::month& m ) noexcept
-    //  -> etl::chrono::month_weekday;
+    // month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::month_weekday_last operator /(int m,
+                                                               const etl::chrono::weekday_last& wdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday_last(etl::chrono::month(m), wdl);
+    }
 
-    //constexpr auto operator/( const etl::chrono::weekday_indexed& wdi, int m ) noexcept
-    //  -> etl::chrono::month_weekday;
+    // month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::month_weekday_last operator /(const etl::chrono::weekday_last& wdl,
+                                                               const etl::chrono::month& m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday_last(m, wdl);
+    }
 
-    //// month_weekday_last
-    //constexpr auto operator/( const etl::chrono::month& m,
-    //                           const etl::chrono::weekday_last& wdl ) noexcept
-    //  -> etl::chrono::month_weekday_last;
+    // month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::month_weekday_last operator /(const etl::chrono::weekday_last& wdl,
+                                                               int m) ETL_NOEXCEPT
+    {
+      return etl::chrono::month_weekday_last(etl::chrono::month(m), wdl);
+    }
 
-    //constexpr auto operator/( int m, const etl::chrono::weekday_last& wdl ) noexcept
-    //  -> etl::chrono::month_weekday_last;
+    //*************************************************************************
+    // year_month
+    ETL_CONSTEXPR14 etl::chrono::year_month operator /(const etl::chrono::year& y,
+                                                       const etl::chrono::month& m) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month(y, m);
+    }
 
-    //constexpr auto operator/( const etl::chrono::weekday_last& wdl,
-    //                           const etl::chrono::month& m ) noexcept
-    //  -> etl::chrono::month_weekday_last;
+    // year_month
+    ETL_CONSTEXPR14 etl::chrono::year_month operator /(const etl::chrono::year& y,
+                                                       int m) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month(y, etl::chrono::month(m));
+    }
 
-    //constexpr auto operator/( const etl::chrono::weekday_last& wdl, int m ) noexcept
-    //  -> etl::chrono::month_weekday_last;
+    ////*************************************************************************
+    // year_month_day
+    ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::year_month& ym,
+                                                           const etl::chrono::day& d) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day(ym.year(), ym.month(), d);
+    }
 
-    //// year_month_day
-    //constexpr auto operator/( const etl::chrono::year_month& ym,
-    //                           const etl::chrono::day& d ) noexcept
-    //  -> etl::chrono::year_month_day;
+    // year_month_day
+    ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::year_month& ym, 
+                                                           int d ) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day(ym.year(), ym.month(), etl::chrono::day(d));
+    }
 
-    //constexpr auto operator/( const etl::chrono::year_month& ym, int d ) noexcept
-    //  -> etl::chrono::year_month_day;
+    // year_month_day
+    ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::year& y,
+                                                           const etl::chrono::month_day& md) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day(y, md.month(), md.day());
+    }
 
-    //constexpr auto operator/( const etl::chrono::year& y,
-    //                           const etl::chrono::month_day& md ) noexcept
-    //  -> etl::chrono::year_month_day;
+    // year_month_day
+    ETL_CONSTEXPR14 etl::chrono::year_month_day operator/(int y,
+                                                          const etl::chrono::month_day& md) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day(etl::chrono::year(y), md.month(), md.day());
+    }
 
-    //constexpr auto operator/( int y, const etl::chrono::month_day& md ) noexcept
-    //  -> etl::chrono::year_month_day;
+    // year_month_day
+    ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::month_day& md,
+                                                           const etl::chrono::year& y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day(y, md.month(), md.day());
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_day& md,
-    //                           const etl::chrono::year& y ) noexcept
-    //  -> etl::chrono::year_month_day;
+    // year_month_day
+    ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::month_day& md,
+                                                           int y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day(etl::chrono::year(y), md.month(), md.day());
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_day& md, int y ) noexcept
-    //  -> etl::chrono::year_month_day;
+    //*************************************************************************
+    // year_month_day_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_day_last operator /(const etl::chrono::year_month& ym,
+                                                                etl::chrono::last_spec) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day_last(ym.year(), etl::chrono::month_day_last(ym.month()));
+    }
 
-    //// year_month_day_last
-    //constexpr auto operator/( const etl::chrono::year_month& ym,
-    //                           etl::chrono::last_spec ) noexcept
-    //  -> etl::chrono::year_month_day_last;
+    // year_month_day_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_day_last operator /(const etl::chrono::year& y,
+                                                                const etl::chrono::month_day_last& mdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day_last(y, mdl);
+    }
 
-    //constexpr auto operator/( const etl::chrono::year& y,
-    //                           const etl::chrono::month_day_last& mdl ) noexcept
-    //  -> etl::chrono::year_month_day_last;
+    // year_month_day_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_day_last operator /(int y,
+                                                                const etl::chrono::month_day_last& mdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day_last(etl::chrono::year(y), mdl);
+    }
 
-    //constexpr auto operator/( int y, const etl::chrono::month_day_last& mdl ) noexcept
-    //  -> etl::chrono::year_month_day_last;
+    // year_month_day_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_day_last operator /(const etl::chrono::month_day_last& mdl,
+                                                                const etl::chrono::year& y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day_last(y, mdl);
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_day_last& mdl,
-    //                           const etl::chrono::year& y ) noexcept
-    //  -> etl::chrono::year_month_day_last;
+    // year_month_day_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_day_last operator /(const etl::chrono::month_day_last& mdl,
+                                                                int y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_day_last(etl::chrono::year(y), mdl);
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_day_last& mdl, int y ) noexcept
-    //  -> etl::chrono::year_month_day_last;
+    //*************************************************************************
+    // year_month_weekday
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator /(const etl::chrono::year_month& ym,
+                                                               const etl::chrono::weekday_indexed& wdi) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ym.year(), ym.month(), wdi);
+    }
 
-    //// year_month_weekday
-    //constexpr auto operator/( const etl::chrono::year_month& ym,
-    //                           const etl::chrono::weekday_indexed& wdi ) noexcept
-    //  -> etl::chrono::year_month_weekday;
+    // year_month_weekday
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator /(const etl::chrono::year& y,
+                                                               const etl::chrono::month_weekday& mwd) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(y, mwd.month(), mwd.weekday_indexed());
+    }
 
-    //constexpr auto operator/( const etl::chrono::year& y,
-    //                           const etl::chrono::month_weekday& mwd ) noexcept
-    //  -> etl::chrono::year_month_weekday;
+    // year_month_weekday
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator/(int y, 
+                                                              const etl::chrono::month_weekday& mwd) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(etl::chrono::year(y), mwd.month(), mwd.weekday_indexed());
+    }
 
-    //constexpr auto operator/( int y, const etl::chrono::month_weekday& mwd ) noexcept
-    //  -> etl::chrono::year_month_weekday;
+    // year_month_weekday
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator /(const etl::chrono::month_weekday& mwd,
+                                                               const etl::chrono::year& y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(y, mwd.month(), mwd.weekday_indexed());
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_weekday& mwd,
-    //                           const etl::chrono::year& y ) noexcept
-    //  -> etl::chrono::year_month_weekday;
+    // year_month_weekday
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator /(const etl::chrono::month_weekday& mwd, 
+                                                               int y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(etl::chrono::year(y), mwd.month(), mwd.weekday_indexed());
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_weekday& mwd, int y ) noexcept
-    //  -> etl::chrono::year_month_weekday;
+    //*************************************************************************
+    // year_month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator /(const etl::chrono::year_month& ym,
+                                                                    const etl::chrono::weekday_last& wdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ym.year(), ym.month(), wdl);
+    }
 
-    //// year_month_weekday_last
-    //constexpr auto operator/( const etl::chrono::year_month& ym,
-    //                           const etl::chrono::weekday_last& wdl ) noexcept
-    //  -> etl::chrono::year_month_weekday_last;
+    // year_month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator /(const etl::chrono::year& y,
+                                                                    const etl::chrono::month_weekday_last& mwdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(y, mwdl.month(), mwdl.weekday_last());
+    }
 
-    //constexpr auto operator/( const etl::chrono::year& y,
-    //                           const etl::chrono::month_weekday_last& mwdl ) noexcept
-    //  -> etl::chrono::year_month_weekday_last;
+    // year_month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator/(int y,
+                                                                   const etl::chrono::month_weekday_last& mwdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(etl::chrono::year(y), mwdl.month(), mwdl.weekday_last());
+    }
 
-    //constexpr auto operator/( int y, const etl::chrono::month_weekday_last& mwdl ) noexcept
-    //  -> etl::chrono::year_month_weekday_last;
+    // year_month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator /(const etl::chrono::month_weekday_last& mwdl,
+                                                                    const etl::chrono::year& y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(y, mwdl.month(), mwdl.weekday_last());
+    }
 
-    //constexpr auto operator/( const etl::chrono::month_weekday_last& mwdl,
-    //                           const etl::chrono::year& y ) noexcept
-    //  -> etl::chrono::year_month_weekday_last;
-
-    //constexpr auto operator/( const etl::chrono::month_weekday_last& mwdl, int y ) noexcept
-    //  -> etl::chrono::year_month_weekday_last;
+    // year_month_weekday_last
+    ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator /(const etl::chrono::month_weekday_last& mwdl,
+                                                                    int y) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(etl::chrono::year(y), mwdl.month(), mwdl.weekday_last());
+    }
   }
 }

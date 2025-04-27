@@ -42,6 +42,11 @@ namespace etl
     ETL_CONSTEXPR etl::chrono::month operator +(const etl::chrono::months& ms, const etl::chrono::month& m)   ETL_NOEXCEPT;
     ETL_CONSTEXPR etl::chrono::month operator -(const etl::chrono::month& m,   const etl::chrono::months& ms) ETL_NOEXCEPT;
 
+    namespace private_chrono
+    {
+      static ETL_CONSTANT unsigned char days_in_month[13] = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    }
+
     //***********************************************************************
     /// month
     //***********************************************************************
@@ -378,6 +383,14 @@ namespace etl
       ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
+      }
+
+      //*************************************************************************
+      /// Returns the last day of the month
+      //*************************************************************************
+      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
+      {
+        return etl::chrono::day(private_chrono::days_in_month[static_cast<unsigned>(m)]);
       }
 
       //*************************************************************************

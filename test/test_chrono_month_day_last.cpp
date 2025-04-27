@@ -84,6 +84,19 @@ namespace
       CHECK_TRUE(month_day_last_october.ok());
       CHECK_TRUE(month_day_last_november.ok());
       CHECK_TRUE(month_day_last_december.ok());
+
+      CHECK_EQUAL(31, month_day_last_january.day());
+      CHECK_EQUAL(29, month_day_last_february.day());
+      CHECK_EQUAL(31, month_day_last_march.day());
+      CHECK_EQUAL(30, month_day_last_april.day());
+      CHECK_EQUAL(31, month_day_last_may.day());
+      CHECK_EQUAL(30, month_day_last_june.day());
+      CHECK_EQUAL(31, month_day_last_july.day());
+      CHECK_EQUAL(31, month_day_last_august.day());
+      CHECK_EQUAL(30, month_day_last_september.day());
+      CHECK_EQUAL(31, month_day_last_october.day());
+      CHECK_EQUAL(30, month_day_last_november.day());
+      CHECK_EQUAL(31, month_day_last_december.day());
     }
 
     //*************************************************************************

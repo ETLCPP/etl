@@ -3195,9 +3195,13 @@
     <ClInclude Include="..\..\include\etl\private\chrono\month_day.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\month_weekday.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\operators.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\system_clock.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\time_point.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\weekday.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\year.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\year_month.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month_day.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month_weekday.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_cxx_20_compat_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h" />
@@ -8472,6 +8476,7 @@
     <ClCompile Include="..\test_chrono_month_day_last.cpp" />
     <ClCompile Include="..\test_chrono_month_weekday.cpp" />
     <ClCompile Include="..\test_chrono_month_weekday_last.cpp" />
+    <ClCompile Include="..\test_chrono_operators.cpp" />
     <ClCompile Include="..\test_chrono_weekday.cpp" />
     <ClCompile Include="..\test_chrono_weekday_indexed.cpp" />
     <ClCompile Include="..\test_chrono_weekday_last.cpp" />

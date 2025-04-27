@@ -44,15 +44,16 @@ namespace etl
       /// Default constructor.
       //*************************************************************************
       year_month()
-        : y(etl::integral_limits<int16_t>::min)
-        , m(0)
+        : y()
+        , m()
       {
       }
 
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR year_month(const etl::chrono::year& y_, const etl::chrono::month& m_) ETL_NOEXCEPT
+      ETL_CONSTEXPR year_month(const etl::chrono::year&  y_, 
+                               const etl::chrono::month& m_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
       {

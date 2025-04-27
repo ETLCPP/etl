@@ -43,7 +43,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR month_weekday(const etl::chrono::month& m_, const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
+      ETL_CONSTEXPR month_weekday(const etl::chrono::month&           m_, 
+                                  const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
         : m(m_)
         , wdi(wdi_)
       {
@@ -107,7 +108,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR month_weekday_last(const etl::chrono::month& m_, const etl::chrono::weekday_last& wdl_) ETL_NOEXCEPT
+      ETL_CONSTEXPR month_weekday_last(const etl::chrono::month&        m_, 
+                                       const etl::chrono::weekday_last& wdl_) ETL_NOEXCEPT
         : m(m_)
         , wdl(wdl_)
       {

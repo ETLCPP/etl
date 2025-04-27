@@ -36,11 +36,6 @@ namespace etl
 {
   namespace chrono
   {
-    namespace private_chrono
-    {
-      static ETL_CONSTANT unsigned char days_in_month[13] = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-    }
-
     class month_day
     {
     public:
@@ -53,7 +48,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR month_day(const etl::chrono::month& m_, const etl::chrono::day& d_) ETL_NOEXCEPT
+      ETL_CONSTEXPR month_day(const etl::chrono::month& m_, 
+                              const etl::chrono::day&   d_) ETL_NOEXCEPT
         : m(m_)
         , d(d_)
       {

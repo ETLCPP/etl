@@ -384,7 +384,7 @@ namespace etl
     ETL_CONSTEXPR bool operator ==(const etl::chrono::weekday_indexed& wd1, const etl::chrono::weekday_indexed& wd2) ETL_NOEXCEPT
     {
       return (wd1.weekday() == wd2.weekday()) && 
-        (wd1.index()   == wd2.index());
+             (wd1.index()   == wd2.index());
     }
 
     //***********************************************************************

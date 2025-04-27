@@ -243,7 +243,7 @@ namespace
     {
       for (int i = -32767; i <= 32767; ++i)
       {
-        bool is_leap = ((i % 4) == 0) && ((i % 400) != 0);
+        bool is_leap = ((i % 4) == 0) && (((i % 100) != 0) || ((i % 400) == 0));
 
         etl::chrono::year year(i);
 

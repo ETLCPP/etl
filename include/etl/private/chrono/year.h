@@ -168,7 +168,9 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR bool is_leap() const ETL_NOEXCEPT
       {
-        return ((value % 4) == 0) && !((value % 400) == 0);
+        return ((value % 4) == 0) &&    // Divisible by 4
+               (((value % 100) != 0) || // but not divisible by 100
+                ((value % 400) == 0));  // unless divisible by 400
       }
 
       //***********************************************************************
