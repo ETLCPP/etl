@@ -929,12 +929,12 @@ namespace etl
 
       while ((value_index > top_index) && compare(first[parent], value))
       {
-        first[value_index] = etl::move(first[parent]);
+        first[value_index] = ETL_MOVE(first[parent]);
         value_index = parent;
         parent = (value_index - 1) / 2;
       }
 
-      first[value_index] = etl::move(value);
+      first[value_index] = ETL_MOVE(value);
     }
 
     // Adjust Heap Helper
@@ -951,18 +951,18 @@ namespace etl
           --child2nd;
         }
 
-        first[value_index] = etl::move(first[child2nd]);
+        first[value_index] = ETL_MOVE(first[child2nd]);
         value_index = child2nd;
         child2nd = 2 * (child2nd + 1);
       }
 
       if (child2nd == length)
       {
-        first[value_index] = etl::move(first[child2nd - 1]);
+        first[value_index] = ETL_MOVE(first[child2nd - 1]);
         value_index = child2nd - 1;
       }
 
-      push_heap(first, value_index, top_index, etl::move(value), compare);
+      push_heap(first, value_index, top_index, ETL_MOVE(value), compare);
     }
 
     // Is Heap Helper
@@ -995,10 +995,10 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::value_type value_t;
     typedef typename etl::iterator_traits<TIterator>::difference_type distance_t;
 
-    value_t value = etl::move(last[-1]);
-    last[-1] = etl::move(first[0]);
+    value_t value = ETL_MOVE(last[-1]);
+    last[-1] = ETL_MOVE(first[0]);
 
-    private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), etl::move(value), compare);
+    private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), ETL_MOVE(value), compare);
   }
 
   // Pop Heap
@@ -1017,7 +1017,7 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
     typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
 
-    private_heap::push_heap(first, difference_t(last - first - 1), difference_t(0), value_t(etl::move(*(last - 1))), compare);
+    private_heap::push_heap(first, difference_t(last - first - 1), difference_t(0), value_t(ETL_MOVE(*(last - 1))), compare);
   }
 
   // Push Heap
@@ -1045,7 +1045,7 @@ namespace etl
 
     while (true)
     {
-      private_heap::adjust_heap(first, parent, length, etl::move(*(first + parent)), compare);
+      private_heap::adjust_heap(first, parent, length, ETL_MOVE(*(first + parent)), compare);
 
       if (parent == 0)
       {
@@ -1182,7 +1182,7 @@ namespace etl
 
       for (int i = 0; i < gcd_nm; i++) 
       {
-        value_type temp = etl::move(*(first + i));
+        value_type temp = ETL_MOVE(*(first + i));
         int j = i;
         
         while (true) 
@@ -1199,11 +1199,11 @@ namespace etl
             break;
           }
 
-          *(first + j) = etl::move(*(first + k));
+          *(first + j) = ETL_MOVE(*(first + k));
           j = k;
         }
 
-        *(first + j) = etl::move(temp);
+        *(first + j) = ETL_MOVE(temp);
       }
 
       return result;
@@ -1324,13 +1324,13 @@ namespace etl
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
 
       // Save the first item.
-      value_type temp(etl::move(*first));
+      value_type temp(ETL_MOVE(*first));
 
       // Move the rest.
       TIterator result = etl::move(etl::next(first), last, first);
 
       // Restore the first item in its rotated position.
-      *result = etl::move(temp);
+      *result = ETL_MOVE(temp);
 
       // The new position of the first item.
       return result;
@@ -1346,13 +1346,13 @@ namespace etl
 
       // Save the last item.
       TIterator previous = etl::prev(last);
-      value_type temp(etl::move(*previous));
+      value_type temp(ETL_MOVE(*previous));
 
       // Move the rest.
       TIterator result = etl::move_backward(first, previous, last);
 
       // Restore the last item in its rotated position.
-      *first = etl::move(temp);
+      *first = ETL_MOVE(temp);
 
       // The new position of the first item.
       return result;
@@ -2127,7 +2127,7 @@ namespace etl
   {
     while (first != last)
     {
-      sum = etl::move(sum) + *first;
+      sum = ETL_MOVE(sum) + *first;
       ++first;
     }
       
@@ -2144,7 +2144,7 @@ namespace etl
   {
     while (first != last)
     {
-      sum = operation(etl::move(sum), *first);
+      sum = operation(ETL_MOVE(sum), *first);
       ++first;
     }
 
@@ -2201,7 +2201,7 @@ namespace etl
       {
         if (!(*itr == value))
         {
-          *first++ = etl::move(*itr);
+          *first++ = ETL_MOVE(*itr);
         }
       }
     }
@@ -2227,7 +2227,7 @@ namespace etl
       {
         if (!predicate(*itr))
         {
-          *first++ = etl::move(*itr);
+          *first++ = ETL_MOVE(*itr);
         }
       }
     }
