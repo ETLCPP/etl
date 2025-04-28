@@ -36,16 +36,45 @@ namespace etl
 {
   namespace chrono
   {
-    class system_clock
-    {
-      using duration = etl::chrono::seconds;
-    };
+    //class time_zone
+    //{
+    //public:
 
-    template<class TDuration>
-    using sys_time = etl::chrono::time_point<etl::chrono::system_clock, TDuration>;
+    //  /// Obtains the name of this time_zone.
+    //  etl::string_view name() const ETL_NOEXCEPT
+    //  {
+    //    return etl::string_view(tz_name, etl::strlen(tz_name));
+    //  }
 
-    using sys_seconds = sys_time<etl::chrono::seconds>;
-    
-    using sys_days = sys_time<etl::chrono::days>;
+    //  template <typename TDuration>
+    //  etl::chrono::sys_info get_info(const etl::chrono::sys_time<TDuration>& tp) const
+    //  {
+
+    //  }
+
+    //  template <typename TDuration>
+    //  etl::chrono::local_info get_info(const etl::chrono::local_time<TDuration>& tp) const
+    //  {
+    //    return etl::chrono::local_info();
+    //  }
+
+    //  template <typename TDuration>
+    //  etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>> to_sys(const etl::chrono::local_time<TDuration>& tp) const
+    //  {
+    //    etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>>()
+    //  }
+
+    //  template <typename TDuration>
+    //  etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>> to_sys(const etl::chrono::local_time<TDuration>& tp, 
+    //                                                                                    etl::chrono::choose z) const
+    //  {
+    //    etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>>();
+    //  }
+
+    //private:
+
+    //  static const char *tz_name;
+
+    //};
   }
 }

@@ -78,7 +78,7 @@ namespace etl
       /// Copy construct from another time_point with a different duration type.
       //***************************************************************************
       template <typename TDuration2>
-      explicit time_point(const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
+      explicit time_point(const time_point<clock, TDuration2>& rhs) ETL_NOEXCEPT
         : dur(rhs.time_since_epoch())
       {
       }
