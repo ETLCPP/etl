@@ -194,27 +194,27 @@ namespace
       CHECK_EQUAL(etl::chrono::year(2000), ymdl1.year());
       CHECK_EQUAL(etl::chrono::January,    ymdl1.month());
       CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::January).day(), ymdl1.day());
-      CHECK_TRUE(etl::chrono::month_day_last(etl::chrono::January) == ymdl1.month_day_last());
+      CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::January).month(), ymdl1.month_day_last().month());
 
       CHECK_EQUAL(etl::chrono::year(2001), ymdl2.year());
       CHECK_EQUAL(etl::chrono::February,   ymdl2.month());
       CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::February).day(), ymdl2.day());
-      CHECK_TRUE(etl::chrono::month_day_last(etl::chrono::February) == ymdl2.month_day_last());
+      CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::February).month(), ymdl2.month_day_last().month());
 
       CHECK_EQUAL(etl::chrono::year(2002), ymdl3.year());
       CHECK_EQUAL(etl::chrono::March,      ymdl3.month());
       CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::March).day(), ymdl3.day());
-      CHECK_TRUE(etl::chrono::month_day_last(etl::chrono::March) == ymdl3.month_day_last());
+      CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::March).month(), ymdl3.month_day_last().month());
 
       CHECK_EQUAL(etl::chrono::year(2003), ymdl4.year());
       CHECK_EQUAL(etl::chrono::April,      ymdl4.month());
       CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::April).day(), ymdl4.day());
-      CHECK_TRUE(etl::chrono::month_day_last(etl::chrono::April) == ymdl4.month_day_last());
+      CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::April).month(), ymdl4.month_day_last().month());
 
       CHECK_EQUAL(etl::chrono::year(2004), ymdl5.year());
       CHECK_EQUAL(etl::chrono::May,        ymdl5.month());
       CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::May).day(), ymdl5.day());
-      CHECK_TRUE(etl::chrono::month_day_last(etl::chrono::May) == ymdl5.month_day_last());
+      CHECK_EQUAL(etl::chrono::month_day_last(etl::chrono::May).month(), ymdl5.month_day_last().month());
     }
 
     //*************************************************************************

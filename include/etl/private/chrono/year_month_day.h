@@ -245,7 +245,11 @@ namespace etl
       ////***********************************************************************
       //ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
       //{
-      //  return etl::chrono::local_days();
+      //// Convert the year_month_day to sys_days first
+      //etl::chrono::sys_days sys_days_representation = static_cast<etl::chrono::sys_days>(*this);
+
+      //// Convert sys_days to local_days (assuming local_days is a wrapper around sys_days)
+      //return etl::chrono::local_days(sys_days_representation);
       //}
 
     private:
@@ -270,7 +274,6 @@ namespace etl
         : y(y)
         , m(mdl.month())
       {
-
       }
 
       //*************************************************************************
@@ -303,6 +306,16 @@ namespace etl
       ETL_CONSTEXPR etl::chrono::month_day_last month_day_last() const ETL_NOEXCEPT
       {
         return etl::chrono::month_day_last(m);
+      }
+
+      //*************************************************************************
+      /// 
+      //*************************************************************************
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
+      {
+        return y.ok() &&
+               m.ok() &&
+               day() == etl::chrono::month_day_last(m).day();
       }
 
       //*************************************************************************

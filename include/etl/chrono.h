@@ -36,6 +36,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "integral_limits.h"
+#include "string_view.h"
 
 #if ETL_NOT_USING_CPP11
   #error NOT SUPPORTED FOR C++03 OR BELOW
@@ -75,6 +76,7 @@ namespace etl
 #include "private/chrono/year_month_weekday.h"
 #include "private/chrono/hh_mm_ss.h"
 #include "private/chrono/operators.h"
+#include "private/chrono/time_zone.h"
 #endif
 
 #undef ETL_IN_CHRONO_H

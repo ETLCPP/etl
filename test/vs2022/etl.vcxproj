@@ -3197,6 +3197,7 @@
     <ClInclude Include="..\..\include\etl\private\chrono\operators.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\system_clock.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\time_point.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\time_zone.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\weekday.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\year.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\year_month.h" />
@@ -8482,6 +8483,8 @@
     <ClCompile Include="..\test_chrono_weekday_last.cpp" />
     <ClCompile Include="..\test_chrono_year.cpp" />
     <ClCompile Include="..\test_chrono_year_month.cpp" />
+    <ClCompile Include="..\test_chrono_year_month_day.cpp" />
+    <ClCompile Include="..\test_chrono_year_month_day_last.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />

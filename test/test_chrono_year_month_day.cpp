@@ -7,7 +7,7 @@ https://www.etlcpp.com
 
 Documentation: 
 
-Copyright(c) 2024 John Wellbelove
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -53,96 +53,115 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_chrono_year_month)
+  SUITE(test_chrono_year_month_day)
   {
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::year_month ym;
+      Chrono::year_month_day ymd;
 
-      CHECK_FALSE(ym.ok()); // Default-constructed year_month is not valid
+      CHECK_FALSE(ymd.ok()); // Default-constructed year_month_day is not valid
     }
 
     //*************************************************************************
     TEST(test_constructor_with_month_and_day)
     {
-      Chrono::year_month ym{Chrono::year(2000), Chrono::January};
+      Chrono::year_month_day ymd{Chrono::year(2000), Chrono::January, Chrono::day(1)};
 
-      CHECK_TRUE(ym.ok()); // Valid year_month
-      CHECK_EQUAL(2000,            (int)ym.year());
-      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ym.month());
+      CHECK_TRUE(ymd.ok()); // Valid year_month_day
+      CHECK_EQUAL(2000,                      (int)ymd.year());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ymd.month());
+      CHECK_EQUAL(Chrono::day(1),            ymd.day());
     }
 
     //*************************************************************************
     TEST(test_invalid_year_month)
     {
-      Chrono::year_month ym{Chrono::year{32768}, Chrono::January}; // Invalid year
+      Chrono::year_month_day ymd{Chrono::year{32768}, Chrono::January, Chrono::day(1)}; // Invalid year
 
-      CHECK_FALSE(ym.ok()); // Invalid year_month
+      CHECK_FALSE(ymd.ok()); // Invalid year_month_day
     }
 
     //*************************************************************************
     TEST(test_invalid_month_in_year_month)
     {
-      Chrono::year_month ym{Chrono::year{2000}, Chrono::month{13}}; // Invalid month (13)
+      Chrono::year_month_day ymd{Chrono::year{2000}, Chrono::month{13}, Chrono::day(1)}; // Invalid month (13)
 
-      CHECK_FALSE(ym.ok()); // Invalid year_month
+      CHECK_FALSE(ymd.ok()); // Invalid year_month_day
+    }
+
+    //*************************************************************************
+    TEST(test_invalid_day_in_year_month)
+    {
+      Chrono::year_month_day ymd{Chrono::year{2000}, Chrono::January, Chrono::day(32)}; // Invalid day (32)
+
+      CHECK_FALSE(ymd.ok()); // Invalid year_month_day
     }
 
 #if ETL_USING_CPP20
     //*************************************************************************
-    TEST(test_year_month_spaceship_operator)
+    TEST(test_year_month_day_spaceship_operator)
     {
-      Chrono::year_month ym1{Chrono::year(2000), Chrono::January};
-      Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
-      Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
+      Chrono::year_month_day ym1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym2{Chrono::year(2001), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
+      Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January,  Chrono::day(2)};
 
       CHECK_TRUE((ym1 <=> ym1) == std::strong_ordering::equal);
       CHECK_TRUE((ym1 <=> ym2) == std::strong_ordering::less);
       CHECK_TRUE((ym2 <=> ym1) == std::strong_ordering::greater);
       CHECK_TRUE((ym1 <=> ym3) == std::strong_ordering::less);
       CHECK_TRUE((ym3 <=> ym1) == std::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym4) == std::strong_ordering::less);
+      CHECK_TRUE((ym4 <=> ym1) == std::strong_ordering::greater);
     }
 #endif
 
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
-    TEST(test_year_month_compare)
+    TEST(test_year_month_day_compare)
     {
-      Chrono::year_month ym1{Chrono::year(2000), Chrono::January};
-      Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
-      Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
+      Chrono::year_month_day ym1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym2{Chrono::year(2001), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
+      Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January,  Chrono::day(2)};
 
       CHECK_TRUE(ym1.compare(ym1) == 0);
       CHECK_TRUE(ym1.compare(ym2) == -1);
       CHECK_TRUE(ym2.compare(ym1) == 1);
       CHECK_TRUE(ym1.compare(ym3) == -1);
       CHECK_TRUE(ym3.compare(ym1) == 1);
+      CHECK_TRUE(ym1.compare(ym4) == -1);
+      CHECK_TRUE(ym4.compare(ym1) == 1);
     }
 #endif
 
     //*************************************************************************
-    TEST(test_year_month_equality_operator)
+    TEST(test_year_month_day_equality_operator)
     {
-      Chrono::year_month ym1{Chrono::year(2000), Chrono::January};
-      Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
-      Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
+      Chrono::year_month_day ym1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym2{Chrono::year(2001), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
+      Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January,  Chrono::day(2)};
 
       CHECK_TRUE(ym1 == ym1);  // Same year/month/day
       CHECK_FALSE(ym1 == ym2); // Different year
       CHECK_FALSE(ym1 == ym3); // Different month
+      CHECK_FALSE(ym1 == ym4); // Different day
     }
 
     //*************************************************************************
-    TEST(test_year_month_not_equality_operator)
+    TEST(test_year_month_day_not_equality_operator)
     {
-      Chrono::year_month ym1{Chrono::year(2000), Chrono::January};
-      Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
-      Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
+      Chrono::year_month_day ym1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym2{Chrono::year(2001), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
+      Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January,  Chrono::day(2)};
 
       CHECK_FALSE(ym1 != ym1); // Same year/month/day
       CHECK_TRUE(ym1 != ym2);  // Different year
       CHECK_TRUE(ym1 != ym3);  // Different month
+      CHECK_TRUE(ym1 != ym4);  // Different day
     }
   };
 }
