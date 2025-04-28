@@ -629,11 +629,27 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Literal for floating point hours duration
+      //***********************************************************************
+      inline ETL_CONSTEXPR etl::chrono::duration<double, ratio<3600>> operator""_h(long double h) noexcept
+      {
+        return etl::chrono::duration<double, ratio<3600>>(h);
+      }
+
+      //***********************************************************************
       /// Literal for minutes duration
       //***********************************************************************
       inline ETL_CONSTEXPR etl::chrono::minutes operator ""_minutes(unsigned long long m) noexcept
       {
         return etl::chrono::minutes(static_cast<etl::chrono::minutes::rep>(m));
+      }
+
+      //***********************************************************************
+      /// Literal for floating point minutes duration
+      //***********************************************************************
+      inline ETL_CONSTEXPR etl::chrono::duration<double, ratio<60>> operator ""_minutes(long double m) noexcept
+      {
+        return etl::chrono::duration<double, ratio<60>>(m);
       }
 
       //***********************************************************************
@@ -645,11 +661,27 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Literal for floating point seconds duration
+      //***********************************************************************
+      inline ETL_CONSTEXPR etl::chrono::duration<double> operator ""_seconds(long double s) noexcept
+      {
+        return etl::chrono::duration<double>(s);
+      }
+
+      //***********************************************************************
       /// Literal for milliseconds duration
       //***********************************************************************
       inline ETL_CONSTEXPR etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) noexcept
       {
         return etl::chrono::milliseconds(static_cast<etl::chrono::milliseconds::rep>(s));
+      }
+
+      //***********************************************************************
+      /// Literal for floating point milliseconds duration
+      //***********************************************************************
+      inline ETL_CONSTEXPR etl::chrono::duration<double, milli> operator ""_milliseconds(long double s) noexcept
+      {
+        return etl::chrono::duration<double, milli>(s);
       }
 
       //***********************************************************************
@@ -661,11 +693,27 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Literal for floating point microseconds duration
+      //***********************************************************************
+      inline ETL_CONSTEXPR etl::chrono::duration<double, micro> operator ""_microseconds(long double s) noexcept
+      {
+        return etl::chrono::duration<double, micro>(s);
+      }
+
+      //***********************************************************************
       /// Literal for nanoseconds duration
       //***********************************************************************
       inline ETL_CONSTEXPR etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) noexcept
       {
         return etl::chrono::nanoseconds(static_cast<etl::chrono::nanoseconds::rep>(s));
+      }
+
+      //***********************************************************************
+      /// Literal for floating point microseconds duration
+      //***********************************************************************
+      inline ETL_CONSTEXPR etl::chrono::duration<double, nano> operator ""_nanoseconds(long double s) noexcept
+      {
+        return etl::chrono::duration<double, nano>(s);
       }
     }
   }
