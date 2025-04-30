@@ -113,7 +113,7 @@ namespace etl
   public:
 
     intrusive_list_value_is_already_linked(string_type file_name_, numeric_type line_number_)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:value is already linked", ETL_INTRUSIVE_LIST_FILE_ID"E"), file_name_, line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:value is already linked", ETL_INTRUSIVE_LIST_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
