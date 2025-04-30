@@ -434,6 +434,15 @@ SOFTWARE.
   #else
     #define ETL_HAS_ATOMIC 0
   #endif
+  #if ((ETL_USING_CPP17 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
+        defined(ETL_COMPILER_ARM5)  || \
+        defined(ETL_COMPILER_ARM6)  || \
+        defined(ETL_COMPILER_GCC)   || \
+        defined(ETL_COMPILER_CLANG))
+    #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 1
+  #else
+    #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
+  #endif
 #endif
 
 //*************************************
@@ -524,6 +533,7 @@ namespace etl
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
     static ETL_CONSTANT bool has_64bit_types                  = (ETL_USING_64BIT_TYPES == 1);
     static ETL_CONSTANT bool has_atomic                       = (ETL_HAS_ATOMIC == 1);
+    static ETL_CONSTANT bool has_atomic_always_lock_free      = (ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE == 1);
     static ETL_CONSTANT bool has_nullptr                      = (ETL_HAS_NULLPTR == 1);
     static ETL_CONSTANT bool has_char8_t                      = (ETL_HAS_CHAR8_T == 1);
     static ETL_CONSTANT bool has_native_char8_t               = (ETL_HAS_NATIVE_CHAR8_T == 1);
