@@ -149,6 +149,7 @@ add_executable(etl_tests
 	test_hfsm.cpp
 	test_hfsm_recurse_to_inner_state_on_start.cpp
 	test_histogram.cpp
+	test_index_of_type.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
 	test_instance_count.cpp
@@ -285,7 +286,9 @@ add_executable(etl_tests
 	test_to_u32string.cpp
 	test_to_u8string.cpp
 	test_to_wstring.cpp
+	test_tuple.cpp
 	test_type_def.cpp
+	test_type_list.cpp
 	test_type_lookup.cpp
 	test_type_select.cpp
 	test_type_traits.cpp

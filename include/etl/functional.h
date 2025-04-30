@@ -113,6 +113,39 @@ namespace etl
   }
 
   //***************************************************************************
+  /// unwrap_reference.
+  //***************************************************************************
+  template <class T>
+  struct unwrap_reference
+  {
+    typedef T type;
+  };
+
+  template <typename T>
+  struct unwrap_reference<etl::reference_wrapper<T> >
+  {
+    typedef T& type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using unwrap_reference_t = typename unwrap_reference<T>::type;
+#endif
+
+  //***************************************************************************
+  /// unwrap_ref_decay.
+  //***************************************************************************
+  template <typename T>
+  struct unwrap_ref_decay : etl::unwrap_reference<typename etl::decay<T>::type> {};
+
+#if ETL_USING_CPP11 
+  template <typename T>
+  using unwrap_ref_decay_t = typename unwrap_ref_decay<T>::type;
+#endif
+
+  //***************************************************************************
+  /// unary_function
+  //***************************************************************************
   template <typename TArgumentType, typename TResultType>
   struct unary_function
   {
@@ -120,6 +153,8 @@ namespace etl
     typedef TResultType   result_type;
   };
 
+  //***************************************************************************
+  /// binary_function
   //***************************************************************************
   template <typename TFirstArgumentType, typename TSecondArgumentType, typename TResultType>
   struct binary_function

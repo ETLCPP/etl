@@ -208,6 +208,16 @@ namespace
       CHECK_EQUAL(sizeof(uint32_t), etl::le_uint32_t::Size);
       CHECK_EQUAL(sizeof(int64_t),  etl::le_int64_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::le_uint64_t::Size);
+
+      // check if net size equals gross size on platform
+      CHECK_EQUAL(sizeof(int8_t),   sizeof(etl::le_int8_t));
+      CHECK_EQUAL(sizeof(uint8_t),  sizeof(etl::le_uint8_t));
+      CHECK_EQUAL(sizeof(int16_t),  sizeof(etl::le_int16_t));
+      CHECK_EQUAL(sizeof(uint16_t), sizeof(etl::le_uint16_t));
+      CHECK_EQUAL(sizeof(int32_t),  sizeof(etl::le_int32_t));
+      CHECK_EQUAL(sizeof(uint32_t), sizeof(etl::le_uint32_t));
+      CHECK_EQUAL(sizeof(int64_t),  sizeof(etl::le_int64_t));
+      CHECK_EQUAL(sizeof(uint64_t), sizeof(etl::le_uint64_t));
     }
 
     //*************************************************************************
@@ -236,6 +246,16 @@ namespace
       CHECK_EQUAL(sizeof(uint32_t), etl::be_uint32_t::Size);
       CHECK_EQUAL(sizeof(int64_t),  etl::be_int64_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::be_uint64_t::Size);
+
+      // check if net size equals gross size on platform
+      CHECK_EQUAL(sizeof(int8_t),   sizeof(etl::be_int8_t));
+      CHECK_EQUAL(sizeof(uint8_t),  sizeof(etl::be_uint8_t));
+      CHECK_EQUAL(sizeof(int16_t),  sizeof(etl::be_int16_t));
+      CHECK_EQUAL(sizeof(uint16_t), sizeof(etl::be_uint16_t));
+      CHECK_EQUAL(sizeof(int32_t),  sizeof(etl::be_int32_t));
+      CHECK_EQUAL(sizeof(uint32_t), sizeof(etl::be_uint32_t));
+      CHECK_EQUAL(sizeof(int64_t),  sizeof(etl::be_int64_t));
+      CHECK_EQUAL(sizeof(uint64_t), sizeof(etl::be_uint64_t));
     }
 
     //*************************************************************************

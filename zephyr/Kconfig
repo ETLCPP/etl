@@ -1,0 +1,5 @@
+config ETL
+  bool "ETL (Embedded Template Library)"
+  depends on CPP
+  help
+    This option enables the 'ETL' library.
