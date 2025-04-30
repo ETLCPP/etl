@@ -60,6 +60,7 @@ namespace
     TEST(test_constructor_in_range)
     {
       Chrono::year_month_day_last year_month_day_last_2000_january(Chrono::year(2000), Chrono::month_day_last(Chrono::January));
+      Chrono::year_month_day_last year_month_day_last_2000_february(Chrono::year(2000), Chrono::month_day_last(Chrono::February));
       Chrono::year_month_day_last year_month_day_last_2001_february(Chrono::year(2001), Chrono::month_day_last(Chrono::February));
       Chrono::year_month_day_last year_month_day_last_2002_march(Chrono::year(2002), Chrono::month_day_last(Chrono::March));
       Chrono::year_month_day_last year_month_day_last_2003_april(Chrono::year(2003), Chrono::month_day_last(Chrono::April));
@@ -73,6 +74,7 @@ namespace
       Chrono::year_month_day_last year_month_day_last_2011_december(Chrono::year(2011), Chrono::month_day_last(Chrono::December));
 
       CHECK_TRUE(year_month_day_last_2000_january.ok());
+      CHECK_TRUE(year_month_day_last_2000_february.ok());
       CHECK_TRUE(year_month_day_last_2001_february.ok());
       CHECK_TRUE(year_month_day_last_2002_march.ok());
       CHECK_TRUE(year_month_day_last_2003_april.ok());
@@ -85,18 +87,19 @@ namespace
       CHECK_TRUE(year_month_day_last_2010_november.ok());
       CHECK_TRUE(year_month_day_last_2011_december.ok());
 
-      CHECK_EQUAL(31, year_month_day_last_2000_january.day());
-      CHECK_EQUAL(29, year_month_day_last_2001_february.day());
-      CHECK_EQUAL(31, year_month_day_last_2002_march.day());
-      CHECK_EQUAL(30, year_month_day_last_2003_april.day());
-      CHECK_EQUAL(31, year_month_day_last_2004_may.day());
-      CHECK_EQUAL(30, year_month_day_last_2005_june.day());
-      CHECK_EQUAL(31, year_month_day_last_2006_july.day());
-      CHECK_EQUAL(31, year_month_day_last_2007_august.day());
-      CHECK_EQUAL(30, year_month_day_last_2008_september.day());
-      CHECK_EQUAL(31, year_month_day_last_2009_october.day());
-      CHECK_EQUAL(30, year_month_day_last_2010_november.day());
-      CHECK_EQUAL(31, year_month_day_last_2011_december.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2000_january.day());
+      CHECK_EQUAL(29, (unsigned)year_month_day_last_2000_february.day());
+      CHECK_EQUAL(28, (unsigned)year_month_day_last_2001_february.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2002_march.day());
+      CHECK_EQUAL(30, (unsigned)year_month_day_last_2003_april.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2004_may.day());
+      CHECK_EQUAL(30, (unsigned)year_month_day_last_2005_june.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2006_july.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2007_august.day());
+      CHECK_EQUAL(30, (unsigned)year_month_day_last_2008_september.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2009_october.day());
+      CHECK_EQUAL(30, (unsigned)year_month_day_last_2010_november.day());
+      CHECK_EQUAL(31, (unsigned)year_month_day_last_2011_december.day());
     }
 
     //*************************************************************************
