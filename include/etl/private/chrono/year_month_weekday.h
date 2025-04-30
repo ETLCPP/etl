@@ -403,19 +403,19 @@ namespace etl
       [[nodiscard]] friend constexpr auto operator <=>(const etl::chrono::year_month_weekday_last& lhs, 
                                                        const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
       {
-        auto cmp = lhs.year() <=> rhs.year();
+        auto cmp1 = lhs.year() <=> rhs.year();
 
-        if (cmp != 0)
+        if (cmp1 != 0)
         {
-          return cmp;
+          return cmp1;
         }
         else
         {
-          auto cmp = lhs.month() <=> rhs.month();
+          auto cmp2 = lhs.month() <=> rhs.month();
 
-          if (cmp != 0)
+          if (cmp2 != 0)
           {
-            return cmp;
+            return cmp2;
           }
           else
           {

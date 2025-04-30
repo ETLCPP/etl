@@ -94,8 +94,6 @@ namespace etl
       //*************************************************************************
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {       
-        private_chrono::days_in_month[m];
-
         // Check if the year, month, and day are valid individually
         return y.ok() && 
                m.ok() && 
@@ -292,10 +290,10 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR year_month_day_last(const etl::chrono::year& y,
-                                        const etl::chrono::month_day_last& mdl) ETL_NOEXCEPT
-        : y(y)
-        , m(mdl.month())
+      ETL_CONSTEXPR year_month_day_last(const etl::chrono::year& y_,
+                                        const etl::chrono::month_day_last& mdl_) ETL_NOEXCEPT
+        : y(y_)
+        , m(mdl_.month())
       {
       }
 
@@ -460,19 +458,19 @@ namespace etl
       [[nodiscard]] friend constexpr auto operator <=>(const etl::chrono::year_month_day_last& lhs, 
                                                        const etl::chrono::year_month_day_last& rhs) ETL_NOEXCEPT
       {
-        auto cmp = lhs.year() <=> rhs.year();
+        auto cmp1 = lhs.year() <=> rhs.year();
 
-        if (cmp != 0)
+        if (cmp1 != 0)
         {
-          return cmp;
+          return cmp1;
         }
         else
         {
-          auto cmp = lhs.month() <=> rhs.month();
+          auto cmp2 = lhs.month() <=> rhs.month();
 
-          if (cmp != 0)
+          if (cmp2 != 0)
           {
-            return cmp;
+            return cmp2;
           }
           else
           {
