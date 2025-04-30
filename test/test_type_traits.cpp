@@ -1365,6 +1365,46 @@ namespace
   }
 
   //*************************************************************************
+#if ETL_USING_BUILTIN_UNDERLYING_TYPE
+  TEST(test_underlying_type)
+  {
+    enum enum0_t : char
+    {
+    };
+
+    enum enum1_t : uint32_t
+    {
+    };
+
+    enum class enum2_t : short
+    {
+    };
+
+    enum class enum3_t : size_t
+    {
+    };
+
+    using enum4_t = enum1_t;
+    using enum5_t = std::add_const<enum2_t>::type;
+
+    CHECK_TRUE((std::is_same<etl::underlying_type<enum0_t>::type, char>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type<enum1_t>::type, uint32_t>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type<enum2_t>::type, short>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type<enum3_t>::type, size_t>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type<enum4_t>::type, uint32_t>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type<enum5_t>::type, short>::value));
+#if ETL_USING_CPP11
+    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum0_t>, char>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum1_t>, uint32_t>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum2_t>, short>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum3_t>, size_t>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum4_t>, uint32_t>::value));
+    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum5_t>, short>::value));
+#endif
+  }
+#endif
+
+  //*************************************************************************
   TEST(test_has_duplicates)
   {
 #if ETL_USING_CPP17
