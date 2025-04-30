@@ -94,11 +94,13 @@ namespace etl
       //*************************************************************************
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {       
+        private_chrono::days_in_month[m];
+
         // Check if the year, month, and day are valid individually
         return y.ok() && 
                m.ok() && 
                d.ok() &&
-               d <= etl::chrono::month_day_last(m).day();
+               d <= max_day_for_month();
       }
 
       //*************************************************************************
@@ -254,6 +256,27 @@ namespace etl
 
     private:
 
+      //***********************************************************************
+      /// Calculates the last day in the year/month.
+      /// Returns 0 if either the year or month are not OK.
+      //***********************************************************************
+      etl::chrono::day max_day_for_month() const
+      {
+        unsigned char count = 0;
+
+        if (y.ok() && m.ok())
+        {
+          count = private_chrono::days_in_month[m];
+
+          if (y.is_leap() && (m == February))
+          {
+            ++count;
+          }
+        }
+
+        return etl::chrono::day(count);
+      }
+
       etl::chrono::year  y;
       etl::chrono::month m;
       etl::chrono::day   d;
@@ -297,7 +320,9 @@ namespace etl
       //*************************************************************************
       ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
       {
-        return etl::chrono::month_day_last(m).day();
+        etl::chrono::day d = etl::chrono::day(etl::chrono::private_chrono::days_in_month[m]);
+
+        return (d == 28) && y.is_leap() ? etl::chrono::day(29) : d;
       }
 
       //*************************************************************************
@@ -313,9 +338,7 @@ namespace etl
       //*************************************************************************
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
-        return y.ok() &&
-               m.ok() &&
-               day() == etl::chrono::month_day_last(m).day();
+        return y.ok() && m.ok();
       }
 
       //*************************************************************************

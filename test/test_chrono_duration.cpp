@@ -57,6 +57,7 @@ namespace
 {
   SUITE(test_chrono_duration)
   {
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_default_constructor)
     {
@@ -68,6 +69,7 @@ namespace
       CHECK_TRUE((etl::is_same<etl::milli, duration_type::period>::value));
       CHECK_EQUAL(0, duration.count());
     }
+#endif
 
     //*************************************************************************
     TEST(test_duration_values_zero_min_max)
@@ -79,6 +81,7 @@ namespace
       CHECK_EQUAL(std::numeric_limits<size_t>::max(), duration_values_type::max());
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_zero_min_max)
     {
@@ -88,6 +91,7 @@ namespace
       CHECK_EQUAL(duration_type(std::numeric_limits<size_t>::min()).count(), duration_type::min().count());
       CHECK_EQUAL(duration_type(std::numeric_limits<size_t>::max()).count(), duration_type::max().count());
     }
+#endif
 
     //*************************************************************************
     TEST(test_predefined_duration_periods)
@@ -126,18 +130,21 @@ namespace
       CHECK_EQUAL(etl::ratio<31556952U>::type::den, Chrono::years::period::den);
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_common_type)
     {
       using duration_type1 = Chrono::duration<size_t, etl::milli>; 
       using duration_type2 = Chrono::duration<int,    etl::micro>; 
 
-      using duration_type = etl::common_type<duration_type1, duration_type2>::type;
+      using duration_type = etl::common_type_t<duration_type1, duration_type2>;
 
-      CHECK_TRUE((std::is_same<size_t,     duration_type::rep>::value));
+      CHECK_TRUE((std::is_same<size_t,        duration_type::rep>::value));
       CHECK_TRUE((std::is_same<etl::micro, duration_type::period>::value));
     }
+#endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_cast_with_same_rep_and_period_for_duration_type1_and_duration_type2)
     {
@@ -151,7 +158,9 @@ namespace
       CHECK_EQUAL(duration_type1::period::den, duration_type2::period::den);
       CHECK_EQUAL(dur1.count(), dur2.count());
     }
+#endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_cast_where_ratio_divide_of_periods_num_is_1)
     {
@@ -168,7 +177,9 @@ namespace
       CHECK_EQUAL(1, ratio_divide_t::num);
       CHECK_EQUAL(dur1.count(), dur2.count() * microseonds_per_millisecond);
     }
+#endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_cast_where_ratio_divide_of_periods_den_is_1)
     {
@@ -185,7 +196,9 @@ namespace
       CHECK_EQUAL(1, ratio_divide_t::den);
       CHECK_EQUAL(dur1.count() * microseonds_per_millisecond, dur2.count());
     }
+#endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_cast_when_rep_and_period_are_not_equal_and_ratio_divide_of_periods_num_and_den_are_not_1)
     {
@@ -202,6 +215,7 @@ namespace
       CHECK_FALSE(1 == ratio_divide_t::den);
       CHECK_EQUAL(dur1.count(), (dur2.count() * duration_type2::period::num) / duration_type1::period::num);
     }
+#endif
 
     //*************************************************************************
     TEST(test_duration_assignment)
@@ -223,6 +237,7 @@ namespace
       CHECK_EQUAL(Four_Hours, hours2.count());
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_comparison_operators)
     {
@@ -276,7 +291,9 @@ namespace
       CHECK_FALSE(dur1a >= dur2c);
       CHECK_TRUE(dur2c  >= dur1a);
     }
+#endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_unary_operators)
     {
@@ -290,7 +307,9 @@ namespace
       CHECK_EQUAL(245,  positive.count());
       CHECK_EQUAL(-245, negative.count());
     }
+#endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_hashes_are_unique)
     {
@@ -307,6 +326,7 @@ namespace
       (void)std::unique(hashes.begin(), hashes.end());
       CHECK_EQUAL(256U, hashes.size());
     }
+#endif
 
     //*************************************************************************
     TEST(test_duration_pre_increment)
@@ -779,7 +799,7 @@ namespace
 
       auto result = s1 % scalar;
 
-      CHECK_EQUAL(1, result.count()); // 10 % 3 = 1 second
+      CHECK_EQUAL(1, result); // 10 % 3 = 1 second
     }
 
     //*************************************************************************
@@ -790,7 +810,7 @@ namespace
 
       auto result = s1 % scalar;
 
-      CHECK_EQUAL(1, result.count()); // 10 % -3 = 1 second (modulus result is positive)
+      CHECK_EQUAL(1, result); // 10 % -3 = 1 second (modulus result is positive)
     }
 
     //*************************************************************************
@@ -801,7 +821,7 @@ namespace
 
       auto result = s1 % scalar;
 
-      CHECK_EQUAL(10, result.count()); // 10 % 100 = 10 seconds
+      CHECK_EQUAL(10, result); // 10 % 100 = 10 seconds
     }
 
     //*************************************************************************
@@ -812,7 +832,7 @@ namespace
 
       auto result = ms1 % scalar;
 
-      CHECK_EQUAL(50, result.count()); // 1050 % 500 = 50 milliseconds
+      CHECK_EQUAL(50, result); // 1050 % 500 = 50 milliseconds
     }
 
     //*************************************************************************
@@ -823,7 +843,7 @@ namespace
 
       auto result = s1 % s2;
 
-      CHECK_EQUAL(1, result); // 10 % 3 = 1 second
+      CHECK_EQUAL(1, result.count()); // 10 % 3 = 1 second
     }
 
     //*************************************************************************
@@ -835,7 +855,7 @@ namespace
       auto result = s1 % ms1;
 
       // Result should be in the common type (milliseconds)
-      CHECK_EQUAL(1000, result); // 10 seconds % 3000 milliseconds = 1000 milliseconds
+      CHECK_EQUAL(1000, result.count()); // 10 seconds % 3000 milliseconds = 1000 milliseconds
     }
 
     //*************************************************************************
@@ -846,7 +866,7 @@ namespace
 
       auto result = s1 % ms1;
 
-      CHECK_EQUAL(0, result); // 1,000,000 seconds % 500,000 milliseconds = 0
+      CHECK_EQUAL(0, result.count()); // 1,000,000 seconds % 500,000 milliseconds = 0
     }
 
     //*************************************************************************
@@ -857,7 +877,7 @@ namespace
 
       auto result = s1 % s2;
 
-      CHECK_EQUAL(1, result); // 7 % 3 = 1 second
+      CHECK_EQUAL(1, result.count()); // 7 % 3 = 1 second
     }
 
     //*************************************************************************
@@ -868,7 +888,7 @@ namespace
 
       auto result = s1 % s2;
 
-      CHECK_EQUAL(5, result); // 5 % 10 = 5 seconds
+      CHECK_EQUAL(5, result.count()); // 5 % 10 = 5 seconds
     }
 
     //*************************************************************************
@@ -880,7 +900,7 @@ namespace
       auto result = s1 % ms1;
 
       // Result should be in the common type (milliseconds)
-      CHECK_EQUAL(0, result); // 10 seconds % 2500 milliseconds = 0 milliseconds
+      CHECK_EQUAL(0, result.count()); // 10 seconds % 2500 milliseconds = 0 milliseconds
     }
 
     //*************************************************************************
@@ -1028,6 +1048,7 @@ namespace
     }
 #endif
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_duration_compare)
     {
@@ -1038,5 +1059,6 @@ namespace
       CHECK_EQUAL(-1, ms1.compare(s1));
       CHECK_EQUAL(1,  s1.compare(ms1));
     }
+#endif
   };
 }

@@ -412,7 +412,8 @@ namespace etl
   /// Check equality.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator ==(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
     
@@ -426,7 +427,8 @@ namespace etl
   /// Check inequality.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator !=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -435,7 +437,8 @@ namespace etl
   /// Less-than.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator <(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 bool operator <(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                  const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
 
@@ -449,7 +452,8 @@ namespace etl
   /// Less-than-or-equal.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator <=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     return !(rhs < lhs);
   }
@@ -458,7 +462,8 @@ namespace etl
   /// Greater-than.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator >(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 bool operator >(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                  const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     return rhs < lhs;
   }
@@ -467,7 +472,8 @@ namespace etl
   /// Greater-than-or-equal.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator >=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -477,7 +483,8 @@ namespace etl
   //***********************************************************************
 #if ETL_USING_CPP20
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) noexcept
+  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                                            const etl::chrono::duration<TRep2, TPeriod2>& rhs) noexcept
   {
     typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
 
@@ -493,7 +500,8 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
   ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type 
-    operator +(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+    operator +(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -511,7 +519,8 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
   ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type 
-    operator -(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+    operator -(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -529,7 +538,8 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2>
   ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
-    operator *(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs)
+    operator *(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const TRep2& rhs)
   {
     using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
     using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
@@ -543,7 +553,8 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TRep2, typename TPeriod2>
   ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod2>
-    operator *(const TRep1& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+    operator *(const TRep1& lhs, 
+               const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
     using result_duration = etl::chrono::duration<common_rep, TPeriod2>;
@@ -557,7 +568,8 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2>
   ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
-    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs)
+    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const TRep2& rhs)
   {
     using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
     using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
@@ -571,7 +583,8 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
   ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type
-    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -586,22 +599,23 @@ namespace etl
   /// Operator %
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2>
-  ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
-    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs)
+  ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type
+    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const TRep2& rhs)
   {
-    using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
-    using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
+    using common_rep = typename etl::common_type<TRep1, TRep2>::type;
 
     // Mod the count of the duration by the scalar value
-    return result_duration(static_cast<common_rep>(lhs.count()) % static_cast<common_rep>(rhs));
+    return common_rep(static_cast<common_rep>(lhs.count()) % static_cast<common_rep>(rhs));
   }
 
   //***********************************************************************
   /// Operator %
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type
-    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type
+    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+               const etl::chrono::duration<TRep2, TPeriod2>& rhs)
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -609,7 +623,7 @@ namespace etl
     common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(lhs);
     common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(rhs);
 
-    return typename etl::common_type<TRep1, TRep2>::type(lhs_converted.count() % rhs_converted.count());
+    return common_duration(lhs_converted.count() % rhs_converted.count());
   }
 }
 

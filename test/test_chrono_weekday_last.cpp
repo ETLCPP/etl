@@ -110,6 +110,7 @@ namespace
       CHECK_FALSE(weekday_last1 == weekday_last3);
     }
 
+#if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_weekday_last_hashes_are_unique)
     {
@@ -129,5 +130,6 @@ namespace
       std::sort(hashes.begin(), hashes.end());
       (void)std::unique(hashes.begin(), hashes.end());
     }
+#endif
   };
 }

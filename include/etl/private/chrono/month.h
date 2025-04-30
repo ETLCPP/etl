@@ -44,7 +44,7 @@ namespace etl
 
     namespace private_chrono
     {
-      static ETL_CONSTANT unsigned char days_in_month[13] = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+      static ETL_CONSTANT unsigned char days_in_month[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     }
 
     //***********************************************************************
@@ -383,14 +383,6 @@ namespace etl
       ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
-      }
-
-      //*************************************************************************
-      /// Returns the last day of the month
-      //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
-      {
-        return etl::chrono::day(private_chrono::days_in_month[static_cast<unsigned>(m)]);
       }
 
       //*************************************************************************
