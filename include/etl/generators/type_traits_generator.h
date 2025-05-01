@@ -2352,33 +2352,58 @@ typedef integral_constant<bool, true>  true_type;
   using type_identity_t = typename type_identity<T>::type;
 #endif
 
+  //*********************************************
+  // underlying_type
+
+  // Primary template for etl::underlying_type
+  template <typename T, bool = etl::is_enum<T>::value>
+  struct underlying_type;
+
+  // Specialization for non-enum types (invalid case)
+  template <typename T>
+  struct underlying_type<T, false>
+  {
+    // Static assertion to ensure this is only used with enums
+    static_assert(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
+  };
+
 #if ETL_USING_BUILTIN_UNDERLYING_TYPE
-namespace private_type_traits
-{
-  template <typename T, bool = is_enum<T>::value>
-  struct __underlying_type_impl;
-
   template <typename T>
-  struct __underlying_type_impl<T, false>
+  struct underlying_type<T, true>
   {
+    typedef __underlying_type(T) type;
   };
-
+#else
   template <typename T>
-  struct __underlying_type_impl<T, true>
+  struct underlying_type<T, true>
   {
-    using type = __underlying_type(T);
-  };
-}
+  private:
 
-template <typename T>
-struct underlying_type : private_type_traits::__underlying_type_impl<T, is_enum<T>::value>
-{
-};
+    // Helper union to deduce the underlying type
+    union Helper
+    {
+      T enum_value;
+      unsigned char raw[sizeof(T)];
+    };
+
+  public:
+
+    // The deduced underlying type
+    typedef typename etl::conditional<sizeof(Helper) == sizeof(long int),
+                                      long int,
+                                      typename etl::conditional<sizeof(Helper) == sizeof(int),
+                                                                int,
+                                                                typename etl::conditional<sizeof(Helper) == sizeof(short),
+                                                                short,
+                                                                typename etl::conditional<sizeof(Helper) == sizeof(char),
+                                                                                          char,
+                                                                                          void>::type>::type>::type>::type type;
+  };
+#endif
 
 #if ETL_USING_CPP11
-template <typename T>
-using underlying_type_t = typename underlying_type<T>::type;
-#endif
+  template <typename T>
+  using underlying_type_t = typename underlying_type<T>::type;
 #endif
 
 #if ETL_USING_CPP11

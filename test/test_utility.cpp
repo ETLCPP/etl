@@ -719,10 +719,11 @@ namespace
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u4)));
     }
 
-#if ETL_USING_BUILTIN_UNDERLYING_TYPE && ETL_USING_CPP11
+#if ETL_USING_BUILTIN_UNDERLYING_TYPE
+    //*********************************
     TEST(test_to_underlying)
     {
-      enum enum0_t : char
+      enum enum0_t : int8_t
       {
         a0 = 'e',
         a1 = 't',
@@ -730,25 +731,26 @@ namespace
         a3 = '3'
       };
 
-      enum enum1_t : uint32_t
+      enum class enum1_t : unsigned char
       {
         b0 = 2,
         b1 = 3,
         b2 = 5,
       };
 
-      enum enum2_t : signed
+      enum enum2_t : int32_t
       {
         c0 = -2,
         c1 = 100,
       };
 
-      using enum3_t = enum1_t;
-
       enum0_t e0 = enum0_t::a1;
       enum1_t e1 = enum1_t::b2;
       enum2_t e2 = enum2_t::c0;
-      enum3_t e3 = enum3_t::b0;
+
+      CHECK_TRUE(etl::is_same<int8_t,        etl::underlying_type_t<enum0_t>>::value);
+      CHECK_TRUE(etl::is_same<unsigned char, etl::underlying_type_t<enum1_t>>::value);
+      CHECK_TRUE(etl::is_same<int32_t,       etl::underlying_type_t<enum2_t>>::value);
 
       CHECK_EQUAL(etl::to_underlying(e0), 't');
       CHECK_EQUAL(etl::to_underlying(e1), 5);

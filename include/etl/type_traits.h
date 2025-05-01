@@ -2345,33 +2345,41 @@ typedef integral_constant<bool, true>  true_type;
   using type_identity_t = typename type_identity<T>::type;
 #endif
 
+  //*********************************************
+  // underlying_type
+
 #if ETL_USING_BUILTIN_UNDERLYING_TYPE
-namespace private_type_traits
-{
-  template <typename T, bool = is_enum<T>::value>
-  struct __underlying_type_impl;
+  // Primary template for etl::underlying_type
+  template <typename T, bool = etl::is_enum<T>::value>
+  struct underlying_type;
 
+  // Specialization for non-enum types (invalid case)
   template <typename T>
-  struct __underlying_type_impl<T, false>
+  struct underlying_type<T, false>
   {
+    // Static assertion to ensure this is only used with enums
+    static_assert(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
   };
 
   template <typename T>
-  struct __underlying_type_impl<T, true>
+  struct underlying_type<T, true>
   {
-    using type = __underlying_type(T);
+    typedef __underlying_type(T) type;
   };
-}
-
-template <typename T>
-struct underlying_type : private_type_traits::__underlying_type_impl<T, is_enum<T>::value>
-{
-};
+#else
+  template <typename T>
+  struct underlying_type
+  {
+    ETL_STATIC_ASSERT(false, "No user defined specialisation of etl::underlying_type for this type");
+    typedef char type;
+  };
+#endif
 
 #if ETL_USING_CPP11
-template <typename T>
-using underlying_type_t = typename underlying_type<T>::type;
-#endif
+  /// Primary template for etl::underlying_type
+  /// Users must spelialise this template for their enumerations. 
+  template <typename T>
+  using underlying_type_t = typename underlying_type<T>::type;
 #endif
 
 #if ETL_USING_CPP11

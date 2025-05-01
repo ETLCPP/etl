@@ -57,7 +57,7 @@ SOFTWARE.
   #endif
 #endif
 
-#if defined(__has_builtin) // Use __has_builtin to check for existence of builtin functions?
+#if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for existence of builtin functions? Fix VS2022 intellisense issue.
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
   #endif
@@ -119,6 +119,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_trivially_constructible = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
+    static ETL_CONSTANT bool using_builtin_underlying_type            = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
   }
 }
 
