@@ -748,18 +748,17 @@ namespace
       enum1_t e1 = enum1_t::b2;
       enum2_t e2 = enum2_t::c0;
 
-      CHECK_TRUE(etl::is_same<int8_t,        etl::underlying_type_t<enum0_t>>::value);
-      CHECK_TRUE(etl::is_same<unsigned char, etl::underlying_type_t<enum1_t>>::value);
-      CHECK_TRUE(etl::is_same<int32_t,       etl::underlying_type_t<enum2_t>>::value);
+      CHECK_TRUE((etl::is_same<int8_t,        etl::underlying_type_t<enum0_t>>::value));
+      CHECK_TRUE((etl::is_same<unsigned char, etl::underlying_type_t<enum1_t>>::value));
+      CHECK_TRUE((etl::is_same<int32_t,       etl::underlying_type_t<enum2_t>>::value));
 
       CHECK_EQUAL(etl::to_underlying(e0), 't');
       CHECK_EQUAL(etl::to_underlying(e1), 5);
       CHECK_EQUAL(etl::to_underlying(e2), -2);
-      CHECK_EQUAL(etl::to_underlying(e3), 2);
       CHECK_EQUAL(etl::to_underlying(enum0_t::a0), 'e');
       CHECK_EQUAL(etl::to_underlying(enum0_t::a2), 'l');
       CHECK_EQUAL(etl::to_underlying(enum0_t::a3), '3');
-      CHECK_EQUAL(etl::to_underlying(enum3_t::b1), 3);
+      CHECK_EQUAL(etl::to_underlying(enum1_t::b1), 3);
       CHECK_EQUAL(etl::to_underlying(enum2_t::c1), 100);
     }
 #endif

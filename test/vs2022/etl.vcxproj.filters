@@ -3462,7 +3462,7 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\tuple.h.t.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
