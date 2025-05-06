@@ -932,6 +932,43 @@ namespace etl
                                                   (pend - pbegin) * sizeof(element_type) / sizeof(TNew));
     }
 
+    //*************************************************************************
+    /// Split off and return an initial span of specified type of this span.
+    /// The original span is advanced by the size of the returned span.
+    /// \tparam TRet Returned span type
+    /// \param n Number of elements in returned span
+    //*************************************************************************
+    template<typename TRet>
+    ETL_NODISCARD etl::span<TRet> take(size_t const n)
+    {
+      ETL_STATIC_ASSERT(sizeof(TRet) % sizeof(element_type) == 0, "sizeof(TRet) must be divisible by sizeof(T)");
+
+      ETL_ASSERT(etl::is_aligned<etl::alignment_of<TRet>::value>(pbegin), ETL_ERROR(span_alignment_exception));
+      ETL_ASSERT(sizeof(TRet) * n <= sizeof(element_type) * size(), ETL_ERROR(span_size_mismatch));
+
+      etl::span<TRet> result = reinterpret_as<TRet>().first(n);
+      advance(sizeof(TRet) / sizeof(element_type) * n);
+      return result;
+    }
+
+    //*************************************************************************
+    /// Split off and return an initial value of specified type of this span.
+    /// The original span is advanced by the size of TRet
+    /// \tparam TRet Returned span type
+    //*************************************************************************
+    template<typename TRet>
+    ETL_NODISCARD TRet& take()
+    {
+      ETL_STATIC_ASSERT(sizeof(TRet) % sizeof(element_type) == 0, "sizeof(TRet) must be divisible by sizeof(T)");
+
+      ETL_ASSERT(etl::is_aligned<etl::alignment_of<TRet>::value>(pbegin), ETL_ERROR(span_alignment_exception));
+      ETL_ASSERT(sizeof(TRet) <= sizeof(element_type) * size(), ETL_ERROR(span_size_mismatch));
+
+      TRet& result = *reinterpret_cast<TRet*>(data());
+      advance(sizeof(TRet) / sizeof(element_type));
+      return result;
+    }
+
   private:
 
     pointer pbegin;

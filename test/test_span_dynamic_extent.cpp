@@ -1370,6 +1370,137 @@ namespace
       CHECK_EQUAL(etl::copy(data0, data1), true);
     }
 
+    //*************************************************************************
+    TEST(test_take_span_size_error)
+    {
+      uint8_t src[] = { 0x01, 0x02, 0x03 };
+      etl::span<uint8_t> data0 = src;
+
+      CHECK_THROW({etl::span<etl::be_uint32_t> data1 = data0.take<etl::be_uint32_t>(1); (void) data1;}, etl::span_size_mismatch);
+    }
+
+    //*************************************************************************
+    TEST(test_take_span)
+    {
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
+      etl::span<uint8_t> data0 = src;
+
+      etl::span<uint8_t> data1 = data0.take<uint8_t>(1);
+
+      CHECK_EQUAL(data0.size(), 4);
+      CHECK_EQUAL(data1.size(), 1);
+      CHECK_EQUAL(data1[0], 0x01);
+
+      etl::span<etl::be_uint32_t> data2 = data0.take<etl::be_uint32_t>(1);
+
+      CHECK_EQUAL(data0.size(), 0);
+      CHECK_EQUAL(data2.size(), 1);
+      CHECK_EQUAL(data2[0], 0x02030405);
+
+      data1 = data0.take<uint8_t>(0);
+
+      CHECK_EQUAL(data0.size(), 0);
+      CHECK_EQUAL(data1.size(), 0);
+
+      CHECK_THROW({etl::span<uint8_t> data3 = data0.take<uint8_t>(1); (void) data3;}, etl::span_size_mismatch);
+    }
+
+    //*************************************************************************
+    TEST(test_take_span_2)
+    {
+
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      etl::span<uint8_t> data0 = src;
+
+      etl::span<etl::be_uint32_t> data1 = data0.take<etl::be_uint32_t>(2);
+
+      CHECK_EQUAL(data0.size(), 2);
+      CHECK_EQUAL(data1.size(), 2);
+      CHECK_EQUAL(data1[0], 0x01020304);
+      CHECK_EQUAL(data1[1], 0x05060708);
+
+      etl::span<uint8_t> data2 = data0.take<uint8_t>(1);
+
+      CHECK_EQUAL(data0.size(), 1);
+      CHECK_EQUAL(data2.size(), 1);
+      CHECK_EQUAL(data2[0], 0x09);
+    }
+
+    //*************************************************************************
+    TEST(test_take_span_const)
+    {
+      const uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      etl::span<const uint8_t> data0 = src;
+
+      etl::span<const etl::be_uint32_t> data1 = data0.take<const etl::be_uint32_t>(2);
+
+      CHECK_EQUAL(data0.size(), 2);
+      CHECK_EQUAL(data1.size(), 2);
+      CHECK_EQUAL(data1[0], 0x01020304);
+      CHECK_EQUAL(data1[1], 0x05060708);
+
+      etl::span<const uint8_t> data2 = data0.take<const uint8_t>(1);
+
+      CHECK_EQUAL(data0.size(), 1);
+      CHECK_EQUAL(data2.size(), 1);
+      CHECK_EQUAL(data2[0], 0x09);
+
+      data2 = data0.take<const uint8_t>(0);
+
+      CHECK_EQUAL(data0.size(), 1);
+      CHECK_EQUAL(data2.size(), 0);
+    }
+
+    //*************************************************************************
+    TEST(test_take_value)
+    {
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      etl::span<uint8_t> data0 = src;
+
+      uint8_t& data1 = data0.take<uint8_t>();
+      CHECK_EQUAL(data0.size(), 9);
+      CHECK_EQUAL(data1, 0x01);
+
+      etl::be_uint32_t& data2 = data0.take<etl::be_uint32_t>();
+      CHECK_EQUAL(data0.size(), 5);
+      CHECK_EQUAL(data2, 0x02030405);
+
+      etl::be_uint32_t& data3 = data0.take<etl::be_uint32_t>();
+      CHECK_EQUAL(data0.size(), 1);
+      CHECK_EQUAL(data3, 0x06070809);
+
+      uint8_t& data4 = data0.take<uint8_t>();
+      CHECK_EQUAL(data0.size(), 0);
+      CHECK_EQUAL(data4, 0x0a);
+
+      CHECK_THROW({uint8_t& data5 = data0.take<uint8_t>(); (void) data5;}, etl::span_size_mismatch);
+    }
+
+    //*************************************************************************
+    TEST(test_take_value_const)
+    {
+      const uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      etl::span<const uint8_t> data0 = src;
+
+      const uint8_t& data1 = data0.take<const uint8_t>();
+      CHECK_EQUAL(data0.size(), 9);
+      CHECK_EQUAL(data1, 0x01);
+
+      const etl::be_uint32_t& data2 = data0.take<const etl::be_uint32_t>();
+      CHECK_EQUAL(data0.size(), 5);
+      CHECK_EQUAL(data2, 0x02030405);
+
+      const etl::be_uint32_t& data3 = data0.take<const etl::be_uint32_t>();
+      CHECK_EQUAL(data0.size(), 1);
+      CHECK_EQUAL(data3, 0x06070809);
+
+      const uint8_t& data4 = data0.take<const uint8_t>();
+      CHECK_EQUAL(data0.size(), 0);
+      CHECK_EQUAL(data4, 0x0a);
+
+      CHECK_THROW({const uint8_t& data5 = data0.take<const uint8_t>(); (void) data5;}, etl::span_size_mismatch);
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }
