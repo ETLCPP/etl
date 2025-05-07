@@ -1380,7 +1380,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_take_span)
+    TEST(test_take_span_take_uint8_tuint32_t_then_no_data_then_excess_data)
     {
       uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
       etl::span<uint8_t> data0 = src;
@@ -1406,10 +1406,10 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_take_span_2)
+    TEST(test_take_span_take_be_uint32_t_twice_then_uint8_t)
     {
 
-      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
       etl::span<uint8_t> data0 = src;
 
       etl::span<etl::be_uint32_t> data1 = data0.take<etl::be_uint32_t>(2);
@@ -1424,12 +1424,13 @@ namespace
       CHECK_EQUAL(data0.size(), 1);
       CHECK_EQUAL(data2.size(), 1);
       CHECK_EQUAL(data2[0], 0x09);
+      CHECK_EQUAL(data0[0], 0x0A);
     }
 
     //*************************************************************************
     TEST(test_take_span_const)
     {
-      const uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      const uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
       etl::span<const uint8_t> data0 = src;
 
       etl::span<const etl::be_uint32_t> data1 = data0.take<const etl::be_uint32_t>(2);
@@ -1452,9 +1453,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_take_value)
+    TEST(test_take_single_value)
     {
-      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
       etl::span<uint8_t> data0 = src;
 
       uint8_t& data1 = data0.take<uint8_t>();
@@ -1471,7 +1472,7 @@ namespace
 
       uint8_t& data4 = data0.take<uint8_t>();
       CHECK_EQUAL(data0.size(), 0);
-      CHECK_EQUAL(data4, 0x0a);
+      CHECK_EQUAL(data4, 0x0A);
 
       CHECK_THROW({uint8_t& data5 = data0.take<uint8_t>(); (void) data5;}, etl::span_size_mismatch);
     }
@@ -1479,7 +1480,7 @@ namespace
     //*************************************************************************
     TEST(test_take_value_const)
     {
-      const uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a };
+      const uint8_t src[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A };
       etl::span<const uint8_t> data0 = src;
 
       const uint8_t& data1 = data0.take<const uint8_t>();
@@ -1496,7 +1497,7 @@ namespace
 
       const uint8_t& data4 = data0.take<const uint8_t>();
       CHECK_EQUAL(data0.size(), 0);
-      CHECK_EQUAL(data4, 0x0a);
+      CHECK_EQUAL(data4, 0x0A);
 
       CHECK_THROW({const uint8_t& data5 = data0.take<const uint8_t>(); (void) data5;}, etl::span_size_mismatch);
     }

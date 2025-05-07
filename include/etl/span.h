@@ -948,6 +948,7 @@ namespace etl
 
       etl::span<TRet> result = reinterpret_as<TRet>().first(n);
       advance(sizeof(TRet) / sizeof(element_type) * n);
+
       return result;
     }
 
@@ -966,6 +967,7 @@ namespace etl
 
       TRet& result = *reinterpret_cast<TRet*>(data());
       advance(sizeof(TRet) / sizeof(element_type));
+
       return result;
     }
 
