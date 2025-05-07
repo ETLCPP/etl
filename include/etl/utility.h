@@ -138,9 +138,9 @@ namespace etl
   // Gets the underlying type of an enum.
   //***********************************
   template <typename T>
-  ETL_CONSTEXPR underlying_type_t<T> to_underlying(T value) ETL_NOEXCEPT
+  ETL_CONSTEXPR typename underlying_type<T>::type to_underlying(T value) ETL_NOEXCEPT
   {
-    return static_cast<underlying_type_t<T>>(value);
+    return static_cast<typename underlying_type<T>::type>(value);
   }
 
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
