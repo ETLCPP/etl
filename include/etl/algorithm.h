@@ -43,6 +43,7 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
+#include "largest.h"
 #include "gcd.h"
 #include "error_handler.h"
 #include "exception.h"
@@ -2280,14 +2281,19 @@ namespace etl
   ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value &&
                           etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
-   copy_s(TInputIterator  i_begin,
-          TInputIterator  i_end,
-          TOutputIterator o_begin,
-          TOutputIterator o_end)
+    copy_s(TInputIterator  i_begin,
+           TInputIterator  i_end,
+           TOutputIterator o_begin,
+           TOutputIterator o_end)
   {
-    using s_size_type = typename iterator_traits<TInputIterator>::difference_type;
-    using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
-    using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
+    typedef typename iterator_traits<TInputIterator>::difference_type  s_size_type;
+    typedef typename iterator_traits<TOutputIterator>::difference_type d_size_type;
+
+#if ETL_USING_CPP11
+    typedef typename etl::common_type<s_size_type, d_size_type>::type  min_size_type;
+#else
+    typedef typename etl::largest_type<s_size_type, d_size_type>::type  min_size_type;
+#endif
 
     s_size_type s_size = etl::distance(i_begin, i_end);
     ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
