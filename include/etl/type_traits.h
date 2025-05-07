@@ -739,7 +739,29 @@ namespace etl
   template <typename T>
   inline constexpr bool is_enum_v = etl::is_enum<T>::value;
 #endif
+#else
+  namespace private_type_traits
+  {
+    // Helper to detect if a type is convertible to an integer
+    template <typename T>
+    struct is_convertible_to_int
+    {
+      static char test(int);   // Match if T is convertible to int
+      static double test(...); // Fallback for other types
 
+      static const bool value = sizeof(test(static_cast<T>(0))) == sizeof(char);
+    };
+  }
+
+  // Implementation of is_enum
+  template <typename T>
+  struct is_enum
+  {
+    static const bool value = private_type_traits::is_convertible_to_int<T>::value &&
+                              !is_class<T>::value &&
+                              !is_arithmetic<T>::value &&
+                              !is_reference<T>::value;
+  };
 #endif
 
   //***************************************************************************
@@ -2267,8 +2289,7 @@ typedef integral_constant<bool, true>  true_type;
   struct common_type<T1, T2>
     : etl::conditional<etl::is_same<T1, typename etl::decay<T1>::type>::value&& etl::is_same<T2, typename etl::decay<T2>::type>::value,
                        private_common_type::common_type_2_impl<T1, T2>,
-                       common_type<typename etl::decay<T2>::type,
-                       typename etl::decay<T2>::type>>::type
+                       common_type<typename etl::decay<T2>::type, typename etl::decay<T2>::type>>::type
   {
   };
 
@@ -2347,7 +2368,6 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // underlying_type
-
 #if ETL_USING_BUILTIN_UNDERLYING_TYPE
   // Primary template for etl::underlying_type
   template <typename T, bool = etl::is_enum<T>::value>
@@ -2358,7 +2378,7 @@ typedef integral_constant<bool, true>  true_type;
   struct underlying_type<T, false>
   {
     // Static assertion to ensure this is only used with enums
-    static_assert(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
+    ETL_STATIC_ASSERT(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
   };
 
   template <typename T>

@@ -2364,7 +2364,7 @@ typedef integral_constant<bool, true>  true_type;
   struct underlying_type<T, false>
   {
     // Static assertion to ensure this is only used with enums
-    static_assert(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
+    ETL_STATIC_ASSERT(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
   };
 
 #if ETL_USING_BUILTIN_UNDERLYING_TYPE
