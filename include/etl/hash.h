@@ -93,7 +93,7 @@ namespace etl
     //*************************************************************************
     /// Primary definition of base hash class, by default is poisoned
     //*************************************************************************
-    template<typename T, bool IsEnum=false>
+    template<typename T, bool Is_Enum = false>
     struct hash_base
     {
     private:
