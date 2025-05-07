@@ -31,7 +31,6 @@ SOFTWARE.
 #include "data.h"
 
 #include "etl/tuple.h"
-#include "etl/private/tuple_size.h"
 
 #include <string>
 #include <tuple>
