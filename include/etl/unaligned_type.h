@@ -449,13 +449,14 @@ namespace etl
   //*************************************************************************
   template <typename T, int Endian_>
   ETL_PACKED_CLASS(unaligned_type) : public private_unaligned_type::unaligned_type_storage<sizeof(T)>
-                                   , public private_unaligned_type::unaligned_copy<sizeof(T), Endian_, etl::is_floating_point<T>::value ? false : true>
   {
   public:
 
     ETL_STATIC_ASSERT(etl::is_integral<T>::value || etl::is_floating_point<T>::value, "Unaligned type must be integral or floating point");
 
     typedef T value_type;
+
+    typedef private_unaligned_type::unaligned_copy<sizeof(T), Endian_, etl::is_floating_point<T>::value ? false : true> unaligned_copy;
 
     typedef typename private_unaligned_type::unaligned_type_storage<sizeof(T)>::storage_type           storage_type;
     typedef typename private_unaligned_type::unaligned_type_storage<sizeof(T)>::pointer                pointer;
@@ -480,7 +481,7 @@ namespace etl
     //*************************************************************************
     unaligned_type(T value)
     {
-      this->copy_value_to_store(value, this->storage);
+      unaligned_copy::copy_value_to_store(value, this->storage);
     }
 
     //*************************************************************************
@@ -506,7 +507,7 @@ namespace etl
     //*************************************************************************
     unaligned_type(const unaligned_type<T, Endian>& other)
     {
-      this->copy_store_to_store(other.data(), Endian, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
     }
 
     //*************************************************************************
@@ -515,7 +516,7 @@ namespace etl
     template <int Endian_Other>
     unaligned_type(const unaligned_type<T, Endian_Other>& other)
     {
-      this->copy_store_to_store(other.data(), Endian_Other, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
     }
 
     //*************************************************************************
@@ -523,7 +524,7 @@ namespace etl
     //*************************************************************************
     unaligned_type& operator =(T value)
     {
-      this->copy_value_to_store(value, this->storage);
+      unaligned_copy::copy_value_to_store(value, this->storage);
 
       return *this;
     }
@@ -533,7 +534,7 @@ namespace etl
     //*************************************************************************
     unaligned_type& operator =(const unaligned_type<T, Endian_>& other)
     {
-      this->copy_store_to_store(other.data(), Endian_, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
 
       return *this;
     }
@@ -544,7 +545,7 @@ namespace etl
     template <int Endian_Other>
     unaligned_type& operator =(const unaligned_type<T, Endian_Other>& other)
     {
-      this->copy_store_to_store(other.data(), Endian_Other, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
 
       return *this;
     }
@@ -556,7 +557,7 @@ namespace etl
     {
       T value = T();
 
-      this->copy_store_to_value(this->storage, value);
+      unaligned_copy::copy_store_to_value(this->storage, value);
 
       return value;
     }
@@ -568,7 +569,7 @@ namespace etl
     {
       T value = T();
 
-      this->copy_store_to_value(this->storage, value);
+      unaligned_copy::copy_store_to_value(this->storage, value);
 
       return value;
     }
@@ -589,7 +590,6 @@ namespace etl
   //*************************************************************************
   template <typename T, int Endian_>
   ETL_PACKED_CLASS(unaligned_type_ext) : public private_unaligned_type::unaligned_type_storage_ext<sizeof(T)>
-                                       , public private_unaligned_type::unaligned_copy<sizeof(T), Endian_, etl::is_floating_point<T>::value ? false : true>
   {
   public:
 
@@ -599,6 +599,8 @@ namespace etl
     friend class unaligned_type_ext;
 
     typedef T value_type;
+
+    typedef private_unaligned_type::unaligned_copy<sizeof(T), Endian_, etl::is_floating_point<T>::value ? false : true> unaligned_copy;
 
     typedef typename private_unaligned_type::unaligned_type_storage_ext<sizeof(T)>::storage_type           storage_type;
     typedef typename private_unaligned_type::unaligned_type_storage_ext<sizeof(T)>::pointer                pointer;
@@ -625,7 +627,7 @@ namespace etl
     unaligned_type_ext(T value, pointer storage_)
       : private_unaligned_type::unaligned_type_storage_ext<Size>(storage_)
     {
-      this->copy_value_to_store(value, this->storage);
+      unaligned_copy::copy_value_to_store(value, this->storage);
     }
 
     //*************************************************************************
@@ -635,7 +637,7 @@ namespace etl
     unaligned_type_ext(const unaligned_type_ext<T, Endian_Other>& other, pointer storage_)
       : private_unaligned_type::unaligned_type_storage_ext<Size>(storage_)
     {      
-      this->copy_store_to_store(other.data(), Endian_Other, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
     }
 
 #if ETL_USING_CPP11
@@ -670,7 +672,7 @@ namespace etl
     //*************************************************************************
     unaligned_type_ext& operator =(T value)
     {
-      this->copy_value_to_store(value, this->storage);
+      unaligned_copy::copy_value_to_store(value, this->storage);
 
       return *this;
     }
@@ -680,7 +682,7 @@ namespace etl
     //*************************************************************************
     unaligned_type_ext& operator =(const unaligned_type_ext<T, Endian>& other)
     {
-      this->copy_store_to_store(other.data(), Endian, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
 
       return *this;
     }
@@ -691,7 +693,7 @@ namespace etl
     template <int Endian_Other>
     unaligned_type_ext& operator =(const unaligned_type_ext<T, Endian_Other>& other)
     {
-      this->copy_store_to_store(other.data(), Endian_Other, this->storage);
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
 
       return *this;
     }
@@ -735,7 +737,7 @@ namespace etl
     {
       T value = T();
 
-      this->copy_store_to_value(this->storage, value);
+      unaligned_copy::copy_store_to_value(this->storage, value);
 
       return value;
     }
@@ -747,7 +749,7 @@ namespace etl
     {
       T value = T();
 
-      this->copy_store_to_value(this->storage, value);
+      unaligned_copy::copy_store_to_value(this->storage, value);
 
       return value;
     }
