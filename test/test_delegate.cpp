@@ -295,7 +295,7 @@ namespace
       CHECK(!d.is_valid());
       CHECK(!d);
 
-      CHECK_THROW(d(), etl::delegate_uninitialised);
+      d();
     }
 
     //*************************************************************************
@@ -307,7 +307,7 @@ namespace
       CHECK(!d.is_valid());
       CHECK(!d);
 
-      CHECK_THROW(d(), etl::delegate_uninitialised);
+      d();
     }
 #endif
 

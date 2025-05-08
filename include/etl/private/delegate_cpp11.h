@@ -368,11 +368,15 @@ namespace etl
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
+    ETL_CONSTEXPR14
     TReturn operator()(TParams... args) const
     {
-      ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
+      if (is_valid())
+      {
+        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      }
 
-      return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      return TReturn();
     }
 
     //*************************************************************************
