@@ -255,6 +255,27 @@ namespace etl
       return current_size;
     }
 
+    //*************************************************************************
+    /// Detects existence of specified node in list.
+    ///\param search_link The node to find in list
+    //*************************************************************************
+    bool contains_node(link_type& search_link) const
+    {
+      link_type* p_link = terminal_link.link_type::etl_next;
+
+      while (p_link != &terminal_link)
+      {
+        if (&search_link == p_link)
+        {
+          return true;
+        }
+
+        p_link = p_link->link_type::etl_next;
+      }
+
+      return false;
+    }
+
   protected:
 
     /// The link that acts as the intrusive_list start & end.
@@ -377,26 +398,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Tests if the link is in this list.
-    //*************************************************************************
-    bool is_link_in_list(link_type& search_link) const
-    {
-      link_type* p_link = terminal_link.link_type::etl_next;
-
-      while (p_link != &terminal_link)
-      {
-        if (&search_link == p_link)
-        {
-          return true;
-        }
-
-        p_link = p_link->link_type::etl_next;
-      }
-
-      return false;
-    }
-
-    //*************************************************************************
     /// Remove the specified node from the list.
     /// Returns ETL_NULLPTR if the link was not in this list or was the last in the list.
     //*************************************************************************
@@ -404,7 +405,7 @@ namespace etl
     {
       link_type* result = ETL_NULLPTR;
 
-      if (is_link_in_list(link))
+      if (contains_node(link))
       {
         link_type* p_next = link.etl_next;
 
@@ -1190,6 +1191,27 @@ namespace etl
 
         other.initialise();
       }
+    }
+
+    //*************************************************************************
+    /// Detects existence of specified value in list.
+    ///\param value The value to find in list
+    //*************************************************************************
+    bool contains(const_reference value) const
+    {
+      const_iterator i_item = begin();
+
+      while (i_item != end())
+      {
+        if (*i_item == value)
+        {
+          return true;
+        }
+
+        ++i_item;
+      }
+
+      return false;
     }
 
   private:

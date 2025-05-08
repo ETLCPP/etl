@@ -1412,5 +1412,77 @@ namespace
       CHECK_EQUAL(data0.size(), compare0.size());
       CHECK_EQUAL(data1.size(), compare1.size());
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_contains_node)
+    {
+      static ItemNDCNode node0("0");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
+      static ItemNDCNode node7("7");
+      static ItemNDCNode node8("8");
+      static ItemNDCNode node9("9");
+
+      DataNDC0 data0;
+
+      data0.push_front(node0);
+      data0.push_front(node1);
+      data0.push_front(node2);
+      data0.push_front(node3);
+      data0.push_front(node4);
+      data0.push_front(node5);
+
+      CHECK_TRUE(data0.contains_node(node0));
+      CHECK_TRUE(data0.contains_node(node1));
+      CHECK_TRUE(data0.contains_node(node2));
+      CHECK_TRUE(data0.contains_node(node3));
+      CHECK_TRUE(data0.contains_node(node4));
+      CHECK_TRUE(data0.contains_node(node5));
+
+      CHECK_FALSE(data0.contains_node(node6));
+      CHECK_FALSE(data0.contains_node(node7));
+      CHECK_FALSE(data0.contains_node(node8));
+      CHECK_FALSE(data0.contains_node(node9));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_contains)
+    {
+      static ItemNDCNode node0("0");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
+      static ItemNDCNode node7("7");
+      static ItemNDCNode node8("8");
+      static ItemNDCNode node9("9");
+
+      DataNDC0 data0;
+
+      data0.push_front(node0);
+      data0.push_front(node1);
+      data0.push_front(node2);
+      data0.push_front(node3);
+      data0.push_front(node4);
+      data0.push_front(node5);
+
+      CHECK_TRUE(data0.contains(ItemNDCNode("0")));
+
+      ItemNDCNode compare_node1("1");
+
+      CHECK_TRUE(data0.contains(compare_node1));
+
+      CHECK_FALSE(data0.contains(ItemNDCNode("6")));
+
+      ItemNDCNode compare_node2("7");
+
+      CHECK_FALSE(data0.contains(compare_node2));
+    }
   };
 }
