@@ -34,6 +34,7 @@ SOFTWARE.
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "iterator.h"
 #include "static_assert.h"
 #include "utility.h"
 #include "memory.h"
@@ -103,6 +104,189 @@ namespace etl
   public:
 
     typedef size_t size_type;
+
+  private:
+
+    //***************************************************************************
+    /// Iterator helper functions
+    //***************************************************************************
+
+    const char* buffer_end() const
+    {
+      return p_buffer + Item_Size * items_initialised;
+    }
+
+    //***************************************************************************
+    /// Optimization: a candidate for being in free list, but no guarantee
+    /// if false, cannot be part of free list, and therefore is allocated
+    /// if true, possibly in free list, but still needs to be checked via free list
+    //***************************************************************************
+    bool is_pointing_into_pool_or_end_or_nullptr(const char *address) const
+    {
+      return address == ETL_NULLPTR || (p_buffer <= address && address <= buffer_end());
+    }
+
+    //***************************************************************************
+    /// Iterate free list to confirm specified address is included or not
+    //***************************************************************************
+    bool is_in_free_list(const char* address) const
+    {
+      const char* i = p_next;
+      while (i != ETL_NULLPTR)
+      {
+        if (address == i)
+        {
+          return true;
+        }
+        i = *reinterpret_cast<const char* const*>(i);
+      }
+      return false;
+    }
+
+  public:
+
+    template<bool is_const>
+    class ipool_iterator
+    {
+    public:
+
+      friend class ipool;
+
+      typedef typename etl::conditional<is_const, const char*, char*>::type         value_type;
+      typedef typename etl::conditional<is_const, const char*&, char*&>::type       reference;
+      typedef typename etl::conditional<is_const, const char**, char**>::type       pointer;
+      typedef ptrdiff_t                                                             difference_type;
+      typedef ETL_OR_STD::forward_iterator_tag                                      iterator_category;
+      typedef typename etl::conditional<is_const, const void*, void*>::type         void_type;
+      typedef typename etl::conditional<is_const, const ipool, ipool>::type         pool_type;
+      typedef typename etl::conditional<is_const, const char* const*, char**>::type pointer_type;
+
+      ipool_iterator(const ipool_iterator& other)
+        : p_current(other.p_current)
+        , p_pool(other.p_pool)
+      {
+        find_allocated();
+      }
+
+      ipool_iterator& operator ++()
+      {
+        p_current = p_current + p_pool->Item_Size;
+        find_allocated();
+        return *this;
+      }
+
+      ipool_iterator operator ++(int)
+      {
+        ipool_iterator temp(*this);
+        p_current = p_current + p_pool->Item_Size;
+        find_allocated();
+        return temp;
+      }
+
+      ipool_iterator& operator =(const ipool_iterator& other)
+      {
+        p_current = other.p_current;
+        p_pool = other.p_pool;
+        return *this;
+      }
+
+      void_type operator *() const
+      {
+        return p_current;
+      }
+
+      template <typename T>
+      T& get() const
+      {
+        return *reinterpret_cast<T*>(p_current);
+      }
+
+      friend bool operator == (const ipool_iterator& lhs, const ipool_iterator& rhs)
+      {
+        return lhs.p_current == rhs.p_current;
+      }
+
+      friend bool operator != (const ipool_iterator& lhs, const ipool_iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      //***************************************************************************
+      /// find allocated item by increasing p_current, starting at p_current
+      /// leave p_current at buffer_end() if no further allocated item found
+      //***************************************************************************
+      void find_allocated()
+      {
+        while (p_current < p_pool->buffer_end())
+        {
+          value_type value = *reinterpret_cast<pointer_type>(p_current);
+          if (!p_pool->is_pointing_into_pool_or_end_or_nullptr(value))
+          {
+            return;
+          }
+          if (!p_pool->is_in_free_list(p_current))
+          {
+            return;
+          }
+          p_current += p_pool->Item_Size;
+        }
+      }
+
+      ipool_iterator(value_type p, pool_type* pool_)
+        : p_current(p)
+        , p_pool(pool_)
+      {
+        find_allocated();
+      }
+
+      value_type p_current;
+      pool_type* p_pool;
+    };
+
+    template<bool is_const>
+    friend class ipool_iterator;
+
+    typedef ipool_iterator<false> iterator;
+
+    class const_iterator : public ipool_iterator<true>
+    {
+      public:
+        const_iterator(const ipool_iterator& other) : ipool_iterator(other) {}
+        const_iterator(const ipool_iterator<false>& other) : ipool_iterator(other.p_current, other.p_pool) {}
+        const_iterator(value_type p, pool_type* pool_) : ipool_iterator<true>(p, pool_) {}
+    };
+
+    iterator begin()
+    {
+      return iterator(p_buffer, this);
+    }
+
+    iterator end()
+    {
+      return iterator(p_buffer + Item_Size * items_initialised, this);
+    }
+
+    const_iterator begin() const
+    {
+      return const_iterator(p_buffer, this);
+    }
+
+    const_iterator end() const
+    {
+      return const_iterator(p_buffer + Item_Size * items_initialised, this);
+    }
+
+    const_iterator cbegin() const
+    {
+      return const_iterator(p_buffer, this);
+    }
+
+    const_iterator cend() const
+    {
+      return const_iterator(p_buffer + Item_Size * items_initialised, this);
+    }
 
     //*************************************************************************
     /// Allocate storage for an object from the pool.
@@ -337,6 +521,7 @@ namespace etl
     }
 
   private:
+    static ETL_CONSTEXPR uintptr_t invalid_item_ptr = 1;
 
     //*************************************************************************
     /// Allocate an item from the pool.
@@ -371,6 +556,11 @@ namespace etl
           // No more left!
           p_next = ETL_NULLPTR;
         }
+
+        // invalid pointer, outside pool
+        // needs to be different from ETL_NULLPTR since ETL_NULLPTR is used
+        // as list endmarker
+        *reinterpret_cast<uintptr_t*>(p_value) = invalid_item_ptr;
       }
       else
       {
