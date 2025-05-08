@@ -47,7 +47,6 @@ SOFTWARE.
 #include "functional.h"
 #include "static_assert.h"
 #include "placement_new.h"
-#include "algorithm.h"
 #include "initializer_list.h"
 
 #include <stddef.h>
