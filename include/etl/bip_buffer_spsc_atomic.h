@@ -246,8 +246,10 @@ namespace etl
       }
       else // read_index > write_index
       {
-        // Doesn't fit
-        if ((write_index + *psize) >= read_index)
+        size_type write_index_plus_size = write_index + *psize;
+
+        // Doesn't fit (must also check for numeric overflow)
+        if (write_index_plus_size >= read_index || write_index_plus_size < *psize)
         {
           *psize = read_index - write_index - 1;
         }
