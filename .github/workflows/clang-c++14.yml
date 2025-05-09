@@ -22,7 +22,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=14 ./
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./
         clang --version
         make -j $(getconf _NPROCESSORS_ONLN)
 
@@ -44,7 +44,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=14 ./
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./
         clang --version
         make -j $(getconf _NPROCESSORS_ONLN)
 

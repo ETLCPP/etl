@@ -9,5 +9,5 @@ If your are considering creating a pull request, please observe the following:
 
 There is a project file for VS2022 for C++14, 17, 20, and bash scripts that run the tests for C++11, 14, 17, 20 under Linux with GCC and Clang.
 
-If you are thinking of adding a new feature then raise this on the GitHub Issues page for disccussion as the maintainers and user of the ETL may have questions or suggestions.
+If you are thinking of adding a new feature then raise this on the GitHub Issues page for discussion as the maintainers and user of the ETL may have questions or suggestions.
 It is possible that the maintainer of the ETL or another contributor is already working on the same or a related feature.
