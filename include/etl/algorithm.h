@@ -2285,9 +2285,13 @@ namespace etl
           TOutputIterator o_begin,
           TOutputIterator o_end)
   {
-    using s_size_type = typename iterator_traits<TInputIterator>::difference_type;
-    using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
-    using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
+    typedef typename iterator_traits<TInputIterator>::difference_type s_size_type;
+    typedef typename iterator_traits<TOutputIterator>::difference_type d_size_type;
+#if ETL_USING_CPP11
+    typedef typename etl::common_type<s_size_type, d_size_type>::type min_size_type;
+#else
+    typedef size_t min_size_type;
+#endif
 
     s_size_type s_size = etl::distance(i_begin, i_end);
     ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
