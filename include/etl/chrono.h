@@ -44,6 +44,7 @@ SOFTWARE.
 #include "hash.h"
 
 #include <stdint.h>
+#include <time.h>
 
 namespace etl
 {
@@ -59,12 +60,15 @@ namespace etl
     constexpr bool treat_as_floating_point_v = treat_as_floating_point<TRep>::value;
 #endif
   }
+
+  // Use the same type as defined in time.h.
+  using time_t = ::time_t;
 }
 
-#include "private/chrono/time_point.h"
 #include "private/chrono/last_spec.h"
 #include "private/chrono/duration.h"
-#include "private/chrono/system_clock.h"
+#include "private/chrono/time_point.h"
+#include "private/chrono/clocks.h"
 #include "private/chrono/day.h"
 #include "private/chrono/weekday.h"
 #include "private/chrono/month.h"
@@ -77,6 +81,7 @@ namespace etl
 #include "private/chrono/hh_mm_ss.h"
 #include "private/chrono/operators.h"
 #include "private/chrono/time_zone.h"
+
 #endif
 
 #undef ETL_IN_CHRONO_H

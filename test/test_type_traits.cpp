@@ -129,6 +129,17 @@ namespace
   {
     return first + second;
   }
+
+  // Structs to test is_specialized
+  template <typename T>
+  struct specialized
+  {
+  };
+
+  template <typename T>
+  struct other_specialized
+  {
+  };
 }
 
 // Definitions for when the STL and compiler built-ins are not available.
@@ -1407,6 +1418,18 @@ namespace
     CHECK_EQUAL(1, (etl::count_of<char, char>::value));
     CHECK_EQUAL(1, (etl::count_of<char, int, char>::value));
     CHECK_EQUAL(2, (etl::count_of<char, int, char, double, char>::value));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_specialization)
+  {
+#if ETL_USING_CPP17
+    CHECK_TRUE((etl::is_specialization_v<specialized<int>, specialized>));
+    CHECK_FALSE((etl::is_specialization_v<other_specialized<int>, specialized>));
+#else
+    CHECK_TRUE((etl::is_specialization<specialized<int>, specialized>::value));
+    CHECK_FALSE((etl::is_specialization<other_specialized<int>, specialized>::value));
 #endif
   }
 }

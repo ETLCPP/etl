@@ -52,8 +52,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR year_month(const etl::chrono::year&  y_, 
-                               const etl::chrono::month& m_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 year_month(const etl::chrono::year&  y_, 
+                                 const etl::chrono::month& m_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
       {
@@ -62,7 +62,7 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -70,7 +70,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -149,7 +149,7 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::year_month& lhs, 
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month& lhs, 
                                             const etl::chrono::year_month& rhs) ETL_NOEXCEPT
       {
         return (lhs.y == rhs.y) && (lhs.m == rhs.m);
@@ -158,7 +158,7 @@ namespace etl
       //*************************************************************************
       /// Inequality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::year_month& lhs, 
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month& lhs, 
                                             const etl::chrono::year_month& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);

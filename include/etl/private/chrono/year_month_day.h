@@ -56,9 +56,9 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR year_month_day(const etl::chrono::year&  y_, 
-                                   const etl::chrono::month& m_, 
-                                   const etl::chrono::day&   d_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 year_month_day(const etl::chrono::year&  y_, 
+                                     const etl::chrono::month& m_, 
+                                     const etl::chrono::day&   d_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
         , d(d_)
@@ -68,7 +68,7 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -76,7 +76,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -84,7 +84,7 @@ namespace etl
       //*************************************************************************
       /// Returns the day.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
       {
         return d;
       }
@@ -158,7 +158,7 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::year_month_day& lhs, 
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_day& lhs, 
                                             const etl::chrono::year_month_day& rhs) ETL_NOEXCEPT
       {
         return (lhs.y == rhs.y) && (lhs.m == rhs.m) && (lhs.d == rhs.d);
@@ -167,7 +167,7 @@ namespace etl
       //*************************************************************************
       /// Inequality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::year_month_day& lhs, 
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_day& lhs, 
                                             const etl::chrono::year_month_day& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
@@ -223,22 +223,31 @@ namespace etl
       //***********************************************************************
       /// Converts *this to etl::chrono::sys_days
       //***********************************************************************
-      //ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
-      //{
-      //  // Start with the first day of the year
-      //  etl::chrono::sys_days first_day_of_year = etl::chrono::sys_days(y / etl::chrono::January / etl::chrono::day(1));
+      ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
+      {
+        int day_count = 0;
 
-      //  // Add the number of days in the months before the current month
-      //  for (etl::chrono::month m = etl::chrono::January; m < m; ++m)
-      //  {
-      //    first_day_of_year += etl::chrono::days((unsigned)etl::chrono::month_day_last(m).day());
-      //  }
+        // Add days for years since 1970
+        for (etl::chrono::year yr(1970); yr < this->year(); ++yr)
+        {
+          day_count += yr.is_leap() ? 366 : 365;
+        }
 
-      //  // Add the days in the current month
-      //  first_day_of_year += d - etl::chrono::day(1);
+        // Add days for months in the current year
+        for (etl::chrono::month mth(1); mth < this->month(); ++mth)
+        {
+          day_count += private_chrono::days_in_month[mth];
+          if (mth == etl::chrono::February && this->year().is_leap())
+          {
+            ++day_count; // Add one day for leap year February
+          }
+        }
 
-      //  return first_day_of_year;
-      //}
+        // Add days for the current month
+        day_count += static_cast<unsigned>(this->day()) - 1;
+
+        return sys_days(etl::chrono::days(day_count));
+      }
 
       ////***********************************************************************
       ///// Converts *this to etl::chrono::local_days
@@ -290,7 +299,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR year_month_day_last(const etl::chrono::year& y_,
+      ETL_CONSTEXPR14 year_month_day_last(const etl::chrono::year& y_,
                                         const etl::chrono::month_day_last& mdl_) ETL_NOEXCEPT
         : y(y_)
         , m(mdl_.month())
@@ -300,7 +309,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -308,7 +317,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -316,7 +325,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
       {
         etl::chrono::day d = etl::chrono::day(etl::chrono::private_chrono::days_in_month[m]);
 
@@ -326,7 +335,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month_day_last month_day_last() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month_day_last month_day_last() const ETL_NOEXCEPT
       {
         return etl::chrono::month_day_last(m);
       }
@@ -342,7 +351,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_day_last& operator +=(const etl::chrono::years& dy) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_day_last& operator +=(const etl::chrono::years& dy) ETL_NOEXCEPT
       {
         y += dy;
 
@@ -352,7 +361,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_day_last& operator +=(const etl::chrono::months& dm) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_day_last& operator +=(const etl::chrono::months& dm) ETL_NOEXCEPT
       {
         m += dm;
 
@@ -362,7 +371,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_day_last& operator -=(const etl::chrono::years& dy) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_day_last& operator -=(const etl::chrono::years& dy) ETL_NOEXCEPT
       {
         y -= dy;
 
@@ -372,7 +381,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_day_last& operator -=(const etl::chrono::months& dm) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_day_last& operator -=(const etl::chrono::months& dm) ETL_NOEXCEPT
       {
         m -= dm;
 
@@ -436,7 +445,7 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::year_month_day_last& lhs, 
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_day_last& lhs, 
                                             const etl::chrono::year_month_day_last& rhs) ETL_NOEXCEPT
       {
         return (lhs.y == rhs.y) && (lhs.m == rhs.m);
@@ -445,7 +454,7 @@ namespace etl
       //*************************************************************************
       /// Inequality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::year_month_day_last& lhs, 
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_day_last& lhs, 
                                             const etl::chrono::year_month_day_last& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
@@ -501,7 +510,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      //ETL_CONSTEXPR operator etl::chrono::sys_days() const ETL_NOEXCEPT
+      //ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
       //{
       //  etl::chrono::sys_days();
       //}
@@ -509,7 +518,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      //ETL_CONSTEXPR explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
+      //ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
       //{
 
       //}

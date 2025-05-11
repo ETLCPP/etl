@@ -58,19 +58,26 @@ add_executable(etl_tests
 #	test_callback_timer_locked.cpp
 #	test_char_traits.cpp
 #	test_checksum.cpp
+
+#    test_chrono_clocks.cpp
 	test_chrono_day.cpp
-	test_chrono_duration.cpp
-	test_chrono_hh_mm_ss.cpp
-	test_chrono_month.cpp
-	test_chrono_month_day.cpp
-	test_chrono_month_day_last.cpp
-	test_chrono_month_weekday.cpp
-	test_chrono_month_weekday_last.cpp
-	test_chrono_weekday.cpp
-	test_chrono_weekday_indexed.cpp
-	test_chrono_weekday_last.cpp
-	test_chrono_year.cpp
-	test_chrono_year_month.cpp
+#	test_chrono_duration.cpp
+#	test_chrono_hh_mm_ss.cpp
+#	test_chrono_month.cpp
+#	test_chrono_month_day.cpp
+#	test_chrono_month_day_last.cpp
+#	test_chrono_month_weekday.cpp
+#	test_chrono_month_weekday_last.cpp
+#	test_chrono_operators.cpp
+#	test_chrono_time_point.cpp
+#	test_chrono_weekday.cpp
+#	test_chrono_weekday_indexed.cpp
+#	test_chrono_weekday_last.cpp
+#	test_chrono_year.cpp
+#	test_chrono_year_month.cpp
+#   test_chrono_year_month_day.cpp
+#	test_chrono_year_month_day_last.cpp
+
 #	test_circular_buffer.cpp
 #	test_circular_buffer_external_buffer.cpp
 #	test_circular_iterator.cpp

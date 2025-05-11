@@ -2250,7 +2250,8 @@ typedef integral_constant<bool, true>  true_type;
     };
 
     template <typename T1, typename T2, typename = void>
-    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&>
+    struct common_type_2_impl 
+      : decay_conditional_result<const T1&, const T2&>
     {
     };
 
@@ -2386,6 +2387,21 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T, typename... TTypes>
   inline constexpr size_t count_of_v = etl::count_of<T, TTypes...>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************************
+  /// is_specialization
+  template <typename T, template <typename...> class Template>
+  struct is_specialization : etl::false_type {};
+
+  template <template <typename...> class Template, typename... TArgs>
+  struct is_specialization<Template<TArgs...>, Template> : etl::true_type {};
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, template <typename...> class Template>
+  inline constexpr bool is_specialization_v = etl::is_specialization<T, Template>::value;
 #endif
 }
 

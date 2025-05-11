@@ -53,7 +53,7 @@ namespace etl
       //***************************************************************************
       /// Default constructor.
       //***************************************************************************
-      ETL_CONSTEXPR time_point() ETL_NOEXCEPT
+      ETL_CONSTEXPR14 time_point() ETL_NOEXCEPT
         : dur(duration::zero())
       {
       }
@@ -61,7 +61,7 @@ namespace etl
       //***************************************************************************
       /// Construct from a duration.
       //***************************************************************************
-      ETL_CONSTEXPR explicit time_point(const duration& dur_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 explicit time_point(const duration& dur_) ETL_NOEXCEPT
         : dur(dur_)
       {
       }
@@ -69,7 +69,7 @@ namespace etl
       //***************************************************************************
       /// Copy constructor.
       //***************************************************************************
-      ETL_CONSTEXPR time_point(const time_point& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 time_point(const time_point& rhs) ETL_NOEXCEPT
         : dur(rhs.dur)
       {
       }
@@ -96,7 +96,7 @@ namespace etl
       //***************************************************************************
       /// Returns a duration representing the amount of time between this and the clock's epoch.
       //***************************************************************************
-      ETL_CONSTEXPR duration time_since_epoch() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration time_since_epoch() const ETL_NOEXCEPT
       {
         return dur;
       }
@@ -124,7 +124,7 @@ namespace etl
       //***************************************************************************
       /// Returns a time_point with the smallest possible duration.
       //***************************************************************************
-      static ETL_CONSTEXPR time_point min() ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 time_point min() ETL_NOEXCEPT
       {
         return time_point(duration::min());
       }
@@ -132,7 +132,7 @@ namespace etl
       //***************************************************************************
       /// Returns a time_point with the largest possible duration.
       //***************************************************************************
-      static ETL_CONSTEXPR time_point max() ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 time_point max() ETL_NOEXCEPT
       {
         return time_point(duration::max());
       }
@@ -142,11 +142,55 @@ namespace etl
       duration dur;
     };
 
+    //***********************************************************************
+    /// Rounds down a duration to the nearest lower precision.
+    //***********************************************************************
+    template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_CONSTEXPR14 
+    etl::chrono::time_point<TClock, TToDuration>
+      floor(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
+    {
+       return etl::chrono::time_point<TClock, TToDuration>(floor<TToDuration>(tp.time_since_epoch()));
+    }
+
+    //***********************************************************************
+    /// Rounds up a duration to the nearest higher precision.
+    //***********************************************************************
+    template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_CONSTEXPR14 
+    etl::chrono::time_point<TClock, TToDuration>
+      ceil(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
+    {
+      return etl::chrono::time_point<TClock, TToDuration>(ceil<TToDuration>(tp.time_since_epoch()));
+    }
+
+    //***********************************************************************
+    /// Rounds a duration to the nearest precision.
+    /// If the duration is exactly halfway, it rounds away from zero.
+    //***********************************************************************
+    template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_CONSTEXPR14 
+    etl::chrono::time_point<TClock, TToDuration>
+      round(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
+    {
+      return etl::chrono::time_point<TClock, TToDuration>(round<TToDuration>(tp.time_since_epoch()));
+    }
+
+    template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_CONSTEXPR14
+    etl::chrono::time_point<TClock, TToDuration>
+      time_point_cast(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
+    {
+      TToDuration dur = etl::chrono::duration_cast<TToDuration>(tp.time_since_epoch());
+
+      return etl::chrono::time_point<TClock, TToDuration>(dur);
+    }
+
     //***************************************************************************
     /// Equality operator
     //***************************************************************************
     template <typename TClock, typename TDuration1, typename TDuration2>
-    ETL_CONSTEXPR bool operator ==(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs)
+    ETL_CONSTEXPR14 bool operator ==(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
     {
       return lhs.time_since_epoch() == rhs.time_since_epoch();
     }
@@ -155,7 +199,7 @@ namespace etl
     /// Inequality operator
     //***************************************************************************
     template <typename TClock, typename TDuration1, typename TDuration2>
-    ETL_CONSTEXPR bool operator !=(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs)
+    ETL_CONSTEXPR14 bool operator !=(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
     {
       return !(lhs == rhs);
     }
@@ -164,7 +208,7 @@ namespace etl
     /// Less-than operator
     //***************************************************************************
     template <typename TClock, typename TDuration1, typename TDuration2>
-    ETL_CONSTEXPR bool operator <(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs)
+    ETL_CONSTEXPR14 bool operator <(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
     {
       return lhs.time_since_epoch() < rhs.time_since_epoch();
     }
@@ -173,7 +217,7 @@ namespace etl
     /// Less-than-equal operator
     //***************************************************************************
     template <typename TClock, typename TDuration1, typename TDuration2>
-    ETL_CONSTEXPR bool operator <=(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs)
+    ETL_CONSTEXPR14 bool operator <=(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
     {
       return !(rhs < lhs);
     }
@@ -182,7 +226,7 @@ namespace etl
     /// Greater-than operator
     //***************************************************************************
     template <typename TClock, typename TDuration1, typename TDuration2>
-    ETL_CONSTEXPR bool operator >(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs)
+    ETL_CONSTEXPR14 bool operator >(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
     {
       return rhs < lhs;
     }
@@ -191,38 +235,25 @@ namespace etl
     /// Greater-than-equal operator
     //***************************************************************************
     template <typename TClock, typename TDuration1, typename TDuration2>
-    ETL_CONSTEXPR bool operator >=(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs)
+    ETL_CONSTEXPR14 bool operator >=(const time_point<TClock, TDuration1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
     {
       return !(lhs < rhs);
     }
-
-    //***************************************************************************
-    /// Local time
-    //***************************************************************************
-    //struct local_t 
-    //{
-    //  using rep        = size_t;
-    //  using period     = etl::chrono::seconds;
-    //  using duration   = etl::chrono::duration<rep, period>;
-    //  using time_point = etl::chrono::time_point<local_t>;
-
-    //  const bool is_steady = true;
-
-    //  time_point now()
-    //  {
-    //    return time_point();
-    //  }
-    //};
-
-    //template <typename TDuration>
-    //using local_time    = etl::chrono::time_point<etl::chrono::local_t, TDuration>;
-
-    //using local_seconds = local_time<etl::chrono::seconds>;
-    //using local_days    = local_time<etl::chrono::days>;
   }
 
+  //***********************************************************************
+  /// Spaceship operator
+  //***********************************************************************
+#if ETL_USING_CPP20
+  template <typename TClock, typename TDuration1, typename TDuration2>
+  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::time_point<TClock, TDuration1>& lhs, const etl::chrono::time_point<TClock, TDuration2>& rhs) noexcept
+  {
+    return (lhs.time_since_epoch() <=> rhs.time_since_epoch());
+  }
+#endif
+
   //***************************************************************************
-  /// Defines type, which is the common type of two std::chrono::time_points.
+  /// Defines type, which is the common type of two etl::chrono::time_points.
   //***************************************************************************
   template <typename TClock, typename TDuration1, typename TDuration2>
   struct common_type<etl::chrono::time_point<TClock, TDuration1>, etl::chrono::time_point<TClock, TDuration2>>

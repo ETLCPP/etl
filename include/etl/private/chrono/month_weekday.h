@@ -43,8 +43,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR month_weekday(const etl::chrono::month&           m_, 
-                                  const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 month_weekday(const etl::chrono::month&           m_, 
+                                    const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
         : m(m_)
         , wdi(wdi_)
       {
@@ -53,7 +53,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -61,7 +61,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday_indexed weekday_indexed() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::weekday_indexed weekday_indexed() const ETL_NOEXCEPT
       {
         return wdi;
       }
@@ -77,8 +77,8 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::month_weekday& lhs, 
-                                            const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_weekday& lhs, 
+                                              const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
       {
         return (lhs.m == rhs.m) && (lhs.wdi == rhs.wdi);
       }
@@ -86,8 +86,8 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::month_weekday& lhs, 
-                                            const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_weekday& lhs, 
+                                              const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
       }
@@ -108,8 +108,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR month_weekday_last(const etl::chrono::month&        m_, 
-                                       const etl::chrono::weekday_last& wdl_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 month_weekday_last(const etl::chrono::month&        m_, 
+                                         const etl::chrono::weekday_last& wdl_) ETL_NOEXCEPT
         : m(m_)
         , wdl(wdl_)
       {
@@ -118,7 +118,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -126,7 +126,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday_last weekday_last() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::weekday_last weekday_last() const ETL_NOEXCEPT
       {
         return wdl;
       }
@@ -142,8 +142,8 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::month_weekday_last& lhs, 
-                                            const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_weekday_last& lhs, 
+                                              const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
       {
         return (lhs.m == rhs.m) && (lhs.wdl == rhs.wdl);
       }
@@ -151,8 +151,8 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::month_weekday_last& lhs, 
-                                            const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_weekday_last& lhs, 
+                                              const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
       }

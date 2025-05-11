@@ -58,29 +58,43 @@ namespace etl
     template <typename TDuration>
     class hh_mm_ss
     {
+    private:
+
+      // Helper template to calculate the number of digits in a denominator at compile time
+      template <uintmax_t Den, int Width = 0>
+      struct fractional_width_helper
+      {
+        static constexpr int value = fractional_width_helper<Den / 10, Width + 1>::value;
+      };
+
+      // Base case: when Den == 1, stop recursion
+      template <int Width>
+      struct fractional_width_helper<1, Width>
+      {
+        static constexpr int value = Width;
+      };
+
+      // Special case: when Den == 0 (invalid denominator), return 0
+      template <int Width>
+      struct fractional_width_helper<0, Width>
+      {
+        static constexpr int value = 0;
+      };
+
+      // Calculate fractional width for TDuration
+      template <typename TDur>
+      struct calculate_fractional_width
+      {
+        static constexpr int value = (TDur::period::den == 1)
+          ? 0
+          : fractional_width_helper<TDur::period::den>::value;
+      };
+
     public:
 
-      ETL_STATIC_ASSERT(etl::chrono::is_duration<TDuration>::value, "TDuration not etl::chrono::duration");
+      ETL_STATIC_ASSERT(etl::chrono::is_duration<TDuration>::value, "TDuration is not a etl::chrono::duration type");
 
-      //***********************************************************************
-      // Fractional width for the duration's subseconds
-      //***********************************************************************
-      static constexpr int fractional_width = []() constexpr 
-        {
-          if (TDuration::period::den == 1) 
-          {
-            return 0;
-          }
-
-          int width = 0;
-
-          for (auto den = TDuration::period::den; den > 1; den /= 10) 
-          {
-            ++width;
-          }
-
-          return width;
-        }();
+      static constexpr int fractional_width = calculate_fractional_width<TDuration>::value;
 
       //***********************************************************************
       /// The return type for to_duration.

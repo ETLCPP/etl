@@ -48,8 +48,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR month_day(const etl::chrono::month& m_, 
-                              const etl::chrono::day&   d_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 month_day(const etl::chrono::month& m_, 
+                                const etl::chrono::day&   d_) ETL_NOEXCEPT
         : m(m_)
         , d(d_)
       {
@@ -58,7 +58,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -66,7 +66,7 @@ namespace etl
       //*************************************************************************
       /// Returns the day.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
       {
         return d;
       }
@@ -94,8 +94,8 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::month_day& lhs, 
-                                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_day& lhs, 
+                                              const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
         return (lhs.d == rhs.d) && (lhs.m == rhs.m);
       }
@@ -103,8 +103,8 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::month_day& lhs, 
-                                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_day& lhs, 
+                                              const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
       }
@@ -112,7 +112,7 @@ namespace etl
       //*************************************************************************
       /// Less-than operator.
       //*************************************************************************
-      ETL_NODISCARD friend ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR14
         bool operator <(const etl::chrono::month_day& lhs,
                         const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -133,7 +133,7 @@ namespace etl
       //*************************************************************************
       /// Less-than-equal operator.
       //*************************************************************************
-      ETL_NODISCARD friend ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR14
         bool operator <=(const etl::chrono::month_day& lhs,
                          const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -143,7 +143,7 @@ namespace etl
       //*************************************************************************
       /// Greater-than operator.
       //*************************************************************************
-      ETL_NODISCARD friend ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR14
         bool operator >(const etl::chrono::month_day& lhs,
                          const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {
@@ -153,7 +153,7 @@ namespace etl
       //*************************************************************************
       /// Greater-than-equal operator.
       //*************************************************************************
-      ETL_NODISCARD friend ETL_CONSTEXPR
+      ETL_NODISCARD friend ETL_CONSTEXPR14
         bool operator >=(const etl::chrono::month_day& lhs,
                          const etl::chrono::month_day& rhs) ETL_NOEXCEPT
       {

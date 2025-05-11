@@ -1500,9 +1500,6 @@
     <ClInclude Include="..\..\include\etl\private\chrono\year_month_day.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\chrono\system_clock.h">
-      <Filter>ETL\Private\chrono</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\chrono\time_point.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
@@ -1511,6 +1508,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\chrono\time_zone.h">
       <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\clocks.h">
+      <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3573,6 +3573,12 @@
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
     <ClCompile Include="..\test_chrono_year_month_day_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_clocks.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_time_point.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
   </ItemGroup>

@@ -56,9 +56,9 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR year_month_weekday(const etl::chrono::year&    y_, 
-                                       const etl::chrono::month&   m_, 
-                                       const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 year_month_weekday(const etl::chrono::year&    y_, 
+                                         const etl::chrono::month&   m_, 
+                                         const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
         , wdi(wdi_)
@@ -68,7 +68,7 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -76,7 +76,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -84,7 +84,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday weekday() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::weekday weekday() const ETL_NOEXCEPT
       {
         return wdi.weekday();
       }
@@ -92,7 +92,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday index.
       //*************************************************************************
-      ETL_CONSTEXPR unsigned index() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 unsigned index() const ETL_NOEXCEPT
       {
         return wdi.index();
       }
@@ -100,7 +100,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday_indexed weekday_indexed() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::weekday_indexed weekday_indexed() const ETL_NOEXCEPT
       {
         return wdi;
       }
@@ -170,7 +170,7 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::year_month_weekday& lhs, 
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_weekday& lhs, 
                                             const etl::chrono::year_month_weekday& rhs) ETL_NOEXCEPT
       {
         return (lhs.y == rhs.y) && (lhs.m == rhs.m) && (lhs.wdi == rhs.wdi);
@@ -179,7 +179,7 @@ namespace etl
       //*************************************************************************
       /// Inequality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::year_month_weekday& lhs, 
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_weekday& lhs, 
                                             const etl::chrono::year_month_weekday& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
@@ -243,7 +243,7 @@ namespace etl
       //*************************************************************************
       /// Construct from year, month, weekday_last
       //*************************************************************************
-      ETL_CONSTEXPR year_month_weekday_last(const etl::chrono::year&         y_, 
+      ETL_CONSTEXPR14 year_month_weekday_last(const etl::chrono::year&         y_, 
                                             const etl::chrono::month&        m_, 
                                             const etl::chrono::weekday_last& wdl_) ETL_NOEXCEPT
         : y(y_)
@@ -255,7 +255,7 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -263,7 +263,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -271,7 +271,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday weekday() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::weekday weekday() const ETL_NOEXCEPT
       {
         return wdl.weekday();
       }
@@ -279,7 +279,7 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday_last.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday_last weekday_last() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::weekday_last weekday_last() const ETL_NOEXCEPT
       {
         return wdl;
       }
@@ -287,7 +287,7 @@ namespace etl
       //*************************************************************************
       /// Adds etl::chrono::years.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_weekday_last& operator +=(const etl::chrono::years& dy) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last& operator +=(const etl::chrono::years& dy) ETL_NOEXCEPT
       {
         y += dy;
 
@@ -297,7 +297,7 @@ namespace etl
       //*************************************************************************
       /// Adds etl::chrono::months.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_weekday_last& operator +=(const etl::chrono::months& dm) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last& operator +=(const etl::chrono::months& dm) ETL_NOEXCEPT
       {
         m += dm;
 
@@ -307,7 +307,7 @@ namespace etl
       //*************************************************************************
       /// Subtracts etl::chrono::years.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_weekday_last& operator -=(const etl::chrono::years& dy) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last& operator -=(const etl::chrono::years& dy) ETL_NOEXCEPT
       {
         y -= dy;
 
@@ -317,7 +317,7 @@ namespace etl
       //*************************************************************************
       /// Subtracts etl::chrono::months.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year_month_weekday_last& operator -=(const etl::chrono::months& dm) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last& operator -=(const etl::chrono::months& dm) ETL_NOEXCEPT
       {
         m -= dm;
 
@@ -381,7 +381,7 @@ namespace etl
       //*************************************************************************
       /// Equality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator ==(const etl::chrono::year_month_weekday_last& lhs, 
+      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_weekday_last& lhs, 
                                             const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
       {
         return (lhs.y == rhs.y) && (lhs.m == rhs.m) && (lhs.weekday() == rhs.weekday());
@@ -390,7 +390,7 @@ namespace etl
       //*************************************************************************
       /// Inequality operator.
       //*************************************************************************
-      friend ETL_CONSTEXPR bool operator !=(const etl::chrono::year_month_weekday_last& lhs, 
+      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_weekday_last& lhs, 
                                             const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
@@ -446,7 +446,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      //ETL_CONSTEXPR operator etl::chrono::sys_days() const ETL_NOEXCEPT
+      //ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
       //{
       //  etl::chrono::sys_days();
       //}
@@ -454,7 +454,7 @@ namespace etl
       //*************************************************************************
       /// 
       //*************************************************************************
-      //ETL_CONSTEXPR explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
+      //ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
       //{
 
       //}

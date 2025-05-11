@@ -137,6 +137,15 @@ namespace
 #endif
 
     //*************************************************************************
+    TEST(test_to_sys_days)
+    {
+      Chrono::year_month_day ymd{Chrono::year(2000), Chrono::February, Chrono::day(10)};
+      Chrono::sys_days sd = Chrono::sys_days(ymd);
+
+      CHECK_EQUAL(10997, sd.time_since_epoch().count());
+    }
+
+    //*************************************************************************
     TEST(test_year_month_day_equality_operator)
     {
       Chrono::year_month_day ym1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
