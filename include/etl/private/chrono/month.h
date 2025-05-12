@@ -57,7 +57,7 @@ namespace etl
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
-      ETL_CONSTEXPR14 month() ETL_NOEXCEPT
+      ETL_CONSTEXPR month() ETL_NOEXCEPT
         : value(0)
       {
       }
@@ -65,7 +65,7 @@ namespace etl
       //***********************************************************************
       /// Construct from unsigned
       //***********************************************************************
-      ETL_CONSTEXPR14 explicit month(unsigned value_) ETL_NOEXCEPT
+      ETL_CONSTEXPR explicit month(unsigned value_) ETL_NOEXCEPT
         : value(value_)
       {
       }
@@ -73,7 +73,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR14 month(const etl::chrono::month& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR month(const etl::chrono::month& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
@@ -155,7 +155,7 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the month is within the valid 1 to 31 range
       //***********************************************************************
-      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
+      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
       {
         return (value >= 1U) && (value <= 12U);
       }
@@ -177,7 +177,7 @@ namespace etl
       //***********************************************************************
       /// The minimum month value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR14 etl::chrono::month min() ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::month min() ETL_NOEXCEPT
       {
         return etl::chrono::month(1);
       }
@@ -185,7 +185,7 @@ namespace etl
       //***********************************************************************
       /// The maximum month value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR14 etl::chrono::month max() ETL_NOEXCEPT
+      static ETL_CONSTEXPR etl::chrono::month max() ETL_NOEXCEPT
       {
         return etl::chrono::month(12);
       }
@@ -193,7 +193,7 @@ namespace etl
       //***********************************************************************
       /// Conversion operator to unsigned int
       //***********************************************************************
-      ETL_CONSTEXPR14 operator unsigned() const ETL_NOEXCEPT
+      ETL_CONSTEXPR operator unsigned() const ETL_NOEXCEPT
       {
         return static_cast<unsigned>(value);
       }
@@ -206,7 +206,7 @@ namespace etl
     //***********************************************************************
     /// Equality operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) == static_cast<unsigned>(d2));
     }
@@ -214,7 +214,7 @@ namespace etl
     //***********************************************************************
     /// Inequality operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
       return !(d1 == d2);
     }
@@ -222,7 +222,7 @@ namespace etl
     //***********************************************************************
     /// Less-than operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator <(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator <(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) < static_cast<unsigned>(d2));
     }
@@ -230,7 +230,7 @@ namespace etl
     //***********************************************************************
     /// Less-than-or-equal operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator <=(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator <=(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) <= static_cast<unsigned>(d2));
     }
@@ -238,7 +238,7 @@ namespace etl
     //***********************************************************************
     /// Greater-than operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator >(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator >(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) > static_cast<unsigned>(d2));
     }
@@ -246,7 +246,7 @@ namespace etl
     //***********************************************************************
     /// Greater-than-or-equal operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator >=(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator >=(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) >= static_cast<unsigned>(d2));
     }
@@ -255,7 +255,7 @@ namespace etl
     /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
-    [[nodiscard]] constexpr auto operator <=>(const etl::chrono::month& d1, const etl::chrono::month& d2) noexcept
+    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::month& d1, const etl::chrono::month& d2) noexcept
     {
       return (static_cast<unsigned>(d1) <=> static_cast<unsigned>(d2));
     }
@@ -265,7 +265,7 @@ namespace etl
     /// Add etl::chrono::months to etl::chrono::month
     ///\return etl::chrono::month
     //***********************************************************************
-    ETL_CONSTEXPR14 etl::chrono::month operator +(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 etl::chrono::month operator +(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
     {
       unsigned int value = static_cast<unsigned int>(m);
 
@@ -291,7 +291,7 @@ namespace etl
     /// Add etl::chrono::month to etl::chrono::months
     ///\return etl::chrono::month
     //***********************************************************************
-    ETL_CONSTEXPR14 etl::chrono::month operator +(const etl::chrono::months& ms, const etl::chrono::month& m) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 etl::chrono::month operator +(const etl::chrono::months& ms, const etl::chrono::month& m) ETL_NOEXCEPT
     {
       return m + ms;
     }
@@ -300,7 +300,7 @@ namespace etl
     /// Subtract etl::chrono::months from etl::chrono::month
     ///\return etl::chrono::month
     //***********************************************************************
-    ETL_CONSTEXPR14 etl::chrono::month operator -(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 etl::chrono::month operator -(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
     {
       return m + etl::chrono::months(-ms.count());
     }
@@ -309,7 +309,7 @@ namespace etl
     /// Subtract etl::chrono::month from etl::chrono::month
     ///\return etl::chrono::months
     //***********************************************************************
-    ETL_CONSTEXPR14 etl::chrono::months operator -(const etl::chrono::month& m1, const etl::chrono::month& m2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 etl::chrono::months operator -(const etl::chrono::month& m1, const etl::chrono::month& m2) ETL_NOEXCEPT
     {
       if (m1.ok() && m2.ok())
       {
@@ -401,7 +401,7 @@ namespace etl
     //***********************************************************************
     /// Equality operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(mdl1.month()) == static_cast<unsigned>(mdl2.month()));
     }
@@ -409,7 +409,7 @@ namespace etl
     //***********************************************************************
     /// Inequality operator
     //***********************************************************************
-    ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
     {
       return !(mdl1 == mdl2);
     }
@@ -418,7 +418,7 @@ namespace etl
     /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
-    [[nodiscard]] constexpr auto operator <=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) noexcept
+    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) noexcept
     {
       return (static_cast<unsigned>(mdl1.month()) <=> static_cast<unsigned>(mdl2.month()));
     }

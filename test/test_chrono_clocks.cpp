@@ -81,7 +81,6 @@ namespace
       CHECK_TRUE((std::is_same<Duration::period, Clock::duration::period>::value));
       CHECK_FALSE(Clock::is_steady); // Set in etl_profile.h
 
-      TimePoint tp{ TimePoint::duration(0) };
       Clock::time_point now;
 
       milliseconds = 1000;
@@ -114,7 +113,6 @@ namespace
       CHECK_TRUE((std::is_same<Duration::period, Clock::duration::period>::value));
       CHECK_TRUE(Clock::is_steady);
 
-      TimePoint tp{ TimePoint::duration(0) };
       Clock::time_point now;
 
       nanoseconds = 1;
@@ -139,7 +137,6 @@ namespace
       CHECK_TRUE((std::is_same<Duration::period, Clock::duration::period>::value));
       CHECK_TRUE(Clock::is_steady);
 
-      TimePoint tp{ TimePoint::duration(0) };
       Clock::time_point now;
 
       seconds = 1;
@@ -165,6 +162,14 @@ namespace
       FromTimePoint from_tp(FromDuration(1000));
 
       ToTimePoint to_tp = etl::chrono::clock_cast<ToClock>(from_tp);
+
+      auto num_sys_clock    = FromDuration::period::den;
+      auto num_steady_clock = ToDuration::period::num;
+
+      auto sys_clock_count          = from_tp.time_since_epoch().count();
+      auto scaled_steady_lock_count = (to_tp.time_since_epoch().count() * num_sys_clock) / num_steady_clock;
+
+      CHECK_EQUAL(sys_clock_count, scaled_steady_lock_count);
     }
   };
 }

@@ -52,8 +52,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR14 year_month(const etl::chrono::year&  y_, 
-                                 const etl::chrono::month& m_) ETL_NOEXCEPT
+      ETL_CONSTEXPR year_month(const etl::chrono::year&  y_, 
+                               const etl::chrono::month& m_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
       {
@@ -62,7 +62,7 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -70,7 +70,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -78,7 +78,7 @@ namespace etl
       //*************************************************************************
       /// Returns true if the month/day is valid.
       //*************************************************************************
-      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
+      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
       {       
         return y.ok() && m.ok();
       }

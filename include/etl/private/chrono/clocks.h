@@ -60,10 +60,22 @@ namespace etl
 {
   namespace chrono
   {
+    namespace private_chrono
+    {
+      template <bool b>
+      struct is_steady_trait
+      {
+        static ETL_CONSTANT bool is_steady = b;
+      };
+
+      template <bool b>
+      ETL_CONSTANT bool is_steady_trait<b>::is_steady;
+    }
+
     //*************************************************************************
     /// The system clock time
     //*************************************************************************
-    class system_clock
+    class system_clock : public private_chrono::is_steady_trait<ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY>
     {
     public:
 
@@ -71,8 +83,6 @@ namespace etl
       using rep        = duration::rep;
       using period     = duration::period;
       using time_point = etl::chrono::time_point<system_clock, duration>;
-
-      static bool ETL_CONSTANT is_steady = ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY;
 
       //*************************************************************************
       static time_point now() ETL_NOEXCEPT
@@ -104,7 +114,7 @@ namespace etl
     //*************************************************************************
     /// The high resolution clock time
     //*************************************************************************
-    class high_resolution_clock
+    class high_resolution_clock : public private_chrono::is_steady_trait<ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY>
     {
     public:
 
@@ -112,8 +122,6 @@ namespace etl
       using rep        = duration::rep;
       using period     = duration::period;
       using time_point = etl::chrono::time_point<high_resolution_clock, duration>;
-
-      static bool ETL_CONSTANT is_steady = ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY;
 
       //*************************************************************************
       static time_point now() ETL_NOEXCEPT
@@ -125,7 +133,7 @@ namespace etl
     //*************************************************************************
     /// The steady clock time
     //*************************************************************************
-    class steady_clock
+    class steady_clock : public private_chrono::is_steady_trait<true>
     {
     public:
 
@@ -133,8 +141,6 @@ namespace etl
       using rep        = duration::rep;
       using period     = duration::period;
       using time_point = etl::chrono::time_point<steady_clock, duration>;
-
-      static bool ETL_CONSTANT is_steady = true;
 
       //*************************************************************************
       static time_point now() ETL_NOEXCEPT
@@ -151,7 +157,6 @@ namespace etl
 
     using sys_seconds = sys_time<etl::chrono::seconds>;
     using sys_days    = sys_time<etl::chrono::days>;
-
 
     //***************************************************************************
     /// Local time

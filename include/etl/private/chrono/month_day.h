@@ -48,7 +48,7 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR14 month_day(const etl::chrono::month& m_, 
+      ETL_CONSTEXPR month_day(const etl::chrono::month& m_, 
                                 const etl::chrono::day&   d_) ETL_NOEXCEPT
         : m(m_)
         , d(d_)
@@ -58,7 +58,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -66,7 +66,7 @@ namespace etl
       //*************************************************************************
       /// Returns the day.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
       {
         return d;
       }

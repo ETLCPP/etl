@@ -34,13 +34,16 @@ SOFTWARE.
 #define ETL_IN_CHRONO_H
 
 #include "platform.h"
+
+#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
+  #error NOT SUPPORTED FOR C++03 OR BELOW
+#endif
+
+#if ETL_USING_CPP11
+
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "string_view.h"
-
-#if ETL_NOT_USING_CPP11
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#else
 #include "hash.h"
 
 #include <stdint.h>

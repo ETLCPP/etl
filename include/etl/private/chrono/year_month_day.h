@@ -46,7 +46,7 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      year_month_day()
+      ETL_CONSTEXPR year_month_day()
         : y()
         , m()
         , d()
@@ -56,9 +56,9 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR14 year_month_day(const etl::chrono::year&  y_, 
-                                     const etl::chrono::month& m_, 
-                                     const etl::chrono::day&   d_) ETL_NOEXCEPT
+      ETL_CONSTEXPR year_month_day(const etl::chrono::year&  y_, 
+                                   const etl::chrono::month& m_, 
+                                   const etl::chrono::day&   d_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
         , d(d_)
@@ -68,7 +68,7 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -76,7 +76,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -84,7 +84,7 @@ namespace etl
       //*************************************************************************
       /// Returns the day.
       //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
       {
         return d;
       }
@@ -267,7 +267,7 @@ namespace etl
       /// Calculates the last day in the year/month.
       /// Returns 0 if either the year or month are not OK.
       //***********************************************************************
-      etl::chrono::day max_day_for_month() const
+      ETL_CONSTEXPR14 etl::chrono::day max_day_for_month() const
       {
         unsigned char count = 0;
 

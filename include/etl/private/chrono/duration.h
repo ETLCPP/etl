@@ -127,7 +127,7 @@ namespace etl
 
       //***********************************************************************
       template <typename TRep2, typename TPeriod2, typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::den == 1, int>::type = 0>
-      ETL_CONSTEXPR duration(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
         : value(etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count())
       {
         ETL_STATIC_ASSERT(!(etl::is_integral<TRep>::value && etl::is_floating_point<TRep2>::value), "Cannot convert duration from floating point to integral");
@@ -153,49 +153,49 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR TRep count() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 TRep count() const ETL_NOEXCEPT
       {
         return value;
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR etl::common_type_t<duration> operator +() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::common_type_t<duration> operator +() const ETL_NOEXCEPT
       {
         return etl::common_type_t<duration>(*this);
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR etl::common_type_t<duration> operator -() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::common_type_t<duration> operator -() const ETL_NOEXCEPT
       {
         return etl::common_type_t<duration>(-value);
       }
 
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::duration<TRep, TPeriod> zero()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> zero()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::zero());
       }
 
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::duration<TRep, TPeriod> min()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> min()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::min());
       }
 
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::duration<TRep, TPeriod> max()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> max()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::max());
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR etl::chrono::duration<TRep, TPeriod> absolute() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> absolute() const ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(value < 0 ? -value : value);
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator ++() ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator ++() ETL_NOEXCEPT
       {
         ++value;
 
@@ -203,7 +203,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration operator ++(int) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration operator ++(int) ETL_NOEXCEPT
       {
         duration temp(*this);      
         ++value;
@@ -212,7 +212,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator --() ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator --() ETL_NOEXCEPT
       {
         --value;
 
@@ -220,7 +220,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration operator --(int) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration operator --(int) ETL_NOEXCEPT
       {
         duration temp(*this);
         --value;
@@ -229,7 +229,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator +=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator +=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
       {
         value += d.count();
 
@@ -237,7 +237,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator -=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator -=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
       {
         value -= d.count();
 
@@ -245,7 +245,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator *=(const TRep& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator *=(const TRep& r) ETL_NOEXCEPT
       {
         value *= r;
 
@@ -253,7 +253,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator /=(const TRep& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator /=(const TRep& r) ETL_NOEXCEPT
       {
         value /= r;
 
@@ -261,7 +261,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator %=(const TRep& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator %=(const TRep& r) ETL_NOEXCEPT
       {
         value %= r;
 
@@ -269,7 +269,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration& operator %=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator %=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
       {
         value %= d.count();
 
@@ -715,7 +715,7 @@ namespace etl
       //***********************************************************************
       /// Literal for hours duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::hours operator ""_hours(unsigned long long h) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::hours operator ""_hours(unsigned long long h) ETL_NOEXCEPT
       {
         return etl::chrono::hours(static_cast<etl::chrono::hours::rep>(h));
       }
@@ -723,7 +723,7 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point hours duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::duration<double, ratio<3600>> operator""_h(long double h) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<3600>> operator""_h(long double h) ETL_NOEXCEPT
       {
         return etl::chrono::duration<double, ratio<3600>>(h);
       }
@@ -731,7 +731,7 @@ namespace etl
       //***********************************************************************
       /// Literal for minutes duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::minutes operator ""_minutes(unsigned long long m) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::minutes operator ""_minutes(unsigned long long m) ETL_NOEXCEPT
       {
         return etl::chrono::minutes(static_cast<etl::chrono::minutes::rep>(m));
       }
@@ -739,7 +739,7 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point minutes duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::duration<double, ratio<60>> operator ""_minutes(long double m) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator ""_minutes(long double m) ETL_NOEXCEPT
       {
         return etl::chrono::duration<double, ratio<60>>(m);
       }
@@ -747,7 +747,7 @@ namespace etl
       //***********************************************************************
       /// Literal for seconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::seconds operator ""_seconds(unsigned long long s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::seconds operator ""_seconds(unsigned long long s) ETL_NOEXCEPT
       {
         return etl::chrono::seconds(static_cast<etl::chrono::seconds::rep>(s));
       }
@@ -755,7 +755,7 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point seconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::duration<double> operator ""_seconds(long double s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator ""_seconds(long double s) ETL_NOEXCEPT
       {
         return etl::chrono::duration<double>(s);
       }
@@ -763,7 +763,7 @@ namespace etl
       //***********************************************************************
       /// Literal for milliseconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) ETL_NOEXCEPT
       {
         return etl::chrono::milliseconds(static_cast<etl::chrono::milliseconds::rep>(s));
       }
@@ -771,7 +771,7 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point milliseconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::duration<double, milli> operator ""_milliseconds(long double s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator ""_milliseconds(long double s) ETL_NOEXCEPT
       {
         return etl::chrono::duration<double, milli>(s);
       }
@@ -779,7 +779,7 @@ namespace etl
       //***********************************************************************
       /// Literal for microseconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::microseconds operator ""_microseconds(unsigned long long s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::microseconds operator ""_microseconds(unsigned long long s) ETL_NOEXCEPT
       {
         return etl::chrono::microseconds(static_cast<etl::chrono::microseconds::rep>(s));
       }
@@ -787,7 +787,7 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point microseconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::duration<double, micro> operator ""_microseconds(long double s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator ""_microseconds(long double s) ETL_NOEXCEPT
       {
         return etl::chrono::duration<double, micro>(s);
       }
@@ -795,7 +795,7 @@ namespace etl
       //***********************************************************************
       /// Literal for nanoseconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) ETL_NOEXCEPT
       {
         return etl::chrono::nanoseconds(static_cast<etl::chrono::nanoseconds::rep>(s));
       }
@@ -803,7 +803,7 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point microseconds duration
       //***********************************************************************
-      inline ETL_CONSTEXPR etl::chrono::duration<double, nano> operator ""_nanoseconds(long double s) ETL_NOEXCEPT
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator ""_nanoseconds(long double s) ETL_NOEXCEPT
       {
         return etl::chrono::duration<double, nano>(s);
       }

@@ -53,7 +53,7 @@ namespace etl
       //***************************************************************************
       /// Default constructor.
       //***************************************************************************
-      ETL_CONSTEXPR14 time_point() ETL_NOEXCEPT
+      ETL_CONSTEXPR time_point() ETL_NOEXCEPT
         : dur(duration::zero())
       {
       }
@@ -61,7 +61,7 @@ namespace etl
       //***************************************************************************
       /// Construct from a duration.
       //***************************************************************************
-      ETL_CONSTEXPR14 explicit time_point(const duration& dur_) ETL_NOEXCEPT
+      ETL_CONSTEXPR explicit time_point(const duration& dur_) ETL_NOEXCEPT
         : dur(dur_)
       {
       }
@@ -69,7 +69,7 @@ namespace etl
       //***************************************************************************
       /// Copy constructor.
       //***************************************************************************
-      ETL_CONSTEXPR14 time_point(const time_point& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR time_point(const time_point& rhs) ETL_NOEXCEPT
         : dur(rhs.dur)
       {
       }
@@ -124,7 +124,7 @@ namespace etl
       //***************************************************************************
       /// Returns a time_point with the smallest possible duration.
       //***************************************************************************
-      static ETL_CONSTEXPR14 time_point min() ETL_NOEXCEPT
+      static ETL_CONSTEXPR time_point min() ETL_NOEXCEPT
       {
         return time_point(duration::min());
       }
@@ -132,7 +132,7 @@ namespace etl
       //***************************************************************************
       /// Returns a time_point with the largest possible duration.
       //***************************************************************************
-      static ETL_CONSTEXPR14 time_point max() ETL_NOEXCEPT
+      static ETL_CONSTEXPR time_point max() ETL_NOEXCEPT
       {
         return time_point(duration::max());
       }
