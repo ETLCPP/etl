@@ -69,7 +69,11 @@ namespace etl
     }
 
     //*********************************************************************
+#if ETL_USING_CPP11
     template <typename T, typename = typename etl::enable_if<etl::is_convertible<T, TValue>::value, void>::type>
+#else
+    template <typename T>
+#endif
     ETL_CONSTEXPR type_def(T value_)
       : value(value_)
     {
@@ -119,7 +123,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator +=(T rhs)
     {
       value += rhs;
@@ -137,7 +145,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator -=(T rhs)
     {
       value -= rhs;
@@ -154,7 +166,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator *=(T rhs)
     {
       value *= rhs;
@@ -171,7 +187,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator /=(T rhs)
     {
       value /= rhs;
@@ -188,7 +208,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator %=(T rhs)
     {
       value %= rhs;
@@ -205,7 +229,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator &=(T rhs)
     {
       value &= rhs;
@@ -222,7 +250,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator |=(T rhs)
     {
       value |= rhs;
@@ -239,7 +271,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     ETL_CONSTEXPR14 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
+#else
+      type_def&
+#endif
       operator ^=(T rhs)
     {
       value ^= rhs;
@@ -289,7 +325,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator +(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value + rhs);
@@ -313,7 +353,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator -(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value - rhs);
@@ -322,7 +366,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator -(T lhs, const type_def& rhs)
     {
       return type_def(lhs - rhs.value);
@@ -339,7 +387,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator *(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value * rhs);
@@ -348,7 +400,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator *(T lhs, const type_def& rhs)
     {
       return type_def(lhs * rhs.value);
@@ -365,7 +421,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator /(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value / rhs);
@@ -374,7 +434,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator /(T lhs, const type_def& rhs)
     {
       return type_def(lhs / rhs.value);
@@ -389,7 +453,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator %(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value % rhs);
@@ -400,7 +468,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator %(T lhs, const type_def& rhs)
     {
       return type_def(lhs % rhs.value);
@@ -417,7 +489,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR 
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator &(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value & rhs);
@@ -426,7 +502,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator &(T lhs, const type_def& rhs)
     {
       return type_def(lhs & rhs.value);
@@ -443,7 +523,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator |(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value | rhs);
@@ -452,7 +536,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator |(T lhs, const type_def& rhs)
     {
       return type_def(lhs | rhs.value);
@@ -469,7 +557,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator ^(const type_def& lhs, T rhs)
     {
       return type_def(lhs.value ^ rhs);
@@ -478,7 +570,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
+#else
+      type_def
+#endif
       operator ^(T lhs, const type_def& rhs)
     {
       return type_def(lhs ^ rhs.value);
@@ -511,7 +607,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator <(const type_def& lhs, T rhs)
     {
       return lhs.value < rhs;
@@ -520,7 +620,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator <(T lhs, const type_def& rhs)
     {
       return lhs < rhs.value;
@@ -537,7 +641,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator <=(const type_def& lhs, T rhs)
     {
       return lhs.value <= rhs;
@@ -546,7 +654,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator <=(T lhs, const type_def& rhs)
     {
       return lhs <= rhs.value;
@@ -563,7 +675,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator >(const type_def& lhs, T rhs)
     {
       return lhs.value > rhs;
@@ -572,7 +688,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator >(T lhs, const type_def& rhs)
     {
       return lhs > rhs.value;
@@ -589,7 +709,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator >=(const type_def& lhs, T rhs)
     {
       return lhs.value >= rhs;
@@ -598,7 +722,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator >=(T lhs, const type_def& rhs)
     {
       return lhs >= rhs.value;
@@ -615,7 +743,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator ==(const type_def& lhs, T rhs)
     {
       return lhs.value == rhs;
@@ -624,7 +756,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator ==(T lhs, const type_def& rhs)
     {
       return lhs == rhs.value;
@@ -641,7 +777,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator !=(const type_def& lhs, T rhs)
     {
       return lhs.value != rhs;
@@ -650,7 +790,11 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
       typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
+#else
+      bool
+#endif
       operator !=(T lhs, const type_def& rhs)
     {
       return lhs != rhs.value;
