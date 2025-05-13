@@ -51,9 +51,13 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
+    #define ETL_USING_BUILTIN_UNDERLYING_TYPE 1
+  #endif
 #endif
 
-#if defined(__has_builtin) // Use __has_builtin to check for existence of builtin functions?
+#if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for existence of builtin functions? Fix VS2022 intellisense issue.
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
   #endif
@@ -72,6 +76,10 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE (__has_builtin(__has_trivial_copy) || __has_builtin(__is_trivially_copyable))
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
+    #define ETL_USING_BUILTIN_UNDERLYING_TYPE __has_builtin(__underlying_type)
   #endif
 #endif
 
@@ -96,6 +104,10 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
+  #define ETL_USING_BUILTIN_UNDERLYING_TYPE 0
+#endif
+
 namespace etl
 {
   namespace traits
@@ -107,6 +119,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_trivially_constructible = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
+    static ETL_CONSTANT bool using_builtin_underlying_type            = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
   }
 }
 

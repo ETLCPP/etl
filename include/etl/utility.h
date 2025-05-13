@@ -34,6 +34,9 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
+#include "private/tuple_element.h"
+#include "private/tuple_size.h"
+
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #if ETL_USING_CPP11
     #include <utility>
@@ -130,6 +133,15 @@ namespace etl
   template <typename T, typename U>
   using forward_like_t = decltype(etl::forward_like<T>(etl::declval<U&>()));
 #endif
+
+  //***********************************
+  // Gets the underlying type of an enum.
+  //***********************************
+  template <typename T>
+  ETL_CONSTEXPR typename underlying_type<T>::type to_underlying(T value) ETL_NOEXCEPT
+  {
+    return static_cast<typename underlying_type<T>::type>(value);
+  }
 
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
   // as the compiler will be unable to decide which one to use, due to ADL.
@@ -325,6 +337,33 @@ namespace etl
   }
 #endif
 
+#if ETL_USING_CPP11
+  //******************************************************************************
+  template <size_t Index, typename T1, typename T2>
+  struct tuple_element<Index, ETL_OR_STD::pair<T1, T2> >
+  {
+    ETL_STATIC_ASSERT(Index < 2U, "pair has only 2 elements");
+  };
+
+  template <typename T1, typename T2>
+  struct tuple_element<0U, ETL_OR_STD::pair<T1, T2> >
+  {
+    typedef T1 type;
+  };
+
+  template <typename T1, typename T2>
+  struct tuple_element<1U, ETL_OR_STD::pair<T1, T2> >
+  {
+    typedef T2 type;
+  };
+
+  //******************************************************************************
+  template <typename T1, typename T2>
+  struct tuple_size<ETL_OR_STD::pair<T1, T2>> : public etl::integral_constant<size_t, 2U>
+  {
+  };
+#endif
+
   //******************************************************************************
   template <typename T1, typename T2>
   inline void swap(pair<T1, T2>& a, pair<T1, T2>& b)
@@ -332,7 +371,7 @@ namespace etl
     a.swap(b);
   }
 
-  ///  Two pairs of the same type are equal iff their members are equal.
+  ///  Two pairs of the same type are equal if their members are equal.
   template <typename T1, typename T2>
   inline bool operator ==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
@@ -496,7 +535,7 @@ namespace etl
   
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral types only");
 
-    using value_type = T;
+    typedef T value_type;
   
     static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT 
     { 
@@ -504,7 +543,7 @@ namespace etl
     }
   };
 
-  namespace private_index_sequence
+  namespace private_integer_sequence
   {
     template <size_t N, typename IndexSeq>
     struct make_index_sequence;
@@ -524,11 +563,17 @@ namespace etl
 
   //***********************************
   template <size_t N>
-  using make_index_sequence = typename private_index_sequence::make_index_sequence<N, etl::integer_sequence<size_t>>::type;
+  using make_index_sequence = typename private_integer_sequence::make_index_sequence<N, etl::integer_sequence<size_t>>::type;
+
+  template <typename... TTypes>
+  using make_index_sequence_for = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
 
   //***********************************
   template <size_t... Indices>
   using index_sequence = etl::integer_sequence<size_t, Indices...>;
+
+  template <typename... TTypes>
+  using index_sequence_for = typename etl::make_index_sequence_for<TTypes...>;
 #endif
 
   //***************************************************************************
@@ -621,7 +666,7 @@ namespace etl
 
     //*********************************
     /// Const function operator.
-    //********************************* 
+    //*********************************
     constexpr TReturn operator()(TParams... args) const
     {
       return ptr(etl::forward<TParams>(args)...);

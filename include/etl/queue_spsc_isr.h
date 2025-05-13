@@ -822,8 +822,8 @@ namespace etl
 
   private:
 
-    queue_spsc_isr(const queue_spsc_isr&);
-    queue_spsc_isr& operator = (const queue_spsc_isr&);
+    queue_spsc_isr(const queue_spsc_isr&) ETL_DELETE;
+    queue_spsc_isr& operator = (const queue_spsc_isr&) ETL_DELETE;
 
 #if ETL_USING_CPP11
     queue_spsc_isr(queue_spsc_isr&&) = delete;

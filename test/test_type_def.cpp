@@ -32,20 +32,37 @@ SOFTWARE.
 
 #include "etl/type_def.h"
 
-#include "etl/type_traits.h"
-
 namespace
 {
+  const char One = 1;
+  const char Two = 2;
+
   SUITE(test_type_def)
   {
     //*************************************************************************
-    TEST(test_macro)
+    TEST(test_macro_ETL_TYPEDEF)
     {
       ETL_TYPEDEF(uint32_t, type1_t);
       ETL_TYPEDEF(uint32_t, type2_t);
 
-      type1_t t1 = type1_t(1);
-      type2_t t2 = type2_t(1);
+      type1_t t1 = type1_t(One);
+      type2_t t2 = type2_t(One);
+
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
+
+      CHECK_EQUAL(i1, i2);
+      CHECK_TRUE(std::is_trivially_copyable<type1_t>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_macro_ETL_USING)
+    {
+      ETL_USING(type1_t, uint32_t);
+      ETL_USING(type2_t, uint32_t);
+
+      type1_t t1 = type1_t(One);
+      type2_t t2 = type2_t(One);
 
       uint32_t i1 = t1.get();
       uint32_t i2 = t2.get();
@@ -60,8 +77,8 @@ namespace
       ETL_TYPEDEF(uint32_t, type1_t);
       ETL_TYPEDEF(uint32_t, type2_t);
 
-      constexpr type1_t t1 = type1_t(1);
-      constexpr type2_t t2 = type2_t(1);
+      constexpr type1_t t1 = type1_t(One);
+      constexpr type2_t t2 = type2_t(One);
 
       uint32_t i1 = t1.get();
       uint32_t i2 = t2.get();
@@ -78,8 +95,8 @@ namespace
       class type2_t_tag;
       typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
 
-      type1_t t1 = type1_t(1);
-      type2_t t2 = type2_t(1);
+      type1_t t1 = type1_t(One);
+      type2_t t2 = type2_t(One);
 
       uint32_t i1 = t1.get();
       uint32_t i2 = t2.get();
@@ -96,8 +113,8 @@ namespace
       class type2_t_tag;
       typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
 
-      constexpr type1_t t1 = type1_t(1);
-      constexpr type2_t t2 = type2_t(1);
+      constexpr type1_t t1 = type1_t(One);
+      constexpr type2_t t2 = type2_t(One);
 
       uint32_t i1 = t1.get();
       uint32_t i2 = t2.get();
@@ -114,8 +131,8 @@ namespace
       class type2_t_tag;
       typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
 
-      type1_t t1(1);
-      type2_t t2(1);
+      type1_t t1(One);
+      type2_t t2(One);
 
       CHECK_EQUAL(t1.get(), t2.get());
     }
@@ -129,14 +146,14 @@ namespace
       class type2_t_tag;
       typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
 
-      constexpr type1_t t1(1);
-      constexpr type2_t t2(1);
+      constexpr type1_t t1(One);
+      constexpr type2_t t2(One);
 
       CHECK_EQUAL(t1.get(), t2.get());
     }
 
     //*************************************************************************
-    TEST(test_operators)
+    TEST(test_unary_operators)
     {
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
@@ -148,14 +165,14 @@ namespace
       CHECK_EQUAL(i++, uint32_t(t++));
       CHECK_EQUAL(--i, uint32_t(--t));
       CHECK_EQUAL(i--, uint32_t(t--));
-      CHECK_EQUAL(i += 2, uint32_t(t += 2));
-      CHECK_EQUAL(i += 2, uint32_t(t += type_t(2)));
-      CHECK_EQUAL(i -= 2, uint32_t(t -= 2));
-      CHECK_EQUAL(i -= 2, uint32_t(t -= type_t(2)));
-      CHECK_EQUAL(i *= 2, uint32_t(t *= 2));
-      CHECK_EQUAL(i *= 2, uint32_t(t *= type_t(2)));
-      CHECK_EQUAL(i /= 2, uint32_t(t /= 2));
-      CHECK_EQUAL(i /= 2, uint32_t(t /= type_t(2)));
+      CHECK_EQUAL(i += Two, uint32_t(t += Two));
+      CHECK_EQUAL(i += Two, uint32_t(t += type_t(Two)));
+      CHECK_EQUAL(i -= Two, uint32_t(t -= Two));
+      CHECK_EQUAL(i -= Two, uint32_t(t -= type_t(Two)));
+      CHECK_EQUAL(i *= Two, uint32_t(t *= Two));
+      CHECK_EQUAL(i *= Two, uint32_t(t *= type_t(Two)));
+      CHECK_EQUAL(i /= Two, uint32_t(t /= Two));
+      CHECK_EQUAL(i /= Two, uint32_t(t /= type_t(Two)));
       CHECK_EQUAL(i &= 0xFF00U, uint32_t(t &= 0xFF00U));
       CHECK_EQUAL(i &= 0xFF00U, uint32_t(t &= type_t(0xFF00U)));
       CHECK_EQUAL(i |= 0x003DU, uint32_t(t |= 0x003DU));
@@ -171,13 +188,59 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_binary_operators)
+    {
+      class __type_t__;
+      using type_t = etl::type_def<__type_t__, uint32_t> ;
+      
+      uint32_t i1 = 0x5A3DUL;
+      uint32_t i2 = 0xB47AUL;
+      type_t t1(0x5A3DUL);
+      type_t t2(0xB47AUL);
+
+      CHECK_EQUAL(i1 + Two, t1 + Two);
+      CHECK_EQUAL(Two + i1, Two + t1);
+      CHECK_EQUAL(i1 + i2, t1 + t2);
+
+      CHECK_EQUAL(i1 - Two, t1 - Two);
+      CHECK_EQUAL(i2 - i1, i2 - t1);
+      CHECK_EQUAL(i2 - i1, t2 - t1);
+      
+      CHECK_EQUAL(i1 * Two, t1 * Two);
+      CHECK_EQUAL(Two * i1, Two * t1);
+      CHECK_EQUAL(i1 * i2, t1 * t2);
+      
+      CHECK_EQUAL(i1 / Two, t1 / Two);
+      CHECK_EQUAL(i2  / i1, i2 / t1);
+      CHECK_EQUAL(i2  / i1, t2 / t1);
+
+      CHECK_EQUAL(uint32_t(0xFF00) & i1, uint32_t(0xFF00) & t1);
+      CHECK_EQUAL(i1 & uint32_t(0xFF00), t1 & uint32_t(0xFF00));
+      CHECK_EQUAL(uint32_t(0xFF00) & i1, type_t(0xFF00UL) & t1);
+
+      CHECK_EQUAL(uint32_t(0x003D) | i1, uint32_t(0x003D) | t1);
+      CHECK_EQUAL(i1 | uint32_t(0x003D), t1 | uint32_t(0x003D));
+      CHECK_EQUAL(uint32_t(0x003D) | i1, type_t(0x003DUL) | t1);
+
+      CHECK_EQUAL(uint32_t(0xAA55) ^ i1, uint32_t(0xAA55) ^ t1);
+      CHECK_EQUAL(i1 ^ uint32_t(0xAA55), t1 ^ uint32_t(0xAA55));
+      CHECK_EQUAL(uint32_t(0xAA55) ^ i1, type_t(0xAA55UL) ^ t1);
+
+      CHECK_EQUAL(i1 << 2, t1 << 2);
+      CHECK_EQUAL(i1 >> 2, t1 >> 2);
+
+      CHECK_EQUAL(i1 % uint32_t(23), t1 % uint32_t(23));
+      CHECK_EQUAL(uint32_t(23) % i1, uint32_t(23) % t1);
+    }
+
+    //*************************************************************************
     TEST(test_comparisons)
     {
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
       type_t t1(1);
-      type_t t2(2);
+      type_t t2(Two);
       type_t t3(t1);
       type_t t4(t2);
 
@@ -200,7 +263,7 @@ namespace
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
       constexpr type_t t1(1);
-      constexpr type_t t2(2);
+      constexpr type_t t2(Two);
 
       constexpr bool eq   = t1 == t1;
       constexpr bool neq  = t1 == t2;

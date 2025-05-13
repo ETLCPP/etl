@@ -16,11 +16,5 @@ install:
 build:
   project: test/vs2022/etl.vcxproj
   verbosity: minimal
-notifications:
-- provider: Webhook
-  url: https://hooks.slack.com/services/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
-  method: POST
-  on_build_success: true
-  on_build_failure: true
-  on_build_status_changed: true
+
   

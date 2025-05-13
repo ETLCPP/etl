@@ -1120,5 +1120,40 @@ namespace
       CHECK_TRUE((u16view == U16View{ u"Hello World", etl::strlen(u"Hello World") }));
       CHECK_TRUE((u32view == U32View{ U"Hello World", etl::strlen(U"Hello World") }));
     }
+
+    //*************************************************************************
+#if ETL_USING_STL
+    TEST(write_to_std_stream)
+    {
+      View view{ "Hello World" };
+      WView wview{ L"Hello World" };
+      U16View u16view{ u"Hello World" };
+      U32View u32view{ U"Hello World" };
+
+      std::stringstream sstream;
+      std::wstringstream wsstream;
+      std::basic_stringstream<char16_t> u16sstream;
+      std::basic_stringstream<char32_t> u32sstream;
+
+      sstream << view;
+      std::string sstream_string = sstream.str();
+      wsstream << wview;
+      std::wstring wsstream_string = wsstream.str();
+      u16sstream << u16view;
+      std::u16string u16sstream_string = u16sstream.str();
+      u32sstream << u32view;
+      std::u32string u32sstream_string = u32sstream.str();
+
+      View sstream_view(sstream_string.data(), sstream_string.size());
+      WView wsstream_view(wsstream_string.data(), wsstream_string.size());
+      U16View u16sstream_view(u16sstream_string.data(), u16sstream_string.size());
+      U32View u32sstream_view(u32sstream_string.data(), u32sstream_string.size());
+
+      CHECK_TRUE(view == sstream_view);
+      CHECK_TRUE(wview == wsstream_view);
+      CHECK_TRUE(u16view == u16sstream_view);
+      CHECK_TRUE(u32view == u32sstream_view);
+    }
+#endif
   };
 }

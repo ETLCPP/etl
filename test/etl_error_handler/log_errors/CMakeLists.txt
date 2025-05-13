@@ -67,6 +67,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+			-fno-exceptions
 			-Wall
 			-Wextra
 			-Werror
@@ -82,6 +83,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+			-fno-exceptions
 			-Wall
 			-Wextra
 			-Werror
