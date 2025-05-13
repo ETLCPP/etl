@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 
 #include "etl/map.h"
+#include "etl/string.h"
 
 #include "data.h"
 
@@ -1575,7 +1576,7 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST_FIXTURE(SetupFixture, test_map_template_deduction)
     {
-      using Pair = std::pair<const std::string, int>;
+      using Pair = std::pair<const etl::string<1>, int>;
 
       etl::map data { Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5} };
 
@@ -1596,9 +1597,9 @@ namespace
 #if ETL_HAS_INITIALIZER_LIST
     TEST_FIXTURE(SetupFixture, test_make_map)
     {
-      using Pair = ETL_OR_STD::pair<const std::string, int>;
+      using Pair = ETL_OR_STD::pair<const etl::string<1>, int>;
 
-      auto data = etl::make_map<std::string, int, std::less<std::string>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
+      auto data = etl::make_map<const etl::string<1>, int, std::less<etl::string<1>>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
 
       auto v = *data.begin();
       using Type = decltype(v);

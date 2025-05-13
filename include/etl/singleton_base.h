@@ -78,7 +78,7 @@ namespace etl
   public:
 
     singleton_base_already_created(string_type file_name_, numeric_type line_number_)
-      : singleton_base_exception(ETL_ERROR_TEXT("singleton_base:already created", ETL_SINGLETON_BASE_FILE_ID"A"), file_name_, line_number_)
+      : singleton_base_exception(ETL_ERROR_TEXT("singleton_base:already created", ETL_SINGLETON_BASE_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };

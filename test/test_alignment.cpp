@@ -48,6 +48,23 @@ void f(int)
 {
 }
 
+struct A_t
+{
+  A_t(uint32_t v_x, uint8_t v_y)
+   : x(v_x)
+   , y(v_y)
+  {
+  }
+
+  bool operator==(A_t& other)
+  {
+    return other.x == x && other.y == y;
+  }
+
+  uint32_t x;
+  uint8_t y;
+};
+
 namespace
 {
   SUITE(test_alignment)
@@ -145,6 +162,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_is_aligned_tests_const)
+    {
+      alignas(uint32_t) const char buffer[2U * sizeof(uint32_t)] = {0, 1};
+
+      const char* p = buffer;
+
+      CHECK_TRUE(etl::is_aligned(p, std::alignment_of<const uint32_t>()));
+      CHECK_TRUE(etl::is_aligned<alignof(const uint32_t)>(p));
+      CHECK_TRUE(etl::is_aligned<const uint32_t>(p));
+
+      ++p;
+      CHECK_FALSE(etl::is_aligned(p, std::alignment_of<const uint32_t>()));
+      CHECK_FALSE(etl::is_aligned<alignof(const uint32_t)>(p));
+      CHECK_FALSE(etl::is_aligned<const uint32_t>(p));
+    }
+
+    //*************************************************************************
     TEST(test_type_with_alignment)
     {
       CHECK_EQUAL(1,  alignof(etl::type_with_alignment_t<1>));
@@ -154,6 +188,30 @@ namespace
       CHECK_EQUAL(16, alignof(etl::type_with_alignment_t<16>));
       CHECK_EQUAL(32, alignof(etl::type_with_alignment_t<32>));
       CHECK_EQUAL(64, alignof(etl::type_with_alignment_t<64>));
+    }
+
+    //*************************************************************************
+    TEST(test_typed_storage)
+    {
+      etl::typed_storage<A_t> a;
+
+      CHECK_EQUAL(false, a.has_value());
+
+      auto& b = a.create(123, 4);
+
+      CHECK_EQUAL(true, a.has_value());
+
+      CHECK_EQUAL(a->x, 123);
+      CHECK_EQUAL(a->y, 4);
+
+      CHECK_EQUAL(b.x, 123);
+      CHECK_EQUAL(b.y, 4);
+
+      CHECK_TRUE(*a == b);
+
+      CHECK_EQUAL(true, a.has_value());
+      a.destroy();
+      CHECK_EQUAL(false, a.has_value());
     }
   };
 }

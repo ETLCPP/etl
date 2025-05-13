@@ -46,7 +46,7 @@ namespace etl
   {
     inline namespace string_literals
     {
-      constexpr etl::u32string_view operator ""_sv(const char32_t* str, size_t length) noexcept
+      inline constexpr etl::u32string_view operator ""_sv(const char32_t* str, size_t length) noexcept
       {
         return etl::u32string_view{ str, length };
       }
