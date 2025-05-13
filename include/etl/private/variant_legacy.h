@@ -40,6 +40,7 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../null_type.h"
 #include "../placement_new.h"
+#include "../monostate.h"
 
 #include <stdint.h>
 
@@ -75,9 +76,7 @@ namespace etl
     /// Monostate for variants.
     ///\ingroup variant
     //***************************************************************************
-    struct monostate
-    {
-    };
+    typedef etl::monostate monostate;
 
     //***************************************************************************
     /// Base exception for the variant class.

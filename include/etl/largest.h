@@ -331,7 +331,7 @@ namespace etl
   ///\ingroup largest
   //***************************************************************************
   template <typename... T>
-    struct largest
+  struct largest
   {
     using type = typename etl::largest_type<T...>::type;
 

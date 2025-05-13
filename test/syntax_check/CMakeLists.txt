@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(etl_syntax_check)
 
 add_definitions(-DETL_DEBUG)
@@ -306,6 +306,7 @@ target_sources(tests PRIVATE
 		to_u32string.h.t.cpp
 		to_u8string.h.t.cpp
 		to_wstring.h.t.cpp
+		tuple.h.t.cpp
 		type_def.h.t.cpp
 		type_lookup.h.t.cpp
 		type_select.h.t.cpp

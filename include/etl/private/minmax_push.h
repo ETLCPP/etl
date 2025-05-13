@@ -31,7 +31,8 @@ SOFTWARE.
 // The header include guard has been intentionally omitted.
 // This file is intended to evaluated multiple times by design.
 #ifndef ETL_PUSHED_MIN_MAX
-  #if !defined(ETL_COMPILER_GREEN_HILLS) && !defined(ETL_COMPILER_IAR) && !defined(ETL_COMPILER_TASKING)
+  #if !defined(ETL_COMPILER_GREEN_HILLS) && !defined(ETL_COMPILER_IAR) && !defined(ETL_COMPILER_TASKING) && \
+      (!defined(__GNUC__) || (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))))
     #if !defined(ETL_COMPILER_ARM5)
       #pragma push_macro("min")
       #pragma push_macro("max")
