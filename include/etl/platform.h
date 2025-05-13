@@ -272,6 +272,46 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if etl::literals::chrono_literals has days (_days)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_DAY) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_DAY 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_DAY 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has weekdays (_weekday)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_WEEKDAY) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_WEEKDAY 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_WEEKDAY 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has month (_months)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_MONTH) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has year (_years)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_YEAR) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_YEAR 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_YEAR 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has year (_hours, _minutes, _seconds, _milliseconds, _microseconds, _nanoseconds)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_DURATION) && ETL_USING_CPP11
+#define ETL_HAS_CHRONO_LITERALS_DURATION 0
+#else
+#define ETL_HAS_CHRONO_LITERALS_DURATION 1
+#endif
+
+//*************************************
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_USING_CPP11
@@ -549,6 +589,10 @@ namespace etl
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
     static ETL_CONSTANT bool has_packed                       = (ETL_HAS_PACKED == 1);
+    static ETL_CONSTANT bool has_chrono_literals_day          = (ETL_HAS_CHRONO_LITERALS_DAY == 1);
+    static ETL_CONSTANT bool has_chrono_literals_weekday      = (ETL_HAS_CHRONO_LITERALS_WEEKDAY == 1);
+    static ETL_CONSTANT bool has_chrono_literals_month        = (ETL_HAS_CHRONO_LITERALS_MONTH == 1);
+    static ETL_CONSTANT bool has_chrono_literals_year         = (ETL_HAS_CHRONO_LITERALS_YEAR == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
