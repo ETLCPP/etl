@@ -1,0 +1,184 @@
+name: clang-c++23
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+
+jobs:
+
+  build-clang-cpp23-linux-no-stl:
+    name: Clang C++23 Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x ./llvm.sh
+        sudo ./llvm.sh 17
+
+    - name: Build
+      run: |
+        export CC=clang-17
+        export CXX=clang++-17
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=23 ./
+        clang-17 --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp23-linux-stl-force-cpp03:
+    name: Clang C++23 Linux - STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x ./llvm.sh
+        sudo ./llvm.sh 17
+
+    - name: Build
+      run: |
+        export CC=clang-17
+        export CXX=clang++-17
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=23 ./
+        clang-17 --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp2-linux-no-stl-force-cpp03:
+    name: Clang C++23 Linux - No STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x ./llvm.sh
+        sudo ./llvm.sh 17
+
+    - name: Build
+      run: |
+        export CC=clang-17
+        export CXX=clang++-17
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=23 ./
+        clang-17 --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp23-osx-stl:
+    name: Clang C++23 OSX - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=23 ./
+        clang --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp23-osx-no-stl:
+    name: Clang C++23 OSX - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=23 ./
+        clang --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp23-osx-stl-force-cpp03:
+    name: Clang C++23 OSX - STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=23 ./
+        clang --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp23-osx-no-stl-force-cpp03:
+    name: Clang C++23 OSX - No STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=23 ./
+        clang --version
+        make -j $(getconf _NPROCESSORS_ONLN)
+
+    - name: Run tests
+      run: ./test/etl_tests
+
