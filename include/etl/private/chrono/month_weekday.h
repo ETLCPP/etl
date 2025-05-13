@@ -173,7 +173,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month_weekday& mw) const
     {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int)];
+      uint8_t buffer[3U * sizeof(unsigned int)];
       
       unsigned int a = mw.month();
       unsigned int b = mw.weekday_indexed().weekday().c_encoding();
@@ -183,7 +183,7 @@ namespace etl
       memcpy(buffer + sizeof(a), &b, sizeof(b));
       memcpy(buffer + sizeof(b), &b, sizeof(c));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + 3U * sizeof(unsigned int));
     }
   };
 #endif
@@ -197,7 +197,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month_weekday_last& mw) const
     {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int)];
+      uint8_t buffer[2U * sizeof(unsigned int)];
 
       unsigned int a = mw.month();
       unsigned int b = mw.weekday_last().weekday().c_encoding();
@@ -205,7 +205,7 @@ namespace etl
       memcpy(buffer,             &a, sizeof(a));
       memcpy(buffer + sizeof(a), &b, sizeof(b));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + 2U * sizeof(unsigned int));
     }
   };
 #endif
