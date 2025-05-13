@@ -794,6 +794,25 @@ namespace etl
                                               decltype(private_type_traits::nonvoid_convertible<TFrom, TTo>(0))::value) ||
                                               (etl::is_void<TFrom>::value && etl::is_void<TTo>::value)> {};
 #endif
+#else
+  // Primary template: Default case, assumes types are not convertible.
+  template <typename From, typename To>
+  class is_convertible
+  {
+  private:
+    // Helper function that returns a small type if `From` is convertible to `To`.
+    static char test(To);
+
+    // Helper function that returns a large type if `From` is not convertible to `To`.
+    static double test(...);
+
+    // Helper function to deduce `From` type.
+    static From make_from();
+
+  public:
+    // If `sizeof(test(make_from()))` is equal to `sizeof(char)`, `From` is convertible to `To`.
+    static const bool value = sizeof(test(make_from())) == sizeof(char);
+  };
 #endif
 
 #if ETL_USING_CPP17
