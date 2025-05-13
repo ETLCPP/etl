@@ -236,8 +236,8 @@ namespace etl
           while (nbits != 0)
           {
             unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
-            
-            typedef typename etl::make_unsigned<T>::type chunk_t;           
+
+            typedef typename etl::make_unsigned<T>::type chunk_t;
             chunk_t chunk = get_chunk(mask_width);
 
             nbits -= mask_width;
@@ -529,7 +529,7 @@ namespace etl
 
     typedef char value_type;
     typedef value_type* iterator;
-    typedef const value_type* const_iterator;   
+    typedef const value_type* const_iterator;
     typedef etl::span<value_type> callback_parameter_type;
     typedef etl::delegate<void(callback_parameter_type)> callback_type;
 

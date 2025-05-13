@@ -188,7 +188,7 @@ namespace etl
 
     //*******************************************
     /// Get the error.
-    //*******************************************    
+    //*******************************************
     ETL_CONSTEXPR14 TError&& error() const&& ETL_NOEXCEPT
     {
       return etl::move(error_value);
@@ -500,7 +500,7 @@ namespace etl
     //*******************************************
     /// Get the value.
     //*******************************************
-    value_type& value() const
+    const value_type& value() const
     {
       return etl::get<Value_Type>(storage);
     }
@@ -660,7 +660,7 @@ namespace etl
     //*******************************************
     ///
     //*******************************************
-    error_type& error() const
+    const error_type& error() const
     {
       return etl::get<Error_Type>(storage);
     }
@@ -932,7 +932,7 @@ namespace etl
     /// Returns the error
     /// Undefined behaviour if an error has not been set.
     //*******************************************
-    error_type& error() const
+    const error_type& error() const
     {
       return etl::get<Error_Type>(storage);
     }
@@ -1107,4 +1107,3 @@ void swap(etl::unexpected<TError>& lhs, etl::unexpected<TError>& rhs)
 }
 
 #endif
-

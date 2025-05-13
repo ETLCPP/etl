@@ -272,6 +272,46 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if etl::literals::chrono_literals has days (_days)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_DAY) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_DAY 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_DAY 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has weekdays (_weekday)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_WEEKDAY) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_WEEKDAY 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_WEEKDAY 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has month (_months)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_MONTH) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has year (_years)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_YEAR) && ETL_USING_CPP11
+  #define ETL_HAS_CHRONO_LITERALS_YEAR 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_YEAR 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has year (_hours, _minutes, _seconds, _milliseconds, _microseconds, _nanoseconds)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_DURATION) && ETL_USING_CPP11
+#define ETL_HAS_CHRONO_LITERALS_DURATION 0
+#else
+#define ETL_HAS_CHRONO_LITERALS_DURATION 1
+#endif
+
+//*************************************
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_USING_CPP11
@@ -434,6 +474,15 @@ SOFTWARE.
   #else
     #define ETL_HAS_ATOMIC 0
   #endif
+  #if ((ETL_USING_CPP17 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
+        defined(ETL_COMPILER_ARM5)  || \
+        defined(ETL_COMPILER_ARM6)  || \
+        defined(ETL_COMPILER_GCC)   || \
+        defined(ETL_COMPILER_CLANG))
+    #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 1
+  #else
+    #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
+  #endif
 #endif
 
 //*************************************
@@ -524,6 +573,7 @@ namespace etl
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
     static ETL_CONSTANT bool has_64bit_types                  = (ETL_USING_64BIT_TYPES == 1);
     static ETL_CONSTANT bool has_atomic                       = (ETL_HAS_ATOMIC == 1);
+    static ETL_CONSTANT bool has_atomic_always_lock_free      = (ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE == 1);
     static ETL_CONSTANT bool has_nullptr                      = (ETL_HAS_NULLPTR == 1);
     static ETL_CONSTANT bool has_char8_t                      = (ETL_HAS_CHAR8_T == 1);
     static ETL_CONSTANT bool has_native_char8_t               = (ETL_HAS_NATIVE_CHAR8_T == 1);
@@ -539,6 +589,10 @@ namespace etl
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
     static ETL_CONSTANT bool has_packed                       = (ETL_HAS_PACKED == 1);
+    static ETL_CONSTANT bool has_chrono_literals_day          = (ETL_HAS_CHRONO_LITERALS_DAY == 1);
+    static ETL_CONSTANT bool has_chrono_literals_weekday      = (ETL_HAS_CHRONO_LITERALS_WEEKDAY == 1);
+    static ETL_CONSTANT bool has_chrono_literals_month        = (ETL_HAS_CHRONO_LITERALS_MONTH == 1);
+    static ETL_CONSTANT bool has_chrono_literals_year         = (ETL_HAS_CHRONO_LITERALS_YEAR == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);

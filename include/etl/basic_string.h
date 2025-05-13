@@ -38,13 +38,11 @@ SOFTWARE.
 #include "char_traits.h"
 #include "alignment.h"
 #include "array.h"
-#include "algorithm.h"
 #include "type_traits.h"
 #include "error_handler.h"
 #include "integral_limits.h"
 #include "exception.h"
 #include "memory.h"
-#include "exception.h"
 #include "binary.h"
 #include "flags.h"
 
@@ -54,6 +52,10 @@ SOFTWARE.
 
 #if ETL_USING_STL && ETL_USING_CPP17
   #include <string_view>
+#endif
+
+#if ETL_USING_STL
+  #include <ostream>
 #endif
 
 #include "private/minmax_push.h"
@@ -243,7 +245,6 @@ namespace etl
       return max_size() - size();
     }
 
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
     //*************************************************************************
     /// Returns whether the string was truncated by the last operation.
     /// Deprecated. Use is_truncated()
@@ -252,7 +253,11 @@ namespace etl
     ETL_DEPRECATED
     bool truncated() const
     {
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       return flags.test<IS_TRUNCATED>();
+#else
+      return false;
+#endif
     }
 
     //*************************************************************************
@@ -261,9 +266,14 @@ namespace etl
     //*************************************************************************
     bool is_truncated() const
     {
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       return flags.test<IS_TRUNCATED>();
+#else
+      return false;
+#endif
     }
 
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
     //*************************************************************************
     /// Clears the 'truncated' flag.
     //*************************************************************************
@@ -281,15 +291,19 @@ namespace etl
     {
       flags.set<CLEAR_AFTER_USE>();
     }
+#endif
 
     //*************************************************************************
     /// Gets the 'secure' state flag.
     //*************************************************************************
     bool is_secure() const
     {
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
       return flags.test<CLEAR_AFTER_USE>();
-    }
+#else
+      return false;
 #endif
+    }
 
   protected:
 
@@ -2964,6 +2978,23 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+
+  //***************************************************************************
+  /// Operator overload to write to std basic_ostream
+  ///\param os Reference to the output stream.
+  ///\param str Reference to the string to write.
+  ///\return Reference to the output stream, for chaining write operations.
+  ///\ingroup string
+  //***************************************************************************
+#if ETL_USING_STL
+  template <typename T>
+  std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
+                                                          const etl::ibasic_string<T>& str)
+  {
+    os.write(str.data(), str.size());
+    return os;
+  }
+#endif
 }
 
 #include "private/minmax_pop.h"
