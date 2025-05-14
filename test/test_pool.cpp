@@ -129,7 +129,7 @@ namespace
 
   std::ostream& operator <<(std::ostream& os, const D0&)
   {
-     return os;
+    return os;
   }
 
   std::ostream& operator <<(std::ostream& os, const D1& d)
@@ -464,7 +464,7 @@ namespace
     int* i = pool.allocate();
     pool.release(i);
   } 
-  
+
   //*************************************************************************
   TEST(test_issue_406_pool_of_c_array)
   {
@@ -492,7 +492,7 @@ namespace
     etl::pool<int, 4> pool0;
 
     etl::ipool::iterator begin = pool0.begin();
-    etl::ipool::iterator end = pool0.end();
+    etl::ipool::iterator end   = pool0.end();
 
     CHECK(begin == end);
     CHECK(!(begin != end));
@@ -502,7 +502,7 @@ namespace
     *a = 1;
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 1);
@@ -511,7 +511,7 @@ namespace
     *b = 2;
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 2);
@@ -532,7 +532,7 @@ namespace
     *c = 3;
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 3);
@@ -540,7 +540,7 @@ namespace
     pool0.release(b);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 2);
@@ -549,7 +549,7 @@ namespace
     *d = 4;
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 3);
@@ -558,7 +558,7 @@ namespace
     *b = 2;
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 4);
@@ -578,7 +578,7 @@ namespace
     pool0.release(b);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 3);
@@ -586,7 +586,7 @@ namespace
     pool0.release(a);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 2);
@@ -594,7 +594,7 @@ namespace
     pool0.release(d);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 1);
@@ -605,7 +605,7 @@ namespace
     pool0.release(c);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin == end);
     CHECK(!(begin != end));
     CHECK_EQUAL(etl::distance(begin, end), 0);
@@ -617,7 +617,7 @@ namespace
     etl::pool<int, 4> pool0;
 
     etl::ipool::const_iterator begin = pool0.begin();
-    etl::ipool::const_iterator end = pool0.end();
+    etl::ipool::const_iterator end   = pool0.end();
 
     CHECK(begin == end);
     CHECK(!(begin != end));
@@ -627,7 +627,7 @@ namespace
     *a = 1;
 
     begin = pool0.cbegin();
-    end = pool0.cend();
+    end   = pool0.cend();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 1);
@@ -636,7 +636,7 @@ namespace
     *b = 2;
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 2);
@@ -657,7 +657,7 @@ namespace
     *c = 3;
 
     begin = pool0.cbegin();
-    end = pool0.cend();
+    end   = pool0.cend();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 3);
@@ -665,7 +665,7 @@ namespace
     pool0.release(b);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 2);
@@ -674,7 +674,7 @@ namespace
     *d = 4;
 
     begin = pool0.cbegin();
-    end = pool0.cend();
+    end   = pool0.cend();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 3);
@@ -683,7 +683,7 @@ namespace
     *b = 2;
 
     begin = pool0.cbegin();
-    end = pool0.cend();
+    end   = pool0.cend();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 4);
@@ -703,7 +703,7 @@ namespace
     pool0.release(b);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 3);
@@ -711,7 +711,7 @@ namespace
     pool0.release(a);
 
     begin = pool0.cbegin();
-    end = pool0.cend();
+    end   = pool0.cend();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 2);
@@ -719,7 +719,7 @@ namespace
     pool0.release(d);
 
     begin = pool0.begin();
-    end = pool0.end();
+    end   = pool0.end();
     CHECK(begin != end);
     CHECK(!(begin == end));
     CHECK_EQUAL(etl::distance(begin, end), 1);
@@ -730,7 +730,7 @@ namespace
     pool0.release(c);
 
     begin = pool0.cbegin();
-    end = pool0.cend();
+    end   = pool0.cend();
     CHECK(begin == end);
     CHECK(!(begin != end));
     CHECK_EQUAL(etl::distance(begin, end), 0);

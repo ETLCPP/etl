@@ -145,6 +145,7 @@ namespace etl
 
   public:
 
+    //***************************************************************************
     template<bool is_const>
     class ipool_iterator
     {
@@ -161,6 +162,7 @@ namespace etl
       typedef typename etl::conditional<is_const, const ipool, ipool>::type         pool_type;
       typedef typename etl::conditional<is_const, const char* const*, char**>::type pointer_type;
 
+      //***************************************************************************
       ipool_iterator(const ipool_iterator& other)
         : p_current(other.p_current)
         , p_pool(other.p_pool)
@@ -168,6 +170,7 @@ namespace etl
         find_allocated();
       }
 
+      //***************************************************************************
       ipool_iterator& operator ++()
       {
         p_current = p_current + p_pool->Item_Size;
@@ -175,6 +178,7 @@ namespace etl
         return *this;
       }
 
+      //***************************************************************************
       ipool_iterator operator ++(int)
       {
         ipool_iterator temp(*this);
@@ -183,6 +187,7 @@ namespace etl
         return temp;
       }
 
+      //***************************************************************************
       ipool_iterator& operator =(const ipool_iterator& other)
       {
         p_current = other.p_current;
@@ -190,22 +195,26 @@ namespace etl
         return *this;
       }
 
+      //***************************************************************************
       void_type operator *() const
       {
         return p_current;
       }
 
+      //***************************************************************************
       template <typename T>
       T& get() const
       {
         return *reinterpret_cast<T*>(p_current);
       }
 
+      //***************************************************************************
       friend bool operator == (const ipool_iterator& lhs, const ipool_iterator& rhs)
       {
         return lhs.p_current == rhs.p_current;
       }
 
+      //***************************************************************************  
       friend bool operator != (const ipool_iterator& lhs, const ipool_iterator& rhs)
       {
         return !(lhs == rhs);
@@ -214,8 +223,8 @@ namespace etl
     private:
 
       //***************************************************************************
-      /// find allocated item by increasing p_current, starting at p_current
-      /// leave p_current at buffer_end() if no further allocated item found
+      /// Find allocated item by increasing p_current, starting at p_current.
+      /// Leave p_current at buffer_end() if no further allocated item found.
       //***************************************************************************
       void find_allocated()
       {
@@ -234,6 +243,9 @@ namespace etl
         }
       }
 
+      //***************************************************************************
+      /// Constructor
+      //***************************************************************************
       ipool_iterator(value_type p, pool_type* pool_)
         : p_current(p)
         , p_pool(pool_)
@@ -250,39 +262,46 @@ namespace etl
 
     typedef ipool_iterator<false> iterator;
 
+    //***************************************************************************
     class const_iterator : public ipool_iterator<true>
     {
-      public:
-        const_iterator(const ipool_iterator& other) : ipool_iterator(other) {}
-        const_iterator(const ipool_iterator<false>& other) : ipool_iterator(other.p_current, other.p_pool) {}
-        const_iterator(value_type p, pool_type* pool_) : ipool_iterator<true>(p, pool_) {}
+    public:
+      const_iterator(const ipool_iterator& other) : ipool_iterator(other) {}
+      const_iterator(const ipool_iterator<false>& other) : ipool_iterator(other.p_current, other.p_pool) {}
+      const_iterator(value_type p, pool_type* pool_) : ipool_iterator<true>(p, pool_) {}
     };
 
+    //***************************************************************************
     iterator begin()
     {
       return iterator(p_buffer, this);
     }
 
+    //***************************************************************************
     iterator end()
     {
       return iterator(p_buffer + Item_Size * items_initialised, this);
     }
 
+    //***************************************************************************
     const_iterator begin() const
     {
       return const_iterator(p_buffer, this);
     }
 
+    //***************************************************************************
     const_iterator end() const
     {
       return const_iterator(p_buffer + Item_Size * items_initialised, this);
     }
 
+    //***************************************************************************
     const_iterator cbegin() const
     {
       return const_iterator(p_buffer, this);
     }
 
+    //***************************************************************************
     const_iterator cend() const
     {
       return const_iterator(p_buffer + Item_Size * items_initialised, this);
@@ -521,7 +540,8 @@ namespace etl
     }
 
   private:
-    static ETL_CONSTEXPR uintptr_t invalid_item_ptr = 1;
+    
+    static ETL_CONSTANT uintptr_t invalid_item_ptr = 1;
 
     //*************************************************************************
     /// Allocate an item from the pool.
