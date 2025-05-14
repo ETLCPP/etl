@@ -1419,7 +1419,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <SupportJustMyCode>true</SupportJustMyCode>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1444,6 +1444,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1470,6 +1471,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1494,6 +1496,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1518,6 +1521,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1542,6 +1546,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1566,6 +1571,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1591,6 +1597,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1616,6 +1623,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -1825,6 +1833,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <SupportJustMyCode>false</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -3110,6 +3119,7 @@
     <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
+    <ClInclude Include="..\..\include\etl\chrono.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\circular_iterator.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -3177,6 +3187,22 @@
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\duration.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\hh_mm_ss.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\clocks.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\last_spec.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\month.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\month_day.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\month_weekday.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\operators.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\time_point.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\time_zone.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\year.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month_day.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month_weekday.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_cxx_20_compat_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h" />
@@ -4417,6 +4443,22 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\chrono.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++ 20 - No Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Forve C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - Optimised O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual messages|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\syntax_check\circular_buffer.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
@@ -8443,6 +8485,23 @@
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
     <ClCompile Include="..\test_char_traits.cpp" />
+    <ClCompile Include="..\test_chrono_clocks.cpp" />
+    <ClCompile Include="..\test_chrono_day.cpp" />
+    <ClCompile Include="..\test_chrono_duration.cpp" />
+    <ClCompile Include="..\test_chrono_hh_mm_ss.cpp" />
+    <ClCompile Include="..\test_chrono_month.cpp" />
+    <ClCompile Include="..\test_chrono_month_day.cpp" />
+    <ClCompile Include="..\test_chrono_month_day_last.cpp" />
+    <ClCompile Include="..\test_chrono_month_weekday.cpp" />
+    <ClCompile Include="..\test_chrono_month_weekday_last.cpp" />
+    <ClCompile Include="..\test_chrono_operators.cpp" />
+    <ClCompile Include="..\test_chrono_weekday.cpp" />
+    <ClCompile Include="..\test_chrono_weekday_indexed.cpp" />
+    <ClCompile Include="..\test_chrono_weekday_last.cpp" />
+    <ClCompile Include="..\test_chrono_year.cpp" />
+    <ClCompile Include="..\test_chrono_year_month.cpp" />
+    <ClCompile Include="..\test_chrono_year_month_day.cpp" />
+    <ClCompile Include="..\test_chrono_year_month_day_last.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
@@ -9466,6 +9525,7 @@
     <ClCompile Include="..\test_successor.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_threshold.cpp" />
+    <ClCompile Include="..\test_chrono_time_point.cpp" />
     <ClCompile Include="..\test_to_arithmetic.cpp" />
     <ClCompile Include="..\test_to_arithmetic_u16.cpp" />
     <ClCompile Include="..\test_to_arithmetic_u32.cpp" />

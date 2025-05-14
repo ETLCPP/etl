@@ -39,6 +39,22 @@ namespace etl
 {
   //***************************************************************************
   // Greatest Common Divisor.
+  // Compile time.
+  //***************************************************************************
+  template <intmax_t A, intmax_t B>
+  struct gcd_const
+  {
+    static ETL_CONSTANT intmax_t value = gcd_const<B, A % B>::value;
+  };
+
+  template <intmax_t A>
+  struct gcd_const<A, 0>
+  {
+    static ETL_CONSTANT intmax_t value = A;
+  };
+
+  //***************************************************************************
+  // Greatest Common Divisor.
   // For unsigned types.
   //***************************************************************************
   template <typename T>

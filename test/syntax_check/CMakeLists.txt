@@ -96,6 +96,7 @@ target_sources(tests PRIVATE
 		callback_timer_locked.h.t.cpp
 		char_traits.h.t.cpp
 		checksum.h.t.cpp
+		chrono.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		combinations.h.t.cpp
