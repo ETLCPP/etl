@@ -590,17 +590,19 @@ namespace etl
     {
       bits_available_in_char = CHAR_BIT;
       char_index = 0U;
-      bits_available = CHAR_BIT * length_chars;
+      bits_available = capacity_bits();
     }
 
     //***************************************************************************
-    /// Returns the maximum capacity in bits.
+    /// Returns the maximum capacity in bytes.
     //***************************************************************************
     size_t capacity_bytes() const
     {
       return length_chars;
     }
 
+    //***************************************************************************
+    /// Returns the maximum capacity in bits.
     //***************************************************************************
     size_t capacity_bits() const
     {
@@ -612,7 +614,7 @@ namespace etl
     //***************************************************************************
     bool empty() const
     {
-      return (bits_available == length_chars);
+      return (available_bits() == capacity_bits());
     }
 
     //***************************************************************************
@@ -620,7 +622,7 @@ namespace etl
     //***************************************************************************
     bool full() const
     {
-      return (bits_available == 0U);
+      return (available_bits() == 0U);
     }
 
     //***************************************************************************
