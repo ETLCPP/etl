@@ -1084,7 +1084,7 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream_reader(void* begin_, void* end_, etl::endian stream_endianness_)
+    bit_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , length_chars(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
       , stream_endianness(stream_endianness_)
@@ -1095,7 +1095,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream_reader(void* begin_, size_t length_, etl::endian stream_endianness_)
+    bit_stream_reader(const void* begin_, size_t length_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , length_chars(length_)
       , stream_endianness(stream_endianness_)
