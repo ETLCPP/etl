@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,9 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: https://www.etlcpp.com/algorithm.html
-
-Copyright(c) 2024 John Wellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -35,11 +31,11 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11
-  #if !defined(ETL_IN_UNIT_TEST)
-    #error NOT SUPPORTED FOR C++03 OR BELOW
-  #endif
-#else
+#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
+  #error NOT SUPPORTED FOR C++03 OR BELOW
+#endif
+
+#if ETL_USING_CPP11
 
 #if ETL_USING_STL
   #include <tuple>
@@ -1298,5 +1294,6 @@ namespace std
     using type = typename etl::nth_type_t<I, Types...>;
   };
 }
+
 #endif
 #endif

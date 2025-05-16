@@ -32,6 +32,8 @@ SOFTWARE.
 #define ETL_RATIO_INCLUDED
 
 #include "platform.h"
+#include "static_assert.h"
+#include "gcd.h"
 
 #include "type_traits.h"
 
@@ -43,22 +45,125 @@ SOFTWARE.
 
 namespace etl
 {
-  template <intmax_t NUM, intmax_t DEN = 1UL>
+  //***********************************************************************
+  /// ratio
+  //***********************************************************************
+  template <intmax_t Num, intmax_t Den = 1UL>
   struct ratio
   {
-    static ETL_CONSTANT intmax_t num = NUM;
-    static ETL_CONSTANT intmax_t den = DEN;
+    ETL_STATIC_ASSERT(Num != 0, "Numerator cannot be zero");
+    ETL_STATIC_ASSERT(Den != 0, "Denominator cannot be zero");
+
+    static ETL_CONSTANT intmax_t num = Num / etl::gcd_const<Num, Den>::value;
+    static ETL_CONSTANT intmax_t den = Den / etl::gcd_const<Num, Den>::value;
+
+    typedef etl::ratio<num, den> type;
   };
 
-  template <intmax_t NUM, intmax_t DEN>
-  ETL_CONSTANT intmax_t ratio<NUM, DEN>::num;
+  template <intmax_t Num, intmax_t Den>
+  ETL_CONSTANT intmax_t ratio<Num, Den>::num;
 
-  template <intmax_t NUM, intmax_t DEN>
-  ETL_CONSTANT intmax_t ratio<NUM, DEN>::den;
+  template <intmax_t Num, intmax_t Den>
+  ETL_CONSTANT intmax_t ratio<Num, Den>::den;
 
+#if ETL_USING_CPP11
+  //***********************************************************************
+  /// ratio_add
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  using ratio_add = etl::ratio<(TRatio1::num * TRatio2::den) + (TRatio2::num * TRatio1::den), TRatio1::den * TRatio2::den>;
+
+  //***********************************************************************
+  /// ratio_subtract
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  using ratio_subtract = etl::ratio<(TRatio1::num * TRatio2::den) - (TRatio2::num * TRatio1::den), TRatio1::den * TRatio2::den>;
+
+  //***********************************************************************
+  /// ratio_multiply
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  using ratio_multiply = etl::ratio<TRatio1::num * TRatio2::num, TRatio1::den * TRatio2::den>;
+
+  //***********************************************************************
+  /// ratio_divide
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  using ratio_divide = etl::ratio<TRatio1::num * TRatio2::den, TRatio1::den * TRatio2::num>;
+#endif
+
+  //***********************************************************************
+  /// ratio_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_equal : etl::bool_constant<(TRatio1::num == TRatio2::num) && (TRatio1::den == TRatio2::den)>
+  {
+  };
+
+  //***********************************************************************
+  /// ratio_not_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_not_equal : etl::bool_constant<!etl::ratio_equal<TRatio1, TRatio2>::value>
+  {
+  };
+
+  //***********************************************************************
+  /// ratio_less
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_less : etl::bool_constant<(TRatio1::num * TRatio2::den) < (TRatio2::num * TRatio1::den)>
+  {
+  };
+
+  //***********************************************************************
+  /// ratio_less_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_less_equal : etl::bool_constant<!etl::ratio_less<TRatio2, TRatio1>::value>
+  {
+  };
+
+  //***********************************************************************
+  /// ratio_greater
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_greater : etl::bool_constant<etl::ratio_less<TRatio2, TRatio1>::value>
+  {
+  };
+
+  //***********************************************************************
+  /// ratio_greater_equal
+  //***********************************************************************
+  template <typename TRatio1, typename TRatio2>
+  struct ratio_greater_equal : etl::bool_constant<!etl::ratio_less<TRatio1, TRatio2>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_equal_v = ratio_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_not_equal_v = ratio_not_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_less_v = ratio_less<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_less_equal_v = ratio_less_equal<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_greater_v = ratio_greater<R1, R2>::value;
+
+  template<typename R1, typename R2>
+  inline constexpr bool ratio_greater_equal_v = ratio_greater_equal<R1, R2>::value;
+#endif
+
+  //***********************************************************************
+  /// Predefined ration types.
+  //***********************************************************************
   #if INT_MAX > INT32_MAX
-    typedef ratio<1, 1000000000000000000000000> yocto;
-    typedef ratio<1, 1000000000000000000000>    zepto;
     typedef ratio<1, 1000000000000000000>       atto;
     typedef ratio<1, 1000000000000000>          femto;
     typedef ratio<1, 1000000000000>             pico;
@@ -87,15 +192,16 @@ namespace etl
     typedef ratio<1000000000000, 1>             tera;
     typedef ratio<1000000000000000, 1>          peta;
     typedef ratio<1000000000000000000, 1>       exa;
-    typedef ratio<1000000000000000000000, 1>    zetta;
-    typedef ratio<1000000000000000000000000, 1> yotta;
   #endif
 
-  /// An approximation of PI to 6 digits.
+  /// An approximation of Pi.
   typedef ratio<355, 113> ratio_pi;
 
   /// An approximation of root 2.
   typedef ratio<239, 169> ratio_root2;
+
+  /// An approximation of 1 over root 2.
+  typedef ratio<169, 239> ratio_1_over_root2;
 
   /// An approximation of e.
   typedef ratio<326, 120> ratio_e;
@@ -184,67 +290,6 @@ namespace etl
     };
   }
 
-  template<typename R1, typename R2>
-  using ratio_add = typename private_ratio::ratio_add<R1, R2>::type;
-
-  template<typename R1, typename R2>
-  using ratio_subtract = typename private_ratio::ratio_subtract<R1, R2>::type;
-
-  template<typename R1, typename R2>
-  using ratio_multiply = typename private_ratio::ratio_multiply<R1, R2>::type;
-
-  template<typename R1, typename R2>
-  using ratio_divide = typename private_ratio::ratio_divide<R1, R2>::type;
-
-  template<typename R1, typename R2>
-  struct ratio_equal : etl::integral_constant<bool, (R1::num == R2::num && R1::den == R2::den)>
-  {
-  };
-
-  template<typename R1, typename R2>
-  struct ratio_not_equal : etl::integral_constant<bool, (R1::num != R2::num || R1::den != R2::den)>
-  {
-  };
-
-  template<typename R1, typename R2>
-  struct ratio_less : etl::integral_constant<bool, (R1::num * R2::den < R2::num * R1::den)>
-  {
-  };
-
-  template<typename R1, typename R2>
-  struct ratio_less_equal : etl::integral_constant<bool, (R1::num * R2::den <= R2::num * R1::den)>
-  {
-  };
-
-  template<typename R1, typename R2>
-  struct ratio_greater : etl::integral_constant<bool, (R1::num * R2::den > R2::num * R1::den)>
-  {
-  };
-
-  template<typename R1, typename R2>
-  struct ratio_greater_equal: etl::integral_constant<bool, (R1::num * R2::den >= R2::num * R1::den)>
-  {
-  };
-
-#if ETL_USING_CPP14
-  template<typename R1, typename R2>
-  ETL_CONSTEXPR14 bool ratio_equal_v = ratio_equal<R1, R2>::value;
-
-  template<typename R1, typename R2>
-  ETL_CONSTEXPR14 bool ratio_not_equal_v = ratio_not_equal<R1, R2>::value;
-
-  template<typename R1, typename R2>
-  ETL_CONSTEXPR14 bool ratio_less_v = ratio_less<R1, R2>::value;
-
-  template<typename R1, typename R2>
-  ETL_CONSTEXPR14 bool ratio_less_equal_v = ratio_less_equal<R1, R2>::value;
-
-  template<typename R1, typename R2>
-  ETL_CONSTEXPR14 bool ratio_greater_v = ratio_greater<R1, R2>::value;
-
-  template<typename R1, typename R2>
-  ETL_CONSTEXPR14 bool ratio_greater_equal_v = ratio_greater_equal<R1, R2>::value;
-#endif
 #endif
 }
 

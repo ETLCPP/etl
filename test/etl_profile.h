@@ -120,6 +120,12 @@ SOFTWARE.
   #endif
 #endif
 
+#define ETL_CHRONO_SYSTEM_CLOCK_DURATION          etl::chrono::milliseconds
+#define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::nanoseconds
+#define ETL_CHRONO_STEADY_CLOCK_DURATION          etl::chrono::seconds
+
+#define ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY false
+
 #if defined(ETL_DEVELOPMENT_OS_WINDOWS)
   #define ETL_TARGET_OS_WINDOWS
 #elif defined(ETL_DEVELOPMENT_OS_LINUX)
