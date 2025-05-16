@@ -5,7 +5,7 @@
 	"build": {
 		"dockerfile": "../Dockerfile",
 		"args": {
-			"BASE_IMAGE_NAME": "silkeh/clang:18"
+			"BASE_IMAGE_NAME": "silkeh/clang:18-bullseye"
 		},
 		"context": "../context"
 	}
