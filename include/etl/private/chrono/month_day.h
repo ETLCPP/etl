@@ -213,16 +213,16 @@ namespace etl
   struct hash<etl::chrono::month_day>
   {
     size_t operator()(const etl::chrono::month_day& md) const
-    {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int)];
-      
-      unsigned int m = md.month();
-      unsigned int d = md.day();
+    {   
+      etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(md.month()));
+      etl::chrono::day::rep   d = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(md.day()));
+
+      uint8_t buffer[sizeof(m) + sizeof(d)];
 
       memcpy(buffer,             &m, sizeof(m));
       memcpy(buffer + sizeof(m), &d, sizeof(d));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(m) + sizeof(d));
     }
   };
 #endif

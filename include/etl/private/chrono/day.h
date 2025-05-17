@@ -43,6 +43,8 @@ namespace etl
     {
     public:
 
+      using rep = uint_least8_t;
+
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
@@ -195,7 +197,7 @@ namespace etl
 
     private:
 
-      uint_least8_t value;
+      rep value;
     };
 
     //***********************************************************************
@@ -315,10 +317,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::day& d) const
     {
-      unsigned value = d;
+      etl::chrono::day::rep value = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(d));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif

@@ -54,6 +54,8 @@ namespace etl
     {
     public:
 
+      using rep = uint_least8_t;
+
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
@@ -200,7 +202,7 @@ namespace etl
 
     private:
 
-      uint_least8_t value;
+      rep value;
     };
 
     //***********************************************************************
@@ -434,10 +436,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month& m) const
     {
-      unsigned value = m;
+      etl::chrono::month::rep value = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(m));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif
@@ -451,10 +453,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month_day_last& mdl) const
     {
-      unsigned value = (unsigned)mdl.month();
+      etl::chrono::month::rep value = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(mdl.month()));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif

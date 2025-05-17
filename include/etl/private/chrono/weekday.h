@@ -68,6 +68,34 @@ namespace etl
       {
       }
 
+      //*************************************************************************
+      /// Construct from sys_days.
+      //*************************************************************************
+      ETL_CONSTEXPR weekday(const etl::chrono::sys_days& sd) ETL_NOEXCEPT
+      {
+        // Get number of days since epoch
+        etl::chrono::days days_since_epoch = sd.time_since_epoch();
+
+        // Convert to weekday manually: epoch was Thursday (4)
+        value = (days_since_epoch.count() + 4) % 7;
+
+        // Normalize in case of negative modulo
+        if (value < 0)
+        {
+          value += 7;
+        }
+      }
+
+      //*************************************************************************
+      /// Construct from local_days.
+      //*************************************************************************
+      ETL_CONSTEXPR weekday(const etl::chrono::local_days& ld) ETL_NOEXCEPT
+      {
+        weekday wd(sys_days(ld.time_since_epoch()));
+
+        value = wd.c_encoding();
+      }
+
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
@@ -500,7 +528,15 @@ namespace etl
   {
     size_t operator()(const etl::chrono::weekday_indexed& wdi) const
     {
-      return etl::hash<etl::chrono::weekday>()(wdi.weekday()) ^ etl::hash<unsigned>()(wdi.index());
+      unsigned int a = wdi.weekday().c_encoding();
+      unsigned int b = wdi.index();
+
+      uint8_t buffer[sizeof(a) + sizeof(b)];
+
+      memcpy(buffer,             &a, sizeof(a));
+      memcpy(buffer + sizeof(a), &b, sizeof(b));
+
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(a) + sizeof(b));
     }
   };
 #endif

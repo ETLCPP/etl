@@ -172,18 +172,18 @@ namespace etl
   struct hash<etl::chrono::month_weekday>
   {
     size_t operator()(const etl::chrono::month_weekday& mw) const
-    {
-      uint8_t buffer[3U * sizeof(unsigned int)];
-      
-      unsigned int a = mw.month();
-      unsigned int b = mw.weekday_indexed().weekday().c_encoding();
-      unsigned int c = mw.weekday_indexed().index();
+    {         
+      etl::chrono::month::rep a = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(mw.month()));
+      unsigned int            b = mw.weekday_indexed().weekday().c_encoding();
+      unsigned int            c = mw.weekday_indexed().index();
+
+      uint8_t buffer[sizeof(a) + sizeof(b) + sizeof(c)];
 
       memcpy(buffer,             &a, sizeof(a));
       memcpy(buffer + sizeof(a), &b, sizeof(b));
       memcpy(buffer + sizeof(b), &b, sizeof(c));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + 3U * sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(a) + sizeof(b) + sizeof(c));
     }
   };
 #endif
@@ -197,15 +197,15 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month_weekday_last& mw) const
     {
-      uint8_t buffer[2U * sizeof(unsigned int)];
+      etl::chrono::month::rep a = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(mw.month()));
+      unsigned int            b = mw.weekday_last().weekday().c_encoding();
 
-      unsigned int a = mw.month();
-      unsigned int b = mw.weekday_last().weekday().c_encoding();
+      uint8_t buffer[sizeof(a) + sizeof(b)];
 
       memcpy(buffer,             &a, sizeof(a));
       memcpy(buffer + sizeof(a), &b, sizeof(b));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + 2U * sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(a) + sizeof(b));
     }
   };
 #endif

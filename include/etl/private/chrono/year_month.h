@@ -216,17 +216,17 @@ namespace etl
   template <>
   struct hash<etl::chrono::year_month>
   {
-    size_t operator()(const etl::chrono::year_month& md) const
-    {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int)];
-      
-      unsigned int y = md.year();
-      unsigned int m = md.month();
+    size_t operator()(const etl::chrono::year_month& ym) const
+    {    
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ym.year()));
+      etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ym.month()));
+
+      uint8_t buffer[sizeof(y) + sizeof(m)];
 
       memcpy(buffer,             &y, sizeof(y));
       memcpy(buffer + sizeof(y), &m, sizeof(m));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(y) + sizeof(m));
     }
   };
 #endif

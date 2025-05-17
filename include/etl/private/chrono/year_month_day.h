@@ -36,6 +36,8 @@ namespace etl
 {
   namespace chrono
   {
+    class year_month_day_last;
+
     //*************************************************************************
     /// year_month_day
     //*************************************************************************
@@ -63,6 +65,73 @@ namespace etl
         , m(m_)
         , d(d_)
       {
+      }
+
+      //*************************************************************************
+      /// Construct from year_month_day_last.
+      //*************************************************************************
+      ETL_CONSTEXPR year_month_day(const etl::chrono::year_month_day_last& ymdl) ETL_NOEXCEPT;
+
+      //*************************************************************************
+      /// Construct from sys_days.
+      //*************************************************************************
+      ETL_CONSTEXPR year_month_day(const etl::chrono::sys_days& sd) ETL_NOEXCEPT
+      {
+        // Days since 1970-01-01
+        int days_since_epoch = static_cast<int>(sd.time_since_epoch().count());
+
+        // Start from 1970-01-01
+        etl::chrono::year  current_year(1970);
+        etl::chrono::month current_month(1);
+
+        // Find the year
+        while (true)
+        {
+          int days_in_year = current_year.is_leap() ? 366 : 365;
+          
+          if (days_since_epoch < days_in_year)
+          {
+            break;
+          }
+
+          days_since_epoch -= days_in_year;
+          ++current_year;
+        }
+
+        // Find the month
+        while (true)
+        {
+          unsigned char days_in_month = etl::chrono::private_chrono::days_in_month[current_month];
+          if (current_month == etl::chrono::February && current_year.is_leap())
+          {
+            ++days_in_month;
+          }
+
+          if (days_since_epoch < days_in_month)
+          {
+            break;
+          }
+
+          days_since_epoch -= days_in_month;
+          ++current_month;
+        }
+
+        // The remaining days are the day of the month (0-based)
+        y = current_year;
+        m = current_month;
+        d = etl::chrono::day(static_cast<unsigned>(days_since_epoch) + 1);
+      }
+
+      //*************************************************************************
+      /// Construct from sys_days.
+      //*************************************************************************
+      ETL_CONSTEXPR year_month_day(const etl::chrono::local_days& ld) ETL_NOEXCEPT
+      {
+        etl::chrono::year_month_day ymd = sys_days(ld.time_since_epoch());
+
+        y = ymd.year();
+        m = ymd.month();
+        d = ymd.day();
       }
 
       //*************************************************************************
@@ -221,7 +290,7 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Converts *this to etl::chrono::sys_days
+      /// Converts to etl::chrono::sys_days
       //***********************************************************************
       ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
       {
@@ -237,6 +306,7 @@ namespace etl
         for (etl::chrono::month mth(1); mth < this->month(); ++mth)
         {
           day_count += private_chrono::days_in_month[mth];
+
           if (mth == etl::chrono::February && this->year().is_leap())
           {
             ++day_count; // Add one day for leap year February
@@ -249,17 +319,13 @@ namespace etl
         return sys_days(etl::chrono::days(day_count));
       }
 
-      ////***********************************************************************
-      ///// Converts *this to etl::chrono::local_days
-      ////***********************************************************************
-      //ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
-      //{
-      //// Convert the year_month_day to sys_days first
-      //etl::chrono::sys_days sys_days_representation = static_cast<etl::chrono::sys_days>(*this);
-
-      //// Convert sys_days to local_days (assuming local_days is a wrapper around sys_days)
-      //return etl::chrono::local_days(sys_days_representation);
-      //}
+      //***********************************************************************
+      /// Converts to etl::chrono::local_days
+      //***********************************************************************
+      ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
+      {
+        return local_days(sys_days(*this).time_since_epoch());
+      }
 
     private:
 
@@ -300,7 +366,7 @@ namespace etl
       /// 
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_day_last(const etl::chrono::year& y_,
-                                        const etl::chrono::month_day_last& mdl_) ETL_NOEXCEPT
+                                          const etl::chrono::month_day_last& mdl_) ETL_NOEXCEPT
         : y(y_)
         , m(mdl_.month())
       {
@@ -455,7 +521,7 @@ namespace etl
       /// Inequality operator.
       //*************************************************************************
       friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_day_last& lhs, 
-                                            const etl::chrono::year_month_day_last& rhs) ETL_NOEXCEPT
+                                              const etl::chrono::year_month_day_last& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
       }
@@ -508,26 +574,38 @@ namespace etl
       }
 
       //*************************************************************************
-      /// 
+      /// Converts to etl::chrono::sys_days
       //*************************************************************************
-      //ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
-      //{
-      //  etl::chrono::sys_days();
-      //}
+      ETL_CONSTEXPR14 operator etl::chrono::sys_days() const ETL_NOEXCEPT
+      {
+        etl::chrono::year_month_day ymd(year(), month(), day());
+
+        return etl::chrono::sys_days(ymd);
+      }
 
       //*************************************************************************
-      /// 
+      /// Converts to etl::chrono::local_days
       //*************************************************************************
-      //ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
-      //{
-
-      //}
+      ETL_CONSTEXPR14 explicit operator etl::chrono::local_days() const ETL_NOEXCEPT
+      {
+        return local_days(sys_days(*this).time_since_epoch());
+      }
 
     private:
 
       etl::chrono::year  y;
       etl::chrono::month m;
     };
+
+    //*************************************************************************
+    /// Construct from year_month_day_last.
+    //*************************************************************************
+    ETL_CONSTEXPR etl::chrono::year_month_day::year_month_day(const etl::chrono::year_month_day_last& ymdl) ETL_NOEXCEPT
+      : y(ymdl.year())
+      , m(ymdl.month())
+      , d(ymdl.day())
+    {
+    }
   }
 
   //*************************************************************************
@@ -539,17 +617,17 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month_day& ymd) const
     {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int) + sizeof(unsigned int)];
-      
-      unsigned int y = ymd.year();
-      unsigned int m = ymd.month();
-      unsigned int d = ymd.day();
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ymd.year()));
+      etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ymd.month()));
+      etl::chrono::day::rep   d = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(ymd.day()));
 
-      memcpy(buffer,             &y, sizeof(y));
-      memcpy(buffer + sizeof(y), &m, sizeof(m));
+      uint8_t buffer[sizeof(y) + sizeof(m) + sizeof(d)];
+
+      memcpy(buffer,                         &y, sizeof(y));
+      memcpy(buffer + sizeof(y),             &m, sizeof(m));
       memcpy(buffer + sizeof(y) + sizeof(m), &d, sizeof(d));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(y) + sizeof(m) + sizeof(d));
     }
   };
 #endif
@@ -563,17 +641,17 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month_day_last& ymdl) const
     {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int) + sizeof(unsigned int)];
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ymdl.year()));
+      etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ymdl.month()));
+      etl::chrono::day::rep   d = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(ymdl.day()));
 
-      unsigned int y = ymdl.year();
-      unsigned int m = ymdl.month();
-      unsigned int d = ymdl.day();
+      uint8_t buffer[sizeof(y) + sizeof(m) + sizeof(d)];
 
-      memcpy(buffer,             &y, sizeof(y));
-      memcpy(buffer + sizeof(y), &m, sizeof(m));
+      memcpy(buffer,                         &y, sizeof(y));
+      memcpy(buffer + sizeof(y),             &m, sizeof(m));
       memcpy(buffer + sizeof(y) + sizeof(m), &d, sizeof(d));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(y) + sizeof(m) + sizeof(d));
     }
   };
 #endif

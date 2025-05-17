@@ -66,6 +66,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_with_sys_days)
+    {
+      Chrono::weekday expected{Chrono::Tuesday};
+      Chrono::weekday actual{Chrono::sys_days(Chrono::days(10988))};
+
+      CHECK_EQUAL((unsigned)expected.c_encoding(), (unsigned)actual.c_encoding());
+    }
+
+    //*************************************************************************
     TEST(test_constructor_in_range)
     {
       for (unsigned i = 0U; i < 7U; ++i)

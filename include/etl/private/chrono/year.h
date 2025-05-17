@@ -43,6 +43,8 @@ namespace etl
     {
     public:
 
+      using rep = int16_t;
+
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
@@ -183,7 +185,7 @@ namespace etl
 
     private:
 
-      int16_t value;
+      rep value;
     };
 
     //***********************************************************************
@@ -316,10 +318,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year& y) const
     {
-      int value = y;
+      etl::chrono::year::rep value = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(y));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(int));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif

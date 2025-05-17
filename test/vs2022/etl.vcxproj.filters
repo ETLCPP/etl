@@ -3584,6 +3584,12 @@
     <ClCompile Include="..\syntax_check\chrono.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month_weekday.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month_weekday_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
