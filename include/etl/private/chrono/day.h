@@ -331,10 +331,11 @@ namespace etl
   {
     namespace chrono_literals
     {
-      //***********************************************************************
-      /// Literal for days
-      //***********************************************************************
-      inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) noexcept
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
+  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) noexcept
+#else
+  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_d(unsigned long long d) noexcept
+#endif
       {
         return etl::chrono::day(static_cast<unsigned>(d));
       }

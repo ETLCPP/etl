@@ -459,22 +459,3 @@ namespace etl
   };
 #endif
 }
-
-#if ETL_HAS_CHRONO_LITERALS_MONTH
-namespace etl
-{
-  namespace literals
-  {
-    namespace chrono_literals
-    {
-      //***********************************************************************
-      /// Literal for months
-      //***********************************************************************
-      inline ETL_CONSTEXPR14 etl::chrono::month operator ""_month(unsigned long long m) noexcept
-      {
-        return etl::chrono::month(static_cast<unsigned char>(m));
-      }
-    }
-  }
-}
-#endif

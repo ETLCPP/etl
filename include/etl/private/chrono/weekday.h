@@ -519,22 +519,3 @@ namespace etl
   };
 #endif
 }
-
-#if ETL_HAS_CHRONO_LITERALS_WEEKDAY
-namespace etl
-{
-  namespace literals
-  {
-    namespace chrono_literals
-    {
-      //***********************************************************************
-      /// Literal for weekdays
-      //***********************************************************************
-      inline ETL_CONSTEXPR14 etl::chrono::weekday operator ""_weekday(unsigned long long wd) noexcept
-      {
-        return etl::chrono::weekday(static_cast<unsigned char>(wd));
-      }
-    }
-  }
-}
-#endif

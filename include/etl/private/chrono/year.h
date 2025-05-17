@@ -335,7 +335,11 @@ namespace etl
       //***********************************************************************
       /// Literal for years
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::year operator ""_year(unsigned long long y) noexcept
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::year operator ""_y(unsigned long long y) noexcept
+#endif
       {
         return etl::chrono::year(static_cast<int16_t>(y));
       }

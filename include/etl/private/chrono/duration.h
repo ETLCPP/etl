@@ -715,7 +715,11 @@ namespace etl
       //***********************************************************************
       /// Literal for hours duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::hours operator ""_hours(unsigned long long h) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::hours operator ""_h(unsigned long long h) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::hours(static_cast<etl::chrono::hours::rep>(h));
       }
@@ -723,7 +727,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point hours duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<3600>> operator""_hours(long double h) ETL_NOEXCEPT
+#else
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<3600>> operator""_h(long double h) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::duration<double, ratio<3600>>(h);
       }
@@ -731,7 +739,11 @@ namespace etl
       //***********************************************************************
       /// Literal for minutes duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::minutes operator ""_minutes(unsigned long long m) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::minutes operator ""_min(unsigned long long m) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::minutes(static_cast<etl::chrono::minutes::rep>(m));
       }
@@ -739,7 +751,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point minutes duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator ""_minutes(long double m) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator ""_min(long double m) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::duration<double, ratio<60>>(m);
       }
@@ -747,7 +763,11 @@ namespace etl
       //***********************************************************************
       /// Literal for seconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::seconds operator ""_seconds(unsigned long long s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::seconds operator ""_s(unsigned long long s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::seconds(static_cast<etl::chrono::seconds::rep>(s));
       }
@@ -755,7 +775,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point seconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator ""_seconds(long double s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator ""_s(long double s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::duration<double>(s);
       }
@@ -763,7 +787,11 @@ namespace etl
       //***********************************************************************
       /// Literal for milliseconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator ""_ms(unsigned long long s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::milliseconds(static_cast<etl::chrono::milliseconds::rep>(s));
       }
@@ -771,7 +799,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point milliseconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator ""_milliseconds(long double s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator ""_ms(long double s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::duration<double, milli>(s);
       }
@@ -779,7 +811,11 @@ namespace etl
       //***********************************************************************
       /// Literal for microseconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::microseconds operator ""_microseconds(unsigned long long s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::microseconds operator ""_us(unsigned long long s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::microseconds(static_cast<etl::chrono::microseconds::rep>(s));
       }
@@ -787,7 +823,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point microseconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator ""_microseconds(long double s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator ""_us(long double s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::duration<double, micro>(s);
       }
@@ -795,7 +835,11 @@ namespace etl
       //***********************************************************************
       /// Literal for nanoseconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator ""_ns(unsigned long long s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::nanoseconds(static_cast<etl::chrono::nanoseconds::rep>(s));
       }
@@ -803,7 +847,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point microseconds duration
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator ""_nanoseconds(long double s) ETL_NOEXCEPT
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator ""_ns(long double s) ETL_NOEXCEPT
+#endif
       {
         return etl::chrono::duration<double, nano>(s);
       }

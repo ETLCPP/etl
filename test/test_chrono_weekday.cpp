@@ -327,38 +327,6 @@ namespace
       CHECK_EQUAL(6U, Chrono::Saturday.iso_encoding());
     }
 
-#if ETL_USING_ETL_CHRONO
-    //*************************************************************************
-    TEST(test_weekday_literals)
-    {
-      using namespace etl::literals::chrono_literals;
-
-      Chrono::weekday weekday0 = 0_weekday;
-      Chrono::weekday weekday1 = 1_weekday;
-      Chrono::weekday weekday2 = 2_weekday;
-      Chrono::weekday weekday3 = 3_weekday;
-      Chrono::weekday weekday4 = 4_weekday;
-      Chrono::weekday weekday5 = 5_weekday;
-      Chrono::weekday weekday6 = 6_weekday;
-
-      CHECK_TRUE(weekday0.ok());
-      CHECK_TRUE(weekday1.ok());
-      CHECK_TRUE(weekday2.ok());
-      CHECK_TRUE(weekday3.ok());
-      CHECK_TRUE(weekday4.ok());
-      CHECK_TRUE(weekday5.ok());
-      CHECK_TRUE(weekday6.ok());
-
-      CHECK_EQUAL(0U, weekday0.c_encoding());
-      CHECK_EQUAL(1U, weekday1.c_encoding());
-      CHECK_EQUAL(2U, weekday2.c_encoding());
-      CHECK_EQUAL(3U, weekday3.c_encoding());
-      CHECK_EQUAL(4U, weekday4.c_encoding());
-      CHECK_EQUAL(5U, weekday5.c_encoding());
-      CHECK_EQUAL(6U, weekday6.c_encoding());
-    }
-#endif
-
     //*************************************************************************
     TEST(test_weekday_comparison_operators)
     {

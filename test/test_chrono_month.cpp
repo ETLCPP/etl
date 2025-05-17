@@ -291,53 +291,6 @@ namespace
     }
 #endif
 
-#if ETL_USING_ETL_CHRONO
-    //*************************************************************************
-    TEST(test_literal_month)
-    {
-      using namespace etl::literals::chrono_literals;
-
-      Chrono::month month1  = 1_month;
-      Chrono::month month2  = 2_month;
-      Chrono::month month3  = 3_month;
-      Chrono::month month4  = 4_month;
-      Chrono::month month5  = 5_month;
-      Chrono::month month6  = 6_month;
-      Chrono::month month7  = 7_month;
-      Chrono::month month8  = 8_month;
-      Chrono::month month9  = 9_month;
-      Chrono::month month10 = 10_month;
-      Chrono::month month11 = 11_month;
-      Chrono::month month12 = 12_month;
-
-      CHECK_TRUE(month1.ok());
-      CHECK_TRUE(month2.ok());
-      CHECK_TRUE(month3.ok());
-      CHECK_TRUE(month4.ok());
-      CHECK_TRUE(month5.ok());
-      CHECK_TRUE(month6.ok());
-      CHECK_TRUE(month7.ok());
-      CHECK_TRUE(month8.ok());
-      CHECK_TRUE(month9.ok());
-      CHECK_TRUE(month10.ok());
-      CHECK_TRUE(month11.ok());
-      CHECK_TRUE(month12.ok());
-
-      CHECK_EQUAL(1U,  unsigned(month1));
-      CHECK_EQUAL(2U,  unsigned(month2));
-      CHECK_EQUAL(3U,  unsigned(month3));
-      CHECK_EQUAL(4U,  unsigned(month4));
-      CHECK_EQUAL(5U,  unsigned(month5));
-      CHECK_EQUAL(6U,  unsigned(month6));
-      CHECK_EQUAL(7U,  unsigned(month7));
-      CHECK_EQUAL(8U,  unsigned(month8));
-      CHECK_EQUAL(9U,  unsigned(month9));
-      CHECK_EQUAL(10U, unsigned(month10));
-      CHECK_EQUAL(11U, unsigned(month11));
-      CHECK_EQUAL(12U, unsigned(month12));
-    }
-#endif
-
     //*************************************************************************
     TEST(test_month_comparison_operators)
     {

@@ -137,13 +137,13 @@ namespace
     //*************************************************************************
     TEST(test_construction_operator_for_year_month)
     {
-      etl::chrono::year_month ym1 = 2000_year / etl::chrono::April;
-      etl::chrono::year_month ym2 = 2001_year / 5;
+      etl::chrono::year_month ym1 = etl::chrono::year(2000) / etl::chrono::April;
+      etl::chrono::year_month ym2 = etl::chrono::year(2001) / 5;
 
-      CHECK_EQUAL(2000_year, ym1.year());
+      CHECK_EQUAL(etl::chrono::year(2000), ym1.year());
       CHECK_EQUAL(etl::chrono::April, ym1.month());
 
-      CHECK_EQUAL(2001_year, ym2.year());
+      CHECK_EQUAL(etl::chrono::year(2001), ym2.year());
       CHECK_EQUAL(etl::chrono::May, ym2.month());
     }
 
