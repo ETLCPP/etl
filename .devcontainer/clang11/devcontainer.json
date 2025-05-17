@@ -1,0 +1,12 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+	"name": "Clang 11",
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"args": {
+			"BASE_IMAGE_NAME": "silkeh/clang:11"
+		},
+		"context": "../context"
+	}
+}
