@@ -482,9 +482,17 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      while (pop())
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        // Do nothing.
+        write = 0;
+        read  = 0;
+      }
+      else
+      {
+        while (pop())
+        {
+          // Do nothing.
+        }
       }
     }
 

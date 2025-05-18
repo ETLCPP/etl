@@ -990,8 +990,8 @@ namespace etl
     {
       if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        in    = 0U;
-        out   = 0U;
+        in  = 0U;
+        out = 0U;
         ETL_RESET_DEBUG_COUNT;
       }
       else
