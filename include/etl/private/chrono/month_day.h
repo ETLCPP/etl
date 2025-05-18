@@ -48,7 +48,7 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR month_day(const etl::chrono::month& m_, 
+      ETL_CONSTEXPR14 month_day(const etl::chrono::month& m_, 
                                 const etl::chrono::day&   d_) ETL_NOEXCEPT
         : m(m_)
         , d(d_)
@@ -58,7 +58,8 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -66,7 +67,8 @@ namespace etl
       //*************************************************************************
       /// Returns the day.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
       {
         return d;
       }
@@ -74,6 +76,7 @@ namespace etl
       //*************************************************************************
       /// Returns true if the month/day is valid.
       //*************************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {       
         if (!m.ok() || !d.ok())
@@ -188,6 +191,7 @@ namespace etl
       /// else if day > other.day, returns 1;
       /// else returns 0;
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 int compare(const month_day& other) const ETL_NOEXCEPT 
       {
         if (m < other.m) return -1;

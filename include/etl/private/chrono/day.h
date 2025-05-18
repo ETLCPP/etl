@@ -64,7 +64,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR day(const etl::chrono::day& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 day(const etl::chrono::day& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
@@ -152,6 +152,7 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the day is within the valid 1 to 31 range
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
         return (value >= 1U) && (value <= 31U);
@@ -171,6 +172,7 @@ namespace etl
       /// else if day > other, returns 1;
       /// else returns 0;
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 int compare(const day& other) const ETL_NOEXCEPT 
       {
         if (value < other.value) return -1;
@@ -182,7 +184,8 @@ namespace etl
       //***********************************************************************
       /// The minimum day value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::day min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::day min() ETL_NOEXCEPT
       {
         return etl::chrono::day(1);
       }
@@ -190,7 +193,8 @@ namespace etl
       //***********************************************************************
       /// The maximum day value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::day max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::day max() ETL_NOEXCEPT
       {
         return etl::chrono::day(31);
       }

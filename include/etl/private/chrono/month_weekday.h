@@ -43,8 +43,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR month_weekday(const etl::chrono::month&           m_, 
-                                  const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 month_weekday(const etl::chrono::month&           m_, 
+                                    const etl::chrono::weekday_indexed& wdi_) ETL_NOEXCEPT
         : m(m_)
         , wdi(wdi_)
       {
@@ -53,7 +53,8 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -61,7 +62,8 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday_indexed weekday_indexed() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::weekday_indexed weekday_indexed() const ETL_NOEXCEPT
       {
         return wdi;
       }
@@ -69,7 +71,8 @@ namespace etl
       //*************************************************************************
       /// Returns true if the month/day is valid.
       //*************************************************************************
-      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {       
         return m.ok() && wdi.ok();
       }
@@ -108,7 +111,7 @@ namespace etl
       //*************************************************************************
       /// Construct from month and weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR month_weekday_last(const etl::chrono::month&        m_, 
+      ETL_CONSTEXPR14 month_weekday_last(const etl::chrono::month&        m_, 
                                        const etl::chrono::weekday_last& wdl_) ETL_NOEXCEPT
         : m(m_)
         , wdl(wdl_)
@@ -118,7 +121,8 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -126,7 +130,8 @@ namespace etl
       //*************************************************************************
       /// Returns the weekday_indexed.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::weekday_last weekday_last() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::weekday_last weekday_last() const ETL_NOEXCEPT
       {
         return wdl;
       }
@@ -134,7 +139,8 @@ namespace etl
       //*************************************************************************
       /// Returns true if the month/day is valid.
       //*************************************************************************
-      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {       
         return m.ok() && wdl.ok();
       }

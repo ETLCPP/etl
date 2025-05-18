@@ -105,8 +105,7 @@ namespace etl
       //***********************************************************************
       /// Default constructor.
       //***********************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 
+      ETL_CONSTEXPR 
       hh_mm_ss() ETL_NOEXCEPT
         : d(TDuration::zero())
       {
@@ -115,7 +114,6 @@ namespace etl
       //***********************************************************************
       /// Construct from duration.
       //***********************************************************************
-      ETL_NODISCARD 
       ETL_CONSTEXPR14
       explicit hh_mm_ss(TDuration d_) ETL_NOEXCEPT
         : d(d_)
@@ -179,6 +177,7 @@ namespace etl
       //***********************************************************************
       /// Returns the duration.
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 explicit operator precision() const ETL_NOEXCEPT
       {
         return to_duration();

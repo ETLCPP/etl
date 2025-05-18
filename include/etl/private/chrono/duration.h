@@ -71,19 +71,22 @@ namespace etl
     struct duration_values
     {
       //***********************************************************************
+      ETL_NODISCARD
       static ETL_CONSTEXPR TRep zero() ETL_NOEXCEPT
       {
         return TRep(0);
       }
 
       //***********************************************************************
-      static ETL_CONSTEXPR TRep min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 TRep min() ETL_NOEXCEPT
       {
         return etl::numeric_limits<TRep>::min();
       }
 
       //***********************************************************************
-      static ETL_CONSTEXPR TRep max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 TRep max() ETL_NOEXCEPT
       {
         return etl::numeric_limits<TRep>::max();
       }
@@ -113,14 +116,14 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR duration(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
 
       //***********************************************************************
       template <typename TRep2>
-      ETL_CONSTEXPR explicit duration(const TRep2& value_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 explicit duration(const TRep2& value_) ETL_NOEXCEPT
         : value(static_cast<TRep>(value_))
       {
       }
@@ -171,24 +174,28 @@ namespace etl
       }
 
       //***********************************************************************
+      ETL_NODISCARD
       static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> zero()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::zero());
       }
 
       //***********************************************************************
+      ETL_NODISCARD
       static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> min()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::min());
       }
 
       //***********************************************************************
+      ETL_NODISCARD
       static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> max()  ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::max());
       }
 
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> absolute() const ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(value < 0 ? -value : value);
