@@ -640,10 +640,8 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    reference at(size_t i)
+    reference at(size_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -653,10 +651,8 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    const_reference at(size_t i) const
+    const_reference at(size_t) const
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -667,10 +663,8 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    reference operator[](size_t i)
+    reference operator[](size_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -680,10 +674,8 @@ namespace etl
     ///\param i The index of the element to access.
     //*************************************************************************
     ETL_NODISCARD
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR const_reference operator[](size_t) const
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -694,8 +686,6 @@ namespace etl
     ETL_CONSTEXPR14
     reference front()
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -705,8 +695,6 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference front() const
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -717,8 +705,6 @@ namespace etl
     ETL_CONSTEXPR14
     reference back()
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -728,8 +714,6 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference back() const
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return *data();
     }
 
@@ -807,7 +791,7 @@ namespace etl
     // Returns a const iterator to the end of the array.
     //*************************************************************************
     ETL_NODISCARD
-      ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
+    ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
     {
       return const_iterator();
     }
@@ -907,18 +891,16 @@ namespace etl
     /// Fills the array with the specified value.
     ///\param value The value to fill the array with.
     //*************************************************************************
-    ETL_CONSTEXPR14 void fill(parameter_t value)
+    ETL_CONSTEXPR14 void fill(parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
     }
 
     //*************************************************************************
     /// Swaps the contents of this array and another.
     ///\param other A reference to the other array.
     //*************************************************************************
-    ETL_CONSTEXPR14 void swap(array& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void swap(array&) ETL_NOEXCEPT
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
     }
 
     //*************************************************************************
@@ -929,10 +911,8 @@ namespace etl
     ///\return An iterator to the first unassigned array element, or end().
     //*************************************************************************
     template <typename TIterator>
-    iterator assign(TIterator first, const TIterator last)
+    iterator assign(TIterator, const TIterator)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -944,10 +924,8 @@ namespace etl
     ///\return An iterator to the first array element set to 'value', or end().
     //*************************************************************************
     template <typename TIterator>
-    iterator assign(TIterator first, const TIterator last, parameter_t value)
+    iterator assign(TIterator, const TIterator, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -956,10 +934,8 @@ namespace etl
     ///\param position The index of the position to insert at.
     ///\param value    The value to insert.
     //*************************************************************************
-    inline iterator insert_at(size_t position, parameter_t value)
+    inline iterator insert_at(size_t, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -968,10 +944,8 @@ namespace etl
     ///\param position The iterator to the position to insert at.
     ///\param value    The value to insert.
     //*************************************************************************
-    iterator insert(const_iterator position, parameter_t value)
+    iterator insert(const_iterator, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -982,10 +956,8 @@ namespace etl
     ///\param last     The iterator to one past the final item in the range.
     //*************************************************************************
     template <typename TIterator>
-    inline iterator insert_at(size_t position, TIterator first, const TIterator last)
+    inline iterator insert_at(size_t, TIterator, const TIterator)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -996,10 +968,8 @@ namespace etl
     ///\param last     The iterator to one past the final item in the range.
     //*************************************************************************
     template <typename TIterator>
-    iterator insert(const_iterator position, TIterator first, const TIterator last)
+    iterator insert(const_iterator, TIterator, const TIterator)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1008,10 +978,8 @@ namespace etl
     /// After erase, the last value in the array will be unmodified.
     ///\param position The index of the position to erase at.
     //*************************************************************************
-    inline iterator erase_at(size_t position)
+    inline iterator erase_at(size_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1020,10 +988,8 @@ namespace etl
     /// After erase, the last value in the array will be unmodified.
     ///\param position The iterator to the position to erase at.
     //*************************************************************************
-    iterator erase(const_iterator position)
+    iterator erase(const_iterator)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1033,10 +999,8 @@ namespace etl
     ///\param first The first item to erase.
     ///\param last  The one past the last item to erase.
     //*************************************************************************
-    iterator erase_range(size_t first, size_t last)
+    iterator erase_range(size_t, size_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1046,10 +1010,8 @@ namespace etl
     ///\param first The first item to erase.
     ///\param last  The one past the last item to erase.
     //*************************************************************************
-    iterator erase(const_iterator first, const_iterator last)
+    iterator erase(const_iterator, const_iterator)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1058,10 +1020,8 @@ namespace etl
     ///\param position The index of the position to erase at.
     ///\param value    The value to use to overwrite the last element in the array.
     //*************************************************************************
-    inline iterator erase_at(size_t position, parameter_t value)
+    inline iterator erase_at(size_t, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1070,10 +1030,8 @@ namespace etl
     ///\param position The iterator to the position to erase at.
     ///\param value    The value to use to overwrite the last element in the array.
     //*************************************************************************
-    iterator erase(const_iterator position, parameter_t value)
+    iterator erase(const_iterator, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1083,10 +1041,8 @@ namespace etl
     ///\param last  The one past the last item to erase.
     ///\param value The value to use to overwrite the last elements in the array.
     //*************************************************************************
-    iterator erase_range(size_t first, size_t last, parameter_t value)
+    iterator erase_range(size_t, size_t, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
 
@@ -1095,10 +1051,8 @@ namespace etl
     ///\param position The iterator to the position to erase at.
     ///\param value    The value to use to overwrite the last elements in the array.
     //*************************************************************************
-    iterator erase(const_iterator first, const_iterator last, parameter_t value)
+    iterator erase(const_iterator, const_iterator, parameter_t)
     {
-      ETL_ASSERT_FAIL(ETL_ERROR(array_out_of_range));
-
       return iterator();
     }
   };
