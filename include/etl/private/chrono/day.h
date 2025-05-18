@@ -80,7 +80,8 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Pre-increment operator
+      /// Assignment operator
+      //***********************************************************************
       template <typename TToDuration, typename TValue2, typename TPeriod2>
       ETL_CONSTEXPR14 etl::chrono::day& operator =(const etl::chrono::duration<TValue2, TPeriod2>& rhs)
       {
@@ -89,6 +90,8 @@ namespace etl
         return *this;
       }
 
+      //***********************************************************************
+      /// Pre-increment operator
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::day& operator ++() ETL_NOEXCEPT
       {

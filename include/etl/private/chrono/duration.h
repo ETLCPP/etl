@@ -366,12 +366,6 @@ namespace etl
         return TToDuration(static_cast<to_rep>((ct_count * ct_num) / ct_den));
       }
     }
-
-    template <typename T>
-    struct is_duration : etl::false_type {};
-
-    template <typename TRep, typename TPeriod>
-    struct is_duration<etl::chrono::duration<TRep, TPeriod>> : etl::true_type {};
   }
 
   //*************************************************************************
