@@ -47,8 +47,10 @@ namespace
   {
     static const size_t SIZE = 10UL;
 
-    typedef etl::array<int, SIZE> Data;
-    typedef std::array<int, SIZE> Compare_Data;
+    using Data         = etl::array<int, SIZE>;
+    using Compare_Data = std::array<int, SIZE>;
+
+    using ZeroData     = etl::array<int, 0>;
 
     Compare_Data compare_data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     Compare_Data swap_data    = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
@@ -60,6 +62,16 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(SIZE));
       CHECK_EQUAL(data.max_size(), SIZE);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_zero_sized_array)
+    {
+      ZeroData data;
+
+      CHECK_TRUE(data.empty());
+      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.max_size(), 0);
     }
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
