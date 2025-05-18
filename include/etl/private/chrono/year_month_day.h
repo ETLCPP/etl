@@ -615,7 +615,7 @@ namespace etl
     //*************************************************************************
     /// Construct from year_month_day_last.
     //*************************************************************************
-    ETL_CONSTEXPR14 etl::chrono::year_month_day::year_month_day(const etl::chrono::year_month_day_last& ymdl) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_day::year_month_day(const etl::chrono::year_month_day_last& ymdl) ETL_NOEXCEPT
       : y(ymdl.year())
       , m(ymdl.month())
       , d(ymdl.day())
