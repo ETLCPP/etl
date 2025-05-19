@@ -713,7 +713,8 @@ namespace etl
   {
     // Base case
     template <typename T, typename = int>
-    struct is_convertible_to_int : false_type
+    struct is_convertible_to_int 
+      : false_type
     {
     };
 
@@ -721,7 +722,7 @@ namespace etl
     // 2nd template argument of base case defaults to int to ensure that this partial specialization is always tried first
     template <typename T>
     struct is_convertible_to_int<T, decltype(static_cast<int>(declval<T>()))>
-        : true_type 
+      : true_type 
     {
     };
   }
@@ -2389,6 +2390,8 @@ typedef integral_constant<bool, true>  true_type;
     typedef __underlying_type(T) type;
   };
 #else
+  /// Primary template for etl::underlying_type
+  /// Users must spelialise this template for their enumerations. 
   template <typename T>
   struct underlying_type
   {
@@ -2398,8 +2401,6 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
 #if ETL_USING_CPP11
-  /// Primary template for etl::underlying_type
-  /// Users must spelialise this template for their enumerations. 
   template <typename T>
   using underlying_type_t = typename underlying_type<T>::type;
 #endif
