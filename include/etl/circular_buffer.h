@@ -1063,9 +1063,9 @@ namespace etl
     template <typename TIterator>
     static difference_type distance(const TIterator& other)
     {
-      const difference_type index = other.get_index();
-      const difference_type reference_index = other.container().out;
-      const size_t buffer_size = other.container().buffer_size;
+      const difference_type index           = other.get_index();
+      const difference_type reference_index = static_cast<difference_type>(other.container().out);
+      const size_t buffer_size              = other.container().buffer_size;
 
       if (index < reference_index)
       {
