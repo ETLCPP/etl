@@ -1070,7 +1070,7 @@ namespace etl
   //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
   template <typename T, typename... TValues>
-  constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
+  constexpr auto make_array(TValues&&... values) ETL_NOEXCEPT -> etl::array<T, sizeof...(TValues)>
   {
     return { etl::forward<T>(values)... };
   }
