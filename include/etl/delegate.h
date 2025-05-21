@@ -34,9 +34,9 @@ SOFTWARE.
 #include "platform.h"
 
 #if ETL_USING_CPP11 && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
-  #include "private/delegate_cpp11.h"
+  #include "private/delegate_cpp11.h" // IWYU pragma: export
 #else
-  #include "private/delegate_cpp03.h"
+  #include "private/delegate_cpp03.h" // IWYU pragma: export
 #endif
 
 #endif
