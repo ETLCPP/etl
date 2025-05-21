@@ -3,6 +3,7 @@
 
 Updates:
 Added etl::tuple
+Added get_token_list to string_utilities to retrieve multiple tokens
 #757  Add etl::chrono time/date classes 
 #1085 Add The Remaining Math Operators To ETL_TYPEDEF
 #1084 Add 'type' Alias to Strong Types
@@ -29,6 +30,7 @@ Fixes:
 #1041 Incorrect rounding of scaled natural numbers in scaled_rounding #1041
 
 Pull Requests:
+#1088 Fix numeric overflow in bip buffer's get_write_reserve 
 #1090 Fix copy_s() for C++03 
 #1089 Cleanup fixes for C++03 
 #1083 Add take() to etl::span 
