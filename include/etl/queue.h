@@ -32,9 +32,7 @@ SOFTWARE.
 #define ETL_QUEUE_INCLUDED
 
 #include "platform.h"
-#include "iterator.h"
 #include "alignment.h"
-#include "array.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "debug_count.h"

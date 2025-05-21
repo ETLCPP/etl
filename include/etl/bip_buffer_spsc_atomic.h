@@ -247,7 +247,7 @@ namespace etl
       else // read_index > write_index
       {
         // Doesn't fit
-        if ((write_index + *psize) >= read_index)
+        if (*psize >= read_index - write_index)
         {
           *psize = read_index - write_index - 1;
         }

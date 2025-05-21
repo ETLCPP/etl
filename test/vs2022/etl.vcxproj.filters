@@ -220,6 +220,12 @@
     <Filter Include="Tests\Messaging">
       <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Private\chrono">
+      <UniqueIdentifier>{46e23f29-ce01-418f-8331-9c739774414c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Chrono">
+      <UniqueIdentifier>{1b1afa65-108a-4665-9e74-3c67a27ff917}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ETL\Codecs">
       <UniqueIdentifier>{6bbca8f0-f707-45ee-9dad-6d41d401bbaf}</UniqueIdentifier>
     </Filter>
@@ -1374,6 +1380,30 @@
     <ClInclude Include="..\..\include\etl\stringify.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\chrono.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\duration.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\month.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\year.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\last_spec.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\base64_encoder.h">
       <Filter>ETL\Codecs</Filter>
     </ClInclude>
@@ -1429,6 +1459,57 @@
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\type_list.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\index_of_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\variant_select_do_visitor.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\monostate.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\tuple_element.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\tuple_size.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\tuple.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\month_day.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\operators.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\month_weekday.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\hh_mm_ss.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month_day.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\time_point.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\year_month_weekday.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\time_zone.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\clocks.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2501,6 +2582,18 @@
     <ClCompile Include="..\test_macros.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_chrono_day.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_weekday.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
     <ClCompile Include="..\syntax_check\absolute.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
@@ -3430,6 +3523,72 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\singleton_base.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_list.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_index_of_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_tuple.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_weekday_indexed.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_weekday_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_duration.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_ratio.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_day.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_day_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_weekday.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_month_weekday_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_hh_mm_ss.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\tuple.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_operators.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month_day.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month_day_last.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_clocks.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_time_point.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\chrono.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month_weekday.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_year_month_weekday_last.cpp">
+      <Filter>Tests\Chrono</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

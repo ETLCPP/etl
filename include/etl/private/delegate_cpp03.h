@@ -66,11 +66,11 @@ namespace etl
     //***********************************
     template <typename TDelegate, typename TReturn, typename TParam>
     struct call_if_impl
-    {    
+    {
       etl::optional<TReturn> call_if(TParam param)
       {
-				TDelegate& d = static_cast<TDelegate&>(*this);
-				
+        TDelegate& d = static_cast<TDelegate&>(*this);
+
         etl::optional<TReturn> result;
 
         if (d.is_valid())
@@ -88,8 +88,8 @@ namespace etl
     {
       bool call_if()
       {
-				TDelegate& d = static_cast<TDelegate&>(*this);
-				
+        TDelegate& d = static_cast<TDelegate&>(*this);
+
         if (d.is_valid())
         {
           d();

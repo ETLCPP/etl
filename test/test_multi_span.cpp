@@ -556,6 +556,7 @@ namespace
 
       while (ms_itr != ms_end_itr)
       {
+        //  Fill the multi span
         *ms_itr++ = *exp_itr++;
       }
 

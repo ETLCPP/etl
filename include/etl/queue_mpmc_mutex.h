@@ -342,9 +342,18 @@ namespace etl
     {
       access.lock();
 
-      while (pop_implementation())
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        // Do nothing.
+        this->write_index  = 0;
+        this->read_index   = 0;
+        this->current_size = 0;
+      }
+      else
+      {
+        while (pop_implementation())
+        {
+          // Do nothing.
+        }
       }
 
       access.unlock();
