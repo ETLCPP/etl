@@ -139,15 +139,7 @@ namespace etl
     //*************************************************************************
     void set(T value_)
     {
-      if (value_ > Last)
-      {
-        value_ = Last;
-      }
-
-      // lower-bound clamp only if First != 0
-      detail::lower_bound_impl<(First != 0), T, First>::apply(value_);
-
-      value = value_;
+      value = etl::clamp(value_, First, Last);
     }
 
     //*************************************************************************
@@ -427,16 +419,7 @@ namespace etl
     //*************************************************************************
     void set(T value_)
     {
-      if (value_ > last_value)
-      {
-        value_ = last_value;
-      }
-      else if (value_ < first_value)
-      {
-        value_ = first_value;
-      }
-
-      value = value_;
+      value = etl::clamp(value_, first_value, last_value);
     }
 
     //*************************************************************************
