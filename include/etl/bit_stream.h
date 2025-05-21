@@ -236,8 +236,8 @@ namespace etl
           while (nbits != 0)
           {
             unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
-            
-            typedef typename etl::make_unsigned<T>::type chunk_t;           
+
+            typedef typename etl::make_unsigned<T>::type chunk_t;
             chunk_t chunk = get_chunk(mask_width);
 
             nbits -= mask_width;
@@ -529,7 +529,7 @@ namespace etl
 
     typedef char value_type;
     typedef value_type* iterator;
-    typedef const value_type* const_iterator;   
+    typedef const value_type* const_iterator;
     typedef etl::span<value_type> callback_parameter_type;
     typedef etl::delegate<void(callback_parameter_type)> callback_type;
 
@@ -590,17 +590,19 @@ namespace etl
     {
       bits_available_in_char = CHAR_BIT;
       char_index = 0U;
-      bits_available = CHAR_BIT * length_chars;
+      bits_available = capacity_bits();
     }
 
     //***************************************************************************
-    /// Returns the maximum capacity in bits.
+    /// Returns the maximum capacity in bytes.
     //***************************************************************************
     size_t capacity_bytes() const
     {
       return length_chars;
     }
 
+    //***************************************************************************
+    /// Returns the maximum capacity in bits.
     //***************************************************************************
     size_t capacity_bits() const
     {
@@ -612,7 +614,7 @@ namespace etl
     //***************************************************************************
     bool empty() const
     {
-      return (bits_available == length_chars);
+      return (available_bits() == capacity_bits());
     }
 
     //***************************************************************************
@@ -620,7 +622,7 @@ namespace etl
     //***************************************************************************
     bool full() const
     {
-      return (bits_available == 0U);
+      return (available_bits() == 0U);
     }
 
     //***************************************************************************
@@ -1082,7 +1084,7 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream_reader(void* begin_, void* end_, etl::endian stream_endianness_)
+    bit_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , length_chars(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
       , stream_endianness(stream_endianness_)
@@ -1093,7 +1095,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream_reader(void* begin_, size_t length_, etl::endian stream_endianness_)
+    bit_stream_reader(const void* begin_, size_t length_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , length_chars(length_)
       , stream_endianness(stream_endianness_)

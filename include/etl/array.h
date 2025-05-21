@@ -204,7 +204,7 @@ namespace etl
     ETL_CONSTEXPR14
     pointer data() ETL_NOEXCEPT
     {
-      return &_buffer[0];
+      return _buffer;
     }
 
     //*************************************************************************
@@ -213,7 +213,7 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_pointer data() const ETL_NOEXCEPT
     {
-      return &_buffer[0];
+      return _buffer;
     }
 
     //*************************************************************************
@@ -227,7 +227,7 @@ namespace etl
     ETL_CONSTEXPR14
     iterator begin() ETL_NOEXCEPT
     {
-      return &_buffer[0];
+      return _buffer;
     }
 
     //*************************************************************************
@@ -236,7 +236,7 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_iterator begin() const ETL_NOEXCEPT
     {
-      return &_buffer[0];
+      return _buffer;
     }
 
     //*************************************************************************
@@ -602,6 +602,461 @@ namespace etl
   template <typename T, size_t SIZE_>
   ETL_CONSTANT size_t array<T, SIZE_>::SIZE;
 
+  //***************************************************************************
+  ///\ingroup array
+  /// A replacement for std::array if you haven't got C++0x11.
+  /// Specialisation for zero sized array.
+  //***************************************************************************
+  template <typename T>
+  class array<T, 0>
+  {
+  private:
+
+    typedef typename etl::parameter_type<T>::type parameter_t;
+
+  public:
+
+    static ETL_CONSTANT size_t SIZE = 0;
+
+    typedef T         value_type;
+    typedef size_t    size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T&        reference;
+    typedef const T&  const_reference;
+    typedef T*        pointer;
+    typedef const T*  const_pointer;
+    typedef T*        iterator;
+    typedef const T*  const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+
+    //*************************************************************************
+    // Element access
+    //*************************************************************************
+
+    //*************************************************************************
+    /// Returns a reference to the value at index 'i'.
+    ///\param i The index of the element to access.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    reference at(size_t)
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the value at index 'i'.
+    ///\param i The index of the element to access.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    const_reference at(size_t) const
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// [] operator.
+    /// Returns a reference to the value at index 'i'.
+    ///\param i The index of the element to access.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    reference operator[](size_t)
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// [] operator.
+    /// Returns a const reference to the value at index 'i'.
+    ///\param i The index of the element to access.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reference operator[](size_t) const
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// Returns a reference to the first element.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    reference front()
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the first element.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reference front() const
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// Returns a reference to the last element.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    reference back()
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// Returns a const reference to the last element.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reference back() const
+    {
+      return *data();
+    }
+
+    //*************************************************************************
+    /// Returns a pointer to the first element of the internal buffer.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    pointer data() ETL_NOEXCEPT
+    {
+      return (T*)0;
+    }
+
+    //*************************************************************************
+    /// Returns a const pointer to the first element of the internal buffer.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_pointer data() const ETL_NOEXCEPT
+    {
+      return (const T*)0;
+    }
+
+    //*************************************************************************
+    // Iterators
+    //*************************************************************************
+
+    //*************************************************************************
+    /// Returns an iterator to the beginning of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    iterator begin() ETL_NOEXCEPT
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Returns a const iterator to the beginning of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_iterator begin() const ETL_NOEXCEPT
+    {
+      return const_iterator();
+    }
+
+    //*************************************************************************
+    /// Returns a const iterator to the beginning of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_iterator cbegin() const ETL_NOEXCEPT
+    {
+      return const_iterator();
+    }
+
+    //*************************************************************************
+    /// Returns an iterator to the end of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    iterator end() ETL_NOEXCEPT
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Returns a const iterator to the end of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
+    {
+      return const_iterator();
+    }
+
+    //*************************************************************************
+    // Returns a const iterator to the end of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
+    {
+      return const_iterator();
+    }
+
+    //*************************************************************************
+    // Returns an reverse iterator to the reverse beginning of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    reverse_iterator rbegin() ETL_NOEXCEPT
+    {
+      return reverse_iterator(end());
+    }
+
+    //*************************************************************************
+    /// Returns a const reverse iterator to the reverse beginning of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reverse_iterator rbegin() const ETL_NOEXCEPT
+    {
+      return const_reverse_iterator(end());
+    }
+
+    //*************************************************************************
+    /// Returns a const reverse iterator to the reverse beginning of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reverse_iterator crbegin() const ETL_NOEXCEPT
+    {
+      return const_reverse_iterator(end());
+    }
+
+    //*************************************************************************
+    /// Returns a reverse iterator to the end of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+      ETL_CONSTEXPR14
+      reverse_iterator rend() ETL_NOEXCEPT
+    {
+      return reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// Returns a const reverse iterator to the end of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reverse_iterator rend() const ETL_NOEXCEPT
+    {
+      return const_reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    /// Returns a const reverse iterator to the end of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR const_reverse_iterator crend() const ETL_NOEXCEPT
+    {
+      return const_reverse_iterator(begin());
+    }
+
+    //*************************************************************************
+    // Capacity
+    //*************************************************************************
+
+    //*************************************************************************
+    /// Returns <b>true</b> if the array size is zero.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
+    {
+      return true;
+    }
+
+    //*************************************************************************
+    /// Returns the size of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
+    {
+      return 0;
+    }
+
+    //*************************************************************************
+    /// Returns the maximum possible size of the array.
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
+    {
+      return 0;
+    }
+
+    //*************************************************************************
+    // Operations
+    //*************************************************************************
+
+    //*************************************************************************
+    /// Fills the array with the specified value.
+    ///\param value The value to fill the array with.
+    //*************************************************************************
+    ETL_CONSTEXPR14 void fill(parameter_t)
+    {
+    }
+
+    //*************************************************************************
+    /// Swaps the contents of this array and another.
+    ///\param other A reference to the other array.
+    //*************************************************************************
+    ETL_CONSTEXPR14 void swap(array&) ETL_NOEXCEPT
+    {
+    }
+
+    //*************************************************************************
+    /// Fills the array from the range.
+    /// If the range is smaller than the array then the unused array elements are left unmodified.
+    ///\param first The iterator to the first item in the range.
+    ///\param last  The iterator to one past the final item in the range.
+    ///\return An iterator to the first unassigned array element, or end().
+    //*************************************************************************
+    template <typename TIterator>
+    iterator assign(TIterator, const TIterator)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Fills the array from the range.
+    /// If the range is smaller than the array then the unused array elements are initialised with the supplied value.
+    ///\param first The iterator to the first item in the range.
+    ///\param last  The iterator to one past the final item in the range.
+    ///\return An iterator to the first array element set to 'value', or end().
+    //*************************************************************************
+    template <typename TIterator>
+    iterator assign(TIterator, const TIterator, parameter_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Inserts a value into the array.
+    ///\param position The index of the position to insert at.
+    ///\param value    The value to insert.
+    //*************************************************************************
+    inline iterator insert_at(size_t, parameter_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Inserts a value into the array.
+    ///\param position The iterator to the position to insert at.
+    ///\param value    The value to insert.
+    //*************************************************************************
+    iterator insert(const_iterator, parameter_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Insert into the array from the range.
+    ///\param position The position to insert at.
+    ///\param first    The iterator to the first item in the range.
+    ///\param last     The iterator to one past the final item in the range.
+    //*************************************************************************
+    template <typename TIterator>
+    inline iterator insert_at(size_t, TIterator, const TIterator)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Insert into the array from the range.
+    ///\param position The position to insert at.
+    ///\param first    The iterator to the first item in the range.
+    ///\param last     The iterator to one past the final item in the range.
+    //*************************************************************************
+    template <typename TIterator>
+    iterator insert(const_iterator, TIterator, const TIterator)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a value from the array.
+    /// After erase, the last value in the array will be unmodified.
+    ///\param position The index of the position to erase at.
+    //*************************************************************************
+    inline iterator erase_at(size_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a value from the array.
+    /// After erase, the last value in the array will be unmodified.
+    ///\param position The iterator to the position to erase at.
+    //*************************************************************************
+    iterator erase(const_iterator)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    /// After erase, the last values in the array will be unmodified.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    //*************************************************************************
+    iterator erase_range(size_t, size_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    /// After erase, the last values in the array will be unmodified.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    //*************************************************************************
+    iterator erase(const_iterator, const_iterator)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a value from the array.
+    ///\param position The index of the position to erase at.
+    ///\param value    The value to use to overwrite the last element in the array.
+    //*************************************************************************
+    inline iterator erase_at(size_t, parameter_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a value from the array.
+    ///\param position The iterator to the position to erase at.
+    ///\param value    The value to use to overwrite the last element in the array.
+    //*************************************************************************
+    iterator erase(const_iterator, parameter_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    ///\param value The value to use to overwrite the last elements in the array.
+    //*************************************************************************
+    iterator erase_range(size_t, size_t, parameter_t)
+    {
+      return iterator();
+    }
+
+    //*************************************************************************
+    /// Erases a range of values from the array.
+    ///\param position The iterator to the position to erase at.
+    ///\param value    The value to use to overwrite the last elements in the array.
+    //*************************************************************************
+    iterator erase(const_iterator, const_iterator, parameter_t)
+    {
+      return iterator();
+    }
+  };
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
@@ -615,7 +1070,7 @@ namespace etl
   //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
   template <typename T, typename... TValues>
-  constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
+  constexpr auto make_array(TValues&&... values) ETL_NOEXCEPT -> etl::array<T, sizeof...(TValues)>
   {
     return { etl::forward<T>(values)... };
   }

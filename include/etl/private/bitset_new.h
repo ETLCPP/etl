@@ -141,7 +141,7 @@ namespace etl
   public:
 
     bitset_overflow(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:overflow", ETL_BITSET_FILE_ID"C"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:overflow", ETL_BITSET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -155,7 +155,7 @@ namespace etl
   public:
 
     bitset_invalid_buffer(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:invalid buffer", ETL_BITSET_FILE_ID"D"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:invalid buffer", ETL_BITSET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };

@@ -40,6 +40,16 @@ namespace etl
 {
   //***************************************************************************
   // Least Common Multiple.
+  // Compile time.
+  //***************************************************************************
+  template <intmax_t A, intmax_t B>
+  struct lcm_const
+  {
+    static ETL_CONSTANT intmax_t value = (A / gcd_const<A, B>::value) * B;
+  };
+
+  //***************************************************************************
+  // Least Common Multiple.
   // For unsigned types.
   //***************************************************************************
   template <typename T>

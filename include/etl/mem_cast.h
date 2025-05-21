@@ -48,7 +48,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// The base class for array_wrapper exceptions.
+  /// The base class for mem_cast exceptions.
   //***************************************************************************
   class mem_cast_exception : public etl::exception
   {

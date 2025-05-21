@@ -2384,7 +2384,7 @@ namespace etl
   /// Template wrapper for memset.
   /// \param db    Destination begin.
   /// \param de    Destination end.
-  /// \param value The value to set.
+  /// \param value The value to set each character of the memory region.
   /// \return The destination
   //***************************************************************************
   template <typename TPointer, typename T>
@@ -2400,7 +2400,7 @@ namespace etl
   /// Template wrapper for memset.
   /// \param db    Destination begin.
   /// \param n     Destination length.
-  /// \param value The value to set.
+  /// \param value The value to set each character of the memory region.
   /// \return The destination
   //***************************************************************************
   template <typename TPointer, typename T>
@@ -2416,7 +2416,7 @@ namespace etl
   /// Template wrapper for memchr.
   /// \param sb    Source begin.
   /// \param se    Source end.
-  /// \param value The value to find.
+  /// \param value The char value to find.
   /// \return The position of the char or 'se'.
   //***************************************************************************
   template <typename TPointer, typename T>

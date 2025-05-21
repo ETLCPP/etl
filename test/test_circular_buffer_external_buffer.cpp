@@ -1033,6 +1033,40 @@ namespace
       CHECK(std::equal(input2.begin(), input2.end(), data1.begin()));
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_swap_with_rvalue)
+    {
+      etl::uninitialized_buffer_of<Ndc, 6U> buffer1;
+      etl::uninitialized_buffer_of<Ndc, 7U> buffer2;
+      etl::uninitialized_buffer_of<Ndc, 8U> buffer3;
+
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
+      Compare input2{ Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Compare input3{ Ndc("13"), Ndc("14"), Ndc("15"), Ndc("16"), Ndc("17"), Ndc("18"), Ndc("19") };
+      Data data1(buffer1.raw, 5U);
+      Data data2(buffer2.raw, 6U);
+      Data data3(buffer3.raw, 7U);
+      data1.push(input1.begin(), input1.end());
+      data2.push(input2.begin(), input2.end());
+      data3.push(input3.begin(), input3.end());
+
+      data1.swap(std::move(data2));
+
+      CHECK_EQUAL(input1.size(), data2.size());
+      CHECK_EQUAL(input2.size(), data1.size());
+      CHECK(std::equal(input1.begin(), input1.end(), data2.begin()));
+      CHECK(std::equal(input2.begin(), input2.end(), data1.begin()));
+
+      swap(data1, std::move(data3));
+
+      CHECK_EQUAL(input2.size(), data3.size());
+      CHECK_EQUAL(input3.size(), data1.size());
+      CHECK(std::equal(input2.begin(), input2.end(), data3.begin()));
+      CHECK(std::equal(input3.begin(), input3.end(), data1.begin()));
+    }
+#endif
+
     //*************************************************************************
     TEST(test_equal)
     {

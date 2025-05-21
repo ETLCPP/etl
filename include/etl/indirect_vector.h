@@ -1182,12 +1182,19 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      iterator itr = begin();
-
-      while (itr != end())
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        storage.destroy<T>(etl::addressof(*itr));
-        ++itr;
+        storage.release_all();
+      }
+      else
+      {
+        iterator itr = begin();
+
+        while (itr != end())
+        {
+          storage.destroy<T>(etl::addressof(*itr));
+          ++itr;
+        }
       }
 
       lookup.clear();

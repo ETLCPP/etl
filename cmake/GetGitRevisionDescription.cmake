@@ -12,23 +12,6 @@
 # Returns the results of git describe on the source tree, and adjusting
 # the output so that it tests false if an error occurs.
 #
-#  git_describe_working_tree(<var> [<additional arguments to git describe> ...])
-#
-# Returns the results of git describe on the working tree (--dirty option),
-# and adjusting the output so that it tests false if an error occurs.
-#
-#  git_get_exact_tag(<var> [<additional arguments to git describe> ...])
-#
-# Returns the results of git describe --exact-match on the source tree,
-# and adjusting the output so that it tests false if there was no exact
-# matching tag.
-#
-#  git_local_changes(<var>)
-#
-# Returns either "CLEAN" or "DIRTY" with respect to uncommitted changes.
-# Uses the return code of "git diff-index --quiet HEAD --".
-# Does not regard untracked files.
-#
 # Requires CMake 2.6 or newer (uses the 'function' command)
 #
 # Original Author:
@@ -43,10 +26,10 @@
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
 
-if(__get_git_revision_description)
+if(__etl_get_git_revision_description)
     return()
 endif()
-set(__get_git_revision_description YES)
+set(__etl_get_git_revision_description YES)
 
 # We must run the following at "include" time, not at function call time,
 # to find the path to this module rather than the path to a calling list file
@@ -62,7 +45,7 @@ get_filename_component(_gitdescmoddir ${CMAKE_CURRENT_LIST_FILE} PATH)
 # neither foo nor bar contain a file/directory .git. This will return
 # C:/bla/.git
 #
-function(_git_find_closest_git_dir _start_dir _git_dir_var)
+function(_etl_git_find_closest_git_dir _start_dir _git_dir_var)
     set(cur_dir "${_start_dir}")
     set(git_dir "${_start_dir}/.git")
     while(NOT EXISTS "${git_dir}")
@@ -83,8 +66,8 @@ function(_git_find_closest_git_dir _start_dir _git_dir_var)
         PARENT_SCOPE)
 endfunction()
 
-function(get_git_head_revision _refspecvar _hashvar)
-    _git_find_closest_git_dir("${CMAKE_CURRENT_SOURCE_DIR}" GIT_DIR)
+function(etl_get_git_head_revision _refspecvar _hashvar)
+    _etl_git_find_closest_git_dir("${CMAKE_CURRENT_SOURCE_DIR}" GIT_DIR)
 
     if("${ARGN}" STREQUAL "ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR")
         set(ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR TRUE)
@@ -143,7 +126,7 @@ function(get_git_head_revision _refspecvar _hashvar)
             string(REGEX REPLACE "gitdir: (.*)$" "\\1" git_worktree_dir
                                  ${worktree_ref})
             string(STRIP ${git_worktree_dir} git_worktree_dir)
-            _git_find_closest_git_dir("${git_worktree_dir}" GIT_DIR)
+            _etl_git_find_closest_git_dir("${git_worktree_dir}" GIT_DIR)
             set(HEAD_SOURCE_FILE "${git_worktree_dir}/HEAD")
         endif()
     else()
@@ -172,11 +155,11 @@ function(get_git_head_revision _refspecvar _hashvar)
         PARENT_SCOPE)
 endfunction()
 
-function(git_describe _var)
+function(etl_git_describe _var)
     if(NOT GIT_FOUND)
         find_package(Git QUIET)
     endif()
-    get_git_head_revision(refspec hash ${ARGN})
+    etl_get_git_head_revision(refspec hash ${ARGN})
     if(NOT GIT_FOUND)
         set(${_var}
             "GIT-NOTFOUND"
@@ -213,72 +196,4 @@ function(git_describe _var)
     set(${_var}
         "${out}"
         PARENT_SCOPE)
-endfunction()
-
-function(git_describe_working_tree _var)
-    if(NOT GIT_FOUND)
-        find_package(Git QUIET)
-    endif()
-    if(NOT GIT_FOUND)
-        set(${_var}
-            "GIT-NOTFOUND"
-            PARENT_SCOPE)
-        return()
-    endif()
-
-    execute_process(
-        COMMAND "${GIT_EXECUTABLE}" describe --dirty ${ARGN}
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        RESULT_VARIABLE res
-        OUTPUT_VARIABLE out
-        ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if(NOT res EQUAL 0)
-        set(out "${out}-${res}-NOTFOUND")
-    endif()
-
-    set(${_var}
-        "${out}"
-        PARENT_SCOPE)
-endfunction()
-
-function(git_get_exact_tag _var)
-    git_describe(out --exact-match ${ARGN})
-    set(${_var}
-        "${out}"
-        PARENT_SCOPE)
-endfunction()
-
-function(git_local_changes _var)
-    if(NOT GIT_FOUND)
-        find_package(Git QUIET)
-    endif()
-    get_git_head_revision(refspec hash)
-    if(NOT GIT_FOUND)
-        set(${_var}
-            "GIT-NOTFOUND"
-            PARENT_SCOPE)
-        return()
-    endif()
-    if(NOT hash)
-        set(${_var}
-            "HEAD-HASH-NOTFOUND"
-            PARENT_SCOPE)
-        return()
-    endif()
-
-    execute_process(
-        COMMAND "${GIT_EXECUTABLE}" diff-index --quiet HEAD --
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        RESULT_VARIABLE res
-        OUTPUT_VARIABLE out
-        ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if(res EQUAL 0)
-        set(${_var}
-            "CLEAN"
-            PARENT_SCOPE)
-    else()
-        set(${_var}
-            "DIRTY"
-            PARENT_SCOPE)
-    endif()
 endfunction()

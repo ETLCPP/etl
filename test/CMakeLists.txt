@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10)
 project(etl_unit_tests LANGUAGES CXX)
 
 #include(FetchContent)
@@ -58,6 +58,24 @@ add_executable(etl_tests
 	test_callback_timer_locked.cpp
 	test_char_traits.cpp
 	test_checksum.cpp
+    test_chrono_clocks.cpp
+	test_chrono_day.cpp
+	test_chrono_duration.cpp
+	test_chrono_hh_mm_ss.cpp
+	test_chrono_month.cpp
+	test_chrono_month_day.cpp
+	test_chrono_month_day_last.cpp
+	test_chrono_month_weekday.cpp
+	test_chrono_month_weekday_last.cpp
+	test_chrono_operators.cpp
+	test_chrono_time_point.cpp
+	test_chrono_weekday.cpp
+	test_chrono_weekday_indexed.cpp
+	test_chrono_weekday_last.cpp
+	test_chrono_year.cpp
+	test_chrono_year_month.cpp
+	test_chrono_year_month_day.cpp
+    test_chrono_year_month_day_last.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
@@ -143,7 +161,6 @@ add_executable(etl_tests
 	test_fsm.cpp
 	test_function.cpp
 	test_functional.cpp
-	test_function_traits.cpp
 	test_gamma.cpp
 	test_hash.cpp
 	test_hfsm.cpp
@@ -223,7 +240,6 @@ add_executable(etl_tests
 	test_queue_spsc_locked.cpp
 	test_queue_spsc_locked_small.cpp
 	test_random.cpp
-	test_ratio.cpp
 	test_reference_flat_map.cpp
 	test_reference_flat_multimap.cpp
 	test_reference_flat_multiset.cpp
@@ -235,7 +251,6 @@ add_executable(etl_tests
 	test_set.cpp
 	test_shared_message.cpp
 	test_singleton.cpp
-	test_singleton_base.cpp
 	test_smallest.cpp
 	test_span_dynamic_extent.cpp
 	test_span_fixed_extent.cpp
@@ -290,8 +305,6 @@ add_executable(etl_tests
 	test_type_select.cpp
 	test_type_traits.cpp
 	test_unaligned_type.cpp
-	test_unaligned_type_ext.cpp
-	test_uncopyable.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp
@@ -321,20 +334,23 @@ if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
 elseif (ETL_CXX_STANDARD MATCHES "03")
-	message(STATUS "Compiling for C++03 (C++98)")    
+	message(STATUS "Compiling for C++03 (C++98)")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
 elseif (ETL_CXX_STANDARD MATCHES "11")
-	message(STATUS "Compiling for C++11")    
+	message(STATUS "Compiling for C++11")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 11)
 elseif (ETL_CXX_STANDARD MATCHES "14")
-	message(STATUS "Compiling for C++14")    
+	message(STATUS "Compiling for C++14")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 14)
 elseif (ETL_CXX_STANDARD MATCHES "17")
-	message(STATUS "Compiling for C++17")    
+	message(STATUS "Compiling for C++17")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
-else()
+elseif (ETL_CXX_STANDARD MATCHES "20")
 	message(STATUS "Compiling for C++20")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 20)
+else()
+	message(STATUS "Compiling for C++23")
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 23)
 endif()
 
 if (NO_STL OR ETL_NO_STL)
@@ -404,7 +420,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wextra
 			-Werror
 			-Wfloat-equal
-			-Wuseless-cast
 			-Wshadow
 			-Wnull-dereference
 			-g
@@ -422,6 +437,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-g
 			)
 endif ()
 

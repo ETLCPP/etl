@@ -34,6 +34,9 @@ SOFTWARE.
 #include "etl/vector.h"
 
 #include <string>
+#include <string_view>
+#include <vector>
+#include <list>
 
 #undef STR
 #define STR(x) x
@@ -53,6 +56,9 @@ namespace
     using Char       = etl::istring::value_type;
     using Vector     = etl::vector<String, 15>;
     using SizeType   = etl::istring::size_type;
+
+    using VectorOfViews7 = etl::vector<StringView, 7>;
+    using VectorOfViews5 = etl::vector<StringView, 5>;
 
 #if ETL_USING_CPP17
     constexpr auto Whitespace = etl::whitespace_v<String::value_type>;
@@ -1084,6 +1090,121 @@ namespace
 
       CHECK_EQUAL(0U, tokens.size());
     }
+
+    //*************************************************************************
+    TEST(test_split_to_vector_of_string_view_all_tokens_captured_ignore_empty_tokens)
+    {
+      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      VectorOfViews7 views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true);
+
+      CHECK_TRUE(all_views_found);
+      CHECK_EQUAL(6, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
+      CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
+    }
+
+    //*************************************************************************
+    TEST(test_get_token_list_to_vector_of_string_view_all_but_1_tokens_captured_ignore_empty_tokens)
+    {
+      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      VectorOfViews5 views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true);
+
+      CHECK_FALSE(all_views_found);
+      CHECK_EQUAL(5, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
+    }
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_get_token_list_to_std_vector_of_std_string_view_all_tokens_captured_ignore_empty_tokens)
+    {
+      std::string text(STR(",,,The,cat,sat,,on,the,mat"));
+      std::vector<std::string_view> views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true);
+
+      CHECK_TRUE(all_views_found);
+      CHECK_EQUAL(6, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
+      CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_get_token_list_to_vector_of_string_view_all_tokens_captured_ignore_empty_tokens_maximum_of_3_tokens)
+    {
+      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      VectorOfViews7 views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true, 3);
+
+      CHECK_FALSE(all_views_found);
+      CHECK_EQUAL(3, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+    }
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_get_token_list_to_std_vector_of_std_string_view_all_tokens_captured_ignore_empty_tokens_maximum_of_3_tokens)
+    {
+      std::string text(STR(",,,The,cat,sat,,on,the,mat"));
+      std::vector<std::string_view> views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true, 3);
+
+      CHECK_FALSE(all_views_found);
+      CHECK_EQUAL(3, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_get_token_list_to_std_list_of_std_string_view_all_tokens_captured_ignore_empty_tokens)
+    {
+      std::string text(STR(",,,The,cat,sat,,on,the,mat"));
+      std::list<std::string_view> views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true);
+
+      CHECK_TRUE(all_views_found);
+      CHECK_EQUAL(6, views.size());
+
+      auto itr = views.begin();
+
+      CHECK_EQUAL(std::string("The"), std::string(itr->begin(), itr->end()));
+      ++itr;
+      CHECK_EQUAL(std::string("cat"), std::string(itr->begin(), itr->end()));
+      ++itr;
+      CHECK_EQUAL(std::string("sat"), std::string(itr->begin(), itr->end()));
+      ++itr;
+      CHECK_EQUAL(std::string("on"),  std::string(itr->begin(), itr->end()));
+      ++itr;
+      CHECK_EQUAL(std::string("the"), std::string(itr->begin(), itr->end()));
+      ++itr;
+      CHECK_EQUAL(std::string("mat"), std::string(itr->begin(), itr->end()));
+    }
+#endif
 
     //*************************************************************************
     TEST(test_pad_left)

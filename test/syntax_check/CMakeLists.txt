@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(etl_syntax_check)
 
 add_definitions(-DETL_DEBUG)
@@ -44,20 +44,23 @@ if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET tests PROPERTY CXX_STANDARD 98)
 elseif (ETL_CXX_STANDARD MATCHES "03")
-	message(STATUS "Compiling for C++03 (C++98)")    
+	message(STATUS "Compiling for C++03 (C++98)")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 98)
 elseif (ETL_CXX_STANDARD MATCHES "11")
-	message(STATUS "Compiling for C++11")    
+	message(STATUS "Compiling for C++11")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 11)
 elseif (ETL_CXX_STANDARD MATCHES "14")
-	message(STATUS "Compiling for C++14")    
+	message(STATUS "Compiling for C++14")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 14)
 elseif (ETL_CXX_STANDARD MATCHES "17")
-	message(STATUS "Compiling for C++17")    
+	message(STATUS "Compiling for C++17")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 17)
-else()
+elseif (ETL_CXX_STANDARD MATCHES "20")
 	message(STATUS "Compiling for C++20")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 20)
+else()
+	message(STATUS "Compiling for C++23")
+	set_property(TARGET tests PROPERTY CXX_STANDARD 23)
 endif()
 
 target_sources(tests PRIVATE
@@ -93,6 +96,7 @@ target_sources(tests PRIVATE
 		callback_timer_locked.h.t.cpp
 		char_traits.h.t.cpp
 		checksum.h.t.cpp
+		chrono.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		combinations.h.t.cpp
@@ -303,6 +307,7 @@ target_sources(tests PRIVATE
 		to_u32string.h.t.cpp
 		to_u8string.h.t.cpp
 		to_wstring.h.t.cpp
+		tuple.h.t.cpp
 		type_def.h.t.cpp
 		type_lookup.h.t.cpp
 		type_select.h.t.cpp

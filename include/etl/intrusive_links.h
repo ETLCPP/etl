@@ -375,7 +375,7 @@ namespace etl
   }
 
   //***************************************************************************
-  // link_clear
+  // link_clear range
   //***************************************************************************
   // Reference
   template <typename TLink>
@@ -401,6 +401,112 @@ namespace etl
     if (start != ETL_NULLPTR)
     {
       etl::link_clear_range(*start);
+    }
+  }
+
+#if ETL_USING_CPP17
+  //***************************************************************************
+  /// Create a linked list from a number of forward_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink& first, TLinks&... links)
+  {
+    TLink* current = &first;
+    ((current->etl_next = &links, current = &links), ...);
+
+    return current;
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of forward_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink* first, TLinks*... links)
+  {
+    if (first != ETL_NULLPTR)
+    {
+      return create_linked_list(*first, (*links)...);
+    }
+    else
+    {
+      return nullptr;
+    }
+  }
+#elif ETL_USING_CPP11
+  //***************************************************************************
+  /// Create a linked list from a number of forward_link nodes.
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink& first)
+  {
+    return &first;
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of forward_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink& first, TLink& next, TLinks&... links)
+  {
+    first.etl_next = &next;
+    return create_linked_list(next, static_cast<TLink&>(links)...);
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of forward_link nodes.
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink* first)
+  {
+    if (first != ETL_NULLPTR)
+    {
+      return create_linked_list(*first);
+    }
+    else
+    {
+      return ETL_NULLPTR;
+    }
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of forward_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink* first, TLink* next, TLinks*... links)
+  {
+    if (first != ETL_NULLPTR)
+    {
+      return create_linked_list(*first, *next, static_cast<TLink&>(*links)...);
+    }
+    else
+    {
+      return ETL_NULLPTR;
+    }
+  }
+#endif
+
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
+    detach_linked_list(TLink& first)
+  {
+    link_clear_range(first);
+  }
+
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
+    detach_linked_list(TLink* first)
+  {
+    if (first != ETL_NULLPTR)
+    {
+      detach_linked_list(*first);
     }
   }
 
@@ -827,6 +933,93 @@ namespace etl
     link_clear_range(TLink* start)
   {
     etl::link_clear_range(*start);
+  }
+
+#if ETL_USING_CPP17
+  //***************************************************************************
+  /// Create a linked list from a number of bidirectional_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink& first, TLinks&... links)
+  {
+    TLink* current = &first;
+    ((current->etl_next = &links, static_cast<TLink&>(links).etl_previous = current, current = &links), ...);
+ 
+    return current;
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of bidirectional_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink* first, TLinks*... links)
+  {
+    TLink* current = first;
+    ((current->etl_next = links, static_cast<TLink*>(links)->etl_previous = current, current = links), ...);
+
+    return current;
+  }
+#elif ETL_USING_CPP11
+  //***************************************************************************
+  /// Create a linked list from a number of bidirectional_link nodes.
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink& first)
+  {
+    return &first;
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of bidirectional_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink& first, TLink& next, TLinks&... links)
+  {
+    first.etl_next    = &next;
+    next.etl_previous = &first;
+
+    return create_linked_list(next, static_cast<TLink&>(links)...);
+  }
+
+  //***************************************************************************
+  /// Create a linked list from a number of bidirectional_link nodes.
+  //***************************************************************************
+  template <typename TLink, typename... TLinks>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, TLink*>::type
+    create_linked_list(TLink* first, TLink* next, TLinks*... links)
+  {
+    if (first != ETL_NULLPTR)
+    {
+      return create_linked_list(*first, *next, static_cast<TLink&>(*links)...);
+    }
+    else
+    {
+      return ETL_NULLPTR;
+    }
+  }
+#endif
+
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, void>::type
+    detach_linked_list(TLink& first)
+  {
+    link_clear_range(first);
+  }
+
+  //***************************************************************************
+  template <typename TLink>
+  typename etl::enable_if<etl::is_bidirectional_link<TLink>::value, void>::type
+    detach_linked_list(TLink* first)
+  {
+    if (first != ETL_NULLPTR)
+    {
+      detach_linked_list(*first);
+    }
   }
 
   //***************************************************************************

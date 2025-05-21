@@ -93,7 +93,7 @@ namespace etl
     //*************************************************************************
     /// Primary definition of base hash class, by default is poisoned
     //*************************************************************************
-    template<typename T, bool IsEnum=false>
+    template<typename T, bool Is_Enum = false>
     struct hash_base
     {
     private:
@@ -159,8 +159,8 @@ namespace etl
   /// Specialisation for signed char.
   ///\ingroup hash
   //***************************************************************************
-  template<> struct
-  hash<signed char>
+  template <>
+  struct hash<signed char>
   {
     ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(signed char), "size_t smaller than type");
 
