@@ -46,36 +46,6 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace detail
-  {
-    //Helper: only performs the v < F check when has_lower == true ––
-    template <bool has_lower, typename U, U F>
-    struct lower_bound_impl;
-
-    // Specialisation for First != 0: enforce v >= First
-    template <typename U, U F>
-    struct lower_bound_impl<true, U, F>
-    {
-      static ETL_CONSTEXPR auto apply(U& v) ETL_NOEXCEPT -> void
-      {
-        if (v < F)
-        {
-          v = F;
-        }
-      }
-    };
-
-    // Specialisation for First == 0: no-op
-    template <typename U, U F>
-    struct lower_bound_impl<false, U, F>
-    {
-      static ETL_CONSTEXPR auto apply(U&) ETL_NOEXCEPT -> void
-      {
-        // nothing
-      }
-    };
-  } // namespace detail
-
   //***************************************************************************
   /// Provides a value that cycles between two limits.
   //***************************************************************************
