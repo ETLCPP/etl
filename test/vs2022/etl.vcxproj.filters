@@ -1510,7 +1510,7 @@
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\chrono\clocks.h">
-      <Filter>UnitTest++\Header Files</Filter>
+      <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
