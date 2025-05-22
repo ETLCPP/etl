@@ -68,10 +68,34 @@ namespace etl
       {
       }
 
+      //*************************************************************************
+      /// Construct from sys_days.
+      //*************************************************************************
+      ETL_CONSTEXPR14 weekday(const etl::chrono::sys_days& sd) ETL_NOEXCEPT
+        : value(255U)
+      {
+        // Get number of days since epoch.
+        etl::chrono::days days_since_epoch = sd.time_since_epoch();
+
+        // Convert to weekday. Beginning of the epoch was a Thursday (4).
+        value = (days_since_epoch.count() + 4) % 7;
+      }
+
+      //*************************************************************************
+      /// Construct from local_days.
+      //*************************************************************************
+      ETL_CONSTEXPR14 weekday(const etl::chrono::local_days& ld) ETL_NOEXCEPT
+        : value(255U)
+      {
+        weekday wd(sys_days(ld.time_since_epoch()));
+
+        value = wd.c_encoding();
+      }
+
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR weekday(const etl::chrono::weekday& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 weekday(const etl::chrono::weekday& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
@@ -153,7 +177,8 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the weekday is within the valid 1 to 31 range
       //***********************************************************************
-      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
         return (c_encoding() <= 6U);
       }
@@ -162,7 +187,8 @@ namespace etl
       /// The minimum weekday value for which ok() will return <b>true</b>
       /// C encoding.
       //***********************************************************************
-      static ETL_CONSTEXPR unsigned min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 unsigned min() ETL_NOEXCEPT
       {
         return 0;
       }
@@ -171,7 +197,8 @@ namespace etl
       /// The maximum weekday value for which ok() will return <b>true</b>
       /// C encoding.
       //***********************************************************************
-      static ETL_CONSTEXPR unsigned max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 unsigned max() ETL_NOEXCEPT
       {
         return 6;
       }
@@ -179,7 +206,8 @@ namespace etl
       //***********************************************************************
       /// Get the C encoding of the weekday
       //***********************************************************************
-      ETL_CONSTEXPR unsigned c_encoding() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 unsigned c_encoding() const ETL_NOEXCEPT
       {
         return value;
       }
@@ -187,7 +215,8 @@ namespace etl
       //***********************************************************************
       /// Get the ISO encoding of the weekday
       //***********************************************************************
-      ETL_CONSTEXPR unsigned iso_encoding() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 unsigned iso_encoding() const ETL_NOEXCEPT
       {
         return (value == 0U) ? 7U : value;
       }
@@ -195,17 +224,20 @@ namespace etl
       //***********************************************************************
       /// Index operator from index
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 etl::chrono::weekday_indexed operator[](unsigned index) const ETL_NOEXCEPT;
         
       //***********************************************************************
       /// Index operator from etl::chrono::last_spec
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 etl::chrono::weekday_last operator[](etl::chrono::last_spec last) const ETL_NOEXCEPT;
 
       //***********************************************************************
       /// Returns <b>true</b> if the day is a weekend.
       //***********************************************************************
-      ETL_CONSTEXPR bool is_weekend() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool is_weekend() const ETL_NOEXCEPT
       {
         return (c_encoding() == 0U) || (c_encoding() == 6U);
       }
@@ -293,7 +325,7 @@ namespace etl
     inline constexpr etl::chrono::weekday Thursday{ 4U };
     inline constexpr etl::chrono::weekday Friday{ 5U };
     inline constexpr etl::chrono::weekday Saturday{ 6U };
-#else     
+#else
     static ETL_CONSTANT etl::chrono::weekday Sunday{ 0U };
     static ETL_CONSTANT etl::chrono::weekday Monday{ 1U };
     static ETL_CONSTANT etl::chrono::weekday Tuesday{ 2U };
@@ -322,7 +354,7 @@ namespace etl
       //***********************************************************************
       /// Construct from weekday and index
       //***********************************************************************
-      ETL_CONSTEXPR weekday_indexed(const etl::chrono::weekday& wd_, unsigned index_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 weekday_indexed(const etl::chrono::weekday& wd_, unsigned index_) ETL_NOEXCEPT
         : wd(wd_)
         , i(static_cast<uint_least8_t>(index_))
       {
@@ -331,7 +363,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR weekday_indexed(const etl::chrono::weekday_indexed& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 weekday_indexed(const etl::chrono::weekday_indexed& other) ETL_NOEXCEPT
         : wd(other.wd)
         , i(other.i)
       {
@@ -351,7 +383,8 @@ namespace etl
       //***********************************************************************
       /// Get weekday
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR etl::chrono::weekday weekday() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::weekday weekday() const ETL_NOEXCEPT
       {
         return wd;
       }
@@ -359,7 +392,8 @@ namespace etl
       //***********************************************************************
       /// Get index
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR unsigned index() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14 unsigned index() const ETL_NOEXCEPT
       {
         return i;
       }
@@ -367,7 +401,8 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the weekday and index are valid
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
         return wd.ok() && (i >= 1U) && (i <= 5U);
       }
@@ -405,7 +440,7 @@ namespace etl
       //***********************************************************************
       /// Construct from unsigned
       //***********************************************************************
-      ETL_CONSTEXPR explicit weekday_last(const etl::chrono::weekday& wd_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 explicit weekday_last(const etl::chrono::weekday& wd_) ETL_NOEXCEPT
         : wd(wd_)
       {
       }
@@ -413,7 +448,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR weekday_last(const etl::chrono::weekday_last& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 weekday_last(const etl::chrono::weekday_last& other) ETL_NOEXCEPT
         : wd(other.wd)
       {
       }
@@ -500,7 +535,15 @@ namespace etl
   {
     size_t operator()(const etl::chrono::weekday_indexed& wdi) const
     {
-      return etl::hash<etl::chrono::weekday>()(wdi.weekday()) ^ etl::hash<unsigned>()(wdi.index());
+      unsigned int a = wdi.weekday().c_encoding();
+      unsigned int b = wdi.index();
+
+      uint8_t buffer[sizeof(a) + sizeof(b)];
+
+      memcpy(buffer,             &a, sizeof(a));
+      memcpy(buffer + sizeof(a), &b, sizeof(b));
+
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(a) + sizeof(b));
     }
   };
 #endif
@@ -519,22 +562,3 @@ namespace etl
   };
 #endif
 }
-
-#if ETL_HAS_CHRONO_LITERALS_WEEKDAY
-namespace etl
-{
-  namespace literals
-  {
-    namespace chrono_literals
-    {
-      //***********************************************************************
-      /// Literal for weekdays
-      //***********************************************************************
-      inline ETL_CONSTEXPR14 etl::chrono::weekday operator ""_weekday(unsigned long long wd) noexcept
-      {
-        return etl::chrono::weekday(static_cast<unsigned char>(wd));
-      }
-    }
-  }
-}
-#endif

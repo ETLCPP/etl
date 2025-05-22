@@ -1030,8 +1030,15 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      etl::destroy(p_buffer, p_end);
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)));
+      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      {
+        ETL_RESET_DEBUG_COUNT;
+      }
+      else
+      {
+        etl::destroy(p_buffer, p_end);
+        ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)));
+      }
 
       p_end = p_buffer;
     }

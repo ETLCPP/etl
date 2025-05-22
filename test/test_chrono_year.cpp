@@ -267,7 +267,11 @@ namespace
     {
       using namespace etl::literals::chrono_literals;
 
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       etl::chrono::year year = 25_year;
+#else
+      etl::chrono::year year = 25_y;
+#endif
 
       CHECK_TRUE(year.ok());
       CHECK_EQUAL(25, int(year));

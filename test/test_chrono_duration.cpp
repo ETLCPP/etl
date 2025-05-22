@@ -1114,5 +1114,29 @@ namespace
       milliseconds abs_negative_ms = abs(negative_ms); // Absolute value
       CHECK_EQUAL(1234, abs_negative_ms.count());
     }
+
+#if ETL_USING_ETL_CHRONO
+    //*************************************************************************
+    TEST(test_duration_literals)
+    {
+      using namespace etl::literals::chrono_literals;
+
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
+      CHECK_TRUE(Chrono::hours(1)        == 1_hours);
+      CHECK_TRUE(Chrono::minutes(2)      == 2_minutes);
+      CHECK_TRUE(Chrono::seconds(3)      == 3_seconds);
+      CHECK_TRUE(Chrono::milliseconds(4) == 4_milliseconds);
+      CHECK_TRUE(Chrono::microseconds(5) == 5_microseconds);
+      CHECK_TRUE(Chrono::nanoseconds(6)  == 6_nanoseconds);
+#else
+      CHECK_TRUE(Chrono::hours(1)        == 1_h);
+      CHECK_TRUE(Chrono::minutes(2)      == 2_min);
+      CHECK_TRUE(Chrono::seconds(3)      == 3_s);
+      CHECK_TRUE(Chrono::milliseconds(4) == 4_ms);
+      CHECK_TRUE(Chrono::microseconds(5) == 5_us);
+      CHECK_TRUE(Chrono::nanoseconds(6)  == 6_ns);
+#endif
+    }
+#endif
   };
 }

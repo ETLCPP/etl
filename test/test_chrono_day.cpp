@@ -255,7 +255,11 @@ namespace
     {
       using namespace etl::literals::chrono_literals;
 
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       Chrono::day day = 25_day;
+#else
+      Chrono::day day = 25_d;
+#endif
 
       CHECK_TRUE(day.ok());
       CHECK_EQUAL(25, unsigned(day));

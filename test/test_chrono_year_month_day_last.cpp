@@ -144,5 +144,14 @@ namespace
       (void)std::unique(hashes.begin(), hashes.end());
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_to_sys_days)
+    {
+      Chrono::year_month_day_last ymdl{Chrono::year(2000), Chrono::month_day_last(Chrono::February)};
+      Chrono::sys_days sd = Chrono::sys_days(ymdl);
+
+      CHECK_EQUAL(11016, sd.time_since_epoch().count());
+    }
   };
 }

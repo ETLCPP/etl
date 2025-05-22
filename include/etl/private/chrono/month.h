@@ -54,6 +54,8 @@ namespace etl
     {
     public:
 
+      using rep = uint_least8_t;
+
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
@@ -73,7 +75,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR month(const etl::chrono::month& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 month(const etl::chrono::month& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
@@ -155,7 +157,8 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the month is within the valid 1 to 31 range
       //***********************************************************************
-      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
         return (value >= 1U) && (value <= 12U);
       }
@@ -166,6 +169,7 @@ namespace etl
       /// else if month > other, returns 1;
       /// else returns 0;
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 int compare(const month& other) const ETL_NOEXCEPT 
       {
         if (value < other.value) return -1;
@@ -177,7 +181,8 @@ namespace etl
       //***********************************************************************
       /// The minimum month value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::month min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::month min() ETL_NOEXCEPT
       {
         return etl::chrono::month(1);
       }
@@ -185,7 +190,8 @@ namespace etl
       //***********************************************************************
       /// The maximum month value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::month max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::month max() ETL_NOEXCEPT
       {
         return etl::chrono::month(12);
       }
@@ -193,14 +199,14 @@ namespace etl
       //***********************************************************************
       /// Conversion operator to unsigned int
       //***********************************************************************
-      ETL_CONSTEXPR operator unsigned() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 operator unsigned() const ETL_NOEXCEPT
       {
         return static_cast<unsigned>(value);
       }
 
     private:
 
-      uint_least8_t value;
+      rep value;
     };
 
     //***********************************************************************
@@ -434,10 +440,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month& m) const
     {
-      unsigned value = m;
+      etl::chrono::month::rep value = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(m));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif
@@ -451,30 +457,11 @@ namespace etl
   {
     size_t operator()(const etl::chrono::month_day_last& mdl) const
     {
-      unsigned value = (unsigned)mdl.month();
+      etl::chrono::month::rep value = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(mdl.month()));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif
 }
-
-#if ETL_HAS_CHRONO_LITERALS_MONTH
-namespace etl
-{
-  namespace literals
-  {
-    namespace chrono_literals
-    {
-      //***********************************************************************
-      /// Literal for months
-      //***********************************************************************
-      inline ETL_CONSTEXPR14 etl::chrono::month operator ""_month(unsigned long long m) noexcept
-      {
-        return etl::chrono::month(static_cast<unsigned char>(m));
-      }
-    }
-  }
-}
-#endif

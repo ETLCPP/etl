@@ -34,9 +34,9 @@ SOFTWARE.
 #include "platform.h"
 
 #if defined(ETL_USE_LEGACY_BITSET)
-  #include "private/bitset_legacy.h"
+  #include "private/bitset_legacy.h" // IWYU pragma: export
 #else
-  #include "private/bitset_new.h"
+  #include "private/bitset_new.h" // IWYU pragma: export
 #endif
 
 #endif

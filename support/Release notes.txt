@@ -1,4 +1,61 @@
 ﻿===============================================================================
+20.41.0
+
+Updates:
+Added etl::tuple
+Added get_token_list to string_utilities to retrieve multiple tokens
+#757  Add etl::chrono time/date classes
+#962  Allow (overload) string append a string_view
+#966  A constructor for delegate with a freestanding function 
+#1047 Deprecate etl::parameter_pack and replace with etl::type_list 
+#1068 Add swap(circular_buffer_ext&&) for circular_buffer_ext 
+#1084 Add 'type' Alias to Strong Types
+#1085 Add The Remaining Math Operators To ETL_TYPEDEF
+
+Fixes:
+#1041 Incorrect rounding of scaled natural numbers in scaled_rounding
+#1042 Incorrect rounding in scaled_rounding with scale of 1 
+#1056 variadic_variant doesn't use the type_id_t type to store type_id
+#1057 ETL_DECLARE_DEBUG_COUNT increases RAM usage even when ETL_DEBUG_COUNT NOT defined 
+#1064 v20.40.0 error: has no member named ‘is_secure’ 
+#1070 MacOs Circlular buffer type conversion error (-Werror) 
+#1073 Test failure on 32-bit x86 arches
+#1076 circular_buffer::pop(N) when holding trivially destructible items 
+#1077 Builds on i386 trigger -Werror=useless-cast
+#1078 Have etl::make_array Check for noexcept Condition
+#1079 Compilation errors in algorithm.h in C++03
+#1095 bit_stream_writer::empty() compares the wrong values to determine empty or not
+#1096 bit_stream_reader constructors do not accept const pointers
+#1101 etl::array supports array sizes of zero
+#1102 Optimise clear of sequence containers for trivially destructible types
+
+Pull Requests:
+#1033 Add newline to end of parameter_pack.h 
+#1036 Add contains() and contains_node() to etl::intrusive_forward_list 
+#1039 Minor cleanup 
+#1040 Implement << operator for std basic_ostream and etl string_view 
+#1043 Added iterator and const_iterator to etl::ipool 
+#1044 Add traits to type_list 
+#1045 Support etl::underlying_type with compiler builtin 
+#1049 Various cleanup changes 
+#1052 Returning const ref of member from const member function 
+#1055 Add enable_if restriction for span constructor from c array
+#1065 Fix cmake helper functions collision 
+#1067 Fix missing is_secure function 
+#1069 Support C++23
+#1072 Add swap(circular_buffer_ext&&) (#1068) 
+#1074 Add Zephyr build system module.yml 
+#1075 Add full West support for ETL in Zephyr builds 
+#1080 Fixed compilation errors in algorithm.h in C++03 and compiler warning
+#1082 Support const pointers in etl::is_aligned() 
+#1083 Add take() to etl::span 
+#1088 Fix numeric overflow in bip buffer's get_write_reserve 
+#1089 Cleanup fixes for C++03 
+#1090 Fix copy_s() for C++03 
+#1103 Add IWYU pragmas to private headers which provide library symbols 
+#1104 Use etl::clamp for setting value in cyclic_value 
+
+===============================================================================
 20.40.0
 
 Updates:

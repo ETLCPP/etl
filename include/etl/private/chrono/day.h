@@ -43,6 +43,8 @@ namespace etl
     {
     public:
 
+      using rep = uint_least8_t;
+
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
@@ -62,7 +64,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR day(const etl::chrono::day& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 day(const etl::chrono::day& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
@@ -78,7 +80,8 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Pre-increment operator
+      /// Assignment operator
+      //***********************************************************************
       template <typename TToDuration, typename TValue2, typename TPeriod2>
       ETL_CONSTEXPR14 etl::chrono::day& operator =(const etl::chrono::duration<TValue2, TPeriod2>& rhs)
       {
@@ -87,6 +90,8 @@ namespace etl
         return *this;
       }
 
+      //***********************************************************************
+      /// Pre-increment operator
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::day& operator ++() ETL_NOEXCEPT
       {
@@ -150,6 +155,7 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the day is within the valid 1 to 31 range
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
         return (value >= 1U) && (value <= 31U);
@@ -169,6 +175,7 @@ namespace etl
       /// else if day > other, returns 1;
       /// else returns 0;
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 int compare(const day& other) const ETL_NOEXCEPT 
       {
         if (value < other.value) return -1;
@@ -180,7 +187,8 @@ namespace etl
       //***********************************************************************
       /// The minimum day value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::day min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::day min() ETL_NOEXCEPT
       {
         return etl::chrono::day(1);
       }
@@ -188,14 +196,15 @@ namespace etl
       //***********************************************************************
       /// The maximum day value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::day max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::day max() ETL_NOEXCEPT
       {
         return etl::chrono::day(31);
       }
 
     private:
 
-      uint_least8_t value;
+      rep value;
     };
 
     //***********************************************************************
@@ -315,10 +324,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::day& d) const
     {
-      unsigned value = d;
+      etl::chrono::day::rep value = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(d));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(unsigned));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif
@@ -331,10 +340,11 @@ namespace etl
   {
     namespace chrono_literals
     {
-      //***********************************************************************
-      /// Literal for days
-      //***********************************************************************
-      inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) noexcept
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
+  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) noexcept
+#else
+  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_d(unsigned long long d) noexcept
+#endif
       {
         return etl::chrono::day(static_cast<unsigned>(d));
       }

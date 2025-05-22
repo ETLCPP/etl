@@ -757,6 +757,45 @@ namespace etl
   }
 
   //***************************************************************************
+  /// get_token_list
+  ///\brief Splits a string of tokens to a set of views, according to a set of delimiters.
+  /// The tokenisation stops if:
+  ///   1. The end of the input text is reached.
+  ///   2. The max_size() of the output container is reached.
+  ///   3. The number of tokens found reaches max_n_tokens. 
+  /// The input container must define <code>const_pointer</code>.
+  /// The output container must define <code>value_type</code>.
+  /// The output container must define the member function <code>max_size</code> that returns the maximum size of the container.
+  /// The output container must define the member function <code>push_back</code> that pushes the view on to the back of the container.
+  ///\param input               The input string.
+  ///\param output              A reference to an output container of string views.
+  ///\param delimiters          A pointer to a string of valid delimiters.
+  ///\param ignore_empty_tokens If <b>true</b> then empty tokens are ignored.
+  ///\param max_n_tokens        The maximum number of tokens to collect. Default tokenise everything.
+  ///\return Returns <b>true</b> if all tokens were added to the list, otherwise <b>false</b>.
+  //***************************************************************************
+  template <typename TInput, typename TOutput>
+  bool get_token_list(const TInput& input, TOutput& output, typename TInput::const_pointer delimiters, bool ignore_empty_tokens, size_t max_n_tokens = etl::integral_limits<size_t>::max)
+  {
+    typedef typename TOutput::value_type string_view_t;
+
+    etl::optional<string_view_t> token;
+
+    size_t count = 0;
+    while ((count != output.max_size()) &&
+           (count != max_n_tokens) &&
+           (token = etl::get_token(input, delimiters, token, ignore_empty_tokens)))
+    {
+      output.push_back(token.value());
+      ++count;
+    }
+
+    bool all_tokens_found = (token.has_value() == false);
+
+    return all_tokens_found;
+  }
+
+  //***************************************************************************
   /// pad_left
   //***************************************************************************
   template <typename TIString>

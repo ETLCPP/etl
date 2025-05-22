@@ -61,7 +61,7 @@ namespace etl
       //***************************************************************************
       /// Construct from a duration.
       //***************************************************************************
-      ETL_CONSTEXPR explicit time_point(const duration& dur_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 explicit time_point(const duration& dur_) ETL_NOEXCEPT
         : dur(dur_)
       {
       }
@@ -69,7 +69,7 @@ namespace etl
       //***************************************************************************
       /// Copy constructor.
       //***************************************************************************
-      ETL_CONSTEXPR time_point(const time_point& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 time_point(const time_point& rhs) ETL_NOEXCEPT
         : dur(rhs.dur)
       {
       }
@@ -96,6 +96,7 @@ namespace etl
       //***************************************************************************
       /// Returns a duration representing the amount of time between this and the clock's epoch.
       //***************************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 duration time_since_epoch() const ETL_NOEXCEPT
       {
         return dur;
@@ -124,7 +125,8 @@ namespace etl
       //***************************************************************************
       /// Returns a time_point with the smallest possible duration.
       //***************************************************************************
-      static ETL_CONSTEXPR time_point min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 time_point min() ETL_NOEXCEPT
       {
         return time_point(duration::min());
       }
@@ -132,7 +134,8 @@ namespace etl
       //***************************************************************************
       /// Returns a time_point with the largest possible duration.
       //***************************************************************************
-      static ETL_CONSTEXPR time_point max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 time_point max() ETL_NOEXCEPT
       {
         return time_point(duration::max());
       }
@@ -146,6 +149,7 @@ namespace etl
     /// Rounds down a duration to the nearest lower precision.
     //***********************************************************************
     template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_NODISCARD
     ETL_CONSTEXPR14 
     etl::chrono::time_point<TClock, TToDuration>
       floor(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
@@ -157,6 +161,7 @@ namespace etl
     /// Rounds up a duration to the nearest higher precision.
     //***********************************************************************
     template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_NODISCARD
     ETL_CONSTEXPR14 
     etl::chrono::time_point<TClock, TToDuration>
       ceil(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
@@ -169,6 +174,7 @@ namespace etl
     /// If the duration is exactly halfway, it rounds away from zero.
     //***********************************************************************
     template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_NODISCARD
     ETL_CONSTEXPR14 
     etl::chrono::time_point<TClock, TToDuration>
       round(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT
@@ -177,6 +183,7 @@ namespace etl
     }
 
     template <typename TToDuration, typename TClock, typename TDuration>
+    ETL_NODISCARD
     ETL_CONSTEXPR14
     etl::chrono::time_point<TClock, TToDuration>
       time_point_cast(const etl::chrono::time_point<TClock, TDuration>& tp) ETL_NOEXCEPT

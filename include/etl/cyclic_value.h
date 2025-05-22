@@ -109,16 +109,7 @@ namespace etl
     //*************************************************************************
     void set(T value_)
     {
-      if (value_ > Last)
-      {
-        value_ = Last;
-      }
-      else if (value_ < First)
-      {
-        value_ = First;
-      }
-
-      value = value_;
+      value = etl::clamp(value_, First, Last);
     }
 
     //*************************************************************************
@@ -351,7 +342,7 @@ namespace etl
     cyclic_value(T first_, T last_)
       : value(first_)
       , first_value(first_)
-      , last_value(last_) 
+      , last_value(last_)
     {
     }
 
@@ -398,16 +389,7 @@ namespace etl
     //*************************************************************************
     void set(T value_)
     {
-      if (value_ > last_value)
-      {
-        value_ = last_value;
-      }
-      else if (value_ < first_value)
-      {
-        value_ = first_value;
-      }
-
-      value = value_;
+      value = etl::clamp(value_, first_value, last_value);
     }
 
     //*************************************************************************

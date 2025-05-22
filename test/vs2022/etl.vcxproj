@@ -8502,6 +8502,8 @@
     <ClCompile Include="..\test_chrono_year_month.cpp" />
     <ClCompile Include="..\test_chrono_year_month_day.cpp" />
     <ClCompile Include="..\test_chrono_year_month_day_last.cpp" />
+    <ClCompile Include="..\test_chrono_year_month_weekday.cpp" />
+    <ClCompile Include="..\test_chrono_year_month_weekday_last.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />

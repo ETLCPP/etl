@@ -990,8 +990,8 @@ namespace etl
     {
       if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
       {
-        in    = 0U;
-        out   = 0U;
+        in  = 0U;
+        out = 0U;
         ETL_RESET_DEBUG_COUNT;
       }
       else
@@ -1063,9 +1063,9 @@ namespace etl
     template <typename TIterator>
     static difference_type distance(const TIterator& other)
     {
-      const difference_type index = other.get_index();
-      const difference_type reference_index = other.container().out;
-      const size_t buffer_size = other.container().buffer_size;
+      const difference_type index           = other.get_index();
+      const difference_type reference_index = static_cast<difference_type>(other.container().out);
+      const size_t buffer_size              = other.container().buffer_size;
 
       if (index < reference_index)
       {

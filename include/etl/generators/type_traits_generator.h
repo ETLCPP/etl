@@ -725,7 +725,8 @@ namespace etl
   {
     // Base case
     template <typename T, typename = int>
-    struct is_convertible_to_int : false_type
+    struct is_convertible_to_int 
+      : false_type
     {
     };
 
@@ -733,7 +734,7 @@ namespace etl
     // 2nd template argument of base case defaults to int to ensure that this partial specialization is always tried first
     template <typename T>
     struct is_convertible_to_int<T, decltype(static_cast<int>(declval<T>()))>
-        : true_type 
+      : true_type 
     {
     };
   }
@@ -751,7 +752,29 @@ namespace etl
   template <typename T>
   inline constexpr bool is_enum_v = etl::is_enum<T>::value;
 #endif
+#else
+  namespace private_type_traits
+  {
+    // Helper to detect if a type is convertible to an integer
+    template <typename T>
+    struct is_convertible_to_int
+    {
+      static char test(int);   // Match if T is convertible to int
+      static double test(...); // Fallback for other types
 
+      static const bool value = sizeof(test(static_cast<T>(0))) == sizeof(char);
+    };
+  }
+
+  // Implementation of is_enum
+  template <typename T>
+  struct is_enum
+  {
+    static const bool value = private_type_traits::is_convertible_to_int<T>::value &&
+                              !is_class<T>::value &&
+                              !is_arithmetic<T>::value &&
+                              !is_reference<T>::value;
+  };
 #endif
 
   //***************************************************************************
@@ -2257,7 +2280,8 @@ typedef integral_constant<bool, true>  true_type;
     };
 
     template <typename T1, typename T2, typename = void>
-    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&>
+    struct common_type_2_impl 
+      : decay_conditional_result<const T1&, const T2&>
     {
     };
 
@@ -2354,7 +2378,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // underlying_type
-
+#if ETL_USING_BUILTIN_UNDERLYING_TYPE
   // Primary template for etl::underlying_type
   template <typename T, bool = etl::is_enum<T>::value>
   struct underlying_type;
@@ -2367,37 +2391,19 @@ typedef integral_constant<bool, true>  true_type;
     ETL_STATIC_ASSERT(etl::is_enum<T>::value, "etl::underlying_type can only be used with enumeration types.");
   };
 
-#if ETL_USING_BUILTIN_UNDERLYING_TYPE
   template <typename T>
   struct underlying_type<T, true>
   {
     typedef __underlying_type(T) type;
   };
 #else
+  /// Primary template for etl::underlying_type
+  /// Users must spelialise this template for their enumerations. 
   template <typename T>
-  struct underlying_type<T, true>
+  struct underlying_type
   {
-  private:
-
-    // Helper union to deduce the underlying type
-    union Helper
-    {
-      T enum_value;
-      unsigned char raw[sizeof(T)];
-    };
-
-  public:
-
-    // The deduced underlying type
-    typedef typename etl::conditional<sizeof(Helper) == sizeof(long int),
-                                      long int,
-                                      typename etl::conditional<sizeof(Helper) == sizeof(int),
-                                                                int,
-                                                                typename etl::conditional<sizeof(Helper) == sizeof(short),
-                                                                short,
-                                                                typename etl::conditional<sizeof(Helper) == sizeof(char),
-                                                                                          char,
-                                                                                          void>::type>::type>::type>::type type;
+    ETL_STATIC_ASSERT(false, "No user defined specialisation of etl::underlying_type for this type");
+    typedef char type;
   };
 #endif
 

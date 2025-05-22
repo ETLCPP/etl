@@ -44,7 +44,8 @@ namespace etl
   template <typename TDuration>
   ETL_NODISCARD
   ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::chrono::is_duration<TDuration>::value, TDuration>::type
+  //typename etl::enable_if<etl::chrono::is_duration<TDuration>::value, TDuration>::type
+  typename etl::enable_if<etl::is_specialization<TDuration, etl::chrono::duration>::value, TDuration>::type
     absolute(TDuration dur) ETL_NOEXCEPT
   {
     return TDuration((dur.count() < 0) ? -dur.count() : dur.count());
@@ -86,13 +87,13 @@ namespace etl
       struct calculate_fractional_width
       {
         static constexpr int value = (TDur::period::den == 1)
-          ? 0
-          : fractional_width_helper<TDur::period::den>::value;
+                                     ? 0
+                                     : fractional_width_helper<TDur::period::den>::value;
       };
 
     public:
 
-      ETL_STATIC_ASSERT(etl::chrono::is_duration<TDuration>::value, "TDuration is not a etl::chrono::duration type");
+      ETL_STATIC_ASSERT((etl::is_specialization<TDuration, etl::chrono::duration>::value), "TDuration is not a etl::chrono::duration type");
 
       static constexpr int fractional_width = calculate_fractional_width<TDuration>::value;
 
@@ -105,8 +106,7 @@ namespace etl
       //***********************************************************************
       /// Default constructor.
       //***********************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 
+      ETL_CONSTEXPR 
       hh_mm_ss() ETL_NOEXCEPT
         : d(TDuration::zero())
       {
@@ -115,7 +115,6 @@ namespace etl
       //***********************************************************************
       /// Construct from duration.
       //***********************************************************************
-      ETL_NODISCARD 
       ETL_CONSTEXPR14
       explicit hh_mm_ss(TDuration d_) ETL_NOEXCEPT
         : d(d_)
@@ -179,6 +178,7 @@ namespace etl
       //***********************************************************************
       /// Returns the duration.
       //***********************************************************************
+      ETL_NODISCARD
       ETL_CONSTEXPR14 explicit operator precision() const ETL_NOEXCEPT
       {
         return to_duration();

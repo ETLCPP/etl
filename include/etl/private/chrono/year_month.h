@@ -43,7 +43,7 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      year_month()
+      ETL_CONSTEXPR year_month()
         : y()
         , m()
       {
@@ -52,8 +52,8 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR year_month(const etl::chrono::year&  y_, 
-                               const etl::chrono::month& m_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 year_month(const etl::chrono::year&  y_, 
+                                 const etl::chrono::month& m_) ETL_NOEXCEPT
         : y(y_)
         , m(m_)
       {
@@ -62,7 +62,8 @@ namespace etl
       //*************************************************************************
       /// Returns the year.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::year year() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::year year() const ETL_NOEXCEPT
       {
         return y;
       }
@@ -70,7 +71,8 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_CONSTEXPR etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -78,7 +80,8 @@ namespace etl
       //*************************************************************************
       /// Returns true if the month/day is valid.
       //*************************************************************************
-      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {       
         return y.ok() && m.ok();
       }
@@ -150,7 +153,7 @@ namespace etl
       /// Equality operator.
       //*************************************************************************
       friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month& lhs, 
-                                            const etl::chrono::year_month& rhs) ETL_NOEXCEPT
+                                              const etl::chrono::year_month& rhs) ETL_NOEXCEPT
       {
         return (lhs.y == rhs.y) && (lhs.m == rhs.m);
       }
@@ -159,7 +162,7 @@ namespace etl
       /// Inequality operator.
       //*************************************************************************
       friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month& lhs, 
-                                            const etl::chrono::year_month& rhs) ETL_NOEXCEPT
+                                              const etl::chrono::year_month& rhs) ETL_NOEXCEPT
       {
         return !(lhs == rhs);
       }
@@ -216,17 +219,17 @@ namespace etl
   template <>
   struct hash<etl::chrono::year_month>
   {
-    size_t operator()(const etl::chrono::year_month& md) const
-    {
-      uint8_t buffer[sizeof(unsigned int) + sizeof(unsigned int)];
-      
-      unsigned int y = md.year();
-      unsigned int m = md.month();
+    size_t operator()(const etl::chrono::year_month& ym) const
+    {    
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ym.year()));
+      etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ym.month()));
+
+      uint8_t buffer[sizeof(y) + sizeof(m)];
 
       memcpy(buffer,             &y, sizeof(y));
       memcpy(buffer + sizeof(y), &m, sizeof(m));
 
-      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(unsigned int) + sizeof(unsigned int));
+      return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(y) + sizeof(m));
     }
   };
 #endif

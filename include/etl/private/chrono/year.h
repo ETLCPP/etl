@@ -43,6 +43,8 @@ namespace etl
     {
     public:
 
+      using rep = int16_t;
+
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
@@ -62,7 +64,7 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      ETL_CONSTEXPR year(const etl::chrono::year& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 year(const etl::chrono::year& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
@@ -142,7 +144,8 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the year is within the valid -32767 to 32767 range
       //***********************************************************************
-      ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
       {
         return (value != etl::integral_limits<int16_t>::min);
       }
@@ -150,7 +153,8 @@ namespace etl
       //***********************************************************************
       /// The minimum year value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::year min() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::year min() ETL_NOEXCEPT
       {
         return etl::chrono::year(-32767);
       }
@@ -158,7 +162,8 @@ namespace etl
       //***********************************************************************
       /// The maximum year value for which ok() will return <b>true</b>
       //***********************************************************************
-      static ETL_CONSTEXPR etl::chrono::year max() ETL_NOEXCEPT
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 etl::chrono::year max() ETL_NOEXCEPT
       {
         return etl::chrono::year(32767);
       }
@@ -166,7 +171,8 @@ namespace etl
       //***********************************************************************
       /// Returns <b>true</b> if the year is a leap year
       //***********************************************************************
-      ETL_CONSTEXPR bool is_leap() const ETL_NOEXCEPT
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 bool is_leap() const ETL_NOEXCEPT
       {
         return ((value % 4) == 0) &&    // Divisible by 4
                (((value % 100) != 0) || // but not divisible by 100
@@ -176,14 +182,14 @@ namespace etl
       //***********************************************************************
       /// Conversion operator to unsigned int
       //***********************************************************************
-      ETL_CONSTEXPR operator int() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 operator int() const ETL_NOEXCEPT
       {
         return static_cast<int>(value);
       }
 
     private:
 
-      int16_t value;
+      rep value;
     };
 
     //***********************************************************************
@@ -316,10 +322,10 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year& y) const
     {
-      int value = y;
+      etl::chrono::year::rep value = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(y));
       const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(int));
+      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif
@@ -335,7 +341,11 @@ namespace etl
       //***********************************************************************
       /// Literal for years
       //***********************************************************************
+#if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::year operator ""_year(unsigned long long y) noexcept
+#else
+      inline ETL_CONSTEXPR14 etl::chrono::year operator ""_y(unsigned long long y) noexcept
+#endif
       {
         return etl::chrono::year(static_cast<int16_t>(y));
       }
