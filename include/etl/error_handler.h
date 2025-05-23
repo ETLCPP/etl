@@ -282,7 +282,7 @@ namespace etl
   /// Sets the assert function.
   /// The argument function signature is void(*)(const etl::exception&)
   //***************************************************************************
-  void set_assert_function(etl::private_error_handler::assert_function_ptr_t afptr)
+  inline void set_assert_function(etl::private_error_handler::assert_function_ptr_t afptr)
   {
     etl::private_error_handler::assert_handler<0>::assert_function_ptr = afptr;
   }
