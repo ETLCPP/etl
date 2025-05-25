@@ -1,4 +1,16 @@
 ﻿===============================================================================
+20.41.1
+
+Fixes:
+Added missing comparison operators.
+Replaced 'typedef' with 'using' for C++11 chrono features.
+Added inline namespaces for chrono literals.
+Added additional chrono arithmetic tests.
+
+Pull Requests:
+#1106 Make public function definition inline
+
+===============================================================================
 20.41.0
 
 Updates:
