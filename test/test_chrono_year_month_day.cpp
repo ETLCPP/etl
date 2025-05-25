@@ -121,18 +121,18 @@ namespace
     //*************************************************************************
     TEST(test_year_month_day_compare)
     {
-      Chrono::year_month_day ym1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
-      Chrono::year_month_day ym2{Chrono::year(2001), Chrono::January,  Chrono::day(1)};
-      Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
-      Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January,  Chrono::day(2)};
+      Chrono::year_month_day ymd1{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ymd2{Chrono::year(2001), Chrono::January,  Chrono::day(1)};
+      Chrono::year_month_day ymd3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
+      Chrono::year_month_day ymd4{Chrono::year(2000), Chrono::January,  Chrono::day(2)};
 
-      CHECK_TRUE(ym1.compare(ym1) == 0);
-      CHECK_TRUE(ym1.compare(ym2) == -1);
-      CHECK_TRUE(ym2.compare(ym1) == 1);
-      CHECK_TRUE(ym1.compare(ym3) == -1);
-      CHECK_TRUE(ym3.compare(ym1) == 1);
-      CHECK_TRUE(ym1.compare(ym4) == -1);
-      CHECK_TRUE(ym4.compare(ym1) == 1);
+      CHECK_TRUE(ymd1.compare(ymd1) == 0);
+      CHECK_TRUE(ymd1.compare(ymd2) == -1);
+      CHECK_TRUE(ymd2.compare(ymd1) == 1);
+      CHECK_TRUE(ymd1.compare(ymd3) == -1);
+      CHECK_TRUE(ymd3.compare(ymd1) == 1);
+      CHECK_TRUE(ymd1.compare(ymd4) == -1);
+      CHECK_TRUE(ymd4.compare(ymd1) == 1);
     }
 #endif
 
@@ -154,6 +154,48 @@ namespace
       CHECK_EQUAL((unsigned)expected.year(),  (unsigned)ymd.year());
       CHECK_EQUAL((unsigned)expected.month(), (unsigned)ymd.month());
       CHECK_EQUAL((unsigned)expected.day(),   (unsigned)ymd.day());
+    }
+
+    //*************************************************************************
+    TEST(test_year_month_day_member_arithmetic_operators)
+    {
+      Chrono::year_month_day ymd{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+
+      ymd += Chrono::years(10);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2010), Chrono::January,  Chrono::day(1)) == ymd);
+
+      ymd -= Chrono::years(5);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2005), Chrono::January,  Chrono::day(1)) == ymd);
+
+      ymd += Chrono::months(10);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2005), Chrono::November,  Chrono::day(1)) == ymd);
+
+      ymd -= Chrono::months(5);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2005), Chrono::June,  Chrono::day(1)) == ymd);
+    }
+
+    //*************************************************************************
+    TEST(test_year_month_day_non_member_arithmetic_operators)
+    {
+      Chrono::year_month_day ymd{Chrono::year(2000), Chrono::January,  Chrono::day(1)};
+
+      ymd = ymd + Chrono::years(10);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2010), Chrono::January,  Chrono::day(1)) == ymd);
+
+      ymd = Chrono::years(10) + ymd;
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2020), Chrono::January,  Chrono::day(1)) == ymd);
+
+      ymd = ymd - Chrono::years(5);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2015), Chrono::January,  Chrono::day(1)) == ymd);
+
+      ymd = ymd + Chrono::months(3);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2015), Chrono::April,    Chrono::day(1)) == ymd);
+      
+      ymd = Chrono::months(3) + ymd;
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2015), Chrono::July,     Chrono::day(1)) == ymd);
+
+      ymd = ymd - Chrono::months(5);
+      CHECK_TRUE(Chrono::year_month_day(Chrono::year(2015), Chrono::February, Chrono::day(1)) == ymd);
     }
 
     //*************************************************************************

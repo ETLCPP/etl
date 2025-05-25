@@ -103,6 +103,48 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_year_month_day_last_member_arithmetic_operators)
+    {
+      Chrono::year_month_day_last ymdl(Chrono::year(2000), Chrono::month_day_last(Chrono::January));
+
+      ymdl += Chrono::years(10);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2010), Chrono::month_day_last(Chrono::January)) == ymdl);
+      
+      ymdl -= Chrono::years(5);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2005), Chrono::month_day_last(Chrono::January)) == ymdl);
+      
+      ymdl += Chrono::months(10);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2005), Chrono::month_day_last(Chrono::November)) == ymdl);
+      
+      ymdl -= Chrono::months(5);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2005), Chrono::month_day_last(Chrono::June)) == ymdl);
+    }
+
+    //*************************************************************************
+    TEST(test_year_month_day_last_non_member_arithmetic_operators)
+    {
+      Chrono::year_month_day_last ymdl(Chrono::year(2000), Chrono::month_day_last(Chrono::January));
+
+      ymdl = ymdl + Chrono::years(10);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2010), Chrono::month_day_last(Chrono::January)) == ymdl);
+
+      ymdl = Chrono::years(10) + ymdl;
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2020), Chrono::month_day_last(Chrono::January)) == ymdl);
+
+      ymdl = ymdl - Chrono::years(5);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2015), Chrono::month_day_last(Chrono::January)) == ymdl);
+
+      ymdl = ymdl + Chrono::months(3);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2015), Chrono::month_day_last(Chrono::April)) == ymdl);
+
+      ymdl = Chrono::months(3) + ymdl;
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2015), Chrono::month_day_last(Chrono::July)) == ymdl);
+
+      ymdl = ymdl - Chrono::months(5);
+      CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2015), Chrono::month_day_last(Chrono::February)) == ymdl);
+    }
+
+    //*************************************************************************
     TEST(test_year_month_day_last_comparison_operators)
     {
       Chrono::year_month_day_last year_month_day_last1(Chrono::year(2000), Chrono::month_day_last(Chrono::January));
