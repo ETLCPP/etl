@@ -3305,6 +3305,7 @@
     <ClInclude Include="..\..\include\etl\rms.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
+    <ClInclude Include="..\..\include\etl\signal.h" />
     <ClInclude Include="..\..\include\etl\singleton.h" />
     <ClInclude Include="..\..\include\etl\singleton_base.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
@@ -9490,6 +9491,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\test_signal.cpp" />
     <ClCompile Include="..\test_singleton.cpp" />
     <ClCompile Include="..\test_singleton_base.cpp" />
     <ClCompile Include="..\test_span_dynamic_extent.cpp" />
