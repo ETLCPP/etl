@@ -152,7 +152,7 @@ namespace etl
     //***************************************************************************
     /// System time
     //***************************************************************************
-    template<class Duration>
+    template <typename Duration>
     using sys_time = etl::chrono::time_point<etl::chrono::system_clock, Duration> ;
 
     using sys_seconds = sys_time<etl::chrono::seconds>;
