@@ -400,6 +400,10 @@ namespace etl
         {
           return (lhs.day() < rhs.day());
         }
+        else
+        {
+          return false;
+        }
       }
       else
       {
