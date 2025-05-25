@@ -85,6 +85,14 @@ namespace etl
 #include "private/chrono/operators.h"
 #include "private/chrono/time_zone.h"
 
+namespace etl
+{
+  namespace chrono 
+  {
+    using namespace literals::chrono_literals;
+  }
+}
+
 #endif
 
 #undef ETL_IN_CHRONO_H

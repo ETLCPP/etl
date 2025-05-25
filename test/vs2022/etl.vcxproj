@@ -8489,6 +8489,7 @@
     <ClCompile Include="..\test_chrono_day.cpp" />
     <ClCompile Include="..\test_chrono_duration.cpp" />
     <ClCompile Include="..\test_chrono_hh_mm_ss.cpp" />
+    <ClCompile Include="..\test_chrono_literals.cpp" />
     <ClCompile Include="..\test_chrono_month.cpp" />
     <ClCompile Include="..\test_chrono_month_day.cpp" />
     <ClCompile Include="..\test_chrono_month_day_last.cpp" />
