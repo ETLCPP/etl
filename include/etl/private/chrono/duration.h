@@ -106,8 +106,8 @@ namespace etl
     {
     public:
 
-      typedef TRep rep;
-      typedef typename TPeriod::type period;
+      using rep    = TRep;
+      using period =  typename TPeriod::type;
 
       //***********************************************************************
       ETL_CONSTEXPR duration() ETL_NOEXCEPT
@@ -285,9 +285,9 @@ namespace etl
 
       //***********************************************************************
       /// Compare duration with another.
-      /// if duration < other, returns -1;
-      /// else if duration > other, returns 1;
-      /// else returns 0;
+      /// if duration < other, returns -1
+      /// else if duration > other, returns 1
+      /// else returns 0
       //***********************************************************************
       template <typename TRep2, typename TPeriod2>
       ETL_CONSTEXPR14 int compare(const duration<TRep2, TPeriod2>& other) const ETL_NOEXCEPT 
@@ -313,22 +313,22 @@ namespace etl
     /// Duration types
     //***********************************************************************
 #if (ETL_USING_64BIT_TYPES)
-    typedef etl::chrono::duration<int64_t, etl::nano>              nanoseconds;
-    typedef etl::chrono::duration<int64_t, etl::micro>             microseconds;
-    typedef etl::chrono::duration<int64_t, etl::milli>             milliseconds;
-    typedef etl::chrono::duration<int64_t, etl::ratio<1U> >        seconds;
+    using nanoseconds  = etl::chrono::duration<int64_t, etl::nano>;
+    using microseconds = etl::chrono::duration<int64_t, etl::micro>;
+    using milliseconds = etl::chrono::duration<int64_t, etl::milli>;
+    using seconds      = etl::chrono::duration<int64_t, etl::ratio<1U>>;
 #else
-    typedef etl::chrono::duration<int32_t, etl::nano>              nanoseconds;
-    typedef etl::chrono::duration<int32_t, etl::micro>             microseconds;
-    typedef etl::chrono::duration<int32_t, etl::milli>             milliseconds;
-    typedef etl::chrono::duration<int32_t, etl::ratio<1U> >        seconds;
+    using nanoseconds  = etl::chrono::duration<int32_t, etl::nano>;
+    using microseconds = etl::chrono::duration<int32_t, etl::micro>;
+    using milliseconds = etl::chrono::duration<int32_t, etl::milli>;
+    using seconds      = etl::chrono::duration<int32_t, etl::ratio<1U>>;
 #endif
-    typedef etl::chrono::duration<int32_t, etl::ratio<60U> >       minutes;
-    typedef etl::chrono::duration<int32_t, etl::ratio<3600U> >     hours;
-    typedef etl::chrono::duration<int32_t, etl::ratio<86400U> >    days;
-    typedef etl::chrono::duration<int32_t, etl::ratio<604800U> >   weeks;
-    typedef etl::chrono::duration<int32_t, etl::ratio<2629746U> >  months;
-    typedef etl::chrono::duration<int32_t, etl::ratio<31556952U> > years;
+    using minutes = etl::chrono::duration<int32_t, etl::ratio<60U>>;
+    using hours   = etl::chrono::duration<int32_t, etl::ratio<3600U>>;
+    using days    = etl::chrono::duration<int32_t, etl::ratio<86400U>>;
+    using weeks   = etl::chrono::duration<int32_t, etl::ratio<604800U>>;
+    using months  = etl::chrono::duration<int32_t, etl::ratio<2629746U>>;
+    using years   = etl::chrono::duration<int32_t, etl::ratio<31556952U>>;
 
     //***********************************************************************
     /// duration_cast
@@ -336,14 +336,14 @@ namespace etl
     template <typename TToDuration, typename TRep, typename TPeriod>
     ETL_CONSTEXPR14 TToDuration duration_cast(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
     {
-      typedef TRep    from_rep;
-      typedef TPeriod from_period;
+      using from_rep    = TRep    ;
+      using from_period = TPeriod ;
 
-      typedef typename TToDuration::rep    to_rep;
-      typedef typename TToDuration::period to_period;
+      using to_rep    = typename TToDuration::rep;
+      using to_period = typename TToDuration::period;
 
-      typedef typename etl::ratio_divide<from_period, to_period> ratio_divide_t;
-      typedef typename etl::common_type<from_rep, to_rep, intmax_t>::type common_t;
+      using ratio_divide_t = typename etl::ratio_divide<from_period, to_period>;
+      using common_t       = typename etl::common_type<from_rep, to_rep, intmax_t>::type;
 
       common_t ct_count = static_cast<common_t>(d.count());
       common_t ct_num   = static_cast<common_t>(ratio_divide_t::type::num);
@@ -396,13 +396,13 @@ namespace etl
   /// Find the common type of two duration types.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  struct common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >
+  struct common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>
   {
   private:
 
-    typedef typename etl::common_type<TRep1, TRep2>::type value_type;
-    typedef etl::ratio<etl::chrono::private_chrono::gcd<TPeriod1::num, TPeriod2::num>::value,
-                       etl::chrono::private_chrono::lcm<TPeriod1::den, TPeriod2::den>::value> period_type;
+    using value_type  = typename etl::common_type<TRep1, TRep2>::type ;
+    using period_type = etl::ratio<etl::chrono::private_chrono::gcd<TPeriod1::num, TPeriod2::num>::value,
+                                   etl::chrono::private_chrono::lcm<TPeriod1::den, TPeriod2::den>::value>;
 
   public:
 
@@ -416,7 +416,7 @@ namespace etl
   ETL_CONSTEXPR14 bool operator ==(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
                                    const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
-    typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
+    using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
     
     common_t l = etl::chrono::duration_cast<common_t>(lhs);
     common_t r = etl::chrono::duration_cast<common_t>(rhs);
@@ -441,7 +441,7 @@ namespace etl
   ETL_CONSTEXPR14 bool operator <(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
-    typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
+    using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
 
     common_t l = etl::chrono::duration_cast<common_t>(lhs);
     common_t r = etl::chrono::duration_cast<common_t>(rhs);
@@ -487,7 +487,7 @@ namespace etl
   [[nodiscard]] constexpr auto operator <=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
                                             const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
-    typedef typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type common_t;
+    using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
 
     common_t l = etl::chrono::duration_cast<common_t>(lhs);
     common_t r = etl::chrono::duration_cast<common_t>(rhs);
@@ -709,9 +709,9 @@ namespace etl
 #if ETL_HAS_CHRONO_LITERALS_DURATION
 namespace etl
 {
-  namespace literals
+  inline namespace literals
   {
-    namespace chrono_literals
+    inline namespace chrono_literals
     {
       //***********************************************************************
       /// Literal for hours duration

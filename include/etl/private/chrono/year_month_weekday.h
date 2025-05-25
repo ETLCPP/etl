@@ -160,78 +160,6 @@ namespace etl
         return y.ok() && m.ok() && wdi.ok();
       }
 
-      //*************************************************************************
-      /// Adds etl::chrono::years
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::year_month_weekday& ymwd,
-                                                                        const etl::chrono::years& dy) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday(ymwd.year() + dy, ymwd.month(), ymwd.weekday_indexed());
-      }
-
-      //*************************************************************************
-      /// Adds etl::chrono::years
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::years& dy,
-                                                                        const etl::chrono::year_month_weekday& ymwd) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday(ymwd.year() + dy, ymwd.month(), ymwd.weekday_indexed());
-      }
-
-      //*************************************************************************
-      /// Adds etl::chrono::months
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::year_month_weekday& ymwd,
-                                                                        const etl::chrono::months& dm) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday(ymwd.year(), ymwd.month() + dm, ymwd.weekday_indexed());
-      }
-
-      //*************************************************************************
-      /// Adds etl::chrono::months
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::months& dm,
-                                                                        const etl::chrono::year_month_weekday& ymwd) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday(ymwd.year(), ymwd.month() + dm, ymwd.weekday_indexed());
-      }
-
-      //*************************************************************************
-      /// Subtracts etl::chrono::years
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator -(const etl::chrono::year_month_weekday& ymwd,
-                                                                        const etl::chrono::years& dy) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday(ymwd.year() - dy, ymwd.month(), ymwd.weekday_indexed());
-      }
-
-      //*************************************************************************
-      /// Subtracts etl::chrono::months
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator -(const etl::chrono::year_month_weekday& ymwd,
-                                                                        const etl::chrono::months& dm) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday(ymwd.year(), ymwd.month() - dm, ymwd.weekday_indexed());
-      }
-
-      //*************************************************************************
-      /// Equality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_weekday& lhs, 
-                                              const etl::chrono::year_month_weekday& rhs) ETL_NOEXCEPT
-      {
-        return (lhs.y == rhs.y) && (lhs.m == rhs.m) && (lhs.wdi == rhs.wdi);
-      }
-
-      //*************************************************************************
-      /// Inequality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_weekday& lhs, 
-                                              const etl::chrono::year_month_weekday& rhs) ETL_NOEXCEPT
-      {
-        return !(lhs == rhs);
-      }
-
       //***********************************************************************
       /// Converts to etl::chrono::sys_days
       //***********************************************************************
@@ -279,6 +207,80 @@ namespace etl
       etl::chrono::month   m;
       etl::chrono::weekday_indexed wdi;
     };
+
+    //*************************************************************************
+    /// Adds etl::chrono::years
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::year_month_weekday& ymwd,
+                                                                      const etl::chrono::years& dy) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ymwd.year() + dy, ymwd.month(), ymwd.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Adds etl::chrono::years
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::years& dy,
+                                                                      const etl::chrono::year_month_weekday& ymwd) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ymwd.year() + dy, ymwd.month(), ymwd.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Adds etl::chrono::months
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::year_month_weekday& ymwd,
+                                                                      const etl::chrono::months& dm) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ymwd.year(), ymwd.month() + dm, ymwd.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Adds etl::chrono::months
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator +(const etl::chrono::months& dm,
+                                                                      const etl::chrono::year_month_weekday& ymwd) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ymwd.year(), ymwd.month() + dm, ymwd.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Subtracts etl::chrono::years
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator -(const etl::chrono::year_month_weekday& ymwd,
+                                                                      const etl::chrono::years& dy) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ymwd.year() - dy, ymwd.month(), ymwd.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Subtracts etl::chrono::months
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday operator -(const etl::chrono::year_month_weekday& ymwd,
+                                                                      const etl::chrono::months& dm) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday(ymwd.year(), ymwd.month() - dm, ymwd.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Equality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_weekday& lhs, 
+                                            const etl::chrono::year_month_weekday& rhs) ETL_NOEXCEPT
+    {
+      return (lhs.year() == rhs.year())   && 
+             (lhs.month() == rhs.month()) && 
+             (lhs.weekday() == rhs.weekday());
+    }
+
+    //*************************************************************************
+    /// Inequality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_weekday& lhs, 
+                                            const etl::chrono::year_month_weekday& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs == rhs);
+    }
 
     //*************************************************************************
     /// year_month_weekday_last
@@ -376,126 +378,6 @@ namespace etl
       }
 
       //*************************************************************************
-      /// Adds etl::chrono::years and const etl::chrono::year_month_weekday_last.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::year_month_weekday_last& ymwdl,
-                                                                             const etl::chrono::years& dy) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday_last(ymwdl.year() + dy, ymwdl.month(), ymwdl.weekday_last());
-      }
-
-      //*************************************************************************
-      /// Adds etl::chrono::years and const etl::chrono::year_month_weekday_last.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::years& dy,
-                                                                             const etl::chrono::year_month_weekday_last& ymwdl) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday_last(ymwdl.year() + dy, ymwdl.month(), ymwdl.weekday_last());
-      }
-
-      //*************************************************************************
-      /// Adds const etl::chrono::year_month_weekday_last and etl::chrono::months.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::year_month_weekday_last& ymwdl,
-                                                                             const etl::chrono::months& dm) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday_last(ymwdl.year(), ymwdl.month() + dm, ymwdl.weekday_last());
-      }
-
-      //*************************************************************************
-      /// Adds etl::chrono::months and const etl::chrono::year_month_weekday_last.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::months& dm,
-                                                                             const etl::chrono::year_month_weekday_last& ymwdl) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday_last(ymwdl.year(), ymwdl.month() + dm, ymwdl.weekday_last());
-      }
-
-      //*************************************************************************
-      /// Subtracts etl::chrono::years from const etl::chrono::year_month_weekday_last.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator -(const etl::chrono::year_month_weekday_last& ymwdl,
-                                                                             const etl::chrono::years& dy) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday_last(ymwdl.year() - dy, ymwdl.month(), ymwdl.weekday_last());
-      }
-
-      //*************************************************************************
-      /// Subtracts etl::chrono::months from const etl::chrono::year_month_weekday_last
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator -(const etl::chrono::year_month_weekday_last& ymwdl,
-                                                                             const etl::chrono::months& dm) ETL_NOEXCEPT
-      {
-        return etl::chrono::year_month_weekday_last(ymwdl.year(), ymwdl.month() - dm, ymwdl.weekday_last());
-      }
-
-      //*************************************************************************
-      /// Equality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_weekday_last& lhs, 
-                                              const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
-      {
-        return (lhs.y == rhs.y) && (lhs.m == rhs.m) && (lhs.weekday() == rhs.weekday());
-      }
-
-      //*************************************************************************
-      /// Inequality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_weekday_last& lhs, 
-                                              const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
-      {
-        return !(lhs == rhs);
-      }
-
-      //***********************************************************************
-      /// Spaceship operator
-      //***********************************************************************
-#if ETL_USING_CPP20
-      [[nodiscard]] friend constexpr auto operator <=>(const etl::chrono::year_month_weekday_last& lhs, 
-                                                       const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
-      {
-        auto cmp1 = lhs.year() <=> rhs.year();
-
-        if (cmp1 != 0)
-        {
-          return cmp1;
-        }
-        else
-        {
-          auto cmp2 = lhs.month() <=> rhs.month();
-
-          if (cmp2 != 0)
-          {
-            return cmp2;
-          }
-          else
-          {
-            return lhs.weekday().c_encoding() <=> rhs.weekday().c_encoding();
-          }
-        }
-      }
-#endif
-
-      //***********************************************************************
-      /// Compare year_month_weekday with another.
-      /// if year < other.year, returns -1;
-      /// else if year > other.year, returns 1;
-      /// if month < other.month, returns -1;
-      /// else if month > other.month, returns 1;
-      /// else returns 0;
-      //***********************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 int compare(const etl::chrono::year_month_weekday_last& other) const ETL_NOEXCEPT 
-      {
-        if (y < other.y) return -1;
-        if (y > other.y) return 1;
-        if (m < other.m) return -1;
-        if (m > other.m) return 1;
-
-        return 0;
-      }
-
-      //*************************************************************************
       /// Converts to etl::chrono::sys_days
       //*************************************************************************
       ETL_NODISCARD
@@ -539,6 +421,80 @@ namespace etl
       etl::chrono::month m;
       etl::chrono::weekday_last wdl;
     };
+
+    //*************************************************************************
+    /// Adds etl::chrono::years and const etl::chrono::year_month_weekday_last.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::year_month_weekday_last& ymwdl,
+                                                                           const etl::chrono::years& dy) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ymwdl.year() + dy, ymwdl.month(), ymwdl.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Adds etl::chrono::years and const etl::chrono::year_month_weekday_last.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::years& dy,
+                                                                           const etl::chrono::year_month_weekday_last& ymwdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ymwdl.year() + dy, ymwdl.month(), ymwdl.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Adds const etl::chrono::year_month_weekday_last and etl::chrono::months.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::year_month_weekday_last& ymwdl,
+                                                                           const etl::chrono::months& dm) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ymwdl.year(), ymwdl.month() + dm, ymwdl.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Adds etl::chrono::months and const etl::chrono::year_month_weekday_last.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator +(const etl::chrono::months& dm,
+                                                                           const etl::chrono::year_month_weekday_last& ymwdl) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ymwdl.year(), ymwdl.month() + dm, ymwdl.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Subtracts etl::chrono::years from const etl::chrono::year_month_weekday_last.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator -(const etl::chrono::year_month_weekday_last& ymwdl,
+                                                                           const etl::chrono::years& dy) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ymwdl.year() - dy, ymwdl.month(), ymwdl.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Subtracts etl::chrono::months from const etl::chrono::year_month_weekday_last
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 etl::chrono::year_month_weekday_last operator -(const etl::chrono::year_month_weekday_last& ymwdl,
+                                                                           const etl::chrono::months& dm) ETL_NOEXCEPT
+    {
+      return etl::chrono::year_month_weekday_last(ymwdl.year(), ymwdl.month() - dm, ymwdl.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Equality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::year_month_weekday_last& lhs, 
+                                            const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
+    {
+      return (lhs.year() == rhs.year())   &&
+             (lhs.month() == rhs.month()) &&
+             (lhs.weekday() == rhs.weekday());
+    }
+
+    //*************************************************************************
+    /// Inequality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::year_month_weekday_last& lhs, 
+                                            const etl::chrono::year_month_weekday_last& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs == rhs);
+    }
   }
 
   //*************************************************************************

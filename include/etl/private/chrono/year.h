@@ -187,6 +187,21 @@ namespace etl
         return static_cast<int>(value);
       }
 
+      //***********************************************************************
+      /// Compare year with another.
+      /// if year < other, returns -1
+      /// else if year > other, returns 1
+      /// else returns 0
+      //***********************************************************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 int compare(const year& other) const ETL_NOEXCEPT 
+      {
+        if (value < other.value) return -1;
+        if (value > other.value) return 1;
+
+        return 0;
+      }
+
     private:
 
       rep value;
@@ -334,9 +349,9 @@ namespace etl
 #if ETL_HAS_CHRONO_LITERALS_YEAR
 namespace etl
 {
-  namespace literals
+  inline namespace literals
   {
-    namespace chrono_literals
+    inline namespace chrono_literals
     {
       //***********************************************************************
       /// Literal for years

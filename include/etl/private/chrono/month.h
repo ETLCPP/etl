@@ -165,9 +165,9 @@ namespace etl
 
       //***********************************************************************
       /// Compare month with another.
-      /// if month < other, returns -1;
-      /// else if month > other, returns 1;
-      /// else returns 0;
+      /// if month < other, returns -1
+      /// else if month > other, returns 1
+      /// else returns 0
       //***********************************************************************
       ETL_NODISCARD
       ETL_CONSTEXPR14 int compare(const month& other) const ETL_NOEXCEPT 
@@ -367,68 +367,6 @@ namespace etl
     static ETL_CONSTANT etl::chrono::month November{ 11 };
     static ETL_CONSTANT etl::chrono::month December{ 12 };
 #endif
-
-    //*************************************************************************
-    /// month_day_last
-    //*************************************************************************
-    class month_day_last
-    {
-    public:
-
-      //*************************************************************************
-      /// Construct from month.
-      //*************************************************************************
-      ETL_CONSTEXPR14 explicit month_day_last(const etl::chrono::month& m_) ETL_NOEXCEPT
-        : m(m_)
-      {
-      }
-
-      //*************************************************************************
-      /// Get the month.
-      //*************************************************************************
-      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
-      {
-        return m;
-      }
-
-      //*************************************************************************
-      /// Is the contained month OK?
-      //*************************************************************************
-      bool ok() const ETL_NOEXCEPT
-      {
-        return m.ok();
-      }
-
-    private:
-
-      etl::chrono::month m;
-    };
-
-    //***********************************************************************
-    /// Equality operator
-    //***********************************************************************
-    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(mdl1.month()) == static_cast<unsigned>(mdl2.month()));
-    }
-
-    //***********************************************************************
-    /// Inequality operator
-    //***********************************************************************
-    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
-    {
-      return !(mdl1 == mdl2);
-    }
-
-    //***********************************************************************
-    /// Spaceship operator
-    //***********************************************************************
-#if ETL_USING_CPP20
-    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) noexcept
-    {
-      return (static_cast<unsigned>(mdl1.month()) <=> static_cast<unsigned>(mdl2.month()));
-    }
-#endif
   }
 
   //*************************************************************************
@@ -448,20 +386,5 @@ namespace etl
   };
 #endif
 
-  //*************************************************************************
-  /// Hash function for etl::chrono::month_day_last
-  //*************************************************************************
-#if ETL_USING_8BIT_TYPES
-  template <>
-  struct hash<etl::chrono::month_day_last>
-  {
-    size_t operator()(const etl::chrono::month_day_last& mdl) const
-    {
-      etl::chrono::month::rep value = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(mdl.month()));
-      const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
 
-      return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
-    }
-  };
-#endif
 }

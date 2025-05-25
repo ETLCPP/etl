@@ -77,29 +77,30 @@ namespace etl
         return m.ok() && wdi.ok();
       }
 
-      //*************************************************************************
-      /// Equality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_weekday& lhs, 
-                                              const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
-      {
-        return (lhs.m == rhs.m) && (lhs.wdi == rhs.wdi);
-      }
-
-      //*************************************************************************
-      /// Equality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_weekday& lhs, 
-                                              const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
-      {
-        return !(lhs == rhs);
-      }
-
     private:
 
       etl::chrono::month m;
       etl::chrono::weekday_indexed wdi;
     };
+
+    //*************************************************************************
+    /// Equality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_weekday& lhs, 
+                                            const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
+    {
+      return (lhs.month() == rhs.month()) &&
+             (lhs.weekday_indexed() == rhs.weekday_indexed());
+    }
+
+    //*************************************************************************
+    /// Equality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_weekday& lhs, 
+                                            const etl::chrono::month_weekday& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs == rhs);
+    }
 
     //*************************************************************************
     /// Construct from month and weekday_last.
@@ -145,29 +146,29 @@ namespace etl
         return m.ok() && wdl.ok();
       }
 
-      //*************************************************************************
-      /// Equality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_weekday_last& lhs, 
-                                              const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
-      {
-        return (lhs.m == rhs.m) && (lhs.wdl == rhs.wdl);
-      }
-
-      //*************************************************************************
-      /// Equality operator.
-      //*************************************************************************
-      friend ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_weekday_last& lhs, 
-                                              const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
-      {
-        return !(lhs == rhs);
-      }
-
     private:
 
       etl::chrono::month m;
       etl::chrono::weekday_last wdl;
     };  
+
+    //*************************************************************************
+    /// Equality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_weekday_last& lhs, 
+                                            const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
+    {
+      return (lhs.month() == rhs.month()) && (lhs.weekday_last() == rhs.weekday_last());
+    }
+
+    //*************************************************************************
+    /// Equality operator.
+    //*************************************************************************
+    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_weekday_last& lhs, 
+                                            const etl::chrono::month_weekday_last& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs == rhs);
+    }
   }
 
   //*************************************************************************

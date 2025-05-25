@@ -44,7 +44,6 @@ namespace etl
   template <typename TDuration>
   ETL_NODISCARD
   ETL_CONSTEXPR14 
-  //typename etl::enable_if<etl::chrono::is_duration<TDuration>::value, TDuration>::type
   typename etl::enable_if<etl::is_specialization<TDuration, etl::chrono::duration>::value, TDuration>::type
     absolute(TDuration dur) ETL_NOEXCEPT
   {

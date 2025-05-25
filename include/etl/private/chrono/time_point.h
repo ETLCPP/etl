@@ -78,7 +78,7 @@ namespace etl
       /// Copy construct from another time_point with a different duration type.
       //***************************************************************************
       template <typename TDuration2>
-      explicit time_point(const time_point<clock, TDuration2>& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 explicit time_point(const time_point<clock, TDuration2>& rhs) ETL_NOEXCEPT
         : dur(rhs.time_since_epoch())
       {
       }
@@ -86,7 +86,7 @@ namespace etl
       //***************************************************************************
       /// Assignment operator.
       //***************************************************************************
-      time_point& operator =(const time_point& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 time_point& operator =(const time_point& rhs) ETL_NOEXCEPT
       {
         dur = rhs.dur;
 
@@ -105,7 +105,7 @@ namespace etl
       //***************************************************************************
       /// Adds a duration.
       //***************************************************************************
-      time_point& operator +=(const duration& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 time_point& operator +=(const duration& rhs) ETL_NOEXCEPT
       {
         dur += rhs;
 
@@ -115,7 +115,7 @@ namespace etl
       //***************************************************************************
       /// Subtracts a duration.
       //***************************************************************************
-      time_point& operator -=(const duration& rhs) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 time_point& operator -=(const duration& rhs) ETL_NOEXCEPT
       {
         dur -= rhs;
 
@@ -138,6 +138,21 @@ namespace etl
       static ETL_CONSTEXPR14 time_point max() ETL_NOEXCEPT
       {
         return time_point(duration::max());
+      }
+
+      //***********************************************************************
+      /// Compare day with another.
+      /// if time_point < other, returns -1
+      /// else if time_point > other, returns 1
+      /// else returns 0
+      //***********************************************************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14 int compare(const time_point& other) const ETL_NOEXCEPT 
+      {
+          if (dur < other.dur) return -1;
+          if (dur > other.dur) return 1;
+
+          return 0;
       }
 
     private:

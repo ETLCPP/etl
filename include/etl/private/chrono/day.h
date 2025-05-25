@@ -171,9 +171,9 @@ namespace etl
 
       //***********************************************************************
       /// Compare day with another.
-      /// if day < other, returns -1;
-      /// else if day > other, returns 1;
-      /// else returns 0;
+      /// if day < other, returns -1
+      /// else if day > other, returns 1
+      /// else returns 0
       //***********************************************************************
       ETL_NODISCARD
       ETL_CONSTEXPR14 int compare(const day& other) const ETL_NOEXCEPT 
@@ -336,9 +336,9 @@ namespace etl
 #if ETL_HAS_CHRONO_LITERALS_DAY
 namespace etl
 {
-  namespace literals
+  inline namespace literals
   {
-    namespace chrono_literals
+    inline namespace chrono_literals
     {
 #if ETL_USING_VERBOSE_CHRONO_LITERALS
   inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) noexcept
