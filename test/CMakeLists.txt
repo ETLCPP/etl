@@ -58,10 +58,11 @@ add_executable(etl_tests
 	test_callback_timer_locked.cpp
 	test_char_traits.cpp
 	test_checksum.cpp
-    test_chrono_clocks.cpp
+	test_chrono_clocks.cpp
 	test_chrono_day.cpp
 	test_chrono_duration.cpp
 	test_chrono_hh_mm_ss.cpp
+	test_chrono_literals.cpp
 	test_chrono_month.cpp
 	test_chrono_month_day.cpp
 	test_chrono_month_day_last.cpp
@@ -75,7 +76,9 @@ add_executable(etl_tests
 	test_chrono_year.cpp
 	test_chrono_year_month.cpp
 	test_chrono_year_month_day.cpp
-    test_chrono_year_month_day_last.cpp
+	test_chrono_year_month_day_last.cpp
+	test_chrono_year_month_weekday.cpp
+	test_chrono_year_month_weekday_last.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
@@ -161,11 +164,13 @@ add_executable(etl_tests
 	test_fsm.cpp
 	test_function.cpp
 	test_functional.cpp
+	test_function_traits.cpp
 	test_gamma.cpp
 	test_hash.cpp
 	test_hfsm.cpp
 	test_hfsm_recurse_to_inner_state_on_start.cpp
 	test_histogram.cpp
+	test_index_of_type.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
 	test_instance_count.cpp
@@ -240,6 +245,7 @@ add_executable(etl_tests
 	test_queue_spsc_locked.cpp
 	test_queue_spsc_locked_small.cpp
 	test_random.cpp
+	test_ratio.cpp
 	test_reference_flat_map.cpp
 	test_reference_flat_multimap.cpp
 	test_reference_flat_multiset.cpp
@@ -251,6 +257,7 @@ add_executable(etl_tests
 	test_set.cpp
 	test_shared_message.cpp
 	test_singleton.cpp
+	test_singleton_base.cpp
 	test_smallest.cpp
 	test_span_dynamic_extent.cpp
 	test_span_fixed_extent.cpp
@@ -300,11 +307,15 @@ add_executable(etl_tests
 	test_to_u32string.cpp
 	test_to_u8string.cpp
 	test_to_wstring.cpp
+	test_tuple.cpp
 	test_type_def.cpp
+	test_type_list.cpp
 	test_type_lookup.cpp
 	test_type_select.cpp
 	test_type_traits.cpp
 	test_unaligned_type.cpp
+	test_unaligned_type_ext.cpp
+	test_uncopyable.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp
