@@ -82,19 +82,21 @@ namespace
       Stopped,
       Set_Speed,
       Recursive,
+      Self_Transition,
       Timeout,
       Unsupported
     };
 
     ETL_DECLARE_ENUM_TYPE(EventId, etl::message_id_t)
-    ETL_ENUM_TYPE(Start,       "Start")
-    ETL_ENUM_TYPE(Stop,        "Stop")
-    ETL_ENUM_TYPE(EStop,       "E-Stop")
-    ETL_ENUM_TYPE(Stopped,     "Stopped")
-    ETL_ENUM_TYPE(Set_Speed,   "Set Speed")
-    ETL_ENUM_TYPE(Recursive,   "Recursive")
-    ETL_ENUM_TYPE(Timeout,     "Timeout")
-    ETL_ENUM_TYPE(Unsupported, "Unsupported")
+    ETL_ENUM_TYPE(Start,           "Start")
+    ETL_ENUM_TYPE(Stop,            "Stop")
+    ETL_ENUM_TYPE(EStop,           "E-Stop")
+    ETL_ENUM_TYPE(Stopped,         "Stopped")
+    ETL_ENUM_TYPE(Set_Speed,       "Set Speed")
+    ETL_ENUM_TYPE(Recursive,       "Recursive")
+    ETL_ENUM_TYPE(Self_Transition, "Self_Transition")
+    ETL_ENUM_TYPE(Timeout,         "Timeout")
+    ETL_ENUM_TYPE(Unsupported,     "Unsupported")
     ETL_END_ENUM_TYPE
   };
 
@@ -130,6 +132,11 @@ namespace
 
   //***********************************
   class Recursive : public etl::message<EventId::Recursive>
+  {
+  };
+
+  //***********************************
+  class SelfTransition : public etl::message<EventId::Self_Transition>
   {
   };
 
@@ -195,6 +202,7 @@ namespace
       windUpStartCount = 0;
       unknownCount = 0;
       stoppedCount = 0;
+      selfTransitionCount = 0;
       isLampOn = false;
       speed = 0;
 
@@ -240,6 +248,7 @@ namespace
     int setSpeedCount;
     int unknownCount;
     int stoppedCount;
+    int selfTransitionCount;
     bool isLampOn;
     int speed;
 
@@ -297,7 +306,7 @@ namespace
   //***********************************
   // The running state.
   //***********************************
-  class Running : public etl::fsm_state<MotorControl, Running, StateId::Running, EStop>
+  class Running : public etl::fsm_state<MotorControl, Running, StateId::Running, EStop, SetSpeed, SelfTransition>
   {
   public:
 
@@ -326,6 +335,22 @@ namespace
       return No_State_Change;
     }
 
+    //***********************************
+    etl::fsm_state_id_t on_event(const SetSpeed& event)
+    {
+      ++get_fsm_context().setSpeedCount;
+      get_fsm_context().SetSpeedValue(event.speed);
+
+      return No_State_Change;
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event(const SelfTransition&)
+    {
+      ++get_fsm_context().selfTransitionCount;
+      return Self_Transition;
+    }
+     
     //***********************************
     void on_exit_state()
     {
@@ -383,7 +408,7 @@ namespace
   //***********************************
   // The at speed state.
   //***********************************
-  class AtSpeed : public etl::fsm_state<MotorControl, AtSpeed, StateId::At_Speed, SetSpeed, Stop>
+  class AtSpeed : public etl::fsm_state<MotorControl, AtSpeed, StateId::At_Speed, Stop>
   {
   public:
     //***********************************
@@ -391,15 +416,6 @@ namespace
     {
       ++get_fsm_context().stopCount;
       return StateId::Winding_Down;
-    }
-
-    //***********************************
-    etl::fsm_state_id_t on_event(const SetSpeed& event)
-    {
-      ++get_fsm_context().setSpeedCount;
-      get_fsm_context().SetSpeedValue(event.speed);
-      //return No_State_Change;
-      return this->get_state_id();
     }
 
     //***********************************
@@ -504,7 +520,6 @@ namespace
       // Send unhandled events.
       motorControl.receive(Stop());
       motorControl.receive(Stopped());
-      motorControl.receive(SetSpeed(10));
 
       CHECK_EQUAL(StateId::Idle, motorControl.get_state_id());
       CHECK_EQUAL(StateId::Idle, motorControl.get_state().get_state_id());
@@ -515,7 +530,7 @@ namespace
       CHECK_EQUAL(0, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(3, motorControl.unknownCount);
+      CHECK_EQUAL(2, motorControl.unknownCount);
       CHECK_EQUAL(0, motorControl.windUpCompleteCount);
       CHECK_EQUAL(0, motorControl.windUpStartCount);
 
@@ -533,7 +548,7 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(3, motorControl.unknownCount);
+      CHECK_EQUAL(2, motorControl.unknownCount);
       CHECK_EQUAL(0, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
 
@@ -550,7 +565,7 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(4, motorControl.unknownCount);
       CHECK_EQUAL(0, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
 
@@ -566,7 +581,7 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(4, motorControl.unknownCount);
       CHECK_EQUAL(1, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
 
@@ -584,7 +599,7 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(4, motorControl.unknownCount);
       CHECK_EQUAL(1, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
 
@@ -602,14 +617,13 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(4, motorControl.unknownCount);
       CHECK_EQUAL(1, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send unhandled events.
       motorControl.receive(Start());
       motorControl.receive(Stop());
-      motorControl.receive(SetSpeed(100));
 
       CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state().get_state_id()));
@@ -620,7 +634,7 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
-      CHECK_EQUAL(8, motorControl.unknownCount);
+      CHECK_EQUAL(6, motorControl.unknownCount);
       CHECK_EQUAL(1, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
 
@@ -637,7 +651,7 @@ namespace
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(1, motorControl.stoppedCount);
-      CHECK_EQUAL(8, motorControl.unknownCount);
+      CHECK_EQUAL(6, motorControl.unknownCount);
       CHECK_EQUAL(1, motorControl.windUpCompleteCount);
       CHECK_EQUAL(1, motorControl.windUpStartCount);
     }
@@ -980,11 +994,39 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_fsm_no_states_and_no_start)
+    TEST(test_hfsm_no_states_and_no_start)
     {
       MotorControl mc;
 
       CHECK_THROW(mc.receive(Start()), etl::fsm_not_started);
+    }
+
+    //*************************************************************************
+    TEST(test_hfsm_self_transition)
+    {
+      MotorControl motorControl;
+
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      // Start the FSM.
+      motorControl.start(false);
+
+      // Send Start event.
+      motorControl.receive(Start());
+
+      // Send Timeout event
+      motorControl.receive(Timeout());
+      // Now in AtSpeed state.
+
+      CHECK_EQUAL(0, motorControl.selfTransitionCount);
+
+      // Execute self transition.
+      // Handled by the parent Running state.
+      motorControl.receive(SelfTransition());
+
+      CHECK_EQUAL(1, motorControl.selfTransitionCount);
     }
   };
 }

@@ -293,14 +293,14 @@ namespace
     {
       ++get_fsm_context().setSpeedCount;
       get_fsm_context().SetSpeedValue(event.speed);
-      return STATE_ID;
+      return No_State_Change;
     }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return STATE_ID;
+      return No_State_Change;
     }
 
     //***********************************
@@ -308,7 +308,7 @@ namespace
     {
       get_fsm_context().TurnRunningLampOn();
 
-      return STATE_ID;
+      return No_State_Change;
     }
   };
 
@@ -330,7 +330,7 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return STATE_ID;
+      return No_State_Change;
     }
   };
 
@@ -345,7 +345,7 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return STATE_ID;
+      return No_State_Change;
     }
   };
 
