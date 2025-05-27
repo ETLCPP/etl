@@ -47,6 +47,7 @@ namespace
       CHECK_EQUAL((ETL_USING_CPP14 == 1),                      etl::traits::using_cpp14);
       CHECK_EQUAL((ETL_USING_CPP17 == 1),                      etl::traits::using_cpp17);
       CHECK_EQUAL((ETL_USING_CPP20 == 1),                      etl::traits::using_cpp20);
+      CHECK_EQUAL((ETL_USING_CPP23 == 1),                      etl::traits::using_cpp23);
       CHECK_EQUAL((ETL_USING_EXCEPTIONS == 1),                 etl::traits::using_exceptions);
       CHECK_EQUAL((ETL_USING_GCC_COMPILER == 1),               etl::traits::using_gcc_compiler);
       CHECK_EQUAL((ETL_USING_MICROSOFT_COMPILER == 1),         etl::traits::using_microsoft_compiler);
@@ -85,7 +86,9 @@ namespace
       CHECK_EQUAL(ETL_VERSION_MINOR,                           etl::traits::version_minor);
       CHECK_EQUAL(ETL_VERSION_PATCH,                           etl::traits::version_patch);
       CHECK_EQUAL(ETL_VERSION_VALUE,                           etl::traits::version);
-#if ETL_USING_CPP20
+#if ETL_USING_CPP23
+      CHECK_EQUAL(23,                                          etl::traits::language_standard);
+#elif ETL_USING_CPP20
       CHECK_EQUAL(20,                                          etl::traits::language_standard);
 #elif ETL_USING_CPP17
       CHECK_EQUAL(17,                                          etl::traits::language_standard);
