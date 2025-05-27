@@ -103,13 +103,13 @@ namespace etl
         etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
         if (next_state_id != ifsm_state::No_State_Change)
-        {
-          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-          etl::ifsm_state* p_next_state = state_list[next_state_id];
-
-          // Have we changed state?
-          if (p_next_state != p_state)
+        {            
+          if (have_changed_state(next_state_id))
           {
+            ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+
+            etl::ifsm_state* p_next_state = state_list[next_state_id];
+
             etl::ifsm_state* p_root = common_ancestor(p_state, p_next_state);
             do_exits(p_root, p_state);
 
@@ -122,6 +122,11 @@ namespace etl
               ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
               p_state = state_list[next_state_id];
             }
+          }
+          else if (is_self_transition(next_state_id))
+          {
+            p_state->on_exit_state();
+            p_state->on_enter_state();
           }
         }
       }
