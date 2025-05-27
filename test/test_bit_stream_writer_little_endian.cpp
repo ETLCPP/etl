@@ -881,6 +881,27 @@ namespace
       CHECK_EQUAL((int)expected[10], (int)storage[10]);
       CHECK_EQUAL((int)expected[11], (int)storage[11]);
     }
+
+    //*************************************************************************
+    TEST(test_full_empty_issue_1095_bit_stream_writer_empty_compares_the_wrong_values_to_determine_empty)
+    {
+      std::array<char, 2U> storage;
+
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::little);
+
+      CHECK_EQUAL(bit_stream.empty(), true);
+      CHECK_EQUAL(bit_stream.full(), false);
+
+      bit_stream.write(int8_t(1));
+
+      CHECK_EQUAL(bit_stream.empty(), false);
+      CHECK_EQUAL(bit_stream.full(), false);
+
+      bit_stream.write(int8_t(2));
+
+      CHECK_EQUAL(bit_stream.empty(), false);
+      CHECK_EQUAL(bit_stream.full(), true);
+    }
   };
 }
 
