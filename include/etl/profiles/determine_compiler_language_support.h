@@ -37,7 +37,19 @@ SOFTWARE.
 
 // Determine C++23 support
 #if !defined(ETL_CPP23_SUPPORTED)
-  #define ETL_CPP23_SUPPORTED 0
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_CPP23_SUPPORTED (__cplusplus >= 202302L)
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP23_SUPPORTED 0
+    #elif defined(ETL_COMPILER_GCC)
+      #define ETL_CPP23_SUPPORTED (__cplusplus >= 202302L)
+    #else
+      #define ETL_CPP23_SUPPORTED (__cplusplus >= 202302L)
+    #endif
+  #else
+    #define ETL_CPP23_SUPPORTED 0
+  #endif
 #endif
 
 #if ETL_CPP23_SUPPORTED
