@@ -883,7 +883,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_full_empty)
+    TEST(test_full_empty_issue_1095_bit_stream_writer_empty_compares_the_wrong_values_to_determine_empty)
     {
       std::array<char, 2U> storage;
 
