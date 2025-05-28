@@ -74,7 +74,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wextra
 			-Werror
 			-Wfloat-equal
-			-Wuseless-cast
 			-Wshadow
 			-Wnull-dereference
 			)
