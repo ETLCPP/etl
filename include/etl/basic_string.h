@@ -45,6 +45,7 @@ SOFTWARE.
 #include "memory.h"
 #include "binary.h"
 #include "flags.h"
+#include "string_utilities.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -247,11 +248,9 @@ namespace etl
 
     //*************************************************************************
     /// Returns whether the string was truncated by the last operation.
-    /// Deprecated. Use is_truncated()
     ///\return Whether the string was truncated by the last operation.
     //*************************************************************************
-    ETL_DEPRECATED
-    bool truncated() const
+    bool is_truncated() const
     {
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       return flags.test<IS_TRUNCATED>();
@@ -262,15 +261,13 @@ namespace etl
 
     //*************************************************************************
     /// Returns whether the string was truncated by the last operation.
+    /// Deprecated. Use is_truncated()
     ///\return Whether the string was truncated by the last operation.
     //*************************************************************************
-    bool is_truncated() const
+    ETL_DEPRECATED
+    bool truncated() const
     {
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
-      return flags.test<IS_TRUNCATED>();
-#else
-      return false;
-#endif
+      return is_truncated();
     }
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -724,7 +721,7 @@ namespace etl
     //*********************************************************************
     void assign(const_pointer text)
     {
-      assign_impl(text, text + etl::strlen(text), false, false);
+      assign_impl(text, false, false);
     }
 
     //*********************************************************************
@@ -761,7 +758,7 @@ namespace etl
       set_truncated(n > CAPACITY);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
@@ -1093,10 +1090,7 @@ namespace etl
 
         current_size = CAPACITY;
 
-        while (position_ != end())
-        {
-          *position_++ = *first++;
-        }
+        position_ = copy_characters(first, etl::distance(position_, end()), position_);
       }
       else
       {
@@ -1127,10 +1121,7 @@ namespace etl
 
         etl::copy_backward(position_, position_ + characters_to_shift, begin() + to_position + characters_to_shift);
 
-        while (first != last)
-        {
-          *position_++ = *first++;
-        }
+        position_ = copy_characters(first, etl::distance(first, last), position_);
       }
 
       p_buffer[current_size] = 0;
@@ -1310,7 +1301,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      etl::copy(i_element + 1, end(), i_element);
+      etl::mem_copy(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
       return i_element;
@@ -1325,7 +1316,7 @@ namespace etl
     {
       iterator i_element_(to_iterator(i_element));
 
-      etl::copy(i_element_ + 1, end(), i_element_);
+      etl::mem_copy(i_element + 1, end(), i_element_);
       p_buffer[--current_size] = 0;
 
       return i_element_;
@@ -1349,7 +1340,7 @@ namespace etl
         return first_;
       }
 
-      etl::copy(last_, end(), first_);
+      etl::mem_copy(last_, end(), first_);
       size_type n_delete = etl::distance(first_, last_);
 
       current_size -= n_delete;
@@ -1386,7 +1377,7 @@ namespace etl
           count = size() - pos;
         }
 
-        etl::copy_n(p_buffer + pos, count, dest);
+        etl::mem_copy(p_buffer + pos, count, dest);
 
         return count;
       }
@@ -2559,16 +2550,24 @@ namespace etl
     //*************************************************************************
     /// Compare helper function
     //*************************************************************************
-    int  compare(const_pointer first1, const_pointer last1, const_pointer first2, const_pointer last2) const
+    static int compare(const_pointer first1, const_pointer last1, 
+                       const_pointer first2, const_pointer last2)
     {
-      while ((first1 != last1) && (first2 != last2))
+      typedef typename etl::make_unsigned<value_type>::type type;
+
+      difference_type length1        = etl::distance(first1, last1);
+      difference_type length2        = etl::distance(first2, last2);
+      difference_type compare_length = min(length1, length2);
+
+      // First compare the string characters.
+      while (compare_length != 0)
       {
-        if (*first1 < *first2)
+        if (static_cast<type>(*first1) < static_cast<type>(*first2))
         {
           // Compared character is lower.
           return -1;
         }
-        else if (*first1 > *first2)
+        else if (static_cast<type>(*first1) > static_cast<type>(*first2))
         {
           // Compared character is higher.
           return 1;
@@ -2576,24 +2575,24 @@ namespace etl
 
         ++first1;
         ++first2;
+        --compare_length;
       }
 
-      // We reached the end of one or both of the strings.
-      if ((first1 == last1) && (first2 == last2))
+      // Then compare the string lengths.
+      if (length1 < length2)
       {
-        // Same length.
-        return 0;
-      }
-      else if (first1 == last1)
-      {
-        // Compared string is shorter.
+        // First string is shorter.
         return -1;
       }
-      else
+      
+      if (length1 > length2)
       {
-        // Compared string is longer.
+        // First string is longer.
         return 1;
       }
+
+      // Strings are the same length.
+      return 0;
     }
 
     //*************************************************************************
@@ -2651,30 +2650,91 @@ namespace etl
   private:
 
     //*********************************************************************
-    /// Common implementation for 'assign'.
+    /// Copy characters using pointers.
+    /// Returns a pointer to the character after the last copied.
+    //*********************************************************************
+    template <typename TIterator1, typename TIterator2>
+    typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value, TIterator2>::type
+      copy_characters(TIterator1 from, size_t dist, TIterator2 to)
+    {
+      etl::mem_copy(from, dist, to);
+
+      return to + dist;
+    }
+
+    //*********************************************************************
+    /// Copy characters using non-pointers.
+    /// Returns an iterator to the character after the last copied.
+    //*********************************************************************
+    template <typename TIterator1, typename TIterator2>
+    typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value, TIterator2>::type
+      copy_characters(TIterator1 from, size_t dist, TIterator2 to)
+    {
+      size_t count = 0;
+
+      while (count != dist) 
+      {
+        *to++ = *from++;
+        ++count;
+      }
+
+      return to;
+    }
+
+    //*********************************************************************
+    /// Common implementation for 'assign' for iterators.
     //*********************************************************************
     template <typename TIterator>
     void assign_impl(TIterator first, TIterator last, bool truncated, bool secure)
     {
-#if ETL_IS_DEBUG_BUILD
-      difference_type d = etl::distance(first, last);
-      ETL_ASSERT(d >= 0, ETL_ERROR(string_iterator));
-#endif
-
       initialise();
 
-      while ((first != last) && (current_size != CAPACITY))
-      {
-        p_buffer[current_size++] = *first++;
-      }
+      difference_type dist = etl::distance(first, last);
 
+#if ETL_IS_DEBUG_BUILD     
+      ETL_ASSERT(dist >= 0, ETL_ERROR(string_iterator));
+#endif
+     
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      set_truncated((size_t(dist) > CAPACITY) || truncated);
+
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
+#endif
+#endif
+
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
+      if (secure)
+      {
+        set_secure();
+      }
+#endif
+
+      // Limit the actual distance to the capacity.
+      dist = difference_type(min(size_t(dist), CAPACITY));
+      copy_characters(first, dist, p_buffer);
+      current_size = dist;
+      p_buffer[current_size] = 0;
+
+      cleanup();
+    }
+
+    //*********************************************************************
+    /// Common implementation for 'assign' for single pointer.
+    //*********************************************************************
+    void assign_impl(const_pointer first, bool truncated, bool secure)
+    {
+      initialise();
+
+      etl::str_n_copy_result result = etl::str_n_copy(first, CAPACITY, p_buffer);
+
+      current_size = result.count;
       p_buffer[current_size] = 0;
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
-      set_truncated((first != last) || truncated);
-
+      set_truncated(result.truncated || truncated);
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
@@ -2978,6 +3038,24 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+
+  //***************************************************************************
+  /// Spaceship operator.
+  ///\param lhs Reference to the first string.
+  ///\param rhs Reference to the second string.
+  ///\return -1 if lhs < rhs
+  ///         0 if lhs == rhs
+  ///         1 if lhs > rhs
+  ///\ingroup string
+  //***************************************************************************
+#if ETL_USING_CPP20
+  template <typename T>
+  int operator <=>(const etl::ibasic_string<T>& lhs,
+                   const etl::ibasic_string<T>& rhs)
+  {
+    return lhs.compare(rhs);
+  }
+#endif
 
   //***************************************************************************
   /// Operator overload to write to std basic_ostream

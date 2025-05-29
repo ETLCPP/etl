@@ -883,6 +883,50 @@ namespace etl
 
     etl::transform(itr, s.end(), itr, ::tolower);
   }
+
+  //***************************************************************************
+  /// str_n_copy
+  /// Copies from src to dst until either n characters have been copied, or a 
+  /// terminating null is found.
+  /// Null terminates the destination if less than n characters have been copied.
+  /// Returns a str_n_copy_result.
+  //***************************************************************************
+  struct str_n_copy_result
+  {
+    size_t count;
+    bool   truncated;
+    bool   terminated;
+  };
+
+  template <typename T>
+  str_n_copy_result str_n_copy(const T* src, size_t n, T* dst)
+  {
+    if ((src == ETL_NULLPTR) || (dst == ETL_NULLPTR))
+    {
+      return str_n_copy_result{ 0, false, false };
+    }
+
+    size_t count = 0;
+
+    while ((count != n) && (*src != 0))
+    {
+      *dst++ = *src++;
+      ++count;
+    }
+
+    // Did we stop because of a terminating zero?
+    if (count != n)
+    {
+      // Yes we did.
+      *dst = 0;
+      return str_n_copy_result{ count, false, true };
+    }
+    else
+    {
+      // No. Truncation depends on the next src character being a terminating zero or not.
+      return str_n_copy_result{ count, *src != 0, false };
+    }
+  }
 }
 
 #include "private/minmax_pop.h"
