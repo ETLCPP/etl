@@ -903,7 +903,8 @@ namespace etl
   {
     if ((src == ETL_NULLPTR) || (dst == ETL_NULLPTR))
     {
-      return str_n_copy_result{ 0, false, false };
+      str_n_copy_result result = { 0, false, false };
+      return result;
     }
 
     size_t count = 0;
@@ -919,12 +920,14 @@ namespace etl
     {
       // Yes we did.
       *dst = 0;
-      return str_n_copy_result{ count, false, true };
+      str_n_copy_result result = { count, false, true };
+      return result;
     }
     else
     {
       // No. Truncation depends on the next src character being a terminating zero or not.
-      return str_n_copy_result{ count, *src != 0, false };
+      str_n_copy_result result = { count, *src != 0, false };
+      return result;
     }
   }
 }
