@@ -3054,24 +3054,6 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Spaceship operator.
-  ///\param lhs Reference to the first string.
-  ///\param rhs Reference to the second string.
-  ///\return -1 if lhs < rhs
-  ///         0 if lhs == rhs
-  ///         1 if lhs > rhs
-  ///\ingroup string
-  //***************************************************************************
-#if ETL_USING_CPP20
-  template <typename T>
-  int operator <=>(const etl::ibasic_string<T>& lhs,
-                   const etl::ibasic_string<T>& rhs)
-  {
-    return lhs.compare(rhs);
-  }
-#endif
-
-  //***************************************************************************
   /// Operator overload to write to std basic_ostream
   ///\param os Reference to the output stream.
   ///\param str Reference to the string to write.
