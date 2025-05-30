@@ -675,7 +675,7 @@ namespace etl
     {
       if (&other != this)
       {
-        assign_impl(other.begin(), other.end(), other.is_truncated(), other.is_secure());
+        append_impl(begin(), other.begin(), other.end(), other.is_truncated(), other.is_secure());
       }
     }
 
@@ -697,7 +697,7 @@ namespace etl
 
         ETL_ASSERT(subposition <= other.size(), ETL_ERROR(string_out_of_bounds));
 
-        assign_impl(other.begin() + subposition, other.begin() + subposition + sublength, other.is_truncated(), other.is_secure());
+        append_impl(begin(), other.begin() + subposition, other.begin() + subposition + sublength, other.is_truncated(), other.is_secure());
       }
     }
 
@@ -711,7 +711,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      assign_impl(first, last, false, false);
+      append_impl(begin(), first, last, false, false);
     }
 
     //*********************************************************************
@@ -719,9 +719,9 @@ namespace etl
     /// Truncates if the string does not have enough free space.
     ///\param other The other string.
     //*********************************************************************
-    void assign(const_pointer text)
+    void assign(const_pointer str)
     {
-      assign_impl(text, false, false);
+      append_impl(begin(), str, false, false);
     }
 
     //*********************************************************************
@@ -730,9 +730,9 @@ namespace etl
     ///\param other The other string.
     ///\param length The length to copy.
     //*********************************************************************
-    void assign(const_pointer text, size_type length_)
+    void assign(const_pointer str, size_type n)
     {
-      assign_impl(text, text + length_, false, false);
+      append_impl(begin(), str, str + n, false, false);
     }
 
     //********************************************************************* 
@@ -741,7 +741,7 @@ namespace etl
     template <typename TOtherTraits>
     void assign(const etl::basic_string_view<T, TOtherTraits>& view)
     {
-      assign_impl(view.begin(), view.end(), false, false);
+      append_impl(begin(), view.begin(), view.end(), false, false);
     }
 
     //*********************************************************************
@@ -750,9 +750,9 @@ namespace etl
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
-    void assign(size_type n, T value)
+    void assign(size_type n, T c)
     {
-      initialise();
+      clear();
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(n > CAPACITY);
@@ -764,7 +764,7 @@ namespace etl
 
       n = etl::min(n, CAPACITY);
 
-      etl::fill_n(begin(), n, value);
+      etl::fill_n(begin(), n, c);
       current_size = n;
       p_buffer[current_size] = 0;
     }
@@ -775,6 +775,7 @@ namespace etl
     void clear()
     {
       initialise();
+      cleanup();
     }
 
     //*********************************************************************
@@ -819,18 +820,7 @@ namespace etl
     //*********************************************************************
     ibasic_string& append(const ibasic_string& str)
     {
-      insert(end(), str.begin(), str.end());
-
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
-      if (str.is_truncated())
-      {
-        set_truncated(true);
-
-#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
-#endif
-      }
-#endif
+      append_impl(end(), str.begin(), str.end(), str.is_truncated(), str.is_secure());
 
       return *this;
     }
@@ -843,42 +833,15 @@ namespace etl
     //*********************************************************************
     ibasic_string& append(const ibasic_string& str, size_type subposition, size_type sublength = npos)
     {
+      if (sublength == npos)
+      {
+        sublength = str.size() - subposition;
+      }
+
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
 
-      insert(size(), str, subposition, sublength);
+      append_impl(end(), str.begin() + subposition, str.begin() + subposition + sublength, str.is_truncated(), str.is_secure());
 
-      return *this;
-    }
-
-    //*********************************************************************
-    /// Appends to the string.
-    ///\param str The string to append.
-    //*********************************************************************
-    ibasic_string& append(const T* str)
-    {
-      insert(size(), str);
-      return *this;
-    }
-
-    //*********************************************************************
-    /// Appends to the string.
-    ///\param str The string to append.
-    ///\param n   The number of characters.
-    //*********************************************************************
-    ibasic_string& append(const T* str, size_type n)
-    {
-      insert(size(), str, n);
-      return *this;
-    }
-
-    //*********************************************************************
-    /// Appends to the string.
-    ///\param n The number of characters.
-    ///\param c The character.
-    //*********************************************************************
-    ibasic_string& append(size_type n, T c)
-    {
-      insert(size(), n, c);
       return *this;
     }
 
@@ -890,7 +853,31 @@ namespace etl
     template <class TIterator>
     ibasic_string& append(TIterator first, TIterator last)
     {
-      insert(end(), first, last);
+      append_impl(end(), first, last, false, false);
+
+      return *this;
+    }
+
+    //*********************************************************************
+    /// Appends to the string.
+    ///\param str The string to append.
+    //*********************************************************************
+    ibasic_string& append(const_pointer str)
+    {
+      append_impl(end(), str, false, false);
+
+      return *this;
+    }
+
+    //*********************************************************************
+    /// Appends to the string.
+    ///\param str The string to append.
+    ///\param n   The number of characters.
+    //*********************************************************************
+    ibasic_string& append(const_pointer str, size_type n)
+    {
+      append_impl(end(), str, str + n, false, false);
+
       return *this;
     }
 
@@ -901,7 +888,34 @@ namespace etl
     template <typename TOtherTraits>
     ibasic_string& append(const etl::basic_string_view<T, TOtherTraits>& view)
     {
-      insert(end(), view.begin(), view.end());
+      append_impl(end(), view.begin(), view.end(), false, false);
+
+      return *this;
+    }
+
+    //*********************************************************************
+    /// Appends to the string.
+    ///\param n The number of characters.
+    ///\param c The character.
+    //*********************************************************************
+    ibasic_string& append(size_type n, T c)
+    {
+      size_type free_space = CAPACITY - current_size;
+
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      set_truncated(n > free_space);
+
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
+      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
+#endif
+#endif
+
+      n = etl::min(n, size_t(free_space));
+
+      etl::fill_n(end(), n, c);
+      current_size += n;
+      p_buffer[current_size] = 0;
+
       return *this;
     }
 
@@ -2530,7 +2544,6 @@ namespace etl
     void initialise()
     {
       current_size = 0U;
-      cleanup();
       p_buffer[0] = 0;
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(false);
@@ -2557,7 +2570,7 @@ namespace etl
 
       difference_type length1        = etl::distance(first1, last1);
       difference_type length2        = etl::distance(first2, last2);
-      difference_type compare_length = min(length1, length2);
+      difference_type compare_length = etl::min(length1, length2);
 
       // First compare the string characters.
       while (compare_length != 0)
@@ -2632,7 +2645,7 @@ namespace etl
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
       if (is_secure())
       {
-        initialise();
+        clear();
       }
 #endif
     }
@@ -2655,11 +2668,11 @@ namespace etl
     //*********************************************************************
     template <typename TIterator1, typename TIterator2>
     typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value, TIterator2>::type
-      copy_characters(TIterator1 from, size_t dist, TIterator2 to)
+      copy_characters(TIterator1 from, size_t n, TIterator2 to)
     {
-      etl::mem_copy(from, dist, to);
+      etl::mem_copy(from, n, to);
 
-      return to + dist;
+      return to + n;
     }
 
     //*********************************************************************
@@ -2668,11 +2681,11 @@ namespace etl
     //*********************************************************************
     template <typename TIterator1, typename TIterator2>
     typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value, TIterator2>::type
-      copy_characters(TIterator1 from, size_t dist, TIterator2 to)
+      copy_characters(TIterator1 from, size_t n, TIterator2 to)
     {
       size_t count = 0;
 
-      while (count != dist) 
+      while (count != n) 
       {
         *to++ = *from++;
         ++count;
@@ -2682,21 +2695,21 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Common implementation for 'assign' for iterators.
+    /// Common implementation for 'assign' and 'append' for iterators.
     //*********************************************************************
     template <typename TIterator>
-    void assign_impl(TIterator first, TIterator last, bool truncated, bool secure)
+    void append_impl(iterator position, TIterator first, TIterator last, bool truncated, bool secure)
     {
-      initialise();
-
-      difference_type dist = etl::distance(first, last);
+      difference_type start      = etl::distance(p_buffer, position);
+      difference_type count      = etl::distance(first, last);
+      difference_type free_space = etl::distance(position, p_buffer + CAPACITY);
 
 #if ETL_IS_DEBUG_BUILD     
-      ETL_ASSERT(dist >= 0, ETL_ERROR(string_iterator));
+      ETL_ASSERT(count >= 0, ETL_ERROR(string_iterator));
 #endif
      
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
-      set_truncated((size_t(dist) > CAPACITY) || truncated);
+      set_truncated((count > free_space) || this->is_truncated() || truncated);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
@@ -2711,24 +2724,25 @@ namespace etl
 #endif
 
       // Limit the actual distance to the capacity.
-      dist = difference_type(min(size_t(dist), CAPACITY));
-      copy_characters(first, dist, p_buffer);
-      current_size = dist;
+      count = etl::min(count, free_space);
+      copy_characters(first, size_t(count), position);
+      current_size = size_t(start + count);
       p_buffer[current_size] = 0;
 
       cleanup();
     }
 
     //*********************************************************************
-    /// Common implementation for 'assign' for single pointer.
+    /// Common implementation for 'assign' and 'append' for single pointer.
     //*********************************************************************
-    void assign_impl(const_pointer first, bool truncated, bool secure)
+    void append_impl(iterator position, const_pointer first, bool truncated, bool secure)
     {
-      initialise();
+      difference_type start      = etl::distance(p_buffer, position);
+      difference_type free_space = etl::distance(position, p_buffer + CAPACITY);
 
-      etl::str_n_copy_result result = etl::str_n_copy(first, CAPACITY, p_buffer);
+      etl::str_n_copy_result result = etl::str_n_copy(first, size_t(free_space), position);
 
-      current_size = result.count;
+      current_size = size_t(start) + result.count;
       p_buffer[current_size] = 0;
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -3038,24 +3052,6 @@ namespace etl
   {
     return !(lhs < rhs);
   }
-
-  //***************************************************************************
-  /// Spaceship operator.
-  ///\param lhs Reference to the first string.
-  ///\param rhs Reference to the second string.
-  ///\return -1 if lhs < rhs
-  ///         0 if lhs == rhs
-  ///         1 if lhs > rhs
-  ///\ingroup string
-  //***************************************************************************
-#if ETL_USING_CPP20
-  template <typename T>
-  int operator <=>(const etl::ibasic_string<T>& lhs,
-                   const etl::ibasic_string<T>& rhs)
-  {
-    return lhs.compare(rhs);
-  }
-#endif
 
   //***************************************************************************
   /// Operator overload to write to std basic_ostream
