@@ -903,31 +903,77 @@ namespace etl
   {
     if ((src == ETL_NULLPTR) || (dst == ETL_NULLPTR))
     {
-      str_n_copy_result result = { 0, false, false };
-      return result;
+      return { 0, false, false };
     }
 
     size_t count = 0;
 
-    while ((count != n) && (*src != 0))
+#if defined(__GNUC__) || defined(_MSC_VER)
+    // Use restrict if available, for better optimization
+    const T* __restrict s = src;
+    T* __restrict       d = dst;
+#else
+    const T* s = src;
+    T*       d = dst;
+#endif
+
+    // Copy in blocks of 4 for loop unrolling
+    count += 4;
+    while (count <= n) 
     {
-      *dst++ = *src++;
+      if (s[0] == 0) 
+      { 
+        break; 
+      }
+      
+      d[0] = s[0];
+      
+      if (s[1] == 0) 
+      { 
+        count += 1; 
+        d[1] = 0; 
+        return { count, false, true }; 
+      } 
+      
+      d[1] = s[1];
+      
+      if (s[2] == 0) 
+      { 
+        count += 2; d[2] = 0; 
+        return { count, false, true }; 
+      } 
+      
+      d[2] = s[2];
+      
+      if (s[3] == 0) 
+      { 
+        count += 3; 
+        d[3] = 0; 
+        return { count, false, true }; 
+      } 
+      
+      d[3] = s[3];
+      s += 4; 
+      d += 4; 
+      count += 4;
+    }
+
+    // Copy remaining
+    while ((count < n) && (*s != 0)) 
+    {
+      *d++ = *s++;
       ++count;
     }
 
-    // Did we stop because of a terminating zero?
-    if (count != n)
+    // 
+    if (count <= n) 
     {
-      // Yes we did.
-      *dst = 0;
-      str_n_copy_result result = { count, false, true };
-      return result;
-    }
-    else
+      *d = 0;
+      return { count, false, true };
+    } 
+    else 
     {
-      // No. Truncation depends on the next src character being a terminating zero or not.
-      str_n_copy_result result = { count, *src != 0, false };
-      return result;
+      return { count, *s != 0, false };
     }
   }
 }

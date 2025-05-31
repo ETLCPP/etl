@@ -166,6 +166,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_shorter_string)
+    {
+      TextSTD compare_text(shorter_text.c_str());
+
+      Text text(shorter_text.c_str());
+
+      CHECK(!text.empty());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_excess)
     {
       TextSTD compare_text(initial_text.c_str());
