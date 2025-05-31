@@ -38,6 +38,7 @@ PrintHeader()
 {
 	echo "$TitleColour"
 	echo "============================================================================" | tee -a log.txt
+	echo " Running tests                        " | tee -a log.txt
 	echo " Configuration   : $configuration_name" | tee -a log.txt
 	echo " Compiler        : $compiler          " | tee -a log.txt
 	echo " Language        : C++$cxx_standard   " | tee -a log.txt
