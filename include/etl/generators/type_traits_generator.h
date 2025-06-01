@@ -300,6 +300,15 @@ namespace etl
   template <> struct is_integral<unsigned long> : true_type {};
   template <> struct is_integral<long long> : true_type {};
   template <> struct is_integral<unsigned long long> : true_type {};
+#if ETL_HAS_NATIVE_CHAR8_T
+  template <> struct is_integral<char8_t> : true_type {};
+#endif
+#if ETL_HAS_NATIVE_CHAR16_T
+  template <> struct is_integral<char16_t> : true_type {};
+#endif
+#if ETL_HAS_NATIVE_CHAR32_T
+  template <> struct is_integral<char32_t> : true_type {};
+#endif
   template <typename T> struct is_integral<const T> : is_integral<T> {};
   template <typename T> struct is_integral<volatile T> : is_integral<T> {};
   template <typename T> struct is_integral<const volatile T> : is_integral<T> {};
@@ -322,6 +331,15 @@ namespace etl
   template <> struct is_signed<float> : true_type {};
   template <> struct is_signed<double> : true_type {};
   template <> struct is_signed<long double> : true_type {};
+#if ETL_HAS_NATIVE_CHAR8_T
+  template <> struct is_signed<char8_t> : true_type {};
+#endif
+#if ETL_HAS_NATIVE_CHAR16_T
+  template <> struct is_signed<char16_t> : true_type {};
+#endif
+#if ETL_HAS_NATIVE_CHAR32_T
+  template <> struct is_signed<char32_t> : true_type {};
+#endif
   template <typename T> struct is_signed<const T> : is_signed<T> {};
   template <typename T> struct is_signed<volatile T> : is_signed<T> {};
   template <typename T> struct is_signed<const volatile T> : is_signed<T> {};
@@ -428,6 +446,9 @@ namespace etl
   /// is_pointer
   template<typename T> struct is_pointer_helper : false_type {};
   template<typename T> struct is_pointer_helper<T*> : true_type {};
+  template<typename T> struct is_pointer_helper<const T*> : is_pointer_helper<T*> {};
+  template<typename T> struct is_pointer_helper<volatile T*> : is_pointer_helper<T*> {};
+  template<typename T> struct is_pointer_helper<const volatile T*> : is_pointer_helper<T*> {};
   template<typename T> struct is_pointer : is_pointer_helper<typename remove_cv<T>::type> {};
 
 #if ETL_USING_CPP17
