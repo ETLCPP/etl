@@ -3,10 +3,9 @@
 
 Updates:
 #1100 Optimise string class initialisation
-Added ability to disable -Wformat-security
-Added -Wformat-security
-Added char8_t, char16_t and char32_t is_integral and is_signed traits
-Hardened mem_set and mem_char parameter requirements
+Optimised etl::string_view::copy for non-STL
+Added char8_t, char16_t and char32_t to is_integral and is_signed traits
+Hardened etl::mem_set and etl::mem_char parameter requirements
 
 Pull Requests:
 #1110 Remove -Wuseless-cast
