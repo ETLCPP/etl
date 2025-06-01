@@ -137,19 +137,19 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 size_t length(const char_type* str)
+    static ETL_CONSTEXPR14 size_t length(const char_type* begin)
     {
-      size_t count = 0UL;
+      const char_type* end = begin;
 
-      if (str != 0)
+      if (end != 0)
       {
-        while (*str++ != 0)
+        while (*end++ != 0)
         {
-          ++count;
+          // Do nothing.
         }
       }
 
-      return count;
+      return size_t(end - begin);
     }
 
     //*************************************************************************
