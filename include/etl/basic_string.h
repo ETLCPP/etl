@@ -2667,6 +2667,7 @@ namespace etl
     /// Returns a pointer to the character after the last copied.
     //*********************************************************************
     template <typename TIterator1, typename TIterator2>
+    static
     typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value, TIterator2>::type
       copy_characters(TIterator1 from, size_t n, TIterator2 to)
     {
@@ -2680,6 +2681,7 @@ namespace etl
     /// Returns an iterator to the character after the last copied.
     //*********************************************************************
     template <typename TIterator1, typename TIterator2>
+    static
     typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value, TIterator2>::type
       copy_characters(TIterator1 from, size_t n, TIterator2 to)
     {
@@ -2692,6 +2694,39 @@ namespace etl
       }
 
       return to;
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(char).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type 
+      get_string_length(const U* src)
+    {
+      return ::strlen(reinterpret_cast<const char*>(src));
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
+      get_string_length(const U* src)
+    {
+      return ::wcslen(reinterpret_cast<const wchar_t*>(src));
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for anything else.
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type 
+      get_string_length(const U* src)
+    {
+      return etl::strlen(src);
     }
 
     //*********************************************************************
@@ -2733,20 +2768,30 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Common implementation for 'assign' and 'append' for single pointer.
+    /// Common implementation for 'assign' and 'append' for C string pointer.
     //*********************************************************************
-    void append_impl(iterator position, const_pointer first, bool truncated, bool secure)
+    void append_impl(iterator position, const_pointer src, bool truncated, bool secure)
     {
+      if (src == ETL_NULLPTR)
+      {
+        clear();
+        return;
+      }
+
       difference_type start      = etl::distance(p_buffer, position);
       difference_type free_space = etl::distance(position, p_buffer + CAPACITY);
 
-      etl::str_n_copy_result result = etl::str_n_copy(first, size_t(free_space), position);
+      pointer dst    = position;     
+      size_t  length = get_string_length(src);
+      size_t  count  = (length < size_t(free_space)) ? length : size_t(free_space);
+      etl::mem_copy(src, count, dst);
 
-      current_size = size_t(start) + result.count;
+      truncated |= (src[count] != 0);
+      current_size = size_t(start) + count;
       p_buffer[current_size] = 0;
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
-      set_truncated(result.truncated || truncated);
+      set_truncated(truncated);
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
 #endif
