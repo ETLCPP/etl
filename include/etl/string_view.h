@@ -107,8 +107,11 @@ namespace etl
     typedef T        value_type;
     typedef TTraits  traits_type;
     typedef size_t   size_type;
+    typedef T&       reference;
     typedef const T& const_reference;
+    typedef T*       pointer;
     typedef const T* const_pointer;
+    typedef const T* iterator;
     typedef const T* const_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -363,7 +366,7 @@ namespace etl
       {
         n = etl::min(count, size() - position);
 
-        etl::copy(mbegin + position, mbegin + position + n, destination);
+        etl::mem_copy(mbegin + position, n, destination);
       }
 
       return n;
