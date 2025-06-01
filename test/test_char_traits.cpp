@@ -55,6 +55,16 @@ namespace
     //*************************************************************************
     TEST(test_strlen)
     {
+      CHECK_EQUAL(0U, etl::strlen((const char*)0));
+      CHECK_EQUAL(0U, etl::strlen((const wchar_t*)0));
+      CHECK_EQUAL(0U, etl::strlen((const char16_t*)0));
+      CHECK_EQUAL(0U, etl::strlen((const char32_t*)0));
+
+      CHECK_EQUAL(0U, etl::strlen(""));
+      CHECK_EQUAL(0U, etl::strlen(L""));
+      CHECK_EQUAL(0U, etl::strlen(u""));
+      CHECK_EQUAL(0U, etl::strlen(U""));
+
       CHECK_EQUAL(6U, etl::strlen("qwerty"));
       CHECK_EQUAL(6U, etl::strlen(L"qwerty"));
       CHECK_EQUAL(6U, etl::strlen(u"qwerty"));
