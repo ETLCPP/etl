@@ -3,3 +3,17 @@ config ETL
   depends on CPP
   help
     This option enables the 'ETL' library.
+
+if ETL
+
+config ETL_DEBUG
+  bool "Build ETL with debugging checks"
+  default y if DEBUG
+
+config ETL_CHECK_PUSH_POP
+  bool "Enable push/pop checks in ETL"
+
+config ETL_LOG_ERRORS
+  bool "Call ETL error handler instead of assert"
+
+endif # ETL
