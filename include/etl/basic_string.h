@@ -50,6 +50,7 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <wchar.h>
 
 #if ETL_USING_STL && ETL_USING_CPP17
   #include <string_view>
