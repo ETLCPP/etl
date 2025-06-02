@@ -2510,7 +2510,7 @@ namespace etl
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(false);
 #endif
-      etl::fill(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], T(0));
+      etl::mem_set(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], char(0));
     }
 
     //*********************************************************************

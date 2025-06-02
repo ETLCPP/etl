@@ -1,4 +1,14 @@
 ﻿===============================================================================
+20.41.4
+
+Updates:
+Optimisation of etl::basic_string<T>::initialize_free_space() using etl::mem_set
+
+Pull Requests:
+#1113 Add missing header wchar.h for usage of wcslen()
+#1114 Fix West support and add ETL configuration options to Kconfig
+
+===============================================================================
 20.41.3
 
 Updates:
