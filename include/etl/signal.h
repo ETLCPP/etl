@@ -120,7 +120,10 @@ namespace etl
     {
       for (const slot_type& s : *this)
       {
-        call(s, etl::forward<TArgs>(args)...);
+        if (valid(s))
+        {
+          s(etl::forward<TArgs>(args)...);
+        }
       }
     }
 
@@ -220,23 +223,25 @@ namespace etl
     iterator  end_of_list;
 
     //*************************************************************************
-    /// For a delegate slot type, use call_if.
+    /// For a delegate slot type.
     //*************************************************************************
     template <typename TSlotType, typename... TArgs>
-    typename etl::enable_if_t<etl::is_delegate<TSlotType>::value, void>
-      call(const TSlotType& s, TArgs&&... args) const
+    static 
+    typename etl::enable_if_t<etl::is_delegate<TSlotType>::value, bool>
+      valid(const TSlotType& s)
     {
-      s.call_if(etl::forward<TArgs>(args)...);
+      return s.is_valid();
     }
 
     //*************************************************************************
-    /// For a non-delegate slot type, just call the slot.
+    /// For a non-delegate slot type.
     //*************************************************************************
     template <typename TSlotType, typename... TArgs>
-    typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, void>
-      call(const TSlotType& s, TArgs&&... args) const
+    static 
+    typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, bool>
+      valid(const TSlotType& s, TArgs&&... args)
     {
-      s(etl::forward<TArgs>(args)...);
+      return true;
     }
 
     //*************************************************************************
