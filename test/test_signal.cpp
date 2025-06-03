@@ -37,11 +37,13 @@ SOFTWARE.
 namespace
 {
 
-  constexpr auto total_output_methods_{5ULL
+  constexpr auto total_output_methods_
+  {
+    5ULL
   };  // free funciton, lambda, static class method, class method, functor.
 
   using signal_type = etl::signal<void(std::ostream&), total_output_methods_>;
-  using slot_type = signal_type::slot_type;
+  using slot_type   = signal_type::slot_type;
 
   //*************************************************************************
   ///\brief Generic output free function
@@ -108,6 +110,16 @@ namespace
   example_class example_;
 
   //*************************************************************************
+  ///\brief Makes an empty slot
+  ///
+  ///\return constexpr slot_type
+  //*************************************************************************
+  ETL_CONSTEXPR14 slot_type make_empty_slot() 
+  {
+    return slot_type();
+  }
+
+  //*************************************************************************
   ///\brief Makes the free function slot
   ///
   ///\return constexpr slot_type
@@ -158,7 +170,8 @@ namespace
   }
 
 #if ETL_USING_CPP14
-  constexpr signal_type constexpr_test_object_{
+  constexpr signal_type constexpr_test_object_
+  {
     make_free_slot(), 
     make_lambda_slot(), 
     make_static_slot(), 
@@ -167,8 +180,21 @@ namespace
   };
 #endif // ETL_USING_CPP14
 
+#if ETL_USING_CPP14
+  constexpr signal_type constexpr_test_object_empty_slots_
+  {
+    make_free_slot(), 
+    make_empty_slot(), 
+    make_static_slot(), 
+    make_empty_slot(), 
+    make_functor_slot()
+  };
+#endif // ETL_USING_CPP14
+
+  //***************************************************************************
   SUITE(signal_test)
   {
+    //***************************************************************************
     TEST(construct)
     {
       signal_type test_object_;
@@ -184,10 +210,12 @@ namespace
 #endif // ETL_USING_CPP14
     }
 
+    //***************************************************************************
     TEST(connect)
     {
       signal_type test_object_;
       const auto free_slot = make_free_slot();
+      test_object_.connect(free_slot);
       test_object_.connect(free_slot);
       CHECK_EQUAL(1U, test_object_.size());
       CHECK_TRUE(test_object_.connected(free_slot));
@@ -214,6 +242,7 @@ namespace
       CHECK_TRUE(test_object_.full());
     }
 
+    //***************************************************************************
     TEST(disconnect)
     {
       signal_type test_object_;
@@ -255,14 +284,15 @@ namespace
     }
   }
 
+  //***************************************************************************
   TEST(disconnect_all)
   {
     signal_type test_object_;
-    const auto free_slot = make_free_slot();
-    const auto lambda_slot = make_lambda_slot();
-    const auto static_slot = make_static_slot();
+    const auto free_slot     = make_free_slot();
+    const auto lambda_slot   = make_lambda_slot();
+    const auto static_slot   = make_static_slot();
     const auto instance_slot = make_instance_slot();
-    const auto functor_slot = make_functor_slot();
+    const auto functor_slot  = make_functor_slot();
     test_object_.connect(free_slot);
     test_object_.connect(lambda_slot);
     test_object_.connect(static_slot);
@@ -279,6 +309,7 @@ namespace
     CHECK_FALSE(test_object_.connected(functor_slot));
   }
 
+  //***************************************************************************
   TEST(call_empty)
   {
     std::stringstream ss;
@@ -287,6 +318,7 @@ namespace
     CHECK_EQUAL(std::string{""}, ss.str());
   }
 
+  //***************************************************************************
   TEST(call)
   {
     signal_type test_object_;
@@ -306,6 +338,30 @@ namespace
 #if ETL_USING_CPP14
     std::stringstream ss2;
     constexpr_test_object_(ss2);
+    CHECK_EQUAL(expected_string, ss2.str());
+#endif // ETL_USING_CPP14
+  }
+
+  //***************************************************************************
+  TEST(call_empty_slots)
+  {
+    signal_type test_object_;
+    test_object_.connect(make_free_slot());
+    test_object_.connect(make_empty_slot()); // Uninitialised delegate
+    test_object_.connect(make_static_slot());
+    test_object_.connect(make_empty_slot()); // Uninitialised delegate
+    test_object_.connect(make_functor_slot());
+
+    std::stringstream ss;
+    test_object_(ss);
+
+    // expect all signals got called
+    const std::string expected_string{"freestaticfunctor"};
+    CHECK_EQUAL(expected_string, ss.str());
+
+#if ETL_USING_CPP14
+    std::stringstream ss2;
+    constexpr_test_object_empty_slots_(ss2);
     CHECK_EQUAL(expected_string, ss2.str());
 #endif // ETL_USING_CPP14
   }
