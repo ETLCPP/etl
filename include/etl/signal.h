@@ -84,13 +84,13 @@ namespace etl
   ///\brief A lightweight signal class designed for efficient memory usage and 
   /// ability to store in ROM.
   ///
-  ///\tparam T: Callback signature.
-  ///\tparam Length: Maximum number of slots that can be connected to the signal.
-  ///\tparam TSlot:  Function-object type or container type that can be invoked.
+  ///\tparam TFunction: Callback signature.
+  ///\tparam Length:    Maximum number of slots that can be connected to the signal.
+  ///\tparam TSlot:     Function-object type or container type that can be invoked. Default etl::delegate.
   ///
   ///\todo Support for return types other than void (aggregate etc.)
   //***************************************************************************
-  template <typename T, size_t Length, typename TSlot = etl::delegate<T>>
+  template <typename TFunction, size_t Length, typename TSlot = etl::delegate<TFunction>>
   class signal
   {
   public:
@@ -110,8 +110,7 @@ namespace etl
 
     //*************************************************************************
     ///\brief Invokes all the slots connected to the signal.
-    /// If the slot is an etl:;delegate then uses call_if, otherwise just 
-    /// calls the slot directly.
+    /// Checks if the slot is valid to call.
     /// 
     ///\param args: Arguments to pass to the slots.
     //*************************************************************************
