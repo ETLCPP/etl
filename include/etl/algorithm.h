@@ -47,6 +47,7 @@ SOFTWARE.
 #include "gcd.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "file_error_numbers.h"
 
 #include <stdint.h>
 #include <string.h>
