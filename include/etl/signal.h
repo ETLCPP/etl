@@ -238,7 +238,7 @@ namespace etl
     template <typename TSlotType, typename... TArgs>
     static 
     typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, bool>
-      valid(const TSlotType& s, TArgs&&... args)
+      valid(const TSlotType&)
     {
       return true;
     }
