@@ -35,7 +35,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-#include "char_traits.h"
 #include "alignment.h"
 #include "array.h"
 #include "type_traits.h"
@@ -50,7 +49,10 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <wchar.h>
+
+#if ETL_USING_LIBC_WCHAR_H
+  #include <wchar.h>
+#endif
 
 #if ETL_USING_STL && ETL_USING_CPP17
   #include <string_view>
@@ -2698,39 +2700,6 @@ namespace etl
     }
 
     //*********************************************************************
-    /// get_string_length, optimised for sizeof(U) == sizeof(char).
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type 
-      get_string_length(const U* src)
-    {
-      return ::strlen(reinterpret_cast<const char*>(src));
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
-      get_string_length(const U* src)
-    {
-      return ::wcslen(reinterpret_cast<const wchar_t*>(src));
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for anything else.
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type 
-      get_string_length(const U* src)
-    {
-      return etl::strlen(src);
-    }
-
-    //*********************************************************************
     /// Common implementation for 'assign' and 'append' for iterators.
     //*********************************************************************
     template <typename TIterator>
@@ -2859,6 +2828,57 @@ namespace etl
       {
         return size() - sz - etl::distance(rbegin(), iposition);
       }
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(char).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type
+      get_string_length(const U* str)
+    {
+      return ::strlen(reinterpret_cast<const char*>(str));
+    }
+
+#if ETL_USING_LIBC_WCHAR_H
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
+      get_string_length(const U* str)
+    {
+      return ::wcslen(reinterpret_cast<const wchar_t*>(str));
+    }
+#endif
+
+    //*********************************************************************
+    /// get_string_length, optimised for anything else.
+    //*********************************************************************
+    template <typename U>
+    static
+#if ETL_USING_LIBC_WCHAR_H
+    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type
+#else
+    typename etl::enable_if<(sizeof(U) != sizeof(char)), size_t>::type
+#endif
+      get_string_length(const U* str)
+    {
+      if (str == ETL_NULLPTR)
+      {
+        return 0;
+      }
+
+      const U* end = str;
+
+      while (*end++ != 0)
+      {
+        // Do nothing.
+      }
+
+      return size_t(end - str) - 1;
     }
   };
 
