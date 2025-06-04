@@ -450,6 +450,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Determine if the ETL can use libc's wchar.h
+#if defined(ETL_NO_LIBC_WCHAR_H)
+  #define ETL_USING_LIBC_WCHAR_H     0
+  #define ETL_NOT_USING_LIBC_WCHAR_H 1
+#else
+  #define ETL_USING_LIBC_WCHAR_H     1
+  #define ETL_NOT_USING_LIBC_WCHAR_H 0
+#endif
+
+//*************************************
 // Determine if the ETL should support atomics.
 #if defined(ETL_NO_ATOMICS) || \
     defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || \
