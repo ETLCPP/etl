@@ -35,7 +35,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-#include "char_traits.h"
 #include "alignment.h"
 #include "array.h"
 #include "type_traits.h"
@@ -2698,39 +2697,6 @@ namespace etl
     }
 
     //*********************************************************************
-    /// get_string_length, optimised for sizeof(U) == sizeof(char).
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type 
-      get_string_length(const U* src)
-    {
-      return ::strlen(reinterpret_cast<const char*>(src));
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
-      get_string_length(const U* src)
-    {
-      return ::wcslen(reinterpret_cast<const wchar_t*>(src));
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for anything else.
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type 
-      get_string_length(const U* src)
-    {
-      return etl::strlen(src);
-    }
-
-    //*********************************************************************
     /// Common implementation for 'assign' and 'append' for iterators.
     //*********************************************************************
     template <typename TIterator>
@@ -2859,6 +2825,57 @@ namespace etl
       {
         return size() - sz - etl::distance(rbegin(), iposition);
       }
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(char).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type 
+      get_string_length(const U* str)
+    {
+      return ::strlen(reinterpret_cast<const char*>(str));
+    }
+
+#if ETL_USING_WIDE_CHARACTERS
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
+      get_string_length(const U* str)
+    {
+      return ::wcslen(reinterpret_cast<const wchar_t*>(str));
+    }
+#endif
+
+    //*********************************************************************
+    /// get_string_length, optimised for anything else.
+    //*********************************************************************
+    template <typename U>
+    static
+#if ETL_USING_WIDE_CHARACTERS
+    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type
+#else
+    typename etl::enable_if<(sizeof(U) != sizeof(char)), size_t>::type
+#endif
+      get_string_length(const U* str)
+    {
+      if (str == ETL_NULLPTR)
+      {
+        return 0;
+      }
+
+      const U* end = str;
+
+      while (*end++ != 0)
+      {
+        // Do nothing.
+      }
+
+      return size_t(end - str) - 1;
     }
   };
 
@@ -3116,6 +3133,8 @@ namespace etl
   }
 #endif
 }
+
+#undef ETL_USING_WCHAR_T_H
 
 #include "private/minmax_pop.h"
 

@@ -41,6 +41,7 @@ namespace
   {
     TEST(test_traits_values)
     {
+      // Using...
       CHECK_EQUAL((ETL_USING_STL == 1),                        etl::traits::using_stl);
       CHECK_EQUAL((ETL_USING_STLPORT == 1),                    etl::traits::using_stlport);
       CHECK_EQUAL((ETL_USING_CPP11 == 1),                      etl::traits::using_cpp11);
@@ -49,6 +50,7 @@ namespace
       CHECK_EQUAL((ETL_USING_CPP20 == 1),                      etl::traits::using_cpp20);
       CHECK_EQUAL((ETL_USING_CPP23 == 1),                      etl::traits::using_cpp23);
       CHECK_EQUAL((ETL_USING_EXCEPTIONS == 1),                 etl::traits::using_exceptions);
+      CHECK_EQUAL((ETL_USING_WIDE_CHARACTERS == 1),            etl::traits::using_wide_characters);
       CHECK_EQUAL((ETL_USING_GCC_COMPILER == 1),               etl::traits::using_gcc_compiler);
       CHECK_EQUAL((ETL_USING_MICROSOFT_COMPILER == 1),         etl::traits::using_microsoft_compiler);
       CHECK_EQUAL((ETL_USING_ARM5_COMPILER == 1),              etl::traits::using_arm5_compiler);
@@ -60,9 +62,10 @@ namespace
       CHECK_EQUAL((ETL_USING_INTEL_COMPILER == 1),             etl::traits::using_intel_compiler);
       CHECK_EQUAL((ETL_USING_TEXAS_INSTRUMENTS_COMPILER == 1), etl::traits::using_texas_instruments_compiler);
       CHECK_EQUAL((ETL_USING_GENERIC_COMPILER == 1),           etl::traits::using_generic_compiler);
-
       CHECK_EQUAL((ETL_USING_8BIT_TYPES == 1),                 etl::traits::has_8bit_types);
       CHECK_EQUAL((ETL_USING_64BIT_TYPES == 1),                etl::traits::has_64bit_types);
+
+      // Has...
       CHECK_EQUAL((ETL_HAS_ATOMIC == 1),                       etl::traits::has_atomic);
       CHECK_EQUAL((ETL_HAS_MUTEX == 1),                        etl::traits::has_mutex);
       CHECK_EQUAL((ETL_HAS_NULLPTR == 1),                      etl::traits::has_nullptr);
@@ -80,7 +83,10 @@ namespace
       CHECK_EQUAL((ETL_HAS_VIRTUAL_MESSAGES == 1),             etl::traits::has_virtual_messages);
       CHECK_EQUAL((ETL_HAS_PACKED == 1),                       etl::traits::has_packed);
 
+      // Is...
       CHECK_EQUAL((ETL_IS_DEBUG_BUILD == 1),                   etl::traits::is_debug_build);
+
+      // Other
       CHECK_EQUAL(__cplusplus,                                 etl::traits::cplusplus);
       CHECK_EQUAL(ETL_VERSION_MAJOR,                           etl::traits::version_major);
       CHECK_EQUAL(ETL_VERSION_MINOR,                           etl::traits::version_minor);
