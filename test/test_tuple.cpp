@@ -33,7 +33,6 @@ SOFTWARE.
 #include "etl/tuple.h"
 
 #include <string>
-#include <tuple>
 #include <array>
 
 namespace
@@ -70,6 +69,7 @@ namespace
     To& operator =(const From& from)
     {
       i = from.i;
+      return *this;
     }
 
     int i;
