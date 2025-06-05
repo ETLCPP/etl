@@ -361,8 +361,8 @@ namespace etl
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(const tuple<UHead, UTail...>&& other)
-      : base_type(etl::forward<tuple<UTail...>>(other.get_base()))
-      , value(etl::forward<UHead>(other.get_value()))
+      : base_type(other.get_base())
+      , value(other.get_value())
     {
     }
 
@@ -375,8 +375,8 @@ namespace etl
                                                                   !etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(const tuple<UHead, UTail...>&& other)
-      : base_type(etl::forward<tuple<UTail...>>(other.get_base()))
-      , value(etl::forward<UHead>(other.get_value()))
+      : base_type(other.get_base())
+      , value(other.get_value())
     {
     }
 
