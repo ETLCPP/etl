@@ -38,15 +38,9 @@ namespace
     //*************************************************************************
     TEST(test_nth_type)
     {
-#if defined(ETL_NTH_TYPE_FORCE_CPP03_IMPLEMENTATION)
-      CHECK((std::is_same<etl::nth_type<0, int, long, double>::type, int>::value));
-      CHECK((std::is_same<etl::nth_type<1, int, long, double>::type, long>::value));
-      CHECK((std::is_same<etl::nth_type<2, int, long, double>::type, double>::value));
-#else
       CHECK((std::is_same<etl::nth_type_t<0, int, long, double>, int>::value));
       CHECK((std::is_same<etl::nth_type_t<1, int, long, double>, long>::value));
       CHECK((std::is_same<etl::nth_type_t<2, int, long, double>, double>::value));
-#endif
     }
   }
 }
