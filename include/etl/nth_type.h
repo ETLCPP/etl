@@ -32,13 +32,9 @@ SOFTWARE.
 #include "platform.h"
 #include "static_assert.h"
 
-#if ETL_NOT_USING_CPP11
-  #if !defined(ETL_IN_UNIT_TEST)
-    #error NOT SUPPORTED FOR C++03 OR BELOW
-  #endif
-#else
 namespace etl
 {
+#if ETL_USING_CPP11 && !defined(ETL_NTH_TYPE_FORCE_CPP03_IMPLEMENTATION)
   namespace private_nth_type
   {
     //***********************************
@@ -67,6 +63,39 @@ namespace etl
   //***********************************
   template <size_t N, typename... TTypes>
   using nth_type_t = typename nth_type<N, TTypes...>::type;
-}
+#else
+  // Primary template: Not defined, will cause a compile error if used with N > 7 or not enough types.
+  template <int N, typename T0 = void, typename T1 = void, typename T2 = void, typename T3 = void,
+                   typename T4 = void, typename T5 = void, typename T6 = void, typename T7 = void>
+  struct nth_type;
+
+  // Specialisations for N = 0..7
+  template <typename T0, typename T1, typename T2>
+  struct nth_type<0, T0, T1, T2, void, void, void, void, void> { typedef T0 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<0, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T0 type; };
+  
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<1, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T1 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<2, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T2 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<3, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T3 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<4, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T4 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<5, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T5 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<6, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T6 type; };
+
+  template <typename T0, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  struct nth_type<7, T0, T1, T2, T3, T4, T5, T6, T7> { typedef T7 type; };
 #endif
+}
 #endif
