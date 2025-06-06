@@ -939,7 +939,7 @@ namespace etl
         {
           // Insert in the middle.
           ++current_size;
-          etl::copy_backward(insert_position, end() - 1, end());
+          etl::mem_move(insert_position, end() - 1, insert_position + 1);
           *insert_position = value;
         }
         else
@@ -955,7 +955,7 @@ namespace etl
         if (position != end())
         {
           // Insert in the middle.
-          etl::copy_backward(insert_position, end() - 1, end());
+          etl::mem_move(insert_position, end() - 1, insert_position + 1);          
           *insert_position = value;
         }
 
@@ -1049,7 +1049,7 @@ namespace etl
           current_size += shift_amount;
         }
 
-        etl::copy_backward(insert_position, insert_position + characters_to_shift, begin() + to_position + characters_to_shift);
+        etl::mem_move(insert_position, insert_position + characters_to_shift, begin() + to_position);
         etl::fill(insert_position, insert_position + shift_amount, value);
       }
 
@@ -1136,7 +1136,8 @@ namespace etl
           current_size += shift_amount;
         }
 
-        etl::copy_backward(position_, position_ + characters_to_shift, begin() + to_position + characters_to_shift);
+        etl::mem_move(position_, position_ + characters_to_shift, begin() + to_position);
+        //etl::copy_backward(position_, position_ + characters_to_shift, begin() + to_position + characters_to_shift);
 
         position_ = copy_characters(first, etl::distance(first, last), position_);
       }
