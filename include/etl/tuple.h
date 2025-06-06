@@ -1277,6 +1277,14 @@ namespace etl
 
 namespace std
 {
+#if ETL_NOT_USING_STL
+  template <typename T>
+  struct tuple_size;
+
+  template <size_t I, typename TType>
+  struct tuple_element;
+#endif
+
   //***************************************************************************
   /// Specialisation of tuple_size to allow the use of C++ structured bindings.
   //***************************************************************************
