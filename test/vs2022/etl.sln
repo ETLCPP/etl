@@ -27,6 +27,10 @@ Global
 		Debug MSVC C++20 - No virtual messages|x64 = Debug MSVC C++20 - No virtual messages|x64
 		Debug MSVC C++20|Win32 = Debug MSVC C++20|Win32
 		Debug MSVC C++20|x64 = Debug MSVC C++20|x64
+		Debug MSVC C++23 - No STL|Win32 = Debug MSVC C++23 - No STL|Win32
+		Debug MSVC C++23 - No STL|x64 = Debug MSVC C++23 - No STL|x64
+		Debug MSVC C++23|Win32 = Debug MSVC C++23|Win32
+		Debug MSVC C++23|x64 = Debug MSVC C++23|x64
 		Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32 = Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32
 		Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|x64 = Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|x64
 		Release MSVC C++20 - No STL - Optimised -O2|Win32 = Release MSVC C++20 - No STL - Optimised -O2|Win32
@@ -75,6 +79,14 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20|Win32.Build.0 = Debug MSVC C++20|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20|x64.ActiveCfg = Debug MSVC C++20|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20|x64.Build.0 = Debug MSVC C++20|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23 - No STL|Win32.ActiveCfg = Debug MSVC C++23 - No STL|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23 - No STL|Win32.Build.0 = Debug MSVC C++23 - No STL|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23 - No STL|x64.ActiveCfg = Debug MSVC C++23 - No STL|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23 - No STL|x64.Build.0 = Debug MSVC C++23 - No STL|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23|Win32.ActiveCfg = Debug MSVC C++23|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23|Win32.Build.0 = Debug MSVC C++23|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23|x64.ActiveCfg = Debug MSVC C++23|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++23|x64.Build.0 = Debug MSVC C++23|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32.ActiveCfg = Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32.Build.0 = Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|x64.ActiveCfg = Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|x64
