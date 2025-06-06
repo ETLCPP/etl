@@ -1277,7 +1277,7 @@ namespace etl
 
 namespace std
 {
-#if ETL_NOT_USING_STL
+#if ETL_NOT_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
   template <typename T>
   struct tuple_size;
 
