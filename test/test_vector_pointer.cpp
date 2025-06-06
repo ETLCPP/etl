@@ -1395,6 +1395,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_pointer_range)
+    {
+      const size_t INITIAL_SIZE = 5;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        Compare_Data compare_data;
+        Data data;
+
+        data.assign(initial_data.data(), initial_data.data() + INITIAL_SIZE);
+        compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+        data.insert(data.data() + offset, insert_data.data(), insert_data.data() + insert_data.size());
+        compare_data.insert(compare_data.begin() + offset, insert_data.begin(), insert_data.end());
+
+        bool is_equal = std::equal(data.begin(),
+                                   data.end(),
+                                   compare_data.begin());
+
+        CHECK(is_equal);
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_range)
     {
       const size_t INITIAL_SIZE = 5;
