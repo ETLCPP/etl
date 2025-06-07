@@ -152,6 +152,38 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
+    ETL_CONSTEXPR14 pointer data() ETL_NOEXCEPT
+    {
+      return pbuffer;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 const_pointer data() const ETL_NOEXCEPT
+    {
+      return pbuffer;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 pointer data_end() ETL_NOEXCEPT
+    {
+      return pbuffer_end;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 const_pointer data_end() const ETL_NOEXCEPT
+    {
+      return pbuffer_end;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
     ETL_CONSTEXPR14 reference operator [](int i) ETL_NOEXCEPT
     {
       return pbuffer[i];
@@ -161,6 +193,22 @@ namespace etl
     ///
     //*************************************************************************
     ETL_CONSTEXPR14 const_reference operator [](int i) const ETL_NOEXCEPT
+    {
+      return pbuffer[i];
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 reference at(int i) ETL_NOEXCEPT
+    {
+      return pbuffer[i];
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 const_reference at(int i) const ETL_NOEXCEPT
     {
       return pbuffer[i];
     }
@@ -211,6 +259,39 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
+    template <typename... TArgs>
+    ETL_CONSTEXPR14 void push_back(rvalue_reference value) ETL_NOEXCEPT
+    {
+      if (!full())
+      {
+        *pbuffer_end++ = etl::move(value);
+      }
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    template <typename... TArgs>
+    ETL_CONSTEXPR14 reference emplace_back(TArgs&&... args) ETL_NOEXCEPT
+    {
+      if (!full())
+      {
+        *pbuffer_end++ = T(etl::forward<TArgs>(args)...);
+      }
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    template <typename... TArgs>
+    ETL_CONSTEXPR14 reference emplace(const_iterator pos, TArgs&&... args) ETL_NOEXCEPT
+    {
+      insert(pos, T(etl::forward<TArgs>(args)...));
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
     ETL_CONSTEXPR14 void pop_back() ETL_NOEXCEPT
     {
       if (!empty())
@@ -218,6 +299,39 @@ namespace etl
         --pbuffer_end;
       }
     }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 itrivial_vector<T>& operator =(const itrivial_vector<T>& other) ETL_NOEXCEPT
+    {
+      assign(other.begin(), other.end());
+
+      return *this;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 itrivial_vector<T>& operator =(itrivial_vector<T>&& other) ETL_NOEXCEPT
+    {
+      for (size_type i = 0; i < size(); ++i)
+      {
+        pbuffer[i] = etl::move(other.pbuffer[i]);
+      }
+    
+      return *this;
+    }
+
+#if ETL_HAS_INITIALIZER_LIST
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 itrivial_vector& operator =(std::initializer_list<value_type> il) ETL_NOEXCEPT
+    {
+      assign(il.begin(), il.end());
+    }
+#endif
 
     //*************************************************************************
     ///
@@ -230,7 +344,39 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
-    ETL_CONSTEXPR14 void assign(size_type count, const_reference value)
+    ETL_CONSTEXPR14 void resize(size_type count)
+    {
+      resize(count, T());
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 void resize(size_type count, const value_type& value) ETL_NOEXCEPT
+    {
+      const size_type current_size = size();
+
+      // Limit the resize.
+      count = (count > size()) ? size() : count;
+
+      if (count < current_size)
+      {
+        // Overwrite the difference with default.      
+        for (size_type i = count; i < current_size; ++i)
+        {
+          pbuffer[i] = value;
+        }
+
+        pbuffer_end = pbuffer + count;
+      }
+
+      pbuffer_end = pbuffer + count;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 void assign(size_type count, const_reference value) ETL_NOEXCEPT
     {
       clear();
 
@@ -249,7 +395,7 @@ namespace etl
     ///
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR14 void assign(TIterator first, TIterator last)
+    ETL_CONSTEXPR14 void assign(TIterator first, TIterator last) ETL_NOEXCEPT
     {
       clear();
 
@@ -266,44 +412,15 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
-    ETL_CONSTEXPR14 iterator insert(const_iterator pos, const_reference value)
+    ETL_CONSTEXPR14 iterator insert(const_iterator pos, const_reference value) ETL_NOEXCEPT
     {
-      // Out of range?
-      if ((pos < pbuffer) || (pos > pbuffer_end))
-      {
-        return nullptr;
-      }
-
-      if (!full())
-      {
-        // Convert to an iterator.
-        iterator itr = pbuffer + (pos - pbuffer);
-
-        // Shifts all elements after 'itr' one position to the right.
-        const_iterator sitr = pbuffer_end;
-        iterator       ditr = sitr + 1;
-
-        while (sitr != itr)
-        {
-          *ditr-- = *sitr--;
-        }
-
-        *itr = value;
-
-        ++pbuffer_end;
-
-        return itr;
-      }
-      else
-      {
-        return end();
-      }
+      return insert(pos, 1, value);
     }
 
     //*************************************************************************
     ///
     //*************************************************************************
-    ETL_CONSTEXPR14 iterator insert(const_iterator pos, rvalue_reference value)
+    ETL_CONSTEXPR14 iterator insert(const_iterator pos, rvalue_reference value) ETL_NOEXCEPT
     {
       // Out of range?
       if ((pos < pbuffer) || (pos > pbuffer_end))
@@ -339,7 +456,7 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
-    ETL_CONSTEXPR14 iterator insert(const_iterator pos, size_type count, const_reference value)
+    ETL_CONSTEXPR14 iterator insert(const_iterator pos, size_type count, const_reference value) ETL_NOEXCEPT
     {
       // Out of range?
       if ((pos < pbuffer) || (pos > pbuffer_end))
@@ -380,7 +497,7 @@ namespace etl
     ///
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR14 iterator insert(const_iterator pos, TIterator first, TIterator last)
+    ETL_CONSTEXPR14 iterator insert(const_iterator pos, TIterator first, TIterator last) ETL_NOEXCEPT
     {
       // Out of range?
       if ((pos < pbuffer) || (pos > pbuffer_end))
@@ -422,7 +539,25 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
-    ETL_CONSTEXPR14 iterator erase(const_iterator citr)
+    template <typename TRange>
+    ETL_CONSTEXPR14 void insert_range(const_iterator pos, TRange range) ETL_NOEXCEPT
+    {
+      insert(pos, range.begin(), range.end());
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    template <typename TRange>
+    ETL_CONSTEXPR14 void append_range(TRange range) ETL_NOEXCEPT
+    {
+      insert(end(), range.begin(), range.end());
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    ETL_CONSTEXPR14 iterator erase(const_iterator citr) ETL_NOEXCEPT
     {
       // Out of range?
       if ((citr < pbuffer) || (citr > pbuffer_end))
@@ -456,7 +591,7 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
-    ETL_CONSTEXPR14 iterator erase(const_iterator citr_begin, const_iterator citr_end)
+    ETL_CONSTEXPR14 iterator erase(const_iterator citr_begin, const_iterator citr_end) ETL_NOEXCEPT
     {
       // Out of range?
       if ((citr_begin < pbuffer) || (citr_begin > pbuffer_end) || (citr_end < pbuffer) || (citr_end > pbuffer_end))
@@ -487,6 +622,17 @@ namespace etl
       --pbuffer_end;
 
       return itr_begin;
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    void swap(itrivial_vector& other) ETL_NOEXCEPT
+    {
+      pointer lhs = pbuffer;
+      pointer rhs = other.pbuffer;
+
+      swap_ranges(pbuffer, pbuffer_end, other.pbuffer);
     }
 
   protected:
@@ -561,6 +707,77 @@ namespace etl
   template <typename... T>
   trivial_vector(T...) -> trivial_vector<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
+
+  //*************************************************************************
+  ///
+  //*************************************************************************
+  template <typename T, size_t Size>
+  bool operator ==(const etl::trivial_vector<T, Size> lhs, const etl::trivial_vector<T, Size> rhs) ETL_NOEXCEPT
+  {
+    const etl::itrivial_vector<T>& ilhs = lhs;
+    const etl::itrivial_vector<T>& irhs = rhs;
+
+    return etl::equal(ilhs.begin(), ilhs.end(), irhs.begin());
+  }
+
+  //*************************************************************************
+  ///
+  //*************************************************************************
+  template <typename T, size_t Size>
+  bool operator !=(const etl::trivial_vector<T, Size> lhs, const etl::trivial_vector<T, Size> rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //*************************************************************************
+  ///
+  //*************************************************************************
+  template <typename T, size_t Size>
+  bool operator <(const etl::trivial_vector<T, Size> lhs, const etl::trivial_vector<T, Size> rhs) ETL_NOEXCEPT
+  {
+    const etl::itrivial_vector<T>& ilhs = lhs;
+    const etl::itrivial_vector<T>& irhs = rhs;
+
+    return etl::lexicographical_compare(ilhs.begin(), ilhs.end(), irhs.begin());
+  }
+
+  //*************************************************************************
+  ///
+  //*************************************************************************
+  template <typename T, size_t Size>
+  bool operator <=(const etl::trivial_vector<T, Size> lhs, const etl::trivial_vector<T, Size> rhs) ETL_NOEXCEPT
+  {
+    return !(rhs < lhs);
+  }
+
+  //*************************************************************************
+  ///
+  //*************************************************************************
+  template <typename T, size_t Size>
+  bool operator >(const etl::trivial_vector<T, Size> lhs, const etl::trivial_vector<T, Size> rhs) ETL_NOEXCEPT
+  {
+    return (rhs < lhs);
+  }
+
+  //*************************************************************************
+  ///
+  //*************************************************************************
+  template <typename T, size_t Size>
+  bool operator >=(const etl::trivial_vector<T, Size> lhs, const etl::trivial_vector<T, Size> rhs) ETL_NOEXCEPT
+  {
+    return !(lhs < rhs);
+  }
+
+  //*************************************************************************
+  /// Overloaded swap for etl::trivial_vector<T, SIZE>
+  ///\param lhs The first trivial_vector.
+  ///\param rhs The second trivial_vector.
+  //*************************************************************************
+  template <typename T, const size_t SIZE>
+  void swap(etl::trivial_vector<T, SIZE> &lhs, etl::trivial_vector<T, SIZE> &rhs) ETL_NOEXCEPT
+  {
+    lhs.swap(rhs);
+  }
 }
 
 #endif
