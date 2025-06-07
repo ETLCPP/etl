@@ -400,3 +400,5 @@ test/vs2022/Debug MSVC C++20 - Forve C++03 - No virtual messages
 test/reflog.txt
 test/etl_error_handler/assert_function/build-make
 test/syntax_check/bgcc
+test/vs2022/Debug MSVC C++23
+test/vs2022/Debug MSVC C++23 - No STL

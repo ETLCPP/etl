@@ -51,7 +51,6 @@ SOFTWARE.
 
 #include <stddef.h>
 #include <stdint.h>
-#include <stddef.h>
 
 //*****************************************************************************
 ///\defgroup vector vector
