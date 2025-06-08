@@ -14,6 +14,7 @@ Disable std::tuple_index and std::tuple_element forward declarations for MacOS a
 
 Pull Requests:
 #1116 Fix forward in tuple ctor
+#1122 Add Newline at end of Span
 
 ===============================================================================
 20.41.5
