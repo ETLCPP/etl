@@ -46,6 +46,9 @@ SOFTWARE.
 #include "delegate.h"
 #include "algorithm.h"
 #include "iterator.h"
+#include "type_traits.h"
+#include "initializer_list.h"
+#include "span.h"
 #include "file_error_numbers.h"
 
 //*****************************************************************************
@@ -69,6 +72,10 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  ///\ingroup signal
+  /// Signal full exception.
+  //***************************************************************************
   class signal_full : public signal_exception
   {
   public:
@@ -86,9 +93,7 @@ namespace etl
   ///
   ///\tparam TFunction: Callback signature.
   ///\tparam Length:    Maximum number of slots that can be connected to the signal.
-  ///\tparam TSlot:     Function-object type or container type that can be invoked. Default etl::delegate.
-  ///
-  ///\todo Support for return types other than void (aggregate etc.)
+  ///\tparam TSlot:     Function-object type or container type that can be invoked. Default etl::delegate<TFunction>.
   //***************************************************************************
   template <typename TFunction, size_t Length, typename TSlot = etl::delegate<TFunction>>
   class signal
@@ -97,16 +102,21 @@ namespace etl
 
     using slot_type = TSlot;
     using size_type = size_t;
+    using span_type = etl::span<const slot_type>;
 
     //*************************************************************************
-    /// Constructs the signal.
+    ///\brief  Construct the signal from a variadic list of slots.
+    ///
+    ///\param slots: Variadic list of slots.
     //*************************************************************************
-    template <typename... TArgs>
-    ETL_CONSTEXPR14 explicit signal(TArgs&&... args) ETL_NOEXCEPT
-      : slot_list{etl::forward<TArgs>(args)...}
-      , end_of_list{slot_list + sizeof... (args)}
+    template <typename... TSlots>
+    ETL_CONSTEXPR14 explicit signal(TSlots&&... slots) ETL_NOEXCEPT
+      : slot_list{etl::forward<TSlots>(slots)...}
+      , slot_list_end{slot_list + sizeof...(slots)}
     {
-    };
+      static_assert((etl::are_all_same<slot_type, etl::decay_t<TSlots>...>::value), "All slots must be slot_type");
+      static_assert(sizeof...(slots) <= Length, "Number of slots exceeds capacity");
+    }
 
     //*************************************************************************
     ///\brief Invokes all the slots connected to the signal.
@@ -117,11 +127,11 @@ namespace etl
     template <typename... TArgs>
     void operator()(TArgs&&... args) const ETL_NOEXCEPT
     {
-      for (const slot_type& s : *this)
+      for (const slot_type& slot : *this)
       {
-        if (slot_is_valid(s))
+        if (slot_is_valid(slot))
         {
-          s(etl::forward<TArgs>(args)...);
+          slot(etl::forward<TArgs>(args)...);
         }
       }
     }
@@ -130,7 +140,7 @@ namespace etl
     ///\brief Connects a slot to the signal.
     /// Ignores the slot if it has already been connected.
     ///
-    ///\param slot: To connect.
+    ///\param slot: The slot o connect.
     //*************************************************************************
     void connect(const slot_type& slot)
     {
@@ -138,8 +148,38 @@ namespace etl
 
       if (!connected(slot))
       {
-        (*end_of_list) = slot;
-        end_of_list    = etl::next(end_of_list);
+        (*slot_list_end) = slot;
+        slot_list_end    = etl::next(slot_list_end);
+      }
+    }
+
+#if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
+    //*************************************************************************
+    ///\brief Connects slots to the signal.
+    /// Ignores the slots if it has already been connected.
+    ///
+    ///\param slots: std::initializer_list of slots to connect.
+    //*************************************************************************
+    void connect(std::initializer_list<const slot_type> slots)
+    {
+      for (const slot_type& slot : slots)
+      {
+        connect(slot);
+      }
+    }
+#endif
+
+    //*************************************************************************
+    ///\brief Connects slots to the signal.
+    /// Ignores the slots if it has already been connected.
+    ///
+    ///\param slots: etl::span of slots to connect.
+    //*************************************************************************
+    void connect(const span_type slots)
+    {
+      for (const slot_type& slot : slots)
+      {
+        connect(slot);
       }
     }
 
@@ -155,10 +195,36 @@ namespace etl
 
       if (itr != end_itr)
       {
-        // Copy + replace idiom (expensive).  Shifts all elements after 'itr' one
-        // position to the left.
+        // Copy + replace idiom (expensive).  Shifts all elements after 'itr'
+        // one position to the left.
         etl::copy(etl::next(itr), end_itr, itr);
-        end_of_list = etl::prev(end_of_list);
+        slot_list_end = etl::prev(slot_list_end);
+      }
+    }
+
+    //*************************************************************************
+    ///\brief Disconnects multiple slots from the signal.
+    ///
+    ///\param slot: std::intializer_list of slots to disconnect.
+    //*************************************************************************
+    void disconnect(std::initializer_list<const slot_type> slots) ETL_NOEXCEPT
+    {
+      for (const slot_type& slot : slots)
+      {
+        disconnect(slot);
+      }
+    }
+
+    //*************************************************************************
+    ///\brief Disconnects multiple slots from the signal.
+    ///
+    ///\param slot: etl::span of slots to disconnect.
+    //*************************************************************************
+    void disconnect(const span_type slots) ETL_NOEXCEPT
+    {
+      for (const slot_type& slot : slots)
+      {
+        disconnect(slot);
       }
     }
 
@@ -167,14 +233,14 @@ namespace etl
     //*************************************************************************
     void disconnect_all() ETL_NOEXCEPT
     {
-      end_of_list = begin();
+      slot_list_end = begin();
     }
 
     //*************************************************************************
     ///\brief Checks if a slot is connected to the signal.
     ///
     ///\param slot: To check.
-    ///\return true if the slot is connected.
+    ///\return <b>true</b> if the slot is connected.
     //*************************************************************************
     ETL_CONSTEXPR14 bool connected(const slot_type& slot) const ETL_NOEXCEPT
     {
@@ -182,7 +248,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\return true if the signal has no slots connected.
+    ///\return <b>true</b> if the signal has no slots connected.
     //*************************************************************************
     ETL_CONSTEXPR14 bool empty() const ETL_NOEXCEPT
     {
@@ -190,7 +256,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\return true if the signal has the maximum number of slots connected.
+    ///\return <b>true</b> if the signal has the maximum number of slots connected.
     //*************************************************************************
     ETL_CONSTEXPR14 bool full() const ETL_NOEXCEPT
     {
@@ -213,13 +279,21 @@ namespace etl
       return etl::distance(begin(), end());
     }
 
+    //*************************************************************************
+    ///\return Total empty slots available.
+    //*************************************************************************
+    ETL_CONSTEXPR14 size_type available() const ETL_NOEXCEPT
+    {
+      return max_size() - size();
+    }
+
   private:
 
     using iterator       = slot_type*;
     using const_iterator = const slot_type*;
 
     slot_type slot_list[Length];
-    iterator  end_of_list;
+    iterator  slot_list_end;
 
     //*************************************************************************
     /// For a delegate slot type.
@@ -264,7 +338,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 iterator end() ETL_NOEXCEPT
     {
-      return end_of_list;
+      return slot_list_end;
     }
 
     //*************************************************************************
@@ -272,7 +346,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator end() const ETL_NOEXCEPT
     {
-      return end_of_list;
+      return slot_list_end;
     }
   };
 }

@@ -3365,7 +3365,6 @@
     <ClInclude Include="..\..\include\etl\to_u32string.h" />
     <ClInclude Include="..\..\include\etl\to_u8string.h" />
     <ClInclude Include="..\..\include\etl\to_wstring.h" />
-    <ClInclude Include="..\..\include\etl\trivial_vector.h" />
     <ClInclude Include="..\..\include\etl\tuple.h" />
     <ClInclude Include="..\..\include\etl\type_list.h" />
     <ClInclude Include="..\..\include\etl\type_lookup.h" />
@@ -9542,7 +9541,6 @@
     <ClCompile Include="..\test_to_u32string.cpp" />
     <ClCompile Include="..\test_to_u8string.cpp" />
     <ClCompile Include="..\test_to_wstring.cpp" />
-    <ClCompile Include="..\test_trivial_vector.cpp" />
     <ClCompile Include="..\test_tuple.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
     <ClCompile Include="..\test_type_list.cpp" />

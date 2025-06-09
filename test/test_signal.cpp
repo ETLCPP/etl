@@ -36,14 +36,9 @@ SOFTWARE.
 
 namespace
 {
-
-  constexpr auto total_output_methods_
-  {
-    5ULL
-  };  // free funciton, lambda, static class method, class method, functor.
-
-  using signal_type = etl::signal<void(std::ostream&), total_output_methods_>;
+  using signal_type = etl::signal<void(std::ostream&), 5U>;
   using slot_type   = signal_type::slot_type;
+  using span_type   = etl::span<const slot_type>;
 
   //*************************************************************************
   ///\brief Generic output free function
@@ -107,7 +102,7 @@ namespace
     }
   };
 
-  example_class example_;
+  example_class example;
 
   //*************************************************************************
   ///\brief Makes an empty slot
@@ -156,7 +151,7 @@ namespace
   //*************************************************************************
   ETL_CONSTEXPR14 slot_type make_instance_slot() 
   {
-    return slot_type::create<example_class, example_, &example_class::method>();
+    return slot_type::create<example_class, example, &example_class::method>();
   }
 
   //*************************************************************************
@@ -166,204 +161,463 @@ namespace
   //*************************************************************************
   ETL_CONSTEXPR14 slot_type make_functor_slot() 
   {
-    return slot_type::create<example_class, example_>();
+    return slot_type::create<example_class, example>();
   }
 
-#if ETL_USING_CPP14
-  constexpr signal_type constexpr_test_object_
-  {
-    make_free_slot(), 
-    make_lambda_slot(), 
-    make_static_slot(), 
-    make_instance_slot(), 
-    make_functor_slot()
-  };
-#endif // ETL_USING_CPP14
-
-#if ETL_USING_CPP14
-  constexpr signal_type constexpr_test_object_empty_slots_
-  {
-    make_free_slot(), 
-    make_empty_slot(), 
-    make_static_slot(), 
-    make_empty_slot(), 
-    make_functor_slot()
-  };
-#endif // ETL_USING_CPP14
+  //*************************************************************************
+  ///\brief Makes the incorrect slot type
+  /// Uncomment for test_construct_with_incorrect_slot_type
+  ///\return An incorrect slot
+  //*************************************************************************
+  //ETL_CONSTEXPR14 etl::delegate<int(std::ostream&)> make_incorrect_slot()
+  //{
+  //  return etl::delegate<int(std::ostream&)>();
+  //}
 
   //***************************************************************************
   SUITE(signal_test)
   {
     //***************************************************************************
-    TEST(construct)
+    TEST(test_default_construct)
     {
-      signal_type test_object_;
-      CHECK_EQUAL(0U, test_object_.size());
-      CHECK_EQUAL(total_output_methods_, test_object_.max_size());
-      CHECK_TRUE(test_object_.empty());
-      CHECK_FALSE(test_object_.full());
+      signal_type test_object;
+      CHECK_EQUAL(0U, test_object.size());
+      CHECK_EQUAL(5U, test_object.max_size());
+      CHECK_TRUE(test_object.empty());
+      CHECK_FALSE(test_object.full());
+    }
+
 #if ETL_USING_CPP14
-      CHECK_EQUAL(total_output_methods_, constexpr_test_object_.size());
-      CHECK_EQUAL(total_output_methods_, constexpr_test_object_.max_size());
-      CHECK_FALSE(constexpr_test_object_.empty());
-      CHECK_TRUE(constexpr_test_object_.full());
-#endif // ETL_USING_CPP14
+    //***************************************************************************
+    TEST(test_constexpr_construct)
+    {
+      static constexpr signal_type signal
+      {
+        make_free_slot(), 
+        make_lambda_slot(), 
+        make_static_slot(), 
+        make_instance_slot(), 
+        make_functor_slot()
+      };
+
+      CHECK_EQUAL(5U, signal.size());
+      CHECK_EQUAL(0, signal.available());
+      CHECK_EQUAL(5U, signal.max_size());
+      CHECK_FALSE(signal.empty());
+      CHECK_TRUE(signal.full());
+    }
+#endif
+
+    //***************************************************************************
+    TEST(test_construct_from_slot_list)
+    {
+      const auto free_slot     = make_free_slot();
+      const auto lambda_slot   = make_lambda_slot();
+      const auto static_slot   = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot  = make_functor_slot();
+
+      signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
+
+      CHECK_EQUAL(5, signal.size());
+      CHECK_EQUAL(0, signal.available());
+      CHECK_EQUAL(5, signal.max_size());
+      CHECK_FALSE(signal.empty());
+      CHECK_TRUE(signal.full());
     }
 
     //***************************************************************************
-    TEST(connect)
+    TEST(test_construct_from_too_many_slots)
     {
-      signal_type test_object_;
-      const auto free_slot = make_free_slot();
-      test_object_.connect(free_slot);
-      test_object_.connect(free_slot);
-      CHECK_EQUAL(1U, test_object_.size());
-      CHECK_TRUE(test_object_.connected(free_slot));
+      // Uncomment to trigger static_assert "Number of slots exceeds capacity"
+      //const auto free_slot     = make_free_slot();
+      //const auto lambda_slot   = make_lambda_slot();
+      //const auto static_slot   = make_static_slot();
+      //const auto instance_slot = make_instance_slot();
+      //const auto functor_slot  = make_functor_slot();
+      //const auto functor_slot2 = make_functor_slot();
 
-      const auto lambda_slot = make_lambda_slot();
-      test_object_.connect(lambda_slot);
-      CHECK_EQUAL(2U, test_object_.size());
-      CHECK_TRUE(test_object_.connected(lambda_slot));
+      //signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot, functor_slot2 };
+    }
 
-      const auto static_slot = make_static_slot();
-      test_object_.connect(static_slot);
-      CHECK_EQUAL(3U, test_object_.size());
-      CHECK_TRUE(test_object_.connected(static_slot));
+#if ETL_USING_CPP14
+    //***************************************************************************
+    TEST(test_constexpr_construct_from_slot_list)
+    {
+      static constexpr auto free_slot     = make_free_slot();
+      static constexpr auto lambda_slot   = make_lambda_slot();
+      static constexpr auto static_slot   = make_static_slot();
+      static constexpr auto instance_slot = make_instance_slot();
+      static constexpr auto functor_slot  = make_functor_slot();
 
-      const auto instance_slot = make_instance_slot();
-      test_object_.connect(instance_slot);
-      CHECK_EQUAL(4U, test_object_.size());
-      CHECK_TRUE(test_object_.connected(instance_slot));
+      static constexpr signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
 
-      const auto functor_slot = make_functor_slot();
-      test_object_.connect(functor_slot);
-      CHECK_EQUAL(5U, test_object_.size());
-      CHECK_TRUE(test_object_.connected(functor_slot));
-      CHECK_TRUE(test_object_.full());
+      CHECK_EQUAL(5, signal.size());
+      CHECK_EQUAL(0, signal.available());
+      CHECK_EQUAL(5, signal.max_size());
+      CHECK_FALSE(signal.empty());
+      CHECK_TRUE(signal.full());
+    }
+#endif
+
+    //***************************************************************************
+    TEST(test_construct_with_incorrect_slot_type)
+    {
+      // Uncomment to trigger static_assert "All slots must be slot_type"
+      //const auto free_slot      = make_free_slot();
+      //const auto lambda_slot    = make_lambda_slot();
+      //const auto incorrect_slot = make_incorrect_slot(); // Incorrect type
+      //const auto instance_slot  = make_instance_slot();
+      //const auto functor_slot   = make_functor_slot();
+
+      //signal_type signal{ free_slot, lambda_slot, incorrect_slot, instance_slot, functor_slot };
     }
 
     //***************************************************************************
-    TEST(disconnect)
+    TEST(test_connect)
     {
-      signal_type test_object_;
-      const auto free_slot = make_free_slot();
-      const auto lambda_slot = make_lambda_slot();
-      const auto static_slot = make_static_slot();
-      const auto instance_slot = make_instance_slot();
-      const auto functor_slot = make_functor_slot();
-      test_object_.connect(free_slot);
-      test_object_.connect(lambda_slot);
-      test_object_.connect(static_slot);
-      test_object_.connect(instance_slot);
-      test_object_.connect(functor_slot);
+      signal_type signal;
 
-      test_object_.disconnect(free_slot);
-      CHECK_EQUAL(4U, test_object_.size());
-      CHECK_FALSE(test_object_.connected(free_slot));
+      const auto free_slot = make_free_slot();
+      signal.connect(free_slot);
+      CHECK_EQUAL(1U, signal.size());
+      CHECK_EQUAL(4U, signal.available());
+      signal.connect(free_slot); // Try to connect it again - nothing should change.
+      CHECK_EQUAL(1U, signal.size());
+      CHECK_EQUAL(4U, signal.available());
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
+      CHECK_TRUE(signal.connected(free_slot));
+
+      const auto lambda_slot = make_lambda_slot();
+      signal.connect(lambda_slot);
+      CHECK_EQUAL(2U, signal.size());
+      CHECK_EQUAL(3U, signal.available());
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
+      CHECK_TRUE(signal.connected(lambda_slot));
+
+      const auto static_slot = make_static_slot();
+      signal.connect(static_slot);
+      CHECK_EQUAL(3U, signal.size());
+      CHECK_EQUAL(2U, signal.available());
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
+      CHECK_TRUE(signal.connected(static_slot));
+
+      const auto instance_slot = make_instance_slot();
+      signal.connect(instance_slot);
+      CHECK_EQUAL(4U, signal.size());
+      CHECK_EQUAL(1U, signal.available());
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
+      CHECK_TRUE(signal.connected(instance_slot));
+
+      const auto functor_slot = make_functor_slot();
+      signal.connect(functor_slot);
+      CHECK_EQUAL(5U, signal.size());
+      CHECK_EQUAL(0U, signal.available());
+      CHECK_FALSE(signal.empty());
+      CHECK_TRUE(signal.full());
+      CHECK_TRUE(signal.connected(functor_slot));
+    }
+
+#if ETL_USING_CPP17
+    //***************************************************************************
+    TEST(test_connect_from_initializer_list)
+    {
+      signal_type signal;
+      
+      /*const*/ slot_type free_slot     = make_free_slot();
+      const auto lambda_slot   = make_lambda_slot();
+      const auto static_slot   = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot  = make_functor_slot();
+
+      signal.connect({ free_slot, lambda_slot, static_slot, instance_slot, functor_slot });
+
+      CHECK_EQUAL(5U, signal.size());
+      CHECK_TRUE(signal.connected(free_slot));
+      CHECK_TRUE(signal.connected(lambda_slot));
+      CHECK_TRUE(signal.connected(static_slot));
+      CHECK_TRUE(signal.connected(instance_slot));
+      CHECK_TRUE(signal.connected(functor_slot));
+      CHECK_EQUAL(0U, signal.available());
+      CHECK_FALSE(signal.empty());
+      CHECK_TRUE(signal.full());
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //***************************************************************************
+    TEST(test_connect_from_initializer_list_too_many_slots)
+    {
+      signal_type signal;
+
+      const auto free_slot     = make_free_slot();
+      const auto lambda_slot   = make_lambda_slot();
+      const auto static_slot   = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot  = make_functor_slot();
+      const auto extra_slot    = make_functor_slot();
+
+      CHECK_THROW(signal.connect({ free_slot, lambda_slot, static_slot, instance_slot, functor_slot, extra_slot }), etl::signal_full);
+    }
+#endif
+
+    //***************************************************************************
+    TEST(test_connect_from_span)
+    {
+      signal_type signal;
+
+      const auto free_slot     = make_free_slot();
+      const auto lambda_slot   = make_lambda_slot();
+      const auto static_slot   = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot  = make_functor_slot();
+
+      const slot_type slot_list[] = { free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
+
+      signal.connect(span_type(slot_list));
+    }
+
+    //***************************************************************************
+    TEST(test_connect_from_span_too_many_slots)
+    {
+      signal_type signal;
+
+      const auto free_slot     = make_free_slot();
+      const auto lambda_slot   = make_lambda_slot();
+      const auto static_slot   = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot  = make_functor_slot();
+      const auto extra_slot    = make_functor_slot();
+
+      const slot_type slot_list[] = { free_slot, lambda_slot, static_slot, instance_slot, functor_slot, extra_slot };
+
+      CHECK_THROW(signal.connect(slot_list), etl::signal_full);
+    }
+
+    //***************************************************************************
+    TEST(test_disconnect)
+    {
+      signal_type signal;
+
+      const auto free_slot     = make_free_slot();
+      const auto lambda_slot   = make_lambda_slot();
+      const auto static_slot   = make_static_slot();
+      const auto instance_slot = make_instance_slot();
+      const auto functor_slot  = make_functor_slot();
+
+      const slot_type slot_list[] = { free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
+      signal.connect(slot_list);
+
+      signal.disconnect(free_slot);
+      CHECK_EQUAL(4U, signal.size());
+      CHECK_EQUAL(1U, signal.available());
+      CHECK_FALSE(signal.connected(free_slot));
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
 
       // Try to remove it again - nothing should change.
-      test_object_.disconnect(free_slot);
-      CHECK_EQUAL(4U, test_object_.size());
-      CHECK_FALSE(test_object_.connected(free_slot));
+      signal.disconnect(free_slot);
+      CHECK_EQUAL(4U, signal.size());
+      CHECK_EQUAL(1U, signal.available());
+      CHECK_FALSE(signal.connected(free_slot));
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
 
-      test_object_.disconnect(lambda_slot);
-      CHECK_EQUAL(3U, test_object_.size());
-      CHECK_FALSE(test_object_.connected(lambda_slot));
+      signal.disconnect(lambda_slot);
+      CHECK_EQUAL(3U, signal.size());
+      CHECK_EQUAL(2U, signal.available());
+      CHECK_FALSE(signal.connected(lambda_slot));
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
 
-      test_object_.disconnect(static_slot);
-      CHECK_EQUAL(2U, test_object_.size());
-      CHECK_FALSE(test_object_.connected(static_slot));
+      signal.disconnect(static_slot);
+      CHECK_EQUAL(2U, signal.size());
+      CHECK_EQUAL(3U, signal.available());
+      CHECK_FALSE(signal.connected(static_slot));
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
 
-      test_object_.disconnect(instance_slot);
-      CHECK_EQUAL(1U, test_object_.size());
-      CHECK_FALSE(test_object_.connected(instance_slot));
+      signal.disconnect(instance_slot);
+      CHECK_EQUAL(1U, signal.size());
+      CHECK_EQUAL(4U, signal.available());
+      CHECK_FALSE(signal.connected(instance_slot));
+      CHECK_FALSE(signal.empty());
+      CHECK_FALSE(signal.full());
 
-      test_object_.disconnect(functor_slot);
-      CHECK_EQUAL(0U, test_object_.size());
-      CHECK_FALSE(test_object_.connected(functor_slot));
+      signal.disconnect(functor_slot);
+      CHECK_EQUAL(0U, signal.size());
+      CHECK_EQUAL(5U, signal.available());
+      CHECK_FALSE(signal.connected(functor_slot));
+      CHECK_TRUE(signal.empty());
+      CHECK_FALSE(signal.full());
     }
   }
 
+#if ETL_USING_CPP17
   //***************************************************************************
-  TEST(disconnect_all)
+  TEST(test_disconnect_from_initializer_list)
   {
-    signal_type test_object_;
+    signal_type signal;
     const auto free_slot     = make_free_slot();
     const auto lambda_slot   = make_lambda_slot();
     const auto static_slot   = make_static_slot();
     const auto instance_slot = make_instance_slot();
     const auto functor_slot  = make_functor_slot();
-    test_object_.connect(free_slot);
-    test_object_.connect(lambda_slot);
-    test_object_.connect(static_slot);
-    test_object_.connect(instance_slot);
-    test_object_.connect(functor_slot);
 
-    test_object_.disconnect_all();
-    CHECK_EQUAL(0U, test_object_.size());
-    CHECK_TRUE(test_object_.empty());
-    CHECK_FALSE(test_object_.connected(free_slot));
-    CHECK_FALSE(test_object_.connected(lambda_slot));
-    CHECK_FALSE(test_object_.connected(static_slot));
-    CHECK_FALSE(test_object_.connected(instance_slot));
-    CHECK_FALSE(test_object_.connected(functor_slot));
+    signal.connect({ free_slot, lambda_slot, static_slot, instance_slot, functor_slot });
+
+    signal.disconnect({ lambda_slot, instance_slot });
+    CHECK_EQUAL(3U, signal.size());
+    CHECK_FALSE(signal.empty());
+    CHECK_TRUE(signal.connected(free_slot));
+    CHECK_FALSE(signal.connected(lambda_slot));
+    CHECK_TRUE(signal.connected(static_slot));
+    CHECK_FALSE(signal.connected(instance_slot));
+    CHECK_TRUE(signal.connected(functor_slot));
+  }
+#endif
+
+  //***************************************************************************
+  TEST(test_disconnect_from_span_list)
+  {
+    signal_type signal;
+    const auto free_slot     = make_free_slot();
+    const auto lambda_slot   = make_lambda_slot();
+    const auto static_slot   = make_static_slot();
+    const auto instance_slot = make_instance_slot();
+    const auto functor_slot  = make_functor_slot();
+
+    signal.connect(free_slot);
+    signal.connect(lambda_slot);
+    signal.connect(static_slot);
+    signal.connect(instance_slot);
+    signal.connect(functor_slot);
+
+    const slot_type slot_list[] = { lambda_slot, instance_slot };
+
+    signal.disconnect(span_type(slot_list));
+    CHECK_EQUAL(3U, signal.size());
+    CHECK_FALSE(signal.empty());
+    CHECK_TRUE(signal.connected(free_slot));
+    CHECK_FALSE(signal.connected(lambda_slot));
+    CHECK_TRUE(signal.connected(static_slot));
+    CHECK_FALSE(signal.connected(instance_slot));
+    CHECK_TRUE(signal.connected(functor_slot));
   }
 
   //***************************************************************************
-  TEST(call_empty)
+  TEST(test_disconnect_all)
+  {
+    signal_type signal;
+    const auto free_slot     = make_free_slot();
+    const auto lambda_slot   = make_lambda_slot();
+    const auto static_slot   = make_static_slot();
+    const auto instance_slot = make_instance_slot();
+    const auto functor_slot  = make_functor_slot();
+
+    const slot_type slot_list[] = { free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
+    signal.connect(slot_list);
+
+    signal.disconnect_all();
+    CHECK_EQUAL(0U, signal.size());
+    CHECK_TRUE(signal.empty());
+    CHECK_FALSE(signal.connected(free_slot));
+    CHECK_FALSE(signal.connected(lambda_slot));
+    CHECK_FALSE(signal.connected(static_slot));
+    CHECK_FALSE(signal.connected(instance_slot));
+    CHECK_FALSE(signal.connected(functor_slot));
+  }
+
+  //***************************************************************************
+  TEST(test_call_empty)
   {
     std::stringstream ss;
-    signal_type test_object_;
-    test_object_(ss);
+    signal_type signal;
+    signal(ss);
     CHECK_EQUAL(std::string{""}, ss.str());
   }
 
   //***************************************************************************
-  TEST(call)
+  TEST(test_call)
   {
-    signal_type test_object_;
-    test_object_.connect(make_free_slot());
-    test_object_.connect(make_lambda_slot());
-    test_object_.connect(make_static_slot());
-    test_object_.connect(make_instance_slot());
-    test_object_.connect(make_functor_slot());
+    const auto free_slot     = make_free_slot();
+    const auto lambda_slot   = make_lambda_slot();
+    const auto static_slot   = make_static_slot();
+    const auto instance_slot = make_instance_slot();
+    const auto functor_slot  = make_functor_slot();
+
+    signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
 
     std::stringstream ss;
-    test_object_(ss);
+    signal(ss);
 
-    // expect all signals got called
+    // Expect all signals got called
     const std::string expected_string{"freelambdastaticmethodfunctor"};
     CHECK_EQUAL(expected_string, ss.str());
-
-#if ETL_USING_CPP14
-    std::stringstream ss2;
-    constexpr_test_object_(ss2);
-    CHECK_EQUAL(expected_string, ss2.str());
-#endif // ETL_USING_CPP14
   }
 
+#if ETL_USING_CPP14
   //***************************************************************************
-  TEST(call_empty_slots)
+  TEST(test_constexpr_call)
   {
-    signal_type test_object_;
-    test_object_.connect(make_free_slot());
-    test_object_.connect(make_empty_slot()); // Uninitialised delegate
-    test_object_.connect(make_static_slot());
-    test_object_.connect(make_empty_slot()); // Uninitialised delegate
-    test_object_.connect(make_functor_slot());
+    static constexpr auto free_slot     = make_free_slot();
+    static constexpr auto lambda_slot   = make_lambda_slot();
+    static constexpr auto static_slot   = make_static_slot();
+    static constexpr auto instance_slot = make_instance_slot();
+    static constexpr auto functor_slot  = make_functor_slot();
+
+    static constexpr signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
 
     std::stringstream ss;
-    test_object_(ss);
+    signal(ss);
 
-    // expect all signals got called
+    // Expect all slots got called
+    const std::string expected_string{"freelambdastaticmethodfunctor"};
+    CHECK_EQUAL(expected_string, ss.str());
+  }
+#endif
+
+  //***************************************************************************
+  TEST(test_call_empty_slots)
+  {
+    const auto free_slot     = make_free_slot();
+    const auto lambda_slot   = make_empty_slot();
+    const auto static_slot   = make_static_slot();
+    const auto instance_slot = make_empty_slot();
+    const auto functor_slot  = make_functor_slot();
+
+    signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
+
+    std::stringstream ss;
+    signal(ss);
+
+    // Expect only valid slots got called
     const std::string expected_string{"freestaticfunctor"};
     CHECK_EQUAL(expected_string, ss.str());
-
-#if ETL_USING_CPP14
-    std::stringstream ss2;
-    constexpr_test_object_empty_slots_(ss2);
-    CHECK_EQUAL(expected_string, ss2.str());
-#endif // ETL_USING_CPP14
   }
 
+#if ETL_USING_CPP14
+  //***************************************************************************
+  TEST(test_call_constexpr_empty_slots)
+  {
+    static constexpr auto free_slot     = make_free_slot();
+    static constexpr auto lambda_slot   = make_empty_slot();
+    static constexpr auto static_slot   = make_static_slot();
+    static constexpr auto instance_slot = make_empty_slot();
+    static constexpr auto functor_slot  = make_functor_slot();
+
+    static constexpr signal_type signal{ free_slot, lambda_slot, static_slot, instance_slot, functor_slot };
+
+    std::stringstream ss;
+    signal(ss);
+
+    // Expect only valid slots got called
+    const std::string expected_string{"freestaticfunctor"};
+    CHECK_EQUAL(expected_string, ss.str());
+  }
+#endif
 }
