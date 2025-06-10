@@ -92,10 +92,10 @@ namespace etl
   /// ability to store in ROM.
   ///
   ///\tparam TFunction: Callback signature.
-  ///\tparam Length:    Maximum number of slots that can be connected to the signal.
+  ///\tparam Size:      Maximum number of slots that can be connected to the signal.
   ///\tparam TSlot:     Function-object type or container type that can be invoked. Default etl::delegate<TFunction>.
   //***************************************************************************
-  template <typename TFunction, size_t Length, typename TSlot = etl::delegate<TFunction>>
+  template <typename TFunction, size_t Size, typename TSlot = etl::delegate<TFunction>>
   class signal
   {
   public:
@@ -115,42 +115,25 @@ namespace etl
       , slot_list_end{slot_list + sizeof...(slots)}
     {
       static_assert((etl::are_all_same<slot_type, etl::decay_t<TSlots>...>::value), "All slots must be slot_type");
-      static_assert(sizeof...(slots) <= Length, "Number of slots exceeds capacity");
-    }
-
-    //*************************************************************************
-    ///\brief Invokes all the slots connected to the signal.
-    /// Checks if the slot is valid to call.
-    /// 
-    ///\param args: Arguments to pass to the slots.
-    //*************************************************************************
-    template <typename... TArgs>
-    void operator()(TArgs&&... args) const ETL_NOEXCEPT
-    {
-      for (const slot_type& slot : *this)
-      {
-        if (slot_is_valid(slot))
-        {
-          slot(etl::forward<TArgs>(args)...);
-        }
-      }
+      static_assert(sizeof...(slots) <= Size, "Number of slots exceeds capacity");
     }
 
     //*************************************************************************
     ///\brief Connects a slot to the signal.
     /// Ignores the slot if it has already been connected.
     ///
-    ///\param slot: The slot o connect.
+    ///\param slot: The slot to connect.
+    ///\return <b>false</b> if not all slots could be connected.
     //*************************************************************************
-    void connect(const slot_type& slot)
+    bool connect(const slot_type& slot)
     {
-      ETL_ASSERT_OR_RETURN(!full(), ETL_ERROR(signal_full));
-
       if (!connected(slot))
       {
-        (*slot_list_end) = slot;
-        slot_list_end    = etl::next(slot_list_end);
+        ETL_ASSERT_OR_RETURN_VALUE(!full(), ETL_ERROR(signal_full), false);
+        append_slot(slot);
       }
+
+      return true;
     }
 
 #if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
@@ -159,13 +142,20 @@ namespace etl
     /// Ignores the slots if it has already been connected.
     ///
     ///\param slots: std::initializer_list of slots to connect.
+    ///\return <b>false</b> if not all slots could be connected.
     //*************************************************************************
-    void connect(std::initializer_list<const slot_type> slots)
+    bool connect(std::initializer_list<const slot_type> slots)
     {
       for (const slot_type& slot : slots)
       {
-        connect(slot);
+        if (!connected(slot))
+        {
+          ETL_ASSERT_OR_RETURN_VALUE(!full(), ETL_ERROR(signal_full), false);
+          append_slot(slot);
+        }
       }
+
+      return true;
     }
 #endif
 
@@ -174,13 +164,20 @@ namespace etl
     /// Ignores the slots if it has already been connected.
     ///
     ///\param slots: etl::span of slots to connect.
+    ///\return <b>false</b> if not all slots could be connected.
     //*************************************************************************
-    void connect(const span_type slots)
+    bool connect(const span_type slots)
     {
       for (const slot_type& slot : slots)
       {
-        connect(slot);
+        if (!connected(slot))
+        {
+          ETL_ASSERT_OR_RETURN_VALUE(!full(), ETL_ERROR(signal_full), false);
+          append_slot(slot);
+        }
       }
+
+      return true;
     }
 
     //*************************************************************************
@@ -202,6 +199,7 @@ namespace etl
       }
     }
 
+#if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
     //*************************************************************************
     ///\brief Disconnects multiple slots from the signal.
     ///
@@ -214,6 +212,7 @@ namespace etl
         disconnect(slot);
       }
     }
+#endif
 
     //*************************************************************************
     ///\brief Disconnects multiple slots from the signal.
@@ -268,7 +267,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type max_size() const ETL_NOEXCEPT
     {
-      return Length;
+      return Size;
     }
 
     //*************************************************************************
@@ -287,13 +286,40 @@ namespace etl
       return max_size() - size();
     }
 
+    //*************************************************************************
+    ///\brief Invokes all the slots connected to the signal.
+    /// Checks if the slot is valid to call.
+    /// 
+    ///\param args: Arguments to pass to the slots.
+    //*************************************************************************
+    template <typename... TArgs>
+    void operator()(TArgs&&... args) const ETL_NOEXCEPT
+    {
+      for (const slot_type& slot : *this)
+      {
+        if (slot_is_valid(slot))
+        {
+          slot(etl::forward<TArgs>(args)...);
+        }
+      }
+    }
+
   private:
 
     using iterator       = slot_type*;
     using const_iterator = const slot_type*;
 
-    slot_type slot_list[Length];
+    slot_type slot_list[Size];
     iterator  slot_list_end;
+
+    //*************************************************************************
+    /// Appends a slot to the slot list.
+    //*************************************************************************
+    void append_slot(const slot_type& slot)
+    {
+      (*slot_list_end) = slot;
+      slot_list_end    = etl::next(slot_list_end);
+    }
 
     //*************************************************************************
     /// For a delegate slot type.
