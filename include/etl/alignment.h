@@ -378,16 +378,8 @@ namespace etl
     /// Default destructor which will NOT call the destructor of the object which
     /// was created by calling create().
     //***************************************************************************
-    ~typed_storage() = default;
-
-    //***************************************************************************
-    /// Calls the destructor of the wrapped object and asserts if has_value() is false.
-    //***************************************************************************
-    void destroy()
+    ~typed_storage()
     {
-      ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
-      data.template get_reference<T>().~T();
-      valid = false;
     }
 
     //***************************************************************************
@@ -470,6 +462,16 @@ namespace etl
       return *::new (data.template get_address<char>()) value_type(t1, t2, t3, t4);
     }
 #endif
+
+    //***************************************************************************
+    /// Calls the destructor of the wrapped object and asserts if has_value() is false.
+    //***************************************************************************
+    void destroy()
+    {
+      ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
+      data.template get_reference<T>().~T();
+      valid = false;
+    }
 
     //***************************************************************************
     /// \returns a pointer of type T and asserts if has_value() is false.
