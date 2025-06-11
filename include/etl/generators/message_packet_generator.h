@@ -50,12 +50,12 @@ cog.outl("//********************************************************************
 // To generate to header file, run this at the command line.
 // Note: You will need Python and COG installed.
 //
-// python -m cogapp -d -e -omessage_packet.h -DHandlers=<n> message_packet_generator.h
+// cog -d -e -omessage_packet.h -DHandlers=<n> message_packet_generator.h
 // Where <n> is the number of messages to support.
 //
 // e.g.
 // To generate handlers for up to 16 messages...
-// python -m cogapp -d -e -omessage_packet.h -DHandlers=16 message_packet_generator.h
+// cog -d -e -omessage_packet.h -DHandlers=16 message_packet_generator.h
 //
 // See generate.bat
 //***************************************************************************

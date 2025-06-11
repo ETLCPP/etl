@@ -38,12 +38,12 @@ SOFTWARE.
 // To generate to header file, run this at the command line.
 // Note: You will need Python and COG installed.
 //
-// python -m cogapp -d -e -ofsm.h -DHandlers=<n> fsm_generator.h
+// cog -d -e -ofsm.h -DHandlers=<n> fsm_generator.h
 // Where <n> is the number of messages to support.
 //
 // e.g.
 // To generate handlers for up to 16 events...
-// python -m cogapp -d -e -ofsm.h -DHandlers=16 fsm_generator.h
+// cog -d -e -ofsm.h -DHandlers=16 fsm_generator.h
 //
 // See generate.bat
 //***************************************************************************
