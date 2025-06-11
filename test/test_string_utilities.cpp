@@ -34,9 +34,12 @@ SOFTWARE.
 #include "etl/vector.h"
 
 #include <string>
-#include <string_view>
 #include <vector>
 #include <list>
+
+#if ETL_USING_CPP17
+  #include <string_view>
+#endif
 
 #undef STR
 #define STR(x) x

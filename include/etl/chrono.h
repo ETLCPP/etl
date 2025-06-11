@@ -43,7 +43,6 @@ SOFTWARE.
 
 #include "type_traits.h"
 #include "integral_limits.h"
-#include "string_view.h"
 #include "hash.h"
 
 #include <stdint.h>
