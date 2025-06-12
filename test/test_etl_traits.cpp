@@ -50,7 +50,7 @@ namespace
       CHECK_EQUAL((ETL_USING_CPP20 == 1),                      etl::traits::using_cpp20);
       CHECK_EQUAL((ETL_USING_CPP23 == 1),                      etl::traits::using_cpp23);
       CHECK_EQUAL((ETL_USING_EXCEPTIONS == 1),                 etl::traits::using_exceptions);
-      CHECK_EQUAL((ETL_USING_WIDE_CHARACTERS == 1),            etl::traits::using_wide_characters);
+      CHECK_EQUAL((ETL_USING_LIBC_WCHAR_H == 1),               etl::traits::using_libc_wchar_h);
       CHECK_EQUAL((ETL_USING_GCC_COMPILER == 1),               etl::traits::using_gcc_compiler);
       CHECK_EQUAL((ETL_USING_MICROSOFT_COMPILER == 1),         etl::traits::using_microsoft_compiler);
       CHECK_EQUAL((ETL_USING_ARM5_COMPILER == 1),              etl::traits::using_arm5_compiler);
