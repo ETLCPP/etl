@@ -3138,6 +3138,8 @@ namespace etl
 #endif
 }
 
+#undef ETL_USING_WCHAR_T_H
+
 #include "private/minmax_pop.h"
 
 #endif

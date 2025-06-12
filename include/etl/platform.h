@@ -139,6 +139,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// For when the runtime library is compiled without wchar_t support.
+#if defined(ETL_NO_WIDE_CHARACTERS)
+  #define ETL_USING_WIDE_CHARACTERS     0
+  #define ETL_NOT_USING_WIDE_CHARACTERS 1
+#else
+  #define ETL_USING_WIDE_CHARACTERS     1
+  #define ETL_NOT_USING_WIDE_CHARACTERS 0
+#endif
+
+//*************************************
 // Figure out things about the compiler, if haven't already done so in etl_profile.h
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
@@ -569,6 +579,7 @@ namespace etl
     static ETL_CONSTANT bool using_generic_compiler           = (ETL_USING_GENERIC_COMPILER == 1);
     static ETL_CONSTANT bool using_legacy_bitset              = (ETL_USING_LEGACY_BITSET == 1);
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
+    static ETL_CONSTANT bool using_wide_characters            = (ETL_USING_WIDE_CHARACTERS == 1);
     
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
