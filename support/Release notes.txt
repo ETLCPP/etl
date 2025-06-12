@@ -1,4 +1,14 @@
 ﻿===============================================================================
+20.41.7
+
+Fixes:
+Fixed std::string_view include warning for < C++17
+#1123 Bug: Possible NULL Pointer Dereference in set.h 
+#1124 alignment.h won't compile as C++03
+#1125 For cogapp, use cog instead of python
+
+
+===============================================================================
 20.41.6
 
 Updates:
