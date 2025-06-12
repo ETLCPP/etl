@@ -341,16 +341,22 @@ namespace etl
       {
         // If critical node matches child node direction then perform a two
         // node rotate in the direction of the critical node
-        if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
+        if (critical_node->children[critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
         {
-          rotate_2node(critical_node, critical_node->dir);
-        }
-        // Otherwise perform a three node rotation in the direction of the
-        // critical node
-        else
-        {
-          rotate_3node(critical_node, critical_node->dir,
-            critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+          if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
+          {
+            rotate_2node(critical_node, critical_node->dir);
+          }
+          // Otherwise perform a three node rotation in the direction of the
+          // critical node
+          else
+          {
+            if (critical_node->children[critical_node->dir]->children[1 - critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
+            {
+              rotate_3node(critical_node, critical_node->dir,
+                           critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+            }
+          }
         }
       }
     }
