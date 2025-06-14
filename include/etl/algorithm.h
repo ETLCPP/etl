@@ -1728,6 +1728,90 @@ namespace etl
   }
 
   //***************************************************************************
+  /// is_unique_sorted_until
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator is_unique_sorted_until(TIterator begin,
+                                   TIterator end,
+                                   TCompare  compare)
+  {
+    if (begin != end)
+    {
+      TIterator next = begin;
+
+      while (++next != end)
+      {
+        if (!compare(*begin, *next))
+        {
+          return next;
+        }
+
+        ++begin;
+      }
+    }
+
+    return end;
+  }
+
+  //***************************************************************************
+  /// is_unique_sorted_until
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator is_unique_sorted_until(TIterator begin,
+                                   TIterator end)
+  {
+    if (begin != end)
+    {
+      TIterator next = begin;
+
+      while (++next != end)
+      {
+        if (!(*begin < *next))
+        {
+          return next;
+        }
+
+        ++begin;
+      }
+    }
+
+    return end;
+  }
+
+  //***************************************************************************
+  /// is_unique_sorted
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  bool is_unique_sorted(TIterator begin,
+                        TIterator end)
+  {
+    return etl::is_unique_sorted_until(begin, end) == end;
+  }
+
+  //***************************************************************************
+  /// is_unique_sorted
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator, typename TCompare>
+  ETL_NODISCARD
+    ETL_CONSTEXPR14
+    bool is_unique_sorted(TIterator begin,
+                          TIterator end,
+                          TCompare  compare)
+  {
+    return etl::is_unique_sorted_until(begin, end, compare) == end;
+  }
+
+  //***************************************************************************
   /// find_if_not
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/find"></a>
