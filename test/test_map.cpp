@@ -501,10 +501,12 @@ namespace
       CMap compare_data(initial_data.begin(), initial_data.end());
       EMap data(initial_data.begin(), initial_data.end());
 
+      auto v = data.at("3");
+
       CHECK(data.at(Key("0")) == compare_data.at("0"));
       CHECK(data.at(Key("1")) == compare_data.at("1"));
       CHECK(data.at(Key("2")) == compare_data.at("2"));
-      CHECK(data.at(Key("3")) == compare_data.at("3"));
+      CHECK(data.at("3") == compare_data.at("3"));
       CHECK(data.at(Key("4")) == compare_data.at("4"));
       CHECK(data.at(Key("5")) == compare_data.at("5"));
       CHECK(data.at(Key("6")) == compare_data.at("6"));

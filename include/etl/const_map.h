@@ -64,7 +64,6 @@ namespace etl
 
     /// Defines the parameter types
     using const_key_reference    = const key_type&;
-    using rvalue_key_reference   = key_type&&;
     using const_mapped_reference = const mapped_type&;
 
     //*********************************************************************
@@ -116,7 +115,8 @@ namespace etl
       : element_list{etl::forward<TElements>(elements)...}
       , element_list_end{element_list + sizeof...(elements)}
     {
-      static_assert((etl::is_default_constructible<value_type>::value),                 "value_type must be default constructible");
+      static_assert((etl::is_default_constructible<key_type>::value),                   "key_type must be default constructible");
+      static_assert((etl::is_default_constructible<mapped_type>::value),                "mapped_type must be default constructible");
       static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
       static_assert(sizeof...(elements) <= Size,                                        "Number of elements exceeds capacity");
     }
