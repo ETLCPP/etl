@@ -35,10 +35,8 @@ SOFTWARE.
 #include "algorithm.h"
 #include "type_traits.h"
 #include "functional.h"
-#include "initializer_list.h"
 #include "nth_type.h"
 
-//#include "private/minmax_push.h"
 #include "private/comparator_is_transparent.h"
 
 ///\defgroup const_map const_map
@@ -54,7 +52,7 @@ namespace etl
     using key_type         = TKey;
     using value_type       = ETL_OR_STD::pair<const TKey, TMapped>;
     using mapped_type      = TMapped ;
-    using key_compare_type = TKeyCompare;
+    using key_compare      = TKeyCompare;
     using reference        = const value_type&;
     using const_reference  = const value_type&;
     using rvalue_reference = value_type&&;
@@ -69,47 +67,43 @@ namespace etl
     using rvalue_key_reference   = key_type&&;
     using const_mapped_reference = const mapped_type&;
 
-  private:
-
     //*********************************************************************
     /// How to compare elements and keys.
     //*********************************************************************
-    class Compare
+    class value_compare
     {
     public:
 
-      // Compare two value types.
+      // value_compare two value types.
       ETL_CONSTEXPR14 bool operator ()(const value_type& element1, const value_type& element2) const ETL_NOEXCEPT
       {
-        return key_compare(element1.first, element2.first);
+        return kcompare(element1.first, element2.first);
       }
 
       ETL_CONSTEXPR14 bool operator ()(const value_type& element, const_key_reference key) const ETL_NOEXCEPT
       {
-        return key_compare(element.first, key);
+        return kcompare(element.first, key);
       }
 
       template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
       ETL_CONSTEXPR14 bool operator ()(const value_type& element, const K& key) const ETL_NOEXCEPT
       {
-        return key_compare(element.first, key);
+        return kcompare(element.first, key);
       }
 
       ETL_CONSTEXPR14 bool operator ()(const_key_reference key, const value_type& element) const ETL_NOEXCEPT
       {
-        return key_compare(key, element.first);
+        return kcompare(key, element.first);
       }
 
       template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
       ETL_CONSTEXPR14 bool operator ()(const K& key, const value_type& element) const ETL_NOEXCEPT
       {
-        return key_compare(element.first, key);
+        return kcompare(key, element.first);
       }
 
-      key_compare_type key_compare;
+      key_compare kcompare;
     };
-
-  public:
 
     //*************************************************************************
     ///\brief Construct a const_map from a variadic list of elements.
@@ -134,7 +128,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool is_valid() const ETL_NOEXCEPT
     {
-      return etl::is_unique_sorted(begin(), end(), compare);
+      return etl::is_unique_sorted(begin(), end(), vcompare);
     }
 
     //*************************************************************************
@@ -295,76 +289,40 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_key_reference key) const ETL_NOEXCEPT
     {
-      return etl::equal_range(begin(), end(), key, compare);
+      return etl::equal_range(begin(), end(), key, vcompare);
     }
 
     //*************************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_CONSTEXPR14 ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const ETL_NOEXCEPT
     {
-      return etl::equal_range(begin(), end(), key, compare);
+      return etl::equal_range(begin(), end(), key, vcompare);
     }
 
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator lower_bound(const_key_reference key) const ETL_NOEXCEPT
     {
-      const_iterator itr = etl::lower_bound(begin(), end(), key, compare);
-
-      if ((itr != end()) && keys_are_equal(key, itr->first))
-      {
-        return itr;
-      }
-      else
-      {
-        return end();
-      }
+      return etl::lower_bound(begin(), end(), key, vcompare);
     }
 
     //*************************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_CONSTEXPR14 const_iterator lower_bound(const K& key) const ETL_NOEXCEPT
     {
-      const_iterator itr = etl::lower_bound(begin(), end(), key, compare);
-
-      if ((itr != end()) && keys_are_equal(key, itr->first))
-      {
-        return itr;
-      }
-      else
-      {
-        return end();
-      }
+      return etl::lower_bound(begin(), end(), key, vcompare);
     }
 
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator upper_bound(const_key_reference key) const ETL_NOEXCEPT
     {
-      const_iterator itr = etl::upper_bound(begin(), end(), key, compare);
-
-      if ((itr != end()) && keys_are_equal(key, itr->first))
-      {
-        return itr;
-      }
-      else
-      {
-        return end();
-      }
+      return etl::upper_bound(begin(), end(), key, vcompare);
     }
 
     //*************************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_CONSTEXPR14 const_iterator upper_bound(const K& key) const ETL_NOEXCEPT
     {
-      const_iterator itr = etl::upper_bound(begin(), end(), key, compare);
-
-      if ((itr != end()) && keys_are_equal(key, itr->first))
-      {
-        return itr;
-      }
-      else
-      {
-        return end();
-      }
+      return etl::upper_bound(begin(), end(), key, vcompare);
     }
 
     //*************************************************************************
@@ -397,24 +355,40 @@ namespace etl
       return Size;
     }
 
+    //*************************************************************************
+    /// How to compare two key elements.
+    //*************************************************************************
+    ETL_CONSTEXPR14 key_compare key_comp() const ETL_NOEXCEPT
+    {
+      return vcompare.kcompare;
+    }
+
+    //*************************************************************************
+    /// How to compare two value elements.
+    //*************************************************************************
+    ETL_CONSTEXPR14 value_compare value_comp() const ETL_NOEXCEPT
+    {
+      return vcompare;
+    }
+
   private:
 
     //*********************************************************************
     /// Check to see if the keys are equal.
     //*********************************************************************
-    bool keys_are_equal(const_key_reference key1, const_key_reference key2) const
+    ETL_CONSTEXPR14 bool keys_are_equal(const_key_reference key1, const_key_reference key2) const ETL_NOEXCEPT
     {
-      return !key_compare_type()(key1, key2) && !key_compare_type()(key2, key1);
+      return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
 
     //*********************************************************************
     template <typename K1, typename K2, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    bool keys_are_equal(const K1& key1, const K2& key2) const
+    ETL_CONSTEXPR14 bool keys_are_equal(const K1& key1, const K2& key2) const ETL_NOEXCEPT
     {
-      return !key_compare_type()(key1, key2) && !key_compare_type()(key2, key1);
+      return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
 
-    Compare compare;
+    value_compare vcompare;
 
     value_type  element_list[Size];
     value_type* element_list_end;
@@ -429,6 +403,27 @@ namespace etl
                                     typename etl::nth_type_t<0, TPairs...>::second_type, 
                                     sizeof...(TPairs)>;
 #endif
+
+
+  //*************************************************************************
+  /// Equality test.
+  //*************************************************************************
+  template <typename TKey, typename TMapped, size_t Size, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator ==(const etl::const_map<TKey, TMapped, Size, TKeyCompare>& lhs,
+                                   const etl::const_map<TKey, TMapped, Size, TKeyCompare>& rhs)
+  {
+    return etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+  }
+
+  //*************************************************************************
+  /// Inequality test.
+  //*************************************************************************
+  template <typename TKey, typename TMapped, size_t Size, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator !=(const etl::const_map<TKey, TMapped, Size, TKeyCompare>& lhs,
+                                   const etl::const_map<TKey, TMapped, Size, TKeyCompare>& rhs)
+  {
+    return !(lhs == rhs);
+  }
 }
 
 #endif
