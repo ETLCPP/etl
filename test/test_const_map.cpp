@@ -67,39 +67,51 @@ namespace
   };
 
   // Less-than operator for Key < Key
-  constexpr bool operator <(const Key& lhs, const Key& rhs) ETL_NOEXCEPT
+  constexpr bool operator <(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k < rhs.k);
   }
 
   // Less-than operator for Key < char
-  constexpr bool operator <(const Key& lhs, char rhs) ETL_NOEXCEPT
+  constexpr bool operator <(const Key& lhs, char rhs) noexcept
   {
     return (lhs.k < rhs);
   }
 
   // Less-than operator for char < Key
-  constexpr bool operator <(char lhs, const Key& rhs) ETL_NOEXCEPT
+  constexpr bool operator <(char lhs, const Key& rhs) noexcept
   {
     return (lhs < rhs.k);
   }
 
-  // Greater-than operator for Key > char
-  constexpr bool operator >(const Key& lhs, const Key& rhs) ETL_NOEXCEPT
+  // Greater-than operator for Key < Key
+  constexpr bool operator >(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k > rhs.k);
   }
 
+  // Greater-than operator for Key > char
+  constexpr bool operator >(const Key& lhs, char rhs) noexcept
+  {
+    return (lhs.k > rhs);
+  }
+
   // Greater-than operator for char > Key
-  constexpr bool operator ==(const Key& lhs, const Key& rhs) ETL_NOEXCEPT
+  constexpr bool operator >(char lhs, const Key& rhs) noexcept
+  {
+    return (lhs > rhs.k);
+  }
+
+  // Greater-than operator for char > Key
+  constexpr bool operator ==(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k == rhs.k);
   }
 
   //#define TEST_GREATER_THAN
   #ifdef TEST_GREATER_THAN
-    using Data                      = etl::const_map<Key, int, Max_Size, std::greater<Key>>;
-    using DataTransparentComparator = etl::const_map<Key, int, Max_Size, std::greater<>>;
+    using Data                      = etl::const_map<Key, int, Max_Size, etl::greater<Key>>;
+    using DataTransparentComparator = etl::const_map<Key, int, Max_Size, etl::greater<>>;
   #else
     using Data                      = etl::const_map<Key, int, Max_Size, etl::less<Key>>;
     using DataTransparentComparator = etl::const_map<Key, int, Max_Size, etl::less<>>;
@@ -112,26 +124,6 @@ namespace
 
   SUITE(test_const_map)
   {
-    //*************************************************************************
-#include "etl/private/diagnostic_null_dereference_push.h"
-    template <typename T1, typename T2>
-    bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
-    {
-      while (begin1 != end1)
-      {
-        if ((begin1->first != begin2->first) || (begin1->second != begin2->second))
-        {
-          return false;
-        }
-
-        ++begin1;
-        ++begin2;
-      }
-
-      return true;
-    }
-#include "etl/private/diagnostic_pop.h"
-
     //*************************************************************************
     TEST(test_default_constructor)
     {
@@ -189,13 +181,22 @@ namespace
                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      CHECK_TRUE(data.is_valid());
-      CHECK_TRUE(data.size() == Max_Size);
-      CHECK_FALSE(data.empty());
-      CHECK_TRUE(data.full());
-      CHECK_TRUE(data.capacity() == Max_Size);
-      CHECK_TRUE(data.max_size() == Max_Size);
-      CHECK_FALSE(data.begin() == data.end());
+      static constexpr bool   is_valid            = data.is_valid();
+      static constexpr size_t size                = data.size();
+      static constexpr bool   empty               = data.empty();
+      static constexpr bool   full                = data.full();
+      static constexpr size_t capacity            = data.capacity();
+      static constexpr size_t max_size            = data.max_size();
+      static constexpr Data::const_iterator begin = data.begin();
+      static constexpr Data::const_iterator end   = data.end();
+
+      CHECK_TRUE(is_valid);
+      CHECK_TRUE(size == Max_Size);
+      CHECK_FALSE(empty);
+      CHECK_TRUE(full);
+      CHECK_TRUE(capacity == Max_Size);
+      CHECK_TRUE(max_size == Max_Size);
+      CHECK_FALSE(begin == end);
     }
 
     ////*************************************************************************
@@ -259,7 +260,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_end)
+    TEST(test_begin_constexpr)
     {
 #ifdef TEST_GREATER_THAN
       static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
@@ -270,7 +271,33 @@ namespace
 #endif
 
       CHECK_TRUE(data.is_valid());
+      static constexpr auto value = *data.begin();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_TRUE((value_type{ Key('J'), 9 }) == value);
+#else
+      CHECK_TRUE((value_type{ Key('A'), 0 }) == value);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_end)
+    {
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
       CHECK_TRUE(data.end() == (data.begin() + data.size()));
+    }
+
+    //*************************************************************************
+    TEST(test_end_constexpr)
+    {
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+      static constexpr Data::const_iterator end_itr = data.end();
+
+      CHECK_TRUE(end_itr == (data.begin() + data.size()));
     }
 
     //*************************************************************************
@@ -298,7 +325,42 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_index__using_transparent_comparator)
+    TEST(test_index_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr Data::mapped_type atA = data[Key('A')];
+      static constexpr Data::mapped_type atB = data[Key('B')];
+      static constexpr Data::mapped_type atC = data[Key('C')];
+      static constexpr Data::mapped_type atD = data[Key('D')];
+      static constexpr Data::mapped_type atE = data[Key('E')];
+      static constexpr Data::mapped_type atF = data[Key('F')];
+      static constexpr Data::mapped_type atG = data[Key('G')];
+      static constexpr Data::mapped_type atH = data[Key('H')];
+      static constexpr Data::mapped_type atI = data[Key('I')];
+      static constexpr Data::mapped_type atJ = data[Key('J')];
+
+      CHECK_TRUE(data.is_valid());
+      CHECK(atA == 0);
+      CHECK(atB == 1);
+      CHECK(atC == 2);
+      CHECK(atD == 3);
+      CHECK(atE == 4);
+      CHECK(atF == 5);
+      CHECK(atG == 6);
+      CHECK(atH == 7);
+      CHECK(atI == 8);
+      CHECK(atJ == 9);
+    }
+
+    //*************************************************************************
+    TEST(test_index_using_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
       static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
@@ -319,6 +381,41 @@ namespace
       CHECK(data['H'] == 7);
       CHECK(data['I'] == 8);
       CHECK(data['J'] == 9);
+    }
+
+    //*************************************************************************
+    TEST(test_index_constexpr_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr Data::mapped_type atA = data['A'];
+      static constexpr Data::mapped_type atB = data['B'];
+      static constexpr Data::mapped_type atC = data['C'];
+      static constexpr Data::mapped_type atD = data['D'];
+      static constexpr Data::mapped_type atE = data['E'];
+      static constexpr Data::mapped_type atF = data['F'];
+      static constexpr Data::mapped_type atG = data['G'];
+      static constexpr Data::mapped_type atH = data['H'];
+      static constexpr Data::mapped_type atI = data['I'];
+      static constexpr Data::mapped_type atJ = data['J'];
+
+      CHECK_TRUE(data.is_valid());
+      CHECK(atA == 0);
+      CHECK(atB == 1);
+      CHECK(atC == 2);
+      CHECK(atD == 3);
+      CHECK(atE == 4);
+      CHECK(atF == 5);
+      CHECK(atG == 6);
+      CHECK(atH == 7);
+      CHECK(atI == 8);
+      CHECK(atJ == 9);
     }
 
     //*************************************************************************
@@ -346,6 +443,41 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_at_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr Data::mapped_type atA = data.at(Key('A'));
+      static constexpr Data::mapped_type atB = data.at(Key('B'));
+      static constexpr Data::mapped_type atC = data.at(Key('C'));
+      static constexpr Data::mapped_type atD = data.at(Key('D'));
+      static constexpr Data::mapped_type atE = data.at(Key('E'));
+      static constexpr Data::mapped_type atF = data.at(Key('F'));
+      static constexpr Data::mapped_type atG = data.at(Key('G'));
+      static constexpr Data::mapped_type atH = data.at(Key('H'));
+      static constexpr Data::mapped_type atI = data.at(Key('I'));
+      static constexpr Data::mapped_type atJ = data.at(Key('J'));
+
+      CHECK_TRUE(data.is_valid());
+      CHECK(atA == 0);
+      CHECK(atB == 1);
+      CHECK(atC == 2);
+      CHECK(atD == 3);
+      CHECK(atE == 4);
+      CHECK(atF == 5);
+      CHECK(atG == 6);
+      CHECK(atH == 7);
+      CHECK(atI == 8);
+      CHECK(atJ == 9);
+    }
+
+    //*************************************************************************
     TEST(test_at_using_transparent_comparator)
     {
       #ifdef TEST_GREATER_THAN
@@ -369,278 +501,870 @@ namespace
           CHECK(data.at('J') == 9);
     }
 
-//    //*************************************************************************
-//    TEST(test_equal_range)
-//    {
-//      Compare_Data compare_data(random_data.begin(), random_data.end());
-//      Data data(random_data.begin(), random_data.end());
-//
-//      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result = data.equal_range('2');
-//      Data::iterator data_lb = data.lower_bound('2');
-//      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result = compare_data.equal_range('2');
-//      Compare_Data::iterator compare_data_lb = compare_data.lower_bound('2');
-//
-//      // Check that both return the same return results
-//      CHECK(data_lb->first == compare_data_lb->first);
-//      CHECK(data_lb->second == compare_data_lb->second);
-//      CHECK(data_result.first->first == compare_result.first->first);
-//      CHECK(data_result.first->second == compare_result.first->second);
-//      CHECK(data_result.second->first == compare_result.second->first);
-//      CHECK(data_result.second->second == compare_result.second->second);
-//
-//      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-//
-//      CHECK(isEqual);
-//    }
+    //*************************************************************************
+    TEST(test_at_constexpr_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
 
-//    //*************************************************************************
-//    TEST(test_equal_range_using_transparent_comparator)
-//    {
-//      using CMap = std::map<char, int, std::less<char>>;
-//      using EMap = etl::map<char, int, Max_Size, etl::less<>>;
-//
-//      CMap compare_data(random_data.begin(), random_data.end());
-//      EMap data(random_data.begin(), random_data.end());
-//
-//      ETL_OR_STD::pair<EMap::iterator, EMap::iterator> data_result = data.equal_range(Key('2'));
-//      EMap::iterator data_lb = data.lower_bound('2');
-//      ETL_OR_STD::pair<CMap::iterator, CMap::iterator> compare_result = compare_data.equal_range('2');
-//      CMap::iterator compare_data_lb = compare_data.lower_bound('2');
-//
-//      // Check that both return the same return results
-//      CHECK(data_lb->first == compare_data_lb->first);
-//      CHECK(data_lb->second == compare_data_lb->second);
-//      CHECK(data_result.first->first == compare_result.first->first);
-//      CHECK(data_result.first->second == compare_result.first->second);
-//      CHECK(data_result.second->first == compare_result.second->first);
-//      CHECK(data_result.second->second == compare_result.second->second);
-//
-//      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-//
-//      CHECK(isEqual);
-//    }
+      static constexpr Data::mapped_type atA = data.at('A');
+      static constexpr Data::mapped_type atB = data.at('B');
+      static constexpr Data::mapped_type atC = data.at('C');
+      static constexpr Data::mapped_type atD = data.at('D');
+      static constexpr Data::mapped_type atE = data.at('E');
+      static constexpr Data::mapped_type atF = data.at('F');
+      static constexpr Data::mapped_type atG = data.at('G');
+      static constexpr Data::mapped_type atH = data.at('H');
+      static constexpr Data::mapped_type atI = data.at('I');
+      static constexpr Data::mapped_type atJ = data.at('J');
 
-//    //*************************************************************************
-//    TEST(test_count)
-//    {
-//      const Data data(initial_data.begin(), initial_data.end());
-//
-//      CHECK(data.count('3') == 1UL);
-//
-//      CHECK(data.count(Key('A') == 0UL);
-//    }
+      CHECK_TRUE(data.is_valid());
+      CHECK(atA == 0);
+      CHECK(atB == 1);
+      CHECK(atC == 2);
+      CHECK(atD == 3);
+      CHECK(atE == 4);
+      CHECK(atF == 5);
+      CHECK(atG == 6);
+      CHECK(atH == 7);
+      CHECK(atI == 8);
+      CHECK(atJ == 9);
+    }
 
-//    //*************************************************************************
-//    TEST(test_count_using_transparent_comparator)
-//    {
-//      using EMap = etl::map<char, int, Max_Size, etl::less<>>;
-//
-//      const EMap data(initial_data.begin(), initial_data.end());
-//
-//      CHECK(data.count(Key('3')) == 1UL);
-//
-//      CHECK(data.count(Key(Key('A')) == 0UL);
-//    }
+    //*************************************************************************
+    TEST(test_equal_range)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
 
-//    //*************************************************************************
-//    TEST(test_iterator)
-//    {
-//      Compare_Data compare_data(initial_data.begin(), initial_data.end());
-//
-//      Data data(compare_data.begin(), compare_data.end());
-//
-//      bool isEqual = Check_Equal(data.begin(),
-//                                 data.end(),
-//                                 compare_data.begin());
-//
-//      CHECK(isEqual);
-//    }
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range(Key('A'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range(Key('B'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range(Key('C'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range(Key('D'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range(Key('E'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range(Key('F'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range(Key('G'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range(Key('H'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range(Key('I'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range(Key('J'));
 
-//    //*************************************************************************
-//    TEST(test_const_iterator)
-//    {
-//      Compare_Data compare_data(initial_data.begin(), initial_data.end());
-//
-//      Data data(compare_data.begin(), compare_data.end());
-//
-//      bool isEqual = Check_Equal(data.cbegin(),
-//                                 data.cend(),
-//                                 compare_data.cbegin());
-//
-//      CHECK(isEqual);
-//    }
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
 
-//    //*************************************************************************
-//    TEST(test_find)
-//    {
-//      Data data(initial_data.begin(), initial_data.end());
-//
-//      Data::iterator it = data.find('3');
-//      CHECK(3 == it->second);
-//
-//      it = data.find(Key('A');
-//      CHECK(data.end() == it);
-//
-//      it = data.find('!');
-//      CHECK(data.end() == it);
-//    }
+      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
 
-//    //*************************************************************************
-//    TEST(test_find_using_transparent_comparator)
-//    {
-//      using EMap = etl::map<char, int, Max_Size, etl::less<>>;
-//
-//      EMap data(initial_data.begin(), initial_data.end());
-//
-//      EMap::iterator it = data.find(Key('3'));
-//      CHECK(3 == it->second);
-//
-//      it = data.find(Key(Key('A'));
-//      CHECK(data.end() == it);
-//
-//      it = data.find(Key('!'));
-//      CHECK(data.end() == it);
-//    }
+      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+#endif
+    }
 
-//    //*************************************************************************
-//    TEST(test_equal)
-//    {
-//      const Data initial1(initial_data.begin(), initial_data.end());
-//      const Data initial2(initial_data.begin(), initial_data.end());
-//
-//      CHECK(initial1 == initial2);
-//
-//      const Data different(different_data.begin(), different_data.end());
-//
-//      CHECK(!(initial1 == different));
-//    }
+    //*************************************************************************
+    TEST(test_equal_range_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
 
-//    //*************************************************************************
-//    TEST(test_not_equal)
-//    {
-//      const Data initial1(initial_data.begin(), initial_data.end());
-//      const Data initial2(initial_data.begin(), initial_data.end());
-//
-//      CHECK(!(initial1 != initial2));
-//
-//      const Data different(different_data.begin(), different_data.end());
-//
-//      CHECK(initial1 != different);
-//    }
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range(Key('A'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range(Key('B'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range(Key('C'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range(Key('D'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range(Key('E'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range(Key('F'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range(Key('G'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range(Key('H'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range(Key('I'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range(Key('J'));
 
-//    //*************************************************************************
-//    TEST(test_lower_bound)
-//    {
-//      Compare_Data compare_data(initial_data.begin(), initial_data.end());
-//      Data data(initial_data.begin(), initial_data.end());
-//
-//      Compare_Data::iterator i_compare = compare_data.lower_bound('8');
-//      Data::iterator i_data = data.lower_bound('8');
-//      CHECK(i_compare->second == i_data->second);
-//
-//#ifdef TEST_GREATER_THAN
-//      i_compare = compare_data.lower_bound('.');
-//      CHECK(compare_data.end() == i_compare);
-//
-//      i_data = data.lower_bound('.');
-//      CHECK(data.end() == i_data);
-//
-//      i_compare = compare_data.lower_bound(Key('A');
-//      i_data = data.lower_bound(Key('A');
-//      CHECK(i_compare->second == i_data->second);
-//#else
-//      i_compare = compare_data.lower_bound('.');
-//      i_data = data.lower_bound('.');
-//      CHECK(i_compare->second == i_data->second);
-//
-//      i_compare = compare_data.lower_bound(Key('A');
-//      CHECK(compare_data.end() == i_compare);
-//
-//      i_data = data.lower_bound(Key('A');
-//      CHECK(data.end() == i_data);
-//#endif
-//    }
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
 
-//    //*************************************************************************
-//    TEST(test_lower_bound_using_transparent_comparator)
-//    {
-//      using CMap = std::map<char, int, std::less<char>>;
-//      using EMap = etl::map<char, int, Max_Size, etl::less<>>;
-//
-//      CMap compare_data(initial_data.begin(), initial_data.end());
-//      EMap data(initial_data.begin(), initial_data.end());
-//
-//      CMap::iterator i_compare = compare_data.lower_bound('8');
-//      EMap::iterator i_data = data.lower_bound(Key('8'));
-//      CHECK(i_compare->second == i_data->second);
-//
-//      i_compare = compare_data.lower_bound('.');
-//      i_data = data.lower_bound(Key('.'));
-//      CHECK(i_compare->second == i_data->second);
-//
-//      i_compare = compare_data.lower_bound(Key('A');
-//      CHECK(compare_data.end() == i_compare);
-//
-//      i_data = data.lower_bound(Key(Key('A'));
-//      CHECK(data.end() == i_data);
-//    }
+      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
 
-//    //*************************************************************************
-//    TEST(test_upper_bound)
-//    {
-//      Compare_Data compare_data(initial_data.begin(), initial_data.end());
-//      Data data(initial_data.begin(), initial_data.end());
-//
-//      Compare_Data::iterator i_compare = compare_data.upper_bound('2');
-//      Data::iterator i_data = data.upper_bound('2');
-//      CHECK(i_compare->second == i_data->second);
-//
-//#ifdef TEST_GREATER_THAN
-//      i_compare = compare_data.upper_bound('.');
-//      CHECK(compare_data.end() == i_compare);
-//
-//      i_data = data.upper_bound('.');
-//      CHECK(data.end() == i_data);
-//
-//      i_compare = compare_data.upper_bound(Key('A');
-//      i_data = data.upper_bound(Key('A');
-//      CHECK(i_compare->second == i_data->second);
-//#else
-//      i_compare = compare_data.upper_bound('.');
-//      i_data = data.upper_bound('.');
-//      CHECK(i_compare->second == i_data->second);
-//
-//      i_compare = compare_data.upper_bound(Key('A');
-//      CHECK(compare_data.end() == i_compare);
-//
-//      i_data = data.upper_bound(Key('A');
-//      CHECK(data.end() == i_data);
-//#endif
-//    }
+      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+#endif
+    }
 
-//    //*************************************************************************
-//    TEST(test_upper_bound_using_transparent_comparator)
-//    {
-//      using CMap = std::map<char, int, std::less<char>>;
-//      using EMap = etl::map<char, int, Max_Size, etl::less<>>;
-//
-//      CMap compare_data(initial_data.begin(), initial_data.end());
-//      EMap data(initial_data.begin(), initial_data.end());
-//
-//      CMap::iterator i_compare = compare_data.upper_bound('2');
-//      EMap::iterator i_data = data.upper_bound(Key('2'));
-//      CHECK(i_compare->second == i_data->second);
-//
-//      i_compare = compare_data.upper_bound('.');
-//      i_data = data.upper_bound(Key('.'));
-//      CHECK(i_compare->second == i_data->second);
-//
-//      i_compare = compare_data.upper_bound(Key('A');
-//      CHECK(compare_data.end() == i_compare);
-//
-//      i_data = data.upper_bound(Key(Key('A'));
-//      CHECK(data.end() == i_data);
-//    }
+    //*************************************************************************
+    TEST(test_equal_range_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range('A');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range('B');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range('C');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range('D');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range('E');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range('F');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range('G');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range('H');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range('I');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range('J');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
+
+      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
+
+      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_equal_range_constexpr_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range('A');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range('B');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range('C');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range('D');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range('E');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range('F');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range('G');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range('H');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range('I');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range('J');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
+
+      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
+
+      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_lower_bound)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                  value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                  value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
+
+      Data::const_iterator result0 = data.lower_bound(Key('A'));
+      Data::const_iterator result1 = data.lower_bound(Key('B'));
+      Data::const_iterator result2 = data.lower_bound(Key('C'));
+      Data::const_iterator result3 = data.lower_bound(Key('D'));
+      Data::const_iterator result4 = data.lower_bound(Key('E'));
+      Data::const_iterator result5 = data.lower_bound(Key('F'));
+      Data::const_iterator result6 = data.lower_bound(Key('G'));
+      Data::const_iterator result7 = data.lower_bound(Key('H'));
+      Data::const_iterator result8 = data.lower_bound(Key('I'));
+      Data::const_iterator result9 = data.lower_bound(Key('J'));
+      Data::const_iterator result10 = data.lower_bound(Key('K'));
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(10, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result10)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result10)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_lower_bound_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                  value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                  value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
+
+      static constexpr Data::const_iterator result0 = data.lower_bound(Key('A'));
+      static constexpr Data::const_iterator result1 = data.lower_bound(Key('B'));
+      static constexpr Data::const_iterator result2 = data.lower_bound(Key('C'));
+      static constexpr Data::const_iterator result3 = data.lower_bound(Key('D'));
+      static constexpr Data::const_iterator result4 = data.lower_bound(Key('E'));
+      static constexpr Data::const_iterator result5 = data.lower_bound(Key('F'));
+      static constexpr Data::const_iterator result6 = data.lower_bound(Key('G'));
+      static constexpr Data::const_iterator result7 = data.lower_bound(Key('H'));
+      static constexpr Data::const_iterator result8 = data.lower_bound(Key('I'));
+      static constexpr Data::const_iterator result9 = data.lower_bound(Key('J'));
+      static constexpr Data::const_iterator result10 = data.lower_bound(Key('K'));
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(10, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result10)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result10)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_lower_bound_using_transparent_comparator)
+    {
+
+    }
+
+    //*************************************************************************
+    TEST(test_lower_bound_constexpr_using_transparent_comparator)
+    {
+
+    }
+
+    //*************************************************************************
+    TEST(test_upper_bound)
+    {
+    }
+
+    //*************************************************************************
+    TEST(test_upper_bound_constexpr)
+    {
+    }
+
+    //*************************************************************************
+    TEST(test_upper_bound_using_transparent_comparator)
+    {
+    }
+
+    //*************************************************************************
+    TEST(test_upper_bound_constexpr_using_transparent_comparator)
+    {
+    }
+
+    //*************************************************************************
+    TEST(test_count)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      CHECK_EQUAL(1, data.count(Key('A')));
+      CHECK_EQUAL(1, data.count(Key('B')));
+      CHECK_EQUAL(1, data.count(Key('C')));
+      CHECK_EQUAL(1, data.count(Key('D')));
+      CHECK_EQUAL(1, data.count(Key('E')));
+      CHECK_EQUAL(1, data.count(Key('F')));
+      CHECK_EQUAL(1, data.count(Key('G')));
+      CHECK_EQUAL(1, data.count(Key('H')));
+      CHECK_EQUAL(1, data.count(Key('I')));
+      CHECK_EQUAL(1, data.count(Key('J')));
+      CHECK_EQUAL(0, data.count(Key('K')));
+    }
+
+    //*************************************************************************
+    TEST(test_count_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr size_t countA = data.count(Key('A'));
+      static constexpr size_t countB = data.count(Key('B'));
+      static constexpr size_t countC = data.count(Key('C'));
+      static constexpr size_t countD = data.count(Key('D'));
+      static constexpr size_t countE = data.count(Key('E'));
+      static constexpr size_t countF = data.count(Key('F'));
+      static constexpr size_t countG = data.count(Key('G'));
+      static constexpr size_t countH = data.count(Key('H'));
+      static constexpr size_t countI = data.count(Key('I'));
+      static constexpr size_t countJ = data.count(Key('J'));
+      static constexpr size_t countK = data.count(Key('K'));
+
+      CHECK_EQUAL(1, countA);
+      CHECK_EQUAL(1, countB);
+      CHECK_EQUAL(1, countC);
+      CHECK_EQUAL(1, countD);
+      CHECK_EQUAL(1, countE);
+      CHECK_EQUAL(1, countF);
+      CHECK_EQUAL(1, countG);
+      CHECK_EQUAL(1, countH);
+      CHECK_EQUAL(1, countI);
+      CHECK_EQUAL(1, countJ);
+      CHECK_EQUAL(0, countK);
+    }
+
+    //*************************************************************************
+    TEST(test_count_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      CHECK_EQUAL(1, data.count('A'));
+      CHECK_EQUAL(1, data.count('B'));
+      CHECK_EQUAL(1, data.count('C'));
+      CHECK_EQUAL(1, data.count('D'));
+      CHECK_EQUAL(1, data.count('E'));
+      CHECK_EQUAL(1, data.count('F'));
+      CHECK_EQUAL(1, data.count('G'));
+      CHECK_EQUAL(1, data.count('H'));
+      CHECK_EQUAL(1, data.count('I'));
+      CHECK_EQUAL(1, data.count('J'));
+      CHECK_EQUAL(0, data.count('K'));
+    }
+
+    //*************************************************************************
+    TEST(test_count_constexpr_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr size_t countA = data.count('A');
+      static constexpr size_t countB = data.count('B');
+      static constexpr size_t countC = data.count('C');
+      static constexpr size_t countD = data.count('D');
+      static constexpr size_t countE = data.count('E');
+      static constexpr size_t countF = data.count('F');
+      static constexpr size_t countG = data.count('G');
+      static constexpr size_t countH = data.count('H');
+      static constexpr size_t countI = data.count('I');
+      static constexpr size_t countJ = data.count('J');
+      static constexpr size_t countK = data.count('K');
+
+      CHECK_EQUAL(1, countA);
+      CHECK_EQUAL(1, countB);
+      CHECK_EQUAL(1, countC);
+      CHECK_EQUAL(1, countD);
+      CHECK_EQUAL(1, countE);
+      CHECK_EQUAL(1, countF);
+      CHECK_EQUAL(1, countG);
+      CHECK_EQUAL(1, countH);
+      CHECK_EQUAL(1, countI);
+      CHECK_EQUAL(1, countJ);
+      CHECK_EQUAL(0, countK);
+    }
+
+    //*************************************************************************
+    TEST(test_iterator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      Data::iterator itr = data.begin();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
+      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
+      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
+      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
+      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
+      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
+      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
+      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
+      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
+      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
+      CHECK_TRUE(itr == data.end());
+#else
+      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
+      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
+      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
+      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
+      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
+      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
+      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
+      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
+      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
+      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
+      CHECK_TRUE(itr == data.end());
+#endif      
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      Data::const_iterator itr = data.begin();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
+      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
+      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
+      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
+      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
+      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
+      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
+      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
+      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
+      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
+      CHECK_TRUE(itr == data.end());
+#else
+      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
+      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
+      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
+      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
+      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
+      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
+      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
+      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
+      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
+      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
+      CHECK_TRUE(itr == data.end());
+#endif      
+    }
+
+    //*************************************************************************
+    TEST(test_find)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      Data::const_iterator result0 = data.find(Key('A'));
+      Data::const_iterator result1 = data.find(Key('B'));
+      Data::const_iterator result2 = data.find(Key('C'));
+      Data::const_iterator result3 = data.find(Key('D'));
+      Data::const_iterator result4 = data.find(Key('E'));
+      Data::const_iterator result5 = data.find(Key('F'));
+      Data::const_iterator result6 = data.find(Key('G'));
+      Data::const_iterator result7 = data.find(Key('H'));
+      Data::const_iterator result8 = data.find(Key('I'));
+      Data::const_iterator result9 = data.find(Key('J'));
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_find_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr Data::const_iterator result0 = data.find(Key('A'));
+      static constexpr Data::const_iterator result1 = data.find(Key('B'));
+      static constexpr Data::const_iterator result2 = data.find(Key('C'));
+      static constexpr Data::const_iterator result3 = data.find(Key('D'));
+      static constexpr Data::const_iterator result4 = data.find(Key('E'));
+      static constexpr Data::const_iterator result5 = data.find(Key('F'));
+      static constexpr Data::const_iterator result6 = data.find(Key('G'));
+      static constexpr Data::const_iterator result7 = data.find(Key('H'));
+      static constexpr Data::const_iterator result8 = data.find(Key('I'));
+      static constexpr Data::const_iterator result9 = data.find(Key('J'));
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_find_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      Data::const_iterator result0 = data.find('A');
+      Data::const_iterator result1 = data.find('B');
+      Data::const_iterator result2 = data.find('C');
+      Data::const_iterator result3 = data.find('D');
+      Data::const_iterator result4 = data.find('E');
+      Data::const_iterator result5 = data.find('F');
+      Data::const_iterator result6 = data.find('G');
+      Data::const_iterator result7 = data.find('H');
+      Data::const_iterator result8 = data.find('I');
+      Data::const_iterator result9 = data.find('J');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0))); 
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_find_constexpr_using_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr Data::const_iterator result0 = data.find('A');
+      static constexpr Data::const_iterator result1 = data.find('B');
+      static constexpr Data::const_iterator result2 = data.find('C');
+      static constexpr Data::const_iterator result3 = data.find('D');
+      static constexpr Data::const_iterator result4 = data.find('E');
+      static constexpr Data::const_iterator result5 = data.find('F');
+      static constexpr Data::const_iterator result6 = data.find('G');
+      static constexpr Data::const_iterator result7 = data.find('H');
+      static constexpr Data::const_iterator result8 = data.find('I');
+      static constexpr Data::const_iterator result9 = data.find('J');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), result0))); 
+      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_equal)
+    {
+      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+
+      CHECK_TRUE(data1 == data2);
+      CHECK_FALSE(data1 == data3);
+    }
+
+    //*************************************************************************
+    TEST(test_not_equal)
+    {
+      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+
+
+      CHECK_FALSE(data1 != data2);
+      CHECK_TRUE(data1 != data3);
+    }
 
 //    //*************************************************************************
 //    TEST(test_key_compare)
@@ -775,25 +1499,356 @@ namespace
 //    }
 //#endif
 
-//    //*************************************************************************
-//    TEST(test_contains)
-//    {
-//      Data data(initial_data.begin(), initial_data.end());
-//
-//      CHECK(data.contains(char('1')));
-//      CHECK(!data.contains(char('99')));
-//    }
+    //*************************************************************************
+    TEST(test_contains)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
 
-//    //*************************************************************************
-//    TEST(test_contains_with_transparent_comparator)
-//    {
-//      etl::map<char, int, Max_Size, etl::less<>> data(initial_data.begin(), initial_data.end());
-//
-//      CHECK(data.contains(char('1')));
-//      CHECK(data.contains(Key('1')));
-//
-//      CHECK(!data.contains(char('99')));
-//      CHECK(!data.contains(Key('99')));
-//    }
+      CHECK_TRUE(data.contains(Key('A')));
+      CHECK_TRUE(data.contains(Key('B')));
+      CHECK_TRUE(data.contains(Key('C')));
+      CHECK_TRUE(data.contains(Key('D')));
+      CHECK_TRUE(data.contains(Key('E')));
+      CHECK_TRUE(data.contains(Key('F')));
+      CHECK_TRUE(data.contains(Key('G')));
+      CHECK_TRUE(data.contains(Key('H')));
+      CHECK_TRUE(data.contains(Key('I')));
+      CHECK_TRUE(data.contains(Key('J')));
+      CHECK_FALSE(data.contains(Key('K')));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+        value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr bool containsA = data.contains(Key('A'));
+      static constexpr bool containsB = data.contains(Key('B'));
+      static constexpr bool containsC = data.contains(Key('C'));
+      static constexpr bool containsD = data.contains(Key('D'));
+      static constexpr bool containsE = data.contains(Key('E'));
+      static constexpr bool containsF = data.contains(Key('F'));
+      static constexpr bool containsG = data.contains(Key('G'));
+      static constexpr bool containsH = data.contains(Key('H'));
+      static constexpr bool containsI = data.contains(Key('I'));
+      static constexpr bool containsJ = data.contains(Key('J'));
+      static constexpr bool containsK = data.contains(Key('K'));
+
+      CHECK_TRUE(containsA);
+      CHECK_TRUE(containsB);
+      CHECK_TRUE(containsC);
+      CHECK_TRUE(containsD);
+      CHECK_TRUE(containsE);
+      CHECK_TRUE(containsF);
+      CHECK_TRUE(containsG);
+      CHECK_TRUE(containsH);
+      CHECK_TRUE(containsI);
+      CHECK_TRUE(containsJ);
+      CHECK_FALSE(containsK);
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      CHECK_TRUE(data.contains('A'));
+      CHECK_TRUE(data.contains('B'));
+      CHECK_TRUE(data.contains('C'));
+      CHECK_TRUE(data.contains('D'));
+      CHECK_TRUE(data.contains('E'));
+      CHECK_TRUE(data.contains('F'));
+      CHECK_TRUE(data.contains('G'));
+      CHECK_TRUE(data.contains('H'));
+      CHECK_TRUE(data.contains('I'));
+      CHECK_TRUE(data.contains('J'));
+      CHECK_FALSE(data.contains('K'));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_with_transparent_comparator_constexpr)
+    {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
+                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+#endif
+
+      static constexpr bool containsA = data.contains('A');
+      static constexpr bool containsB = data.contains('B');
+      static constexpr bool containsC = data.contains('C');
+      static constexpr bool containsD = data.contains('D');
+      static constexpr bool containsE = data.contains('E');
+      static constexpr bool containsF = data.contains('F');
+      static constexpr bool containsG = data.contains('G');
+      static constexpr bool containsH = data.contains('H');
+      static constexpr bool containsI = data.contains('I');
+      static constexpr bool containsJ = data.contains('J');
+      static constexpr bool containsK = data.contains('K');
+
+      CHECK_TRUE(containsA);
+      CHECK_TRUE(containsB);
+      CHECK_TRUE(containsC);
+      CHECK_TRUE(containsD);
+      CHECK_TRUE(containsE);
+      CHECK_TRUE(containsF);
+      CHECK_TRUE(containsG);
+      CHECK_TRUE(containsH);
+      CHECK_TRUE(containsI);
+      CHECK_TRUE(containsJ);
+      CHECK_FALSE(containsK);
+    }
+
+    //*************************************************************************
+    TEST(test_key_comp)
+    {
+      static constexpr Data data;
+      static constexpr Data::key_compare compare = data.key_comp();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compare(Key{ 'A' }, Key{ 'A' }));
+      CHECK_TRUE(compare(Key{ 'B' }, Key{ 'A' }));
+      CHECK_FALSE(compare(Key{ 'A' }, Key{ 'B' }));
+#else
+      CHECK_FALSE(compare(Key{ 'A' }, Key{ 'A' }));
+      CHECK_FALSE(compare(Key{ 'B' }, Key{ 'A' }));
+      CHECK_TRUE(compare(Key{ 'A' }, Key{ 'B' }));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_key_comp_transparent_comparator)
+    {
+      static constexpr DataTransparentComparator data;
+      static constexpr DataTransparentComparator::key_compare compare = data.key_comp();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compare('A', 'A'));
+      CHECK_TRUE(compare('B', 'A'));
+      CHECK_FALSE(compare('A', 'B'));
+#else
+      CHECK_FALSE(compare('A', 'A'));
+      CHECK_FALSE(compare('B', 'A'));
+      CHECK_TRUE(compare('A', 'B'));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_key_comp_constexpr)
+    {
+      static constexpr Data data;
+      static constexpr Data::key_compare compare = data.key_comp();
+
+      static constexpr bool compareAA = compare(Key{ 'A' }, Key{ 'A' });
+      static constexpr bool compareBA = compare(Key{ 'B' }, Key{ 'A' });
+      static constexpr bool compareAB = compare(Key{ 'A' }, Key{ 'B' });
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compareAA);
+      CHECK_TRUE(compareBA);
+      CHECK_FALSE(compareAB);
+#else
+      CHECK_FALSE(compareAA);
+      CHECK_FALSE(compareBA);
+      CHECK_TRUE(compareAB);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_key_comp_constexpr_transparent_comparator)
+    {
+      static constexpr DataTransparentComparator data;
+      static constexpr DataTransparentComparator::key_compare compare = data.key_comp();
+
+      static constexpr bool compareAA = compare('A', 'A');
+      static constexpr bool compareBA = compare('B', 'A');
+      static constexpr bool compareAB = compare('A', 'B');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compareAA);
+      CHECK_TRUE(compareBA);
+      CHECK_FALSE(compareAB);
+#else
+      CHECK_FALSE(compareAA);
+      CHECK_FALSE(compareBA);
+      CHECK_TRUE(compareAB);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_value_comp)
+    {
+      static constexpr Data data;
+      static constexpr Data::value_compare compare = data.value_comp();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'A' }, 0 }));
+      CHECK_FALSE(compare(value_type{ Key{ 'A' }, 0 }, Key{ 'A' }));
+      CHECK_FALSE(compare(Key{ 'A' }, value_type{ Key{ 'A' }, 0 }));
+
+      CHECK_TRUE(compare(value_type{ Key{ 'B' }, 1 }, value_type{ Key{ 'A' }, 0 }));
+      CHECK_TRUE(compare(value_type{ Key{ 'B' }, 1 }, Key{ 'A' }));
+      CHECK_TRUE(compare(Key{ 'B' }, value_type{ Key{ 'A' }, 0 }));
+
+      CHECK_FALSE(compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'B' }, 1 }));
+      CHECK_FALSE(compare(value_type{ Key{ 'A' }, 0 }, Key{ 'B' }));
+      CHECK_FALSE(compare(Key{ 'A' }, value_type{ Key{ 'B' }, 1 }));
+#else
+      CHECK_FALSE(compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'A' }, 0 }));
+      CHECK_FALSE(compare(value_type{ Key{ 'A' }, 0 }, Key{ 'A' }));
+      CHECK_FALSE(compare(Key{ 'A' }, value_type{ Key{ 'A' }, 0 }));
+
+      CHECK_FALSE(compare(value_type{ Key{ 'B' }, 1 }, value_type{ Key{ 'A' }, 0 }));
+      CHECK_FALSE(compare(value_type{ Key{ 'B' }, 1 }, Key{ 'A' }));
+      CHECK_FALSE(compare(Key{ 'B' }, value_type{ Key{ 'A' }, 0 }));
+
+      CHECK_TRUE(compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'B' }, 1 }));
+      CHECK_TRUE(compare(value_type{ Key{ 'A' }, 0 }, Key{ 'B' }));
+      CHECK_TRUE(compare(Key{ 'A' }, value_type{ Key{ 'B' }, 1 }));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_value_comp_transparent_comparator)
+    {
+      static constexpr DataTransparentComparator data;
+      static constexpr DataTransparentComparator::value_compare compare = data.value_comp();
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compare(value_type{ 'A', 0 }, value_type{ 'A', 0 }));
+      CHECK_FALSE(compare(value_type{ 'A', 0 }, 'A'));
+      CHECK_FALSE(compare('A', value_type{ 'A', 0 }));
+
+      CHECK_TRUE(compare(value_type{ 'B', 1 }, value_type{ 'A', 0 }));
+      CHECK_TRUE(compare(value_type{ 'B', 1 }, 'A'));
+      CHECK_TRUE(compare('B', value_type{ 'A', 0 }));
+
+      CHECK_FALSE(compare(value_type{ 'A', 0 }, value_type{ 'B', 1 }));
+      CHECK_FALSE(compare(value_type{ 'A', 0 }, 'B'));
+      CHECK_FALSE(compare('A', value_type{ 'B', 1 }));
+#else
+      CHECK_FALSE(compare(value_type{ 'A', 0 }, value_type{ 'A', 0 }));
+      CHECK_FALSE(compare(value_type{ 'A', 0 }, 'A'));
+      CHECK_FALSE(compare('A', value_type{ 'A', 0 }));
+
+      CHECK_FALSE(compare(value_type{ 'B', 1 }, value_type{ 'A', 0 }));
+      CHECK_FALSE(compare(value_type{ 'B', 1 }, 'A'));
+      CHECK_FALSE(compare('B', value_type{ 'A', 0 }));
+
+      CHECK_TRUE(compare(value_type{ 'A', 0 }, value_type{ 'B', 1 }));
+      CHECK_TRUE(compare(value_type{ 'A', 0 }, 'B'));
+      CHECK_TRUE(compare('A', value_type{ 'B', 1 }));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_value_comp_constexpr)
+    {
+      static constexpr Data data;
+      static constexpr Data::value_compare compare = data.value_comp();
+
+      static constexpr bool compareAA1 = compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'A' }, 0 });
+      static constexpr bool compareAA2 = compare(value_type{ Key{ 'A' }, 0 }, Key{ 'A' });
+      static constexpr bool compareAA3 = compare(Key{ 'A' }, value_type{ Key{ 'A' }, 0 });
+
+      static constexpr bool compareBA1 = compare(value_type{ Key{ 'B' }, 0 }, value_type{ Key{ 'A' }, 0 });
+      static constexpr bool compareBA2 = compare(value_type{ Key{ 'B' }, 0 }, Key{ 'A' });
+      static constexpr bool compareBA3 = compare(Key{ 'B' }, value_type{ Key{ 'A' }, 0 });
+          
+      static constexpr bool compareAB1 = compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'B' }, 0 });
+      static constexpr bool compareAB2 = compare(value_type{ Key{ 'A' }, 0 }, Key{ 'B' });
+      static constexpr bool compareAB3 = compare(Key{ 'A' }, value_type{ Key{ 'B' }, 0 });;
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compareAA1);
+      CHECK_FALSE(compareAA2);
+      CHECK_FALSE(compareAA3);
+
+      CHECK_TRUE(compareBA1);
+      CHECK_TRUE(compareBA2);
+      CHECK_TRUE(compareBA3);
+
+      CHECK_FALSE(compareAB1);
+      CHECK_FALSE(compareAB2);
+      CHECK_FALSE(compareAB3);
+#else
+      CHECK_FALSE(compareAA1);
+      CHECK_FALSE(compareAA2);
+      CHECK_FALSE(compareAA3);
+
+      CHECK_FALSE(compareBA1);
+      CHECK_FALSE(compareBA2);
+      CHECK_FALSE(compareBA3);
+
+      CHECK_TRUE(compareAB1);
+      CHECK_TRUE(compareAB2);
+      CHECK_TRUE(compareAB3);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_value_comp_constexpr_transparent_comparator)
+    {
+      static constexpr DataTransparentComparator data;
+      static constexpr DataTransparentComparator::value_compare compare = data.value_comp();
+
+      static constexpr bool compareAA1 = compare(value_type{ 'A', 0 }, value_type{ 'A', 0 });
+      static constexpr bool compareAA2 = compare(value_type{ 'A', 0 }, 'A');
+      static constexpr bool compareAA3 = compare('A', value_type{ 'A', 0 });
+
+      static constexpr bool compareBA1 = compare(value_type{ 'B', 0 }, value_type{ 'A', 0 });
+      static constexpr bool compareBA2 = compare(value_type{ 'B', 0 }, 'A');
+      static constexpr bool compareBA3 = compare('B', value_type{ 'A', 0 });
+
+      static constexpr bool compareAB1 = compare(value_type{ 'A', 0 }, value_type{ 'B', 0 });
+      static constexpr bool compareAB2 = compare(value_type{ 'A', 0 }, 'B');
+      static constexpr bool compareAB3 = compare('A', value_type{ 'B', 0 });;
+
+#ifdef TEST_GREATER_THAN
+      CHECK_FALSE(compareAA1);
+      CHECK_FALSE(compareAA2);
+      CHECK_FALSE(compareAA3);
+
+      CHECK_TRUE(compareBA1);
+      CHECK_TRUE(compareBA2);
+      CHECK_TRUE(compareBA3);
+
+      CHECK_FALSE(compareAB1);
+      CHECK_FALSE(compareAB2);
+      CHECK_FALSE(compareAB3);
+#else
+      CHECK_FALSE(compareAA1);
+      CHECK_FALSE(compareAA2);
+      CHECK_FALSE(compareAA3);
+
+      CHECK_FALSE(compareBA1);
+      CHECK_FALSE(compareBA2);
+      CHECK_FALSE(compareBA3);
+
+      CHECK_TRUE(compareAB1);
+      CHECK_TRUE(compareAB2);
+      CHECK_TRUE(compareAB3);
+#endif
+    }
   };
 }
