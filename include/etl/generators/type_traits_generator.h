@@ -2423,8 +2423,7 @@ typedef integral_constant<bool, true>  true_type;
   template <typename T>
   struct underlying_type
   {
-    ETL_STATIC_ASSERT(false, "No user defined specialisation of etl::underlying_type for this type");
-    typedef char type;
+    typedef int type;
   };
 #endif
 

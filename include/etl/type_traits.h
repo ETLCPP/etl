@@ -2412,12 +2412,11 @@ typedef integral_constant<bool, true>  true_type;
   };
 #else
   /// Primary template for etl::underlying_type
-  /// Users must spelialise this template for their enumerations. 
+  /// Users must specialise this template for their enumerations. 
   template <typename T>
   struct underlying_type
   {
-    ETL_STATIC_ASSERT(false, "No user defined specialisation of etl::underlying_type for this type");
-    typedef char type;
+    typedef int type;
   };
 #endif
 
