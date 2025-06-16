@@ -1512,6 +1512,9 @@
     <ClInclude Include="..\..\include\etl\private\chrono\clocks.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3592,6 +3595,9 @@
     </ClCompile>
     <ClCompile Include="..\test_chrono_literals.cpp">
       <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_map.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

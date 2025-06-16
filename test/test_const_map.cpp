@@ -108,7 +108,7 @@ namespace
     return (lhs.k == rhs.k);
   }
 
-  //#define TEST_GREATER_THAN
+  #define TEST_GREATER_THAN
   #ifdef TEST_GREATER_THAN
     using Data                      = etl::const_map<Key, int, Max_Size, etl::greater<Key>>;
     using DataTransparentComparator = etl::const_map<Key, int, Max_Size, etl::greater<>>;
@@ -118,8 +118,6 @@ namespace
   #endif
 
   using value_type = Data::value_type;
-
-  using Data_iterator       = Data::iterator;
   using Data_const_iterator = Data::const_iterator;
 
   SUITE(test_const_map)
@@ -547,61 +545,61 @@ namespace
                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range(Key('A'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range(Key('B'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range(Key('C'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range(Key('D'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range(Key('E'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range(Key('F'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range(Key('G'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range(Key('H'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range(Key('I'));
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range(Key('J'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultA = data.equal_range(Key('A'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultB = data.equal_range(Key('B'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultC = data.equal_range(Key('C'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultD = data.equal_range(Key('D'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultE = data.equal_range(Key('E'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultF = data.equal_range(Key('F'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultG = data.equal_range(Key('G'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultH = data.equal_range(Key('H'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultI = data.equal_range(Key('I'));
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultJ = data.equal_range(Key('J'));
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ.second)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultJ.second)));
 #endif
     }
 
@@ -616,61 +614,61 @@ namespace
                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range(Key('A'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range(Key('B'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range(Key('C'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range(Key('D'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range(Key('E'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range(Key('F'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range(Key('G'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range(Key('H'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range(Key('I'));
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range(Key('J'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultA = data.equal_range(Key('A'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultB = data.equal_range(Key('B'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultC = data.equal_range(Key('C'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultD = data.equal_range(Key('D'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultE = data.equal_range(Key('E'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultF = data.equal_range(Key('F'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultG = data.equal_range(Key('G'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultH = data.equal_range(Key('H'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultI = data.equal_range(Key('I'));
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultJ = data.equal_range(Key('J'));
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ.second)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultJ.second)));
 #endif
     }
 
@@ -685,61 +683,61 @@ namespace
                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range('A');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range('B');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range('C');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range('D');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range('E');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range('F');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range('G');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range('H');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range('I');
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range('J');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultA = data.equal_range('A');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultB = data.equal_range('B');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultC = data.equal_range('C');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultD = data.equal_range('D');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultE = data.equal_range('E');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultF = data.equal_range('F');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultG = data.equal_range('G');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultH = data.equal_range('H');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultI = data.equal_range('I');
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultJ = data.equal_range('J');
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ.second)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultJ.second)));
 #endif
     }
 
@@ -754,61 +752,61 @@ namespace
                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result0 = data.equal_range('A');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result1 = data.equal_range('B');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result2 = data.equal_range('C');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result3 = data.equal_range('D');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result4 = data.equal_range('E');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result5 = data.equal_range('F');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result6 = data.equal_range('G');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result7 = data.equal_range('H');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result8 = data.equal_range('I');
-      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> result9 = data.equal_range('J');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultA = data.equal_range('A');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultB = data.equal_range('B');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultC = data.equal_range('C');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultD = data.equal_range('D');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultE = data.equal_range('E');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultF = data.equal_range('F');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultG = data.equal_range('G');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultH = data.equal_range('H');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultI = data.equal_range('I');
+      static constexpr ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> resultJ = data.equal_range('J');
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(10, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ.second)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0.first)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1.first)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2.first)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3.first)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4.first)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5.first)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6.first)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7.first)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8.first)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9.first)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA.first)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB.first)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC.first)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD.first)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE.first)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF.first)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG.first)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH.first)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI.first)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ.first)));
 
-      CHECK_EQUAL(1, (std::distance(data.begin(), result0.second)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result1.second)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result2.second)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result3.second)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4.second)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result5.second)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result6.second)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result7.second)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result8.second)));
-      CHECK_EQUAL(10, (std::distance(data.begin(), result9.second)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA.second)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB.second)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC.second)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultD.second)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE.second)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF.second)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultG.second)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultH.second)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultI.second)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultJ.second)));
 #endif
     }
 
@@ -823,42 +821,42 @@ namespace
                                   value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
 #endif
 
-      Data::const_iterator result0 = data.lower_bound(Key('A'));
-      Data::const_iterator result1 = data.lower_bound(Key('B'));
-      Data::const_iterator result2 = data.lower_bound(Key('C'));
-      Data::const_iterator result3 = data.lower_bound(Key('D'));
-      Data::const_iterator result4 = data.lower_bound(Key('E'));
-      Data::const_iterator result5 = data.lower_bound(Key('F'));
-      Data::const_iterator result6 = data.lower_bound(Key('G'));
-      Data::const_iterator result7 = data.lower_bound(Key('H'));
-      Data::const_iterator result8 = data.lower_bound(Key('I'));
-      Data::const_iterator result9 = data.lower_bound(Key('J'));
-      Data::const_iterator result10 = data.lower_bound(Key('K'));
+      Data::const_iterator resultA = data.lower_bound(Key('A'));
+      Data::const_iterator resultB = data.lower_bound(Key('B'));
+      Data::const_iterator resultC = data.lower_bound(Key('C'));
+      Data::const_iterator resultD = data.lower_bound(Key('D'));
+      Data::const_iterator resultE = data.lower_bound(Key('E'));
+      Data::const_iterator resultF = data.lower_bound(Key('F'));
+      Data::const_iterator resultG = data.lower_bound(Key('G'));
+      Data::const_iterator resultH = data.lower_bound(Key('H'));
+      Data::const_iterator resultI = data.lower_bound(Key('I'));
+      Data::const_iterator resultJ = data.lower_bound(Key('J'));
+      Data::const_iterator resultK = data.lower_bound(Key('K'));
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(10, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result9)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result10)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultK)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result9)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result10)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultK)));
 #endif
     }
 
@@ -873,75 +871,343 @@ namespace
                                   value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
 #endif
 
-      static constexpr Data::const_iterator result0 = data.lower_bound(Key('A'));
-      static constexpr Data::const_iterator result1 = data.lower_bound(Key('B'));
-      static constexpr Data::const_iterator result2 = data.lower_bound(Key('C'));
-      static constexpr Data::const_iterator result3 = data.lower_bound(Key('D'));
-      static constexpr Data::const_iterator result4 = data.lower_bound(Key('E'));
-      static constexpr Data::const_iterator result5 = data.lower_bound(Key('F'));
-      static constexpr Data::const_iterator result6 = data.lower_bound(Key('G'));
-      static constexpr Data::const_iterator result7 = data.lower_bound(Key('H'));
-      static constexpr Data::const_iterator result8 = data.lower_bound(Key('I'));
-      static constexpr Data::const_iterator result9 = data.lower_bound(Key('J'));
-      static constexpr Data::const_iterator result10 = data.lower_bound(Key('K'));
+      static constexpr Data::const_iterator resultA = data.lower_bound(Key('A'));
+      static constexpr Data::const_iterator resultB = data.lower_bound(Key('B'));
+      static constexpr Data::const_iterator resultC = data.lower_bound(Key('C'));
+      static constexpr Data::const_iterator resultD = data.lower_bound(Key('D'));
+      static constexpr Data::const_iterator resultE = data.lower_bound(Key('E'));
+      static constexpr Data::const_iterator resultF = data.lower_bound(Key('F'));
+      static constexpr Data::const_iterator resultG = data.lower_bound(Key('G'));
+      static constexpr Data::const_iterator resultH = data.lower_bound(Key('H'));
+      static constexpr Data::const_iterator resultI = data.lower_bound(Key('I'));
+      static constexpr Data::const_iterator resultJ = data.lower_bound(Key('J'));
+      static constexpr Data::const_iterator resultK = data.lower_bound(Key('K'));
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(10, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result9)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result10)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultK)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result9)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result10)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultK)));
 #endif
     }
 
     //*************************************************************************
     TEST(test_lower_bound_using_transparent_comparator)
     {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                                       value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
 
+      Data::const_iterator resultA = data.lower_bound('A');
+      Data::const_iterator resultB = data.lower_bound('B');
+      Data::const_iterator resultC = data.lower_bound('C');
+      Data::const_iterator resultD = data.lower_bound('D');
+      Data::const_iterator resultE = data.lower_bound('E');
+      Data::const_iterator resultF = data.lower_bound('F');
+      Data::const_iterator resultG = data.lower_bound('G');
+      Data::const_iterator resultH = data.lower_bound('H');
+      Data::const_iterator resultI = data.lower_bound('I');
+      Data::const_iterator resultJ = data.lower_bound('J');
+      Data::const_iterator resultK = data.lower_bound('K');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultK)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultK)));
+#endif
     }
 
     //*************************************************************************
     TEST(test_lower_bound_constexpr_using_transparent_comparator)
     {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                                       value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
 
+      static constexpr Data::const_iterator resultA = data.lower_bound('A');
+      static constexpr Data::const_iterator resultB = data.lower_bound('B');
+      static constexpr Data::const_iterator resultC = data.lower_bound('C');
+      static constexpr Data::const_iterator resultD = data.lower_bound('D');
+      static constexpr Data::const_iterator resultE = data.lower_bound('E');
+      static constexpr Data::const_iterator resultF = data.lower_bound('F');
+      static constexpr Data::const_iterator resultG = data.lower_bound('G');
+      static constexpr Data::const_iterator resultH = data.lower_bound('H');
+      static constexpr Data::const_iterator resultI = data.lower_bound('I');
+      static constexpr Data::const_iterator resultJ = data.lower_bound('J');
+      static constexpr Data::const_iterator resultK = data.lower_bound('K');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultK)));
+#else
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultK)));
+#endif
     }
 
     //*************************************************************************
     TEST(test_upper_bound)
     {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                  value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                  value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
+
+      Data::const_iterator resultA = data.upper_bound(Key('A'));
+      Data::const_iterator resultB = data.upper_bound(Key('B'));
+      Data::const_iterator resultC = data.upper_bound(Key('C'));
+      Data::const_iterator resultD = data.upper_bound(Key('D'));
+      Data::const_iterator resultE = data.upper_bound(Key('E'));
+      Data::const_iterator resultF = data.upper_bound(Key('F'));
+      Data::const_iterator resultG = data.upper_bound(Key('G'));
+      Data::const_iterator resultH = data.upper_bound(Key('H'));
+      Data::const_iterator resultI = data.upper_bound(Key('I'));
+      Data::const_iterator resultJ = data.upper_bound(Key('J'));
+      Data::const_iterator resultK = data.upper_bound(Key('K'));
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultK)));
+#else
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultK)));
+#endif
     }
 
     //*************************************************************************
     TEST(test_upper_bound_constexpr)
     {
+#ifdef TEST_GREATER_THAN
+      static constexpr Data data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                  value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                  value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
+
+      static constexpr Data::const_iterator resultA = data.upper_bound(Key('A'));
+      static constexpr Data::const_iterator resultB = data.upper_bound(Key('B'));
+      static constexpr Data::const_iterator resultC = data.upper_bound(Key('C'));
+      static constexpr Data::const_iterator resultD = data.upper_bound(Key('D'));
+      static constexpr Data::const_iterator resultE = data.upper_bound(Key('E'));
+      static constexpr Data::const_iterator resultF = data.upper_bound(Key('F'));
+      static constexpr Data::const_iterator resultG = data.upper_bound(Key('G'));
+      static constexpr Data::const_iterator resultH = data.upper_bound(Key('H'));
+      static constexpr Data::const_iterator resultI = data.upper_bound(Key('I'));
+      static constexpr Data::const_iterator resultJ = data.upper_bound(Key('J'));
+      static constexpr Data::const_iterator resultK = data.upper_bound(Key('K'));
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultK)));
+#else
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultK)));
+#endif
     }
 
     //*************************************************************************
     TEST(test_upper_bound_using_transparent_comparator)
     {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                                       value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
+
+      Data::const_iterator resultA = data.upper_bound('A');
+      Data::const_iterator resultB = data.upper_bound('B');
+      Data::const_iterator resultC = data.upper_bound('C');
+      Data::const_iterator resultD = data.upper_bound('D');
+      Data::const_iterator resultE = data.upper_bound('E');
+      Data::const_iterator resultF = data.upper_bound('F');
+      Data::const_iterator resultG = data.upper_bound('G');
+      Data::const_iterator resultH = data.upper_bound('H');
+      Data::const_iterator resultI = data.upper_bound('I');
+      Data::const_iterator resultJ = data.upper_bound('J');
+      Data::const_iterator resultK = data.upper_bound('K');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultK)));
+#else
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultK)));
+#endif
     }
 
     //*************************************************************************
     TEST(test_upper_bound_constexpr_using_transparent_comparator)
     {
+#ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
+                                                       value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
+#else
+      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
+                                                       value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+#endif
+
+      static constexpr Data::const_iterator resultA = data.upper_bound('A');
+      static constexpr Data::const_iterator resultB = data.upper_bound('B');
+      static constexpr Data::const_iterator resultC = data.upper_bound('C');
+      static constexpr Data::const_iterator resultD = data.upper_bound('D');
+      static constexpr Data::const_iterator resultE = data.upper_bound('E');
+      static constexpr Data::const_iterator resultF = data.upper_bound('F');
+      static constexpr Data::const_iterator resultG = data.upper_bound('G');
+      static constexpr Data::const_iterator resultH = data.upper_bound('H');
+      static constexpr Data::const_iterator resultI = data.upper_bound('I');
+      static constexpr Data::const_iterator resultJ = data.upper_bound('J');
+      static constexpr Data::const_iterator resultK = data.upper_bound('K');
+
+#ifdef TEST_GREATER_THAN
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultK)));
+#else
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
+      CHECK_EQUAL(10, (std::distance(data.begin(), resultK)));
+#endif
     }
 
     //*************************************************************************
@@ -1065,46 +1331,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_iterator)
-    {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
-
-      Data::iterator itr = data.begin();
-
-#ifdef TEST_GREATER_THAN
-      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
-      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
-      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
-      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
-      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
-      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
-      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
-      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
-      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
-      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
-      CHECK_TRUE(itr == data.end());
-#else
-      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
-      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
-      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
-      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
-      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
-      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
-      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
-      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
-      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
-      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
-      CHECK_TRUE(itr == data.end());
-#endif      
-    }
-
-    //*************************************************************************
     TEST(test_const_iterator)
     {
 #ifdef TEST_GREATER_THAN
@@ -1155,39 +1381,39 @@ namespace
                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      Data::const_iterator result0 = data.find(Key('A'));
-      Data::const_iterator result1 = data.find(Key('B'));
-      Data::const_iterator result2 = data.find(Key('C'));
-      Data::const_iterator result3 = data.find(Key('D'));
-      Data::const_iterator result4 = data.find(Key('E'));
-      Data::const_iterator result5 = data.find(Key('F'));
-      Data::const_iterator result6 = data.find(Key('G'));
-      Data::const_iterator result7 = data.find(Key('H'));
-      Data::const_iterator result8 = data.find(Key('I'));
-      Data::const_iterator result9 = data.find(Key('J'));
+      Data::const_iterator resultA = data.find(Key('A'));
+      Data::const_iterator resultB = data.find(Key('B'));
+      Data::const_iterator resultC = data.find(Key('C'));
+      Data::const_iterator resultD = data.find(Key('D'));
+      Data::const_iterator resultE = data.find(Key('E'));
+      Data::const_iterator resultF = data.find(Key('F'));
+      Data::const_iterator resultG = data.find(Key('G'));
+      Data::const_iterator resultH = data.find(Key('H'));
+      Data::const_iterator resultI = data.find(Key('I'));
+      Data::const_iterator resultJ = data.find(Key('J'));
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
 #endif
     }
 
@@ -1202,39 +1428,39 @@ namespace
                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      static constexpr Data::const_iterator result0 = data.find(Key('A'));
-      static constexpr Data::const_iterator result1 = data.find(Key('B'));
-      static constexpr Data::const_iterator result2 = data.find(Key('C'));
-      static constexpr Data::const_iterator result3 = data.find(Key('D'));
-      static constexpr Data::const_iterator result4 = data.find(Key('E'));
-      static constexpr Data::const_iterator result5 = data.find(Key('F'));
-      static constexpr Data::const_iterator result6 = data.find(Key('G'));
-      static constexpr Data::const_iterator result7 = data.find(Key('H'));
-      static constexpr Data::const_iterator result8 = data.find(Key('I'));
-      static constexpr Data::const_iterator result9 = data.find(Key('J'));
+      static constexpr Data::const_iterator resultA = data.find(Key('A'));
+      static constexpr Data::const_iterator resultB = data.find(Key('B'));
+      static constexpr Data::const_iterator resultC = data.find(Key('C'));
+      static constexpr Data::const_iterator resultD = data.find(Key('D'));
+      static constexpr Data::const_iterator resultE = data.find(Key('E'));
+      static constexpr Data::const_iterator resultF = data.find(Key('F'));
+      static constexpr Data::const_iterator resultG = data.find(Key('G'));
+      static constexpr Data::const_iterator resultH = data.find(Key('H'));
+      static constexpr Data::const_iterator resultI = data.find(Key('I'));
+      static constexpr Data::const_iterator resultJ = data.find(Key('J'));
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
 #endif
     }
 
@@ -1249,39 +1475,39 @@ namespace
                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      Data::const_iterator result0 = data.find('A');
-      Data::const_iterator result1 = data.find('B');
-      Data::const_iterator result2 = data.find('C');
-      Data::const_iterator result3 = data.find('D');
-      Data::const_iterator result4 = data.find('E');
-      Data::const_iterator result5 = data.find('F');
-      Data::const_iterator result6 = data.find('G');
-      Data::const_iterator result7 = data.find('H');
-      Data::const_iterator result8 = data.find('I');
-      Data::const_iterator result9 = data.find('J');
+      Data::const_iterator resultA = data.find('A');
+      Data::const_iterator resultB = data.find('B');
+      Data::const_iterator resultC = data.find('C');
+      Data::const_iterator resultD = data.find('D');
+      Data::const_iterator resultE = data.find('E');
+      Data::const_iterator resultF = data.find('F');
+      Data::const_iterator resultG = data.find('G');
+      Data::const_iterator resultH = data.find('H');
+      Data::const_iterator resultI = data.find('I');
+      Data::const_iterator resultJ = data.find('J');
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0))); 
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA))); 
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
 #endif
     }
 
@@ -1296,39 +1522,39 @@ namespace
                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
 #endif
 
-      static constexpr Data::const_iterator result0 = data.find('A');
-      static constexpr Data::const_iterator result1 = data.find('B');
-      static constexpr Data::const_iterator result2 = data.find('C');
-      static constexpr Data::const_iterator result3 = data.find('D');
-      static constexpr Data::const_iterator result4 = data.find('E');
-      static constexpr Data::const_iterator result5 = data.find('F');
-      static constexpr Data::const_iterator result6 = data.find('G');
-      static constexpr Data::const_iterator result7 = data.find('H');
-      static constexpr Data::const_iterator result8 = data.find('I');
-      static constexpr Data::const_iterator result9 = data.find('J');
+      static constexpr Data::const_iterator resultA = data.find('A');
+      static constexpr Data::const_iterator resultB = data.find('B');
+      static constexpr Data::const_iterator resultC = data.find('C');
+      static constexpr Data::const_iterator resultD = data.find('D');
+      static constexpr Data::const_iterator resultE = data.find('E');
+      static constexpr Data::const_iterator resultF = data.find('F');
+      static constexpr Data::const_iterator resultG = data.find('G');
+      static constexpr Data::const_iterator resultH = data.find('H');
+      static constexpr Data::const_iterator resultI = data.find('I');
+      static constexpr Data::const_iterator resultJ = data.find('J');
 
 #ifdef TEST_GREATER_THAN
-      CHECK_EQUAL(9, (std::distance(data.begin(), result0)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(1, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(0, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), result0))); 
-      CHECK_EQUAL(1, (std::distance(data.begin(), result1)));
-      CHECK_EQUAL(2, (std::distance(data.begin(), result2)));
-      CHECK_EQUAL(3, (std::distance(data.begin(), result3)));
-      CHECK_EQUAL(4, (std::distance(data.begin(), result4)));
-      CHECK_EQUAL(5, (std::distance(data.begin(), result5)));
-      CHECK_EQUAL(6, (std::distance(data.begin(), result6)));
-      CHECK_EQUAL(7, (std::distance(data.begin(), result7)));
-      CHECK_EQUAL(8, (std::distance(data.begin(), result8)));
-      CHECK_EQUAL(9, (std::distance(data.begin(), result9)));
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA))); 
+      CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
+      CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
+      CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
+      CHECK_EQUAL(4, (std::distance(data.begin(), resultE)));
+      CHECK_EQUAL(5, (std::distance(data.begin(), resultF)));
+      CHECK_EQUAL(6, (std::distance(data.begin(), resultG)));
+      CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
+      CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
+      CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
 #endif
     }
 
