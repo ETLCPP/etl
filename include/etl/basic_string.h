@@ -1319,7 +1319,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      etl::mem_copy(i_element + 1, end(), i_element);
+      etl::mem_move(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
       return i_element;
@@ -1334,7 +1334,7 @@ namespace etl
     {
       iterator i_element_(to_iterator(i_element));
 
-      etl::mem_copy(i_element + 1, end(), i_element_);
+      etl::mem_move(i_element + 1, end(), i_element_);
       p_buffer[--current_size] = 0;
 
       return i_element_;
@@ -1395,7 +1395,7 @@ namespace etl
           count = size() - pos;
         }
 
-        etl::mem_copy(p_buffer + pos, count, dest);
+        etl::mem_move(p_buffer + pos, count, dest);
 
         return count;
       }
@@ -2675,7 +2675,7 @@ namespace etl
     typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value, TIterator2>::type
       copy_characters(TIterator1 from, size_t n, TIterator2 to)
     {
-      etl::mem_copy(from, n, to);
+      etl::mem_move(from, n, to);
 
       return to + n;
     }
@@ -2755,7 +2755,7 @@ namespace etl
       pointer dst    = position;     
       size_t  length = get_string_length(src);
       size_t  count  = (length < size_t(free_space)) ? length : size_t(free_space);
-      etl::mem_copy(src, count, dst);
+      etl::mem_move(src, count, dst);
 
       truncated |= (src[count] != 0);
       current_size = size_t(start) + count;
