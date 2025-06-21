@@ -366,7 +366,7 @@ namespace etl
       {
         n = etl::min(count, size() - position);
 
-        etl::mem_copy(mbegin + position, n, destination);
+        etl::mem_move(mbegin + position, n, destination);
       }
 
       return n;

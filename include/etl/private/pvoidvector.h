@@ -367,7 +367,7 @@ namespace etl
       void** p_first = (void**)(first);
       void** p_last  = (void**)(last);
 
-      p_end = etl::mem_copy(p_first, p_last, p_buffer) + (p_last - p_first);
+      p_end = etl::mem_move(p_first, p_last, p_buffer) + (p_last - p_first);
     }
 
     //*********************************************************************
@@ -593,7 +593,7 @@ namespace etl
       ETL_ASSERT_OR_RETURN((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
 
       etl::mem_move(position_, p_end, position_ + count);
-      etl::mem_copy((void**)first, (void**)last, position_);
+      etl::mem_move((void**)first, (void**)last, position_);
       p_end += count;
     }
 
@@ -604,7 +604,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      etl::mem_copy(i_element + 1, end(), i_element);
+      etl::mem_move(i_element + 1, end(), i_element);
       --p_end;
 
       return i_element;
@@ -619,7 +619,7 @@ namespace etl
     {
       iterator i_element_ = to_iterator(i_element);
 
-      etl::mem_copy(i_element_ + 1, end(), i_element_);
+      etl::mem_move(i_element_ + 1, end(), i_element_);
       --p_end;
 
       return i_element_;
@@ -638,7 +638,7 @@ namespace etl
       iterator first_ = to_iterator(first);
       iterator last_  = to_iterator(last);
 
-      etl::mem_copy(last_, end(), first_);
+      etl::mem_move(last_, end(), first_);
       size_t n_delete = static_cast<size_t>(etl::distance(first, last));
 
       // Just adjust the count.
