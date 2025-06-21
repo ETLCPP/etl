@@ -2146,12 +2146,27 @@ typedef integral_constant<bool, true>  true_type;
   template <> struct is_move_constructible<void const volatile> : public false_type{};
 
 #else
-
+  
   //*********************************************
   // is_copy_constructible
   template <typename T>
-  struct is_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_copy_constructible 
   {
+  private:
+    // Try to instantiate a function that takes a const T& and returns a char
+    template <typename U>
+    static char test(const U&);
+
+    // Fallback: anything else returns int
+    static int test(...);
+
+    // Helper to check if T is copy constructible
+    // If T is not copy constructible, the first overload is not viable
+    // and the second overload is chosen.
+    static const T& makeT();
+
+  public:
+    enum { value = (sizeof(test(makeT())) == sizeof(char)) };
   };
 
   //*********************************************

@@ -31,22 +31,13 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if (ETL_USING_CPP11)
+#if (ETL_USING_CPP11) && !defined(ETL_STATIC_ASSERT_FORCE_CPP03_IMPLEMENTATION)
   #define ETL_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
-  template <bool Condition>
-  struct ETL_ETL_STATIC_ASSERT_FAILED;
-
-  template <>
-  struct ETL_ETL_STATIC_ASSERT_FAILED<true> {};
-
   #define ETL_SA1(a,b) a##b
   #define ETL_SA2(a,b) ETL_SA1(a,b)
-  #define ETL_STATIC_ASSERT(Condition, Message) \
-		  enum \
-		  { \
-        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<static_cast<bool>(Condition)>) \
-	    }
+
+  #define ETL_STATIC_ASSERT(Condition, Message) enum { ETL_SA2(static_assert_at_, __LINE__) = 1/(int(!!(Condition))) }
 #endif
 
 #endif

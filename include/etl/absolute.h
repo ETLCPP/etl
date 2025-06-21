@@ -64,18 +64,17 @@ namespace etl
   // For signed types.
   // Returns the result as the unsigned type.
   //***************************************************************************
-#if ETL_USING_CPP11
-  template <typename T, typename TReturn = typename etl::make_unsigned<T>::type>
-#else
-  template <typename T, typename TReturn>
-  #endif
+  template <typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR 
-  typename etl::enable_if<etl::is_signed<T>::value, TReturn>::type
+  typename etl::enable_if<etl::is_signed<T>::value, typename etl::make_unsigned<T>::type>::type
     absolute_unsigned(T value) ETL_NOEXCEPT
   {
-    return (value == etl::integral_limits<T>::min) ? (etl::integral_limits<TReturn>::max / 2U) + 1U
-                                                   : (value < T(0)) ? TReturn(-value) : TReturn(value);
+    typedef typename etl::make_unsigned<T>::type return_type;
+
+    return (value == etl::integral_limits<T>::min) ? (etl::integral_limits<return_type>::max / 2U) + 1U
+                                                   : (value < T(0)) ? return_type(-value) 
+                                                                    : return_type(value);
   }
 
   //***************************************************************************
@@ -93,4 +92,3 @@ namespace etl
 }
 
 #endif
-
