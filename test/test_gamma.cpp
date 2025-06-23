@@ -41,6 +41,7 @@ namespace
   using IntGammaEncode    = etl::gamma_encode<int>;
   using DoubleGammaEncode = etl::gamma_encode<double>;
 
+  using IntGammaDecode    = etl::gamma_decode<int>;
   using DoubleGammaDecode = etl::gamma_decode<double>;
 
   struct Compare
@@ -60,6 +61,16 @@ namespace
   const std::array<int, Size> result1a =
   {
     0, 0, 0, 1, 1, 2, 4, 5, 7, 9
+  };
+
+  const std::array<int, Size> input1b =
+  {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+  };
+
+  const std::array<int, Size> result1b =
+  {
+    0, 3, 4, 5, 6, 6, 7, 7, 8, 9
   };
 
   std::array<int, Size> output1;
@@ -97,6 +108,17 @@ namespace
       std::transform(input1a.begin(), input1a.end(), output1.begin(), gamma);
 
       bool isEqual = std::equal(output1.begin(), output1.end(), result1a.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_int_gamma_decode)
+    {
+      IntGammaDecode gamma(0.5, 9);
+
+      std::transform(input1b.begin(), input1b.end(), output1.begin(), gamma);
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), result1b.begin());
       CHECK(isEqual);
     }
 
