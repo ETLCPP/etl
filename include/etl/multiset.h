@@ -2486,10 +2486,9 @@ namespace etl
   template <typename TKey, typename TCompare>
   bool operator <(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
-    return ETL_OR_STD::lexicographical_compare(lhs.begin(),
-      lhs.end(),
-      rhs.begin(),
-      rhs.end());
+    return ETL_OR_STD::lexicographical_compare(lhs.begin(), lhs.end(),
+                                               rhs.begin(), rhs.end(), 
+                                               etl::imultiset<TKey, TCompare>::value_compare());
   }
 
   //*************************************************************************
