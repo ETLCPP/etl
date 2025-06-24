@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CONST_MAP_INCLUDED
-#define ETL_CONST_MAP_INCLUDED
+#ifndef ETL_CONST_MULTIMAP_INCLUDED
+#define ETL_CONST_MULTIMAP_INCLUDED
 
 #include "platform.h"
 
@@ -44,13 +44,13 @@ SOFTWARE.
 
 #include "private/comparator_is_transparent.h"
 
-///\defgroup const_map const_map
+///\defgroup const_multimap const_multimap
 ///\ingroup containers
 
 namespace etl
 {
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  class iconst_map
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>>
+  class iconst_multimap
   {
   public:
 
@@ -112,17 +112,18 @@ namespace etl
     };
 
     //*************************************************************************
-    /// Check that the elements are valid for a map.
-    /// The elements must be sorted and contain no duplicates.
+    /// Check that the elements are valid for a multimap.
+    /// The elements must be sorted.
     /// \return <b>true</b> if the elements are valid for the map.
     //*************************************************************************
     ETL_CONSTEXPR14 bool is_valid() const ETL_NOEXCEPT
     {
-      return etl::is_unique_sorted(begin(), end(), vcompare);
+      return etl::is_sorted(begin(), end(), vcompare);
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the beginning of the map.
+    ///\brief Gets the beginning of the map.
+    ///\return <code>const_iterator</code> to the beginning of the map.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator begin() const ETL_NOEXCEPT
     {
@@ -130,7 +131,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the beginning of the map.
+    ///\brief Gets the beginning of the map.
+    ///\return <code>const_iterator</code> to the beginning of the map.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator cbegin() const ETL_NOEXCEPT
     {
@@ -138,7 +140,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the end of the map.
+    ///\brief Gets the end of the map.
+    ///\return <code>const_iterator</code> to the end of the map.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator end() const ETL_NOEXCEPT
     {
@@ -146,7 +149,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the end of the map.
+    ///\brief Gets the end of the map.
+    ///\return <code>const_iterator</code> to the end of the map.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator cend() const ETL_NOEXCEPT
     {
@@ -154,67 +158,12 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_pointer</code> to the beginning of the map.
+    ///\brief Gets the beginning of the map.
+    ///\return <code>const_pointer</code> to the beginning of the map.
     //*************************************************************************
     ETL_CONSTEXPR14 const_pointer data() const ETL_NOEXCEPT
     {
       return element_list;
-    }
-
-    //*************************************************************************
-    ///\brief Index operator.
-    ///\param key The key of the element to return.
-    ///\return A <code>const_mapped_reference</code> to the mapped value at the index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    ETL_CONSTEXPR14 const_mapped_reference operator[](const_key_reference key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-      
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Key index operator.
-    /// Enabled for transparent comparators.
-    ///\param key The key of the element to return.
-    ///\return A <code>const_mapped_reference</code> to the mapped value at the key index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    ETL_CONSTEXPR14 const_mapped_reference operator[](const K& key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Gets the mapped value at the key index.
-    ///\param key The key of the element to return.
-    ///\return A <code>const_mapped_reference</code> to the mapped value at the index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    ETL_CONSTEXPR14 const_mapped_reference at(const_key_reference key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Gets the mapped value at the key index.
-    /// Enabled if the comparator is transparent.
-    ///\param key The key of the element to return.
-    ///\return A <code>const_mapped_reference</code> to the mapped value at the index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    ETL_CONSTEXPR14 const_mapped_reference at(const K& key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-
-      return itr->second;
     }
 
     //*************************************************************************
@@ -233,7 +182,6 @@ namespace etl
       }
 
       return end();
-
     }
 
     //*************************************************************************
@@ -285,7 +233,9 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type count(const_key_reference key) const ETL_NOEXCEPT
     {
-      return contains(key) ? 1 : 0;
+      auto range = equal_range(key);
+
+      return size_type(etl::distance(range.first, range.second));
     }
       
     //*************************************************************************
@@ -297,7 +247,9 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_CONSTEXPR14 size_type count(const K& key) const ETL_NOEXCEPT
     {
-      return contains(key) ? 1 : 0;
+      auto range = equal_range(key);
+
+      return size_type(etl::distance(range.first, range.second));
     }
 
     //*************************************************************************
@@ -446,7 +398,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     template <typename... TElements>
-    ETL_CONSTEXPR14 explicit iconst_map(value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit iconst_multimap(value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
       : element_list(element_list_)
       , element_list_end{element_list_ + size_}
       , max_elements(max_elements_)
@@ -480,24 +432,24 @@ namespace etl
     size_type   max_elements;
   };
 
-  //*********************************************************************
-  /// Map type designed for constexpr.
-  //*********************************************************************
+  //*************************************************************************
+  /// Multimap type designed for constexpr.
+  //*************************************************************************
   template <typename TKey, typename TMapped, size_t Size, typename TKeyCompare = etl::less<TKey>>
-  class const_map : public iconst_map<TKey, TMapped, TKeyCompare>
+  class const_multimap : public iconst_multimap<TKey, TMapped, TKeyCompare>
   {
   public:
 
-    using base_t = iconst_map<TKey, TMapped, TKeyCompare>;
+    using base_t = iconst_multimap<TKey, TMapped, TKeyCompare>;
 
-    using key_type         = typename base_t::key_type;
-    using value_type       = typename base_t::value_type;
-    using mapped_type      = typename base_t::mapped_type ;
-    using key_compare      = typename base_t::key_compare;
-    using const_reference  = typename base_t::const_reference;
-    using const_pointer    = typename base_t::const_pointer;
-    using const_iterator   = typename base_t::const_iterator;
-    using size_type        = typename base_t::size_type;
+    using key_type        = typename base_t::key_type;
+    using value_type      = typename base_t::value_type;
+    using mapped_type     = typename base_t::mapped_type;
+    using key_compare     = typename base_t::key_compare;
+    using const_reference = typename base_t::const_reference;
+    using const_pointer   = typename base_t::const_pointer;
+    using const_iterator  = typename base_t::const_iterator;
+    using size_type       = typename base_t::size_type;
 
     /// Defines the parameter types
     using const_key_reference    = const key_type&;
@@ -510,8 +462,8 @@ namespace etl
     /// Static asserts if the number of elements is greater than the capacity of the const_map.
     //*************************************************************************
     template <typename... TElements>
-    ETL_CONSTEXPR14 explicit const_map(TElements&&... elements) ETL_NOEXCEPT
-      : iconst_map<TKey, TMapped, TKeyCompare>(element_list, sizeof...(elements), Size)
+    ETL_CONSTEXPR14 explicit const_multimap(TElements&&... elements) ETL_NOEXCEPT
+      : iconst_multimap<TKey, TMapped, TKeyCompare>(element_list, sizeof...(elements), Size)
       , element_list{etl::forward<TElements>(elements)...}
     {
       static_assert((etl::is_default_constructible<key_type>::value),                   "key_type must be default constructible");
@@ -530,17 +482,17 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17
   template <typename... TPairs>
-  const_map(TPairs...) -> const_map<typename etl::nth_type_t<0, TPairs...>::first_type, 
-                                    typename etl::nth_type_t<0, TPairs...>::second_type, 
-                                    sizeof...(TPairs)>;
+  const_multimap(TPairs...) -> const_multimap<typename etl::nth_type_t<0, TPairs...>::first_type, 
+                                              typename etl::nth_type_t<0, TPairs...>::second_type, 
+                                              sizeof...(TPairs)>;
 #endif
 
   //*************************************************************************
   /// Equality test.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator ==(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& lhs,
+                                   const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -549,50 +501,66 @@ namespace etl
   /// Inequality test.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator !=(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& lhs,
+                                   const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
 
   //*************************************************************************
-  /// Less-than.
+  /// Less than operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically less than the
+  /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator <(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                  const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs)
+  ETL_CONSTEXPR14 bool operator <(const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& lhs,
+                                  const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), 
-                                        rhs.begin(), rhs.end(), 
+                                        rhs.begin(), rhs.end(),
                                         lhs.value_comp());
   }
 
   //*************************************************************************
-  /// Greater-than.
+  /// Greater than operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically greater than the
+  /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator >(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                  const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs)
+  ETL_CONSTEXPR14 bool operator >(const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& lhs,
+                                  const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return (rhs < lhs);
   }
 
   //*************************************************************************
-  /// Less-than-equal.
+  /// Less than or equal operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically less than or equal
+  /// to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator <=(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& lhs,
+                                   const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(rhs < lhs);
   }
 
   //*************************************************************************
-  /// Greater-than-equal.
+  /// Greater than or equal operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically greater than or
+  /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator >=(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& lhs,
+                                   const etl::iconst_multimap<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(lhs < rhs);
   }
