@@ -2859,7 +2859,9 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), 
+                                        rhs.begin(), rhs.end(), 
+                                        lhs.value_comp());
   }
 
   //*************************************************************************
