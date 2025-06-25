@@ -9274,8 +9274,12 @@
     <ClCompile Include="..\test_circular_iterator.cpp" />
     <ClCompile Include="..\test_const_map.cpp" />
     <ClCompile Include="..\test_const_map_constexpr.cpp" />
+    <ClCompile Include="..\test_const_map_ext.cpp" />
+    <ClCompile Include="..\test_const_map_ext_constexpr.cpp" />
     <ClCompile Include="..\test_const_multimap.cpp" />
     <ClCompile Include="..\test_const_multimap_constexpr.cpp" />
+    <ClCompile Include="..\test_const_multimap_ext.cpp" />
+    <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
