@@ -38,7 +38,7 @@ PrintHeader()
 	echo " Configuration   : $configuration_name" | tee -a log.txt
 	echo " Compiler        : $compiler          " | tee -a log.txt
 	echo " Language        : C++$cxx_standard   " | tee -a log.txt
-  echo " Optimisation    : $opt               " | tee -a log.txt
+    echo " Optimisation    : $opt               " | tee -a log.txt
 	echo " Sanitizer       : $sanitize          " | tee -a log.txt
 	echo " Compiler select : $compiler_enabled  " | tee -a log.txt
 	echo " ETL version     : $etl_version       " | tee -a log.txt
