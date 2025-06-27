@@ -82,6 +82,7 @@ add_executable(etl_tests
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
+	test_closure.cpp
 	test_compare.cpp
 	test_constant.cpp
 	test_container.cpp
