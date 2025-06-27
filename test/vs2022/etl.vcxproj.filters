@@ -1515,9 +1515,6 @@
     <ClInclude Include="..\..\include\etl\const_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\const_multimap.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3600,27 +3597,6 @@
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
     <ClCompile Include="..\test_const_map.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_map_constexpr.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_multimap_constexpr.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_multimap.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_map_ext.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_map_ext_constexpr.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_multimap_ext.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
