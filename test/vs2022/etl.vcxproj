@@ -9271,7 +9271,6 @@
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
-    <ClCompile Include="..\test_const_map.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
