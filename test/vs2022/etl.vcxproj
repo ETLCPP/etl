@@ -9282,6 +9282,7 @@
     <ClCompile Include="..\test_const_multimap_ext.cpp" />
     <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp" />
     <ClCompile Include="..\test_const_set.cpp" />
+    <ClCompile Include="..\test_const_set_constexpr.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
