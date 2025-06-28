@@ -1518,6 +1518,9 @@
     <ClInclude Include="..\..\include\etl\const_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_set.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3621,6 +3624,9 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_set.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3293,6 +3293,7 @@
     <ClInclude Include="..\..\include\etl\constant.h" />
     <ClInclude Include="..\..\include\etl\const_map.h" />
     <ClInclude Include="..\..\include\etl\const_multimap.h" />
+    <ClInclude Include="..\..\include\etl\const_set.h" />
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />
@@ -9280,6 +9281,7 @@
     <ClCompile Include="..\test_const_multimap_constexpr.cpp" />
     <ClCompile Include="..\test_const_multimap_ext.cpp" />
     <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp" />
+    <ClCompile Include="..\test_const_set.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
