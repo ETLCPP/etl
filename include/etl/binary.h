@@ -45,6 +45,7 @@ SOFTWARE.
 #include "smallest.h"
 #include "exception.h"
 #include "error_handler.h"
+#include "functional.h"
 
 #if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>

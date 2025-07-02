@@ -37,6 +37,8 @@ SOFTWARE.
 #include "../../limits.h"
 #include "../../type_traits.h"
 
+#include <string.h>
+
 namespace etl
 {
   namespace chrono
