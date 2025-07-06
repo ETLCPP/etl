@@ -34,6 +34,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 #include <stdint.h>
+#include <string.h>
 
 #include "etl/murmur3.h"
 

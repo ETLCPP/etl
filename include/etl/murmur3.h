@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "ihash.h"
+#include "iterator.h"
 #include "binary.h"
 #include "error_handler.h"
 
