@@ -1515,6 +1515,9 @@
     <ClInclude Include="..\..\include\etl\const_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\closure.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3596,8 +3599,11 @@
     <ClCompile Include="..\test_chrono_literals.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_const_map.cpp">
-      <Filter>Tests\Containers</Filter>
+    <ClCompile Include="..\test_closure.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\closure.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

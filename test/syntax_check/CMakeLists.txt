@@ -99,6 +99,7 @@ target_sources(tests PRIVATE
 		chrono.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
+		closure.h.t.cpp
 		combinations.h.t.cpp
 		compare.h.t.cpp
 		constant.h.t.cpp

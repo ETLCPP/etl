@@ -86,7 +86,7 @@ namespace etl
   class closure<R(Arg0)>
   {
   public:
-    using fct = etl::delegate<R(Arg0)>;
+    typedef etl::delegate<R(Arg0)> fct;
 
     closure(fct const& f, Arg0 const arg0)
       : m_f(f), m_arg0(arg0)
@@ -106,7 +106,7 @@ namespace etl
   class closure<R(Arg0, Arg1)>
   {
   public:
-    using fct = etl::delegate<R(Arg0, Arg1)>;
+    typedef etl::delegate<R(Arg0, Arg1)> fct;
 
     closure(fct const& f, Arg0 const arg0, Arg1 const arg1)
       : m_f(f), m_arg0(arg0), m_arg1(arg1)
@@ -127,7 +127,7 @@ namespace etl
   class closure<R(Arg0, Arg1, Arg2)>
   {
   public:
-    using fct = etl::delegate<R(Arg0, Arg1, Arg2)>;
+    typedef etl::delegate<R(Arg0, Arg1, Arg2)> fct;
 
     closure(fct const& f, Arg0 const arg0, Arg1 const arg1, Arg2 const arg2)
       : m_f(f), m_arg0(arg0), m_arg1(arg1), m_arg2(arg2)
@@ -149,7 +149,7 @@ namespace etl
   class closure<R(Arg0, Arg1, Arg2, Arg3)>
   {
   public:
-    using fct = etl::delegate<R(Arg0, Arg1, Arg2, Arg3)>;
+    typedef etl::delegate<R(Arg0, Arg1, Arg2, Arg3)> fct;
 
     closure(fct const& f, Arg0 const arg0, Arg1 const arg1, Arg2 const arg2, Arg3 const arg3)
       : m_f(f), m_arg0(arg0), m_arg1(arg1), m_arg2(arg2), m_arg3(arg3)
@@ -172,7 +172,7 @@ namespace etl
   class closure<R(Arg0, Arg1, Arg2, Arg3, Arg4)>
   {
   public:
-    using fct = etl::delegate<R(Arg0, Arg1, Arg2, Arg3, Arg4)>;
+    typedef etl::delegate<R(Arg0, Arg1, Arg2, Arg3, Arg4)> fct;
 
     closure(fct const& f, Arg0 const arg0, Arg1 const arg1, Arg2 const arg2, Arg3 const arg3, Arg4 const arg4)
       : m_f(f), m_arg0(arg0), m_arg1(arg1), m_arg2(arg2), m_arg3(arg3), m_arg4(arg4)
