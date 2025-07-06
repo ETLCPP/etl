@@ -1159,12 +1159,14 @@ namespace etl
     round_toward_neg_infinity = std::round_toward_neg_infinity,
   };
 
+#include "private/diagnostic_deprecated_push.h"
   enum float_denorm_style
   {
     denorm_indeterminate = std::denorm_indeterminate,
     denorm_absent        = std::denorm_absent,
     denorm_present       = std::denorm_present
   };
+#include "private/diagnostic_pop.h"
 
 #if ETL_USING_CPP11
   template <typename T>
