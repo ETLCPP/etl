@@ -610,6 +610,7 @@ namespace etl
     static ETL_CONSTANT bool has_chrono_literals_milliseconds = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_chrono_literals_microseconds = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_chrono_literals_nanoseconds  = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
+    static ETL_CONSTANT bool has_std_byteswap                 = (ETL_HAS_STD_BYTESWAP == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);

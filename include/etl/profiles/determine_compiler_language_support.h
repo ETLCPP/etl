@@ -224,13 +224,13 @@ SOFTWARE.
 
     #if defined(__cpp_lib_byteswap)
       #if __cpp_lib_byteswap != 0
-        #define ETL_STD_BYTESWAP_SUPPORTED 1
+        #define ETL_HAS_STD_BYTESWAP 1
       #endif
     #endif
   #endif
 #endif
-#ifndef ETL_STD_BYTESWAP_SUPPORTED
-#define ETL_STD_BYTESWAP_SUPPORTED 0
+#ifndef ETL_HAS_STD_BYTESWAP
+  #define ETL_HAS_STD_BYTESWAP 0
 #endif
 
 #endif
