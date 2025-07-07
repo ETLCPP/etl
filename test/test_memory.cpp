@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/memory.h"
 #include "etl/list.h"
 #include "etl/debug_count.h"
+#include "etl/endianness.h"
 
 #include "data.h"
 
@@ -1370,7 +1371,14 @@ namespace
       char* p2 = etl::mem_char(data, data + 8, (char)0x99);
 
       CHECK_EQUAL(uint32_t(0x29), uint32_t(*p1));
-      CHECK((reinterpret_cast<char*>(data) + 18) == p1);
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        CHECK((reinterpret_cast<char*>(data) + 18) == p1);
+      }
+      else
+      {
+        CHECK((reinterpret_cast<char*>(data) + 17) == p1);
+      }
       CHECK((reinterpret_cast<char*>(data) + 32) == p2);
     }
 
@@ -1383,7 +1391,14 @@ namespace
       const char* p2 = etl::mem_char(data, data + 8, (char)0x99);
 
       CHECK_EQUAL(uint32_t(0x29), uint32_t(*p1));
-      CHECK((reinterpret_cast<const char*>(data) + 18) == p1);
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        CHECK((reinterpret_cast<const char*>(data) + 18) == p1);
+      }
+      else
+      {
+        CHECK((reinterpret_cast<const char*>(data) + 17) == p1);
+      }
       CHECK((reinterpret_cast<const char*>(data) + 32) == p2);
     }
 
@@ -1396,7 +1411,14 @@ namespace
       char* p2 = etl::mem_char(data, 8, (char)0x99);
 
       CHECK_EQUAL(uint32_t(0x29), uint32_t(*p1));
-      CHECK((reinterpret_cast<char*>(data) + 18) == p1);
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        CHECK((reinterpret_cast<char*>(data) + 18) == p1);
+      }
+      else
+      {
+        CHECK((reinterpret_cast<char*>(data) + 17) == p1);
+      }
       CHECK((reinterpret_cast<char*>(data) + 32) == p2);
     }
 
@@ -1409,7 +1431,14 @@ namespace
       const char* p2 = etl::mem_char(data, 8, (char)0x99);
 
       CHECK_EQUAL(uint32_t(0x29), uint32_t(*p1));
-      CHECK((reinterpret_cast<const char*>(data) + 18) == p1);
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        CHECK((reinterpret_cast<const char*>(data) + 18) == p1);
+      }
+      else
+      {
+        CHECK((reinterpret_cast<const char*>(data) + 17) == p1);
+      }
       CHECK((reinterpret_cast<const char*>(data) + 32) == p2);
     }
 
