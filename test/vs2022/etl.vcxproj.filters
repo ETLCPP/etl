@@ -3632,6 +3632,12 @@
     <ClCompile Include="..\test_const_set_constexpr.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_const_set_ext.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_set_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

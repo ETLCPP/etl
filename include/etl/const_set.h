@@ -439,7 +439,6 @@ namespace etl
 
     using key_type        = typename base_t::key_type;
     using value_type      = typename base_t::value_type;
-    using mapped_type     = typename base_t::mapped_type ;
     using key_compare     = typename base_t::key_compare;
     using const_reference = typename base_t::const_reference;
     using const_pointer   = typename base_t::const_pointer;
@@ -496,7 +495,7 @@ namespace etl
   ETL_CONSTEXPR14 bool operator ==(const etl::iconst_set<TKey, TKeyCompare>& lhs,
                                    const etl::iconst_set<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
-    return etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************

@@ -594,7 +594,7 @@ namespace etl
   ETL_CONSTEXPR14 bool operator ==(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
                                    const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
-    return etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************
