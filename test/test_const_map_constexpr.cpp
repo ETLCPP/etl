@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2025 John Wellbelove, rlindeman
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the 'Software'), to deal
@@ -102,7 +102,7 @@ namespace
     using IDataTransparentComparator = etl::iconst_map<Key, int, etl::greater<>>;
   #else
     using Data                       = etl::const_map<Key,  int, Max_Size, etl::less<Key>>;
-    using Data2                      = etl::const_map<Key,  int, Max_Size + 1, etl::greater<Key>>;
+    using Data2                      = etl::const_map<Key,  int, Max_Size + 1, etl::less<Key>>;
     using IData                      = etl::iconst_map<Key, int, etl::less<Key>>;
     using DataTransparentComparator  = etl::const_map<Key,  int, Max_Size, etl::less<>>;
     using DataTransparentComparator2 = etl::const_map<Key,  int, Max_Size + 1, etl::less<>>;
@@ -114,7 +114,7 @@ namespace
   using mapped_type    = Data::mapped_type;
   using const_iterator = Data::const_iterator;
 
-  SUITE(test_const_map)
+  SUITE(test_const_map_constexpr)
   {
     //*************************************************************************
     TEST(test_default_constructor)

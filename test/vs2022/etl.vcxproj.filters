@@ -1521,6 +1521,9 @@
     <ClInclude Include="..\..\include\etl\const_set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3636,6 +3639,18 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_const_set_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset_ext.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset_ext_constexpr.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>

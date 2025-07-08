@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2025 John Wellbelove, rlindeman
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the 'Software'), to deal
@@ -102,9 +102,9 @@ namespace
     using DataTransparentComparator  = etl::const_set_ext<Key, etl::greater<>>;
     using IDataTransparentComparator = etl::iconst_set<Key,    etl::greater<>>;
   #else
-    using Data                       = etl::const_set<Key,  etl::less<Key>>;
+    using Data                       = etl::const_set_ext<Key,  etl::less<Key>>;
     using IData                      = etl::iconst_set<Key, etl::less<Key>>;
-    using DataTransparentComparator  = etl::const_set<Key,  etl::less<>>;
+    using DataTransparentComparator  = etl::const_set_ext<Key,  etl::less<>>;
     using IDataTransparentComparator = etl::iconst_set<Key, etl::less<>>;
   #endif
 
@@ -269,8 +269,8 @@ namespace
       static constexpr span_type span(values);
       static constexpr etl::const_set_ext data{span};
 
-      etl::const_set<Key, int, 10U> check{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                           Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      etl::const_set<Key, 10U> check{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
+                                      Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
 
       CHECK_TRUE(data.is_valid());
       CHECK_TRUE(data.size() == Max_Size);
@@ -289,8 +289,8 @@ namespace
       
       static constexpr etl::const_set_ext data{values};
       
-      etl::const_set<Key, int, 10U> check{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                           Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      etl::const_set<Key, 10U> check{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
+                                      Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
 
       CHECK_TRUE(data.is_valid());
       CHECK_TRUE(data.size() == Max_Size);

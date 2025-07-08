@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2025 John Wellbelove, rlindeman
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the 'Software'), to deal
@@ -98,7 +98,7 @@ namespace
 #else
   using Data                       = etl::const_multimap_ext<Key, int, etl::less<Key>>;
   using IData                      = etl::iconst_multimap<Key,    int, etl::less<Key>>;
-  using DataTransparentComparator  = etl::const_multimap_ext<Key, inte, etl::less<>>;
+  using DataTransparentComparator  = etl::const_multimap_ext<Key, int, etl::less<>>;
   using IDataTransparentComparator = etl::iconst_multimap<Key,    int, etl::less<>>;
 #endif
 
@@ -108,7 +108,7 @@ namespace
   using const_iterator = Data::const_iterator;
   using span_type      = etl::span<const value_type, Max_Size>;
 
-  SUITE(test_const_multimap)
+  SUITE(test_const_multimap_ext)
   {
     //*************************************************************************
     TEST(test_default_constructor)

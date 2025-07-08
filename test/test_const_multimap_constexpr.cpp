@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2025 John Wellbelove, rlindeman
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the 'Software'), to deal
@@ -113,7 +113,7 @@ namespace
   using mapped_type    = Data::mapped_type;
   using const_iterator = Data::const_iterator;
 
-  SUITE(test_const_multimap)
+  SUITE(test_const_multimap_constexpr)
   {
     //*************************************************************************
     TEST(test_default_constructor)
