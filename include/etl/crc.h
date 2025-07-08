@@ -45,6 +45,7 @@ SOFTWARE.
 #include "crc8_maxim.h"
 #include "crc8_rohc.h"
 #include "crc8_wcdma.h"
+#include "crc8_nrsc5.h"
 
 #include "crc16.h"
 #include "crc16_a.h"
