@@ -81,6 +81,7 @@ namespace etl
     typedef crc_parameters<uint8_t, 0x9BU, 0x00U, 0x00U, true>  crc8_wcdma_parameters;
     typedef crc_parameters<uint8_t, 0x1DU, 0xFFU, 0xFFU, false> crc8_j1850_parameters;
     typedef crc_parameters<uint8_t, 0x1DU, 0x00U, 0x00U, false> crc8_j1850_zero_parameters;
+    typedef crc_parameters<uint8_t, 0x31U, 0xFFU, 0x00U, false> crc8_nrsc5_parameters;
 
     // 16 bit.
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_parameters;
