@@ -136,6 +136,7 @@ add_executable(etl_tests
 	test_crc8_maxim.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
+	test_crc8_nrsc5.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
