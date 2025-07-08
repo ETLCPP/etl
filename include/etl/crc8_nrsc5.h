@@ -28,62 +28,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC_INCLUDED
-#define ETL_CRC_INCLUDED
+#ifndef ETL_CRC8_NRSC5_INCLUDED
+#define ETL_CRC8_NRSC5_INCLUDED
 
-#include "crc1.h"
+#include "platform.h"
+#include "private/crc_implementation.h"
 
-#include "crc8_ccitt.h"
-#include "crc8_cdma2000.h"
-#include "crc8_darc.h"
-#include "crc8_dvbs2.h"
-#include "crc8_ebu.h"
-#include "crc8_icode.h"
-#include "crc8_itu.h"
-#include "crc8_j1850_zero.h"
-#include "crc8_j1850.h"
-#include "crc8_maxim.h"
-#include "crc8_rohc.h"
-#include "crc8_wcdma.h"
-#include "crc8_nrsc5.h"
+namespace etl
+{
+#if ETL_USING_CPP11 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+  template <size_t Table_Size>
+  using crc8_nrsc5_t = etl::crc_type<etl::private_crc::crc8_nrsc5_parameters, Table_Size>;
+#else
+  template <size_t Table_Size>
+  class crc8_nrsc5_t : public etl::crc_type<etl::private_crc::crc8_nrsc5_parameters, Table_Size>
+  {
+  public:
 
-#include "crc16.h"
-#include "crc16_a.h"
-#include "crc16_arc.h"
-#include "crc16_aug_ccitt.h"
-#include "crc16_buypass.h"
-#include "crc16_ccitt.h"
-#include "crc16_cdma2000.h"
-#include "crc16_dds110.h"
-#include "crc16_dectr.h"
-#include "crc16_dectx.h"
-#include "crc16_dnp.h"
-#include "crc16_en13757.h"
-#include "crc16_genibus.h"
-#include "crc16_kermit.h"
-#include "crc16_maxim.h"
-#include "crc16_mcrf4xx.h"
-#include "crc16_modbus.h"
-#include "crc16_profibus.h"
-#include "crc16_riello.h"
-#include "crc16_t10dif.h"
-#include "crc16_teledisk.h"
-#include "crc16_tms37157.h"
-#include "crc16_usb.h"
-#include "crc16_x25.h"
-#include "crc16_xmodem.h"
-#include "crc16_m17.h"
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    crc8_nrsc5_t()
+    {
+      this->reset();
+    }
 
-#include "crc32.h"
-#include "crc32_bzip2.h"
-#include "crc32_c.h"
-#include "crc32_d.h"
-#include "crc32_jamcrc.h"
-#include "crc32_mpeg2.h"
-#include "crc32_posix.h"
-#include "crc32_q.h"
-#include "crc32_xfer.h"
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    crc8_nrsc5_t(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+#endif
 
-#include "crc64_ecma.h"
+  typedef crc8_nrsc5_t<256U> crc8_nrsc5_t256;
+  typedef crc8_nrsc5_t<16U>  crc8_nrsc5_t16;
+  typedef crc8_nrsc5_t<4U>   crc8_nrsc5_t4;
+  typedef crc8_nrsc5_t256    crc8_nrsc5;
+}
 
 #endif
