@@ -139,8 +139,10 @@ add_executable(etl_tests
 	test_crc8_j1850.cpp
 	test_crc8_j1850_zero.cpp
 	test_crc8_maxim.cpp
+	test_crc8_nrsc5.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
+	test_crc8_nrsc5.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
@@ -364,9 +366,11 @@ elseif (ETL_CXX_STANDARD MATCHES "17")
 elseif (ETL_CXX_STANDARD MATCHES "20")
 	message(STATUS "Compiling for C++20")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 20)
-else()
+elseif (ETL_CXX_STANDARD MATCHES "23")
 	message(STATUS "Compiling for C++23")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 23)
+else()
+	message(STATUS "Unsupported C++ standard")
 endif()
 
 if (NO_STL OR ETL_NO_STL)
@@ -392,7 +396,7 @@ if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
 endif()
 
 if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
-	message(STATUS "Compiling for C++03 tests")
+	message(STATUS "Compiling for forced C++03 tests")
 	target_compile_definitions(etl_tests PRIVATE -DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 

@@ -64,10 +64,6 @@ namespace etl
     using const_iterator  = const value_type*;
     using size_type       = size_t;
 
-    /// Defines the parameter types
-    using const_key_reference    = const key_type&;
-    using const_mapped_reference = const mapped_type&;
-
     //*********************************************************************
     /// How to compare elements and keys.
     //*********************************************************************
@@ -82,7 +78,7 @@ namespace etl
       }
 
       // Compare value type and key.
-      ETL_CONSTEXPR14 bool operator ()(const value_type& element, const_key_reference key) const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 bool operator ()(const value_type& element, const key_type& key) const ETL_NOEXCEPT
       {
         return kcompare(element.first, key);
       }
@@ -96,7 +92,7 @@ namespace etl
       }
 
       // Compare key and value type.
-      ETL_CONSTEXPR14 bool operator ()(const_key_reference key, const value_type& element) const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 bool operator ()(const key_type& key, const value_type& element) const ETL_NOEXCEPT
       {
         return kcompare(key, element.first);
       }
@@ -173,7 +169,7 @@ namespace etl
     ///\return A <code>const_iterator</code> to the mapped value at the index,
     /// or end() if not found.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_iterator find(const_key_reference key) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 const_iterator find(const key_type& key) const ETL_NOEXCEPT
     {
       const_iterator itr = lower_bound(key);
 
@@ -210,7 +206,7 @@ namespace etl
     ///\param key The key of the element to check.
     ///\return <b>true</b> if the map contains an element with key.
     //*************************************************************************
-    ETL_CONSTEXPR14 bool contains(const_key_reference key) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bool contains(const key_type& key) const ETL_NOEXCEPT
     {
       return find(key) != end();
     }
@@ -232,7 +228,7 @@ namespace etl
     ///\param key The key of the element to count.
     ///\return 0 or 1
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type count(const_key_reference key) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 size_type count(const key_type& key) const ETL_NOEXCEPT
     {
       auto range = equal_range(key);
 
@@ -261,7 +257,7 @@ namespace etl
     ///\param key The key of the element
     ///\return etl::pair or std::pair containing a pair of iterators.
     //*************************************************************************
-    ETL_CONSTEXPR14 ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_key_reference key) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const key_type& key) const ETL_NOEXCEPT
     {
       return etl::equal_range(begin(), end(), key, vcompare);
     }
@@ -287,7 +283,7 @@ namespace etl
     ///\param key The key of the element
     ///\return const_iterator to the element or end()
     //*************************************************************************
-    ETL_CONSTEXPR14 const_iterator lower_bound(const_key_reference key) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 const_iterator lower_bound(const key_type& key) const ETL_NOEXCEPT
     {
       return etl::lower_bound(begin(), end(), key, vcompare);
     }
@@ -311,7 +307,7 @@ namespace etl
     ///\param key The key of the element
     ///\return const_iterator to the element or end()
     //*************************************************************************
-    ETL_CONSTEXPR14 const_iterator upper_bound(const_key_reference key) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 const_iterator upper_bound(const key_type& key) const ETL_NOEXCEPT
     {
       return etl::upper_bound(begin(), end(), key, vcompare);
     }
@@ -411,7 +407,7 @@ namespace etl
     //*********************************************************************
     /// Check to see if the keys are equal.
     //*********************************************************************
-    ETL_CONSTEXPR14 bool keys_are_equal(const_key_reference key1, const_key_reference key2) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bool keys_are_equal(const key_type& key1, const key_type& key2) const ETL_NOEXCEPT
     {
       return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
@@ -451,10 +447,6 @@ namespace etl
     using const_pointer   = typename base_t::const_pointer;
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
-
-    /// Defines the parameter types
-    using const_key_reference    = const key_type&;
-    using const_mapped_reference = const mapped_type&;
 
     static_assert((etl::is_default_constructible<key_type>::value),    "key_type must be default constructible");
     static_assert((etl::is_default_constructible<mapped_type>::value), "mapped_type must be default constructible");
@@ -507,10 +499,6 @@ namespace etl
     using const_pointer   = typename base_t::const_pointer;
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
-
-    /// Defines the parameter types
-    using const_key_reference    = const key_type&;
-    using const_mapped_reference = const mapped_type&;
 
     static_assert((etl::is_default_constructible<key_type>::value),    "key_type must be default constructible");
     static_assert((etl::is_default_constructible<mapped_type>::value), "mapped_type must be default constructible");

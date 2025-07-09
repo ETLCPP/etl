@@ -3294,6 +3294,8 @@
     <ClInclude Include="..\..\include\etl\constant.h" />
     <ClInclude Include="..\..\include\etl\const_map.h" />
     <ClInclude Include="..\..\include\etl\const_multimap.h" />
+    <ClInclude Include="..\..\include\etl\const_multiset.h" />
+    <ClInclude Include="..\..\include\etl\const_set.h" />
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />
@@ -3343,6 +3345,7 @@
     <ClInclude Include="..\..\include\etl\crc8_j1850.h" />
     <ClInclude Include="..\..\include\etl\crc8_j1850_zero.h" />
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
+    <ClInclude Include="..\..\include\etl\crc8_nrsc5.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
@@ -9300,6 +9303,14 @@
     <ClCompile Include="..\test_const_multimap_constexpr.cpp" />
     <ClCompile Include="..\test_const_multimap_ext.cpp" />
     <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp" />
+    <ClCompile Include="..\test_const_multiset.cpp" />
+    <ClCompile Include="..\test_const_multiset_constexpr.cpp" />
+    <ClCompile Include="..\test_const_multiset_ext.cpp" />
+    <ClCompile Include="..\test_const_multiset_ext_constexpr.cpp" />
+    <ClCompile Include="..\test_const_set.cpp" />
+    <ClCompile Include="..\test_const_set_constexpr.cpp" />
+    <ClCompile Include="..\test_const_set_ext.cpp" />
+    <ClCompile Include="..\test_const_set_ext_constexpr.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
@@ -9349,6 +9360,7 @@
     <ClCompile Include="..\test_crc8_j1850.cpp" />
     <ClCompile Include="..\test_crc8_j1850_zero.cpp" />
     <ClCompile Include="..\test_crc8_maxim.cpp" />
+    <ClCompile Include="..\test_crc8_nrsc5.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_expected.cpp" />

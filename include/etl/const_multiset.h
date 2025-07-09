@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CONST_MAP_INCLUDED
-#define ETL_CONST_MAP_INCLUDED
+#ifndef ETL_CONST_MULTISET_INCLUDED
+#define ETL_CONST_MULTISET_INCLUDED
 
-#include "platform.h"
+#include "platform.h" 
 
 #if ETL_NOT_USING_CPP11
   #error NOT SUPPORTED FOR C++03 OR BELOW
@@ -45,81 +45,38 @@ SOFTWARE.
 
 #include "private/comparator_is_transparent.h"
 
-///\defgroup const_map const_map
+///\defgroup const_multiset const_multiset
 ///\ingroup containers
 
 namespace etl
 {
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  class iconst_map
+  template <typename TKey, typename TKeyCompare = etl::less<TKey>>
+  class iconst_multiset
   {
   public:
 
     using key_type        = TKey;
-    using value_type      = ETL_OR_STD::pair<const TKey, TMapped>;
-    using mapped_type     = TMapped ;
+    using value_type      = TKey;
     using key_compare     = TKeyCompare;
+    using value_compare   = TKeyCompare;
     using const_reference = const value_type&;
     using const_pointer   = const value_type*;
     using const_iterator  = const value_type*;
     using size_type       = size_t;
 
-    //*********************************************************************
-    /// How to compare elements and keys.
-    //*********************************************************************
-    class value_compare
-    {
-    public:
-
-      // Compare two value types.
-      ETL_CONSTEXPR14 bool operator ()(const value_type& element1, const value_type& element2) const ETL_NOEXCEPT
-      {
-        return kcompare(element1.first, element2.first);
-      }
-
-      // Compare value type and key.
-      ETL_CONSTEXPR14 bool operator ()(const value_type& element, const key_type& key) const ETL_NOEXCEPT
-      {
-        return kcompare(element.first, key);
-      }
-
-      // Compare value types and key.
-      // Enabled for transparent comparators.
-      template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-      ETL_CONSTEXPR14 bool operator ()(const value_type& element, const K& key) const ETL_NOEXCEPT
-      {
-        return kcompare(element.first, key);
-      }
-
-      // Compare key and value type.
-      ETL_CONSTEXPR14 bool operator ()(const key_type& key, const value_type& element) const ETL_NOEXCEPT
-      {
-        return kcompare(key, element.first);
-      }
-
-      // Compare key and value type.
-      // Enabled for transparent comparators.
-      template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-      ETL_CONSTEXPR14 bool operator ()(const K& key, const value_type& element) const ETL_NOEXCEPT
-      {
-        return kcompare(key, element.first);
-      }
-
-      key_compare kcompare;
-    };
-
     //*************************************************************************
-    /// Check that the elements are valid for a map.
-    /// The elements must be sorted and contain no duplicates.
-    /// \return <b>true</b> if the elements are valid for the map.
+    /// Check that the elements are valid for a multiset.
+    /// The elements must be sorted.
+    /// \return <b>true</b> if the elements are valid for the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 bool is_valid() const ETL_NOEXCEPT
     {
-      return etl::is_unique_sorted(begin(), end(), vcompare);
+      return etl::is_sorted(begin(), end(), vcompare);
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the beginning of the map.
+    ///\brief Gets the beginning of the multiset.
+    ///\return <code>const_iterator</code> to the beginning of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator begin() const ETL_NOEXCEPT
     {
@@ -127,7 +84,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the beginning of the map.
+    ///\brief Gets the beginning of the multiset.
+    ///\return <code>const_iterator</code> to the beginning of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator cbegin() const ETL_NOEXCEPT
     {
@@ -135,7 +93,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the end of the map.
+    ///\brief Gets the end of the multiset.
+    ///\return <code>const_iterator</code> to the end of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator end() const ETL_NOEXCEPT
     {
@@ -143,7 +102,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_iterator</code> to the end of the map.
+    ///\brief Gets the end of the multiset.
+    ///\return <code>const_iterator</code> to the end of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator cend() const ETL_NOEXCEPT
     {
@@ -151,7 +111,8 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a <code>const_pointer</code> to the beginning of the map.
+    ///\brief Gets the beginning of the multiset.
+    ///\return <code>const_pointer</code> to the beginning of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 const_pointer data() const ETL_NOEXCEPT
     {
@@ -159,72 +120,16 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Index operator.
-    ///\param key The key of the element to return.
-    ///\return A <code>const mapped_type&</code> to the mapped value at the index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    ETL_CONSTEXPR14 const mapped_type& operator[](const key_type& key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-      
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Key index operator.
-    /// Enabled for transparent comparators.
-    ///\param key The key of the element to return.
-    ///\return A <code>const mapped_type&</code> to the mapped value at the key index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    ETL_CONSTEXPR14 const mapped_type& operator[](const K& key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Gets the mapped value at the key index.
-    ///\param key The key of the element to return.
-    ///\return A <code>const mapped_type&</code> to the mapped value at the index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    ETL_CONSTEXPR14 const mapped_type& at(const key_type& key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Gets the mapped value at the key index.
-    /// Enabled if the comparator is transparent.
-    ///\param key The key of the element to return.
-    ///\return A <code>const mapped_type&</code> to the mapped value at the index.
-    /// Undefined behaviour if the key is not in the map.
-    //*************************************************************************
-    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    ETL_CONSTEXPR14 const mapped_type& at(const K& key) const ETL_NOEXCEPT
-    {
-      const_iterator itr = find(key);
-
-      return itr->second;
-    }
-
-    //*************************************************************************
-    ///\brief Gets a const_iterator to the mapped value at the key index.
+    ///\brief Gets a const_iterator to the value at the key index.
     ///\param key The key of the element to find.
-    ///\return A <code>const_iterator</code> to the mapped value at the index,
+    ///\return A <code>const_iterator</code> to the value at the index,
     /// or end() if not found.
     //*************************************************************************
     ETL_CONSTEXPR14 const_iterator find(const key_type& key) const ETL_NOEXCEPT
     {
       const_iterator itr = lower_bound(key);
 
-      if ((itr != end()) && (keys_are_equal(itr->first, key)))
+      if ((itr != end()) && (keys_are_equal(*itr, key)))
       {
         return itr;
       }
@@ -233,10 +138,10 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Gets a const_iterator to the mapped value at the key index.
+    ///\brief Gets a const_iterator to the value at the key index.
     /// Enabled if the comparator is transparent.
     ///\param key The key of the element to find.
-    ///\return A <code>const_iterator</code> to the mapped value at the index,
+    ///\return A <code>const_iterator</code> to the value at the index,
     /// or end() if not found.
     //*************************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
@@ -244,7 +149,7 @@ namespace etl
     {
       const_iterator itr = lower_bound(key);
 
-      if ((itr != end()) && (keys_are_equal(itr->first, key)))
+      if ((itr != end()) && (keys_are_equal(*itr, key)))
       {
         return itr;
       }
@@ -253,9 +158,9 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Checks if the map contains an element with key.
+    ///\brief Checks if the multiset contains an element with key.
     ///\param key The key of the element to check.
-    ///\return <b>true</b> if the map contains an element with key.
+    ///\return <b>true</b> if the multiset contains an element with key.
     //*************************************************************************
     ETL_CONSTEXPR14 bool contains(const key_type& key) const ETL_NOEXCEPT
     {
@@ -263,10 +168,10 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Checks if the map contains an element with key.
+    ///\brief Checks if the multiset contains an element with key.
     /// Enabled if the comparator is transparent.
     ///\param key The key of the element to check.
-    ///\return <b>true</b> if the map contains an element with key.
+    ///\return <b>true</b> if the multiset contains an element with key.
     //*************************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_CONSTEXPR14 bool contains(const K& key) const ETL_NOEXCEPT
@@ -281,7 +186,9 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type count(const key_type& key) const ETL_NOEXCEPT
     {
-      return contains(key) ? 1 : 0;
+      auto range = equal_range(key);
+
+      return size_type(etl::distance(range.first, range.second));
     }
       
     //*************************************************************************
@@ -293,7 +200,9 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_CONSTEXPR14 size_type count(const K& key) const ETL_NOEXCEPT
     {
-      return contains(key) ? 1 : 0;
+      auto range = equal_range(key);
+
+      return size_type(etl::distance(range.first, range.second));
     }
 
     //*************************************************************************
@@ -373,8 +282,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks if the map is empty.
-    ///\return <b>true</b> if the map is empty.
+    /// Checks if the multiset is empty.
+    ///\return <b>true</b> if the multiset is empty.
     //*************************************************************************
     ETL_CONSTEXPR14 size_type empty() const ETL_NOEXCEPT
     {
@@ -382,8 +291,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Checks if the map is full.
-    ///\return <b>true</b> if the map is full.
+    /// Checks if the multiset is full.
+    ///\return <b>true</b> if the multiset is full.
     //*************************************************************************
     ETL_CONSTEXPR14 size_type full() const ETL_NOEXCEPT
     {
@@ -391,8 +300,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the size of the map.
-    ///\return The size of the map.
+    /// Gets the size of the multiset.
+    ///\return The size of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 size_type size() const ETL_NOEXCEPT
     {
@@ -400,8 +309,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the maximum size of the map.
-    ///\return The maximum size of the map.
+    /// Gets the maximum size of the multiset.
+    ///\return The maximum size of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 size_type max_size() const ETL_NOEXCEPT
     {
@@ -409,9 +318,9 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the capacity of the map.
+    /// Gets the capacity of the multiset.
     /// This is always equal to max_size().
-    ///\return The capacity of the map.
+    ///\return The capacity of the multiset.
     //*************************************************************************
     ETL_CONSTEXPR14 size_type capacity() const ETL_NOEXCEPT
     {
@@ -424,7 +333,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 key_compare key_comp() const ETL_NOEXCEPT
     {
-      return vcompare.kcompare;
+      return kcompare;
     }
 
     //*************************************************************************
@@ -442,7 +351,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     template <typename... TElements>
-    ETL_CONSTEXPR14 explicit iconst_map(const value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit iconst_multiset(const value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
       : element_list(element_list_)
       , element_list_end{element_list_ + size_}
       , max_elements(max_elements_)
@@ -469,43 +378,43 @@ namespace etl
       return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
 
+    key_compare   kcompare;
     value_compare vcompare;
 
     const value_type* element_list;
     const value_type* element_list_end;
-    size_type         max_elements;
+    size_type   max_elements;
   };
 
-  //*********************************************************************
-  /// Map type designed for constexpr.
-  //*********************************************************************
-  template <typename TKey, typename TMapped, size_t Size, typename TKeyCompare = etl::less<TKey>>
-  class const_map : public iconst_map<TKey, TMapped, TKeyCompare>
+  //*************************************************************************
+  /// Multiset type designed for constexpr.
+  //*************************************************************************
+  template <typename TKey, size_t Size, typename TKeyCompare = etl::less<TKey>>
+  class const_multiset : public iconst_multiset<TKey, TKeyCompare>
   {
   public:
 
-    using base_t = iconst_map<TKey, TMapped, TKeyCompare>;
+    using base_t = iconst_multiset<TKey, TKeyCompare>;
 
     using key_type        = typename base_t::key_type;
     using value_type      = typename base_t::value_type;
-    using mapped_type     = typename base_t::mapped_type ;
     using key_compare     = typename base_t::key_compare;
     using const_reference = typename base_t::const_reference;
     using const_pointer   = typename base_t::const_pointer;
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
 
-    static_assert((etl::is_default_constructible<key_type>::value),    "key_type must be default constructible");
-    static_assert((etl::is_default_constructible<mapped_type>::value), "mapped_type must be default constructible");
+    static_assert((etl::is_default_constructible<key_type>::value), "key_type must be default constructible");
 
     //*************************************************************************
-    ///\brief Construct a const_map from a variadic list of elements.
+    ///\brief Construct a const_set from a variadic list of elements.
+    /// Static asserts if the element type is not constructible.
     /// Static asserts if the elements are not of type <code>value_type</code>.
-    /// Static asserts if the number of elements is greater than the capacity of the const_map.
+    /// Static asserts if the number of elements is greater than the capacity of the const_set.
     //*************************************************************************
     template <typename... TElements>
-    ETL_CONSTEXPR14 explicit const_map(TElements&&... elements) ETL_NOEXCEPT
-      : iconst_map<TKey, TMapped, TKeyCompare>(element_list, sizeof...(elements), Size)
+    ETL_CONSTEXPR14 explicit const_multiset(TElements&&... elements) ETL_NOEXCEPT
+      : iconst_multiset<TKey, TKeyCompare>(element_list, sizeof...(elements), Size)
       , element_list{etl::forward<TElements>(elements)...}
     {
       static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
@@ -522,56 +431,52 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17
   template <typename... TElements>
-  const_map(TElements...) -> const_map<typename etl::nth_type_t<0, TElements...>::first_type, 
-                                       typename etl::nth_type_t<0, TElements...>::second_type, 
-                                       sizeof...(TElements)>;
+  const_multiset(TElements...) -> const_multiset<etl::nth_type_t<0, TElements...>, sizeof...(TElements)>;
 #endif
 
   //*********************************************************************
-  /// Map type designed for constexpr.
+  /// Multiset type designed for constexpr.
   //*********************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>>
-  class const_map_ext : public iconst_map<TKey, TMapped, TKeyCompare>
+  template <typename TKey, typename TKeyCompare = etl::less<TKey>>
+  class const_multiset_ext : public iconst_multiset<TKey, TKeyCompare>
   {
   public:
 
-    using base_t = iconst_map<TKey, TMapped, TKeyCompare>;
+    using base_t = iconst_multiset<TKey, TKeyCompare>;
 
     using key_type        = typename base_t::key_type;
     using value_type      = typename base_t::value_type;
-    using mapped_type     = typename base_t::mapped_type ;
     using key_compare     = typename base_t::key_compare;
     using const_reference = typename base_t::const_reference;
     using const_pointer   = typename base_t::const_pointer;
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
 
-    static_assert((etl::is_default_constructible<key_type>::value),    "key_type must be default constructible");
-    static_assert((etl::is_default_constructible<mapped_type>::value), "mapped_type must be default constructible");
+    static_assert((etl::is_default_constructible<key_type>::value), "key_type must be default constructible");
 
     //*************************************************************************
-    ///\brief Default construct a const_map.
+    ///\brief Default construct a const_multiset.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_map_ext() ETL_NOEXCEPT
-      : iconst_map<TKey, TMapped, TKeyCompare>(nullptr, 0, 0)
+    ETL_CONSTEXPR14 const_multiset_ext() ETL_NOEXCEPT
+      : iconst_multiset<TKey, TKeyCompare>(nullptr, 0, 0)
     {
     }
 
     //*************************************************************************
-    ///\brief Construct a const_map from a variadic list of elements.
+    ///\brief Construct a const_multiset from a variadic list of elements.
     //*************************************************************************
     template <size_type Size>
-    ETL_CONSTEXPR14 explicit const_map_ext(const etl::span<const value_type, Size>& sp) ETL_NOEXCEPT
-      : iconst_map<TKey, TMapped, TKeyCompare>(sp.data(), Size, Size)
+    ETL_CONSTEXPR14 explicit const_multiset_ext(const etl::span<const value_type, Size>& sp) ETL_NOEXCEPT
+      : iconst_multiset<TKey, TKeyCompare>(sp.data(), Size, Size)
     {
     }
 
     //*************************************************************************
-    ///\brief Construct a const_map from an array.
+    ///\brief Construct a const_multiset from an array.
     //*************************************************************************
     template <size_type Size>
-    ETL_CONSTEXPR14 explicit const_map_ext(const value_type(&begin_)[Size]) ETL_NOEXCEPT
-      : iconst_map<TKey, TMapped, TKeyCompare>(begin_, Size, Size)
+    ETL_CONSTEXPR14 explicit const_multiset_ext(const value_type(&begin_)[Size]) ETL_NOEXCEPT
+      : iconst_multiset<TKey, TKeyCompare>(begin_, Size, Size)
     {
     }
   };
@@ -581,18 +486,18 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17
   template <typename TElements, size_t N>
-  const_map_ext(const etl::span<TElements, N>&) -> const_map_ext<typename TElements::first_type, typename TElements::second_type>;
+  const_multiset_ext(const etl::span<TElements, N>&) -> const_multiset_ext<typename TElements>;
 
   template <typename TElements, size_t N>
-  const_map_ext(const TElements(&)[N]) -> const_map_ext<typename TElements::first_type, typename TElements::second_type>;
+  const_multiset_ext(const TElements(&)[N]) -> const_multiset_ext<typename TElements>;
 #endif
 
   //*************************************************************************
   /// Equality test.
   //*************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator ==(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
+  template <typename TKey, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator ==(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -600,51 +505,67 @@ namespace etl
   //*************************************************************************
   /// Inequality test.
   //*************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator !=(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
+  template <typename TKey, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator !=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(lhs == rhs);
   }
 
   //*************************************************************************
-  /// Less-than.
+  /// Less than operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically less than the
+  /// second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator <(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                  const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
+  template <typename TKey, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator <(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), 
-                                        rhs.begin(), rhs.end(), 
+                                        rhs.begin(), rhs.end(),
                                         lhs.value_comp());
   }
 
   //*************************************************************************
-  /// Greater-than.
+  /// Greater than operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically greater than the
+  /// second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator >(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                  const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
+  template <typename TKey, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator >(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return (rhs < lhs);
   }
 
   //*************************************************************************
-  /// Less-than-equal.
+  /// Less than or equal operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically less than or equal
+  /// to the second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator <=(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
+  template <typename TKey, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator <=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(rhs < lhs);
   }
 
   //*************************************************************************
-  /// Greater-than-equal.
+  /// Greater than or equal operator.
+  ///\param lhs Reference to the first list.
+  ///\param rhs Reference to the second list.
+  ///\return <b>true</b> if the first list is lexicographically greater than or
+  /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator >=(const etl::iconst_map<TKey, TMapped, TKeyCompare>& lhs,
-                                   const etl::iconst_map<TKey, TMapped, TKeyCompare>& rhs) ETL_NOEXCEPT
+  template <typename TKey, typename TKeyCompare>
+  ETL_CONSTEXPR14 bool operator >=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(lhs < rhs);
   }
