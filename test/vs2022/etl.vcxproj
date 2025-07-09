@@ -3344,6 +3344,7 @@
     <ClInclude Include="..\..\include\etl\crc8_j1850.h" />
     <ClInclude Include="..\..\include\etl\crc8_j1850_zero.h" />
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
+    <ClInclude Include="..\..\include\etl\crc8_nrsc5.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
@@ -9339,6 +9340,7 @@
     <ClCompile Include="..\test_crc8_j1850.cpp" />
     <ClCompile Include="..\test_crc8_j1850_zero.cpp" />
     <ClCompile Include="..\test_crc8_maxim.cpp" />
+    <ClCompile Include="..\test_crc8_nrsc5.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_expected.cpp" />
