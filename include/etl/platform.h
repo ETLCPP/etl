@@ -245,8 +245,10 @@ SOFTWARE.
 // Indicate if C++ exceptions are enabled.
 #if defined(ETL_THROW_EXCEPTIONS)
   #define ETL_USING_EXCEPTIONS 1
+  #define ETL_NOT_USING_EXCEPTIONS 0
 #else
   #define ETL_USING_EXCEPTIONS 0
+  #define ETL_NOT_USING_EXCEPTIONS 1
 #endif
 
 //*************************************
