@@ -1,4 +1,34 @@
 ﻿===============================================================================
+20.42.0
+
+Updates:
+Removed redundant ETL_USING_WIDE_CHARACTERS
+#1118 Constexpr constructible flat_map, map, and set containers.
+      Added etl::const_map,      etl::const_map_ext,
+            etl::const_multimap, etl::const multimap_ext
+            etl::const_set,      etl::const_set_ext,
+            etl::const_multiset, etl::const multiset_ext
+
+Fixes:
+#1126 to_arithmetic-does-not-compile-on-C++98
+#1128 Request: Make Delegate Methods noexcept
+#1130 Use of etl::mem_copy for overlaped areas
+#1132 Make type_def Methods Noexcept
+#1143 v20.41.x, risc-v (esp32-c3) "No user defined specialisation of etl::underlying_type for this type"
+
+Pull Requests:
+#1131 Fix usage of template keyword
+#1136 Fix gamma.h on i386
+#1137 Add etl::closure
+#1138 Ignore deprecation of std::float_denorm_style
+#1139 Cleanup to get more independent of std
+#1140 Use std::byteswap only if available
+#1141 Fix build of tuple on clang >= 19
+#1142 Fix tests on big endian
+#1144 Add support for CRC8-NRSC5
+#1145 Workaround for link libraries call on Zephyr platform
+
+===============================================================================
 20.41.7
 
 Fixes:
