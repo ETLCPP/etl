@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "atomic.h"
+#include "timer_model.h"
 
 #include <stdint.h>
 
@@ -50,9 +51,11 @@ namespace etl
 
   //***************************************************************************
   /// Common definitions for the timer framework.
+  /// \tparam TIMER_MODEL Determines the type of the internal timer types determining the tick resolution.
   //***************************************************************************
+  template<const size_t TIMER_MODEL = etl::timer_model::TIMER_MODEL_LARGE>
   struct timer
-  {
+  {  
     // Timer modes.
     struct mode
     {
@@ -100,8 +103,8 @@ namespace etl
     {
       enum
       {
-        INACTIVE = 0xFFFFFFFFUL,
-        Inactive = 0xFFFFFFFFUL
+        INACTIVE = etl::size_type_lookup<TIMER_MODEL>::range::MAX,
+        Inactive = etl::size_type_lookup<TIMER_MODEL>::range::MAX
       };
     };
 
@@ -110,10 +113,10 @@ namespace etl
     {
       enum
       {
-        No_Active_Interval = 0xFFFFFFFFUL
+        No_Active_Interval = etl::size_type_lookup<TIMER_MODEL>::range::MAX
       };
 
-      typedef uint32_t type;
+      typedef etl::size_type_lookup<TIMER_MODEL>::type type;
     };
   };
 }
