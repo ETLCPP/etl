@@ -486,10 +486,10 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17
   template <typename TElements, size_t N>
-  const_multiset_ext(const etl::span<TElements, N>&) -> const_multiset_ext<typename TElements>;
+  const_multiset_ext(const etl::span<TElements, N>&) -> const_multiset_ext<TElements>;
 
   template <typename TElements, size_t N>
-  const_multiset_ext(const TElements(&)[N]) -> const_multiset_ext<typename TElements>;
+  const_multiset_ext(const TElements(&)[N]) -> const_multiset_ext<TElements>;
 #endif
 
   //*************************************************************************
