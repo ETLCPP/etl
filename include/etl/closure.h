@@ -121,7 +121,7 @@ namespace etl
     void bind_impl(etl::index_sequence<Indexes...>, UArgs&&... args)
     {
       // Use an initializer list to expand the pack and assign each argument
-      int dummy[] = {0, (etl::get<Indexes>(m_args) = std::forward<UArgs>(args), 0)...};
+      int dummy[] = {0, (etl::get<Indexes>(m_args) = etl::forward<UArgs>(args), 0)...};
       (void)dummy; // Suppress unused variable warning
     }
 
