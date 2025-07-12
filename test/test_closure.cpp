@@ -151,5 +151,15 @@ namespace
       CHECK_EQUAL(23, c5());
     }
 
+    //*************************************************************************
+    TEST(test_bind_static_assert)
+    {
+      etl::closure<int(int, int)> c(df2, 1, 2);
+
+      // Uncomment to generate static_assert errors.
+      //c.bind(1);                // Argument count mismatch
+      //c.bind(1, 2, 3);          // Argument count mismatch
+      //c.bind(1, std::string()); // Argument is not convertible
+    }
   };
 }

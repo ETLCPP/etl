@@ -35,6 +35,7 @@ SOFTWARE.
 #include "delegate.h"
 #include "tuple.h"
 #include "utility.h"
+#include "type_list.h"
 
 namespace etl
 {
@@ -62,9 +63,9 @@ namespace etl
   {
   public:
    
-    using delegate_type = etl::delegate<TReturn(TArgs...)>; ///< The delegate type to be invoked.   
-    using tuple_type    = etl::tuple<TArgs...>;             ///< Tuple type for storing arguments.
-
+    using delegate_type  = etl::delegate<TReturn(TArgs...)>; ///< The delegate type to be invoked.
+    using argument_types = etl::type_list<TArgs...>;         ///< The type list of arguments.
+    
     //*********************************************************************
     /// Construct a closure with a delegate and its arguments.
     /// \param f    The delegate to be invoked.
@@ -92,16 +93,18 @@ namespace etl
     /// \tparam TArg  Type of the argument.
     /// \param arg    The new value to bind.
     //*********************************************************************
-    template <size_t index, typename TArg,
-              typename = etl::enable_if_t<etl::is_same<TArg, etl::tuple_element_t<index, tuple_type>>::value && !etl::is_reference<TArg>::value>>
-    void bind(TArg arg)
+    template <size_t Index, typename UArg>
+    void bind(UArg arg)
     {
-      etl::get<index>(m_args) = arg;
+      static_assert(etl::is_convertible<UArg, etl::type_list_type_at_index_t<argument_types, Index>>::value, "Argument is not convertible");
+      static_assert(!etl::is_reference<UArg>::value, "Cannot bind reference arguments");
+
+      etl::get<Index>(m_args) = arg;
     }
 
     //*********************************************************************
     /// Bind new values to multiple arguments at once.
-    /// The number and types of arguments must match the tuple.
+    /// The number of arguments must match the tuple.
     /// \param args The new values to bind.
     ///*********************************************************************
     template <typename... UArgs>
@@ -120,8 +123,8 @@ namespace etl
     template <size_t... Indexes, typename... UArgs>
     void bind_impl(etl::index_sequence<Indexes...>, UArgs&&... args)
     {
-      // Use an initializer list to expand the pack and assign each argument
-      int dummy[] = {0, (etl::get<Indexes>(m_args) = etl::forward<UArgs>(args), 0)...};
+      // Expand the pack and call bind<Index>(arg) for each argument
+      int dummy[] = {0, (bind<Indexes>(etl::forward<UArgs>(args)), 0)...};
       (void)dummy; // Suppress unused variable warning
     }
 
@@ -137,7 +140,7 @@ namespace etl
     }
 
     delegate_type m_f; ///< The delegate to invoke.
-    tuple_type m_args; ///< The bound arguments.
+    etl::tuple<TArgs...> m_args; ///< The bound arguments.
   };
 #else
   //*************************************************************************
