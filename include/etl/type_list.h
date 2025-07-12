@@ -287,6 +287,35 @@ namespace etl
 
   template <typename... TypeLists>
   using type_list_cat_t = typename type_list_cat<TypeLists...>::type;
+
+  //***************************************************************************
+  /// Checks that two type lists are convertible.
+  /// Static asserts if the type lists are not the same length.
+  //***************************************************************************
+  // Primary template
+  template <typename TFromList, typename TToList>
+  struct type_lists_are_convertible;
+
+  // Specialization: both lists empty, convertible
+  template <>
+  struct type_lists_are_convertible<etl::type_list<>, etl::type_list<>> 
+    : public etl::true_type
+  {
+  };
+
+  // Recursive case: check head types, then recurse
+  template <typename TFromHead, typename... TFromTail, typename TToHead, typename... TToTail>
+  struct type_lists_are_convertible<etl::type_list<TFromHead, TFromTail...>, etl::type_list<TToHead, TToTail...>> 
+    : public etl::bool_constant<etl::is_convertible<TFromHead, TToHead>::value && 
+                                etl::type_lists_are_convertible<etl::type_list<TFromTail...>, etl::type_list<TToTail...>>::value>
+  {
+    static_assert(sizeof...(TFromTail) == sizeof...(TToTail), "Type lists are not the same length");
+  };
+
+#if ETL_USING_CPP17
+  template <typename TFromList, typename TToList>
+  inline constexpr bool type_lists_are_convertible_v = etl::type_lists_are_convertible<TFromList, TToList>::value;
+#endif
 }
 #endif
 
