@@ -1225,15 +1225,14 @@ namespace
       etl::link<BLink1>(data1, data0);
       etl::link<BLink1>(data0, nullptr);
 
+      // According to the documentation, `data1`/`data2` remain linked to each other.
       etl::unlink<BLink0>(data1, data2);
-      data1.BLink0::clear();
-      data2.BLink0::clear();
 
       CHECK(data0.BLink0::etl_previous == nullptr);
       CHECK(data0.BLink0::etl_next == &data3);
       CHECK(data1.BLink0::etl_previous == nullptr);
-      CHECK(data1.BLink0::etl_next == nullptr);
-      CHECK(data2.BLink0::etl_previous == nullptr);
+      CHECK(data1.BLink0::etl_next == &data2);
+      CHECK(data2.BLink0::etl_previous == &data1);
       CHECK(data2.BLink0::etl_next == nullptr);
       CHECK(data3.BLink0::etl_previous == &data0);
       CHECK(data3.BLink0::etl_next == nullptr);
