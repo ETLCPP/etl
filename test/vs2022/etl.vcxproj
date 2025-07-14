@@ -3317,6 +3317,8 @@
     <ClInclude Include="..\..\include\etl\crc16_maxim.h" />
     <ClInclude Include="..\..\include\etl\crc16_mcrf4xx.h" />
     <ClInclude Include="..\..\include\etl\crc16_modbus.h" />
+    <ClInclude Include="..\..\include\etl\crc16_opensafety_a.h" />
+    <ClInclude Include="..\..\include\etl\crc16_opensafety_b.h" />
     <ClInclude Include="..\..\include\etl\crc16_profibus.h" />
     <ClInclude Include="..\..\include\etl\crc16_riello.h" />
     <ClInclude Include="..\..\include\etl\crc16_t10dif.h" />
@@ -3346,6 +3348,7 @@
     <ClInclude Include="..\..\include\etl\crc8_j1850_zero.h" />
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
     <ClInclude Include="..\..\include\etl\crc8_nrsc5.h" />
+    <ClInclude Include="..\..\include\etl\crc8_opensafety.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
@@ -9295,6 +9298,7 @@
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
     <ClCompile Include="..\test_closure.cpp" />
+    <ClCompile Include="..\test_closure_constexpr.cpp" />
     <ClCompile Include="..\test_const_map.cpp" />
     <ClCompile Include="..\test_const_map_constexpr.cpp" />
     <ClCompile Include="..\test_const_map_ext.cpp" />
@@ -9331,6 +9335,8 @@
     <ClCompile Include="..\test_crc16_m17.cpp" />
     <ClCompile Include="..\test_crc16_maxim.cpp" />
     <ClCompile Include="..\test_crc16_mcrf4xx.cpp" />
+    <ClCompile Include="..\test_crc16_opensafety_a.cpp" />
+    <ClCompile Include="..\test_crc16_opensafety_b.cpp" />
     <ClCompile Include="..\test_crc16_profibus.cpp" />
     <ClCompile Include="..\test_crc16_riello.cpp" />
     <ClCompile Include="..\test_crc16_t10dif.cpp" />
@@ -9361,6 +9367,7 @@
     <ClCompile Include="..\test_crc8_j1850_zero.cpp" />
     <ClCompile Include="..\test_crc8_maxim.cpp" />
     <ClCompile Include="..\test_crc8_nrsc5.cpp" />
+    <ClCompile Include="..\test_crc8_opensafety.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_expected.cpp" />

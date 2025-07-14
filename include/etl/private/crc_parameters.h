@@ -82,6 +82,7 @@ namespace etl
     typedef crc_parameters<uint8_t, 0x1DU, 0xFFU, 0xFFU, false> crc8_j1850_parameters;
     typedef crc_parameters<uint8_t, 0x1DU, 0x00U, 0x00U, false> crc8_j1850_zero_parameters;
     typedef crc_parameters<uint8_t, 0x31U, 0xFFU, 0x00U, false> crc8_nrsc5_parameters;
+    typedef crc_parameters<uint8_t, 0x2FU, 0x00U, 0x00U, false> crc8_opensafety_parameters;
 
     // 16 bit.
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_parameters;
@@ -110,6 +111,8 @@ namespace etl
     typedef crc_parameters<uint16_t, 0x1021U, 0xC6C6U, 0x0000U, true>  crc16_a_parameters;
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_arc_parameters;
     typedef crc_parameters<uint16_t, 0x5935U, 0xFFFFU, 0x0000U, false> crc16_m17_parameters;
+    typedef crc_parameters<uint16_t, 0x5935U, 0x0000U, 0x0000U, false>  crc16_opensafety_a_parameters;
+    typedef crc_parameters<uint16_t, 0x755BU, 0x0000U, 0x0000U, false>  crc16_opensafety_b_parameters;
 
     // 32 bit.
     typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, true>  crc32_parameters;

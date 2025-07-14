@@ -1527,6 +1527,18 @@
     <ClInclude Include="..\..\include\etl\crc8_nrsc5.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_multimap.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_opensafety.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_opensafety_a.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_opensafety_b.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3663,6 +3675,18 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc8_nrsc5.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_closure_constexpr.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_opensafety.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_opensafety_a.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_opensafety_b.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
   </ItemGroup>

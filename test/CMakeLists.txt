@@ -87,6 +87,7 @@ add_executable(etl_tests
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
 	test_closure.cpp
+	test_closure_constexpr.cpp
 	test_compare.cpp
 	test_constant.cpp
 	test_container.cpp
@@ -111,6 +112,8 @@ add_executable(etl_tests
 	test_crc16_maxim.cpp
 	test_crc16_mcrf4xx.cpp
 	test_crc16_modbus.cpp
+	test_crc16_opensafety_a.cpp
+	test_crc16_opensafety_b.cpp
 	test_crc16_profibus.cpp
 	test_crc16_riello.cpp
 	test_crc16_t10dif.cpp
@@ -140,6 +143,7 @@ add_executable(etl_tests
 	test_crc8_j1850_zero.cpp
 	test_crc8_maxim.cpp
 	test_crc8_nrsc5.cpp
+	test_crc8_opensafety.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
 	test_crc8_nrsc5.cpp
