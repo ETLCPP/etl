@@ -368,7 +368,7 @@ namespace etl
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
-    TReturn operator()(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 TReturn operator()(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
@@ -419,7 +419,7 @@ namespace etl
     /// Run time alternative.
     //*************************************************************************
     template <typename TAlternative>
-    TReturn call_or(TAlternative alternative, TParams... args) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const ETL_NOEXCEPT
     {
       if (is_valid())
       {
@@ -436,7 +436,7 @@ namespace etl
     /// Compile time alternative.
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    TReturn call_or(TParams... args) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 TReturn call_or(TParams... args) const ETL_NOEXCEPT
     {
       if (is_valid())
       {

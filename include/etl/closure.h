@@ -71,7 +71,7 @@ namespace etl
     /// \param f    The delegate to be invoked.
     /// \param args The arguments to bind to the delegate.
     //*********************************************************************
-    closure(const delegate_type& f, const TArgs... args)
+    ETL_CONSTEXPR14 closure(const delegate_type& f, const TArgs... args) ETL_NOEXCEPT
       : m_f(f)
       , m_args(args...)
     {
@@ -81,7 +81,7 @@ namespace etl
     /// Invoke the stored delegate with the bound arguments.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    TReturn operator()() const
+    ETL_CONSTEXPR14 TReturn operator()() const ETL_NOEXCEPT
     {
       return execute(etl::index_sequence_for<TArgs...>{});
     }
@@ -94,7 +94,7 @@ namespace etl
     /// \param arg    The new value to bind.
     //*********************************************************************
     template <size_t Index, typename UArg>
-    void bind(UArg arg)
+    ETL_CONSTEXPR14 void bind(UArg arg) ETL_NOEXCEPT
     {
       static_assert(etl::is_convertible<UArg, etl::type_list_type_at_index_t<argument_types, Index>>::value, "Argument is not convertible");
       static_assert(!etl::is_reference<UArg>::value, "Cannot bind reference arguments");
@@ -108,7 +108,7 @@ namespace etl
     /// \param args The new values to bind.
     ///*********************************************************************
     template <typename... UArgs>
-    void bind(UArgs&&... args)
+    ETL_CONSTEXPR14 void bind(UArgs&&... args) ETL_NOEXCEPT
     {
       static_assert(sizeof...(UArgs) == sizeof...(TArgs), "Argument count mismatch");
       bind_impl(etl::make_index_sequence<sizeof...(TArgs)>{}, etl::forward<UArgs>(args)...);
@@ -121,7 +121,7 @@ namespace etl
     /// \param args The new values to bind.
     ///*********************************************************************
     template <size_t... Indexes, typename... UArgs>
-    void bind_impl(etl::index_sequence<Indexes...>, UArgs&&... args)
+    ETL_CONSTEXPR14 void bind_impl(etl::index_sequence<Indexes...>, UArgs&&... args) ETL_NOEXCEPT
     {
       // Expand the pack and call bind<Index>(arg) for each argument
       int dummy[] = {0, (bind<Indexes>(etl::forward<UArgs>(args)), 0)...};
@@ -134,12 +134,12 @@ namespace etl
     /// \return The result of the delegate invocation.
     //*********************************************************************
     template<size_t... Indexes>
-    TReturn execute(etl::index_sequence<Indexes...>) const
+    ETL_CONSTEXPR14 TReturn execute(etl::index_sequence<Indexes...>) const ETL_NOEXCEPT
     {
       return m_f(etl::get<Indexes>(m_args)...);
     }
 
-    delegate_type m_f; ///< The delegate to invoke.
+    delegate_type m_f;           ///< The delegate to invoke.
     etl::tuple<TArgs...> m_args; ///< The bound arguments.
   };
 #else
