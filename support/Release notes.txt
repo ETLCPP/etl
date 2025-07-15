@@ -1,4 +1,19 @@
 ﻿===============================================================================
+20.42.2
+
+Updates:
+Added etl::crc8_opensafety
+Added etl::crc16_opensafety_a and etl::crc16_opensafety_b
+Added etl::crc64_iso
+#1132 Request: Make type_def Methods Noexcept
+
+Fixes:
+#1150 Bug in the void etl::unlink(first, last) for bidirectional links.
+
+Pull Requests:
+#1147 Fix compile error in closure.h by using etl::forward
+
+===============================================================================
 20.42.1
 
 Pull Requests:
