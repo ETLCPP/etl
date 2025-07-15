@@ -127,6 +127,7 @@ namespace etl
 
     // 64 bit.
     typedef crc_parameters<uint64_t, 0x42F0E1EBA9EA3693ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false> crc64_ecma_parameters;
+    typedef crc_parameters<uint64_t, 0x000000000000001BULL, 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, true>  crc64_iso_parameters;
   }
 }
 

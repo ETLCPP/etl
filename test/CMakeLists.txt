@@ -132,6 +132,7 @@ add_executable(etl_tests
 	test_crc32_q.cpp
 	test_crc32_xfer.cpp
 	test_crc64_ecma.cpp
+	test_crc64_iso.cpp
 	test_crc8_ccitt.cpp
 	test_crc8_cdma2000.cpp
 	test_crc8_darc.cpp
