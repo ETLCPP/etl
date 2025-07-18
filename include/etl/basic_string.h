@@ -1358,7 +1358,7 @@ namespace etl
         return first_;
       }
 
-      etl::mem_copy(last_, end(), first_);
+      etl::mem_move(last_, end(), first_);
       size_type n_delete = etl::distance(first_, last_);
 
       current_size -= n_delete;
