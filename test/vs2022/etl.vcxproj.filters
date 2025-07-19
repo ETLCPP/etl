@@ -1527,9 +1527,6 @@
     <ClInclude Include="..\..\include\etl\crc8_nrsc5.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\const_multimap.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\crc8_opensafety.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
@@ -1538,6 +1535,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\crc16_opensafety_b.h">
       <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc64_iso.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_multimap.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3688,6 +3691,9 @@
     </ClCompile>
     <ClCompile Include="..\test_crc16_opensafety_b.cpp">
       <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc64_iso.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
