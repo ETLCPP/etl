@@ -266,7 +266,6 @@ namespace
 
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin));
 
-
       CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin).error());
       CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin).error());
 
