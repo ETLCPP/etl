@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 John Wellbelove
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -255,6 +255,7 @@ namespace
       CHECK_EQUAL(0U, locks.lock_count);
     }
 
+    //*************************************************************************
     TEST(callback_timer_deferred_locked_one_shot_priority)
     {
       locks.clear();

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 John Wellbelove
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -35,7 +35,6 @@ SOFTWARE.
 #include "priority_queue.h"
 #include "delegate.h"
 
-
 namespace etl
 {
   //***************************************************************************
@@ -54,15 +53,22 @@ namespace etl
     typedef icallback_timer_locked::unlock_type   unlock_type;
 
   private:
-      class CallbackNode {
-        public:
-            callback_type callback;
-            uint_least8_t priority;
-            CallbackNode(callback_type &callback_,uint_least8_t priority_) : callback(callback_), priority(priority_) {}
-            bool operator < (const CallbackNode& p) const
-            {
-                return this->priority > p.priority; // comparison was inverted here to easy the code design
-            }
+
+    class CallbackNode 
+    {
+    public:
+
+      CallbackNode(callback_type &callback_,uint_least8_t priority_) : callback(callback_), priority(priority_) 
+      {
+      }
+            
+      bool operator < (const CallbackNode& p) const
+      {
+        return this->priority > p.priority; // comparison was inverted here to easy the code design
+      }
+
+      callback_type callback;
+      uint_least8_t priority;
     };
 
   public:
@@ -83,8 +89,9 @@ namespace etl
       this->set_locks(try_lock_, lock_, unlock_);
     }
 
-    // Implement virtual functions
-
+    //*******************************************
+    /// Handle the tick call
+    //*******************************************
     bool tick(uint32_t count) final
     {
       if (enabled)
@@ -145,24 +152,27 @@ namespace etl
     //*******************************************
     void handle_deferred(void)
     {
-        callback_type work_todo_callback;
-        do
-        {
-            lock();
-            if (handler_queue.empty())
-            {
-                work_todo_callback.clear();
-            }
-            else
-            {
-                CallbackNode &work_todo_callback_node = handler_queue.top();
-                work_todo_callback = work_todo_callback_node.callback;
-                handler_queue.pop();
-            }
-            unlock();
+      callback_type work_todo_callback;
 
-            work_todo_callback.call_if();
-        }while (work_todo_callback.is_valid());
+      do
+      {
+        lock();
+        
+        if (handler_queue.empty())
+        {
+          work_todo_callback.clear();
+        }
+        else
+        {
+          CallbackNode &work_todo_callback_node = handler_queue.top();
+          work_todo_callback = work_todo_callback_node.callback;
+          handler_queue.pop();
+        }
+
+        unlock();
+
+        work_todo_callback.call_if();
+      } while (work_todo_callback.is_valid());
     }
 
     // Overloads
