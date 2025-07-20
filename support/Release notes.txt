@@ -17,6 +17,7 @@ Fix gamma tests (removed integral tests)
 #1151 test failure in i386 in 20.42.1: test_replace_strings in test_string_utilities.c fails
 
 Pull Requests:
+#955  Implements deferred callback timer with optional priority
 #1147 Fix compile error in closure.h by using etl::forward
 
 ===============================================================================
