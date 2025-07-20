@@ -3830,11 +3830,6 @@
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
     <ClInclude Include="..\iterators_for_unit_tests.h" />
-    <ClInclude Include="..\syntax_check\c++03\etl_profile.h" />
-    <ClInclude Include="..\syntax_check\c++11\etl_profile.h" />
-    <ClInclude Include="..\syntax_check\c++14\etl_profile.h" />
-    <ClInclude Include="..\syntax_check\c++17\etl_profile.h" />
-    <ClInclude Include="..\syntax_check\c++20\etl_profile.h" />
     <ClInclude Include="..\unittest++\AssertException.h" />
     <ClInclude Include="..\unittest++\CheckMacros.h" />
     <ClInclude Include="..\unittest++\Checks.h" />
@@ -10703,11 +10698,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC  - No Checks|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
     </Text>
-    <Text Include="..\syntax_check\c++03\CMakeLists.txt" />
-    <Text Include="..\syntax_check\c++11\CMakeLists.txt" />
-    <Text Include="..\syntax_check\c++14\CMakeLists.txt" />
-    <Text Include="..\syntax_check\c++17\CMakeLists.txt" />
-    <Text Include="..\syntax_check\c++20\CMakeLists.txt" />
     <Text Include="..\syntax_check\CMakeLists.txt" />
     <Text Include="..\syntax_check\log.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>

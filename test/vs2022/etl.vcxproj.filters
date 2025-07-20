@@ -1359,21 +1359,6 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\syntax_check\c++03\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++03</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++11\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++14\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++14</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++17\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++17</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++20\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++20</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\diagnostic_stringop_overread_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -1541,6 +1526,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\const_multimap.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
+      <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3692,8 +3680,14 @@
     <ClCompile Include="..\test_crc16_opensafety_b.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\callback_timer_deferred_locked.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_timer_deferred_locked.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_crc64_iso.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\CRC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3881,21 +3875,6 @@
     </Text>
     <Text Include="..\etl_error_handler\log_errors_and_exceptions\CMakeLists.txt">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++03\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++03</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++11\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++11</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++14\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++14</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++17\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++17</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++20\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++20</Filter>
     </Text>
     <Text Include="..\syntax_check\log.txt">
       <Filter>Tests\Syntax Checks\Source</Filter>
