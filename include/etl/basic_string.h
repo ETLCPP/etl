@@ -190,7 +190,7 @@ namespace etl
     /// Gets the current size of the string.
     ///\return The current size of the string.
     //*************************************************************************
-    size_type size() const
+    ETL_CONSTEXPR14 size_type size() const
     {
       return current_size;
     }
@@ -199,7 +199,7 @@ namespace etl
     /// Gets the current size of the string.
     ///\return The current size of the string.
     //*************************************************************************
-    size_type length() const
+    ETL_CONSTEXPR14 size_type length() const
     {
       return current_size;
     }
@@ -208,7 +208,7 @@ namespace etl
     /// Checks the 'empty' state of the string.
     ///\return <b>true</b> if empty.
     //*************************************************************************
-    bool empty() const
+    ETL_CONSTEXPR14 bool empty() const
     {
       return (current_size == 0);
     }
@@ -217,7 +217,7 @@ namespace etl
     /// Checks the 'full' state of the string.
     ///\return <b>true</b> if full.
     //*************************************************************************
-    bool full() const
+    ETL_CONSTEXPR14 bool full() const
     {
       return current_size == CAPACITY;
     }
@@ -226,7 +226,7 @@ namespace etl
     /// Returns the capacity of the string.
     ///\return The capacity of the string.
     //*************************************************************************
-    size_type capacity() const
+    ETL_CONSTEXPR14 size_type capacity() const
     {
       return CAPACITY;
     }
@@ -235,7 +235,7 @@ namespace etl
     /// Returns the maximum possible size of the string.
     ///\return The maximum size of the string.
     //*************************************************************************
-    size_type max_size() const
+    ETL_CONSTEXPR14 size_type max_size() const
     {
       return CAPACITY;
     }
@@ -244,7 +244,7 @@ namespace etl
     /// Returns the remaining capacity.
     ///\return The remaining capacity.
     //*************************************************************************
-    size_type available() const
+    ETL_CONSTEXPR14 size_type available() const
     {
       return max_size() - size();
     }
@@ -253,7 +253,7 @@ namespace etl
     /// Returns whether the string was truncated by the last operation.
     ///\return Whether the string was truncated by the last operation.
     //*************************************************************************
-    bool is_truncated() const
+    ETL_CONSTEXPR14 bool is_truncated() const
     {
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       return flags.test<IS_TRUNCATED>();
@@ -268,7 +268,7 @@ namespace etl
     ///\return Whether the string was truncated by the last operation.
     //*************************************************************************
     ETL_DEPRECATED
-    bool truncated() const
+      ETL_CONSTEXPR14 bool truncated() const
     {
       return is_truncated();
     }
@@ -296,7 +296,7 @@ namespace etl
     //*************************************************************************
     /// Gets the 'secure' state flag.
     //*************************************************************************
-    bool is_secure() const
+    ETL_CONSTEXPR14 bool is_secure() const
     {
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
       return flags.test<CLEAR_AFTER_USE>();
@@ -310,7 +310,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    string_base(size_type max_size_)
+    ETL_CONSTEXPR14 string_base(size_type max_size_)
       : current_size(0)
       , CAPACITY(max_size_)
     {
@@ -329,7 +329,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~string_base()
+    ETL_CONSTEXPR14 ~string_base()
     {
     }
 
@@ -378,7 +378,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the string.
     ///\return A const iterator to the beginning of the string.
     //*********************************************************************
-    const_iterator begin() const
+    ETL_CONSTEXPR14 const_iterator begin() const
     {
       return &p_buffer[0];
     }
@@ -396,7 +396,7 @@ namespace etl
     /// Returns a const_iterator to the end of the string.
     ///\return A const iterator to the end of the string.
     //*********************************************************************
-    const_iterator end() const
+    ETL_CONSTEXPR14 const_iterator end() const
     {
       return &p_buffer[current_size];
     }
@@ -405,7 +405,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the string.
     ///\return A const iterator to the beginning of the string.
     //*********************************************************************
-    const_iterator cbegin() const
+    ETL_CONSTEXPR14 const_iterator cbegin() const
     {
       return &p_buffer[0];
     }
@@ -414,7 +414,7 @@ namespace etl
     /// Returns a const_iterator to the end of the string.
     ///\return A const iterator to the end of the string.
     //*********************************************************************
-    const_iterator cend() const
+    ETL_CONSTEXPR14 const_iterator cend() const
     {
       return &p_buffer[current_size];
     }
@@ -432,7 +432,7 @@ namespace etl
     /// Returns a const reverse iterator to the reverse beginning of the string.
     ///\return Const iterator to the reverse beginning of the string.
     //*********************************************************************
-    const_reverse_iterator rbegin() const
+    ETL_CONSTEXPR14 const_reverse_iterator rbegin() const
     {
       return const_reverse_iterator(end());
     }
@@ -441,7 +441,7 @@ namespace etl
     /// Returns a reverse iterator to the end + 1 of the string.
     ///\return Reverse iterator to the end + 1 of the string.
     //*********************************************************************
-    reverse_iterator rend()
+    ETL_CONSTEXPR14 reverse_iterator rend()
     {
       return reverse_iterator(begin());
     }
@@ -450,7 +450,7 @@ namespace etl
     /// Returns a const reverse iterator to the end + 1 of the string.
     ///\return Const reverse iterator to the end + 1 of the string.
     //*********************************************************************
-    const_reverse_iterator rend() const
+    ETL_CONSTEXPR14 const_reverse_iterator rend() const
     {
       return const_reverse_iterator(begin());
     }
@@ -459,7 +459,7 @@ namespace etl
     /// Returns a const reverse iterator to the reverse beginning of the string.
     ///\return Const reverse iterator to the reverse beginning of the string.
     //*********************************************************************
-    const_reverse_iterator crbegin() const
+    ETL_CONSTEXPR14 const_reverse_iterator crbegin() const
     {
       return const_reverse_iterator(cend());
     }
@@ -468,7 +468,7 @@ namespace etl
     /// Returns a const reverse iterator to the end + 1 of the string.
     ///\return Const reverse iterator to the end + 1 of the string.
     //*********************************************************************
-    const_reverse_iterator crend() const
+    ETL_CONSTEXPR14 const_reverse_iterator crend() const
     {
       return const_reverse_iterator(cbegin());
     }
@@ -568,7 +568,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_type i) const
+    ETL_CONSTEXPR14 const_reference operator [](size_type i) const
     {
       return p_buffer[i];
     }
@@ -591,7 +591,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference at(size_type i) const
+    ETL_CONSTEXPR14 const_reference at(size_type i) const
     {
       ETL_ASSERT(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
@@ -610,7 +610,7 @@ namespace etl
     /// Returns a const reference to the first element.
     ///\return A const reference to the first element.
     //*********************************************************************
-    const_reference front() const
+    ETL_CONSTEXPR14 const_reference front() const
     {
       return p_buffer[0];
     }
@@ -628,7 +628,7 @@ namespace etl
     /// Returns a const reference to the last element.
     ///\return A const reference to the last element.
     //*********************************************************************
-    const_reference back() const
+    ETL_CONSTEXPR14 const_reference back() const
     {
       return p_buffer[current_size - 1];
     }
@@ -664,7 +664,7 @@ namespace etl
     /// Returns a const pointer to the beginning of the string data.
     ///\return A const pointer to the beginning of the string data.
     //*********************************************************************
-    const_pointer data_end() const
+    ETL_CONSTEXPR14 const_pointer data_end() const
     {
       return p_buffer + current_size;
     }
@@ -1371,7 +1371,7 @@ namespace etl
     //*********************************************************************
     /// Return a pointer to a C string.
     //*********************************************************************
-    const_pointer c_str() const
+    ETL_CONSTEXPR14 const_pointer c_str() const
     {
       return p_buffer;
     }
@@ -1382,7 +1382,7 @@ namespace etl
     ///\param count The number of characters to copy.
     ///\param pos   The position to start copying from.
     //*********************************************************************
-    size_type copy(pointer dest, size_type count, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type copy(pointer dest, size_type count, size_type pos = 0) const
     {
       if (pos < size())
       {
@@ -1421,7 +1421,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type find(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type find(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
     {
       return find_impl(view.begin(), view.end(), view.size(), pos);
     }
@@ -1431,7 +1431,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find(const_pointer s, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type find(const_pointer s, size_type pos = 0) const
     {
       size_t sz = etl::strlen(s);
 
@@ -1444,7 +1444,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_type find(const_pointer s, size_type pos, size_type n) const
+    ETL_CONSTEXPR14 size_type find(const_pointer s, size_type pos, size_type n) const
     {
       size_t sz = etl::strlen(s);
 
@@ -1475,7 +1475,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type rfind(const ibasic_string<T>& str, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(const ibasic_string<T>& str, size_type position = npos) const
     {
       return rfind_impl(str.rbegin(), str.rend(), str.size(), position);
     }
@@ -1496,7 +1496,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type rfind(const_pointer s, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(const_pointer s, size_type position = npos) const
     {
       size_type len = etl::strlen(s);
 
@@ -1511,7 +1511,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type rfind(const_pointer s, size_type position, size_type length_) const
+    ETL_CONSTEXPR14 size_type rfind(const_pointer s, size_type position, size_type length_) const
     {
       const_reverse_iterator srbegin(s + length_);
       const_reverse_iterator srend(s);
@@ -1524,7 +1524,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type rfind(T c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(T c, size_type position = npos) const
     {
       if (position >= size())
       {
@@ -1548,7 +1548,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is within this string
     //*********************************************************************
-    bool contains(const etl::ibasic_string<T>& str) const 
+    ETL_CONSTEXPR14 bool contains(const etl::ibasic_string<T>& str) const 
     {
       return find(str) != npos;
     }
@@ -1557,7 +1557,7 @@ namespace etl
     /// Checks that the view is within this string
     //*********************************************************************
     template <typename TOtherTraits>
-    bool contains(const etl::basic_string_view<T, TOtherTraits>& view) const 
+    ETL_CONSTEXPR14 bool contains(const etl::basic_string_view<T, TOtherTraits>& view) const 
     {
       return find(view) != npos;
     }
@@ -1565,7 +1565,7 @@ namespace etl
     //*********************************************************************
     /// Checks that text is within this string
     //*********************************************************************
-    bool contains(const_pointer s) const 
+    ETL_CONSTEXPR14 bool contains(const_pointer s) const 
     {
       return find(s) != npos;
     }
@@ -1573,7 +1573,7 @@ namespace etl
     //*********************************************************************
     /// Checks that character is within this string
     //*********************************************************************
-    bool contains(value_type c) const 
+    ETL_CONSTEXPR14 bool contains(value_type c) const 
     {
       return find(c) != npos;
     }
@@ -1581,7 +1581,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is the start of this string
     //*********************************************************************
-    bool starts_with(const etl::ibasic_string<T>& str) const 
+    ETL_CONSTEXPR14 bool starts_with(const etl::ibasic_string<T>& str) const 
     {
       return compare(0, str.size(), str) == 0;
     }
@@ -1590,7 +1590,7 @@ namespace etl
     /// Checks that the view is the start of this string
     //*********************************************************************
     template <typename TOtherTraits>
-    bool starts_with(const etl::basic_string_view<T, TOtherTraits>& view) const 
+    ETL_CONSTEXPR14 bool starts_with(const etl::basic_string_view<T, TOtherTraits>& view) const 
     {
       return compare(0, view.size(), view) == 0;
     }
@@ -1598,7 +1598,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is the start of this string
     //*********************************************************************
-    bool starts_with(const_pointer s) const 
+    ETL_CONSTEXPR14 bool starts_with(const_pointer s) const 
     {
       size_t len = etl::strlen(s);
 
@@ -1608,7 +1608,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the character is the start of this string
     //*********************************************************************
-    bool starts_with(value_type c) const 
+    ETL_CONSTEXPR14 bool starts_with(value_type c) const 
     {
       return !empty() && (front() == c);
     }
@@ -1616,7 +1616,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is the end of this string
     //*********************************************************************
-    bool ends_with(const etl::ibasic_string<T>& str) const 
+    ETL_CONSTEXPR14 bool ends_with(const etl::ibasic_string<T>& str) const 
     {
       if (str.size() > size()) 
       {
@@ -1630,7 +1630,7 @@ namespace etl
     /// Checks that the view is the end of this string
     //*********************************************************************
     template <typename TOtherTraits>
-    bool ends_with(const etl::basic_string_view<T, TOtherTraits>& view) const 
+    ETL_CONSTEXPR14 bool ends_with(const etl::basic_string_view<T, TOtherTraits>& view) const 
     {
       if (view.size() > size()) 
       {
@@ -1643,7 +1643,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the string is the end of this string
     //*********************************************************************
-    bool ends_with(const_pointer s) const 
+    ETL_CONSTEXPR14 bool ends_with(const_pointer s) const 
     {
       size_t len = etl::strlen(s);
 
@@ -1658,7 +1658,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the character is the end of this string
     //*********************************************************************
-    bool ends_with(value_type c) const 
+    ETL_CONSTEXPR14 bool ends_with(value_type c) const 
     {
       return !empty() && (back() == c);
     }
@@ -1949,7 +1949,7 @@ namespace etl
     //*************************************************************************
     /// Compare with string.
     //*************************************************************************
-    int compare(const ibasic_string& str) const
+    ETL_CONSTEXPR14 int compare(const ibasic_string& str) const
     {
       return compare(p_buffer,
                      p_buffer + size(),
@@ -1961,7 +1961,7 @@ namespace etl
     /// Compare with etl::basic_string_view.
     //*************************************************************************
     template <typename TOtherTraits>
-    int compare(const etl::basic_string_view<T, TOtherTraits>& view) const
+    ETL_CONSTEXPR14 int compare(const etl::basic_string_view<T, TOtherTraits>& view) const
     {
       return compare(p_buffer,
                      p_buffer + size(),
@@ -1972,7 +1972,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string.
     //*************************************************************************
-    int compare(size_type position, size_type length_, const ibasic_string& str) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const ibasic_string& str) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
 
@@ -1989,7 +1989,7 @@ namespace etl
     /// Compare position / length with etl::basic_string_view.
     //*************************************************************************
     template <typename TOtherTraits>
-    int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -2000,7 +2000,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with string / subposition / sublength.
     //*************************************************************************
-    int compare(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= str.size(), ETL_ERROR(string_out_of_bounds));
@@ -2019,7 +2019,7 @@ namespace etl
     /// Compare position / length with etl::basic_string_view. / subposition / sublength.
     //*************************************************************************
     template <typename TOtherTraits>
-    int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view, size_type subposition, size_type sublength) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view, size_type subposition, size_type sublength) const
     {
       ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
       ETL_ASSERT(subposition <= view.size(), ETL_ERROR(string_out_of_bounds));
@@ -2037,7 +2037,7 @@ namespace etl
     //*************************************************************************
     ///  Compare with C string
     //*************************************************************************
-    int compare(const value_type* s) const
+    ETL_CONSTEXPR14 int compare(const value_type* s) const
     {
       return compare(p_buffer,
                      p_buffer + size(),
@@ -2048,7 +2048,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string.
     //*************************************************************************
-    int compare(size_type position, size_type length_, const_pointer s) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const_pointer s) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -2059,7 +2059,7 @@ namespace etl
     //*************************************************************************
     /// Compare position / length with C string / n.
     //*************************************************************************
-    int compare(size_type position, size_type length_, const_pointer s, size_type n) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type length_, const_pointer s, size_type n) const
     {
       return compare(p_buffer + position,
                      p_buffer + position + length_,
@@ -2072,7 +2072,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_first_of(const ibasic_string<T>& str, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(const ibasic_string<T>& str, size_type position = 0) const
     {
       return find_first_of(str.c_str(), position, str.size());
     }
@@ -2082,7 +2082,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_first_of(const_pointer s, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(const_pointer s, size_type position = 0) const
     {
       return find_first_of(s, position, etl::strlen(s));
     }
@@ -2093,7 +2093,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type find_first_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = 0) const
     {
       return find_first_of(view.data(), position, view.size());
     }
@@ -2104,7 +2104,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_type find_first_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_first_of(const_pointer s, size_type position, size_type n) const
     {
       if (position < size())
       {
@@ -2128,7 +2128,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_first_of(value_type c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(value_type c, size_type position = 0) const
     {
       if (position < size())
       {
@@ -2149,7 +2149,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_last_of(const ibasic_string<T>& str, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(const ibasic_string<T>& str, size_type position = npos) const
     {
       return find_last_of(str.c_str(), position, str.size());
     }
@@ -2159,7 +2159,7 @@ namespace etl
     ///\param s   Pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_last_of(const_pointer s, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(const_pointer s, size_type position = npos) const
     {
       return find_last_of(s, position, etl::strlen(s));
     }
@@ -2170,7 +2170,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type find_last_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = npos) const
     {
       return find_last_of(view.data(), position, view.size());
     }
@@ -2181,7 +2181,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_type find_last_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_last_of(const_pointer s, size_type position, size_type n) const
     {
       if (empty())
       {
@@ -2214,7 +2214,7 @@ namespace etl
     ///\param c   The character to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_last_of(value_type c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(value_type c, size_type position = npos) const
     {
       if (empty())
       {
@@ -2244,7 +2244,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_first_not_of(const ibasic_string<T>& str, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const ibasic_string<T>& str, size_type position = 0) const
     {
       return find_first_not_of(str.c_str(), position, str.size());
     }
@@ -2254,7 +2254,7 @@ namespace etl
     ///\param s   Pointer to the content to not find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_first_not_of(const_pointer s, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const_pointer s, size_type position = 0) const
     {
       return find_first_not_of(s, position, etl::strlen(s));
     }
@@ -2265,7 +2265,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type find_first_not_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = 0) const
     {
       return find_first_not_of(view.data(), position, view.size());
     }
@@ -2276,7 +2276,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to search for.
     //*********************************************************************
-    size_type find_first_not_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const_pointer s, size_type position, size_type n) const
     {
       if (position < size())
       {
@@ -2307,7 +2307,7 @@ namespace etl
     ///\param c   The character to not find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_first_not_of(value_type c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(value_type c, size_type position = 0) const
     {
       if (position < size())
       {
@@ -2328,7 +2328,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_last_not_of(const ibasic_string<T>& str, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const ibasic_string<T>& str, size_type position = npos) const
     {
       return find_last_not_of(str.c_str(), position, str.size());
     }
@@ -2338,7 +2338,7 @@ namespace etl
     ///\param s   The pointer to the content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find_last_not_of(const_pointer s, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const_pointer s, size_type position = npos) const
     {
       return find_last_not_of(s, position, etl::strlen(s));
     }
@@ -2349,7 +2349,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type find_last_not_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const etl::basic_string_view<T, TOtherTraits>& view, size_type position = npos) const
     {
       return find_last_not_of(view.data(), position, view.size());
     }
@@ -2360,7 +2360,7 @@ namespace etl
     ///\param pos The position to start searching from.
     ///\param n   The number of characters to use.
     //*********************************************************************
-    size_type find_last_not_of(const_pointer s, size_type position, size_type n) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const_pointer s, size_type position, size_type n) const
     {
       if (empty())
       {
@@ -2398,7 +2398,7 @@ namespace etl
     //*********************************************************************
     //
     //*********************************************************************
-    size_type find_last_not_of(value_type c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(value_type c, size_type position = npos) const
     {
       if (empty())
       {
@@ -2536,7 +2536,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ibasic_string(T* p_buffer_, size_type MAX_SIZE_)
+    ETL_CONSTEXPR14 ibasic_string(T* p_buffer_, size_type MAX_SIZE_)
       : string_base(MAX_SIZE_),
         p_buffer(p_buffer_)
     {
@@ -2545,7 +2545,7 @@ namespace etl
     //*********************************************************************
     /// Initialise the string.
     //*********************************************************************
-    void initialise()
+    ETL_CONSTEXPR14 void initialise()
     {
       current_size = 0U;
       p_buffer[0] = 0;
@@ -2567,8 +2567,8 @@ namespace etl
     //*************************************************************************
     /// Compare helper function
     //*************************************************************************
-    static int compare(const_pointer first1, const_pointer last1, 
-                       const_pointer first2, const_pointer last2)
+    ETL_CONSTEXPR14 static int compare(const_pointer first1, const_pointer last1, 
+                                       const_pointer first2, const_pointer last2)
     {
       typedef typename etl::make_unsigned<value_type>::type type;
 
@@ -2644,7 +2644,7 @@ namespace etl
 #else
   protected:
 #endif
-    ~ibasic_string()
+    ETL_CONSTEXPR14 ~ibasic_string()
     {
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
       if (is_secure())
@@ -2659,7 +2659,7 @@ namespace etl
     //*************************************************************************
     /// Convert from const_iterator to iterator
     //*************************************************************************
-    iterator to_iterator(const_iterator itr) const
+    ETL_CONSTEXPR14 iterator to_iterator(const_iterator itr) const
     {
       return const_cast<iterator>(itr);
     }
@@ -2782,7 +2782,7 @@ namespace etl
     /// Common implementation for 'find'.
     //*************************************************************************
     template <typename TIterator>
-    size_type find_impl(TIterator first, TIterator last, size_type sz, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type find_impl(TIterator first, TIterator last, size_type sz, size_type pos = 0) const
     {
       if ((pos + sz) > size())
       {
@@ -2805,7 +2805,7 @@ namespace etl
     /// Common implementation for 'rfind'.
     //*************************************************************************
     template <typename TIterator>
-    size_type rfind_impl(TIterator rfirst, TIterator rlast, size_type sz, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type rfind_impl(TIterator rfirst, TIterator rlast, size_type sz, size_type pos = 0) const
     {
       if (sz > size())
       {
