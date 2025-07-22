@@ -9331,6 +9331,7 @@
     <ClCompile Include="..\test_const_set_constexpr.cpp" />
     <ClCompile Include="..\test_const_set_ext.cpp" />
     <ClCompile Include="..\test_const_set_ext_constexpr.cpp" />
+    <ClCompile Include="..\test_const_string_char.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
