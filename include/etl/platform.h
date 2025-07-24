@@ -478,6 +478,7 @@ SOFTWARE.
     defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS) || \
     defined(__STDC_NO_ATOMICS__)
   #define ETL_HAS_ATOMIC 0
+  #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
 #else
   #if ((ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
         defined(ETL_COMPILER_ARM5)  || \
