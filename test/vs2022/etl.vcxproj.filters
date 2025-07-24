@@ -3689,6 +3689,9 @@
     <ClCompile Include="..\test_crc64_iso.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_const_string_char.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
