@@ -3683,6 +3683,9 @@
     <ClCompile Include="..\test_crc64_iso.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_const_string_char.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_delegate_observable.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
