@@ -3297,6 +3297,7 @@
     <ClInclude Include="..\..\include\etl\const_multimap.h" />
     <ClInclude Include="..\..\include\etl\const_multiset.h" />
     <ClInclude Include="..\..\include\etl\const_set.h" />
+    <ClInclude Include="..\..\include\etl\const_string.h" />
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />

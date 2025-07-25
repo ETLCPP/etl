@@ -280,6 +280,52 @@ namespace
     TEST_FIXTURE(SetupFixture, test_compare_functions)
     {
       static constexpr Text text("Hello World");
+      static constexpr Text text_same("Hello World");
+      static constexpr Text text_less("Hello Wnrld");
+      static constexpr Text text_greater("Hello Wprld");
+      static constexpr Text text_less_length("Hello Worl");
+      static constexpr Text text_greater_length("Hello World!");
+
+      static constexpr auto text_compare_with_same = text.compare(text_same);
+      CHECK_EQUAL(0, text_compare_with_same);
+
+      static constexpr auto text_compare_with_less = text.compare(text_less);
+      CHECK_EQUAL(1, text_compare_with_less);
+
+      static constexpr auto text_compare_with_greater = text.compare(text_greater);
+      CHECK_EQUAL(-1, text_compare_with_greater);
+
+      static constexpr auto text_compare_with_less_length = text.compare(text_less_length);
+      CHECK_EQUAL(1, text_compare_with_less_length);
+
+      static constexpr auto text_compare_with_greater_length = text.compare(text_greater_length);
+      CHECK_EQUAL(-1, text_compare_with_greater_length);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_operators)
+    {
+      static constexpr Text text("Hello World");
+      static constexpr Text text_same("Hello World");
+      static constexpr Text text_less("Hello Wnrld");
+      static constexpr Text text_greater("Hello Wprld");
+      static constexpr Text text_less_length("Hello Worl");
+      static constexpr Text text_greater_length("Hello World!");
+
+      //static constexpr bool text_compare_with_same = (text == text_same);
+      //CHECK_TRUE(text_compare_with_same);
+
+      //static constexpr auto text_compare_with_less = text.compare(text_less);
+      //CHECK_EQUAL(1, text_compare_with_less);
+
+      //static constexpr auto text_compare_with_greater = text.compare(text_greater);
+      //CHECK_EQUAL(-1, text_compare_with_greater);
+
+      //static constexpr auto text_compare_with_less_length = text.compare(text_less_length);
+      //CHECK_EQUAL(1, text_compare_with_less_length);
+
+      //static constexpr auto text_compare_with_greater_length = text.compare(text_greater_length);
+      //CHECK_EQUAL(-1, text_compare_with_greater_length);
     }
   };
 }

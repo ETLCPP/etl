@@ -28,14 +28,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_STRING_INCLUDED
-#define ETL_STRING_INCLUDED
+#ifndef ETL_CONST_STRING_INCLUDED
+#define ETL_CONST_STRING_INCLUDED
 
 #include "platform.h"
-#include "basic_string.h"
-#include "string_view.h"
+#include "string.h"
 #include "hash.h"
-#include "initializer_list.h"
 
 #include <ctype.h>
 
@@ -43,21 +41,6 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USING_CPP11
-  inline namespace literals
-  {
-    inline namespace string_literals
-    {
-      inline constexpr etl::string_view operator ""_sv(const char* str, size_t length) noexcept
-      {
-        return etl::string_view{ str, length };
-      }
-    }
-  }
-#endif
-
-  typedef etl::ibasic_string<char> istring;
-
   //***************************************************************************
   /// A string implementation that uses a fixed size external buffer.
   ///\ingroup string
