@@ -219,8 +219,8 @@ namespace etl
     /// Copy constructor
     /// From fixed extent span.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<N == Extent, void>::type* = 0) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(const etl::span<U, Size>& other, typename etl::enable_if<Size == Extent, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(other.data())
     {
     }
@@ -229,8 +229,8 @@ namespace etl
     /// Copy constructor
     /// From dynamic extent span.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR14 span(const etl::span<U, N>& other, typename etl::enable_if<N == etl::dynamic_extent, void>::type* = 0)
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR14 span(const etl::span<U, Size>& other, typename etl::enable_if<Size == etl::dynamic_extent, void>::type* = 0)
       : pbegin(other.data())
     {
       ETL_ASSERT(other.size() == Extent, ETL_ERROR(span_size_mismatch));
@@ -657,8 +657,8 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::span<U, N>& other) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(const etl::span<U, Size>& other) ETL_NOEXCEPT
       : pbegin(other.data())
       , pend(other.data() + other.size())
     {
@@ -1082,26 +1082,26 @@ namespace etl
   span(const TIterator begin_, const TSize size_)
     ->span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
 
-  template <typename T, size_t N>
-  span(T(&)[N])
-    -> span<T, N>;
+  template <typename T, size_t Size>
+  span(T(&)[Size])
+    -> span<T, Size>;
 
-  template <typename T, size_t N>
-  span(etl::array<T, N>&)
-    -> span<T, N>;
+  template <typename T, size_t Size>
+  span(etl::array<T, Size>&)
+    -> span<T, Size>;
 
-  template <typename T, size_t N>
-  span(const etl::array<T, N>&)
-    -> span<const T, N>;
+  template <typename T, size_t Size>
+  span(const etl::array<T, Size>&)
+    -> span<const T, Size>;
 
 #if ETL_USING_STL && ETL_USING_CPP11
-  template <typename T, size_t N>
-  span(std::array<T, N>&)
-    ->span<T, N>;
+  template <typename T, size_t Size>
+  span(std::array<T, Size>&)
+    ->span<T, Size>;
 
-  template <typename T, size_t N>
-  span(const std::array<T, N>&)
-    ->span<const T, N>;
+  template <typename T, size_t Size>
+  span(const std::array<T, Size>&)
+    ->span<const T, Size>;
 #endif
 #endif 
 
@@ -1123,22 +1123,22 @@ namespace etl
   //*************************************************************************
   /// Obtains a view to the byte representation of the elements of the span s.
   //*************************************************************************
-  template <class T, size_t N>
-  span<const byte, (N == etl::dynamic_extent) ? (etl::dynamic_extent) : (N * sizeof(T))> 
-    as_bytes(span<T, N> s) ETL_NOEXCEPT
+  template <class T, size_t Size>
+  span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))> 
+    as_bytes(span<T, Size> s) ETL_NOEXCEPT
   {
-    return span<const byte, (N == etl::dynamic_extent) ? (etl::dynamic_extent) : (N * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
+    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
   }
 
   //*************************************************************************
   /// Obtains a view to the byte representation of the elements of the span s.
   //*************************************************************************
-  template <class T, size_t N>
-  span<byte, (N == etl::dynamic_extent) ? (etl::dynamic_extent) : (N * sizeof(T))> 
-    as_writable_bytes(span<T, N> s) ETL_NOEXCEPT
+  template <class T, size_t Size>
+  span<byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))> 
+    as_writable_bytes(span<T, Size> s) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(!etl::is_const<T>::value, "span<T> must be of non-const type");
-    return span<byte, (N == etl::dynamic_extent) ? (etl::dynamic_extent) : (N * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
+    return span<byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
   }
 }
 

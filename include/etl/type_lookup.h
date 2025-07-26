@@ -57,7 +57,7 @@ namespace etl
 
     enum
     {
-      ID = ID_
+      Id = ID_
     };
   };
 
@@ -84,19 +84,19 @@ namespace etl
     struct nulltype {};
 
     // For N type pairs.
-    template <size_t ID, typename T1, typename... TRest>
+    template <size_t Id, typename T1, typename... TRest>
     struct type_from_id_helper
     {
-      using type = typename etl::conditional<ID == T1::ID,
+      using type = typename etl::conditional<Id == T1::Id,
                                              typename T1::type,
-                                             typename type_from_id_helper<ID, TRest...>::type>::type;
+                                             typename type_from_id_helper<Id, TRest...>::type>::type;
     };
 
     // Specialisation for 1 type pair.
-    template <size_t ID, typename T1>
-    struct type_from_id_helper<ID, T1>
+    template <size_t Id, typename T1>
+    struct type_from_id_helper<Id, T1>
     {
-      using type = typename etl::conditional<ID == T1::ID,
+      using type = typename etl::conditional<Id == T1::Id,
                                              typename T1::type,
                                              nulltype>::type;
     };
@@ -106,16 +106,16 @@ namespace etl
     //************************************
     // type_from_id
     //************************************
-    template <int ID>
+    template <int Id>
     struct type_from_id
     {
-      using type = typename type_from_id_helper<ID, TTypes...>::type;
+      using type = typename type_from_id_helper<Id, TTypes...>::type;
 
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
 
-    template <int ID>
-    using type_from_id_t = typename type_from_id<ID>::type;
+    template <int Id>
+    using type_from_id_t = typename type_from_id<Id>::type;
 
   private:
 
@@ -125,14 +125,14 @@ namespace etl
     template <typename T, typename T1, typename... TRest>
     struct id_from_type_helper
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::ID) : id_from_type_helper<T, TRest...>::value;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::Id) : id_from_type_helper<T, TRest...>::value;
     };
 
     // Specialisation for 1 type pair.
     template <typename T, typename T1>
     struct id_from_type_helper<T, T1>
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::ID) : UNKNOWN;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::Id) : UNKNOWN;
     };
 
   public:
@@ -239,26 +239,26 @@ namespace etl
   public:
 
     //************************************
-    template <int ID>
+    template <int Id>
     struct type_from_id
     {
       typedef 
-            typename etl::conditional<ID == T1::ID, typename T1::type,
-            typename etl::conditional<ID == T2::ID, typename T2::type,
-            typename etl::conditional<ID == T3::ID, typename T3::type,
-            typename etl::conditional<ID == T4::ID, typename T4::type,
-            typename etl::conditional<ID == T5::ID, typename T5::type,
-            typename etl::conditional<ID == T6::ID, typename T6::type,
-            typename etl::conditional<ID == T7::ID, typename T7::type,
-            typename etl::conditional<ID == T8::ID, typename T8::type,
-            typename etl::conditional<ID == T9::ID, typename T9::type,
-            typename etl::conditional<ID == T10::ID, typename T10::type,
-            typename etl::conditional<ID == T11::ID, typename T11::type,
-            typename etl::conditional<ID == T12::ID, typename T12::type,
-            typename etl::conditional<ID == T13::ID, typename T13::type,
-            typename etl::conditional<ID == T14::ID, typename T14::type,
-            typename etl::conditional<ID == T15::ID, typename T15::type,
-            typename etl::conditional<ID == T16::ID, typename T16::type,
+            typename etl::conditional<Id == T1::Id, typename T1::type,
+            typename etl::conditional<Id == T2::Id, typename T2::type,
+            typename etl::conditional<Id == T3::Id, typename T3::type,
+            typename etl::conditional<Id == T4::Id, typename T4::type,
+            typename etl::conditional<Id == T5::Id, typename T5::type,
+            typename etl::conditional<Id == T6::Id, typename T6::type,
+            typename etl::conditional<Id == T7::Id, typename T7::type,
+            typename etl::conditional<Id == T8::Id, typename T8::type,
+            typename etl::conditional<Id == T9::Id, typename T9::type,
+            typename etl::conditional<Id == T10::Id, typename T10::type,
+            typename etl::conditional<Id == T11::Id, typename T11::type,
+            typename etl::conditional<Id == T12::Id, typename T12::type,
+            typename etl::conditional<Id == T13::Id, typename T13::type,
+            typename etl::conditional<Id == T14::Id, typename T14::type,
+            typename etl::conditional<Id == T15::Id, typename T15::type,
+            typename etl::conditional<Id == T16::Id, typename T16::type,
             etl::null_type<0> >::type>::type>::type>::type>
                               ::type>::type>::type>::type>
                               ::type>::type>::type>::type>
@@ -279,22 +279,22 @@ namespace etl
       enum
       {
         value =
-          (unsigned int) etl::is_same<T, typename T1::type>::value ? (unsigned int)T1::ID :
-          (unsigned int) etl::is_same<T, typename T2::type>::value ? (unsigned int)T2::ID :
-          (unsigned int) etl::is_same<T, typename T3::type>::value ? (unsigned int)T3::ID :
-          (unsigned int) etl::is_same<T, typename T4::type>::value ? (unsigned int)T4::ID :
-          (unsigned int) etl::is_same<T, typename T5::type>::value ? (unsigned int)T5::ID :
-          (unsigned int) etl::is_same<T, typename T6::type>::value ? (unsigned int)T6::ID :
-          (unsigned int) etl::is_same<T, typename T7::type>::value ? (unsigned int)T7::ID :
-          (unsigned int) etl::is_same<T, typename T8::type>::value ? (unsigned int)T8::ID :
-          (unsigned int) etl::is_same<T, typename T9::type>::value ? (unsigned int)T9::ID :
-          (unsigned int) etl::is_same<T, typename T10::type>::value ? (unsigned int)T10::ID :
-          (unsigned int) etl::is_same<T, typename T11::type>::value ? (unsigned int)T11::ID :
-          (unsigned int) etl::is_same<T, typename T12::type>::value ? (unsigned int)T12::ID :
-          (unsigned int) etl::is_same<T, typename T13::type>::value ? (unsigned int)T13::ID :
-          (unsigned int) etl::is_same<T, typename T14::type>::value ? (unsigned int)T14::ID :
-          (unsigned int) etl::is_same<T, typename T15::type>::value ? (unsigned int)T15::ID :
-          (unsigned int) etl::is_same<T, typename T16::type>::value ? (unsigned int)T16::ID :
+          (unsigned int) etl::is_same<T, typename T1::type>::value ? (unsigned int)T1::Id :
+          (unsigned int) etl::is_same<T, typename T2::type>::value ? (unsigned int)T2::Id :
+          (unsigned int) etl::is_same<T, typename T3::type>::value ? (unsigned int)T3::Id :
+          (unsigned int) etl::is_same<T, typename T4::type>::value ? (unsigned int)T4::Id :
+          (unsigned int) etl::is_same<T, typename T5::type>::value ? (unsigned int)T5::Id :
+          (unsigned int) etl::is_same<T, typename T6::type>::value ? (unsigned int)T6::Id :
+          (unsigned int) etl::is_same<T, typename T7::type>::value ? (unsigned int)T7::Id :
+          (unsigned int) etl::is_same<T, typename T8::type>::value ? (unsigned int)T8::Id :
+          (unsigned int) etl::is_same<T, typename T9::type>::value ? (unsigned int)T9::Id :
+          (unsigned int) etl::is_same<T, typename T10::type>::value ? (unsigned int)T10::Id :
+          (unsigned int) etl::is_same<T, typename T11::type>::value ? (unsigned int)T11::Id :
+          (unsigned int) etl::is_same<T, typename T12::type>::value ? (unsigned int)T12::Id :
+          (unsigned int) etl::is_same<T, typename T13::type>::value ? (unsigned int)T13::Id :
+          (unsigned int) etl::is_same<T, typename T14::type>::value ? (unsigned int)T14::Id :
+          (unsigned int) etl::is_same<T, typename T15::type>::value ? (unsigned int)T15::Id :
+          (unsigned int) etl::is_same<T, typename T16::type>::value ? (unsigned int)T16::Id :
           (unsigned int) UNKNOWN
       };
 

@@ -534,11 +534,11 @@ namespace etl
   /// Template deduction guides.
   //*************************************************************************
 #if ETL_USING_CPP17
-  template <typename TElements, size_t N>
-  const_multimap_ext(const etl::span<TElements, N>&) -> const_multimap_ext<typename TElements::first_type, typename TElements::second_type>;
+  template <typename TElements, size_t Size>
+  const_multimap_ext(const etl::span<TElements, Size>&) -> const_multimap_ext<typename TElements::first_type, typename TElements::second_type>;
 
-  template <typename TElements, size_t N>
-  const_multimap_ext(const TElements(&)[N]) -> const_multimap_ext<typename TElements::first_type, typename TElements::second_type>;
+  template <typename TElements, size_t Size>
+  const_multimap_ext(const TElements(&)[Size]) -> const_multimap_ext<typename TElements::first_type, typename TElements::second_type>;
 #endif
 
   //*************************************************************************

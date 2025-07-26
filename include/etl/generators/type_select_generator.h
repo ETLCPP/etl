@@ -66,40 +66,40 @@ namespace etl
   private:
 
     //***********************************
-    template <size_t ID, size_t N, typename T1, typename... TRest>
+    template <size_t Id, size_t Index, typename T1, typename... TRest>
     struct type_select_helper
     {
-      using type = typename etl::conditional<ID == N,
+      using type = typename etl::conditional<Id == Index,
                                              T1,
-                                             typename type_select_helper<ID, N + 1, TRest...>::type>::type;
+                                             typename type_select_helper<Id, Index + 1, TRest...>::type>::type;
     };
 
     //***********************************
-    template <size_t ID, size_t N, typename T1>
-    struct type_select_helper<ID, N, T1>
+    template <size_t Id, size_t Index, typename T1>
+    struct type_select_helper<Id, Index, T1>
     {
       using type = T1;
     };
 
   public:
 
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      static_assert(ID < sizeof...(TTypes), "Illegal type_select::select index");
+      static_assert(Id < sizeof...(TTypes), "Illegal type_select::select index");
 
-      using type = typename type_select_helper<ID, 0, TTypes...>::type;
+      using type = typename type_select_helper<Id, 0, TTypes...>::type;
     };
 
-    template <size_t ID>
-    using select_t = typename select<ID>::type;
+    template <size_t Id>
+    using select_t = typename select<Id>::type;
   };
 
   //***************************************************************************
   // Select type alias
   //***************************************************************************
-  template <size_t N, typename... TTypes>
-  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<N>;
+  template <size_t Index, typename... TTypes>
+  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<Index>;
 
 #else
 
@@ -116,12 +116,12 @@ namespace etl
   cog.outl("{")
   cog.outl("public:")
   cog.outl("")
-  cog.outl("  template <size_t ID>")
+  cog.outl("  template <size_t Id>")
   cog.outl("  struct select")
   cog.outl("  {")
-  cog.outl("    typedef typename etl::conditional<ID == 0, T0,")
+  cog.outl("    typedef typename etl::conditional<Id == 0, T0,")
   for n in range(1, int(NTypes)) :
-      cog.outl("            typename etl::conditional<ID == %s, T%s," % (n, n))
+      cog.outl("            typename etl::conditional<Id == %s, T%s," % (n, n))
   cog.outl("            etl::null_type<0> >")
   cog.out("            ")
   for n in range(1, int(NTypes)) :
@@ -131,7 +131,7 @@ namespace etl
           cog.out("            ")
   cog.outl("::type type;")
   cog.outl("");
-  cog.outl("    ETL_STATIC_ASSERT(ID < %s, \"Invalid ID\");" % int(NTypes));
+  cog.outl("    ETL_STATIC_ASSERT(Id < %s, \"Invalid Id\");" % int(NTypes));
   cog.outl("  };")
   cog.outl("};")
 
@@ -151,12 +151,12 @@ namespace etl
       cog.outl("T%s>" % (s - 1))
       cog.outl("{")
       cog.outl("public:")
-      cog.outl("  template <size_t ID>")
+      cog.outl("  template <size_t Id>")
       cog.outl("  struct select")
       cog.outl("  {")
-      cog.outl("    typedef typename etl::conditional<ID == 0, T0,")
+      cog.outl("    typedef typename etl::conditional<Id == 0, T0,")
       for n in range(1, s) :
-          cog.outl("            typename etl::conditional<ID == %s, T%s," % (n, n))
+          cog.outl("            typename etl::conditional<Id == %s, T%s," % (n, n))
       cog.outl("            etl::null_type<0> >")
       cog.out("            ")
       for n in range(1, s) :
@@ -166,7 +166,7 @@ namespace etl
             cog.out("            ")
       cog.outl("::type type;")
       cog.outl("");
-      cog.outl("    ETL_STATIC_ASSERT(ID < %s, \"Invalid ID\");" % s);
+      cog.outl("    ETL_STATIC_ASSERT(Id < %s, \"Invalid Id\");" % s);
       cog.outl("  };")
       cog.outl("};")
   ]]]*/

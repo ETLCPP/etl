@@ -64,16 +64,16 @@ namespace etl
     //*************************************************************************
     /// Registers a callback for the specified id.
     /// Compile time assert if the id is out of range.
-    /// \tparam ID The id of the callback.
+    /// \tparam Id The id of the callback.
     /// \param callback Reference to the callback.
     //*************************************************************************
-    template <size_t ID>
+    template <size_t Id>
     void register_callback(etl::ifunction<size_t>& callback)
     {
-      ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
-      ETL_STATIC_ASSERT(ID >= OFFSET,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id < (OFFSET + RANGE), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= OFFSET,          "Callback Id out of range");
 
-      lookup[ID - OFFSET] = &callback;
+      lookup[Id - OFFSET] = &callback;
     }
 
     //*************************************************************************
@@ -102,15 +102,15 @@ namespace etl
     //*************************************************************************
     /// Executes the callback function for the index.
     /// Compile time assert if the id is out of range.
-    /// \tparam ID The id of the callback.
+    /// \tparam Id The id of the callback.
     //*************************************************************************
-    template <size_t ID>
+    template <size_t Id>
     void callback()
     {
-      ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
-      ETL_STATIC_ASSERT(ID >= OFFSET,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id < (OFFSET + RANGE), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= OFFSET,          "Callback Id out of range");
 
-      (*lookup[ID - OFFSET])(ID);
+      (*lookup[Id - OFFSET])(Id);
     }
 
     //*************************************************************************

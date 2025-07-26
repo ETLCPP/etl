@@ -1572,10 +1572,10 @@ typedef integral_constant<bool, true>  true_type;
   /// Requires that the class has defined 'base_type'.
   //*************************************************************************** 
   // Recursive definition of the type.
-  template <size_t N, typename TType>
+  template <size_t Index, typename TType>
   struct nth_base
   {
-    typedef typename nth_base<N - 1U, typename TType::base_type>::type type;
+    typedef typename nth_base<Index - 1U, typename TType::base_type>::type type;
   };
 
   template <typename TType>
@@ -1585,8 +1585,8 @@ typedef integral_constant<bool, true>  true_type;
   };
 
 #if ETL_USING_CPP11
-  template <size_t N, typename TType>
-  using nth_base_t = typename nth_base<N, TType>::type;
+  template <size_t Index, typename TType>
+  using nth_base_t = typename nth_base<Index, TType>::type;
 #endif
 
   //***************************************************************************

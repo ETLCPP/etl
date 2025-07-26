@@ -263,7 +263,7 @@ namespace etl
     typedef void(*assert_function_ptr_t)(const etl::exception&);
 
     // Stores the assert function pointer and default assert function.
-    template <size_t N>
+    template <size_t Index>
     struct assert_handler
     {
       static assert_function_ptr_t assert_function_ptr;
@@ -274,8 +274,8 @@ namespace etl
       }
     };
 
-    template <size_t N>
-    assert_function_ptr_t assert_handler<N>::assert_function_ptr = assert_handler<N>::default_assert;
+    template <size_t Index>
+    assert_function_ptr_t assert_handler<Index>::assert_function_ptr = assert_handler<Index>::default_assert;
   }
 
   //***************************************************************************

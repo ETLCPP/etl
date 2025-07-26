@@ -54,40 +54,40 @@ namespace etl
   private:
 
     //***********************************
-    template <size_t ID, size_t N, typename T1, typename... TRest>
+    template <size_t Id, size_t Index, typename T1, typename... TRest>
     struct type_select_helper
     {
-      using type = typename etl::conditional<ID == N,
+      using type = typename etl::conditional<Id == Index,
                                              T1,
-                                             typename type_select_helper<ID, N + 1, TRest...>::type>::type;
+                                             typename type_select_helper<Id, Index + 1, TRest...>::type>::type;
     };
 
     //***********************************
-    template <size_t ID, size_t N, typename T1>
-    struct type_select_helper<ID, N, T1>
+    template <size_t Id, size_t Index, typename T1>
+    struct type_select_helper<Id, Index, T1>
     {
       using type = T1;
     };
 
   public:
 
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      static_assert(ID < sizeof...(TTypes), "Illegal type_select::select index");
+      static_assert(Id < sizeof...(TTypes), "Illegal type_select::select index");
 
-      using type = typename type_select_helper<ID, 0, TTypes...>::type;
+      using type = typename type_select_helper<Id, 0, TTypes...>::type;
     };
 
-    template <size_t ID>
-    using select_t = typename select<ID>::type;
+    template <size_t Id>
+    using select_t = typename select<Id>::type;
   };
 
   //***************************************************************************
   // Select type alias
   //***************************************************************************
-  template <size_t N, typename... TTypes>
-  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<N>;
+  template <size_t Index, typename... TTypes>
+  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<Index>;
 
 #else
 
@@ -114,30 +114,30 @@ namespace etl
   {
   public:
 
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
-              typename etl::conditional<ID == 10, T10,
-              typename etl::conditional<ID == 11, T11,
-              typename etl::conditional<ID == 12, T12,
-              typename etl::conditional<ID == 13, T13,
-              typename etl::conditional<ID == 14, T14,
-              typename etl::conditional<ID == 15, T15,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
+              typename etl::conditional<Id == 10, T10,
+              typename etl::conditional<Id == 11, T11,
+              typename etl::conditional<Id == 12, T12,
+              typename etl::conditional<Id == 13, T13,
+              typename etl::conditional<Id == 14, T14,
+              typename etl::conditional<Id == 15, T15,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 16, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 16, "Invalid Id");
     };
   };
 
@@ -162,29 +162,29 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
-              typename etl::conditional<ID == 10, T10,
-              typename etl::conditional<ID == 11, T11,
-              typename etl::conditional<ID == 12, T12,
-              typename etl::conditional<ID == 13, T13,
-              typename etl::conditional<ID == 14, T14,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
+              typename etl::conditional<Id == 10, T10,
+              typename etl::conditional<Id == 11, T11,
+              typename etl::conditional<Id == 12, T12,
+              typename etl::conditional<Id == 13, T13,
+              typename etl::conditional<Id == 14, T14,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 15, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 15, "Invalid Id");
     };
   };
 
@@ -208,28 +208,28 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
-              typename etl::conditional<ID == 10, T10,
-              typename etl::conditional<ID == 11, T11,
-              typename etl::conditional<ID == 12, T12,
-              typename etl::conditional<ID == 13, T13,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
+              typename etl::conditional<Id == 10, T10,
+              typename etl::conditional<Id == 11, T11,
+              typename etl::conditional<Id == 12, T12,
+              typename etl::conditional<Id == 13, T13,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 14, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 14, "Invalid Id");
     };
   };
 
@@ -252,27 +252,27 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
-              typename etl::conditional<ID == 10, T10,
-              typename etl::conditional<ID == 11, T11,
-              typename etl::conditional<ID == 12, T12,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
+              typename etl::conditional<Id == 10, T10,
+              typename etl::conditional<Id == 11, T11,
+              typename etl::conditional<Id == 12, T12,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 13, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 13, "Invalid Id");
     };
   };
 
@@ -294,26 +294,26 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
-              typename etl::conditional<ID == 10, T10,
-              typename etl::conditional<ID == 11, T11,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
+              typename etl::conditional<Id == 10, T10,
+              typename etl::conditional<Id == 11, T11,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 12, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 12, "Invalid Id");
     };
   };
 
@@ -334,25 +334,25 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
-              typename etl::conditional<ID == 10, T10,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
+              typename etl::conditional<Id == 10, T10,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 11, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 11, "Invalid Id");
     };
   };
 
@@ -372,24 +372,24 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
-              typename etl::conditional<ID == 9, T9,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
+              typename etl::conditional<Id == 9, T9,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 10, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 10, "Invalid Id");
     };
   };
 
@@ -408,23 +408,23 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
-              typename etl::conditional<ID == 8, T8,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
+              typename etl::conditional<Id == 8, T8,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type type;
 
-      ETL_STATIC_ASSERT(ID < 9, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 9, "Invalid Id");
     };
   };
 
@@ -442,21 +442,21 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
-              typename etl::conditional<ID == 7, T7,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
+              typename etl::conditional<Id == 7, T7,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 8, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 8, "Invalid Id");
     };
   };
 
@@ -473,20 +473,20 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
-              typename etl::conditional<ID == 6, T6,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
+              typename etl::conditional<Id == 6, T6,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 7, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 7, "Invalid Id");
     };
   };
 
@@ -502,19 +502,19 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
-              typename etl::conditional<ID == 5, T5,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
+              typename etl::conditional<Id == 5, T5,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 6, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 6, "Invalid Id");
     };
   };
 
@@ -529,18 +529,18 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
-              typename etl::conditional<ID == 4, T4,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
+              typename etl::conditional<Id == 4, T4,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 5, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 5, "Invalid Id");
     };
   };
 
@@ -554,17 +554,17 @@ namespace etl
   struct type_select<T0, T1, T2, T3>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
-              typename etl::conditional<ID == 3, T3,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
+              typename etl::conditional<Id == 3, T3,
               etl::null_type<0> >
               ::type>::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 4, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 4, "Invalid Id");
     };
   };
 
@@ -577,16 +577,16 @@ namespace etl
   struct type_select<T0, T1, T2>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
-              typename etl::conditional<ID == 2, T2,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
+              typename etl::conditional<Id == 2, T2,
               etl::null_type<0> >
               ::type>::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 3, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 3, "Invalid Id");
     };
   };
 
@@ -598,15 +598,15 @@ namespace etl
   struct type_select<T0, T1>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
-              typename etl::conditional<ID == 1, T1,
+      typedef typename etl::conditional<Id == 0, T0,
+              typename etl::conditional<Id == 1, T1,
               etl::null_type<0> >
               ::type>::type type;
 
-      ETL_STATIC_ASSERT(ID < 2, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 2, "Invalid Id");
     };
   };
 
@@ -617,14 +617,14 @@ namespace etl
   struct type_select<T0>
   {
   public:
-    template <size_t ID>
+    template <size_t Id>
     struct select
     {
-      typedef typename etl::conditional<ID == 0, T0,
+      typedef typename etl::conditional<Id == 0, T0,
               etl::null_type<0> >
               ::type type;
 
-      ETL_STATIC_ASSERT(ID < 1, "Invalid ID");
+      ETL_STATIC_ASSERT(Id < 1, "Invalid Id");
     };
   };
 #endif
