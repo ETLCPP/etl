@@ -54,6 +54,8 @@ namespace etl
     typedef etl::delegate<void(void)> lock_type;
     typedef etl::delegate<void(void)> unlock_type;
 
+    typedef etl::delegate<void(etl::timer::id::type)> event_callback_type;
+
     //*******************************************
     /// Register a timer.
     //*******************************************
@@ -103,6 +105,7 @@ namespace etl
           {
             lock();
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
             unlock();
           }
 
@@ -180,10 +183,12 @@ namespace etl
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
+              remove_callback.call_if(timer.id);
             }
 
             timer.delta = immediate_ ? 0U : timer.period;
             active_list.insert(timer.id);
+            insert_callback.call_if(timer.id);
             unlock();
 
             result = true;
@@ -213,6 +218,7 @@ namespace etl
           {
             lock();
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
             unlock();
           }
 
@@ -317,6 +323,34 @@ namespace etl
       }
 
       return result;
+    }
+
+    //*******************************************
+    /// Set a callback when a timer is inserted on list
+    //*******************************************
+    void set_insert_callback(event_callback_type insert_)
+    {
+      insert_callback = insert_;
+    }
+
+    //*******************************************
+    /// Set a callback when a timer is removed from list
+    //*******************************************
+    void set_remove_callback(event_callback_type remove_)
+    {
+      remove_callback = remove_;
+    }
+
+    //*******************************************
+    void clear_insert_callback()
+    {
+      insert_callback.clear();
+    }
+
+    //*******************************************
+    void clear_remove_callback()
+    {
+      remove_callback.clear();
     }
 
   protected:
@@ -604,6 +638,9 @@ namespace etl
     lock_type     lock;     ///< The callback that locks.
     unlock_type   unlock;   ///< The callback that unlocks.
 
+    event_callback_type insert_callback;
+    event_callback_type remove_callback;
+
   public:
     template <uint_least8_t>
     friend class callback_timer_locked;
@@ -666,6 +703,7 @@ namespace etl
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
+              remove_callback.call_if(timer.id);
 
               if (timer.callback.is_valid())
               {
@@ -677,6 +715,7 @@ namespace etl
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
+                insert_callback.call_if(timer.id);
               }
 
               has_active = !active_list.empty();
