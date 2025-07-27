@@ -2379,13 +2379,11 @@ namespace etl
     typedef typename etl::largest_type<s_size_type, d_size_type>::type  min_size_type;
 #endif
 
-    s_size_type s_size = etl::distance(i_begin, i_end);
-    ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
-    d_size_type d_size = etl::distance(o_begin, o_end);
-    ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
-    min_size_type size = etl::min<min_size_type>(s_size, d_size);
+    s_size_type s_size     = etl::distance(i_begin, i_end);
+    d_size_type d_size     = etl::distance(o_begin, o_end);
+    min_size_type min_size = etl::min<min_size_type>(s_size, d_size);
 
-    return etl::copy(i_begin, i_begin + size, o_begin);
+    return etl::copy(i_begin, i_begin + min_size, o_begin);
   }
 
   //***************************************************************************
@@ -2552,13 +2550,11 @@ namespace etl
     using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
     using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
 
-    s_size_type s_size = etl::distance(i_begin, i_end);
-    ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
-    d_size_type d_size = etl::distance(o_begin, o_end);
-    ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
-    min_size_type size = etl::min<min_size_type>(s_size, d_size);
+    s_size_type s_size     = etl::distance(i_begin, i_end);
+    d_size_type d_size     = etl::distance(o_begin, o_end);
+    min_size_type min_size = etl::min<min_size_type>(s_size, d_size);
 
-    return etl::move(i_begin, i_begin + size, o_begin);
+    return etl::move(i_begin, i_begin + min_size, o_begin);
   }
 
   //***************************************************************************
