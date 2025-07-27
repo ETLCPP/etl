@@ -1,0 +1,12 @@
+How to convert the ETL header beween #include guards and #pragma once.
+
+Install
+python3 -m pip install guardonce
+
+Navigate to etl/scripts
+
+Change from #include guard to #pragma once
+./convert_headers_to_use_once.bat
+
+Change from #pragma once to #include guard
+./convert_headers_to_use_guards.bat

@@ -10496,6 +10496,8 @@
     <None Include="..\..\library.properties" />
     <None Include="..\..\meson.build" />
     <None Include="..\..\README.md" />
+    <None Include="..\..\scripts\convert_headers_to_use_guards.bat" />
+    <None Include="..\..\scripts\convert_headers_to_use_once.bat" />
     <None Include="..\..\scripts\generator_test.bat" />
     <None Include="..\..\scripts\generator_test.py" />
     <None Include="..\..\scripts\update_release.bat" />
@@ -10512,6 +10514,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\CMakeLists.txt" />
+    <Text Include="..\..\Converting header guards.txt" />
     <Text Include="..\..\support\Release notes.txt" />
     <Text Include="..\..\todo.txt" />
     <Text Include="..\..\version.txt" />
