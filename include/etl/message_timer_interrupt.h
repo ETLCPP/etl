@@ -67,7 +67,7 @@ namespace etl
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-      bool is_space = (number_of_registered_timers < MAX_TIMERS);
+      bool is_space = (number_of_registered_timers < Max_Timers);
 
       if (is_space)
       {
@@ -75,7 +75,7 @@ namespace etl
         if (!router_.is_null_router())
         {
           // Search for the free space.
-          for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
+          for (uint_least8_t i = 0U; i < Max_Timers; ++i)
           {
             timer_data& timer = timer_array[i];
 
@@ -157,7 +157,7 @@ namespace etl
         active_list.clear();
       }
 
-      for (int i = 0; i < MAX_TIMERS; ++i)
+      for (int i = 0; i < Max_Timers; ++i)
       {
         new (&timer_array[i]) timer_data();
       }
@@ -415,12 +415,12 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_timer_interrupt(timer_data* const timer_array_, const uint_least8_t  MAX_TIMERS_)
+    imessage_timer_interrupt(timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
       : timer_array(timer_array_)
       , active_list(timer_array_)
       , enabled(false)
       , number_of_registered_timers(0U)
-      , MAX_TIMERS(MAX_TIMERS_)
+      , Max_Timers(Max_Timers_)
     {
     }
 
@@ -628,18 +628,18 @@ namespace etl
 
   public:
 
-    const uint_least8_t MAX_TIMERS;
+    const uint_least8_t Max_Timers;
   };
 
   //***************************************************************************
   /// The message timer
   //***************************************************************************
-  template <uint_least8_t MAX_TIMERS_, typename TInterruptGuard>
+  template <uint_least8_t Max_Timers_, typename TInterruptGuard>
   class message_timer_interrupt : public etl::imessage_timer_interrupt<TInterruptGuard>
   {
   public:
 
-    ETL_STATIC_ASSERT(MAX_TIMERS_ <= 254, "No more than 254 timers are allowed");
+    ETL_STATIC_ASSERT(Max_Timers_ <= 254, "No more than 254 timers are allowed");
 
     typedef typename imessage_timer_interrupt<TInterruptGuard>::callback_type callback_type;
 
@@ -647,13 +647,13 @@ namespace etl
     /// Constructor.
     //*******************************************
     message_timer_interrupt()
-      : imessage_timer_interrupt<TInterruptGuard>(timer_array, MAX_TIMERS_)
+      : imessage_timer_interrupt<TInterruptGuard>(timer_array, Max_Timers_)
     {
     }
 
   private:
 
-    typename etl::imessage_timer_interrupt<TInterruptGuard>::timer_data timer_array[MAX_TIMERS_];
+    typename etl::imessage_timer_interrupt<TInterruptGuard>::timer_data timer_array[Max_Timers_];
   };
 }
 

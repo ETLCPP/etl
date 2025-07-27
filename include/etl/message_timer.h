@@ -352,7 +352,7 @@ namespace etl
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-      bool is_space = (registered_timers < MAX_TIMERS);
+      bool is_space = (registered_timers < Max_Timers);
 
       if (is_space)
       {
@@ -360,7 +360,7 @@ namespace etl
         if (!router_.is_null_router())
         {
           // Search for the free space.
-          for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
+          for (uint_least8_t i = 0U; i < Max_Timers; ++i)
           {
             etl::message_timer_data& timer = timer_array[i];
 
@@ -435,7 +435,7 @@ namespace etl
       active_list.clear();
       ETL_ENABLE_TIMER_UPDATES;
 
-      for (int i = 0; i < MAX_TIMERS; ++i)
+      for (int i = 0; i < Max_Timers; ++i)
       {
         new (&timer_array[i]) message_timer_data();
       }
@@ -624,7 +624,7 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_timer(message_timer_data* const timer_array_, const uint_least8_t  MAX_TIMERS_)
+    imessage_timer(message_timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
       : timer_array(timer_array_),
         active_list(timer_array_),
         enabled(false),
@@ -632,7 +632,7 @@ namespace etl
         process_semaphore(0),
 #endif
         registered_timers(0),
-        MAX_TIMERS(MAX_TIMERS_)
+        Max_Timers(Max_Timers_)
     {
     }
 
@@ -671,30 +671,30 @@ namespace etl
 
   public:
 
-    const uint_least8_t MAX_TIMERS;
+    const uint_least8_t Max_Timers;
   };
 
   //***************************************************************************
   /// The message timer
   //***************************************************************************
-  template <uint_least8_t MAX_TIMERS_>
+  template <uint_least8_t Max_Timers_>
   class message_timer : public etl::imessage_timer
   {
   public:
 
-    ETL_STATIC_ASSERT(MAX_TIMERS_ <= 254, "No more than 254 timers are allowed");
+    ETL_STATIC_ASSERT(Max_Timers_ <= 254, "No more than 254 timers are allowed");
 
     //*******************************************
     /// Constructor.
     //*******************************************
     message_timer()
-      : imessage_timer(timer_array, MAX_TIMERS_)
+      : imessage_timer(timer_array, Max_Timers_)
     {
     }
 
   private:
 
-    message_timer_data timer_array[MAX_TIMERS_];
+    message_timer_data timer_array[Max_Timers_];
   };
 }
 
