@@ -35,7 +35,6 @@ SOFTWARE.
 
 #include "etl/const_string.h"
 #include "etl/string_view.h"
-#include "etl/fnv_1.h"
 
 #undef STR
 #define STR(x) x
@@ -55,22 +54,27 @@ namespace
 
     using Text    = etl::const_string;
     using IText   = const etl::istring;
-    using TextSTD = std::string;
     using value_t = Text::value_type;
-    //using TextL   = etl::string<52>;
-    //using TextS   = etl::string<4>;
-    //using View    = etl::string_view;
 
-    TextSTD initial_text;
-    TextSTD less_text;
-    TextSTD greater_text;
-    TextSTD shorter_text;
-    TextSTD different_text;
-    TextSTD insert_text;
-    TextSTD longer_text;
-    TextSTD short_text;
+    static constexpr const char* initial = STR("Hello World");
 
-    const value_t* pinitial_text = STR("Hello World");
+    static constexpr const char* ccp_hello = STR("Hello");
+    static constexpr const char* ccp_world = STR("World");
+    static constexpr const char* ccp_worls = STR("Worls");
+
+    static constexpr Text text_hello(STR("Hello"));
+    static constexpr Text text_world(STR("World"));
+
+    static constexpr Text text(STR("Hello World"));
+    static constexpr Text text_same(STR("Hello World"));
+    static constexpr Text text_less(STR("Hello Wnrld"));
+    static constexpr Text text_greater(STR("Hello Wprld"));
+    static constexpr Text text_less_length(STR("Hello Worl"));
+    static constexpr Text text_greater_length(STR("Hello World!"));
+
+    static constexpr size_t length = etl::strlen(STR("Hello World"));
+
+    static constexpr IText& itext = text;
 
     //*************************************************************************
     template <typename T1, typename T2>
@@ -80,30 +84,8 @@ namespace
     }
 
     //*************************************************************************
-    struct SetupFixture
+    TEST(test_constructor_char_pointer)
     {
-      SetupFixture()
-      {
-        initial_text   = STR("Hello World");
-        insert_text    = STR("Insert");
-        less_text      = STR("Hello Vorld");
-        greater_text   = STR("Hello Xorld");
-        shorter_text   = STR("Hello Worl");
-        different_text = STR("Byee Planet");
-        longer_text    = STR("Hello World There");
-        short_text     = STR("Hello");
-      }
-    };
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_constructor_char_pointer)
-    {
-      TextSTD compare_text(initial_text.c_str());
-
-      static constexpr const char* initial = "Hello World";
-      static constexpr Text        text(initial);
-      static constexpr size_t      length = etl::strlen(initial);
-
       static constexpr auto text_empty = text.empty();
       CHECK_FALSE(text_empty);
 
@@ -166,51 +148,48 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_contains)
+    TEST(test_contains_const_char_pointer)
     {
-      static constexpr Text text("Hello World");
-
-      static constexpr auto text_contains_world = text.contains("World");
+      static constexpr auto text_contains_world = text.contains(ccp_world);
       CHECK_TRUE(text_contains_world);
 
-      static constexpr auto text_contains_worls = text.contains("Worls");
+      static constexpr auto text_contains_worls = text.contains(ccp_worls);
       CHECK_FALSE(text_contains_worls);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_start_with_ends_with)
+    TEST(test_start_with)
     {
-      static constexpr Text text("Hello World");
-
-      static constexpr auto text_starts_with_hello = text.starts_with("Hello");
+      static constexpr auto text_starts_with_hello = text.starts_with(ccp_hello);
       CHECK_TRUE(text_starts_with_hello);
 
-      static constexpr auto text_starts_with_world = text.starts_with("World");
+      static constexpr auto text_starts_with_world = text.starts_with(ccp_world);
       CHECK_FALSE(text_starts_with_world);
+    }
 
-      static constexpr auto text_ends_with_hello = text.ends_with("Hello");
+    //*************************************************************************
+    TEST(test_ends_with)
+    {
+      static constexpr auto text_ends_with_hello = text.ends_with(ccp_hello);
       CHECK_FALSE(text_ends_with_hello);
 
-      static constexpr auto text_ends_with_world = text.ends_with("World");
+      static constexpr auto text_ends_with_world = text.ends_with(ccp_world);
       CHECK_TRUE(text_ends_with_world);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find)
+    TEST(test_find)
     {
-      static constexpr Text text("Hello World");
-
-      static constexpr auto text_find_world = text.find("World");
+      static constexpr auto text_find_world = text.find(ccp_world);
       CHECK_EQUAL(6, text_find_world);
 
-      static constexpr auto text_find_worls = text.find("Worls");
+      static constexpr auto text_find_worls = text.find(ccp_worls);
       CHECK_EQUAL(Text::npos, text_find_worls);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_first_of)
+    TEST(test_find_first_of)
     {
-      static constexpr Text text("Hello World");
       static constexpr auto text_find_first_of_o = text.find_first_of(STR('o'), 5);
       CHECK_EQUAL(7, text_find_first_of_o);
 
@@ -219,9 +198,8 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_first_not_of)
+    TEST(test_find_first_not_of)
     {
-      static constexpr Text text("Hello World");
       static constexpr auto text_find_first_not_of_l = text.find_first_not_of(STR('l'), 2);
       CHECK_EQUAL(4, text_find_first_not_of_l);
 
@@ -230,10 +208,8 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_last_of)
+    TEST(test_find_last_of)
     {
-      static constexpr Text text("Hello World");
-
       static constexpr auto text_find_last_of_o = text.find_last_of(STR('o'), 9);
       CHECK_EQUAL(7, text_find_last_of_o);
 
@@ -242,10 +218,8 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_last_not_of)
+    TEST(test_find_last_not_of)
     {
-      static constexpr Text text("Hello World");
-
       static constexpr auto text_find_last_not_of_l = text.find_last_not_of(STR('l'), 9);
       CHECK_EQUAL(8, text_find_last_not_of_l);
 
@@ -254,12 +228,8 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_access_functions)
+    TEST(test_access_functions)
     {
-      static constexpr const char* initial = "Hello World";
-      static constexpr Text        text(initial);
-      static constexpr size_t      length = etl::strlen(initial);
-
       static constexpr auto text_index_operator = text[3];
       CHECK_EQUAL(initial[3], text_index_operator);
 
@@ -277,15 +247,8 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_functions)
+    TEST(test_compare_functions)
     {
-      static constexpr Text text("Hello World");
-      static constexpr Text text_same("Hello World");
-      static constexpr Text text_less("Hello Wnrld");
-      static constexpr Text text_greater("Hello Wprld");
-      static constexpr Text text_less_length("Hello Worl");
-      static constexpr Text text_greater_length("Hello World!");
-
       static constexpr auto text_compare_with_same = text.compare(text_same);
       CHECK_EQUAL(0, text_compare_with_same);
 
@@ -303,29 +266,98 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_operators)
+    TEST(test_compare_equal_operator)
     {
-      static constexpr Text text("Hello World");
-      static constexpr Text text_same("Hello World");
-      static constexpr Text text_less("Hello Wnrld");
-      static constexpr Text text_greater("Hello Wprld");
-      static constexpr Text text_less_length("Hello Worl");
-      static constexpr Text text_greater_length("Hello World!");
+      static constexpr bool text_compare_with_same = (text == text_same);
+      CHECK_TRUE(text_compare_with_same);
 
-      //static constexpr bool text_compare_with_same = (text == text_same);
-      //CHECK_TRUE(text_compare_with_same);
+      static constexpr bool text_compare_with_less = (text == text_less);
+      CHECK_FALSE(text_compare_with_less);
 
-      //static constexpr auto text_compare_with_less = text.compare(text_less);
-      //CHECK_EQUAL(1, text_compare_with_less);
+      static constexpr bool text_compare_with_greater = (text == text_greater);
+      CHECK_FALSE(text_compare_with_greater);
 
-      //static constexpr auto text_compare_with_greater = text.compare(text_greater);
-      //CHECK_EQUAL(-1, text_compare_with_greater);
+      static constexpr bool text_compare_with_less_length = (text == text_less_length);
+      CHECK_FALSE(text_compare_with_less_length);
 
-      //static constexpr auto text_compare_with_less_length = text.compare(text_less_length);
-      //CHECK_EQUAL(1, text_compare_with_less_length);
+      static constexpr bool text_compare_with_greater_length = (text == text_greater_length);
+      CHECK_FALSE(text_compare_with_greater_length);
+    }
 
-      //static constexpr auto text_compare_with_greater_length = text.compare(text_greater_length);
-      //CHECK_EQUAL(-1, text_compare_with_greater_length);
+    //*************************************************************************
+    TEST(test_compare_not_equal_operator)
+    {
+      static constexpr bool text_compare_with_same = (text != text_same);
+      CHECK_FALSE(text_compare_with_same);
+
+      static constexpr bool text_compare_with_less = (text != text_less);
+      CHECK_TRUE(text_compare_with_less);
+
+      static constexpr bool text_compare_with_greater = (text != text_greater);
+      CHECK_TRUE(text_compare_with_greater);
+
+      static constexpr bool text_compare_with_less_length = (text != text_less_length);
+      CHECK_TRUE(text_compare_with_less_length);
+
+      static constexpr bool text_compare_with_greater_length = (text != text_greater_length);
+      CHECK_TRUE(text_compare_with_greater_length);
+    }
+
+    //*************************************************************************
+    TEST(test_compare_less_than_operator)
+    {
+      static constexpr bool text_compare_with_same = (text < text_same);
+      CHECK_FALSE(text_compare_with_same);
+
+      static constexpr bool text_compare_with_less = (text < text_less);
+      CHECK_FALSE(text_compare_with_less);
+
+      static constexpr bool text_compare_with_greater = (text < text_greater);
+      CHECK_TRUE(text_compare_with_greater);
+
+      static constexpr bool text_compare_with_less_length = (text < text_less_length);
+      CHECK_FALSE(text_compare_with_less_length);
+
+      static constexpr bool text_compare_with_greater_length = (text < text_greater_length);
+      CHECK_TRUE(text_compare_with_greater_length);
+    }
+
+    //*************************************************************************
+    TEST(test_compare_less_than_equal_operator)
+    {
+      static constexpr bool text_compare_with_same = (text <= text_same);
+      CHECK_TRUE(text_compare_with_same);
+
+      static constexpr bool text_compare_with_less = (text <= text_less);
+      CHECK_FALSE(text_compare_with_less);
+
+      static constexpr bool text_compare_with_greater = (text <= text_greater);
+      CHECK_TRUE(text_compare_with_greater);
+
+      static constexpr bool text_compare_with_less_length = (text <= text_less_length);
+      CHECK_FALSE(text_compare_with_less_length);
+
+      static constexpr bool text_compare_with_greater_length = (text <= text_greater_length);
+      CHECK_TRUE(text_compare_with_greater_length);
+    }
+
+    //*************************************************************************
+    TEST(test_compare_greater_than_operator)
+    {
+      static constexpr bool text_compare_with_same = (text > text_same);
+      CHECK_FALSE(text_compare_with_same);
+
+      static constexpr bool text_compare_with_less = (text > text_less);
+      CHECK_TRUE(text_compare_with_less);
+
+      static constexpr bool text_compare_with_greater = (text > text_greater);
+      CHECK_FALSE(text_compare_with_greater);
+
+      static constexpr bool text_compare_with_less_length = (text > text_less_length);
+      CHECK_TRUE(text_compare_with_less_length);
+
+      static constexpr bool text_compare_with_greater_length = (text > text_greater_length);
+      CHECK_FALSE(text_compare_with_greater_length);
     }
   };
 }

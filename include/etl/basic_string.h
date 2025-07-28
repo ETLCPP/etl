@@ -2891,7 +2891,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator ==(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -2904,7 +2904,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR bool operator ==(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return (lhs.size() == etl::strlen(rhs)) && etl::equal(lhs.begin(), lhs.end(), rhs);
   }
@@ -2917,7 +2917,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator ==(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator ==(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return (rhs.size() == etl::strlen(lhs)) && etl::equal(rhs.begin(), rhs.end(), lhs);
   }
@@ -2930,7 +2930,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator !=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2943,7 +2943,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR bool operator !=(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return !(lhs == rhs);
   }
@@ -2956,7 +2956,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator !=(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator !=(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2969,7 +2969,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator <(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -2982,7 +2982,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR bool operator <(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs, rhs + etl::strlen(rhs));
   }
@@ -2995,7 +2995,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator <(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator <(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return etl::lexicographical_compare(lhs, lhs + etl::strlen(lhs), rhs.begin(), rhs.end());
   }
@@ -3009,7 +3009,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator >(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return (rhs < lhs);
   }
@@ -3022,7 +3022,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR bool operator >(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return (rhs < lhs);
   }
@@ -3035,7 +3035,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator >(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator >(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return (rhs < lhs);
   }
@@ -3049,7 +3049,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator <=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -3062,7 +3062,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR bool operator <=(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return !(lhs > rhs);
   }
@@ -3075,7 +3075,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator <=(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator <=(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -3089,7 +3089,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator >=(const etl::ibasic_string<T>& lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -3102,7 +3102,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::ibasic_string<T>& lhs, const T* rhs)
+  ETL_CONSTEXPR bool operator >=(const etl::ibasic_string<T>& lhs, const T* rhs)
   {
     return !(lhs < rhs);
   }
@@ -3115,7 +3115,7 @@ namespace etl
   ///\ingroup string
   //***************************************************************************
   template <typename T>
-  bool operator >=(const T* lhs, const etl::ibasic_string<T>& rhs)
+  ETL_CONSTEXPR bool operator >=(const T* lhs, const etl::ibasic_string<T>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -3137,8 +3137,6 @@ namespace etl
   }
 #endif
 }
-
-#undef ETL_USING_WCHAR_T_H
 
 #include "private/minmax_pop.h"
 
