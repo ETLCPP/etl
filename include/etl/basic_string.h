@@ -1410,7 +1410,7 @@ namespace etl
     ///\param str The content to find
     ///\param pos The position to start searching from.
     //*********************************************************************
-    size_type find(const ibasic_string<T>& str, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type find(const ibasic_string<T>& str, size_type pos = 0) const
     {
       return find_impl(str.begin(), str.end(), str.size(), pos);
     }
@@ -1456,7 +1456,7 @@ namespace etl
     ///\param c        The character to find.
     ///\param position The position to start searching from.
     //*********************************************************************
-    size_type find(T c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find(T c, size_type position = 0) const
     {
       const_iterator i = etl::find(begin() + position, end(), c);
 
@@ -1486,7 +1486,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
+    ETL_CONSTEXPR14 size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = npos) const
     {
       return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
     }
