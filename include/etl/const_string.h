@@ -65,6 +65,59 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    constexpr const_string(const value_type* buffer, size_t length)
+      : istring(const_cast<value_type*>(buffer), length)
+    {
+      this->current_size = length;
+    }
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    constexpr const_string(const value_type* buffer, const value_type* buffer_end)
+      : istring(const_cast<value_type*>(buffer), buffer_end - buffer)
+    {
+      this->current_size = buffer_end - buffer;
+    }
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    constexpr const_string(const etl::string_view& view)
+      : istring(const_cast<value_type*>(view.data()), view.size())
+    {
+      this->current_size = view.size();
+    }
+
+    //*************************************************************************
+    /// Copy constructor.
+    //*************************************************************************
+    constexpr const_string(const etl::const_string& other)
+      : istring(const_cast<value_type*>(other.data()), other.size())
+    {
+      this->current_size = other.size();
+    }
+
+    //*************************************************************************
+    /// Returns a sub-string.
+    ///\param position The position of the first character.  Default = 0.
+    ///\param length   The number of characters. Default = npos.
+    //*************************************************************************
+    constexpr etl::const_string substr(size_type position = 0, size_type length_ = npos) const
+    {
+      if (position < this->size())
+      {
+        length_ = etl::min(length_, this->size() - position);
+
+        return etl::const_string(data() + position, length_);
+      }
+
+      return etl::const_string("");
+    }
+
+    //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #if ETL_HAS_ISTRING_REPAIR
@@ -80,7 +133,7 @@ namespace etl
     //*************************************************************************
     /// Deleted.
     //*************************************************************************
-    const_string(const const_string& other) ETL_DELETE;
+    //const_string(const const_string& other) ETL_DELETE;
   };
 }
 
