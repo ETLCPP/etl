@@ -3293,11 +3293,16 @@
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
+    <ClInclude Include="..\..\include\etl\const_basic_string.h" />
     <ClInclude Include="..\..\include\etl\const_map.h" />
     <ClInclude Include="..\..\include\etl\const_multimap.h" />
     <ClInclude Include="..\..\include\etl\const_multiset.h" />
     <ClInclude Include="..\..\include\etl\const_set.h" />
     <ClInclude Include="..\..\include\etl\const_string.h" />
+    <ClInclude Include="..\..\include\etl\const_u16string.h" />
+    <ClInclude Include="..\..\include\etl\const_u32string.h" />
+    <ClInclude Include="..\..\include\etl\const_u8string.h" />
+    <ClInclude Include="..\..\include\etl\const_wstring.h" />
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />
@@ -9426,6 +9431,10 @@
     <ClCompile Include="..\test_const_set_ext.cpp" />
     <ClCompile Include="..\test_const_set_ext_constexpr.cpp" />
     <ClCompile Include="..\test_const_string_char.cpp" />
+    <ClCompile Include="..\test_const_string_u16.cpp" />
+    <ClCompile Include="..\test_const_string_u32.cpp" />
+    <ClCompile Include="..\test_const_string_u8.cpp" />
+    <ClCompile Include="..\test_const_string_wchar_t.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />

@@ -40,6 +40,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "hash.h"
 #include "basic_string.h"
+#include "const_basic_string.h"
 #include "algorithm.h"
 #include "private/minmax_push.h"
 
@@ -137,6 +138,17 @@ namespace etl
       , mend(str.end())
     {
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    /// Construct from const_string.
+    //*************************************************************************
+    ETL_CONSTEXPR basic_string_view(const etl::const_basic_string<T>& str)
+      : mbegin(str.begin())
+      , mend(str.end())
+    {
+    }
+#endif
 
     //*************************************************************************
     /// Construct from T*.

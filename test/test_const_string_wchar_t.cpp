@@ -33,22 +33,22 @@ SOFTWARE.
 #include <algorithm>
 #include <atomic>
 
-#include "etl/const_string.h"
+#include "etl/const_wstring.h"
 #include "etl/string_view.h"
 
 #if ETL_USING_CPP14
 
 #undef STR
-#define STR(x) x
+#define STR(x) L##x
 
 namespace
 {
-  SUITE(test_const_string_char)
+  SUITE(test_const_string_wchar_t)
   {
-    using Text = etl::const_string;
-    using View = etl::string_view;
+    using Text = etl::const_wstring;
+    using View = etl::wstring_view;
 
-    using TextSTD = std::string;
+    using TextSTD = std::wstring;
 
     static constexpr Text::const_pointer text_pointer = STR("Hello World");
     static constexpr Text                text(STR("Hello World"));
@@ -163,7 +163,7 @@ namespace
       static constexpr auto text_crend = text_from_pointer.crend();
       CHECK_EQUAL(&text_pointer[0] - 1, etl::addressof(*text_crend));
 
-      bool is_equal = Equal(std::string(text_pointer), text);
+      bool is_equal = Equal(std::wstring(text_pointer), text);
       CHECK(is_equal);
     }
 
@@ -229,7 +229,7 @@ namespace
       static constexpr auto text_crend = text_from_literal.crend();
       CHECK_EQUAL(&text_pointer[0] - 1, etl::addressof(*text_crend));
 
-      bool is_equal = Equal(std::string(text_pointer), text);
+      bool is_equal = Equal(std::wstring(text_pointer), text);
       CHECK(is_equal);
     }
 
@@ -308,7 +308,7 @@ namespace
       static constexpr auto text_crend = text_copy.crend();
       CHECK_EQUAL(&text_pointer[0] - 1, etl::addressof(*text_crend));
 
-      bool is_equal = Equal(std::string(text_pointer), text);
+      bool is_equal = Equal(std::wstring(text_pointer), text);
       CHECK(is_equal);
     }
 
@@ -375,7 +375,7 @@ namespace
       static constexpr auto text_crend = text_copy.crend();
       CHECK_EQUAL(&text_pointer[0] - 1, etl::addressof(*text_crend));
 
-      bool is_equal = Equal(std::string(text_pointer), text);
+      bool is_equal = Equal(std::wstring(text_pointer), text);
       CHECK(is_equal);
     }
 
@@ -524,9 +524,9 @@ namespace
 #if ETL_USING_STL
     TEST(test_write_string_to_std_basic_ostream)
     {
-      static constexpr Text text1 = STR("Hello World");
+      Text text1(STR("Hello World"));
 
-      std::stringstream sstream;
+      std::wstringstream sstream;
 
       sstream << text1;
 
