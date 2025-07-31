@@ -61,6 +61,11 @@ add_executable(etl_tests
 	test_const_map_constexpr.cpp
 	test_const_multimap.cpp
 	test_const_multimap_constexpr.cpp
+	test_const_string_char.cpp
+	test_const_string_u16.cpp
+	test_const_string_u32.cpp
+	test_const_string_u8.cpp
+	test_const_string_wchar_t.cpp
 	test_char_traits.cpp
 	test_checksum.cpp
 	test_chrono_clocks.cpp

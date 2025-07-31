@@ -1533,6 +1533,21 @@
     <ClInclude Include="..\..\include\etl\const_string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_wstring.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_u16string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_u32string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_u8string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_basic_string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3695,6 +3710,18 @@
     <ClCompile Include="..\test_const_string_char.cpp">
       <Filter>Tests\Strings</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_const_string_wchar_t.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_string_u16.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_string_u32.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_string_u8.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3853,6 +3880,12 @@
     <None Include="..\..\CONTRIBUTING.md">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\scripts\convert_headers_to_use_guards.bat">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\scripts\convert_headers_to_use_once.bat">
+      <Filter>Tests</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
@@ -3891,6 +3924,7 @@
     <Text Include="..\syntax_check\CMakeLists.txt">
       <Filter>Tests\Syntax Checks</Filter>
     </Text>
+    <Text Include="..\..\Converting header guards.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\etl.ico">

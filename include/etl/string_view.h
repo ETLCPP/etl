@@ -40,6 +40,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "hash.h"
 #include "basic_string.h"
+#include "const_basic_string.h"
 #include "algorithm.h"
 #include "private/minmax_push.h"
 
@@ -69,7 +70,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup stack
+  ///\ingroup string
   /// The exception thrown when the index is out of bounds.
   //***************************************************************************
   class string_view_bounds : public string_view_exception
@@ -83,7 +84,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup stack
+  ///\ingroup string
   /// The exception thrown when the view is uninitialised.
   //***************************************************************************
   class string_view_uninitialised : public string_view_exception
@@ -137,6 +138,17 @@ namespace etl
       , mend(str.end())
     {
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    /// Construct from const_string.
+    //*************************************************************************
+    ETL_CONSTEXPR basic_string_view(const etl::const_basic_string<T>& str)
+      : mbegin(str.begin())
+      , mend(str.end())
+    {
+    }
+#endif
 
     //*************************************************************************
     /// Construct from T*.
@@ -563,9 +575,9 @@ namespace etl
       position = etl::min(position, size());
 
       const_iterator iposition = etl::find_end(begin(),
-        begin() + position,
-        view.begin(),
-        view.end());
+                                               begin() + position,
+                                               view.begin(),
+                                               view.end());
 
       if (iposition == end())
       {

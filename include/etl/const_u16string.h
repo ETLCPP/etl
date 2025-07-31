@@ -28,12 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CONST_STRING_INCLUDED
-#define ETL_CONST_STRING_INCLUDED
+#ifndef ETL_CONST_U16STRING_INCLUDED
+#define ETL_CONST_U16STRING_INCLUDED
 
 #include "platform.h"
-#include "iterator.h"
-#include "char_traits.h"
 #include "const_basic_string.h"
 
 #if ETL_USING_CPP14
@@ -44,30 +42,30 @@ namespace etl
   /// A string implementation that uses a fixed size external const buffer.
   ///\ingroup string
   //***************************************************************************
-  class const_string : public etl::const_basic_string<char>  
+  class const_u16string : public etl::const_basic_string<char16_t>
   {
   public:
 
-    using value_type      = const_basic_string<char>::value_type;
-    using size_type       = const_basic_string<char>::size_type;
-    using const_pointer   = const_basic_string<char>::const_pointer;
-    using const_reference = const_basic_string<char>::const_reference;
-    using const_iterator = const_basic_string<char>::const_iterator;
+    using value_type      = const_basic_string<char16_t>::value_type;
+    using size_type       = const_basic_string<char16_t>::size_type;
+    using const_pointer   = const_basic_string<char16_t>::const_pointer;
+    using const_reference = const_basic_string<char16_t>::const_reference;
+    using const_iterator  = const_basic_string<char16_t>::const_iterator;
 
-    using const_reverse_iterator = const_basic_string<char>::const_reverse_iterator;
+    using const_reverse_iterator = const_basic_string<char16_t>::const_reverse_iterator;
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    constexpr const_string(const value_type* buffer, bool is_truncated = false)
+    constexpr const_u16string(const value_type* buffer, bool is_truncated = false)
       : const_basic_string(buffer, etl::strlen(buffer), is_truncated)
-    {      
+    {
     }
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    constexpr const_string(const value_type* buffer, size_t length, bool is_truncated = false)
+    constexpr const_u16string(const value_type* buffer, size_t length, bool is_truncated = false)
       : const_basic_string(buffer, length, is_truncated)
     {
     }
@@ -75,7 +73,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    constexpr const_string(const value_type* buffer, const value_type* buffer_end, bool is_truncated = false)
+    constexpr const_u16string(const value_type* buffer, const value_type* buffer_end, bool is_truncated = false)
       : const_basic_string(buffer, buffer_end - buffer, is_truncated)
     {
     }
@@ -83,7 +81,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    constexpr const_string(const etl::const_string& other)
+    constexpr const_u16string(const etl::const_u16string& other)
       : const_basic_string(other.data(), other.size(), other.is_truncated())
     {
     }
