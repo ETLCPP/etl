@@ -31,6 +31,7 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 #include <cstdint>
+#include <vector>
 
 #include "etl/optional.h"
 #include "etl/vector.h"
@@ -116,6 +117,75 @@ namespace
       data4 = etl::nullopt;
       CHECK(!bool(data4));
       CHECK(!data4.has_value());
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_emplace_construction_cpp14)
+    {
+      constexpr etl::optional<int> opt(etl::in_place_t{}, 1);
+
+      CHECK_TRUE(opt.has_value());
+      CHECK(bool(opt));
+      CHECK_EQUAL(1, opt.value());
+    }
+#endif
+
+#if ETL_USING_CPP20 && ETL_USING_STL
+    //*************************************************************************
+    TEST(test_emplace_construction_cpp20)
+    {
+      struct TestData
+      {
+        constexpr TestData(int a_, int b_)
+          : a(a_), b(b_)
+        {
+        }
+
+        int a;
+        int b;
+      };
+
+      constexpr etl::optional<TestData> opt(etl::in_place_t{}, 1, 2);
+
+      CHECK_TRUE(opt.has_value());
+      CHECK(bool(opt));
+      CHECK_EQUAL(1, opt.value().a);
+      CHECK_EQUAL(2, opt.value().b);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_construct_from_initializer_list_and_arguments)
+    {
+      struct S
+      {
+        S()
+          : vi()
+          , a(0)
+          , b(0)
+        {
+        }
+
+        S(std::initializer_list<int> il, int a_, int b_)
+          : vi(il)
+          , a(a_)
+          , b(b_)
+        {
+        }
+
+        std::vector<int> vi;
+        int a;
+        int b;
+      };
+
+      etl::optional<S> opt(etl::in_place_t{}, { 10, 11, 12 }, 1, 2);
+
+      CHECK_EQUAL(10, opt.value().vi[0]);
+      CHECK_EQUAL(11, opt.value().vi[1]);
+      CHECK_EQUAL(12, opt.value().vi[2]);
+      CHECK_EQUAL(1, opt.value().a);
+      CHECK_EQUAL(2, opt.value().b);
     }
 
     //*************************************************************************
