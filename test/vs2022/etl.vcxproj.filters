@@ -1530,6 +1530,9 @@
     <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate_observable.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3689,6 +3692,9 @@
     <ClCompile Include="..\test_crc64_iso.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_delegate_observable.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3847,6 +3853,12 @@
     <None Include="..\..\CONTRIBUTING.md">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\scripts\convert_headers_to_use_guards.bat">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\scripts\convert_headers_to_use_once.bat">
+      <Filter>Tests</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
@@ -3885,6 +3897,7 @@
     <Text Include="..\syntax_check\CMakeLists.txt">
       <Filter>Tests\Syntax Checks</Filter>
     </Text>
+    <Text Include="..\..\Converting header guards.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\etl.ico">

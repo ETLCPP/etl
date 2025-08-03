@@ -153,6 +153,7 @@ add_executable(etl_tests
 	test_debounce.cpp
 	test_delegate.cpp
 	test_delegate_cpp03.cpp
+	test_delegate_observable.cpp
 	test_delegate_service.cpp
 	test_delegate_service_compile_time.cpp
 	test_delegate_service_cpp03.cpp

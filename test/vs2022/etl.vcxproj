@@ -3353,6 +3353,7 @@
     <ClInclude Include="..\..\include\etl\crc8_opensafety.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
+    <ClInclude Include="..\..\include\etl\delegate_observable.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
     <ClInclude Include="..\..\include\etl\function_traits.h" />
     <ClInclude Include="..\..\include\etl\gcd.h" />
@@ -9387,6 +9388,7 @@
     <ClCompile Include="..\test_crc8_opensafety.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
+    <ClCompile Include="..\test_delegate_observable.cpp" />
     <ClCompile Include="..\test_expected.cpp" />
     <ClCompile Include="..\test_function_traits.cpp" />
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
