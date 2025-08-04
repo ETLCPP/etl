@@ -60,6 +60,7 @@ SOFTWARE.
 #include "message_router.h"
 #include "integral_limits.h"
 #include "largest.h"
+#include "tuple.h"
 
 #include <stdint.h>
 
@@ -207,7 +208,77 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
+
+    // Compile-time: TState::ID must equal its index in the type list (0..N-1)
+    template <size_t Id, typename...> struct check_ids : etl::true_type 
+    {
+    };
+    
+    template <size_t Id, typename TState0, typename... TRest>
+    struct check_ids<Id, TState0, TRest...>
+      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
+    {
+    };   
   }
+
+  class ifsm_state;
+
+  //***************************************************************************
+  /// A class to store FSM states.
+  //***************************************************************************
+  template <typename... TStates>
+  class fsm_state_pack 
+  {
+  public:
+
+    friend class etl::fsm;
+
+    ETL_STATIC_ASSERT((private_fsm::check_ids<0, TStates...>::value), "State IDs must be 0..N-1 and in order");
+    ETL_STATIC_ASSERT(sizeof...(TStates) > 0, "At least one state is required");
+    ETL_STATIC_ASSERT(sizeof...(TStates) < private_fsm::ifsm_state_helper<>::No_State_Change, "State IDs mst be less than ifsm_state::No_State_Change");
+
+    //*********************************
+    // The number of states.
+    //*********************************
+    static constexpr size_t size()
+    {
+      return sizeof...(TStates);
+    }
+
+    //*********************************
+    /// Gets a reference to the state.
+    //*********************************
+    template <typename TState>
+    TState& get() 
+    { 
+      return etl::get<TState>(storage); 
+    }
+
+    //*********************************
+    /// Gets a const reference to the state.
+    //*********************************
+    template <typename TState>
+    const TState& get() const 
+    { 
+      return etl::get<TState>(storage); 
+    }
+
+  private:
+
+    //*********************************
+    /// Gets a pointer to the state list.
+    //*********************************
+    etl::ifsm_state** get_state_list()
+    {
+      return &states[0];
+    }
+
+    /// A tuple to store the states.
+    etl::tuple<TStates...> storage{};
+
+    /// Pointers to the states.
+    etl::ifsm_state* states[sizeof...(TStates)]{ &etl::get<TStates>(storage)... };
+  };
 
   //***************************************************************************
   /// Interface class for FSM states.
@@ -333,8 +404,8 @@ namespace etl
     ifsm_state* p_default_child;
 
     // Disabled.
-    ifsm_state(const ifsm_state&);
-    ifsm_state& operator =(const ifsm_state&);
+    ifsm_state(const ifsm_state&) ETL_DELETE;
+    ifsm_state& operator =(const ifsm_state&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -360,6 +431,7 @@ namespace etl
 
     //*******************************************
     /// Set the states for the FSM
+    /// From a pointer to etl::ifsm_state and size.
     //*******************************************
     template <typename TSize>
     void set_states(etl::ifsm_state** p_states, TSize size)
@@ -374,6 +446,22 @@ namespace etl
       {
         ETL_ASSERT(state_list[i] != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
         ETL_ASSERT(state_list[i]->get_state_id() == i, ETL_ERROR(etl::fsm_state_list_order_exception));
+        state_list[i]->set_fsm_context(*this);
+      }
+    }
+
+    //*******************************************
+    /// Set the states for the FSM
+    /// From an etl::fsm_state_pack.
+    //*******************************************
+    template <typename... TStates>
+    void set_states(etl::fsm_state_pack<TStates...>& state_pack)
+    {
+      state_list = state_pack.get_state_list();
+      number_of_states = etl::fsm_state_id_t(state_pack.size());
+
+      for (etl::fsm_state_id_t i = 0; i < number_of_states; ++i)
+      {
         state_list[i]->set_fsm_context(*this);
       }
     }

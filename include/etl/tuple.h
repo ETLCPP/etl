@@ -240,7 +240,7 @@ namespace etl
     //*********************************
     ETL_CONSTEXPR14
     tuple()
-      : value(THead())
+      : value()
     {
     }
 
