@@ -213,7 +213,7 @@ namespace etl
     template <size_t Id, typename...> struct check_ids : etl::true_type 
     {
     };
-    
+
     template <size_t Id, typename TState0, typename... TRest>
     struct check_ids<Id, TState0, TRest...>
       : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
