@@ -730,5 +730,55 @@ namespace
       CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
     }
+
+    //*************************************************************************
+    TEST(test_fsm_force_state_changes)
+    {
+      MotorControl motorControl;
+
+      etl::fsm_state_pack<Idle, Running, WindingDown, Locked> statePack;
+
+      motorControl.Initialise(statePack);
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      // Start the FSM.
+      motorControl.start(false);
+      CHECK(motorControl.is_started());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
+
+      auto id1 = motorControl.transition_to(StateId::Running);
+
+      // Now in Running state.
+      CHECK_EQUAL(StateId::Running, int(id1));
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state().get_state_id()));
+
+      auto id2 = motorControl.transition_to(StateId::Idle);
+      
+      // Now in Locked state.
+      CHECK_EQUAL(StateId::Locked, int(id2));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
+
+      auto id3 = motorControl.transition_to(StateId::Winding_Down);
+
+      // Now in Locked state.
+      CHECK_EQUAL(StateId::Winding_Down, int(id3));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state().get_state_id()));
+
+      // Send a normal event message to make sure the FSM is still working.
+
+      // Now send a Stopped event message.
+      motorControl.receive(Stopped());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
+    }
   };
 }

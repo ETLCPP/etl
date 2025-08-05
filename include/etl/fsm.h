@@ -508,34 +508,26 @@ namespace etl
       {
         etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-        if (have_changed_state(next_state_id))
-        {
-          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-          etl::ifsm_state* p_next_state = state_list[next_state_id];
-
-          do
-          {
-            p_state->on_exit_state();
-            p_state = p_next_state;
-
-            next_state_id = p_state->on_enter_state();
-
-            if (have_changed_state(next_state_id))
-            {
-              ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-              p_next_state = state_list[next_state_id];
-            }
-          } while (p_next_state != p_state); // Have we changed state again?
-        }
-        else if (is_self_transition(next_state_id))
-        {
-          p_state->on_exit_state();
-          p_state->on_enter_state();
-        }
+        process_state_change(next_state_id); 
       }
       else
       {
         ETL_ASSERT_FAIL(ETL_ERROR(etl::fsm_not_started));
+      }
+    }
+
+    //*******************************************
+    /// Invoke a state transition.
+    //*******************************************
+    etl::fsm_state_id_t transition_to(etl::fsm_state_id_t new_state_id)
+    {
+      if (is_started())
+      {
+        return process_state_change(new_state_id);
+      }
+      else
+      {
+        return ifsm_state::No_State_Change;
       }
     }
 
@@ -631,6 +623,39 @@ namespace etl
     bool is_self_transition(etl::fsm_state_id_t next_state_id) const
     {
       return (next_state_id == ifsm_state::Self_Transition);
+    }
+
+    //*******************************************
+    /// Core function to process a state change.
+    //*******************************************
+    virtual etl::fsm_state_id_t process_state_change(etl::fsm_state_id_t next_state_id)
+    {
+      if (have_changed_state(next_state_id))
+      {
+        ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+        etl::ifsm_state* p_next_state = state_list[next_state_id];
+
+        do
+        {
+          p_state->on_exit_state();
+          p_state = p_next_state;
+
+          next_state_id = p_state->on_enter_state();
+
+          if (have_changed_state(next_state_id))
+          {
+            ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+            p_next_state = state_list[next_state_id];
+          }
+        } while (p_next_state != p_state); // Have we changed state again?
+      }
+      else if (is_self_transition(next_state_id))
+      {
+        p_state->on_exit_state();
+        p_state->on_enter_state();
+      }
+
+      return p_state->get_state_id();
     }
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.

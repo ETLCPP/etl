@@ -193,6 +193,14 @@ namespace
     }
 
     //***********************************
+    template <typename... TStates>
+    void Initialise(etl::fsm_state_pack<TStates...>& state_pack)
+    {
+      set_states(state_pack);
+      ClearStatistics();
+    }
+
+    //***********************************
     void ClearStatistics()
     {
       startCount = 0;
@@ -1027,6 +1035,57 @@ namespace
       motorControl.receive(SelfTransition());
 
       CHECK_EQUAL(1, motorControl.selfTransitionCount);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_force_state_changes)
+    {
+      MotorControl motorControl;
+
+      etl::fsm_state_pack<Idle, Running, WindingUp, WindingDown, AtSpeed> statePack;
+
+      motorControl.Initialise(statePack);
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      // Start the FSM.
+      motorControl.start(false);
+      CHECK(motorControl.is_started());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
+
+      auto id1 = motorControl.transition_to(StateId::Winding_Up);
+
+      // Now in Winding_Up state.
+      CHECK_EQUAL(StateId::Winding_Up, int(id1));
+      CHECK_EQUAL(StateId::Winding_Up, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Winding_Up, int(motorControl.get_state().get_state_id()));
+
+      auto id2 = motorControl.transition_to(StateId::At_Speed);
+
+      // Now in At_Speed state.
+      CHECK_EQUAL(StateId::At_Speed, int(id2));
+      CHECK_EQUAL(StateId::At_Speed, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::At_Speed, int(motorControl.get_state().get_state_id()));
+
+      // Send some normal event messages to make sure the HFSM is still working.
+
+      // Now send a Stop event message.
+      motorControl.receive(Stop());
+
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state().get_state_id()));
+
+      // Now send a Stopped event message.
+      motorControl.receive(Stopped());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
+
+
     }
   };
 }
