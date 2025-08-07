@@ -1533,6 +1533,9 @@
     <ClInclude Include="..\..\include\etl\delegate_observable.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\rounded_integral_division.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3854,10 +3857,10 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\scripts\convert_headers_to_use_guards.bat">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Scripts</Filter>
     </None>
     <None Include="..\..\scripts\convert_headers_to_use_once.bat">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -3897,7 +3900,9 @@
     <Text Include="..\syntax_check\CMakeLists.txt">
       <Filter>Tests\Syntax Checks</Filter>
     </Text>
-    <Text Include="..\..\Converting header guards.txt" />
+    <Text Include="..\..\Converting header guards.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\etl.ico">

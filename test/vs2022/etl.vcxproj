@@ -3481,6 +3481,7 @@
     <ClInclude Include="..\..\include\etl\rescale.h" />
     <ClInclude Include="..\..\include\etl\result.h" />
     <ClInclude Include="..\..\include\etl\rms.h" />
+    <ClInclude Include="..\..\include\etl\rounded_integral_division.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
     <ClInclude Include="..\..\include\etl\singleton.h" />
@@ -10331,6 +10332,7 @@
     <ClCompile Include="..\test_rescale.cpp" />
     <ClCompile Include="..\test_result.cpp" />
     <ClCompile Include="..\test_rms.cpp" />
+    <ClCompile Include="..\test_rounded_integral_division.cpp" />
     <ClCompile Include="..\test_shared_message.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
