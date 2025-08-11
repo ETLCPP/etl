@@ -656,22 +656,22 @@ namespace etl
   {
     const T quotient      = num / den;
     const T remainder     = num % den;
-    const T common_den    = etl::absolute(common_den);
+    const T abs_den       = etl::absolute(den);
     const T abs_remainder = etl::absolute(remainder);
-    const T direction     = ((num >= 0) == (common_den >= 0)) ? 1 : -1;
+    const T direction     = ((num >= 0) == (den >= 0)) ? 1 : -1;
 
-    if ((abs_remainder * 2) < common_den)
+    if ((abs_remainder * 2) < abs_den)
     {
       return quotient;
     }
-    else if ((abs_remainder * 2) > common_den)
+    else if ((abs_remainder * 2) > abs_den)
     {
       return quotient + direction;
     }
     else
     {
       // Exactly halfway, round to odd
-      return (quotient & 1) == 1 ? quotient : quotient + direction;
+      return (quotient & 1) != 0 ? quotient : quotient + direction;
     }
   }
 
@@ -706,23 +706,22 @@ namespace etl
                           T>::type
     divide_round_half_odd(T num, T den) ETL_NOEXCEPT
   {
-    const T quotient   = num / den;
-    const T remainder  = num % den;
+    const T quotient      = num / den;
+    const T remainder     = num % den;
+    const T direction     = ((num >= 0U) == (den >= 0U)) ? 1 : -1;
 
     if ((remainder * 2U) < den)
     {
-      // Less than halfway, round down
       return quotient;
     }
     else if ((remainder * 2U) > den)
     {
-      // More than halfway, round up
-      return quotient + 1U;
+      return quotient + direction;
     }
     else
     {
       // Exactly halfway, round to odd
-      return (quotient & 1U) == 1U ? quotient : quotient + 1U;
+      return (quotient & 1U) != 0U ? quotient : quotient + direction;
     }
   }
 
