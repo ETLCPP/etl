@@ -259,7 +259,7 @@ namespace etl
     //*********************************
     // The number of states.
     //*********************************
-    static constexpr size_t size()
+    static ETL_CONSTEXPR size_t size()
     {
       return sizeof...(TStates);
     }
@@ -536,7 +536,7 @@ namespace etl
 
         if (have_changed_state(next_state_id))
         {
-          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+          ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
           etl::ifsm_state* p_next_state = state_list[next_state_id];
 
           do
@@ -548,7 +548,7 @@ namespace etl
 
             if (have_changed_state(next_state_id))
             {
-              ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+              ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
               p_next_state = state_list[next_state_id];
             }
           } while (p_next_state != p_state); // Have we changed state again?

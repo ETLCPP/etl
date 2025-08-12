@@ -117,7 +117,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable)
     {
-      ETL_CONSTEXPR14 Observable observable(global_callback, member_callback);
+      static ETL_CONSTEXPR14 Observable observable(global_callback, member_callback);
 
       CHECK_EQUAL(2, observable.number_of_observers());
 
@@ -144,7 +144,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable_using_template_deduction_guide_cpp17)
     {
-      ETL_CONSTEXPR14 etl::delegate_observable observable(int{}, global_callback, member_callback);
+      static ETL_CONSTEXPR14 etl::delegate_observable observable(int{}, global_callback, member_callback);
 
       CHECK_EQUAL(2, observable.number_of_observers());
 
@@ -171,7 +171,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable_from_function)
     {
-      ETL_CONSTEXPR14 Observable observable = CreateObservable();
+      static ETL_CONSTEXPR14 Observable observable = CreateObservable();
 
       CHECK_EQUAL(1, observable.number_of_observers());
 

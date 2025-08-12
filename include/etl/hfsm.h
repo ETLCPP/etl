@@ -219,7 +219,7 @@ namespace etl
     {
       if (have_changed_state(next_state_id))
       {
-        ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+        ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
 
         etl::ifsm_state* p_next_state = state_list[next_state_id];
         etl::ifsm_state* p_root       = common_ancestor(p_state, p_next_state);
@@ -227,7 +227,7 @@ namespace etl
         do_exits(p_root, p_state);
         next_state_id = do_enters(p_root, p_next_state, true);
 
-        ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+        ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
         p_state = state_list[next_state_id];
       }
       else if (is_self_transition(next_state_id))
