@@ -97,7 +97,7 @@ namespace
   };
 
   //*************************************************************************
-  ETL_CONSTEXPR14 Observable CreateObservable()
+  static ETL_CONSTEXPR14 Observable CreateObservable()
   {
     Observable observable;
 
