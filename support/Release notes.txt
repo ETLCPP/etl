@@ -12,6 +12,7 @@ Made invocation of delegate consrexpr for C++14
 #1132 Request: Make type_def Methods Noexcept
 #1054 Using #pragma once
 #1159 etl::fsm helper to check states id sequence at compile time
+#1160 Feature request: rounded division (similar to scaled rounding)
 
 Fixes:
 Fix gamma tests (removed integral tests)

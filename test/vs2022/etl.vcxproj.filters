@@ -3698,6 +3698,9 @@
     <ClCompile Include="..\test_delegate_observable.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_rounded_integral_division.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

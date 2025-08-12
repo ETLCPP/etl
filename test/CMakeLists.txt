@@ -267,6 +267,7 @@ add_executable(etl_tests
 	test_rescale.cpp
 	test_result.cpp
 	test_rms.cpp
+	test_rounded_integral_division.cpp
 	test_scaled_rounding.cpp
 	test_set.cpp
 	test_shared_message.cpp
