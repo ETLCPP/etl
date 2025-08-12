@@ -96,7 +96,7 @@ namespace
     }
   };
 
-#if !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_VERSION <= 1100))
+#if !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_FULL_VERSION <= 1100))
   //*************************************************************************
   ETL_CONSTEXPR14 Observable CreateObservable()
   {
@@ -170,7 +170,7 @@ namespace
     }
 #endif
 
-#if !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_VERSION <= 1100))
+#if !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_FULL_VERSION <= 1100))
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable_from_function)
     {
