@@ -60,7 +60,9 @@ SOFTWARE.
 #include "message_router.h"
 #include "integral_limits.h"
 #include "largest.h"
-#include "tuple.h"
+#if ETL_USING_CPP11
+  #include "tuple.h"
+#endif
 
 #include <stdint.h>
 
@@ -223,6 +225,7 @@ namespace etl
 
   class ifsm_state;
 
+#if ETL_USING_CPP11
   //***************************************************************************
   /// A class to store FSM states.
   //***************************************************************************
@@ -279,6 +282,7 @@ namespace etl
     /// Pointers to the states.
     etl::ifsm_state* states[sizeof...(TStates)]{ &etl::get<TStates>(storage)... };
   };
+#endif
 
   //***************************************************************************
   /// Interface class for FSM states.
@@ -450,6 +454,7 @@ namespace etl
       }
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Set the states for the FSM
     /// From an etl::fsm_state_pack.
@@ -465,6 +470,7 @@ namespace etl
         state_list[i]->set_fsm_context(*this);
       }
     }
+#endif
 
     //*******************************************
     /// Starts the FSM.
