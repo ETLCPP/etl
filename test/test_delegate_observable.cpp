@@ -98,14 +98,15 @@ namespace
 
 #if defined(ETL_COMPILER_GCC)
   #if (ETL_COMPILER_FULL_VERSION <= 1100)
-      #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE 0
+      #define ETL_GCC_11 1
     #else
-      #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE 1
+      #define ETL_GCC_11 0
   #endif
 #else
-  #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE 1
+  #define ETL_GCC_11 0
 #endif
 
+#define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE (ETL_GCC_11 && ETL_USING_CPP14)
 
 #if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
   //*************************************************************************
