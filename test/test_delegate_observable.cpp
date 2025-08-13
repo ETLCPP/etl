@@ -96,7 +96,18 @@ namespace
     }
   };
 
-#if !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_FULL_VERSION <= 1100))
+#if defined(ETL_COMPILER_GCC)
+  #if (ETL_COMPILER_FULL_VERSION <= 1100))
+      #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE 0
+    #else
+      #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE 1
+  #endif
+#else
+  #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE 1
+#endif
+
+
+#if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
   //*************************************************************************
   ETL_CONSTEXPR14 Observable CreateObservable()
   {
@@ -170,7 +181,7 @@ namespace
     }
 #endif
 
-#if !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_FULL_VERSION <= 1100))
+#if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable_from_function)
     {

@@ -476,6 +476,7 @@ namespace etl
       }
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Set the states for the FSM
     /// From an etl::fsm_state_pack.
@@ -491,6 +492,7 @@ namespace etl
         state_list[i]->set_fsm_context(*this);
       }
     }
+#endif
 
     //*******************************************
     /// Starts the FSM.
