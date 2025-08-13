@@ -77,9 +77,8 @@ namespace etl
   typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type
     divide_round_to_ceiling(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T remainder  = numerator % denominator;
-
-    T quotient = numerator / denominator;
+    const T remainder = numerator % denominator;
+    const T quotient  = numerator / denominator;
 
     // If remainder is zero, already exact
     if (remainder == 0)
@@ -129,9 +128,8 @@ namespace etl
                           T>::type
     divide_round_to_ceiling(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T remainder  = numerator % denominator;
-
-    T quotient = numerator / denominator;
+    const T remainder = numerator % denominator;
+    const T quotient  = numerator / denominator;
     
     // If remainder is zero, already exact, otherwise, increment quotient
     return remainder == 0U ? quotient : quotient + 1U;
@@ -175,9 +173,8 @@ namespace etl
                           T>::type
     divide_round_to_floor(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T remainder  = numerator % denominator;
-
-    T quotient = numerator / denominator;
+    const T remainder = numerator % denominator;
+    const T quotient  = numerator / denominator;
 
     // If remainder is zero, already exact
     if (remainder == 0)
@@ -271,22 +268,19 @@ namespace etl
                           T>::type
     divide_round_to_infinity(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T remainder  = numerator % denominator;
-
-    T quotient = numerator / denominator;
-
+    const T remainder = numerator % denominator;
+    const T quotient  = numerator / denominator;
+    
     if (private_rounded_integral_division::are_same_sign(numerator, denominator))
     {
       // Same sign, round towards +infinity
-      quotient = remainder ? quotient + 1 : quotient;
+      return remainder ? quotient + 1 : quotient;
     }
     else
     {
       // Different signs, round towards -infinity
-      quotient = remainder ? quotient - 1 : quotient;
+      return remainder ? quotient - 1 : quotient;
     }
-
-    return quotient;
   }
 
   //***************************************************************************
@@ -327,9 +321,8 @@ namespace etl
                           T>::type
     divide_round_to_infinity(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T remainder  = numerator % denominator;
-
-    T quotient = numerator / denominator;
+    const T remainder = numerator % denominator;
+    const T quotient  = numerator / denominator;
 
     return remainder ? quotient + 1U : quotient;
   }
@@ -416,9 +409,8 @@ namespace etl
     divide_round_half_up(T numerator, T denominator) ETL_NOEXCEPT
   {
     // Normal division
-    T quotient = numerator / denominator;
-
     const T remainder = numerator % denominator;
+    const T quotient  = numerator / denominator;
 
     // Work with magnitudes in unsigned form (avoids abs() overflow)
     typedef typename std::make_unsigned<T>::type utype;
@@ -433,11 +425,11 @@ namespace etl
       // Round away from zero
       if (private_rounded_integral_division::are_same_sign(numerator, denominator)) 
       {
-        ++quotient; // same sign ? increment
+        return quotient + 1; // same sign ? increment
       }
       else 
       {
-        --quotient; // different sign ? decrement
+        return quotient - 1; // different sign ? decrement
       }
     }
 
@@ -483,16 +475,10 @@ namespace etl
     divide_round_half_up(T numerator, T denominator) ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
+    const T quotient = numerator / denominator;
 
-    T quotient = numerator / denominator;
-        
     // If remainder is at least half the divisor, round up
-    if (remainder >= (denominator / 2U) + (denominator % 2U))
-    {
-      ++quotient;
-    }
-
-    return quotient;
+    return (remainder >= (denominator / 2U) + (denominator % 2U)) ? quotient + 1U : quotient;
   }
 
   //***************************************************************************
@@ -583,16 +569,10 @@ namespace etl
     divide_round_half_down(T numerator, T denominator) ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
-
-    T quotient = numerator / denominator;
+    const T quotient  = numerator / denominator;
 
     // If remainder is at least half the divisor, round down
-    if (remainder > (denominator / 2U))
-    {
-      ++quotient;
-    }
-
-    return quotient;
+    return (remainder > (denominator / 2U)) ? quotient + 1U : quotient;
   }
 
   //***************************************************************************
