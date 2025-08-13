@@ -1527,14 +1527,14 @@
     <ClInclude Include="..\..\include\etl\const_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\delegate_observable.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\rounded_integral_division.h">
       <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
