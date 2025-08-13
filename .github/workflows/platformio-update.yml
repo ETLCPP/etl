@@ -1,0 +1,26 @@
+name: Publish ETL to PlatformIO
+
+on:
+  release:
+    types: [published]  # Trigger only when a GitHub release is published
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish to PlatformIO Registry
+        env:
+          PIO_API_TOKEN: ${{ secrets.PLATFORMIO_TOKEN }}
+        run: |
+          echo "Triggering PlatformIO library update for ETL..."
+          curl -X POST \
+            -H "Authorization: Bearer $PLATFORMIO_TOKEN" \
+            -H "Content-Type: application/json" \
+            https://api.platformio.org/v3/lib/update \
+            -d '{
+              "owner": "ETLCPP",
+              "name": "Embedded Template Library"
+            }'
