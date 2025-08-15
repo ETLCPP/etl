@@ -274,12 +274,12 @@ namespace etl
     if (private_rounded_integral_division::are_same_sign(numerator, denominator))
     {
       // Same sign, round towards +infinity
-      return remainder ? quotient + 1 : quotient;
+      return (remainder != 0) ? quotient + 1 : quotient;
     }
     else
     {
       // Different signs, round towards -infinity
-      return remainder ? quotient - 1 : quotient;
+      return (remainder != 0) ? quotient - 1 : quotient;
     }
   }
 
