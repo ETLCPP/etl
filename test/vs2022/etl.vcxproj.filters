@@ -3701,6 +3701,12 @@
     <ClCompile Include="..\test_rounded_integral_division.cpp">
       <Filter>Tests\Maths</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_not_null_pointer.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_unique_pointer.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

@@ -34,8 +34,8 @@ SOFTWARE.
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "ETL_STATIC_ASSERT.h"
-#include "unique_ptr.h"
+#include "static_assert.h"
+#include "memory.h"
 #include "type_traits.h"
 
 namespace etl 
@@ -61,128 +61,216 @@ namespace etl
   public:
 
     not_null_contains_null(string_type file_name_, numeric_type line_number_)
-      : delegate_exception(ETL_ERROR_TEXT("not_null:contains null", ETL_NOT_NULL_FILE_ID"A"), file_name_, line_number_)
+      : not_null_exception(ETL_ERROR_TEXT("not_null:contains null", ETL_NOT_NULL_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
 
+  //***************************************************************************
+  // not_null
   // Primary template
+  //***************************************************************************
   template <typename T>
   class not_null;
 
+  //***************************************************************************
   // Specialisation for T*
+  // A container for pointers that are not allowed to be null.
+  //***************************************************************************
   template <typename T>
   class not_null<T*> 
   {
   public:
 
+    //*********************************
+    /// Constructs a not_null from a pointer.
+    /// Asserts if the pointer is null.
+    //*********************************
     explicit not_null(T* ptr_)
       : ptr(ptr_) 
     {
-      ETL_ASSERT(ptr != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
+      ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
     }
 
-    not_null(const etl::not_null& other)
+    //*********************************
+    /// Copy constructor from a not_null pointer.
+    //*********************************
+    not_null(const etl::not_null<T*>& other)
       : ptr(other.get()) 
     {
     }
 
-    not_null& operator =(const etl::not_null& other) 
+    //*********************************
+    /// Assignment from a not_null.
+    //*********************************
+    not_null& operator =(const etl::not_null<T*>& rhs) 
     {
-      ptr = other.get();
+      ptr = rhs.get();
 
       return *this;
     }
 
-    not_null& operator =(T* ptr_) 
+    //*********************************
+    /// Assignment from a pointer.
+    /// Asserts if the pointer is null.
+    //*********************************
+    not_null& operator =(T* rhs) 
     {
-      ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
+      ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
       
-      ptr = ptr_;
+      ptr = rhs;
 
       return *this;
     }
 
+    //*********************************
+    /// Gets the underlying pointer.
+    //*********************************
     T* get() const 
     { 
       return ptr; 
     }
 
+    //*********************************
+    /// Implicit conversion to T*.
+    //*********************************
     operator T*() const 
     { 
       return ptr; 
     }
 
-    typename etl::remove_pointer<T*>::type& operator*() const
-    { 
-      return *ptr; 
-    }
-  
-    T operator->() const 
-    { 
-      return ptr; 
-    }
-
-  private:
-
-    T* ptr;
-  };
-
-  // Partial specialisation for etl::unique_ptr
-  template <typename T, typename TDeleter>
-  class not_null<etl::unique_ptr<T, TDeleter>> 
-  {
-  public:
-
-    explicit not_null(etl::unique_ptr<T, TDeleter>&& ptr_)
-      : ptr(etl::move(ptr_)) 
-    {
-      ETL_ASSERT(ptr != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
-    }
-
-#if ETL_USING_CPP11
-    not_null& operator =(etl::unique_ptr<T, TDeleter>&& ptr_) 
-    {
-      ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
-
-      ptr = etl::move(ptr_);
-
-      return *this;
-    }
-#endif
-
-    T* get() const 
-    { 
-      return ptr.get(); 
-    }
-
-    operator T*() const 
-    { 
-      return ptr.get(); 
-    }
-  
+    //*********************************
+    /// Dereference operator.
+    //*********************************
     T& operator*() const
     { 
       return *ptr; 
     }
   
+    //*********************************
+    /// Arrow operator.
+    //*********************************
     T* operator->() const 
-    { 
-      return ptr.get(); 
-    }
-
-    etl::unique_ptr<T, TDeleter>& unique() 
-    { 
-      return ptr; 
-    }
-  
-    const etl::unique_ptr<T, TDeleter>& unique() const 
     { 
       return ptr; 
     }
 
   private:
+
+    /// The underlying pointer.
+    T* ptr;
+  };
+
+  //***************************************************************************
+  // Partial specialisation for etl::unique_ptr
+  // A container for unique_ptr that are not allowed to be null.
+  //***************************************************************************
+  template <typename T, typename TDeleter>
+  class not_null<etl::unique_ptr<T, TDeleter>> 
+  {
+  private:
+
+    // The unique_ptr type.
+    typedef etl::unique_ptr<T, TDeleter> unique_ptr_type;
+
+  public:
+
+    //*********************************
+    /// Constructs a not_null from a unique_ptr.
+    /// Asserts if the unique_ptr is null.
+    //*********************************
+    explicit not_null(unique_ptr_type&& u_ptr_)
+      : u_ptr(etl::move(u_ptr_)) 
+    {
+      ETL_ASSERT(u_ptr.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
+    }
+
+#if ETL_USING_CPP11
+    //*********************************
+    /// Constructs a not_null from a unique_ptr.
+    //*********************************
+    not_null(etl::not_null<unique_ptr_type>&& other)
+      : u_ptr(etl::move(other.u_ptr)) 
+    {
+    }
+
+    //*********************************
+    /// Assign from a unique_ptr.
+    /// Asserts if the unique_ptr is null.
+    //*********************************
+    not_null& operator =(unique_ptr_type&& rhs) 
+    {
+      ETL_ASSERT_OR_RETURN_VALUE(rhs.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
+
+      u_ptr = etl::move(rhs);
+
+      return *this;
+    }
+
+    //*********************************
+    /// Assign from a not_null.
+    //*********************************
+    not_null& operator =(etl::not_null<unique_ptr_type>&& rhs) 
+    {
+      u_ptr = etl::move(rhs.u_ptr);
+
+      return *this;
+    }
+#endif
+
+    //*********************************
+    /// Gets the underlying unique_ptr.
+    //*********************************
+    T* get() const 
+    { 
+      return u_ptr.get(); 
+    }
+
+    //*********************************
+    /// Implicit conversion to T*.
+    //*********************************
+    operator T*() const 
+    { 
+      return u_ptr.get(); 
+    }
   
-    etl::unique_ptr<T, TDeleter> ptr;
+    //*********************************
+    /// Dereference operator.
+    //*********************************
+    T& operator*() const
+    { 
+      return *u_ptr; 
+    }
+  
+    //*********************************
+    /// Arrow operator.
+    //*********************************
+    T* operator->() const 
+    { 
+      return u_ptr.get(); 
+    }
+
+    //*********************************
+    /// Gets the underlying unique_ptr.
+    //*********************************
+    unique_ptr_type& unique() 
+    { 
+      return u_ptr; 
+    }
+  
+    //*********************************
+    /// Gets the underlying unique_ptr.
+    //*********************************
+    const unique_ptr_type& unique() const 
+    { 
+      return u_ptr; 
+    }
+
+  private:
+  
+    /// The underlying unique_ptr.
+    unique_ptr_type u_ptr;
   };
 }
+
+#endif
