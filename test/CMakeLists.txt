@@ -229,6 +229,8 @@ add_executable(etl_tests
 	test_multi_span.cpp
 	test_multi_vector.cpp
 	test_murmur3.cpp
+	test_not_null_pointer.cpp
+	test_not_null_unique_pointer.cpp
 	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp

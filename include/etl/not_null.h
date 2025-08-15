@@ -82,11 +82,17 @@ namespace etl
   {
   public:
 
+    typedef T        value_type;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T&       reference;
+    typedef const T& const_reference;
+
     //*********************************
     /// Constructs a not_null from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    explicit not_null(T* ptr_)
+    explicit not_null(pointer ptr_)
       : ptr(ptr_) 
     {
       ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
@@ -114,7 +120,7 @@ namespace etl
     /// Assignment from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    not_null& operator =(T* rhs) 
+    not_null& operator =(pointer rhs) 
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
       
@@ -126,15 +132,15 @@ namespace etl
     //*********************************
     /// Gets the underlying pointer.
     //*********************************
-    T* get() const 
+    pointer get() const 
     { 
       return ptr; 
     }
 
     //*********************************
-    /// Implicit conversion to T*.
+    /// Implicit conversion to pointer.
     //*********************************
-    operator T*() const 
+    operator pointer() const 
     { 
       return ptr; 
     }
@@ -142,7 +148,7 @@ namespace etl
     //*********************************
     /// Dereference operator.
     //*********************************
-    T& operator*() const
+    reference operator*() const
     { 
       return *ptr; 
     }
@@ -150,7 +156,7 @@ namespace etl
     //*********************************
     /// Arrow operator.
     //*********************************
-    T* operator->() const 
+    pointer operator->() const 
     { 
       return ptr; 
     }
@@ -158,7 +164,7 @@ namespace etl
   private:
 
     /// The underlying pointer.
-    T* ptr;
+    pointer ptr;
   };
 
   //***************************************************************************
@@ -166,15 +172,19 @@ namespace etl
   // A container for unique_ptr that are not allowed to be null.
   //***************************************************************************
   template <typename T, typename TDeleter>
-  class not_null<etl::unique_ptr<T, TDeleter>> 
+  class not_null<etl::unique_ptr<T, TDeleter> > 
   {
-  private:
-
-    // The unique_ptr type.
-    typedef etl::unique_ptr<T, TDeleter> unique_ptr_type;
-
   public:
 
+    typedef T        value_type;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T&       reference;
+    typedef const T& const_reference;
+
+    typedef etl::unique_ptr<T, TDeleter> unique_ptr_type;
+
+#if ETL_USING_CPP11
     //*********************************
     /// Constructs a not_null from a unique_ptr.
     /// Asserts if the unique_ptr is null.
@@ -185,7 +195,6 @@ namespace etl
       ETL_ASSERT(u_ptr.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
     }
 
-#if ETL_USING_CPP11
     //*********************************
     /// Constructs a not_null from a unique_ptr.
     //*********************************
@@ -219,17 +228,17 @@ namespace etl
 #endif
 
     //*********************************
-    /// Gets the underlying unique_ptr.
+    /// Gets the underlying ptr.
     //*********************************
-    T* get() const 
+    pointer get() const 
     { 
       return u_ptr.get(); 
     }
 
     //*********************************
-    /// Implicit conversion to T*.
+    /// Implicit conversion to pointer.
     //*********************************
-    operator T*() const 
+    operator pointer() const 
     { 
       return u_ptr.get(); 
     }
@@ -237,7 +246,7 @@ namespace etl
     //*********************************
     /// Dereference operator.
     //*********************************
-    T& operator*() const
+    reference operator*() const
     { 
       return *u_ptr; 
     }
@@ -245,7 +254,7 @@ namespace etl
     //*********************************
     /// Arrow operator.
     //*********************************
-    T* operator->() const 
+    pointer operator->() const 
     { 
       return u_ptr.get(); 
     }
