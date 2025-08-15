@@ -246,6 +246,7 @@ target_sources(tests PRIVATE
 		murmur3.h.t.cpp
 		mutex.h.t.cpp
 		negative.h.t.cpp
+		not_null.h.t.cpp
 		nth_type.h.t.cpp
 		nullptr.h.t.cpp
 		null_type.h.t.cpp
