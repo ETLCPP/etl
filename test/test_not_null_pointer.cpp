@@ -80,6 +80,40 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_underlying)
+    {
+      int value1 = 123;
+      etl::not_null<int*> nn1(&value1);
+
+      int* p = nn1.underlying();
+
+      CHECK_EQUAL(123, *p);
+    }
+
+    //*************************************************************************
+    TEST(test_underlying_const)
+    {
+      int value1 = 123;
+      const etl::not_null<int*> nn1(&value1);
+
+      const int* p = nn1.underlying();
+
+      CHECK_EQUAL(123, *p);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_const)
+    {
+      using up_t = etl::unique_ptr<int>;
+      up_t up1(new int{ 123 });
+      const etl::not_null<up_t> nn(etl::move(up1));
+
+      const up_t& up2 = nn.underlying();
+
+      CHECK_EQUAL(123, *up2.get());
+    }
+
+    //*************************************************************************
     TEST(test_implicit_conversion)
     {
       struct S 
