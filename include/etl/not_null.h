@@ -87,12 +87,13 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
+    typedef pointer  underlying_type;
 
     //*********************************
     /// Constructs a not_null from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    explicit not_null(pointer ptr_)
+    explicit not_null(underlying_type ptr_)
       : ptr(ptr_) 
     {
       ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
@@ -120,7 +121,7 @@ namespace etl
     /// Assignment from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    not_null& operator =(pointer rhs) 
+    not_null& operator =(underlying_type rhs) 
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
       
@@ -161,6 +162,22 @@ namespace etl
       return ptr; 
     }
 
+    //*********************************
+    /// Gets a reference to the underlying pointer.
+    //*********************************
+    underlying_type& underlying() 
+    { 
+      return ptr; 
+    }
+
+    //*********************************
+    /// Gets a const_reference to the underlying pointer.
+    //*********************************
+    const underlying_type& underlying() const 
+    { 
+      return ptr; 
+    }
+
   private:
 
     /// The underlying pointer.
@@ -182,14 +199,14 @@ namespace etl
     typedef T&       reference;
     typedef const T& const_reference;
 
-    typedef etl::unique_ptr<T, TDeleter> unique_ptr_type;
+    typedef etl::unique_ptr<T, TDeleter> underlying_type;;
 
 #if ETL_USING_CPP11
     //*********************************
     /// Constructs a not_null from a unique_ptr.
     /// Asserts if the unique_ptr is null.
     //*********************************
-    explicit not_null(unique_ptr_type&& u_ptr_)
+    explicit not_null(underlying_type&& u_ptr_)
       : u_ptr(etl::move(u_ptr_)) 
     {
       ETL_ASSERT(u_ptr.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
@@ -198,7 +215,7 @@ namespace etl
     //*********************************
     /// Constructs a not_null from a unique_ptr.
     //*********************************
-    not_null(etl::not_null<unique_ptr_type>&& other)
+    not_null(etl::not_null<underlying_type>&& other)
       : u_ptr(etl::move(other.u_ptr)) 
     {
     }
@@ -207,7 +224,7 @@ namespace etl
     /// Assign from a unique_ptr.
     /// Asserts if the unique_ptr is null.
     //*********************************
-    not_null& operator =(unique_ptr_type&& rhs) 
+    not_null& operator =(underlying_type&& rhs) 
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
 
@@ -219,7 +236,7 @@ namespace etl
     //*********************************
     /// Assign from a not_null.
     //*********************************
-    not_null& operator =(etl::not_null<unique_ptr_type>&& rhs) 
+    not_null& operator =(etl::not_null<underlying_type>&& rhs) 
     {
       u_ptr = etl::move(rhs.u_ptr);
 
@@ -260,17 +277,17 @@ namespace etl
     }
 
     //*********************************
-    /// Gets the underlying unique_ptr.
+    /// Gets a reference to the underlying unique_ptr.
     //*********************************
-    unique_ptr_type& unique() 
+    underlying_type& underlying() 
     { 
       return u_ptr; 
     }
   
     //*********************************
-    /// Gets the underlying unique_ptr.
+    /// Gets a const_reference to the underlying unique_ptr.
     //*********************************
-    const unique_ptr_type& unique() const 
+    const underlying_type& underlying() const 
     { 
       return u_ptr; 
     }
@@ -278,7 +295,7 @@ namespace etl
   private:
   
     /// The underlying unique_ptr.
-    unique_ptr_type u_ptr;
+    underlying_type u_ptr;
   };
 }
 
