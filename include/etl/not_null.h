@@ -281,7 +281,7 @@ namespace etl
     //*********************************
     underlying_type& underlying() 
     { 
-      return u_ptr; 
+      return etl::move(u_ptr); 
     }
   
     //*********************************
@@ -289,7 +289,7 @@ namespace etl
     //*********************************
     const underlying_type& underlying() const 
     { 
-      return u_ptr; 
+      return etl::move(u_ptr); 
     }
 
   private:
