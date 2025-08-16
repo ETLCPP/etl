@@ -55,25 +55,25 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_unique)
+    TEST(test_underlying)
     {
       using up_t = etl::unique_ptr<int>;
       up_t up1(new int{ 123 });
       etl::not_null<up_t> nn(etl::move(up1));
 
-      up_t up2 = etl::move(nn.unique());
+      up_t up2 = etl::move(nn.underlying());
 
       CHECK_EQUAL(123, *up2.get());
     }
 
     //*************************************************************************
-    TEST(test_unique_const)
+    TEST(test_underlying_const)
     {
       using up_t = etl::unique_ptr<int>;
       up_t up1(new int{ 123 });
       const etl::not_null<up_t> nn(etl::move(up1));
 
-      const up_t& up2 = nn.unique();
+      const up_t& up2 = etl::move(nn.underlying());
 
       CHECK_EQUAL(123, *up2.get());
     }
