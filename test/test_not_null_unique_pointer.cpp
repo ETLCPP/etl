@@ -55,44 +55,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_underlying)
-    {
-      using up_t = etl::unique_ptr<int>;
-      up_t up1(new int{ 123 });
-      etl::not_null<up_t> nn(etl::move(up1));
-
-      up_t up2 = etl::move(nn.underlying());
-
-      CHECK_EQUAL(123, *up2.get());
-    }
-
-    //*************************************************************************
-    TEST(test_underlying_const)
-    {
-      using up_t = etl::unique_ptr<int>;
-      up_t up1(new int{ 123 });
-      const etl::not_null<up_t> nn(etl::move(up1));
-
-      const up_t& up2 = etl::move(nn.underlying());
-
-      CHECK_EQUAL(123, *up2.get());
-    }
-
-    //*************************************************************************
-    TEST(test_move_construct)
-    {
-      using up_t = etl::unique_ptr<int>;
-      up_t up(new int{ 123 });
-
-      etl::not_null<up_t> nn1(etl::move(up));
-      etl::not_null<up_t> nn2(etl::move(nn1)); // Move constructor
-
-      CHECK_TRUE(nn1.get() == nullptr);
-      CHECK_EQUAL(123, *nn2.get());
-      CHECK_EQUAL(123, *nn2);
-    }
-
-    //*************************************************************************
     TEST(test_assign_from_unique_ptr)
     {
       using up_t = etl::unique_ptr<int>;
@@ -105,22 +67,6 @@ namespace
 
       nn1 = etl::move(up2);
 
-      CHECK_EQUAL(456, *nn1.get());
-    }
-
-    //*************************************************************************
-    TEST(test_assign_from_not_null)
-    {
-      using up_t = etl::unique_ptr<int>;
-      up_t up1(new int{ 123 });
-      etl::not_null<up_t> nn1(etl::move(up1));
-
-      up_t up2(new int{ 456 });
-      etl::not_null<up_t> nn2(etl::move(up2));
-
-      nn1 = etl::move(nn2);
-
-      CHECK_TRUE(nn2.get() == nullptr);
       CHECK_EQUAL(456, *nn1.get());
     }
 

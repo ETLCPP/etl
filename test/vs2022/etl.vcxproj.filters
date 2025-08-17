@@ -1521,6 +1521,9 @@
     <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\not_null.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3694,6 +3697,9 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\not_null.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_pointer_constexpr.cpp">
+      <Filter>Tests\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

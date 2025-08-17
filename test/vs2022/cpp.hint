@@ -38,3 +38,25 @@
 #define CHECK_ARRAY_EQUAL
 #define CHECK_CLOSE
 #define CHECK_THROW
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ETL_NOEXCEPT_IF_NO_THROW
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ETL_NOEXCEPT
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ETL_ASSERT(b, e)
+#define ETL_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e));}}
+#define ETL_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}
+#define ETL_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e));}}
+#define ETL_ASSERT(b, e) assert((b))
+#define ETL_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}}
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ETL_ERROR(e) (e(__FILE__, __LINE__))
+#define ETL_ERROR(e) (e("", __LINE__))
