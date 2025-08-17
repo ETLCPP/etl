@@ -47,7 +47,7 @@ namespace etl
   {
   public:
 
-    not_null_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+    not_null_exception(string_type reason_, string_type file_name_, numeric_type line_number_) ETL_NOEXCEPT_IF_NO_THROW
       : exception(reason_, file_name_, line_number_)
     {
     }
@@ -60,7 +60,7 @@ namespace etl
   {
   public:
 
-    not_null_contains_null(string_type file_name_, numeric_type line_number_)
+    not_null_contains_null(string_type file_name_, numeric_type line_number_) ETL_NOEXCEPT_IF_NO_THROW
       : not_null_exception(ETL_ERROR_TEXT("not_null:contains null", ETL_NOT_NULL_FILE_ID"A"), file_name_, line_number_)
     {
     }
@@ -93,24 +93,37 @@ namespace etl
     /// Constructs a not_null from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    explicit not_null(underlying_type ptr_)
+    ETL_CONSTEXPR14 explicit not_null(underlying_type ptr_) ETL_NOEXCEPT_IF_NO_THROW
       : ptr(ptr_) 
     {
       ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
     }
 
     //*********************************
-    /// Copy constructor from a not_null pointer.
+    /// Copy construct from a not_null pointer.
     //*********************************
-    not_null(const etl::not_null<T*>& other)
+    ETL_CONSTEXPR14 not_null(const etl::not_null<T*>& other) ETL_NOEXCEPT
       : ptr(other.get()) 
     {
     }
 
     //*********************************
+    /// Assignment from a pointer.
+    /// Asserts if the pointer is null.
+    //*********************************
+    ETL_CONSTEXPR14 not_null& operator =(underlying_type rhs) ETL_NOEXCEPT_IF_NO_THROW
+    {
+      ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
+
+      ptr = rhs;
+
+      return *this;
+    }
+
+    //*********************************
     /// Assignment from a not_null.
     //*********************************
-    not_null& operator =(const etl::not_null<T*>& rhs) 
+    ETL_CONSTEXPR14 not_null& operator =(const etl::not_null<T*>& rhs) ETL_NOEXCEPT
     {
       ptr = rhs.get();
 
@@ -118,22 +131,9 @@ namespace etl
     }
 
     //*********************************
-    /// Assignment from a pointer.
-    /// Asserts if the pointer is null.
-    //*********************************
-    not_null& operator =(underlying_type rhs) 
-    {
-      ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
-      
-      ptr = rhs;
-
-      return *this;
-    }
-
-    //*********************************
     /// Gets the underlying pointer.
     //*********************************
-    pointer get() const 
+    ETL_CONSTEXPR14 pointer get() const ETL_NOEXCEPT
     { 
       return ptr; 
     }
@@ -141,7 +141,7 @@ namespace etl
     //*********************************
     /// Implicit conversion to pointer.
     //*********************************
-    operator pointer() const 
+    ETL_CONSTEXPR14 operator pointer() const ETL_NOEXCEPT
     { 
       return ptr; 
     }
@@ -149,31 +149,15 @@ namespace etl
     //*********************************
     /// Dereference operator.
     //*********************************
-    reference operator*() const
+    ETL_CONSTEXPR14 reference operator*() const ETL_NOEXCEPT
     { 
       return *ptr; 
     }
-  
+
     //*********************************
     /// Arrow operator.
     //*********************************
-    pointer operator->() const 
-    { 
-      return ptr; 
-    }
-
-    //*********************************
-    /// Gets a reference to the underlying pointer.
-    //*********************************
-    underlying_type& underlying() 
-    { 
-      return ptr; 
-    }
-
-    //*********************************
-    /// Gets a const_reference to the underlying pointer.
-    //*********************************
-    const underlying_type& underlying() const 
+    ETL_CONSTEXPR14 pointer operator->() const ETL_NOEXCEPT
     { 
       return ptr; 
     }
@@ -191,6 +175,11 @@ namespace etl
   template <typename T, typename TDeleter>
   class not_null<etl::unique_ptr<T, TDeleter> > 
   {
+  private:
+
+    typedef etl::not_null<etl::unique_ptr<T, TDeleter> > this_type;
+    typedef etl::unique_ptr<T, TDeleter> underlying_type;
+
   public:
 
     typedef T        value_type;
@@ -199,46 +188,28 @@ namespace etl
     typedef T&       reference;
     typedef const T& const_reference;
 
-    typedef etl::unique_ptr<T, TDeleter> underlying_type;;
-
 #if ETL_USING_CPP11
     //*********************************
     /// Constructs a not_null from a unique_ptr.
-    /// Asserts if the unique_ptr is null.
+    /// Asserts if the unique_ptr contains null.
+    /// Moves from the unique_ptr.
     //*********************************
-    explicit not_null(underlying_type&& u_ptr_)
+    ETL_CONSTEXPR14 explicit not_null(underlying_type&& u_ptr_) ETL_NOEXCEPT_IF_NO_THROW
       : u_ptr(etl::move(u_ptr_)) 
     {
       ETL_ASSERT(u_ptr.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
     }
 
     //*********************************
-    /// Constructs a not_null from a unique_ptr.
-    //*********************************
-    not_null(etl::not_null<underlying_type>&& other)
-      : u_ptr(etl::move(other.u_ptr)) 
-    {
-    }
-
-    //*********************************
     /// Assign from a unique_ptr.
-    /// Asserts if the unique_ptr is null.
+    /// Asserts if the unique_ptr contains null.
+    /// Moves from the unique_ptr.
     //*********************************
-    not_null& operator =(underlying_type&& rhs) 
+    ETL_CONSTEXPR14 not_null& operator =(underlying_type&& rhs) ETL_NOEXCEPT_IF_NO_THROW
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
 
       u_ptr = etl::move(rhs);
-
-      return *this;
-    }
-
-    //*********************************
-    /// Assign from a not_null.
-    //*********************************
-    not_null& operator =(etl::not_null<underlying_type>&& rhs) 
-    {
-      u_ptr = etl::move(rhs.u_ptr);
 
       return *this;
     }
@@ -247,7 +218,7 @@ namespace etl
     //*********************************
     /// Gets the underlying ptr.
     //*********************************
-    pointer get() const 
+    ETL_CONSTEXPR14 pointer get() const ETL_NOEXCEPT
     { 
       return u_ptr.get(); 
     }
@@ -255,7 +226,7 @@ namespace etl
     //*********************************
     /// Implicit conversion to pointer.
     //*********************************
-    operator pointer() const 
+    ETL_CONSTEXPR14 operator pointer() const ETL_NOEXCEPT
     { 
       return u_ptr.get(); 
     }
@@ -263,7 +234,7 @@ namespace etl
     //*********************************
     /// Dereference operator.
     //*********************************
-    reference operator*() const
+    ETL_CONSTEXPR14 reference operator*() const ETL_NOEXCEPT
     { 
       return *u_ptr; 
     }
@@ -271,29 +242,21 @@ namespace etl
     //*********************************
     /// Arrow operator.
     //*********************************
-    pointer operator->() const 
+    ETL_CONSTEXPR14 pointer operator->() const ETL_NOEXCEPT
     { 
       return u_ptr.get(); 
     }
 
-    //*********************************
-    /// Gets a reference to the underlying unique_ptr.
-    //*********************************
-    underlying_type& underlying() 
-    { 
-      return u_ptr; 
-    }
-  
-    //*********************************
-    /// Gets a const_reference to the underlying unique_ptr.
-    //*********************************
-    const underlying_type& underlying() const 
-    { 
-      return u_ptr; 
-    }
-
   private:
   
+    ETL_CONSTEXPR14 explicit not_null(const this_type& u_ptr_) ETL_NOEXCEPT ETL_DELETE;
+    ETL_CONSTEXPR14 not_null& operator=(const this_type& rhs) ETL_NOEXCEPT  ETL_DELETE;
+
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 explicit not_null(this_type&& u_ptr_) ETL_NOEXCEPT = delete;
+    ETL_CONSTEXPR14 not_null& operator=(this_type&& rhs) ETL_NOEXCEPT = delete;
+#endif
+
     /// The underlying unique_ptr.
     underlying_type u_ptr;
   };

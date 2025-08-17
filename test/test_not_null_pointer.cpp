@@ -31,15 +31,25 @@ SOFTWARE.
 
 namespace
 {
+  struct S
+  {
+    int x;
+
+    int get() const
+    {
+      return x;
+    }
+  };
+
   SUITE(test_not_null_pointer)
   {
     //*************************************************************************
     TEST(test_construct_from_non_null_pointer)
     {
-      int value = 42;
+      int value = 123;
       etl::not_null<int*> nn(&value);
       CHECK_EQUAL(&value, nn.get());
-      CHECK_EQUAL(42, *nn);
+      CHECK_EQUAL(123, *nn);
     }
 
     //*************************************************************************
@@ -80,48 +90,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_underlying)
-    {
-      int value1 = 123;
-      etl::not_null<int*> nn1(&value1);
-
-      int* p = nn1.underlying();
-
-      CHECK_EQUAL(123, *p);
-    }
-
-    //*************************************************************************
-    TEST(test_underlying_const)
-    {
-      int value1 = 123;
-      const etl::not_null<int*> nn1(&value1);
-
-      const int* p = nn1.underlying();
-
-      CHECK_EQUAL(123, *p);
-    }
-
-    //*************************************************************************
-    TEST(test_unique_const)
-    {
-      using up_t = etl::unique_ptr<int>;
-      up_t up1(new int{ 123 });
-      const etl::not_null<up_t> nn(etl::move(up1));
-
-      const up_t& up2 = nn.underlying();
-
-      CHECK_EQUAL(123, *up2.get());
-    }
-
-    //*************************************************************************
     TEST(test_implicit_conversion)
     {
-      struct S 
-      { 
-        int x; 
-      };
-      
-      S s{77};
+      S s{123};
       etl::not_null<S*> nn(&s);
 
       S* raw = nn;
@@ -131,17 +102,7 @@ namespace
     //*************************************************************************
     TEST(test_arrow_operator)
     {
-      struct S 
-      { 
-        int x;
-
-        int get() const 
-        { 
-          return x; 
-        }
-      };
-
-      S s{77};
+      S s{123};
       etl::not_null<S*> nn(&s);
 
       CHECK_EQUAL(s.x, nn->x);
@@ -151,17 +112,7 @@ namespace
     //*************************************************************************
     TEST(test_dereference_operator)
     {
-      struct S 
-      { 
-        int x;
-
-        int get() const 
-        { 
-          return x; 
-        }
-      };
-
-      S s{77};
+      S s{123};
       etl::not_null<S*> nn(&s);
 
       CHECK_EQUAL(s.x, (*nn).x);
