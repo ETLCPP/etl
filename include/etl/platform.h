@@ -356,6 +356,8 @@ SOFTWARE.
   #define ETL_ENUM_CLASS(name)            enum name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum name
   #define ETL_LVALUE_REF_QUALIFIER
+  #define ETL_NOEXCEPT_IF_NO_THROW
+  #define ETL_NOEXCEPT_IF_NO_THROW_EXPR(...)
 #endif
 
 //*************************************
