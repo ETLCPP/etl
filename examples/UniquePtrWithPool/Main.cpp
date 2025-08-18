@@ -25,7 +25,7 @@ struct Deleter
     if (ptr)
     {
       std::cout << "Releasing S(" << ptr->a << ", " << ptr->b << ") back to pool." << std::endl;
-      pool->release(ptr);
+      pool->destroy(ptr);
     }
   }
 
