@@ -15,6 +15,8 @@ struct S
 };
 
 // Custom deleter that returns S* to the pool
+// This class is defined to be able to log the release of objects back to the pool.
+// Normally, you would use the predefined etl::ipool::destroyer
 struct Deleter
 {
   Deleter(etl::pool<S, 10>& p)

@@ -272,6 +272,58 @@ namespace etl
     };
 
     //***************************************************************************
+    /// A releaser is a functor that releases an object back to the pool.
+    //***************************************************************************
+    class releaser
+    {
+    public:
+
+      releaser(etl::ipool& p)
+        : pool(&p) 
+      {
+      }
+
+      template <typename T>
+      void operator()(const T* const p_object) const
+      {
+        if (p_object)
+        {
+          pool->release(p_object);
+        }
+      }
+
+    private:
+
+      etl::ipool* pool;
+    };
+
+    //***************************************************************************
+    /// A destroyer is a functor that destroys an object and releases it back to the pool.
+    //***************************************************************************
+    class destroyer
+    {
+    public:
+
+      destroyer(etl::ipool& p)
+        : pool(&p) 
+      {
+      }
+
+      template <typename T>
+      void operator()(const T* const p_object) const
+      {
+        if (p_object)
+        {
+          pool->destroy(p_object);
+        }
+      }
+
+    private:
+
+      etl::ipool* pool;
+    };
+
+    //***************************************************************************
     iterator begin()
     {
       return iterator(p_buffer, this);
