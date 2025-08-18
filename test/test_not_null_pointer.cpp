@@ -133,5 +133,32 @@ namespace
 
       CHECK_THROW(nn = nullptr, etl::not_null_contains_null);
     }
+
+    //*************************************************************************
+    TEST(test_non_null_comparisons)
+    {
+      int value[2] = { 123, 456 };
+      etl::not_null<int*> nn1(&value[0]);
+      etl::not_null<int*> nn2(&value[1]);
+      CHECK_TRUE(nn1 == nn1);
+      CHECK_TRUE(nn1 != nn2);
+      CHECK_TRUE(nn2 != nn1);
+
+      CHECK_FALSE(nn1 < nn1);
+      CHECK_TRUE(nn1 < nn2);
+      CHECK_FALSE(nn2 < nn1);
+
+      CHECK_TRUE(nn1 <= nn1);
+      CHECK_TRUE(nn1 <= nn2);
+      CHECK_FALSE(nn2 <= nn1);
+
+      CHECK_FALSE(nn1 > nn1);
+      CHECK_FALSE(nn1 > nn2);
+      CHECK_TRUE(nn2 > nn1);
+
+      CHECK_TRUE(nn1 >= nn1);
+      CHECK_FALSE(nn1 >= nn2);
+      CHECK_TRUE(nn2 >= nn1);
+    }
   };
 }
