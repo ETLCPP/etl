@@ -789,4 +789,42 @@ namespace
     }
 #endif
   };
+
+#if ETL_USING_CPP17 && !defined(ETL_FORCE_CPP11_NONTYPE)
+  //*********************************
+  TEST(test_nontype_t_cpp17)
+  {
+    // Test with int
+    CHECK_TRUE(42 == etl::nontype_t<42>::value);
+
+    // Test with bool
+    CHECK_TRUE(true == etl::nontype_t<true>::value);
+
+    // Test with char
+    CHECK_TRUE('A' == etl::nontype_t<'A'>::value);
+
+    // Test with enum
+    enum class E : uint8_t { A = 1, B = 2 };
+    CHECK_TRUE(E::A == etl::nontype_t<E::A>::value);
+    CHECK_TRUE(E::B == etl::nontype_t<E::B>::value);
+  }
+#elif ETL_USING_CPP11
+  enum class E : uint8_t { A = 1, B = 2 };
+
+  TEST(test_nontype_t_cpp11)
+  {
+    // Test with int
+    CHECK_TRUE(42 == (etl::nontype_t<int, 42>::value));
+
+    // Test with bool
+    CHECK_TRUE(true == (etl::nontype_t<bool, true>::value));
+
+    // Test with char
+    CHECK_TRUE('A' == (etl::nontype_t<char, 'A'>::value));
+
+    // Test with enum
+    CHECK_TRUE(E::A == (etl::nontype_t<E, E::A>::value));
+    CHECK_TRUE(E::B == (etl::nontype_t<E, E::B>::value));
+  }
+#endif
 }
