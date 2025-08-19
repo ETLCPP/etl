@@ -36,6 +36,7 @@ SOFTWARE.
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <type_traits>
 
 namespace
 {
@@ -287,6 +288,18 @@ namespace
 
   SUITE(test_delegate)
   {
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_delegate_types)
+    {
+      using Delegate = etl::delegate<int(float, long)>;
+
+      // Check the return type.
+      CHECK_TRUE((std::is_same<Delegate::return_type, int>::value));
+  
+      // Check the argument types.
+      CHECK_TRUE((std::is_same<Delegate::argument_types, etl::type_list<float, long>>::value));
+    }
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_false)
     {

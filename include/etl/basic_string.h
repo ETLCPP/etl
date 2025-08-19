@@ -35,7 +35,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-#include "char_traits.h"
 #include "alignment.h"
 #include "array.h"
 #include "type_traits.h"
@@ -50,6 +49,10 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+
+#if ETL_USING_LIBC_WCHAR_H
+  #include <wchar.h>
+#endif
 
 #if ETL_USING_STL && ETL_USING_CPP17
   #include <string_view>
@@ -936,7 +939,7 @@ namespace etl
         {
           // Insert in the middle.
           ++current_size;
-          etl::copy_backward(insert_position, end() - 1, end());
+          etl::mem_move(insert_position, end() - 1, insert_position + 1);
           *insert_position = value;
         }
         else
@@ -952,7 +955,7 @@ namespace etl
         if (position != end())
         {
           // Insert in the middle.
-          etl::copy_backward(insert_position, end() - 1, end());
+          etl::mem_move(insert_position, end() - 1, insert_position + 1);          
           *insert_position = value;
         }
 
@@ -1046,7 +1049,7 @@ namespace etl
           current_size += shift_amount;
         }
 
-        etl::copy_backward(insert_position, insert_position + characters_to_shift, begin() + to_position + characters_to_shift);
+        etl::mem_move(insert_position, insert_position + characters_to_shift, begin() + to_position);
         etl::fill(insert_position, insert_position + shift_amount, value);
       }
 
@@ -1133,7 +1136,8 @@ namespace etl
           current_size += shift_amount;
         }
 
-        etl::copy_backward(position_, position_ + characters_to_shift, begin() + to_position + characters_to_shift);
+        etl::mem_move(position_, position_ + characters_to_shift, begin() + to_position);
+        //etl::copy_backward(position_, position_ + characters_to_shift, begin() + to_position + characters_to_shift);
 
         position_ = copy_characters(first, etl::distance(first, last), position_);
       }
@@ -1315,7 +1319,7 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
-      etl::mem_copy(i_element + 1, end(), i_element);
+      etl::mem_move(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
       return i_element;
@@ -1330,7 +1334,7 @@ namespace etl
     {
       iterator i_element_(to_iterator(i_element));
 
-      etl::mem_copy(i_element + 1, end(), i_element_);
+      etl::mem_move(i_element + 1, end(), i_element_);
       p_buffer[--current_size] = 0;
 
       return i_element_;
@@ -1354,7 +1358,7 @@ namespace etl
         return first_;
       }
 
-      etl::mem_copy(last_, end(), first_);
+      etl::mem_move(last_, end(), first_);
       size_type n_delete = etl::distance(first_, last_);
 
       current_size -= n_delete;
@@ -1391,7 +1395,7 @@ namespace etl
           count = size() - pos;
         }
 
-        etl::mem_copy(p_buffer + pos, count, dest);
+        etl::mem_move(p_buffer + pos, count, dest);
 
         return count;
       }
@@ -2509,7 +2513,7 @@ namespace etl
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(false);
 #endif
-      etl::fill(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], T(0));
+      etl::mem_set(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], char(0));
     }
 
     //*********************************************************************
@@ -2671,7 +2675,7 @@ namespace etl
     typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value, TIterator2>::type
       copy_characters(TIterator1 from, size_t n, TIterator2 to)
     {
-      etl::mem_copy(from, n, to);
+      etl::mem_move(from, n, to);
 
       return to + n;
     }
@@ -2694,39 +2698,6 @@ namespace etl
       }
 
       return to;
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for sizeof(U) == sizeof(char).
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type 
-      get_string_length(const U* src)
-    {
-      return ::strlen(reinterpret_cast<const char*>(src));
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
-      get_string_length(const U* src)
-    {
-      return ::wcslen(reinterpret_cast<const wchar_t*>(src));
-    }
-
-    //*********************************************************************
-    /// get_string_length, optimised for anything else.
-    //*********************************************************************
-    template <typename U>
-    static
-    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type 
-      get_string_length(const U* src)
-    {
-      return etl::strlen(src);
     }
 
     //*********************************************************************
@@ -2784,7 +2755,7 @@ namespace etl
       pointer dst    = position;     
       size_t  length = get_string_length(src);
       size_t  count  = (length < size_t(free_space)) ? length : size_t(free_space);
-      etl::mem_copy(src, count, dst);
+      etl::mem_move(src, count, dst);
 
       truncated |= (src[count] != 0);
       current_size = size_t(start) + count;
@@ -2858,6 +2829,57 @@ namespace etl
       {
         return size() - sz - etl::distance(rbegin(), iposition);
       }
+    }
+
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(char).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(char), size_t>::type
+      get_string_length(const U* str)
+    {
+      return ::strlen(reinterpret_cast<const char*>(str));
+    }
+
+#if ETL_USING_LIBC_WCHAR_H
+    //*********************************************************************
+    /// get_string_length, optimised for sizeof(U) == sizeof(wchar_t).
+    //*********************************************************************
+    template <typename U>
+    static
+    typename etl::enable_if<sizeof(U) == sizeof(wchar_t), size_t>::type
+      get_string_length(const U* str)
+    {
+      return ::wcslen(reinterpret_cast<const wchar_t*>(str));
+    }
+#endif
+
+    //*********************************************************************
+    /// get_string_length, optimised for anything else.
+    //*********************************************************************
+    template <typename U>
+    static
+#if ETL_USING_LIBC_WCHAR_H
+    typename etl::enable_if<(sizeof(U) != sizeof(char)) && (sizeof(U) != sizeof(wchar_t)), size_t>::type
+#else
+    typename etl::enable_if<(sizeof(U) != sizeof(char)), size_t>::type
+#endif
+      get_string_length(const U* str)
+    {
+      if (str == ETL_NULLPTR)
+      {
+        return 0;
+      }
+
+      const U* end = str;
+
+      while (*end++ != 0)
+      {
+        // Do nothing.
+      }
+
+      return size_t(end - str) - 1;
     }
   };
 
@@ -3115,6 +3137,8 @@ namespace etl
   }
 #endif
 }
+
+#undef ETL_USING_WCHAR_T_H
 
 #include "private/minmax_pop.h"
 

@@ -335,6 +335,62 @@ namespace
     }
 
     //*************************************************************************
+    TEST(is_unique_sorted_until)
+    {
+      int sorted_data[]     = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int not_sorted_data[] = { 1, 2, 3, 4, 6, 5, 7, 8, 9, 10 };
+      int not_unique_data[] = { 1, 2, 3, 4, 4, 5, 6, 8, 9, 10 };
+
+      int* p_sorted     = etl::is_unique_sorted_until(std::begin(sorted_data), std::end(sorted_data));
+      int* p_not_sorted = etl::is_unique_sorted_until(std::begin(not_sorted_data), std::end(not_sorted_data));
+      int* p_not_unique = etl::is_unique_sorted_until(std::begin(not_unique_data), std::end(not_unique_data));
+
+      CHECK_EQUAL(10, std::distance(sorted_data, p_sorted));
+      CHECK_EQUAL(5,  std::distance(not_sorted_data, p_not_sorted));
+      CHECK_EQUAL(4,  std::distance(not_unique_data, p_not_unique));
+    }
+
+    //*************************************************************************
+    TEST(is_unique_sorted_until_compare)
+    {
+      int sorted_data[]     = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      int not_sorted_data[] = { 10, 9, 8, 7, 5, 6, 4, 3, 2, 1 };
+      int not_unique_data[] = { 10, 9, 8, 6, 5, 4, 4, 3, 2, 1 };
+
+      int* p_sorted     = etl::is_unique_sorted_until(std::begin(sorted_data), std::end(sorted_data), std::greater<int>());
+      int* p_not_sorted = etl::is_unique_sorted_until(std::begin(not_sorted_data), std::end(not_sorted_data), std::greater<int>());
+      int* p_not_unique = etl::is_unique_sorted_until(std::begin(not_unique_data), std::end(not_unique_data), std::greater<int>());
+
+      CHECK_EQUAL(10, std::distance(sorted_data, p_sorted));
+      CHECK_EQUAL(5, std::distance(not_sorted_data, p_not_sorted));
+      CHECK_EQUAL(6, std::distance(not_unique_data, p_not_unique));
+    }
+
+    //*************************************************************************
+    TEST(is_unique_sorted)
+    {
+      int sorted_data[]     = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int not_sorted_data[] = { 1, 2, 3, 4, 6, 5, 7, 8, 9, 10 };
+      int not_unique_data[] = { 1, 2, 3, 4, 4, 5, 6, 8, 9, 10 };
+
+      CHECK_TRUE((etl::is_unique_sorted(std::begin(sorted_data), std::end(sorted_data))));
+      CHECK_FALSE((etl::is_unique_sorted(std::begin(not_sorted_data), std::end(not_sorted_data))));
+      CHECK_FALSE((etl::is_unique_sorted(std::begin(not_unique_data), std::end(not_unique_data))));
+    }
+
+    //*************************************************************************
+    TEST(is_unique_sorted_compare)
+    {
+      int sorted_data[]     = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      int not_sorted_data[] = { 10, 9, 8, 7, 5, 6, 4, 3, 2, 1 };
+      int not_unique_data[] = { 10, 9, 8, 6, 5, 4, 4, 3, 2, 1 };
+
+      CHECK_TRUE((etl::is_unique_sorted(std::begin(sorted_data), std::end(sorted_data), std::greater<int>())));
+      CHECK_FALSE((etl::is_unique_sorted(std::begin(not_sorted_data), std::end(not_sorted_data), std::greater<int>())));
+      CHECK_FALSE((etl::is_unique_sorted(std::begin(not_unique_data), std::end(not_unique_data), std::greater<int>())));
+    }
+
+    //*************************************************************************
     TEST(copy_pod_pointer)
     {
       int data1[10];
@@ -1362,17 +1418,6 @@ namespace
       CHECK_EQUAL(std::begin(out1) + 5, result);
       is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
       CHECK(is_same);
-    }
-
-    //*************************************************************************
-    TEST(copy_s_random_iterator)
-    {
-      int data1[] = { 1, 2, 3, 4, 5 };
-      int out1[10];
-      CHECK_THROW(etl::copy_s(std::end(data1), std::begin(data1), std::begin(out1), std::end(out1)), etl::algorithm_error);
-      CHECK_THROW(etl::copy_s(std::begin(data1), std::end(data1), std::end(out1), std::begin(out1)), etl::algorithm_error);
-      CHECK_THROW(etl::move_s(std::end(data1), std::begin(data1), std::begin(out1), std::end(out1)), etl::algorithm_error);
-      CHECK_THROW(etl::move_s(std::begin(data1), std::end(data1), std::end(out1), std::begin(out1)), etl::algorithm_error);
     }
 
     //*************************************************************************

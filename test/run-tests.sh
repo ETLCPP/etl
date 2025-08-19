@@ -1,15 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
+shopt -s xpg_echo
+
 clear
-
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-
-echo "ETL Tests" > log.txt
 
 export ASAN_OPTIONS=symbol_line=1
 export ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-14/bin//llvm-symbolizer
-
-echo -e
 
 configuration_name="Configuration Name Not Set"
 
@@ -42,7 +38,7 @@ PrintHeader()
 	echo " Configuration   : $configuration_name" | tee -a log.txt
 	echo " Compiler        : $compiler          " | tee -a log.txt
 	echo " Language        : C++$cxx_standard   " | tee -a log.txt
-  echo " Optimisation    : $opt               " | tee -a log.txt
+    echo " Optimisation    : $opt               " | tee -a log.txt
 	echo " Sanitizer       : $sanitize          " | tee -a log.txt
 	echo " Compiler select : $compiler_enabled  " | tee -a log.txt
 	echo " ETL version     : $etl_version       " | tee -a log.txt
@@ -55,14 +51,14 @@ PrintHeader()
 PrintHelp()
 {
 	echo "$HelpColour"
-	echo "-------------------------------------------------------------------------------------"
-	echo " Syntax          : ./runtests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> "
-	echo " C++ Standard    : 11, 14, 17, 20 or 23                                              "
-	echo " Optimisation    : 0, 1, 2 or 3. Default = 0                                         "
-	echo " Threads         : Number of threads to use. Default = 4                             "
-	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled          "
-	echo " Compiler select : gcc or clang. Default All compilers                               "
-	echo "-------------------------------------------------------------------------------------"
+	echo "------------------------------------------------------------------------------------------------"
+	echo " Syntax          : ./run-tests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> <Compiler>"
+	echo " C++ Standard    : 11, 14, 17, 20 or 23                                                         "
+	echo " Optimisation    : 0, 1, 2 or 3. Default = 0                                                    "
+	echo " Threads         : Number of threads to use. Default = 4                                        "
+	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled                     "
+	echo " Compiler select : gcc or clang. Default All compilers                                          "
+	echo "------------------------------------------------------------------------------------------------"
 	echo "$NoColour"
 }
 
@@ -180,483 +176,71 @@ fi
 #******************************************************************************
 # Get the ETL version
 #******************************************************************************
-etl_version_raw=$(cat ../../version.txt)
+etl_version_raw=$(cat ../version.txt)
 etl_version=$(echo $etl_version_raw | sed -e 's/\r//g') # Remove trailing \r
 
 #******************************************************************************
 # Get the compiler versions
 #******************************************************************************
-gcc_compiler=$(g++ --version | grep g++)
-clang_compiler=$(clang++ --version | grep clang)
 
-#******************************************************************************
-# GCC
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "STL"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
+while read i ; do
+  CC=`echo $i | cut -d, -f1 | sed -e 's/ *$//'`
+  MSG=`echo $i | cut -d, -f2 | sed -e 's/ *$//'`
+  DIR=`echo $i | cut -d, -f3 | sed -e 's/ *$//'`
+  CMD=`echo $i | cut -d, -f4 | sed -e 's/ *$//'`
 
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "STL - Non-virtual messages"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=ON ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "STL - Force C++03"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "No STL"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "No STL - Force C++03"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-# CLANG
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "STL"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "STL - Force C++03"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "No STL"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "No STL - Force C++03"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "Initializer list test"
-PrintHeader
-cd ../etl_initializer_list/
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "Initializer list test"
-PrintHeader
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "Error macros 'log_errors' test"
-PrintHeader
-cd ../../etl_error_handler/log_errors
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "Error macros 'exceptions' test"
-PrintHeader
-cd ../../../etl_error_handler/exceptions
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "Error macros 'log_errors and exceptions' test"
-PrintHeader
-cd ../../../etl_error_handler/log_errors_and_exceptions
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "gcc" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$gcc_compiler
-SetConfigurationName "Error macros 'assert function' test"
-PrintHeader
-cd ../../../etl_error_handler/assert_function
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "Error macros 'log_errors' test"
-PrintHeader
-cd ../../../etl_error_handler/log_errors
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "Error macros 'exceptions' test"
-PrintHeader
-cd ../../../etl_error_handler/exceptions
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "Error macros 'log_errors and exceptions' test"
-PrintHeader
-cd ../../../etl_error_handler/log_errors_and_exceptions
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-#******************************************************************************
-if [ "$compiler_enabled" = "clang" ] || [ "$compiler_enabled" = "All compilers" ]; then
-compiler=$clang_compiler
-SetConfigurationName "Error macros 'assert function' test"
-PrintHeader
-cd ../../../etl_error_handler/assert_function
-mkdir -p build-make || exit 1
-cd build-make || exit 1
-rm * -rf
-cmake -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
-cmake --build .
-if [ $? -eq 0 ]; then
-  PassedCompilation
-else
-  FailedCompilation
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  PassedTests
-else
-  FailedTests
-  exit $?
-fi
-fi
-
-cd ../..
+  if [ "$compiler_enabled" = "$CC" ] || [ "$compiler_enabled" = "All compilers" ]; then
+    if [ "$CC" = "gcc" ] ; then
+      compiler=$(g++ --version | grep g++)
+    else
+      compiler=$(clang++ --version | grep clang)
+    fi
+    OLD_DIR=`pwd`
+    cd $DIR
+    mkdir -p build-make || exit 1
+    cd build-make || exit 1
+    echo "ETL Tests" > log.txt
+    SetConfigurationName "$MSG"
+    PrintHeader
+    $CMD
+    cmake --build .
+    if [ $? -eq 0 ]; then
+      PassedCompilation
+    else
+      FailedCompilation
+      exit $?
+    fi
+    ./etl_tests
+    if [ $? -eq 0 ]; then
+      PassedTests
+    else
+      FailedTests
+      exit $?
+    fi
+    cd ..
+    rm -rf build-make
+    cd $OLD_DIR
+  fi
+done <<-EOF
+gcc  ,STL                       ,.,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+gcc  ,STL - Non-virtual messages,.,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=ON ..
+gcc  ,STL - Force C++03         ,.,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON  -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+gcc  ,No STL                    ,.,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DNO_STL=ON  -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+gcc  ,No STL - Force C++03      ,.,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DNO_STL=ON  -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON  -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+clang,STL                       ,.,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+clang,STL - Force C++03         ,.,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON  -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+clang,No STL                    ,.,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DNO_STL=ON  -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+clang,No STL - Force C++03      ,.,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DNO_STL=ON  -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON  -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
+gcc  ,Initializer list test     ,etl_initializer_list,cmake -DCMAKE_C_COMPILER=gcc   -DCMAKE_CXX_COMPILER=g++     -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+clang,Initializer list test     ,etl_initializer_list,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+gcc  ,Error macros 'log_errors' test,etl_error_handler/log_errors                              ,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+gcc  ,Error macros 'exceptions' test,etl_error_handler/exceptions                              ,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+gcc  ,Error macros 'log_errors and exceptions' test,etl_error_handler/log_errors_and_exceptions,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+gcc  ,Error macros 'assert function' test,etl_error_handler/assert_function                    ,cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+clang,Error macros 'log_errors' test,etl_error_handler/log_errors                              ,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+clang,Error macros 'exceptions' test,etl_error_handler/exceptions                              ,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+clang,Error macros 'log_errors and exceptions' test,etl_error_handler/log_errors_and_exceptions,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+clang,Error macros 'assert function' test,etl_error_handler/assert_function                    ,cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard -DETL_ENABLE_SANITIZER=$sanitize ..
+EOF
 
 TestsCompleted

@@ -311,36 +311,36 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<typename U, size_t N>
-    ETL_CONSTEXPR poly_span(U(&begin_)[N]) ETL_NOEXCEPT
+    template<typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(U(&begin_)[Size]) ETL_NOEXCEPT
       : pbegin(begin_)
       , element_size(sizeof(U))
     {
-      ETL_STATIC_ASSERT(N <= Extent, "Array data overflow");
+      ETL_STATIC_ASSERT(Size <= Extent, "Array data overflow");
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
 
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(etl::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(etl::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
     {
-      ETL_STATIC_ASSERT(N <= Extent, "Array data overflow");
+      ETL_STATIC_ASSERT(Size <= Extent, "Array data overflow");
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
 
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(const etl::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(const etl::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
     {
-      ETL_STATIC_ASSERT(N <= Extent, "Array data overflow");
+      ETL_STATIC_ASSERT(Size <= Extent, "Array data overflow");
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
 
@@ -348,24 +348,24 @@ namespace etl
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(std::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(std::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
     {
-      ETL_STATIC_ASSERT(N <= Extent, "Array data overflow");
+      ETL_STATIC_ASSERT(Size <= Extent, "Array data overflow");
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of U");
     }
 
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(const std::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(const std::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
     {
-      ETL_STATIC_ASSERT(N <= Extent, "Array data overflow");
+      ETL_STATIC_ASSERT(Size <= Extent, "Array data overflow");
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of U");
     }
 #endif
@@ -682,11 +682,11 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<typename U, size_t N>
-    ETL_CONSTEXPR poly_span(U(&begin_)[N]) ETL_NOEXCEPT
+    template<typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(U(&begin_)[Size]) ETL_NOEXCEPT
       : pbegin(begin_)
       , element_size(sizeof(U))
-      , span_extent(N)
+      , span_extent(Size)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
@@ -694,11 +694,11 @@ namespace etl
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(etl::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(etl::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
-      , span_extent(N)
+      , span_extent(Size)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
@@ -706,11 +706,11 @@ namespace etl
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(const etl::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(const etl::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
-      , span_extent(N)
+      , span_extent(Size)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
@@ -719,11 +719,11 @@ namespace etl
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(std::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(std::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
-      , span_extent(N)
+      , span_extent(Size)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of U");
     }
@@ -731,11 +731,11 @@ namespace etl
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR poly_span(const std::array<U, N>& a) ETL_NOEXCEPT
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR poly_span(const std::array<U, Size>& a) ETL_NOEXCEPT
       : pbegin(a.data())
       , element_size(sizeof(U))
-      , span_extent(N)
+      , span_extent(Size)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of U");
     }
@@ -1002,26 +1002,26 @@ protected:
   poly_span(const TIterator begin_, const TSize size_)
     ->poly_span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
 
-  template <typename T, size_t N>
-  poly_span(T(&)[N])
-    ->poly_span<T, N>;
+  template <typename T, size_t Size>
+  poly_span(T(&)[Size])
+    ->poly_span<T, Size>;
 
-  template <typename T, size_t N>
-  poly_span(etl::array<T, N>&)
-    ->poly_span<T, N>;
+  template <typename T, size_t Size>
+  poly_span(etl::array<T, Size>&)
+    ->poly_span<T, Size>;
 
-  template <typename T, size_t N>
-  poly_span(const etl::array<T, N>&)
-    ->poly_span<const T, N>;
+  template <typename T, size_t Size>
+  poly_span(const etl::array<T, Size>&)
+    ->poly_span<const T, Size>;
 
 #if ETL_USING_STL
-  template <typename T, size_t N>
-  poly_span(std::array<T, N>&)
-    ->poly_span<T, N>;
+  template <typename T, size_t Size>
+  poly_span(std::array<T, Size>&)
+    ->poly_span<T, Size>;
 
-  template <typename T, size_t N>
-  poly_span(const std::array<T, N>&)
-    ->poly_span<const T, N>;
+  template <typename T, size_t Size>
+  poly_span(const std::array<T, Size>&)
+    ->poly_span<const T, Size>;
 #endif
 #endif 
 

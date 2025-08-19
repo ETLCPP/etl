@@ -218,4 +218,19 @@ SOFTWARE.
   #define ETL_NO_CPP_NAN_SUPPORT
 #endif
 
+#if defined(__has_include)
+  #if __has_include(<version>)
+    #include <version>
+
+    #if defined(__cpp_lib_byteswap)
+      #if __cpp_lib_byteswap != 0
+        #define ETL_HAS_STD_BYTESWAP 1
+      #endif
+    #endif
+  #endif
+#endif
+#ifndef ETL_HAS_STD_BYTESWAP
+  #define ETL_HAS_STD_BYTESWAP 0
+#endif
+
 #endif

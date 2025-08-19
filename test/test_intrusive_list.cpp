@@ -1420,6 +1420,12 @@ namespace
       CHECK(are_equal);
 
       CHECK_EQUAL(data0.size(), compare0.size());
+
+      // Double check that after splicing `etl_previous` is also correct - `.reverse()` easy way to do so.
+      data0.reverse();
+      compare0.reverse();
+      are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
+      CHECK(are_equal);
     }
 
     //*************************************************************************

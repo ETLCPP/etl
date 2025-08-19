@@ -34,6 +34,7 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "etl/crc16_cdma2000.h"
+#include "etl/endianness.h"
 
 //*****************************************************************************
 // The results for these tests were created from https://crccalc.com/
@@ -115,7 +116,15 @@ namespace
     TEST(test_crc16_cdma2000_add_range_endian)
     {
       std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
-      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint32_t> data2;
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        data2 = { 0x04030201UL, 0x08070605UL };
+      }
+      else
+      {
+        data2 = { 0x01020304UL, 0x05060708UL };
+      }
       std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint16_t crc1 = etl::crc16_cdma2000(data1.begin(), data1.end());
@@ -198,7 +207,15 @@ namespace
     TEST(test_crc16_cdma2000_16_add_range_endian)
     {
       std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
-      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint32_t> data2;
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        data2 = { 0x04030201UL, 0x08070605UL };
+      }
+      else
+      {
+        data2 = { 0x01020304UL, 0x05060708UL };
+      }
       std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint16_t crc1 = etl::crc16_cdma2000_t16(data1.begin(), data1.end());
@@ -281,7 +298,15 @@ namespace
     TEST(test_crc16_cdma2000_4_add_range_endian)
     {
       std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
-      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint32_t> data2;
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        data2 = { 0x04030201UL, 0x08070605UL };
+      }
+      else
+      {
+        data2 = { 0x01020304UL, 0x05060708UL };
+      }
       std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint16_t crc1 = etl::crc16_cdma2000_t4(data1.begin(), data1.end());

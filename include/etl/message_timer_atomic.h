@@ -407,13 +407,13 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_timer_atomic(timer_data* const timer_array_, const uint_least8_t  MAX_TIMERS_)
+    imessage_timer_atomic(timer_data* const timer_array_, const uint_least8_t  Max_Timers)
       : timer_array(timer_array_)
       , active_list(timer_array_)
       , enabled(false)
       , process_semaphore(0U)
       , registered_timers(0U)
-      , MAX_TIMERS(MAX_TIMERS_)
+      , MAX_TIMERS(Max_Timers)
     {
     }
 
@@ -628,24 +628,24 @@ namespace etl
   //***************************************************************************
   /// The message timer
   //***************************************************************************
-  template <uint_least8_t MAX_TIMERS_, typename TSemaphore>
+  template <uint_least8_t Max_Timers, typename TSemaphore>
   class message_timer_atomic : public etl::imessage_timer_atomic<TSemaphore>
   {
   public:
 
-    ETL_STATIC_ASSERT(MAX_TIMERS_ <= 254, "No more than 254 timers are allowed");
+    ETL_STATIC_ASSERT(Max_Timers <= 254, "No more than 254 timers are allowed");
 
     //*******************************************
     /// Constructor.
     //*******************************************
     message_timer_atomic()
-      : imessage_timer_atomic<TSemaphore>(timer_array, MAX_TIMERS_)
+      : imessage_timer_atomic<TSemaphore>(timer_array, Max_Timers)
     {
     }
 
   private:
 
-    typename etl::imessage_timer_atomic<TSemaphore>::timer_data timer_array[MAX_TIMERS_];
+    typename etl::imessage_timer_atomic<TSemaphore>::timer_data timer_array[Max_Timers];
   };
 }
 

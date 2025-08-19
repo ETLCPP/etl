@@ -38,12 +38,12 @@ SOFTWARE.
 // To generate to header file, run this at the command line.
 // Note: You will need Python and COG installed.
 //
-// python -m cogapp -d -e -ovariant_pool.h -DNTypes=<n> variant_pool_generator.h
+// cog -d -e -ovariant_pool.h -DNTypes=<n> variant_pool_generator.h
 // Where <n> is the number of types to support.
 //
 // e.g.
 // To generate handlers for up to 16 types...
-// python -m cogapp -d -e -ovariant_pool.h -DNTypes=16 variant_pool_generator.h
+// cog -d -e -ovariant_pool.h -DNTypes=16 variant_pool_generator.h
 //
 // See generate.bat
 //***************************************************************************

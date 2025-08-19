@@ -102,7 +102,7 @@ namespace etl
   //*****************************************************************************
   namespace private_optional
   {
-    template <typename T, bool IsDefaultConstructible = etl::is_integral<T>::value>
+    template <typename T, bool IsDefaultConstructible = etl::is_fundamental<T>::value>
     class optional_impl;
 
     //*****************************************************************************
@@ -159,7 +159,6 @@ namespace etl
           storage.construct(etl::move(other.value()));
         }
       }
-#endif
 
       //***************************************************************************
       /// Constructor from value type.
@@ -170,7 +169,6 @@ namespace etl
         storage.construct(value_);
       }
 
-#if ETL_USING_CPP11
       //***************************************************************************
       /// Constructor from value type.
       //***************************************************************************
@@ -178,6 +176,27 @@ namespace etl
       optional_impl(T&& value_)
       {
         storage.construct(etl::move(value_));
+      }
+
+      //***************************************************************************
+      /// Constructor from variadic args.
+      //***************************************************************************
+      template <typename... TArgs>
+      ETL_CONSTEXPR20_STL
+        optional_impl(etl::in_place_t, TArgs&&... args)
+      {
+        storage.construct(etl::forward<TArgs>(args)...);
+      }
+
+      //*******************************************
+      /// Construct from initializer_list and arguments.
+      //*******************************************
+      template <typename U, typename... TArgs >
+      ETL_CONSTEXPR20_STL optional_impl(etl::in_place_t,
+                                        std::initializer_list<U> ilist,
+                                        TArgs&&... args)
+      {
+        storage.construct(ilist, etl::forward<TArgs>(args)...);
       }
 #endif
 
@@ -734,7 +753,6 @@ namespace etl
           storage.construct(etl::move(other.value()));
         }
       }
-#endif
 
       //***************************************************************************
       /// Constructor from value type.
@@ -745,7 +763,6 @@ namespace etl
         storage.construct(value_);
       }
 
-#if ETL_USING_CPP11
       //***************************************************************************
       /// Constructor from value type.
       //***************************************************************************
@@ -753,6 +770,27 @@ namespace etl
       optional_impl(T&& value_)
       {
         storage.construct(etl::move(value_));
+      }
+
+      //***************************************************************************
+      /// Constructor from variadic args.
+      //***************************************************************************
+      template <typename... TArgs>
+      ETL_CONSTEXPR14
+        optional_impl(etl::in_place_t, TArgs&&... args)
+      {
+        storage.construct(etl::forward<TArgs>(args)...);
+      }
+
+      //*******************************************
+      /// Construct from initializer_list and arguments.
+      //*******************************************
+      template <typename U, typename... TArgs >
+      ETL_CONSTEXPR14 optional_impl(etl::in_place_t,
+                                    std::initializer_list<U> ilist,
+                                    TArgs&&... args)
+      {
+        storage.construct(ilist, etl::forward<TArgs>(args)...);
       }
 #endif
 
@@ -1395,6 +1433,54 @@ namespace etl
       : impl_t(etl::move(value_))
     {
     }
+#endif
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Emplace construct from arguments.
+    //***************************************************************************
+    template <typename U = T, ETL_OPTIONAL_ENABLE_CPP14, typename... Args>
+    ETL_CONSTEXPR14
+    explicit optional(etl::in_place_t, Args&&... args)
+      : impl_t(etl::in_place_t{}, etl::forward<Args>(args)...)
+    {
+    }
+
+    //***************************************************************************
+    /// Emplace construct from arguments.
+    //***************************************************************************
+    template <typename U = T, ETL_OPTIONAL_ENABLE_CPP20_STL, typename... Args>
+    ETL_CONSTEXPR20_STL
+    explicit optional(etl::in_place_t, Args&&... args)
+      : impl_t(etl::in_place_t{}, etl::forward<Args>(args)...)
+    {
+    }
+
+#if ETL_HAS_INITIALIZER_LIST
+    //*******************************************
+    /// Construct from initializer_list and arguments.
+    //*******************************************
+    template <typename U = T, ETL_OPTIONAL_ENABLE_CPP14, typename... TArgs>
+    ETL_CONSTEXPR14 
+    explicit optional(etl::in_place_t,
+                      std::initializer_list<U> ilist,
+                      TArgs&&... args)
+      : impl_t(etl::in_place_t{}, ilist, etl::forward<TArgs>(args)...)
+    {
+    }
+
+    //*******************************************
+    /// Construct from initializer_list and arguments.
+    //*******************************************
+    template <typename U = T, ETL_OPTIONAL_ENABLE_CPP20_STL, typename... TArgs>
+    ETL_CONSTEXPR20_STL 
+    explicit optional(etl::in_place_t,
+                      std::initializer_list<U> ilist,
+                      TArgs&&... args)
+      : impl_t(etl::in_place_t{}, ilist, etl::forward<TArgs>(args)...)
+    {
+    }
+#endif
 #endif
 
 #if ETL_USING_CPP11

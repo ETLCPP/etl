@@ -2290,9 +2290,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_copy a non trivially copyable type");
 
-    memcpy(reinterpret_cast<void*>(db),
-           reinterpret_cast<const void*>(sb),
-           sizeof(typename etl::iterator_traits<T*>::value_type) * static_cast<size_t>(se - sb));
+    ::memcpy(reinterpret_cast<void*>(db),
+             reinterpret_cast<const void*>(sb),
+             sizeof(T) * static_cast<size_t>(se - sb));
 
     return db;
   }
@@ -2309,9 +2309,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_copy a non trivially copyable type");
 
-    memcpy(reinterpret_cast<void*>(db),
-           reinterpret_cast<const void*>(sb),
-           sizeof(typename etl::iterator_traits<T*>::value_type) * n);
+    ::memcpy(reinterpret_cast<void*>(db),
+             reinterpret_cast<const void*>(sb),
+             sizeof(T) * n);
     
     return db;
   }
@@ -2328,9 +2328,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_move a non trivially copyable type");
 
-    memmove(reinterpret_cast<void*>(db),
-            reinterpret_cast<const void*>(sb),
-            sizeof(T) * static_cast<size_t>(se - sb));
+    ::memmove(reinterpret_cast<void*>(db),
+              reinterpret_cast<const void*>(sb),
+              sizeof(T) * static_cast<size_t>(se - sb));
 
     return db;
   }
@@ -2347,9 +2347,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_move a non trivially copyable type");
 
-    memmove(reinterpret_cast<void*>(db),
-            reinterpret_cast<const void*>(sb),
-            sizeof(typename etl::iterator_traits<T*>::value_type) * n);
+    ::memmove(reinterpret_cast<void*>(db),
+              reinterpret_cast<const void*>(sb),
+              sizeof(T) * n);
     
     return db;
   }
@@ -2369,9 +2369,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_compare a non trivially copyable type");
 
-    return memcmp(reinterpret_cast<const void*>(db),
-                  reinterpret_cast<const void*>(sb),
-                  sizeof(T) * static_cast<size_t>(se - sb));
+    return ::memcmp(reinterpret_cast<const void*>(db),
+                    reinterpret_cast<const void*>(sb),
+                    sizeof(T) * static_cast<size_t>(se - sb));
   }
 
   //***************************************************************************
@@ -2389,16 +2389,16 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_compare a non trivially copyable type");
 
-    return memcmp(reinterpret_cast<const void*>(db),
-                  reinterpret_cast<const void*>(sb),
-                  sizeof(T) * n);
+    return ::memcmp(reinterpret_cast<const void*>(db),
+                    reinterpret_cast<const void*>(sb),
+                    sizeof(T) * n);
   }
 
   //***************************************************************************
   /// Template wrapper for memset.
   /// \param db    Destination begin.
   /// \param de    Destination end.
-  /// \param value The value to set each byte of the memory region.
+  /// \param value The value to set each <b>char</b> of the memory region.
   /// \return The destination
   //***************************************************************************
   template <typename TPointer, typename T>
@@ -2410,9 +2410,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, "Cannot mem_set a non trivially copyable type");
 
-    memset(reinterpret_cast<void*>(db), 
-           static_cast<char>(value),
-           sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(de - db));
+    ::memset(reinterpret_cast<void*>(db), 
+             static_cast<char>(value),
+             sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(de - db));
 
     return db;
   }
@@ -2421,7 +2421,7 @@ namespace etl
   /// Template wrapper for memset.
   /// \param db    Destination begin.
   /// \param n     Destination length.
-  /// \param value The value to set each byte of the memory region.
+  /// \param value The value to set each <b>char</b> of the memory region.
   /// \return The destination
   //***************************************************************************
   template <typename TPointer, typename T>
@@ -2433,9 +2433,9 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, "Cannot mem_set a non trivially copyable type");
 
-    memset(reinterpret_cast<void*>(db),
-           static_cast<char>(value),
-           sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+    ::memset(reinterpret_cast<void*>(db),
+             static_cast<char>(value),
+             sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
 
     return db;
   }
@@ -2455,9 +2455,9 @@ namespace etl
                             sizeof(T) == 1, char*>::type
     mem_char(TPointer sb, TPointer se, T value) ETL_NOEXCEPT
   {
-    void* result = memchr(reinterpret_cast<void*>(sb), 
-                          static_cast<char>(value),
-                          sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
+    void* result = ::memchr(reinterpret_cast<void*>(sb), 
+                            static_cast<char>(value),
+                            sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
 
     return (result == 0U) ? reinterpret_cast<char*>(se) : reinterpret_cast<char*>(result);
   }
@@ -2477,9 +2477,9 @@ namespace etl
                             sizeof(T) == 1, const char*>::type
     mem_char(TPointer sb, TPointer se, T value) ETL_NOEXCEPT
   {
-    const void* result = memchr(reinterpret_cast<const void*>(sb),
-                                static_cast<char>(value),
-                                sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
+    const void* result = ::memchr(reinterpret_cast<const void*>(sb),
+                                  static_cast<char>(value),
+                                  sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
 
     return (result == 0U) ? reinterpret_cast<const char*>(se) : reinterpret_cast<const char*>(result);
   }
@@ -2499,9 +2499,9 @@ namespace etl
                             sizeof(T) == 1, char*>::type
     mem_char(TPointer sb, size_t n, T value) ETL_NOEXCEPT
   {
-    void* result = memchr(reinterpret_cast<void*>(sb), 
-                          static_cast<char>(value),
-                          sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+    void* result = ::memchr(reinterpret_cast<void*>(sb), 
+                            static_cast<char>(value),
+                            sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
 
     return (result == 0U) ? reinterpret_cast<char*>(sb + n) : reinterpret_cast<char*>(result);
   }
@@ -2521,9 +2521,9 @@ namespace etl
                             sizeof(T) == 1, const char*>::type
     mem_char(TPointer sb, size_t n, T value) ETL_NOEXCEPT
   {
-    const void* result = memchr(reinterpret_cast<const void*>(sb),
-                                static_cast<char>(value),
-                                sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+    const void* result = ::memchr(reinterpret_cast<const void*>(sb),
+                                  static_cast<char>(value),
+                                  sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
 
     return (result == 0U) ? reinterpret_cast<const char*>(sb + n) : reinterpret_cast<const char*>(result);
   }

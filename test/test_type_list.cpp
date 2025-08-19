@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2025 BMW AG
+Copyright(c) 2025 BMW AG, John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -180,6 +180,33 @@ namespace
 #endif
     }
 
+    //*************************************************************************
+    TEST(test_type_lists_are_convertible)
+    {
+      typedef etl::type_list<char,  int,  uint32_t> t1;
+      typedef etl::type_list<short, long, uint64_t> t2;
+      typedef etl::type_list<char,  std::string, uint32_t> t3;
+      typedef etl::type_list<> t4;
+
+      // Uncomment to generate static_assert error.
+      //typedef etl::type_list<char,  int> t5;
+
+      CHECK_TRUE((etl::type_lists_are_convertible<t1, t2>::value));
+      CHECK_FALSE((etl::type_lists_are_convertible<t1, t3>::value));
+      CHECK_TRUE((etl::type_lists_are_convertible<t4, t4>::value));
+
+      // Uncomment to generate static_assert error.
+      //CHECK_FALSE((etl::type_lists_are_convertible<t1, t5>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_lists_are_convertible_v<t1, t2>));
+      CHECK_FALSE((etl::type_lists_are_convertible_v<t1, t3>));
+      CHECK_TRUE((etl::type_lists_are_convertible_v<t4, t4>));
+
+      // Uncomment to generate static_assert error.
+      //CHECK_FALSE((etl::type_lists_are_convertible_v<t1, t5>));
+#endif
+    }
   };
 #endif
 }

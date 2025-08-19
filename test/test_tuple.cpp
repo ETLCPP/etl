@@ -33,7 +33,6 @@ SOFTWARE.
 #include "etl/tuple.h"
 
 #include <string>
-#include <tuple>
 #include <array>
 
 namespace
@@ -48,6 +47,34 @@ namespace
     return std::array<std::size_t, sizeof...(Indices)>{Indices...};
   }
 
+  //*********************************
+  struct From 
+  {
+    From(int i_)
+      : i(i_)
+    {
+    }
+
+    int i;
+  };
+
+  //*********************************
+  struct To 
+  {
+    explicit To(const From& from)
+      : i(from.i)
+    {
+    }
+
+    To& operator =(const From& from)
+    {
+      i = from.i;
+      return *this;
+    }
+
+    int i;
+  };
+  
   SUITE(test_tuple)
   {
     //*************************************************************************
@@ -103,8 +130,97 @@ namespace
     //*************************************************************************
     TEST(test_copy_constructor)
     {
-      etl::tuple<int, double, int, Data> tp;
+      etl::tuple<int, double, int, Data> tp(1, 2.2, 3, Data("4"));
       etl::tuple<int, double, int, Data> otherTuple(tp);
+
+      CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
+      CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
+      CHECK_EQUAL(etl::get<2>(tp), etl::get<2>(otherTuple));
+      CHECK_EQUAL(etl::get<3>(tp), etl::get<3>(otherTuple));
+    }
+
+    //*************************************************************************
+    TEST(test_copy_constructor_from_explicitly_convertible_type)
+    {
+      etl::tuple<From> from(1);
+      etl::tuple<To> to(from);
+
+      CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
+    }
+
+    //*************************************************************************
+    TEST(test_copy_constructor_from_const_explicitly_convertible_type)
+    {
+      const etl::tuple<From> from(1);
+      etl::tuple<To> to(from);
+
+      CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      etl::tuple<int, double, int, Data> tp(1, 2.2, 3, Data("4"));
+      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+
+      CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
+      CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
+      CHECK_EQUAL(etl::get<2>(tp), etl::get<2>(otherTuple));
+      CHECK_EQUAL(etl::get<3>(tp), etl::get<3>(otherTuple));
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_const)
+    {
+      const etl::tuple<int, double, int, Data> tp(1, 2.2, 3, Data("4"));
+      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+
+      CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
+      CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
+      CHECK_EQUAL(etl::get<2>(tp), etl::get<2>(otherTuple));
+      CHECK_EQUAL(etl::get<3>(tp), etl::get<3>(otherTuple));
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_implicitly_convertible_type)
+    {
+      etl::tuple<short, float, short, Data> tp(1, 2.2f, 3, Data("4"));
+      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+
+      CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
+      CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
+      CHECK_EQUAL(etl::get<2>(tp), etl::get<2>(otherTuple));
+      CHECK_EQUAL(etl::get<3>(tp), etl::get<3>(otherTuple));
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_const_implicitly_convertible_type)
+    {
+      const etl::tuple<short, float, short, Data> tp(1, 2.2f, 3, Data("4"));
+      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+
+      CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
+      CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
+      CHECK_EQUAL(etl::get<2>(tp), etl::get<2>(otherTuple));
+      CHECK_EQUAL(etl::get<3>(tp), etl::get<3>(otherTuple));
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_explicitly_convertible_type)
+    {
+      etl::tuple<From> from(1);
+      etl::tuple<To> to(etl::move(from));
+
+      CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_const_explicitly_convertible_type)
+    {
+      const etl::tuple<From> from(1);
+      etl::tuple<To> to(etl::move(from));
+
+      CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
     }
 
     //*************************************************************************
@@ -112,6 +228,8 @@ namespace
     {
       etl::tuple<int> tp(1);
       etl::tuple<int> otherTuple(tp);
+
+      CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
     }
 
     //*************************************************************************

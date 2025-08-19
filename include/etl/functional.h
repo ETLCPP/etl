@@ -237,7 +237,7 @@ namespace etl
     template <typename T1, typename T2>
     constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
     {
-      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+      return static_cast<T2&&>(rhs) < static_cast<T1&&>(lhs);
     }
   };
 #endif

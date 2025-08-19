@@ -1729,6 +1729,90 @@ namespace etl
   }
 
   //***************************************************************************
+  /// is_unique_sorted_until
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator is_unique_sorted_until(TIterator begin,
+                                   TIterator end,
+                                   TCompare  compare)
+  {
+    if (begin != end)
+    {
+      TIterator next = begin;
+
+      while (++next != end)
+      {
+        if (!compare(*begin, *next))
+        {
+          return next;
+        }
+
+        ++begin;
+      }
+    }
+
+    return end;
+  }
+
+  //***************************************************************************
+  /// is_unique_sorted_until
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator is_unique_sorted_until(TIterator begin,
+                                   TIterator end)
+  {
+    if (begin != end)
+    {
+      TIterator next = begin;
+
+      while (++next != end)
+      {
+        if (!(*begin < *next))
+        {
+          return next;
+        }
+
+        ++begin;
+      }
+    }
+
+    return end;
+  }
+
+  //***************************************************************************
+  /// is_unique_sorted
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  bool is_unique_sorted(TIterator begin,
+                        TIterator end)
+  {
+    return etl::is_unique_sorted_until(begin, end) == end;
+  }
+
+  //***************************************************************************
+  /// is_unique_sorted
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator, typename TCompare>
+  ETL_NODISCARD
+    ETL_CONSTEXPR14
+    bool is_unique_sorted(TIterator begin,
+                          TIterator end,
+                          TCompare  compare)
+  {
+    return etl::is_unique_sorted_until(begin, end, compare) == end;
+  }
+
+  //***************************************************************************
   /// find_if_not
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/find"></a>
@@ -2296,13 +2380,11 @@ namespace etl
     typedef typename etl::largest_type<s_size_type, d_size_type>::type  min_size_type;
 #endif
 
-    s_size_type s_size = etl::distance(i_begin, i_end);
-    ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
-    d_size_type d_size = etl::distance(o_begin, o_end);
-    ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
-    min_size_type size = etl::min<min_size_type>(s_size, d_size);
+    s_size_type s_size     = etl::distance(i_begin, i_end);
+    d_size_type d_size     = etl::distance(o_begin, o_end);
+    min_size_type min_size = etl::min<min_size_type>(s_size, d_size);
 
-    return etl::copy(i_begin, i_begin + size, o_begin);
+    return etl::copy(i_begin, i_begin + min_size, o_begin);
   }
 
   //***************************************************************************
@@ -2469,13 +2551,11 @@ namespace etl
     using d_size_type = typename iterator_traits<TOutputIterator>::difference_type;
     using min_size_type = typename etl::common_type<s_size_type, d_size_type>::type;
 
-    s_size_type s_size = etl::distance(i_begin, i_end);
-    ETL_ASSERT(s_size >= 0, ETL_ERROR(algorithm_error));
-    d_size_type d_size = etl::distance(o_begin, o_end);
-    ETL_ASSERT(d_size >= 0, ETL_ERROR(algorithm_error));
-    min_size_type size = etl::min<min_size_type>(s_size, d_size);
+    s_size_type s_size     = etl::distance(i_begin, i_end);
+    d_size_type d_size     = etl::distance(o_begin, o_end);
+    min_size_type min_size = etl::min<min_size_type>(s_size, d_size);
 
-    return etl::move(i_begin, i_begin + size, o_begin);
+    return etl::move(i_begin, i_begin + min_size, o_begin);
   }
 
   //***************************************************************************

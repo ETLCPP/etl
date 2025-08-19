@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "char_traits.h"
 #include "integral_limits.h"
 
 #if ETL_NOT_USING_STL && defined(ETL_COMPILER_ARM5) && !defined(__USE_C99_MATH)
@@ -1159,12 +1158,14 @@ namespace etl
     round_toward_neg_infinity = std::round_toward_neg_infinity,
   };
 
+#include "private/diagnostic_deprecated_push.h"
   enum float_denorm_style
   {
     denorm_indeterminate = std::denorm_indeterminate,
     denorm_absent        = std::denorm_absent,
     denorm_present       = std::denorm_present
   };
+#include "private/diagnostic_pop.h"
 
 #if ETL_USING_CPP11
   template <typename T>

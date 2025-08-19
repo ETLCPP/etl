@@ -156,10 +156,10 @@ namespace etl
     b = ETL_MOVE(temp);
   }
 
-  template< class T, size_t N >
-  ETL_CONSTEXPR14 void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+  template< class T, size_t Size >
+  ETL_CONSTEXPR14 void swap(T(&a)[Size], T(&b)[Size]) ETL_NOEXCEPT
   {
-    for (size_t i = 0UL; i < N; ++i)
+    for (size_t i = 0UL; i < Size; ++i)
     {
       swap(a[i], b[i]);
     }
@@ -545,13 +545,13 @@ namespace etl
 
   namespace private_integer_sequence
   {
-    template <size_t N, typename IndexSeq>
+    template <size_t Count, typename IndexSeq>
     struct make_index_sequence;
 
-    template <size_t N, size_t... Indices>
-    struct make_index_sequence<N, etl::integer_sequence<size_t, Indices...>>
+    template <size_t Count, size_t... Indices>
+    struct make_index_sequence<Count, etl::integer_sequence<size_t, Indices...>>
     {
-      using type = typename make_index_sequence<N - 1, etl::integer_sequence<size_t, N - 1, Indices...>>::type;
+      using type = typename make_index_sequence<Count - 1, etl::integer_sequence<size_t, Count - 1, Indices...>>::type;
     };
 
     template <size_t... Indices>
@@ -562,8 +562,8 @@ namespace etl
   }
 
   //***********************************
-  template <size_t N>
-  using make_index_sequence = typename private_integer_sequence::make_index_sequence<N, etl::integer_sequence<size_t>>::type;
+  template <size_t Count>
+  using make_index_sequence = typename private_integer_sequence::make_index_sequence<Count, etl::integer_sequence<size_t>>::type;
 
   template <typename... TTypes>
   using make_index_sequence_for = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
@@ -634,14 +634,14 @@ namespace etl
 #endif
 
   //*************************
-  template <size_t I> struct in_place_index_t 
+  template <size_t Index> struct in_place_index_t 
   {
     explicit ETL_CONSTEXPR in_place_index_t() {}
   };
 
 #if ETL_USING_CPP17
-  template <size_t I>
-  inline constexpr in_place_index_t<I> in_place_index{};
+  template <size_t Index>
+  inline constexpr in_place_index_t<Index> in_place_index{};
 #endif
 
 #if ETL_USING_CPP11
@@ -816,6 +816,26 @@ namespace etl
 
     /// The pointer to the function.
     TReturn(*ptr)(TArgs...);
+  };
+#endif
+
+#if ETL_USING_CPP17 && !defined(ETL_FORCE_CPP11_NONTYPE)
+  //*****************************************************************************
+  // Wraps a non-type template parameter as a type.
+  //*****************************************************************************
+  template <auto Value>
+  struct nontype_t
+  {
+    static constexpr decltype(Value) value = Value;
+  };
+#elif ETL_USING_CPP11
+  //*****************************************************************************
+  // Wraps a non-type template parameter as a type.
+  //*****************************************************************************
+  template <typename T, T Value>
+  struct nontype_t
+  {
+    static constexpr T value = Value;
   };
 #endif
 }

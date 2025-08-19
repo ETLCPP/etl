@@ -240,7 +240,7 @@ namespace etl
     //*********************************
     ETL_CONSTEXPR14
     tuple()
-      : value(THead())
+      : value()
     {
     }
 
@@ -333,7 +333,7 @@ namespace etl
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(tuple<UHead, UTail...>&& other)
-      : base_type(etl::forward<tuple<UHead, UTail...>>(other.get_base()))
+      : base_type(etl::forward<tuple<UTail...>>(other.get_base()))
       , value(etl::forward<UHead>(other.get_value()))
     {
     }
@@ -347,7 +347,7 @@ namespace etl
                                                                   !etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(tuple<UHead, UTail...>&& other)
-      : base_type(etl::forward<tuple<UHead, UTail...>>(other.get_base()))
+      : base_type(etl::forward<tuple<UTail...>>(other.get_base()))
       , value(etl::forward<UHead>(other.get_value()))
     {
     }
@@ -361,8 +361,8 @@ namespace etl
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(const tuple<UHead, UTail...>&& other)
-      : base_type(etl::forward<tuple<UHead, UTail...>>(other.get_base()))
-      , value(etl::forward<UHead>(other.get_value()))
+      : base_type(other.get_base())
+      , value(other.get_value())
     {
     }
 
@@ -375,8 +375,8 @@ namespace etl
                                                                   !etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(const tuple<UHead, UTail...>&& other)
-      : base_type(etl::forward<tuple<UHead, UTail...>>(other.get_base()))
-      , value(etl::forward<UHead>(other.get_value()))
+      : base_type(other.get_base())
+      , value(other.get_value())
     {
     }
 
@@ -1146,12 +1146,12 @@ namespace etl
     }
 
     // Recursive case: compare the current element and recurse.
-    template <typename TTuple1, typename TTuple2, size_t I, size_t... Indices>
+    template <typename TTuple1, typename TTuple2, size_t Index, size_t... Indices>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    bool tuple_equality(const TTuple1& lhs, const TTuple2& rhs, etl::index_sequence<I, Indices...>)
+    bool tuple_equality(const TTuple1& lhs, const TTuple2& rhs, etl::index_sequence<Index, Indices...>)
     {
-      return etl::get<I>(lhs) == etl::get<I>(rhs) && tuple_equality(lhs, rhs, etl::index_sequence<Indices...>{});
+      return etl::get<Index>(lhs) == etl::get<Index>(rhs) && tuple_equality(lhs, rhs, etl::index_sequence<Indices...>{});
     }
 
     //***************************************************************************
@@ -1167,17 +1167,17 @@ namespace etl
     }
 
     // Recursively compare the current element and the rest.
-    template <typename TTuple1, typename TTuple2, size_t I, size_t... Indices>
+    template <typename TTuple1, typename TTuple2, size_t Index, size_t... Indices>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    bool tuple_less_than(const TTuple1& lhs, const TTuple2& rhs, etl::index_sequence<I, Indices...>)
+    bool tuple_less_than(const TTuple1& lhs, const TTuple2& rhs, etl::index_sequence<Index, Indices...>)
     {
-      if (get<I>(lhs) < get<I>(rhs))
+      if (get<Index>(lhs) < get<Index>(rhs))
       {
         return true;
       }
 
-      if (get<I>(rhs) < get<I>(lhs))
+      if (get<Index>(rhs) < get<Index>(lhs))
       {
         return false;
       }
@@ -1277,6 +1277,15 @@ namespace etl
 
 namespace std
 {
+#if ETL_NOT_USING_STL && !((defined(ETL_DEVELOPMENT_OS_APPLE) || \
+    (ETL_COMPILER_FULL_VERSION >= 190000)) && defined(ETL_COMPILER_CLANG))
+  template <typename T>
+  struct tuple_size;
+
+  template <size_t Index, typename TType>
+  struct tuple_element;
+#endif
+
   //***************************************************************************
   /// Specialisation of tuple_size to allow the use of C++ structured bindings.
   //***************************************************************************
@@ -1288,10 +1297,10 @@ namespace std
   //***************************************************************************
   /// Specialisation of tuple_element to allow the use of C++ structured bindings.
   //***************************************************************************
-  template <size_t I, typename... Types>
-  struct tuple_element<I, etl::tuple<Types...>>
+  template <size_t Index, typename... Types>
+  struct tuple_element<Index, etl::tuple<Types...>>
   {
-    using type = typename etl::nth_type_t<I, Types...>;
+    using type = typename etl::nth_type_t<Index, Types...>;
   };
 }
 

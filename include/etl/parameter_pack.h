@@ -89,36 +89,36 @@ namespace etl
     //***************************************************************************
     /// type_from_index
     //***************************************************************************
-    template <size_t I>
+    template <size_t Index>
     class type_from_index
     {
     private:
 
       //***********************************
-      template <size_t II, size_t N, typename T1, typename... TRest>
+      template <size_t Desired_Index, size_t Current_Index, typename T1, typename... TRest>
       struct type_from_index_helper
       {
-        using type = typename etl::conditional<II == N, T1, typename type_from_index_helper<II, N + 1, TRest...>::type>::type;
+        using type = typename etl::conditional<Desired_Index == Current_Index, T1, typename type_from_index_helper<Desired_Index, Current_Index + 1, TRest...>::type>::type;
       };
 
       //***********************************
-      template <size_t II, size_t N, typename T1>
-      struct type_from_index_helper<II, N, T1>
+      template <size_t Desired_Index, size_t Current_Index, typename T1>
+      struct type_from_index_helper<Desired_Index, Current_Index, T1>
       {
         using type = T1;
       };
 
     public:
 
-      static_assert(I < sizeof...(TTypes), "Index out of bounds of parameter pack");
+      static_assert(Index < sizeof...(TTypes), "Index out of bounds of parameter pack");
 
       /// Template alias
-      using type = typename type_from_index_helper<I, 0, TTypes...>::type;
+      using type = typename type_from_index_helper<Index, 0, TTypes...>::type;
     };
 
     //***********************************
-    template <size_t I>
-    using type_from_index_t = typename type_from_index<I>::type;
+    template <size_t Index>
+    using type_from_index_t = typename type_from_index<Index>::type;
   };
 
   //***********************************
@@ -134,7 +134,7 @@ namespace etl
   inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 #endif
 
-#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER
+#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER && !ETL_USING_CLANG_COMPILER
   //***********************************
   template <typename... TTypes>
   template <typename T>

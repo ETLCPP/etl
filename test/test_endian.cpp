@@ -38,12 +38,28 @@ namespace
     //*************************************************************************
     TEST(test_endianness)
     {
-      // Intel platform is little endian.
-      CHECK(etl::endianness()() == etl::endian::little);
-      CHECK(etl::endianness()() != etl::endian::big);
+#if defined(ETL_ENDIAN_NATIVE) && defined(ETL_ENDIAN_BIG)
+      if (ETL_ENDIAN_NATIVE == ETL_ENDIAN_BIG)
+      {
+        // Big endian platforms
+        CHECK(etl::endianness()() != etl::endian::little);
+        CHECK(etl::endianness()() == etl::endian::big);
 
-      CHECK(etl::endianness::value() == etl::endian::little);
-      CHECK(etl::endianness::value() != etl::endian::big);
+        CHECK(etl::endianness::value() != etl::endian::little);
+        CHECK(etl::endianness::value() == etl::endian::big);
+      }
+      else
+      {
+        // Little endian platforms
+        CHECK(etl::endianness()() == etl::endian::little);
+        CHECK(etl::endianness()() != etl::endian::big);
+
+        CHECK(etl::endianness::value() == etl::endian::little);
+        CHECK(etl::endianness::value() != etl::endian::big);
+      }
+#else
+  #error Endianness unknown: Test not possible
+#endif
     }
   };
 }

@@ -92,6 +92,7 @@ target_sources(tests PRIVATE
 		callback_service.h.t.cpp
 		callback_timer.h.t.cpp
 		callback_timer_atomic.h.t.cpp
+		callback_timer_deferred_locked.h.t.cpp
 		callback_timer_interrupt.h.t.cpp
 		callback_timer_locked.h.t.cpp
 		char_traits.h.t.cpp
@@ -99,6 +100,7 @@ target_sources(tests PRIVATE
 		chrono.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
+		closure.h.t.cpp
 		combinations.h.t.cpp
 		compare.h.t.cpp
 		constant.h.t.cpp
@@ -124,6 +126,8 @@ target_sources(tests PRIVATE
 		crc16_maxim.h.t.cpp
 		crc16_mcrf4xx.h.t.cpp
 		crc16_modbus.h.t.cpp
+		crc16_opensafety_a.h.t.cpp
+		crc16_opensafety_b.h.t.cpp
 		crc16_profibus.h.t.cpp
 		crc16_riello.h.t.cpp
 		crc16_t10dif.h.t.cpp
@@ -152,12 +156,14 @@ target_sources(tests PRIVATE
 		crc8_j1850.h.t.cpp
 		crc8_j1850_zero.h.t.cpp
 		crc8_maxim.h.t.cpp
+		crc8_opensafety.h.t.cpp
 		crc8_rohc.h.t.cpp
 		crc8_wcdma.h.t.cpp
 		cyclic_value.h.t.cpp
 		debounce.h.t.cpp
 		debug_count.h.t.cpp
 		delegate.h.t.cpp
+		delegate_observable.h.t.cpp
 		delegate_service.h.t.cpp
 		deque.h.t.cpp
 		endianness.h.t.cpp
@@ -240,6 +246,7 @@ target_sources(tests PRIVATE
 		murmur3.h.t.cpp
 		mutex.h.t.cpp
 		negative.h.t.cpp
+		not_null.h.t.cpp
 		nth_type.h.t.cpp
 		nullptr.h.t.cpp
 		null_type.h.t.cpp

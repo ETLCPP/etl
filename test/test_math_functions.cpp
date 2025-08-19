@@ -535,5 +535,57 @@ namespace
       CHECK_EQUAL(5,  lcm5);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_absolute) 
+    {
+      CHECK_EQUAL(int16_t(0), etl::absolute(int16_t(0)));
+      CHECK_EQUAL(int16_t(32767), etl::absolute(int16_t(32767)));
+      CHECK_EQUAL(int16_t(32767), etl::absolute(int16_t(-32767)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_constexpr) 
+    {
+      constexpr int16_t absolute1 = etl::absolute(int16_t(0));
+      constexpr int16_t absolute2 = etl::absolute(int16_t(32767));
+      constexpr int16_t absolute3 = etl::absolute(int16_t(-32767));
+
+      CHECK_EQUAL(int16_t(0),     absolute1);
+      CHECK_EQUAL(int16_t(32767), absolute2);
+      CHECK_EQUAL(int16_t(32767), absolute3);
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned) 
+    {
+      CHECK_EQUAL(uint16_t(0),     etl::absolute_unsigned(int16_t(0)));
+      CHECK_EQUAL(uint16_t(32767), etl::absolute_unsigned(int16_t(32767)));
+      CHECK_EQUAL(uint16_t(32767), etl::absolute_unsigned(int16_t(-32767)));
+      CHECK_EQUAL(uint16_t(32768), etl::absolute_unsigned(int16_t(-32768)));
+
+      CHECK_EQUAL(uint16_t(0),     etl::absolute_unsigned(uint16_t(0)));
+      CHECK_EQUAL(uint16_t(65535), etl::absolute_unsigned(uint16_t(65535)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_constexpr) 
+    {
+      constexpr uint16_t absolute1 = etl::absolute(int16_t(0));
+      constexpr uint16_t absolute2 = etl::absolute(int16_t(32767));
+      constexpr uint16_t absolute3 = etl::absolute(int16_t(-32767));
+      constexpr uint16_t absolute4 = etl::absolute(int16_t(-32768));
+
+      CHECK_EQUAL(uint16_t(0),     absolute1);
+      CHECK_EQUAL(uint16_t(32767), absolute2);
+      CHECK_EQUAL(uint16_t(32767), absolute3);
+      CHECK_EQUAL(uint16_t(32768), absolute4);
+
+      constexpr uint16_t absolute5 = etl::absolute(uint16_t(0));
+      constexpr uint16_t absolute6 = etl::absolute(uint16_t(65535));
+
+      CHECK_EQUAL(uint16_t(0),     absolute5);
+      CHECK_EQUAL(uint16_t(65535), absolute6);
+    }
   };
 }

@@ -91,42 +91,6 @@ namespace etl
       p_state = ETL_NULLPTR;
     }
 
-    using fsm::receive;
-
-    //*******************************************
-    /// Top level message handler for the HFSM.
-    //*******************************************
-    void receive(const etl::imessage& message) ETL_OVERRIDE
-    {
-      if (is_started())
-      {
-        etl::fsm_state_id_t next_state_id = p_state->process_event(message);
-     
-        if (have_changed_state(next_state_id))
-        {
-          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-
-          etl::ifsm_state* p_next_state = state_list[next_state_id];
-          etl::ifsm_state* p_root       = common_ancestor(p_state, p_next_state);
-          
-          do_exits(p_root, p_state);
-          next_state_id = do_enters(p_root, p_next_state, true);
-
-          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-          p_state = state_list[next_state_id];
-        }
-        else if (is_self_transition(next_state_id))
-        {
-          p_state->on_exit_state();
-          p_state->on_enter_state();
-        }
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::fsm_not_started));
-      }
-    }
-
   private:
 
     //*******************************************
@@ -246,6 +210,33 @@ namespace etl
         p_current->on_exit_state();
         p_current = p_current->p_parent;
       }
+    }
+
+    //*******************************************
+    /// Core function to process a state change.
+    //*******************************************
+    etl::fsm_state_id_t process_state_change(etl::fsm_state_id_t next_state_id) ETL_OVERRIDE
+    {
+      if (have_changed_state(next_state_id))
+      {
+        ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
+
+        etl::ifsm_state* p_next_state = state_list[next_state_id];
+        etl::ifsm_state* p_root       = common_ancestor(p_state, p_next_state);
+
+        do_exits(p_root, p_state);
+        next_state_id = do_enters(p_root, p_next_state, true);
+
+        ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
+        p_state = state_list[next_state_id];
+      }
+      else if (is_self_transition(next_state_id))
+      {
+        p_state->on_exit_state();
+        p_state->on_enter_state();
+      }
+
+      return p_state->get_state_id();
     }
   };
 }

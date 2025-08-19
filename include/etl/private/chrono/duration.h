@@ -21,7 +21,7 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+FITNESS FOR Value1 PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -37,6 +37,8 @@ SOFTWARE.
 #include "../../limits.h"
 #include "../../type_traits.h"
 
+#include <string.h>
+
 namespace etl
 {
   namespace chrono
@@ -44,23 +46,23 @@ namespace etl
     namespace private_chrono
     {
       // Helper to find the greatest common divisor
-      template <intmax_t A, intmax_t B>
+      template <intmax_t Value1, intmax_t Value2>
       struct gcd 
       {
-        static ETL_CONSTANT intmax_t value = gcd<B, A % B>::value;
+        static ETL_CONSTANT intmax_t value = gcd<Value2, Value1 % Value2>::value;
       };
 
-      template <intmax_t A>
-      struct gcd<A, 0> 
+      template <intmax_t Value1>
+      struct gcd<Value1, 0> 
       {
-        static ETL_CONSTANT intmax_t value = A;
+        static ETL_CONSTANT intmax_t value = Value1;
       };
 
       // Helper to find the least common multiple
-      template <intmax_t A, intmax_t B>
+      template <intmax_t Value1, intmax_t Value2>
       struct lcm 
       {
-        static ETL_CONSTANT intmax_t value = (A / gcd<A, B>::value) * B;
+        static ETL_CONSTANT intmax_t value = (Value1 / gcd<Value1, Value2>::value) * Value2;
       };
     }
 

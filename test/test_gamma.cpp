@@ -38,10 +38,8 @@ namespace
 {
   constexpr size_t Size = 10UL;
 
-  using IntGammaEncode    = etl::gamma_encode<int>;
-  using DoubleGammaEncode = etl::gamma_encode<double>;
-
-  using DoubleGammaDecode = etl::gamma_decode<double>;
+  using GammaEncode = etl::gamma_encode<double>;
+  using GammaDecode = etl::gamma_decode<double>;
 
   struct Compare
   {
@@ -52,20 +50,7 @@ namespace
   };
 
   //***********************************
-  const std::array<int, Size> input1a =
-  {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-  };
-
-  const std::array<int, Size> result1a =
-  {
-    0, 0, 0, 1, 1, 2, 4, 5, 7, 9
-  };
-
-  std::array<int, Size> output1;
-
-  //***********************************
-  const std::array<double, Size> input2a =
+  const std::array<double, Size> input1a =
   {
     0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
   };
@@ -75,7 +60,7 @@ namespace
     0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00
   };
 
-  const std::array<double, Size> input2b =
+  const std::array<double, Size> input1b =
   {
     0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00
   };
@@ -90,33 +75,22 @@ namespace
   SUITE(test_gamma)
   {
     //*************************************************************************
-    TEST(test_int_gamma_encode)
+    TEST(test_gamma_encode)
     {
-      IntGammaEncode gamma(0.5, 9);
+      GammaEncode gamma(0.5, 9.0);
 
-      std::transform(input1a.begin(), input1a.end(), output1.begin(), gamma);
-
-      bool isEqual = std::equal(output1.begin(), output1.end(), result1a.begin());
-      CHECK(isEqual);
-    }
-
-    //*************************************************************************
-    TEST(test_double_gamma_encode)
-    {
-      DoubleGammaEncode gamma(0.5, 9.0);
-
-      std::transform(input2a.begin(), input2a.end(), output2.begin(), gamma);
+      std::transform(input1a.begin(), input1a.end(), output2.begin(), gamma);
 
       bool isEqual = std::equal(output2.begin(), output2.end(), result2a.begin(), Compare());
       CHECK(isEqual);
     }
 
     //*************************************************************************
-    TEST(test_double_gamma_decode)
+    TEST(test_gamma_decode)
     {
-      DoubleGammaDecode gamma(0.5, 9.0);
+      GammaDecode gamma(0.5, 9.0);
 
-      std::transform(input2b.begin(), input2b.end(), output2.begin(), gamma);
+      std::transform(input1b.begin(), input1b.end(), output2.begin(), gamma);
 
       bool isEqual = std::equal(output2.begin(), output2.end(), result2b.begin(), Compare());
       CHECK(isEqual);

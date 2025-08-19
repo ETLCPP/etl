@@ -45,6 +45,7 @@ SOFTWARE.
 #include "smallest.h"
 #include "exception.h"
 #include "error_handler.h"
+#include "functional.h"
 
 #if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>
@@ -84,15 +85,15 @@ namespace etl
   /// Maximum value that can be contained in N bits.
   ///\ingroup binary
   //***************************************************************************
-  /// Definition for non-zero NBITS.
-  template <size_t NBITS>
+  /// Definition for non-zero NBits.
+  template <size_t NBits>
   struct max_value_for_nbits
   {
-    typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
-    static ETL_CONSTANT value_type value = (value_type(1) << (NBITS - 1)) | max_value_for_nbits<NBITS - 1>::value;
+    typedef typename etl::smallest_uint_for_bits<NBits>::type value_type;
+    static ETL_CONSTANT value_type value = (value_type(1) << (NBits - 1)) | max_value_for_nbits<NBits - 1>::value;
   };
 
-  /// Specialisation for when NBITS == 0.
+  /// Specialisation for when NBits == 0.
   template <>
   struct max_value_for_nbits<0>
   {
@@ -100,12 +101,12 @@ namespace etl
     static ETL_CONSTANT value_type value = 0;
   };
 
-  template <size_t NBITS>
-  ETL_CONSTANT typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
+  template <size_t NBits>
+  ETL_CONSTANT typename max_value_for_nbits<NBits>::value_type max_value_for_nbits<NBits>::value;
 
 #if ETL_USING_CPP17
-  template <size_t NBITS>
-  inline constexpr typename etl::max_value_for_nbits<NBITS>::value_type max_value_for_nbits_v = max_value_for_nbits<NBITS>::value;
+  template <size_t NBits>
+  inline constexpr typename etl::max_value_for_nbits<NBits>::value_type max_value_for_nbits_v = max_value_for_nbits<NBits>::value;
 #endif
 
   //***************************************************************************
@@ -238,19 +239,19 @@ namespace etl
   /// Fold a binary number down to a set number of bits using XOR.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, size_t NBITS, typename TValue>
+  template <typename TReturn, size_t NBits, typename TValue>
   ETL_CONSTEXPR14 TReturn fold_bits(TValue value)
   {
-    ETL_STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
+    ETL_STATIC_ASSERT(integral_limits<TReturn>::bits >= NBits, "Return type too small to hold result");
 
-    ETL_CONSTANT TValue mask  = etl::power<2, NBITS>::value - 1U;
-    ETL_CONSTANT size_t shift = NBITS;
+    ETL_CONSTANT TValue mask  = etl::power<2, NBits>::value - 1U;
+    ETL_CONSTANT size_t shift = NBits;
 
     // Fold the value down to fit the width.
     TReturn folded_value = 0;
 
     // Keep shifting down and XORing the lower bits.
-    while (value >= etl::max_value_for_nbits<NBITS>::value)
+    while (value >= etl::max_value_for_nbits<NBits>::value)
     {
       folded_value ^= value & mask;
       value >>= shift;
@@ -267,16 +268,16 @@ namespace etl
   /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, size_t NBITS, typename TValue>
+  template <typename TReturn, size_t NBits, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    ETL_STATIC_ASSERT(NBITS <= etl::integral_limits<TReturn>::bits, "NBITS too large for return type");
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<TReturn>::bits, "NBits too large for return type");
 
     struct S
     {
-      signed value : NBITS;
+      signed value : NBits;
     } s = {0};
 
     return (s.value = value);
@@ -288,17 +289,17 @@ namespace etl
   /// is the right shift amount, to a signed integral type.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, size_t NBITS, size_t SHIFT, typename TValue>
+  template <typename TReturn, size_t NBits, size_t SHIFT, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
-    ETL_STATIC_ASSERT(NBITS <= etl::integral_limits<TReturn>::bits, "NBITS too large for return type");
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<TReturn>::bits, "NBits too large for return type");
     ETL_STATIC_ASSERT(SHIFT <= etl::integral_limits<TReturn>::bits, "SHIFT too large");
 
     struct S
     {
-      signed value : NBITS;
+      signed value : NBits;
     } s = {0};
 
     return (s.value = (value >> SHIFT));
@@ -310,15 +311,15 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
-  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBITS)
+  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBits)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
 
-    ETL_ASSERT((NBITS <= etl::integral_limits<TReturn>::bits), ETL_ERROR(binary_out_of_range));
+    ETL_ASSERT((NBits <= etl::integral_limits<TReturn>::bits), ETL_ERROR(binary_out_of_range));
 
-    TReturn mask = TReturn(1) << (NBITS - 1);
-    value = value & TValue((TValue(1) << NBITS) - 1);
+    TReturn mask = TReturn(1) << (NBits - 1);
+    value = value & TValue((TValue(1) << NBits) - 1);
 
     return TReturn((value ^ mask) - mask);
   }
@@ -330,15 +331,15 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
-  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBITS, size_t SHIFT)
+  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBits, size_t SHIFT)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
 
-    ETL_ASSERT((NBITS <= etl::integral_limits<TReturn>::bits), ETL_ERROR(binary_out_of_range));
+    ETL_ASSERT((NBits <= etl::integral_limits<TReturn>::bits), ETL_ERROR(binary_out_of_range));
 
-    TReturn mask = TReturn(1) << (NBITS - 1);
-    value = (value >> SHIFT) & TValue((TValue(1) << NBITS) - 1);
+    TReturn mask = TReturn(1) << (NBits - 1);
+    value = (value >> SHIFT) & TValue((TValue(1) << NBits) - 1);
 
     return TReturn((value ^ mask) - mask);
   }
@@ -387,7 +388,7 @@ namespace etl
   /// Fills a value with a bit pattern. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TResult, typename TValue, TValue N>
+  template <typename TResult, typename TValue, TValue Value>
   ETL_CONSTEXPR TResult binary_fill()
   {
     ETL_STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
@@ -395,7 +396,7 @@ namespace etl
     typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
     typedef typename etl::make_unsigned<TValue>::type  unsigned_v_t;
 
-    return TResult(unsigned_v_t(N) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
+    return TResult(unsigned_v_t(Value) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
   }
 
 #if ETL_USING_8BIT_TYPES
@@ -417,12 +418,12 @@ namespace etl
   /// Detects the presence of zero bytes. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TValue, TValue N>
+  template <typename TValue, TValue Value>
   ETL_CONSTEXPR14 bool has_zero_byte()
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
     ETL_CONSTEXPR14 const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
-    const unsigned_t temp = unsigned_t(~((((unsigned_t(N) & mask) + mask) | unsigned_t(N)) | mask));
+    const unsigned_t temp = unsigned_t(~((((unsigned_t(Value) & mask) + mask) | unsigned_t(Value)) | mask));
 
     return (temp != 0U);
   }
@@ -438,13 +439,13 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Detects the presence of a byte of value N. Partial compile time.
+  /// Detects the presence of a byte of value Value. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TValue, TValue N>
+  template <typename TValue, TValue Value>
   ETL_CONSTEXPR14 bool has_byte_n(TValue value)
   {
-    return etl::has_zero_byte(TValue(value ^ etl::binary_fill<TValue, uint8_t>(N)));
+    return etl::has_zero_byte(TValue(value ^ etl::binary_fill<TValue, uint8_t>(Value)));
   }
 #endif
 
@@ -738,7 +739,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), T>::type
     reverse_bytes(T value)
   {
-#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL && ETL_HAS_STD_BYTESWAP
     return std::byteswap(value);
 #else
     return (value >> 8U) | (value << 8U);
@@ -754,7 +755,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), T>::type
     reverse_bytes(T value)
   {
-#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL && ETL_HAS_STD_BYTESWAP
     return std::byteswap(value);
 #else
     value = ((value & 0xFF00FF00UL) >> 8U) | ((value & 0x00FF00FFUL) << 8U);
@@ -774,7 +775,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), T>::type
     reverse_bytes(T value)
   {
-#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL && ETL_HAS_STD_BYTESWAP
     return std::byteswap(value);
 #else
     value = ((value & 0xFF00FF00FF00FF00ULL) >> 8U)  | ((value & 0x00FF00FF00FF00FFULL) << 8U);

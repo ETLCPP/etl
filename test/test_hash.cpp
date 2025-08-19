@@ -35,6 +35,7 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "etl/hash.h"
+#include "etl/endianness.h"
 
 // for testing user-defined hash specializations
 namespace { class CustomType{}; }
@@ -177,7 +178,14 @@ namespace
 
       if (ETL_PLATFORM_64BIT)
       {
-        CHECK_EQUAL(9821047038287739023U, hash);
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          CHECK_EQUAL(9821047038287739023U, hash);
+        }
+        else
+        {
+          CHECK_EQUAL(15239628249615675935U, hash);
+        }
       }
     }
 

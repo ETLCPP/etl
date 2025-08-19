@@ -1,4 +1,122 @@
 ﻿===============================================================================
+20.43.0
+
+Updates:
+Added 'emplace' constructor to etl::optional
+Added etl::delegate_observable
+Added return_type and argument_types to etl::delegate
+Added etl::nontype_t<>
+Added etl::not_null<>
+#1054 Using #pragma once
+#1159 etl::fsm helper to check states id sequence at compile time
+#1160 Feature request: rounded division (similar to scaled rounding)
+
+Fixes:
+Fix gamma tests (removed integral tests)
+#1126 to_arithmetic does not compile on C++98
+#1150 Bug in the void etl::unlink(first, last) for bidirectional links.
+#1151 test failure in i386 in 20.42.1: test_replace_strings in test_string_utilities.c fails
+#1152 Patch: use "python3 -m cogapp" instead of "cog" in generate.bat
+#1153 ROM size increase after algorithm_exception introduction
+#1156 Name conflict between template parameter and status register macro on MSP430 devices 
+#1158 Bug: Inverted logic in ! __has_include(<version>) check causes compilation failure on compilers without <version> header
+
+Pull Requests:
+#955  Implements deferred callback timer with optional priority
+#1147 Fix compile error in closure.h by using etl::forward
+
+===============================================================================
+20.42.2
+
+Updates:
+Added etl::crc8_opensafety
+Added etl::crc16_opensafety_a and etl::crc16_opensafety_b
+Added etl::crc64_iso
+Added etl::type_lists_are_convertible
+Made etl::closure constexpr for C++14
+Made invocation of delegate consrexpr for C++14
+#1132 Request: Make type_def Methods Noexcept
+
+===============================================================================
+20.42.1
+
+Pull Requests:
+#1147 Fix compile error in closure.h by using etl::forward
+
+===============================================================================
+20.42.0
+
+Updates:
+Removed redundant ETL_USING_WIDE_CHARACTERS
+#1118 Constexpr constructible flat_map, map, and set containers.
+      Added etl::const_map,      etl::const_map_ext,
+            etl::const_multimap, etl::const multimap_ext
+            etl::const_set,      etl::const_set_ext,
+            etl::const_multiset, etl::const multiset_ext
+
+Fixes:
+#1126 to_arithmetic-does-not-compile-on-C++98
+#1128 Request: Make Delegate Methods noexcept
+#1130 Use of etl::mem_copy for overlaped areas
+#1132 Make type_def Methods Noexcept
+#1143 v20.41.x, risc-v (esp32-c3) "No user defined specialisation of etl::underlying_type for this type"
+
+Pull Requests:
+#1131 Fix usage of template keyword
+#1136 Fix gamma.h on i386
+#1137 Add etl::closure
+#1138 Ignore deprecation of std::float_denorm_style
+#1139 Cleanup to get more independent of std
+#1140 Use std::byteswap only if available
+#1141 Fix build of tuple on clang >= 19
+#1142 Fix tests on big endian
+#1144 Add support for CRC8-NRSC5
+#1145 Workaround for link libraries call on Zephyr platform
+
+===============================================================================
+20.41.7
+
+Fixes:
+Fixed std::string_view include warning for < C++17
+#1123 Bug: Possible NULL Pointer Dereference in set.h 
+#1124 alignment.h won't compile as C++03
+#1125 For cogapp, use cog instead of python
+
+===============================================================================
+20.41.6
+
+Updates:
+Further optimisation of etl::basic_string::insert by using etl::mem_move()
+Used mem_copy and mem_move to optimise vectors of pointers
+Added C++23 Preview configuration to VS2022 project
+
+Fixes:
+Fixed tuple const&& move constructors
+Fixed usage of structured bindings for tuple, when not using the STL
+Disable std::tuple_index and std::tuple_element forward declarations for MacOS and Clang
+#1119 Forced compiler error in nth_type.h breaks containers for C++03
+
+Pull Requests:
+#1116 Fix forward in tuple ctor
+#1122 Add Newline at end of Span
+
+===============================================================================
+20.41.5
+
+Pull Requests:
+#1115 Conditionally use wchar.h
+
+===============================================================================
+20.41.4
+
+Updates:
+Optimisation of etl::basic_string<T>::initialize_free_space() using etl::mem_set
+
+Pull Requests:
+#1113 Add missing header wchar.h for usage of wcslen()
+#1114 Fix West support and add ETL configuration options to Kconfig
+
+===============================================================================
 20.41.3
 
 Updates:

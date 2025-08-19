@@ -41,12 +41,12 @@ namespace
       typedef etl::numeric_limits<bool> ETL_NL;
       typedef std::numeric_limits<bool> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);

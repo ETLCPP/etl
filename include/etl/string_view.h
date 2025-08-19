@@ -69,7 +69,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup stack
+  ///\ingroup string
   /// The exception thrown when the index is out of bounds.
   //***************************************************************************
   class string_view_bounds : public string_view_exception
@@ -83,7 +83,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup stack
+  ///\ingroup string
   /// The exception thrown when the view is uninitialised.
   //***************************************************************************
   class string_view_uninitialised : public string_view_exception
@@ -366,7 +366,7 @@ namespace etl
       {
         n = etl::min(count, size() - position);
 
-        etl::mem_copy(mbegin + position, n, destination);
+        etl::mem_move(mbegin + position, n, destination);
       }
 
       return n;
@@ -563,9 +563,9 @@ namespace etl
       position = etl::min(position, size());
 
       const_iterator iposition = etl::find_end(begin(),
-        begin() + position,
-        view.begin(),
-        view.end());
+                                               begin() + position,
+                                               view.begin(),
+                                               view.end());
 
       if (iposition == end())
       {

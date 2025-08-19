@@ -14,6 +14,8 @@
 #endif
 
 #include "murmurhash3.h"
+#include "etl/bit.h"
+#include "etl/endianness.h"
 
 //-----------------------------------------------------------------------------
 // Platform-specific functions and macros
@@ -60,13 +62,27 @@ inline uint64_t rotl64(uint64_t x, int8_t r)
 
 FORCE_INLINE uint32_t getblock32(const uint32_t * p, int i)
 {
-  return p[i];
+  if (etl::endianness::value() == etl::endian::little)
+  {
+    return p[i];
+  }
+  else
+  {
+    return etl::byteswap(p[i]);
+  }
 }
 
 #if ETL_USING_64BIT_TYPES
 FORCE_INLINE uint64_t getblock64(const uint64_t * p, int i)
 {
-  return p[i];
+  if (etl::endianness::value() == etl::endian::little)
+  {
+    return p[i];
+  }
+  else
+  {
+    return etl::byteswap(p[i]);
+  }
 }
 #endif
 
