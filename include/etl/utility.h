@@ -818,6 +818,26 @@ namespace etl
     TReturn(*ptr)(TArgs...);
   };
 #endif
+
+#if ETL_USING_CPP17 && !defined(ETL_FORCE_CPP11_NONTYPE)
+  //*****************************************************************************
+  // Wraps a non-type template parameter as a type.
+  //*****************************************************************************
+  template <auto Value>
+  struct nontype_t
+  {
+    static constexpr decltype(Value) value = Value;
+  };
+#elif ETL_USING_CPP11
+  //*****************************************************************************
+  // Wraps a non-type template parameter as a type.
+  //*****************************************************************************
+  template <typename T, T Value>
+  struct nontype_t
+  {
+    static constexpr T value = Value;
+  };
+#endif
 }
 
 #endif

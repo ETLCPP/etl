@@ -331,13 +331,15 @@ SOFTWARE.
   #define ETL_ENUM_CLASS(name)            enum class name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
   #define ETL_LVALUE_REF_QUALIFIER        &
+  #define ETL_NOEXCEPT                    noexcept
+  #define ETL_NOEXCEPT_EXPR(...)          noexcept(__VA_ARGS__)
 
-  #if ETL_USING_EXCEPTIONS
-    #define ETL_NOEXCEPT           noexcept
-    #define ETL_NOEXCEPT_EXPR(...) noexcept(__VA_ARGS__)
+  #if ETL_NOT_USING_EXCEPTIONS
+    #define ETL_NOEXCEPT_IF_NO_THROW           noexcept
+    #define ETL_NOEXCEPT_IF_NO_THROW_EXPR(...) noexcept(__VA_ARGS__)
   #else
-    #define ETL_NOEXCEPT
-    #define ETL_NOEXCEPT_EXPR(...)
+    #define ETL_NOEXCEPT_IF_NO_THROW
+    #define ETL_NOEXCEPT_IF_NO_THROW_EXPR(...)
   #endif
 #else
   #define ETL_CONSTEXPR
@@ -354,6 +356,8 @@ SOFTWARE.
   #define ETL_ENUM_CLASS(name)            enum name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum name
   #define ETL_LVALUE_REF_QUALIFIER
+  #define ETL_NOEXCEPT_IF_NO_THROW
+  #define ETL_NOEXCEPT_IF_NO_THROW_EXPR(...)
 #endif
 
 //*************************************
