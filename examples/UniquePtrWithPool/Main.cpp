@@ -14,31 +14,15 @@ struct S
   double b;
 };
 
-// Custom deleter that returns S* to the pool
-// This class is defined to be able to log the release of objects back to the pool.
-// Normally, you would use the predefined etl::ipool::destroyer
-struct Deleter
-{
-  Deleter(etl::pool<S, 10>& p)
-    : pool(&p) {}
-
-  void operator()(S* ptr) const
-  {
-    if (ptr)
-    {
-      std::cout << "Releasing S(" << ptr->a << ", " << ptr->b << ") back to pool." << std::endl;
-      pool->destroy(ptr);
-    }
-  }
-
-  etl::pool<S, 10>* pool;
-};
-
 int main()
 {
   etl::pool<S, 10> pool;
-  Deleter pool_deleter(pool);
-  using Unique = etl::unique_ptr<S, Deleter>;
+  auto pool_deleter = [&pool](auto ptr) 
+    { 
+      std::cout << "Releasing S(" << ptr->a << ", " << ptr->b << ") back to pool." << std::endl; 
+      pool.destroy(ptr); 
+    };
+  using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
 
   Unique us1(pool.create(1, 2), pool_deleter);
   std::cout << "Created S(" << us1->a << ", " << us1->b << ") from pool." << std::endl;

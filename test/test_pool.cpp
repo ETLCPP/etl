@@ -774,9 +774,8 @@ namespace
   TEST(test_releaser_functor_with_unique_ptr)
   {
     etl::pool<S, 10> pool;  
-    using Deleter = etl::ipool::releaser;
-    Deleter pool_deleter(pool);
-    using Unique = etl::unique_ptr<S, Deleter>;
+    auto pool_deleter = [&pool](S* ptr) { pool.release(ptr); };
+    using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
 
     S::instance_count = 0;
 
@@ -823,9 +822,8 @@ namespace
   TEST(test_destroyer_functor_with_unique_ptr)
   {
     etl::pool<S, 10> pool;  
-    using Deleter = etl::ipool::destroyer;
-    Deleter pool_deleter(pool);
-    using Unique = etl::unique_ptr<S, Deleter>;
+    auto pool_deleter = [&pool](S* ptr) { pool.destroy(ptr); };
+    using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
 
     S::instance_count = 0;
 
