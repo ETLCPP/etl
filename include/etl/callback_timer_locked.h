@@ -63,12 +63,12 @@ namespace etl
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
-      bool is_space = (number_of_registered_timers < MAX_TIMERS);
+      bool is_space = (number_of_registered_timers < Max_Timers);
 
       if (is_space)
       {
         // Search for the free space.
-        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
+        for (uint_least8_t i = 0U; i < Max_Timers; ++i)
         {
           timer_data& timer = timer_array[i];
 
@@ -142,7 +142,7 @@ namespace etl
       active_list.clear();
       unlock();
 
-      for (uint8_t i = 0U; i < MAX_TIMERS; ++i)
+      for (uint8_t i = 0U; i < Max_Timers; ++i)
       {
         ::new (&timer_array[i]) timer_data();
       }
@@ -388,12 +388,12 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    icallback_timer_locked(timer_data* const timer_array_, const uint_least8_t  MAX_TIMERS_)
+    icallback_timer_locked(timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
       : timer_array(timer_array_),
         active_list(timer_array_),
         enabled(false),
         number_of_registered_timers(0U),
-        MAX_TIMERS(MAX_TIMERS_)
+        Max_Timers(Max_Timers_)
     {
     }
 
@@ -588,7 +588,7 @@ namespace etl
     //*******************************************
     bool is_valid_timer_id(etl::timer::id::type id_) const
     {
-      return (id_ < MAX_TIMERS);
+      return (id_ < Max_Timers);
     }
 
     // The array of timer data structures.
@@ -611,18 +611,18 @@ namespace etl
     template <uint_least8_t, uint32_t>
     friend class callback_timer_deferred_locked;
 
-    const uint_least8_t MAX_TIMERS;
+    const uint_least8_t Max_Timers;
   };
 
   //***************************************************************************
   /// The callback timer
   //***************************************************************************
-  template <uint_least8_t MAX_TIMERS_>
+  template <uint_least8_t Max_Timers_>
   class callback_timer_locked : public etl::icallback_timer_locked
   {
   public:
 
-    ETL_STATIC_ASSERT(MAX_TIMERS_ <= 254U, "No more than 254 timers are allowed");
+    ETL_STATIC_ASSERT(Max_Timers_ <= 254U, "No more than 254 timers are allowed");
 
     typedef icallback_timer_locked::callback_type callback_type;
     typedef icallback_timer_locked::try_lock_type try_lock_type;
@@ -633,7 +633,7 @@ namespace etl
     /// Constructor.
     //*******************************************
     callback_timer_locked()
-      : icallback_timer_locked(timer_array, MAX_TIMERS_)
+      : icallback_timer_locked(timer_array, Max_Timers_)
     {
     }
 
@@ -641,7 +641,7 @@ namespace etl
     /// Constructor.
     //*******************************************
     callback_timer_locked(try_lock_type try_lock_, lock_type lock_, unlock_type unlock_)
-      : icallback_timer_locked(timer_array, MAX_TIMERS_)
+      : icallback_timer_locked(timer_array, Max_Timers_)
     {
       this->set_locks(try_lock_, lock_, unlock_);
     }
@@ -700,7 +700,7 @@ namespace etl
 
   private:
 
-    timer_data timer_array[MAX_TIMERS_];
+    timer_data timer_array[Max_Timers_];
   };
 }
 

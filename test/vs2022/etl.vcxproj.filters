@@ -196,26 +196,11 @@
     <Filter Include="Tests\Syntax Checks">
       <UniqueIdentifier>{8a3300fa-c2cd-44dd-8582-692f97ec4dc0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Syntax Checks\C++03">
-      <UniqueIdentifier>{ca522a34-8cf0-4f64-8ca1-33f52f65a9a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++11">
-      <UniqueIdentifier>{ba2bf848-6023-4906-a0d4-14a4c8fba0e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++14">
-      <UniqueIdentifier>{527f4d9a-8968-4352-8cdf-f6ccc391dcf9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++17">
-      <UniqueIdentifier>{57b110fa-b3d8-4cc4-9619-ca510a29c213}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests\Syntax Checks\Logs">
       <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tests\Syntax Checks\Source">
       <UniqueIdentifier>{a05ae045-3218-4ca2-9f25-08cc977898df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++20">
-      <UniqueIdentifier>{3336d15c-7c22-4df0-a6b2-1eb605099a1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tests\Messaging">
       <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
@@ -1530,8 +1515,17 @@
     <ClInclude Include="..\..\include\etl\const_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate_observable.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\rounded_integral_division.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
-      <Filter>UnitTest++\Header Files</Filter>
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\not_null.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3698,6 +3692,24 @@
     <ClCompile Include="..\test_crc64_iso.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_delegate_observable.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_rounded_integral_division.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_pointer.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_unique_pointer.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\not_null.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_pointer_constexpr.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3856,6 +3868,12 @@
     <None Include="..\..\CONTRIBUTING.md">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\scripts\convert_headers_to_use_guards.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\convert_headers_to_use_once.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
@@ -3893,6 +3911,9 @@
     </Text>
     <Text Include="..\syntax_check\CMakeLists.txt">
       <Filter>Tests\Syntax Checks</Filter>
+    </Text>
+    <Text Include="..\..\Converting header guards.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

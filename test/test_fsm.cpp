@@ -155,6 +155,14 @@ namespace
     }
 
     //***********************************
+    template <typename... TStates>
+    void Initialise(etl::fsm_state_pack<TStates...>& state_pack)
+    {
+      set_states(state_pack);
+      ClearStatistics();
+    }
+
+    //***********************************
     void ClearStatistics()
     {
       startCount    = 0;
@@ -367,8 +375,6 @@ namespace
     //*************************************************************************
     TEST(test_fsm)
     {
-      etl::null_message_router nmr;
-
       CHECK(motorControl.is_producer());
       CHECK(motorControl.is_consumer());
 
@@ -509,8 +515,6 @@ namespace
     //*************************************************************************
     TEST(test_fsm_emergency_stop)
     {
-      etl::null_message_router nmr;
-
       motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList)); 
       motorControl.reset();
       motorControl.ClearStatistics();
@@ -558,8 +562,6 @@ namespace
     //*************************************************************************
     TEST(test_fsm_recursive_event)
     {
-      etl::null_message_router nmr;
-
       motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
@@ -679,6 +681,104 @@ namespace
       MotorControl mc;
 
       CHECK_THROW(mc.receive(Start()), etl::fsm_not_started);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_initialise_from_state_pack)
+    {
+      MotorControl motorControl;
+
+      etl::fsm_state_pack<Idle, Running, WindingDown, Locked> statePack;
+
+      motorControl.Initialise(statePack);
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      // Start the FSM.
+      motorControl.start(false);
+      CHECK(motorControl.is_started());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
+
+      // Send Start event.
+      motorControl.receive(Start());
+
+      // Now in Running state.
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state().get_state_id()));
+
+      // Send SetSpeed event.
+      motorControl.receive(SetSpeed(100));
+
+      // Still in Running state.
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state().get_state_id()));
+
+      // Send Stop event.
+      motorControl.receive(Stop());
+
+      // Now in WindingDown state.
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state().get_state_id()));
+
+      // Send Stopped event.
+      motorControl.receive(Stopped());
+
+      // Now in Locked state via Idle state.
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_force_state_changes)
+    {
+      MotorControl motorControl;
+
+      etl::fsm_state_pack<Idle, Running, WindingDown, Locked> statePack;
+
+      motorControl.Initialise(statePack);
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      // Start the FSM.
+      motorControl.start(false);
+      CHECK(motorControl.is_started());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
+
+      auto id1 = motorControl.transition_to(StateId::Running);
+
+      // Now in Running state.
+      CHECK_EQUAL(StateId::Running, int(id1));
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Running, int(motorControl.get_state().get_state_id()));
+
+      auto id2 = motorControl.transition_to(StateId::Idle);
+      
+      // Now in Locked state.
+      CHECK_EQUAL(StateId::Locked, int(id2));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
+
+      auto id3 = motorControl.transition_to(StateId::Winding_Down);
+
+      // Now in Locked state.
+      CHECK_EQUAL(StateId::Winding_Down, int(id3));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state().get_state_id()));
+
+      // Send a normal event message to make sure the FSM is still working.
+
+      // Now send a Stopped event message.
+      motorControl.receive(Stopped());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
     }
   };
 }

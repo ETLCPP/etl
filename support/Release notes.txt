@@ -1,4 +1,31 @@
 ﻿===============================================================================
+20.43.0
+
+Updates:
+Added 'emplace' constructor to etl::optional
+Added etl::delegate_observable
+Added return_type and argument_types to etl::delegate
+Added etl::nontype_t<>
+Added etl::not_null<>
+#1054 Using #pragma once
+#1159 etl::fsm helper to check states id sequence at compile time
+#1160 Feature request: rounded division (similar to scaled rounding)
+
+Fixes:
+Fix gamma tests (removed integral tests)
+#1126 to_arithmetic does not compile on C++98
+#1150 Bug in the void etl::unlink(first, last) for bidirectional links.
+#1151 test failure in i386 in 20.42.1: test_replace_strings in test_string_utilities.c fails
+#1152 Patch: use "python3 -m cogapp" instead of "cog" in generate.bat
+#1153 ROM size increase after algorithm_exception introduction
+#1156 Name conflict between template parameter and status register macro on MSP430 devices 
+#1158 Bug: Inverted logic in ! __has_include(<version>) check causes compilation failure on compilers without <version> header
+
+Pull Requests:
+#955  Implements deferred callback timer with optional priority
+#1147 Fix compile error in closure.h by using etl::forward
+
+===============================================================================
 20.42.2
 
 Updates:
@@ -9,16 +36,6 @@ Added etl::type_lists_are_convertible
 Made etl::closure constexpr for C++14
 Made invocation of delegate consrexpr for C++14
 #1132 Request: Make type_def Methods Noexcept
-
-Fixes:
-Fix gamma tests (removed integral tests)
-#1126 to_arithmetic does not compile on C++98
-#1150 Bug in the void etl::unlink(first, last) for bidirectional links.
-#1151 test failure in i386 in 20.42.1: test_replace_strings in test_string_utilities.c fails
-
-Pull Requests:
-#955  Implements deferred callback timer with optional priority
-#1147 Fix compile error in closure.h by using etl::forward
 
 ===============================================================================
 20.42.1

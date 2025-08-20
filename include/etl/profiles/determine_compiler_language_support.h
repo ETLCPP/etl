@@ -219,7 +219,7 @@ SOFTWARE.
 #endif
 
 #if defined(__has_include)
-  #if !__has_include(<version>)
+  #if __has_include(<version>)
     #include <version>
 
     #if defined(__cpp_lib_byteswap)

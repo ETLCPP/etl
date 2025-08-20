@@ -72,6 +72,9 @@ cog.outl("//********************************************************************
 #include "message_router.h"
 #include "integral_limits.h"
 #include "largest.h"
+#if ETL_USING_CPP11
+  #include "tuple.h"
+#endif
 
 #include <stdint.h>
 
@@ -226,7 +229,79 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
+
+    // Compile-time: TState::ID must equal its index in the type list (0..N-1)
+    template <size_t Id, typename...> struct check_ids : etl::true_type 
+    {
+    };
+
+    template <size_t Id, typename TState0, typename... TRest>
+    struct check_ids<Id, TState0, TRest...>
+      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
+    {
+    };   
   }
+
+  class ifsm_state;
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// A class to store FSM states.
+  //***************************************************************************
+  template <typename... TStates>
+  class fsm_state_pack 
+  {
+  public:
+
+    friend class etl::fsm;
+
+    ETL_STATIC_ASSERT((private_fsm::check_ids<0, TStates...>::value), "State IDs must be 0..N-1 and in order");
+    ETL_STATIC_ASSERT(sizeof...(TStates) > 0, "At least one state is required");
+    ETL_STATIC_ASSERT(sizeof...(TStates) < private_fsm::ifsm_state_helper<>::No_State_Change, "State IDs mst be less than ifsm_state::No_State_Change");
+
+    //*********************************
+    // The number of states.
+    //*********************************
+    static ETL_CONSTEXPR size_t size()
+    {
+      return sizeof...(TStates);
+    }
+
+    //*********************************
+    /// Gets a reference to the state.
+    //*********************************
+    template <typename TState>
+    TState& get() 
+    { 
+      return etl::get<TState>(storage); 
+    }
+
+    //*********************************
+    /// Gets a const reference to the state.
+    //*********************************
+    template <typename TState>
+    const TState& get() const 
+    { 
+      return etl::get<TState>(storage); 
+    }
+
+  private:
+
+    //*********************************
+    /// Gets a pointer to the state list.
+    //*********************************
+    etl::ifsm_state** get_state_list()
+    {
+      return &states[0];
+    }
+
+    /// A tuple to store the states.
+    etl::tuple<TStates...> storage{};
+
+    /// Pointers to the states.
+    etl::ifsm_state* states[sizeof...(TStates)]{ &etl::get<TStates>(storage)... };
+  };
+#endif
 
   //***************************************************************************
   /// Interface class for FSM states.
@@ -359,8 +434,8 @@ namespace etl
     ifsm_state* p_default_child;
 
     // Disabled.
-    ifsm_state(const ifsm_state&);
-    ifsm_state& operator =(const ifsm_state&);
+    ifsm_state(const ifsm_state&) ETL_DELETE;
+    ifsm_state& operator =(const ifsm_state&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -386,6 +461,7 @@ namespace etl
 
     //*******************************************
     /// Set the states for the FSM
+    /// From a pointer to etl::ifsm_state and size.
     //*******************************************
     template <typename TSize>
     void set_states(etl::ifsm_state** p_states, TSize size)
@@ -403,6 +479,24 @@ namespace etl
         state_list[i]->set_fsm_context(*this);
       }
     }
+
+#if ETL_USING_CPP11
+    //*******************************************
+    /// Set the states for the FSM
+    /// From an etl::fsm_state_pack.
+    //*******************************************
+    template <typename... TStates>
+    void set_states(etl::fsm_state_pack<TStates...>& state_pack)
+    {
+      state_list = state_pack.get_state_list();
+      number_of_states = etl::fsm_state_id_t(state_pack.size());
+
+      for (etl::fsm_state_id_t i = 0; i < number_of_states; ++i)
+      {
+        state_list[i]->set_fsm_context(*this);
+      }
+    }
+#endif
 
     //*******************************************
     /// Starts the FSM.
@@ -446,34 +540,26 @@ namespace etl
       {
         etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-        if (have_changed_state(next_state_id))
-        {
-          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-          etl::ifsm_state* p_next_state = state_list[next_state_id];
-
-          do
-          {
-            p_state->on_exit_state();
-            p_state = p_next_state;
-
-            next_state_id = p_state->on_enter_state();
-
-            if (have_changed_state(next_state_id))
-            {
-              ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-              p_next_state = state_list[next_state_id];
-            }
-          } while (p_next_state != p_state); // Have we changed state again?
-        }
-        else if (is_self_transition(next_state_id))
-        {
-          p_state->on_exit_state();
-          p_state->on_enter_state();
-        }
+        process_state_change(next_state_id); 
       }
       else
       {
         ETL_ASSERT_FAIL(ETL_ERROR(etl::fsm_not_started));
+      }
+    }
+
+    //*******************************************
+    /// Invoke a state transition.
+    //*******************************************
+    etl::fsm_state_id_t transition_to(etl::fsm_state_id_t new_state_id)
+    {
+      if (is_started())
+      {
+        return process_state_change(new_state_id);
+      }
+      else
+      {
+        return ifsm_state::No_State_Change;
       }
     }
 
@@ -569,6 +655,39 @@ namespace etl
     bool is_self_transition(etl::fsm_state_id_t next_state_id) const
     {
       return (next_state_id == ifsm_state::Self_Transition);
+    }
+
+    //*******************************************
+    /// Core function to process a state change.
+    //*******************************************
+    virtual etl::fsm_state_id_t process_state_change(etl::fsm_state_id_t next_state_id)
+    {
+      if (have_changed_state(next_state_id))
+      {
+        ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
+        etl::ifsm_state* p_next_state = state_list[next_state_id];
+
+        do
+        {
+          p_state->on_exit_state();
+          p_state = p_next_state;
+
+          next_state_id = p_state->on_enter_state();
+
+          if (have_changed_state(next_state_id))
+          {
+            ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
+            p_next_state = state_list[next_state_id];
+          }
+        } while (p_next_state != p_state); // Have we changed state again?
+      }
+      else if (is_self_transition(next_state_id))
+      {
+        p_state->on_exit_state();
+        p_state->on_enter_state();
+      }
+
+      return p_state->get_state_id();
     }
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.

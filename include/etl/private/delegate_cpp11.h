@@ -55,6 +55,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "../function_traits.h"
 #include "../utility.h"
 #include "../optional.h"
+#include "../type_list.h"
 
 namespace etl
 {
@@ -118,6 +119,9 @@ namespace etl
   class delegate<TReturn(TParams...)> final : public delegate_tag
   {
   public:
+
+    using return_type    = TReturn;
+    using argument_types = etl::type_list<TParams...>;
 
     //*************************************************************************
     /// Default constructor.

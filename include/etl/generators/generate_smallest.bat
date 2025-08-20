@@ -1,1 +1,1 @@
-cog -d -e -o../smallest.h -DNTypes=16 smallest_generator.h
+python3 -m cogapp -d -e -o../smallest.h -DNTypes=16 smallest_generator.h

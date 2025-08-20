@@ -153,6 +153,7 @@ add_executable(etl_tests
 	test_debounce.cpp
 	test_delegate.cpp
 	test_delegate_cpp03.cpp
+	test_delegate_observable.cpp
 	test_delegate_service.cpp
 	test_delegate_service_compile_time.cpp
 	test_delegate_service_cpp03.cpp
@@ -229,6 +230,9 @@ add_executable(etl_tests
 	test_multi_span.cpp
 	test_multi_vector.cpp
 	test_murmur3.cpp
+	test_not_null_pointer.cpp
+	test_not_null_pointer_constexpr.cpp
+	test_not_null_unique_pointer.cpp
 	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp
@@ -267,6 +271,7 @@ add_executable(etl_tests
 	test_rescale.cpp
 	test_result.cpp
 	test_rms.cpp
+	test_rounded_integral_division.cpp
 	test_scaled_rounding.cpp
 	test_set.cpp
 	test_shared_message.cpp

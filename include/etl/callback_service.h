@@ -41,11 +41,11 @@ namespace etl
 {
   //***************************************************************************
   /// An indexed callback service.
-  /// \tparam RANGE  The number of callbacks to handle.
-  /// \tparam OFFSET The lowest callback id value.
-  /// The callback ids must range between OFFSET and OFFSET + RANGE - 1.
+  /// \tparam Range  The number of callbacks to handle.
+  /// \tparam Offset The lowest callback id value.
+  /// The callback ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
-  template <size_t RANGE, size_t OFFSET = 0U>
+  template <size_t Range, size_t Offset = 0U>
   class callback_service
   {
   public:
@@ -64,16 +64,16 @@ namespace etl
     //*************************************************************************
     /// Registers a callback for the specified id.
     /// Compile time assert if the id is out of range.
-    /// \tparam ID The id of the callback.
+    /// \tparam Id The id of the callback.
     /// \param callback Reference to the callback.
     //*************************************************************************
-    template <size_t ID>
+    template <size_t Id>
     void register_callback(etl::ifunction<size_t>& callback)
     {
-      ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
-      ETL_STATIC_ASSERT(ID >= OFFSET,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= Offset,          "Callback Id out of range");
 
-      lookup[ID - OFFSET] = &callback;
+      lookup[Id - Offset] = &callback;
     }
 
     //*************************************************************************
@@ -84,9 +84,9 @@ namespace etl
     //*************************************************************************
     void register_callback(size_t id, etl::ifunction<size_t>& callback)
     {
-      if ((id >= OFFSET) && (id < (OFFSET + RANGE)))
+      if ((id >= Offset) && (id < (Offset + Range)))
       {
-        lookup[id - OFFSET] = &callback;
+        lookup[id - Offset] = &callback;
       }
     }
 
@@ -102,15 +102,15 @@ namespace etl
     //*************************************************************************
     /// Executes the callback function for the index.
     /// Compile time assert if the id is out of range.
-    /// \tparam ID The id of the callback.
+    /// \tparam Id The id of the callback.
     //*************************************************************************
-    template <size_t ID>
+    template <size_t Id>
     void callback()
     {
-      ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
-      ETL_STATIC_ASSERT(ID >= OFFSET,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= Offset,          "Callback Id out of range");
 
-      (*lookup[ID - OFFSET])(ID);
+      (*lookup[Id - Offset])(Id);
     }
 
     //*************************************************************************
@@ -119,9 +119,9 @@ namespace etl
     //*************************************************************************
     void callback(size_t id)
     {
-      if ((id >= OFFSET) && (id < (OFFSET + RANGE)))
+      if ((id >= Offset) && (id < (Offset + Range)))
       {
-        (*lookup[id - OFFSET])(id);
+        (*lookup[id - Offset])(id);
       }
       else
       {
@@ -144,15 +144,15 @@ namespace etl
     }
 
     /// The default callback for unhandled ids.
-    etl::function_mp<callback_service<RANGE, OFFSET>,
+    etl::function_mp<callback_service<Range, Offset>,
                      size_t,
-                     &callback_service<RANGE, OFFSET>::unhandled> unhandled_callback;
+                     &callback_service<Range, Offset>::unhandled> unhandled_callback;
 
     /// Pointer to the user defined 'unhandled' callback.
     etl::ifunction<size_t>* p_unhandled;
 
     /// Lookup table of callbacks.
-    etl::array<etl::ifunction<size_t>*, RANGE> lookup;
+    etl::array<etl::ifunction<size_t>*, Range> lookup;
   };
 }
 

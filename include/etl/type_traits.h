@@ -111,16 +111,16 @@ namespace etl
 #endif
 
 #if ETL_USING_CPP11
-  template <bool B>
-  using bool_constant = integral_constant<bool, B>;
+  template <bool BValue>
+  using bool_constant = integral_constant<bool, BValue>;
 #else
-  template <bool B>
-  struct bool_constant : etl::integral_constant<bool, B> { };
+  template <bool BValue>
+  struct bool_constant : etl::integral_constant<bool, BValue> { };
 #endif
 
 #if ETL_USING_CPP17
-  template <bool B>
-  inline constexpr bool bool_constant_v = bool_constant<B>::value;
+  template <bool BValue>
+  inline constexpr bool bool_constant_v = bool_constant<BValue>::value;
 #endif
 
   //***************************************************************************
@@ -423,7 +423,7 @@ namespace etl
   /// is_array
   template <typename T> struct is_array : false_type {};
   template <typename T> struct is_array<T[]> : true_type {};
-  template <typename T, size_t MAXN> struct is_array<T[MAXN]> : true_type {};
+  template <typename T, size_t Size> struct is_array<T[Size]> : true_type {};
 
 #if ETL_USING_CPP17
   template <typename T>
@@ -495,12 +495,12 @@ namespace etl
 
   //***************************************************************************
   /// conditional
-  template <bool B, typename T, typename F>  struct conditional { typedef T type; };
+  template <bool BValue, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
 #if ETL_USING_CPP11
-  template <bool B, typename T, typename F>
-  using conditional_t = typename conditional<B, T, F>::type;
+  template <bool BValue, typename T, typename F>
+  using conditional_t = typename conditional<BValue, T, F>::type;
 #endif
 
   //***************************************************************************
@@ -561,41 +561,41 @@ namespace etl
 
   //***************************************************************************
   /// enable_if
-  template <bool B, typename T = void> struct enable_if {};
+  template <bool BValue, typename T = void> struct enable_if {};
   template <typename T> struct enable_if<true, T> { typedef T type; };
 
 #if ETL_USING_CPP11
-  template <bool B, typename T = void>
-  using enable_if_t = typename enable_if<B, T>::type;
+  template <bool BValue, typename T = void>
+  using enable_if_t = typename enable_if<BValue, T>::type;
 #endif
 
   //***************************************************************************
   /// extent
-  template <typename T, unsigned MAXN = 0U>
+  template <typename T, unsigned Size = 0U>
   struct extent : integral_constant<size_t, 0U> {};
 
   template <typename T>
   struct extent<T[], 0> : integral_constant<size_t, 0U> {};
 
-  template <typename T, unsigned MAXN>
-  struct extent<T[], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
+  template <typename T, unsigned Size>
+  struct extent<T[], Size> : integral_constant<size_t, extent<T, Size - 1>::value> {};
 
-  template <typename T, unsigned MAXN>
-  struct extent<T[MAXN], 0> : integral_constant<size_t, MAXN> {};
+  template <typename T, unsigned Size>
+  struct extent<T[Size], 0> : integral_constant<size_t, Size> {};
 
-  template <typename T, unsigned I, unsigned MAXN>
-  struct extent<T[I], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
+  template <typename T, unsigned I, unsigned Size>
+  struct extent<T[I], Size> : integral_constant<size_t, extent<T, Size - 1>::value> {};
 
 #if ETL_USING_CPP17
-  template <typename T, unsigned N = 0U>
-  inline constexpr size_t extent_v = extent<T, N>::value;
+  template <typename T, unsigned Size = 0U>
+  inline constexpr size_t extent_v = extent<T, Size>::value;
 #endif
 
   //***************************************************************************
   /// remove_extent
   template <typename T> struct remove_extent { typedef T type; };
   template <typename T> struct remove_extent<T[]> { typedef T type; };
-  template <typename T, size_t MAXN> struct remove_extent<T[MAXN]> { typedef T type; };
+  template <typename T, size_t Size> struct remove_extent<T[Size]> { typedef T type; };
 
 #if ETL_USING_CPP11
   template <typename T>
@@ -606,7 +606,7 @@ namespace etl
   /// remove_all_extents
   template <typename T> struct remove_all_extents { typedef T type; };
   template <typename T> struct remove_all_extents<T[]> { typedef typename remove_all_extents<T>::type type; };
-  template <typename T, size_t MAXN> struct remove_all_extents<T[MAXN]> { typedef typename remove_all_extents<T>::type type; };
+  template <typename T, size_t Size> struct remove_all_extents<T[Size]> { typedef typename remove_all_extents<T>::type type; };
 
 #if ETL_USING_CPP11
   template <typename T>
@@ -617,7 +617,7 @@ namespace etl
   /// rank
   template <typename T>struct rank : integral_constant<size_t, 0> {};
   template <typename T> struct rank<T[]> : public integral_constant<size_t, rank<T>::value + 1> {};
-  template <typename T, size_t MAXN> struct rank<T[MAXN]> : public integral_constant<size_t, rank<T>::value + 1> {};
+  template <typename T, size_t Size> struct rank<T[Size]> : public integral_constant<size_t, rank<T>::value + 1> {};
 
 #if ETL_USING_CPP17
   template <typename T>
@@ -869,16 +869,16 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
 #if ETL_USING_CPP17
-  template <bool B>
-  using bool_constant = std::bool_constant<B>;
+  template <bool BValue>
+  using bool_constant = std::bool_constant<BValue>;
 #else
-  template <bool B>
-  struct bool_constant : std::integral_constant<bool, B> { };
+  template <bool BValue>
+  struct bool_constant : std::integral_constant<bool, BValue> { };
 #endif
 
 #if ETL_USING_CPP17
-  template <bool B>
-  inline constexpr bool bool_constant_v = bool_constant<B>::value;
+  template <bool BValue>
+  inline constexpr bool bool_constant_v = bool_constant<BValue>::value;
 #endif
 
   //***************************************************************************
@@ -1184,12 +1184,12 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   /// conditional
   ///\ingroup type_traits
-  template <bool B, typename T, typename F>  struct conditional { typedef T type; };
+  template <bool BValue, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
 #if ETL_USING_CPP11
-  template <bool B, typename T, typename F>
-  using conditional_t = typename conditional<B, T, F>::type;
+  template <bool BValue, typename T, typename F>
+  using conditional_t = typename conditional<BValue, T, F>::type;
 #endif
 
   //***************************************************************************
@@ -1215,22 +1215,22 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   /// enable_if
   ///\ingroup type_traits
-  template <bool B, typename T = void> struct enable_if : std::enable_if<B, T> {};
+  template <bool BValue, typename T = void> struct enable_if : std::enable_if<BValue, T> {};
 
 #if ETL_USING_CPP11
-  template <bool B, typename T = void>
-  using enable_if_t = typename std::enable_if<B, T>::type;
+  template <bool BValue, typename T = void>
+  using enable_if_t = typename std::enable_if<BValue, T>::type;
 #endif
 
   //***************************************************************************
   /// extent
   ///\ingroup type_traits
-  template <typename T, unsigned MAXN = 0U>
-  struct extent : std::extent<T, MAXN> {};
+  template <typename T, unsigned Size = 0U>
+  struct extent : std::extent<T, Size> {};
 
 #if ETL_USING_CPP17
-  template <typename T, unsigned MAXN = 0U>
-  inline constexpr size_t extent_v = std::extent_v<T, MAXN>;
+  template <typename T, unsigned Size = 0U>
+  inline constexpr size_t extent_v = std::extent_v<T, Size>;
 #endif
 
   //***************************************************************************
@@ -1442,7 +1442,7 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   /// conditional_integral_constant
   // /\ingroup type_traits
-  template <bool B, typename T, T TRUE_VALUE, T FALSE_VALUE>
+  template <bool BValue, typename T, T TRUE_VALUE, T FALSE_VALUE>
   struct conditional_integral_constant;
 
   template <typename T, T TRUE_VALUE, T FALSE_VALUE>
@@ -1572,10 +1572,10 @@ typedef integral_constant<bool, true>  true_type;
   /// Requires that the class has defined 'base_type'.
   //*************************************************************************** 
   // Recursive definition of the type.
-  template <size_t N, typename TType>
+  template <size_t Index, typename TType>
   struct nth_base
   {
-    typedef typename nth_base<N - 1U, typename TType::base_type>::type type;
+    typedef typename nth_base<Index - 1U, typename TType::base_type>::type type;
   };
 
   template <typename TType>
@@ -1585,8 +1585,8 @@ typedef integral_constant<bool, true>  true_type;
   };
 
 #if ETL_USING_CPP11
-  template <size_t N, typename TType>
-  using nth_base_t = typename nth_base<N, TType>::type;
+  template <size_t Index, typename TType>
+  using nth_base_t = typename nth_base<Index, TType>::type;
 #endif
 
   //***************************************************************************
@@ -1976,7 +1976,7 @@ typedef integral_constant<bool, true>  true_type;
   // is_assignable
   template <typename T1,
             typename T2,
-            bool B = (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value) && (etl::is_arithmetic<T2>::value || etl::is_pointer<T2>::value)>
+            bool BValue = (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value) && (etl::is_arithmetic<T2>::value || etl::is_pointer<T2>::value)>
   struct is_assignable;
 
   template <typename T1, typename T2>
@@ -1990,7 +1990,7 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP11
   //*********************************************
   // is_constructible
-  template <typename T, bool B, typename... TArgs>
+  template <typename T, bool BValue, typename... TArgs>
   struct is_constructible_helper;
 
   template <typename T, typename... TArgs>
@@ -2009,7 +2009,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_copy_constructible
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_copy_constructible;
 
   template <typename T>
@@ -2022,7 +2022,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_move_constructible
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_move_constructible;
 
   template <typename T>
@@ -2035,7 +2035,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_trivially_constructible
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_trivially_constructible;
 
   template <typename T>
@@ -2048,7 +2048,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_trivially_copy_constructible
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_trivially_copy_constructible;
 
   template <typename T>
@@ -2061,7 +2061,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_trivially_destructible
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_trivially_destructible;
 
   template <typename T>
@@ -2074,7 +2074,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_trivially_copy_assignable
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_trivially_copy_assignable;
 
   template <typename T>
@@ -2087,7 +2087,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_trivially_copyable
-  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_trivially_copyable;
 
   template <typename T>

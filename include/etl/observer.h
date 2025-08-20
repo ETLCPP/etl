@@ -92,10 +92,10 @@ namespace etl
   //*********************************************************************
   /// The object that is being observed.
   ///\tparam TObserver     The observer type.
-  ///\tparam MAX_OBSERVERS The maximum number of observers that can be accommodated.
+  ///\tparam Max_Observers The maximum number of observers that can be accommodated.
   ///\ingroup observer
   //*********************************************************************
-  template <typename TObserver, const size_t MAX_OBSERVERS>
+  template <typename TObserver, const size_t Max_Observers>
   class observable
   {
   private:
@@ -137,7 +137,7 @@ namespace etl
 
     typedef size_t size_type;
 
-    typedef etl::vector<observer_item, MAX_OBSERVERS> Observer_List;
+    typedef etl::vector<observer_item, Max_Observers> Observer_List;
 
     //*****************************************************************
     /// Add an observer to the list.

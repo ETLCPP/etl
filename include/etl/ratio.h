@@ -21,7 +21,7 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+FITNESS FOR Value1 PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -210,34 +210,34 @@ namespace etl
   namespace private_ratio
   {
     // Primary template for GCD calculation
-    template <typename T, T A, T B, bool = (B == 0)>
+    template <typename T, T Value1, T Value2, bool = (Value2 == 0)>
     struct ratio_gcd;
 
-    // Specialisation for the case when B is not zero
-    template <typename T, T A, T B>
-    struct ratio_gcd<T, A, B, false>
+    // Specialisation for the case when Value2 is not zero
+    template <typename T, T Value1, T Value2>
+    struct ratio_gcd<T, Value1, Value2, false>
     {
-      static constexpr T value = ratio_gcd<T, B, A % B>::value;
+      static constexpr T value = ratio_gcd<T, Value2, Value1 % Value2>::value;
     };
 
-    // Specialisation for the case when B is zero
-    template <typename T, T A, T B>
-    struct ratio_gcd<T, A, B, true>
+    // Specialisation for the case when Value2 is zero
+    template <typename T, T Value1, T Value2>
+    struct ratio_gcd<T, Value1, Value2, true>
     {
-      static constexpr T value = (A < 0) ? -A : A;
+      static constexpr T value = (Value1 < 0) ? -Value1 : Value1;
     };
 
     // Primary template for LCM calculation
-    template <typename T, T A, T B>
+    template <typename T, T Value1, T Value2>
     struct ratio_lcm
     {
     private:
 
-      static constexpr T product = ((A * B) < 0) ? -(A * B) : A * B;
+      static constexpr T product = ((Value1 * Value2) < 0) ? -(Value1 * Value2) : Value1 * Value2;
 
     public:
 
-      static constexpr T value = product / ratio_gcd<T, A, B>::value;
+      static constexpr T value = product / ratio_gcd<T, Value1, Value2>::value;
     };
 
     template<typename R1>

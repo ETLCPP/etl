@@ -481,11 +481,11 @@ namespace etl
   /// Template deduction guides.
   //*************************************************************************
 #if ETL_USING_CPP17
-  template <typename TElements, size_t N>
-  const_set_ext(const etl::span<TElements, N>&) -> const_set_ext<TElements>;
+  template <typename TElements, size_t Size>
+  const_set_ext(const etl::span<TElements, Size>&) -> const_set_ext<TElements>;
 
-  template <typename TElements, size_t N>
-  const_set_ext(const TElements(&)[N]) -> const_set_ext<TElements>;
+  template <typename TElements, size_t Size>
+  const_set_ext(const TElements(&)[Size]) -> const_set_ext<TElements>;
 #endif
 
   //*************************************************************************

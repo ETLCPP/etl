@@ -1,0 +1,26 @@
+name: Publish ETL to PlatformIO
+
+on:
+  release:
+    types: [published]  # Trigger only when a GitHub release is published
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Publish to PlatformIO Registry
+        run: pio package publish --owner etlcpp --non-interactive
+        env:
+          PLATFORMIO_AUTH_TOKEN: ${{ secrets.PLATFORMIO_TOKEN }}

@@ -69,7 +69,7 @@ namespace etl
 
     enum
     {
-      ID = ID_
+      Id = ID_
     };
   };
 
@@ -96,19 +96,19 @@ namespace etl
     struct nulltype {};
 
     // For N type pairs.
-    template <size_t ID, typename T1, typename... TRest>
+    template <size_t Id, typename T1, typename... TRest>
     struct type_from_id_helper
     {
-      using type = typename etl::conditional<ID == T1::ID,
+      using type = typename etl::conditional<Id == T1::Id,
                                              typename T1::type,
-                                             typename type_from_id_helper<ID, TRest...>::type>::type;
+                                             typename type_from_id_helper<Id, TRest...>::type>::type;
     };
 
     // Specialisation for 1 type pair.
-    template <size_t ID, typename T1>
-    struct type_from_id_helper<ID, T1>
+    template <size_t Id, typename T1>
+    struct type_from_id_helper<Id, T1>
     {
-      using type = typename etl::conditional<ID == T1::ID,
+      using type = typename etl::conditional<Id == T1::Id,
                                              typename T1::type,
                                              nulltype>::type;
     };
@@ -118,16 +118,16 @@ namespace etl
     //************************************
     // type_from_id
     //************************************
-    template <int ID>
+    template <int Id>
     struct type_from_id
     {
-      using type = typename type_from_id_helper<ID, TTypes...>::type;
+      using type = typename type_from_id_helper<Id, TTypes...>::type;
 
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
 
-    template <int ID>
-    using type_from_id_t = typename type_from_id<ID>::type;
+    template <int Id>
+    using type_from_id_t = typename type_from_id<Id>::type;
 
   private:
 
@@ -137,14 +137,14 @@ namespace etl
     template <typename T, typename T1, typename... TRest>
     struct id_from_type_helper
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::ID) : id_from_type_helper<T, TRest...>::value;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::Id) : id_from_type_helper<T, TRest...>::value;
     };
 
     // Specialisation for 1 type pair.
     template <typename T, typename T1>
     struct id_from_type_helper<T, T1>
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::ID) : UNKNOWN;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::Id) : UNKNOWN;
     };
 
   public:
@@ -241,12 +241,12 @@ namespace etl
   cog.outl("public:")
   cog.outl("")
   cog.outl("  //************************************")
-  cog.outl("  template <int ID>")
+  cog.outl("  template <int Id>")
   cog.outl("  struct type_from_id")
   cog.outl("  {")
   cog.outl("    typedef ")
   for n in range(1, int(NTypes) + 1):
-      cog.outl("          typename etl::conditional<ID == T%s::ID, typename T%s::type," %(n, n))
+      cog.outl("          typename etl::conditional<Id == T%s::Id, typename T%s::type," %(n, n))
   cog.out("          etl::null_type<0> >")
   for n in range(1, int(NTypes) + 1):
       if n == int(NTypes):
@@ -274,7 +274,7 @@ namespace etl
   cog.outl("    {")
   cog.outl("      value =")
   for n in range(1, int(NTypes) + 1) :
-      cog.outl("        (unsigned int) etl::is_same<T, typename T%s::type>::value ? (unsigned int)T%s::ID :" % (n, n))
+      cog.outl("        (unsigned int) etl::is_same<T, typename T%s::type>::value ? (unsigned int)T%s::Id :" % (n, n))
   cog.outl("        (unsigned int) UNKNOWN")
   cog.outl("    };")
   cog.outl("")

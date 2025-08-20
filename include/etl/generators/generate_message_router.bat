@@ -1,1 +1,1 @@
-cog -d -e -o../message_router.h -DHandlers=16 message_router_generator.h 
+python3 -m cogapp -d -e -o../message_router.h -DHandlers=16 message_router_generator.h 
