@@ -3286,6 +3286,9 @@
     <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_1d.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_2d.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_3d.h" />
     <ClInclude Include="..\..\include\etl\chrono.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\circular_iterator.h" />
@@ -3297,6 +3300,7 @@
     <ClInclude Include="..\..\include\etl\const_multimap.h" />
     <ClInclude Include="..\..\include\etl\const_multiset.h" />
     <ClInclude Include="..\..\include\etl\const_set.h" />
+    <ClInclude Include="..\..\include\etl\coordinate.h" />
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />
@@ -9382,6 +9386,9 @@
     <ClCompile Include="..\test_callback_timer_deferred_locked.cpp" />
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_1d.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_2d.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_3d.cpp" />
     <ClCompile Include="..\test_char_traits.cpp" />
     <ClCompile Include="..\test_chrono_clocks.cpp" />
     <ClCompile Include="..\test_chrono_day.cpp" />
@@ -9424,6 +9431,7 @@
     <ClCompile Include="..\test_const_set_constexpr.cpp" />
     <ClCompile Include="..\test_const_set_ext.cpp" />
     <ClCompile Include="..\test_const_set_ext_constexpr.cpp" />
+    <ClCompile Include="..\test_coordinate.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc1.cpp" />
