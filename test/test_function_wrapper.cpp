@@ -1086,6 +1086,7 @@ namespace
       CHECK_EQUAL(1, result);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_return_parameter_constexpr)
     {
@@ -1103,6 +1104,7 @@ namespace
       CHECK_TRUE(func);
       CHECK_EQUAL(1, result);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda)
@@ -1154,6 +1156,7 @@ namespace
       CHECK_EQUAL(2, result);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_constexpr)
     {
@@ -1170,6 +1173,7 @@ namespace
       CHECK_TRUE(func);
       CHECK_EQUAL(1, result);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_return_parameter_assignment)
