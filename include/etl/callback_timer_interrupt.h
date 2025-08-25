@@ -52,6 +52,8 @@ namespace etl
 
     typedef etl::delegate<void(void)> callback_type;
 
+    typedef etl::delegate<void(etl::timer::id::type)> event_callback_type;
+
     //*******************************************
     /// Register a timer.
     //*******************************************
@@ -106,6 +108,7 @@ namespace etl
             (void)guard; // Silence 'unused variable warnings.
 
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
           }
 
           // Reset in-place.
@@ -176,6 +179,7 @@ namespace etl
             count -= timer.delta;
 
             active_list.remove(timer.id, true);
+            remove_callback.call_if(timer.id);
 
             if (timer.callback.is_valid())
             {
@@ -187,6 +191,7 @@ namespace etl
               // Reinsert the timer.
               timer.delta = timer.period;
               active_list.insert(timer.id);
+              insert_callback.call_if(timer.id);
             }
 
             has_active = !active_list.empty();
@@ -229,10 +234,12 @@ namespace etl
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
+              remove_callback.call_if(timer.id);
             }
 
             timer.delta = immediate_ ? 0U : timer.period;
             active_list.insert(timer.id);
+            insert_callback.call_if(timer.id);
 
             result = true;
           }
@@ -263,6 +270,7 @@ namespace etl
             (void)guard; // Silence 'unused variable warnings.
 
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
           }
 
           result = true;
@@ -354,6 +362,34 @@ namespace etl
       }
 
       return false;
+    }
+
+    //*******************************************
+    /// Set a callback when a timer is inserted on list
+    //*******************************************
+    void set_insert_callback(event_callback_type insert_)
+    {
+      insert_callback = insert_;
+    }
+
+    //*******************************************
+    /// Set a callback when a timer is removed from list
+    //*******************************************
+    void set_remove_callback(event_callback_type remove_)
+    {
+      remove_callback = remove_;
+    }
+
+    //*******************************************
+    void clear_insert_callback()
+    {
+      insert_callback.clear();
+    }
+
+    //*******************************************
+    void clear_remove_callback()
+    {
+      remove_callback.clear();
     }
 
   protected:
@@ -636,6 +672,9 @@ namespace etl
 
     bool enabled;
     uint_least8_t number_of_registered_timers;
+
+    event_callback_type insert_callback;
+    event_callback_type remove_callback;
 
   public:
 
