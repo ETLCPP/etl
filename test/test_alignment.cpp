@@ -194,24 +194,31 @@ namespace
     TEST(test_typed_storage)
     {
       etl::typed_storage<A_t> a;
+      CHECK_FALSE(a.has_value());
 
-      CHECK_EQUAL(false, a.has_value());
-
-      auto& b = a.create(123, 4);
-
-      CHECK_EQUAL(true, a.has_value());
+      etl::typed_storage<A_t> b(789, 10);  // Construct in  place.
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 789);
+      CHECK_EQUAL(b->y, 10);
+      
+      auto& ref = a.create(123, 4);  // Create in place.
+      CHECK_TRUE(a.has_value());
 
       CHECK_EQUAL(a->x, 123);
       CHECK_EQUAL(a->y, 4);
 
-      CHECK_EQUAL(b.x, 123);
-      CHECK_EQUAL(b.y, 4);
+      CHECK_EQUAL(ref.x, 123);
+      CHECK_EQUAL(ref.y, 4);
 
-      CHECK_TRUE(*a == b);
+      CHECK_TRUE(*a == ref);
 
-      CHECK_EQUAL(true, a.has_value());
+      a.create(456, 7);  // Calling create again is not an error.
+      CHECK_EQUAL(a->x, 456);
+      CHECK_EQUAL(a->y, 7);
+
+      CHECK_TRUE(a.has_value());
       a.destroy();
-      CHECK_EQUAL(false, a.has_value());
+      CHECK_FALSE(a.has_value());
     }
   };
 }
