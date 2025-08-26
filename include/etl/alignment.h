@@ -445,9 +445,17 @@ namespace etl
     template <typename... TArgs>
     reference create(TArgs&&... args)
     {
-      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (&storage.value) value_type(etl::forward<TArgs>(args)...);
+      if (has_value())
+      {
+        storage.value = T(args...);
+      }
+      else
+      {
+        valid = true;
+        ::new (&storage.value) value_type(etl::forward<TArgs>(args)...);
+      }
+
+      return storage.value;
     }
 #else
     //***************************************************************************
@@ -457,9 +465,17 @@ namespace etl
     template <typename T1>
     reference create(const T1& t1)
     {
-      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (&storage.value) value_type(t1);
+      if (has_value())
+      {
+        storage.value = T(t1);
+      }
+      else
+      {
+        valid = true;
+        ::new (&storage.value) value_type(t1);
+      }
+
+      return storage.value;
     }
 
     //***************************************************************************
@@ -469,9 +485,17 @@ namespace etl
     template <typename T1, typename T2>
     reference create(const T1& t1, const T2& t2)
     {
-      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (&storage.value) value_type(t1, t2);
+      if (has_value())
+      {
+        storage.value = T(t1, t2);
+      }
+      else
+      {
+        valid = true;
+        ::new (&storage.value) value_type(t1, t2);
+      }
+
+      return storage.value;
     }
 
     //***************************************************************************
@@ -481,9 +505,17 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference create(const T1& t1, const T2& t2, const T3& t3)
     {
-      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (&storage.value) value_type(t1, t2, t3);
+      if (has_value())
+      {
+        storage.value = T(t1, t2, t3);
+      }
+      else
+      {
+        valid = true;
+        ::new (&storage.value) value_type(t1, t2, t3);
+      }
+
+      return storage.value;
     }
 
     //***************************************************************************
@@ -493,9 +525,17 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
     {
-      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (&storage.value) value_type(t1, t2, t3, t4);
+      if (has_value())
+      {
+        storage.value = T(t1, t2, t3, t4);
+      }
+      else
+      {
+        valid = true;
+        ::new (&storage.value) value_type(t1, t2, t3, t4);
+      }
+
+      return storage.value;
     }
 #endif
 
@@ -554,7 +594,7 @@ namespace etl
 
     struct dummy_t {};
 
-    //*******************************
+   //*******************************
     union union_type
     {
       union_type()
