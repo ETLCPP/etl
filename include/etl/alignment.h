@@ -371,7 +371,7 @@ namespace etl
     //***************************************************************************
     // Default constructor
     //***************************************************************************
-    typed_storage()
+    typed_storage() ETL_NOEXCEPT
       : valid(false)
     {
     }
@@ -381,7 +381,7 @@ namespace etl
     /// Constructs the instance of T forwarding the given \p args to its constructor.
     //***************************************************************************
     template <typename... TArgs>
-    typed_storage(TArgs&&... args)
+    typed_storage(TArgs&&... args) ETL_NOEXCEPT_IF_NO_THROW
     {
       create(etl::forward<TArgs>(args)...);
     }
@@ -423,7 +423,7 @@ namespace etl
     /// Default destructor which will NOT call the destructor of the object which
     /// was created by calling create().
     //***************************************************************************
-    ~typed_storage()
+    ~typed_storage() ETL_NOEXCEPT
     {
       // Intentionally empty.
     }
@@ -443,7 +443,7 @@ namespace etl
     /// \returns the instance of T which has been constructed in the internal byte array.
     //***************************************************************************
     template <typename... TArgs>
-    reference create(TArgs&&... args)
+    reference create(TArgs&&... args) ETL_NOEXCEPT_IF_NO_THROW
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
       valid = true;
@@ -502,7 +502,7 @@ namespace etl
     //***************************************************************************
     /// Calls the destructor of the stored object, if created.
     //***************************************************************************
-    void destroy()
+    void destroy() ETL_NOEXCEPT
     {
       if (has_value())
       {
@@ -557,12 +557,12 @@ namespace etl
     //*******************************
     union union_type
     {
-      union_type()
+      union_type() ETL_NOEXCEPT
         : dummy()
       {
       }
 
-      ~union_type()
+      ~union_type() ETL_NOEXCEPT
       {
       }
 
