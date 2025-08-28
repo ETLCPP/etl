@@ -386,6 +386,7 @@ namespace etl
     //***************************************************************************
     /// Constructs the instance of T with type T1
     //***************************************************************************
+    template <typename T1>
     typed_storage(const T1& t1)
       : valid(false)
     {
@@ -395,6 +396,7 @@ namespace etl
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2
     //***************************************************************************
+    template <typename T1, typename T2>
     typed_storage(const T1& t1, const T2& t2)
       : valid(false)
     {
@@ -404,6 +406,7 @@ namespace etl
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3
     //***************************************************************************
+    template <typename T1, typename T2, typename T3>
     typed_storage(const T1& t1, const T2& t2, const T3& t3)
       : valid(false)
     {
@@ -413,6 +416,7 @@ namespace etl
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3, T4
     //***************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
     typed_storage(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
       : valid(false)
     {
@@ -607,15 +611,15 @@ namespace etl
       {
       }
 
-      dummy_t dummy;
-      T       value;
+      dummy_t    dummy;
+      value_type value;
     } storage;
 
     bool valid;
   };
 
   //***************************************************************************
-  /// Wrapper class that provides a memory area and lets the user create an
+  /// Wrapper class wraps a supplied memory area and lets the user create an
   /// instance of T in this memory at runtime. This class also erases the
   /// destructor call of T, i.e. if typed_storage goes out of scope, the
   /// destructor if the wrapped type will not be called. This can be done
@@ -639,7 +643,6 @@ namespace etl
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    template <typename... TArgs>
     typed_storage_ext(void* pbuffer_) ETL_NOEXCEPT_IF_NO_THROW
       : pbuffer(reinterpret_cast<T*>(pbuffer_)),
         valid(false)
@@ -659,31 +662,34 @@ namespace etl
       ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
       create(etl::forward<TArgs>(args)...);
     }
+
+    //***************************************************************************
+    /// Move constructor.
+    /// Transfers ownership of the buffer from \p other to this.
+    //***************************************************************************
+    typed_storage_ext(typed_storage_ext<T>&& other) ETL_NOEXCEPT_IF_NO_THROW
+      : pbuffer(other.pbuffer)
+      , valid(other.valid)
+    {
+      other.pbuffer = ETL_NULLPTR;
+      other.valid   = false;
+    }
 #else
     //***************************************************************************
     /// Constructs the instance of T with type T1
     //***************************************************************************
+    template <typename T1>
     typed_storage_ext(void* pbuffer_, const T1& t1)
       : pbuffer(reinterpret_cast<T*>(pbuffer_))
       , valid(false)
     {
       ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
-    }
-
-    //***************************************************************************
-    /// Constructs the instance of T with type T1
-    //***************************************************************************
-    typed_storage_ext(void* pbuffer_, const T1& t1)
-      : pbuffer(reinterpret_cast<T*>(pbuffer_))
-      , valid(false)
-    {
-      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
-      create(t1);
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2
     //***************************************************************************
+    template <typename T1, typename T2>
     typed_storage_ext(void* pbuffer_, const T1& t1, const T2& t2)
       : pbuffer(reinterpret_cast<T*>(pbuffer_))
       , valid(false)
@@ -695,6 +701,7 @@ namespace etl
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3
     //***************************************************************************
+    template <typename T1, typename T2, typename T3>
     typed_storage_ext(void* pbuffer_, const T1& t1, const T2& t2, const T3& t3)
       : pbuffer(reinterpret_cast<T*>(pbuffer_))
       , valid(false)
@@ -706,6 +713,7 @@ namespace etl
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3, T4
     //***************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
     typed_storage_ext(void* pbuffer_, const T1& t1, const T2& t2, const T3& t3, const T4& t4)
       : pbuffer(reinterpret_cast<T*>(pbuffer_))
       , valid(false)
@@ -848,7 +856,7 @@ namespace etl
     typed_storage_ext(etl::typed_storage_ext<T>&) ETL_DELETE;
     typed_storage_ext& operator =(etl::typed_storage_ext<T>&) ETL_DELETE;
 
-    T*   pbuffer;
+    pointer pbuffer;
     bool valid;
   };
 
