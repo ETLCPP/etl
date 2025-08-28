@@ -1,4 +1,12 @@
 ﻿===============================================================================
+20.43.1
+
+Updates:
+#1170 Place a typed pointer instead of a bool into etl::typed_storage
+      Modified the storage used by etl::typed_storage to be a union, along the lines of etl::optional.
+      Added etl::typed_storage_ext to wrap external storage.
+
+===============================================================================
 20.43.0
 
 Updates:
