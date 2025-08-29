@@ -156,7 +156,7 @@ namespace etl
     ///\param i The index of the element to access.
     //*************************************************************************
     ETL_NODISCARD
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR14 const_reference operator[](size_t i) const
     {
       ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -600,7 +600,7 @@ namespace etl
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
       //TODO: Add relevant debug asserts
-      
+
       iterator p = to_iterator(first);
 
       p = etl::move(last, cend(), p);
