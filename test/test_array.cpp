@@ -134,6 +134,9 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ int d = data[data.size()]; (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -145,6 +148,9 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ int d = data[data.size()]; (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************

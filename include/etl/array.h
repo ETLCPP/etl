@@ -145,6 +145,8 @@ namespace etl
     ETL_CONSTEXPR14
     reference operator[](size_t i)
     {
+      ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+
       return _buffer[i];
     }
 
@@ -156,6 +158,8 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference operator[](size_t i) const
     {
+      ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+
       return _buffer[i];
     }
 
@@ -166,6 +170,8 @@ namespace etl
     ETL_CONSTEXPR14
     reference front()
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[0];
     }
 
@@ -175,6 +181,8 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference front() const
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[0];
     }
 
@@ -185,6 +193,8 @@ namespace etl
     ETL_CONSTEXPR14
     reference back()
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[SIZE - 1];
     }
 
@@ -194,6 +204,8 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference back() const
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[SIZE - 1];
     }
 
@@ -439,6 +451,8 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator position, parameter_t value)
     {
+      //TODO: Add relevant debug asserts
+
       iterator p = to_iterator(position);
 
       etl::move_backward(p, end() - 1, end());
@@ -468,6 +482,8 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, const TIterator last)
     {
+      //TODO: Add relevant debug asserts
+
       iterator p = to_iterator(position);
       iterator result(p);
 
@@ -504,6 +520,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position)
     {
+      //TODO: Add relevant debug asserts
+
       iterator p = to_iterator(position);
       etl::move(p + 1, end(), p);
 
@@ -529,6 +547,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
+      //TODO: Add relevant debug asserts
+
       iterator p = to_iterator(first);
       etl::move(last, cend(), p);
       return p;
@@ -551,6 +571,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position, parameter_t value)
     {
+      //TODO: Add relevant debug asserts
+
       iterator p = to_iterator(position);
 
       etl::move(p + 1, end(), p);
@@ -577,6 +599,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
+      //TODO: Add relevant debug asserts
+      
       iterator p = to_iterator(first);
 
       p = etl::move(last, cend(), p);
