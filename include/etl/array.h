@@ -451,7 +451,7 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator position, parameter_t value)
     {
-      //TODO: Add relevant debug asserts
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
 
@@ -482,7 +482,7 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, const TIterator last)
     {
-      //TODO: Add relevant debug asserts
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
       iterator result(p);
@@ -520,7 +520,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position)
     {
-      //TODO: Add relevant debug asserts
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
       etl::move(p + 1, end(), p);
@@ -547,7 +547,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      //TODO: Add relevant debug asserts
+      ETL_DEBUG_ASSERT(cbegin() <= first && first < last && last <= cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(first);
       etl::move(last, cend(), p);
@@ -571,7 +571,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position, parameter_t value)
     {
-      //TODO: Add relevant debug asserts
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
 
@@ -594,12 +594,13 @@ namespace etl
 
     //*************************************************************************
     /// Erases a range of values from the array.
-    ///\param position The iterator to the position to erase at.
-    ///\param value    The value to use to overwrite the last elements in the array.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    ///\param value The value to use to overwrite the last elements in the array.
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
-      //TODO: Add relevant debug asserts
+      ETL_DEBUG_ASSERT(cbegin() <= first && first < last && last <= cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(first);
 
