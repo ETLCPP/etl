@@ -2052,7 +2052,11 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_move_constructible
-  template <typename T> struct is_move_constructible: public is_constructible<T, typename etl::add_rvalue_reference<T>::type>{};
+#if ETL_USING_CPP11
+  template <typename T> struct is_move_constructible : public is_constructible<T, typename etl::add_rvalue_reference<T>::type>{};
+#else
+  template <typename T> struct is_move_constructible : public is_constructible<T, T>{};
+#endif
 #else
   //*********************************************
   // is_copy_constructible
