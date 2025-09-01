@@ -621,8 +621,8 @@ namespace
       CHECK(isEqual);
 
       //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
-      // Erase indexes are equal
-      CHECK_THROW({ result = data.erase_range(5, 5, 99); }, etl::array_out_of_range);
+      // first is greater than last
+      CHECK_THROW({ result = data.erase_range(6, 5, 99); }, etl::array_out_of_range);
 
       // Erase out of range
       CHECK_THROW({ result = data.erase_range(5, data.size() + 1, 99); }, etl::array_out_of_range);

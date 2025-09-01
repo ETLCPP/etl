@@ -547,7 +547,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= first && first < last && last <= cend(), ETL_ERROR(array_out_of_range));
+      ETL_DEBUG_ASSERT(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(first);
       etl::move(last, cend(), p);
@@ -600,7 +600,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= first && first < last && last <= cend(), ETL_ERROR(array_out_of_range));
+      ETL_DEBUG_ASSERT(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(first);
 
