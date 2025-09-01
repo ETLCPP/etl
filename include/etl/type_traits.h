@@ -1971,7 +1971,7 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_assignable
-#if defined(ETL_USING_BUILTIN_IS_ASSIGNABLE) || defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#if ETL_USING_BUILTIN_IS_ASSIGNABLE
   template<typename T1, typename T2>
   struct is_assignable
   {
@@ -1985,7 +1985,7 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
 #if ETL_USING_CPP11
-#if defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE) || defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#if ETL_USING_BUILTIN_IS_CONSTRUCTIBLE
   //*********************************************
   // is_constructible
   template<typename T, typename... TArgs>
@@ -2029,7 +2029,7 @@ typedef integral_constant<bool, true>  true_type;
   template <> struct is_move_constructible<void const volatile> : public false_type{};
 
 #else
-#if defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE) || defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#if ETL_USING_BUILTIN_IS_CONSTRUCTIBLE
   //*********************************************
   // is_constructible
   template<typename T, typename TArgs = void>
@@ -2070,7 +2070,7 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 #endif
 
-#if defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE) || defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#if ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE
 #if ETL_USING_CPP11
   //*********************************************
   // is_trivially_constructible
@@ -2130,7 +2130,7 @@ typedef integral_constant<bool, true>  true_type;
   };
 #endif
 
-#if defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE) || defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#if ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE
   //*********************************************
   // is_trivially_destructible
   template <typename T>
@@ -2151,7 +2151,7 @@ typedef integral_constant<bool, true>  true_type;
   };
 #endif
 
-#if defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE) || defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#if ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
   //*********************************************
   // is_trivially_copy_assignable
   template <typename T>
