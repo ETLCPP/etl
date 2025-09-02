@@ -290,14 +290,14 @@ namespace etl
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator <<=(int rhs) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 type_def& operator <<=(unsigned int rhs) ETL_NOEXCEPT
     {
       value <<= rhs;
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator >>=(int rhs) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 type_def& operator >>=(unsigned int rhs) ETL_NOEXCEPT
     {
       value >>= rhs;
       return *this;
@@ -589,7 +589,7 @@ namespace etl
     //*********************************************************************
     // << operator
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator <<(const type_def& lhs, int rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR type_def operator <<(const type_def& lhs, unsigned int rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value << rhs);
     }
@@ -597,7 +597,7 @@ namespace etl
     //*********************************************************************
     // >> operator
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator >>(const type_def& lhs, int rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR type_def operator >>(const type_def& lhs, unsigned int rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value >> rhs);
     }
