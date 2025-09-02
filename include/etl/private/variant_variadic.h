@@ -268,7 +268,7 @@ namespace etl
   //***********************************
   // holds_alternative. Forward declaration
   template <typename T, typename... TTypes>
-  ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) noexcept;
+  ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT;
 
   //***********************************
   // get. Forward declarations
@@ -305,14 +305,14 @@ namespace etl
   #include "variant_select_do_operator.h"
 #endif
 
-  constexpr bool operator >(etl::monostate, etl::monostate) noexcept { return false; }
-	constexpr bool operator <(etl::monostate, etl::monostate) noexcept { return false; }
-	constexpr bool operator !=(etl::monostate, etl::monostate) noexcept { return false; }
-	constexpr bool operator <=(etl::monostate, etl::monostate) noexcept { return true; }
-	constexpr bool operator >=(etl::monostate, etl::monostate) noexcept { return true; }
-	constexpr bool operator ==(etl::monostate, etl::monostate) noexcept { return true; }
+  constexpr bool operator >(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
+	constexpr bool operator <(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
+	constexpr bool operator !=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
+	constexpr bool operator <=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
+	constexpr bool operator >=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
+	constexpr bool operator ==(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
 #if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
-  constexpr std::strong_ordering operator<=>(monostate, monostate) noexcept
+  constexpr std::strong_ordering operator<=>(monostate, monostate) ETL_NOEXCEPT
   {
     return std::strong_ordering::equal;
   }
@@ -782,7 +782,7 @@ namespace etl
     /// Checks whether a valid value is currently stored.
     ///\return <b>true</b> if the value is valid, otherwise <b>false</b>.
     //***************************************************************************
-    constexpr bool valueless_by_exception() const noexcept
+    constexpr bool valueless_by_exception() const ETL_NOEXCEPT
     {
       return type_id == variant_npos;
     }
@@ -790,7 +790,7 @@ namespace etl
     //***************************************************************************
     /// Gets the index of the type currently stored or variant_npos
     //***************************************************************************
-    constexpr size_t index() const noexcept
+    constexpr size_t index() const ETL_NOEXCEPT
     {
       return type_id;
     }
@@ -812,14 +812,14 @@ namespace etl
     ///\return <b>true</b> if it is the specified type, otherwise <b>false</b>.
     //***************************************************************************
     template <typename T, etl::enable_if_t<is_supported_type<T>(), int> = 0>
-    constexpr bool is_type() const noexcept
+    constexpr bool is_type() const ETL_NOEXCEPT
     {
       return (type_id == index_of_type<T>::value);
     }
 
     //***************************************************************************
     template <typename T, etl::enable_if_t<!is_supported_type<T>(), int> = 0>
-    constexpr bool is_type() const noexcept
+    constexpr bool is_type() const ETL_NOEXCEPT
     {
       return false;
     }
@@ -838,7 +838,7 @@ namespace etl
     //***************************************************************************
     /// Swaps this variant with another.
     //***************************************************************************
-    void swap(variant& rhs) noexcept
+    void swap(variant& rhs) ETL_NOEXCEPT
     {
       variant temp(etl::move(*this));
       *this = etl::move(rhs);
@@ -1221,7 +1221,7 @@ namespace etl
   /// Checks if the variant v holds the alternative T.
   //***************************************************************************
 	template <typename T, typename... TTypes>
-	ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) noexcept
+	ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT
 	{
     constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
 
@@ -1232,7 +1232,7 @@ namespace etl
   /// Checks if the variant v holds the alternative Index.
   //***************************************************************************
   template <size_t Index, typename... TTypes>
-  ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) noexcept
+  ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT
   {
     return (Index == v.index());
   }
@@ -1241,7 +1241,7 @@ namespace etl
   /// Checks if the variant v holds the alternative Index. (Runtime)
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool holds_alternative(size_t index, const etl::variant<TTypes...>& v) noexcept
+  ETL_CONSTEXPR14 bool holds_alternative(size_t index, const etl::variant<TTypes...>& v) ETL_NOEXCEPT
   {
     return (index == v.index());
   }
@@ -1351,7 +1351,7 @@ namespace etl
   //***************************************************************************
   template< size_t Index, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(etl::variant<TTypes...>* pv) noexcept
+    get_if(etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     if ((pv != nullptr) && (pv->index() == Index))
     {
@@ -1366,7 +1366,7 @@ namespace etl
   //***********************************
   template< size_t Index, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(const etl::variant<TTypes...>* pv) noexcept
+    get_if(const etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     if ((pv != nullptr) && (pv->index() == Index))
     {
@@ -1380,7 +1380,7 @@ namespace etl
 
   //***********************************
   template< class T, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<TTypes...>* pv) noexcept
+  ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
 
@@ -1396,7 +1396,7 @@ namespace etl
 
   //***********************************
   template< typename T, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>* pv) noexcept
+  ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
 
@@ -1561,7 +1561,7 @@ namespace etl
       using function_pointer = add_pointer_t<TRet(TCallable&&, TCurVariant&&, TVarRest&&...)>;
 
       template <size_t tIndex>
-      static constexpr function_pointer fptr() noexcept
+      static constexpr function_pointer fptr() ETL_NOEXCEPT
       {
         return &do_visit_single<TRet, TCallable, TCurVariant, tIndex, TVarRest...>;
       }
