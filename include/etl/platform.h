@@ -252,6 +252,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if C++ exceptions are enabled for debug asserts.
+#if defined(ETL_DEBUG_THROW_EXCEPTIONS)
+  #define ETL_DEBUG_USING_EXCEPTIONS 1
+  #define ETL_DEBUG_NOT_USING_EXCEPTIONS 0
+#else
+  #define ETL_DEBUG_USING_EXCEPTIONS 0
+  #define ETL_DEBUG_NOT_USING_EXCEPTIONS 1
+#endif
+
+//*************************************
 // Indicate if nullptr is used.
 #if ETL_NO_NULLPTR_SUPPORT
   #define ETL_HAS_NULLPTR 0

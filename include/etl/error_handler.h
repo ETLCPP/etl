@@ -365,8 +365,8 @@ namespace etl
 #endif
 
 #if ETL_IS_DEBUG_BUILD
-  #if ETL_USING_EXCEPTIONS
-    #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}                    // If the condition fails, throws an exception.
+  #if ETL_DEBUG_USING_EXCEPTIONS
+    #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}  // If the condition fails, throws an exception.
   #else
     #define ETL_DEBUG_ASSERT(b, e) assert((b))  // If the condition fails, asserts.
   #endif
