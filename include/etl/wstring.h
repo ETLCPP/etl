@@ -347,8 +347,9 @@ namespace etl
     /// Constructor, from null terminated text.
     ///\param text The initial text of the wstring_ext.
     //*************************************************************************
-    template <typename TPointer, typename = typename etl::enable_if<etl::is_same<const value_type*, TPointer>::value, int>::type>
-    wstring_ext(TPointer text, char* buffer, size_type buffer_size)
+    template <typename TPointer>
+    wstring_ext(TPointer text, value_type* buffer, size_type buffer_size,
+                typename etl::enable_if<etl::is_same<const value_type*, TPointer>::value, int>::type* = ETL_NULLPTR)
       : iwstring(buffer, buffer_size - 1U)
     {
       if (this->is_within_buffer(text))
