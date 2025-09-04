@@ -3877,6 +3877,12 @@
     <None Include="..\..\scripts\convert_headers_to_use_once.bat">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\..\.github\workflows\platformio-update.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.coderabbit.yaml">
+      <Filter>Resource Files\CI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">

@@ -11369,6 +11369,7 @@
   <ItemGroup>
     <None Include="..\..\.circleci\config.yml" />
     <None Include="..\..\.clang-format" />
+    <None Include="..\..\.coderabbit.yaml" />
     <None Include="..\..\.gitattributes" />
     <None Include="..\..\.github\workflows\clang-c++11.yml" />
     <None Include="..\..\.github\workflows\clang-c++14.yml" />
@@ -11381,6 +11382,7 @@
     <None Include="..\..\.github\workflows\gcc-c++20.yml" />
     <None Include="..\..\.github\workflows\msvc.yml" />
     <None Include="..\..\.github\workflows\gcc-syntax-checks.yml" />
+    <None Include="..\..\.github\workflows\platformio-update.yml" />
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\appveyor.yml" />
