@@ -11,6 +11,9 @@ Fixes:
 #1176 Fix GCC __builtin_memcpy errors when compiling with -O2 optimisation
 #1180 Duplicate definition of const_reference in etl::const_set_ext
 
+Pull Requests:
+#1169 Remove Unreachable Break Statements
+
 ===============================================================================
 20.43.0
 
