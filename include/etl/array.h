@@ -145,6 +145,8 @@ namespace etl
     ETL_CONSTEXPR14
     reference operator[](size_t i)
     {
+      ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+
       return _buffer[i];
     }
 
@@ -154,8 +156,10 @@ namespace etl
     ///\param i The index of the element to access.
     //*************************************************************************
     ETL_NODISCARD
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR14 const_reference operator[](size_t i) const
     {
+      ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+
       return _buffer[i];
     }
 
@@ -166,6 +170,8 @@ namespace etl
     ETL_CONSTEXPR14
     reference front()
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[0];
     }
 
@@ -175,6 +181,8 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference front() const
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[0];
     }
 
@@ -185,6 +193,8 @@ namespace etl
     ETL_CONSTEXPR14
     reference back()
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[SIZE - 1];
     }
 
@@ -194,6 +204,8 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference back() const
     {
+      ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
+
       return _buffer[SIZE - 1];
     }
 
@@ -439,6 +451,8 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator position, parameter_t value)
     {
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+
       iterator p = to_iterator(position);
 
       etl::move_backward(p, end() - 1, end());
@@ -468,6 +482,8 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, const TIterator last)
     {
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+
       iterator p = to_iterator(position);
       iterator result(p);
 
@@ -504,6 +520,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position)
     {
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+
       iterator p = to_iterator(position);
       etl::move(p + 1, end(), p);
 
@@ -529,6 +547,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
+      ETL_DEBUG_ASSERT(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
+
       iterator p = to_iterator(first);
       etl::move(last, cend(), p);
       return p;
@@ -551,6 +571,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position, parameter_t value)
     {
+      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+
       iterator p = to_iterator(position);
 
       etl::move(p + 1, end(), p);
@@ -572,11 +594,14 @@ namespace etl
 
     //*************************************************************************
     /// Erases a range of values from the array.
-    ///\param position The iterator to the position to erase at.
-    ///\param value    The value to use to overwrite the last elements in the array.
+    ///\param first The first item to erase.
+    ///\param last  The one past the last item to erase.
+    ///\param value The value to use to overwrite the last elements in the array.
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
+      ETL_DEBUG_ASSERT(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
+
       iterator p = to_iterator(first);
 
       p = etl::move(last, cend(), p);
