@@ -85,7 +85,7 @@ namespace
     return (lhs.k == rhs.k);
   }
 
-#if !defined(ETL_NOT_USING_CPP23)
+#if ETL_NOT_USING_CPP23
   // Equality operator for Key != Key
   constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
   {
