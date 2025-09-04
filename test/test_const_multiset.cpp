@@ -85,11 +85,13 @@ namespace
     return (lhs.k == rhs.k);
   }
 
+#if !defined(ETL_DEVELOPMENT_OS_APPLE)
   // Equality operator for Key != Key
   constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
   {
     return !(lhs.k == rhs.k);
   }
+#endif
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
