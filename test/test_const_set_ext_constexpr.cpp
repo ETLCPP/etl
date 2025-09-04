@@ -41,6 +41,8 @@ SOFTWARE.
 
 #include "data.h"
 
+#if ETL_USING_CPP14
+
 namespace
 {
   static constexpr size_t Max_Size = 10UL;
@@ -90,10 +92,10 @@ namespace
   }
 
   // Equality operator for Key != Key
-  //constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
-  //{
-  //  return !(lhs.k == rhs.k);
-  //}
+  constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
+  {
+    return !(lhs.k == rhs.k);
+  }
 
   #define TEST_GREATER_THAN
   #ifdef TEST_GREATER_THAN
@@ -1568,3 +1570,5 @@ namespace
     }
   };
 }
+
+#endif
