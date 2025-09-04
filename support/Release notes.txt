@@ -5,9 +5,10 @@ Updates:
 #1170 Place a typed pointer instead of a bool into etl::typed_storage
       Modified the storage used by etl::typed_storage to be a union, along the lines of etl::optional.
       Added etl::typed_storage_ext to wrap external storage.
+
+Fixes:
 #1176 Fix GCC __builtin_memcpy errors when compiling with -O2 optimisation
 #1180 Duplicate definition of const_reference in etl::const_set_ext
-
 
 ===============================================================================
 20.43.0

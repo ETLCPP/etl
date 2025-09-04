@@ -84,10 +84,10 @@ namespace
   }
 
   // Equality operator for Key != Key
-  //constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
-  //{
-  //  return !(lhs.k == rhs.k);
-  //}
+  constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
+  {
+    return !(lhs.k == rhs.k);
+  }
 
   #define TEST_GREATER_THAN
   #ifdef TEST_GREATER_THAN

@@ -3883,6 +3883,9 @@
     <None Include="..\..\.coderabbit.yaml">
       <Filter>Resource Files\CI</Filter>
     </None>
+    <None Include="..\..\..\etl-arduino\.github\workflows\platformio-update.yml">
+      <Filter>ETL\Arduino</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">

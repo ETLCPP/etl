@@ -11367,6 +11367,7 @@
     <ClCompile Include="..\unittest++\XmlTestReporter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\etl-arduino\.github\workflows\platformio-update.yml" />
     <None Include="..\..\.circleci\config.yml" />
     <None Include="..\..\.clang-format" />
     <None Include="..\..\.coderabbit.yaml" />

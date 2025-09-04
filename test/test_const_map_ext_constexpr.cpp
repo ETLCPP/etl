@@ -41,6 +41,8 @@ SOFTWARE.
 
 #include "data.h"
 
+#if ETL_USING_CPP14
+
 namespace
 {
   static constexpr size_t Max_Size = 10UL;
@@ -1711,3 +1713,5 @@ namespace
     }
   };
 }
+
+#endif
