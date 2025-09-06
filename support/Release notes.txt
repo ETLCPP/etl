@@ -8,11 +8,13 @@ Added automatic use of __builtin_memcpy, __builtin_memmove, __builtin_memset, __
       Added etl::typed_storage_ext to wrap external storage.
 
 Fixes:
+#1171 optional of a const arary can't be emplaced with gcc-15
 #1176 Fix GCC __builtin_memcpy errors when compiling with -O2 optimisation
 #1180 Duplicate definition of const_reference in etl::const_set_ext
 
 Pull Requests:
 #1169 Remove Unreachable Break Statements
+#1172 Make call interfaces in etl::delegate and etl::closure conditionally noexcept
 
 ===============================================================================
 20.43.0
