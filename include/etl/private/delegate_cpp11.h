@@ -386,7 +386,7 @@ namespace etl
     template <typename TRet = TReturn>
     ETL_CONSTEXPR14
     typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool>
-      call_if(TParams... args) const ETL_NOEXCEPT
+      call_if(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       if (is_valid())
       {
@@ -406,7 +406,7 @@ namespace etl
     template <typename TRet = TReturn>
     ETL_CONSTEXPR14
     typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>>
-      call_if(TParams... args) const ETL_NOEXCEPT
+      call_if(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       etl::optional<TReturn> result;
 
@@ -423,7 +423,7 @@ namespace etl
     /// Run time alternative.
     //*************************************************************************
     template <typename TAlternative>
-    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       if (is_valid())
       {
@@ -440,7 +440,7 @@ namespace etl
     /// Compile time alternative.
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    ETL_CONSTEXPR14 TReturn call_or(TParams... args) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 TReturn call_or(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       if (is_valid())
       {
@@ -583,7 +583,7 @@ namespace etl
     /// Stub call for a member function. Run time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    static ETL_CONSTEXPR14 TReturn method_stub(void* object, TParams... params) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn method_stub(void* object, TParams... params) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       T* p = static_cast<T*>(object);
       return (p->*Method)(etl::forward<TParams>(params)...);
@@ -593,7 +593,7 @@ namespace etl
     /// Stub call for a const member function. Run time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    static ETL_CONSTEXPR14 TReturn const_method_stub(void* object, TParams... params) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn const_method_stub(void* object, TParams... params) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       T* const p = static_cast<T*>(object);
       return (p->*Method)(etl::forward<TParams>(params)...);
@@ -603,7 +603,7 @@ namespace etl
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...), T& Instance>
-    static ETL_CONSTEXPR14 TReturn method_instance_stub(void*, TParams... params) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn method_instance_stub(void*, TParams... params) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
@@ -612,7 +612,7 @@ namespace etl
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const, const T& Instance>
-    static ETL_CONSTEXPR14 TReturn const_method_instance_stub(void*, TParams... params) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn const_method_instance_stub(void*, TParams... params) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
@@ -622,7 +622,7 @@ namespace etl
     /// Stub call for a function operator. Compile time instance.
     //*************************************************************************
     template <typename T, T& Instance>
-    static ETL_CONSTEXPR14 TReturn operator_instance_stub(void*, TParams... params) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn operator_instance_stub(void*, TParams... params) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       return Instance.operator()(etl::forward<TParams>(params)...);
     }
@@ -632,7 +632,7 @@ namespace etl
     /// Stub call for a free function.
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    static ETL_CONSTEXPR14 TReturn function_stub(void*, TParams... params) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn function_stub(void*, TParams... params) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       return (Method)(etl::forward<TParams>(params)...);
     }
@@ -641,7 +641,7 @@ namespace etl
     /// Stub call for a lambda or functor function.
     //*************************************************************************
     template <typename TLambda>
-    static ETL_CONSTEXPR14 TReturn lambda_stub(void* object, TParams... arg) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn lambda_stub(void* object, TParams... arg) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       TLambda* p = static_cast<TLambda*>(object);
       return (p->operator())(etl::forward<TParams>(arg)...);
@@ -651,7 +651,7 @@ namespace etl
     /// Stub call for a const lambda or functor function.
     //*************************************************************************
     template <typename TLambda>
-    static ETL_CONSTEXPR14 TReturn const_lambda_stub(void* object, TParams... arg) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 TReturn const_lambda_stub(void* object, TParams... arg) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       const TLambda* p = static_cast<const TLambda*>(object);
       return (p->operator())(etl::forward<TParams>(arg)...);
