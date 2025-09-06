@@ -56,6 +56,12 @@ struct A_t
   {
   }
 
+  ~A_t()
+  {
+    x = 0;
+    y = 0;
+  }
+
   bool operator==(A_t& other)
   {
     return other.x == x && other.y == y;
@@ -194,24 +200,79 @@ namespace
     TEST(test_typed_storage)
     {
       etl::typed_storage<A_t> a;
+      CHECK_FALSE(a.has_value());
 
-      CHECK_EQUAL(false, a.has_value());
-
-      auto& b = a.create(123, 4);
-
-      CHECK_EQUAL(true, a.has_value());
+      // Construct in place.
+      etl::typed_storage<A_t> b(789, 10);  
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 789);
+      CHECK_EQUAL(b->y, 10);
+      
+      // Create in place.
+      auto& ref = a.create(123, 4);
+      CHECK_TRUE(a.has_value());
 
       CHECK_EQUAL(a->x, 123);
       CHECK_EQUAL(a->y, 4);
 
-      CHECK_EQUAL(b.x, 123);
-      CHECK_EQUAL(b.y, 4);
+      CHECK_EQUAL(ref.x, 123);
+      CHECK_EQUAL(ref.y, 4);
 
-      CHECK_TRUE(*a == b);
+      CHECK_TRUE(*a == ref);
 
-      CHECK_EQUAL(true, a.has_value());
+      // Destroy
+      CHECK_TRUE(a.has_value());
       a.destroy();
-      CHECK_EQUAL(false, a.has_value());
+      CHECK_FALSE(a.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_typed_storage_ext)
+    {
+      alignas(A_t) char buffer1[sizeof(A_t)] = {0};
+      alignas(A_t) char buffer2[sizeof(A_t)] = {0};
+
+      // Construct.
+      etl::typed_storage_ext<A_t> a(buffer1);
+      CHECK_FALSE(a.has_value());
+
+      // Construct in place.
+      etl::typed_storage_ext<A_t> b(buffer2, 789, 10);
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 789);
+      CHECK_EQUAL(b->y, 10);
+
+      // Create in place.
+      auto& ref = a.create(123, 4);  
+      CHECK_EQUAL(ref.x, 123);
+      CHECK_EQUAL(ref.y, 4);
+
+      CHECK_TRUE(a.has_value());
+      CHECK_EQUAL(a->x, 123);
+      CHECK_EQUAL(a->y, 4);
+      CHECK_TRUE(*a == ref);
+
+      // Swap
+      etl::swap(a, b);
+      CHECK_TRUE(a.has_value());
+      CHECK_EQUAL(a->x, 789);
+      CHECK_EQUAL(a->y, 10);
+
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 123);
+      CHECK_EQUAL(b->y, 4);
+
+      // Move contruct
+      etl::typed_storage_ext<A_t> c(etl::move(a));
+      CHECK_FALSE(a.has_value());
+      CHECK_TRUE(c.has_value());
+      CHECK_EQUAL(c->x, 789);
+      CHECK_EQUAL(c->y, 10);
+
+      // Destroy
+      CHECK_TRUE(c.has_value());
+      c.destroy();
+      CHECK_FALSE(c.has_value());
     }
   };
 }
