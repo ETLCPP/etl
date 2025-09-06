@@ -259,7 +259,7 @@ namespace etl
     /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
-    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::day& d1, const etl::chrono::day& d2) noexcept
+    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) <=> static_cast<unsigned>(d2));
     }
@@ -341,9 +341,9 @@ namespace etl
     inline namespace chrono_literals
     {
 #if ETL_USING_VERBOSE_CHRONO_LITERALS
-  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) noexcept
+  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_day(unsigned long long d) ETL_NOEXCEPT
 #else
-  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_d(unsigned long long d) noexcept
+  inline ETL_CONSTEXPR14 etl::chrono::day operator ""_d(unsigned long long d) ETL_NOEXCEPT
 #endif
       {
         return etl::chrono::day(static_cast<unsigned>(d));
