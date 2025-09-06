@@ -85,11 +85,13 @@ namespace
     return (lhs.k == rhs.k);
   }
 
+#if ETL_NOT_USING_CPP20
   // Equality operator for Key != Key
   constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
   {
     return !(lhs.k == rhs.k);
   }
+#endif
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN

@@ -81,6 +81,26 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
     #define ETL_USING_BUILTIN_UNDERLYING_TYPE __has_builtin(__underlying_type)
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMCPY)
+    #define ETL_USING_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
+   #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
+    #define ETL_USING_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMSET)
+    #define ETL_USING_BUILTIN_MEMSET __has_builtin(__builtin_memset)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMCMP)
+    #define ETL_USING_BUILTIN_MEMCMP __has_builtin(__builtin_memcmp)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMCHR)
+    #define ETL_USING_BUILTIN_MEMCHR __has_builtin(__builtin_memchr)
+  #endif
 #endif
 
 // The default. Set to 0, if not already set.
@@ -108,6 +128,26 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_UNDERLYING_TYPE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_MEMCPY)
+  #define ETL_USING_BUILTIN_MEMCPY 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_MEMMOVE)
+  #define ETL_USING_BUILTIN_MEMMOVE 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_MEMSET)
+  #define ETL_USING_BUILTIN_MEMSET 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_MEMCMP)
+  #define ETL_USING_BUILTIN_MEMCMP 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_MEMCHR)
+  #define ETL_USING_BUILTIN_MEMCHR 0
+#endif
+
 namespace etl
 {
   namespace traits
@@ -120,6 +160,11 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
     static ETL_CONSTANT bool using_builtin_underlying_type            = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
+    static ETL_CONSTANT bool using_builtin_memcpy                     = (ETL_USING_BUILTIN_MEMCPY == 1);
+    static ETL_CONSTANT bool using_builtin_memmove                    = (ETL_USING_BUILTIN_MEMMOVE == 1);
+    static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
+    static ETL_CONSTANT bool using_builtin_memcmp                     = (ETL_USING_BUILTIN_MEMCMP == 1);
+    static ETL_CONSTANT bool using_builtin_memchr                     = (ETL_USING_BUILTIN_MEMCHR == 1);
   }
 }
 

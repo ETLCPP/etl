@@ -57,10 +57,6 @@ add_executable(etl_tests
 	test_callback_timer_deferred_locked.cpp
 	test_callback_timer_interrupt.cpp
 	test_callback_timer_locked.cpp
-	test_const_map.cpp
-	test_const_map_constexpr.cpp
-	test_const_multimap.cpp
-	test_const_multimap_constexpr.cpp
 	test_char_traits.cpp
 	test_checksum.cpp
 	test_chrono_clocks.cpp
@@ -91,6 +87,22 @@ add_executable(etl_tests
 	test_closure_constexpr.cpp
 	test_compare.cpp
 	test_constant.cpp
+	test_const_map.cpp
+	test_const_map_constexpr.cpp
+	test_const_map_ext.cpp
+	test_const_map_ext_constexpr.cpp
+	test_const_multimap.cpp
+	test_const_multimap_constexpr.cpp
+	test_const_multimap_ext.cpp
+	test_const_multimap_ext_constexpr.cpp
+	test_const_multiset.cpp
+	test_const_multiset_constexpr.cpp
+	test_const_multiset_ext.cpp
+	test_const_multiset_ext_constexpr.cpp
+	test_const_set.cpp
+	test_const_set_constexpr.cpp
+	test_const_set_ext.cpp
+	test_const_set_ext_constexpr.cpp
 	test_container.cpp
 	test_correlation.cpp
 	test_covariance.cpp
@@ -148,7 +160,6 @@ add_executable(etl_tests
 	test_crc8_opensafety.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
-	test_crc8_nrsc5.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
