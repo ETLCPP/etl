@@ -3173,7 +3173,7 @@ namespace etl
   ///\return Reference to the output stream, for chaining write operations.
   ///\ingroup string
   //***************************************************************************
-#if ETL_USING_STL
+#if ETL_USING_STD_OSTREAM
   template <typename T>
   std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
                                                           const etl::ibasic_string<T>& str)

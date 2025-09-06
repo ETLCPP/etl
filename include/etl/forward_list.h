@@ -352,7 +352,7 @@ namespace etl
     etl::ipool* p_node_pool;    ///< The pool of data nodes used in the list.
     size_type   MAX_SIZE;       ///< The maximum size of the forward_list.
     bool        pool_is_shared; ///< If <b>true</b> then the pool is shared between lists.
-    ETL_DECLARE_DEBUG_COUNT;     ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT;    ///< Internal debugging.
   };
 
   //***************************************************************************
@@ -745,7 +745,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T();
       ETL_INCREMENT_DEBUG_COUNT;
-        insert_node_after(start_node, *p_data_node);
+      insert_node_after(start_node, *p_data_node);
       return front();
     }
 
