@@ -11,10 +11,12 @@ Fixes:
 #1171 optional of a const arary can't be emplaced with gcc-15
 #1176 Fix GCC __builtin_memcpy errors when compiling with -O2 optimisation
 #1180 Duplicate definition of const_reference in etl::const_set_ext
+#1181 Compilation errors on basic_string
 
 Pull Requests:
 #1169 Remove Unreachable Break Statements
 #1172 Make call interfaces in etl::delegate and etl::closure conditionally noexcept
+#1177 Fix .clang-format
 
 ===============================================================================
 20.43.0

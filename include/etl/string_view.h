@@ -47,7 +47,7 @@ SOFTWARE.
   #include <string_view>
 #endif
 
-#if ETL_USING_STL
+#if ETL_USING_STD_OSTREAM
   #include <ostream>
 #endif
 
