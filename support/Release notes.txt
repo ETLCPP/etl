@@ -17,6 +17,7 @@ Pull Requests:
 #1169 Remove Unreachable Break Statements
 #1172 Make call interfaces in etl::delegate and etl::closure conditionally noexcept
 #1177 Fix .clang-format
+#1179 Made all 'noexcept' statements use ETL_NOEXCEPT macro
 
 ===============================================================================
 20.43.0
