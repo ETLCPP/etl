@@ -367,6 +367,7 @@ namespace etl
 #if ETL_IS_DEBUG_BUILD
   #if ETL_DEBUG_USING_EXCEPTIONS
     #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}  // If the condition fails, throws an exception.
+    #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE_CPP11_CONSTEXPR(b, e, v) {return (b) ? (v) : throw(e);}  // throwing from c++11 constexpr requires ? operator
   #else
     #define ETL_DEBUG_ASSERT(b, e) assert((b))  // If the condition fails, asserts.
   #endif

@@ -158,9 +158,9 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference operator[](size_t i) const
     {
-//throwing from c++11 constexpr requires ? operator
+      //throwing from c++11 constexpr requires a special macro
 #if ETL_USING_CPP11 && !ETL_USING_CPP14 && ETL_DEBUG_USING_EXCEPTIONS
-      return i < SIZE ? _buffer[i] : throw(ETL_ERROR(array_out_of_range));
+      ETL_DEBUG_ASSERT_OR_RETURN_VALUE_CPP11_CONSTEXPR(i < SIZE, ETL_ERROR(array_out_of_range), _buffer[i]);
 #else
       ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
