@@ -33,6 +33,8 @@ SOFTWARE.
 #include <utility>
 #include <iterator>
 
+#if ETL_USING_CPP14
+
 #include "etl/const_set.h"
 
 namespace
@@ -1129,6 +1131,7 @@ namespace
 
       CHECK_TRUE(equal12);
       CHECK_FALSE(equal13);
+      CHECK_FALSE(equal14);
     }
 
     //*************************************************************************
@@ -1432,3 +1435,5 @@ namespace
     }
   };
 }
+
+#endif

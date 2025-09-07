@@ -1,0 +1,200 @@
+language: "en-GB"
+early_access: false
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: false
+  high_level_summary_in_walkthrough: false
+  poem: false
+  review_status: false 
+  collapse_walkthrough: false
+  changed_files_summary: false
+  sequence_diagrams: false
+  estimate_code_review_effort: false
+  assess_linked_issues: false
+  related_issues: false
+  related_prs: false
+  suggested_labels: false
+  suggested_reviewers: false
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "include/etl/*.h"
+      instructions: |
+        Review the C++ code in these directories. The code must not use
+        STL containers but must instead rely on Embedded Template Library
+        (ETL) for data structures and algorithms.
+
+        When answering questions, provide accurate and concise information based on the ETL documentation and codebase. If you don't know the answer, just say "I don't know". Do not make up answers.
+        When providing code examples, ensure they are relevant to the ETL and follow its conventions.
+        Always be polite and professional in your responses.
+
+        Header files should start with the ETL's standard MIT comment block.
+
+        Header files should have include guards in the format '#ifndef ETL_<FILENAME>>_INCLUDED #define ETL_<FILENAME>_INCLUDED #endif'
+
+        Headers should be organized in the following order
+          - The first header include should be '#include "platform.h"'
+          - Headers from the ETL
+          - Headers from the path 'private/**'
+          - C++ standard library headers
+          - C standard library headers
+
+        Pay extra attention to the following
+          - Buffer overflows
+          - Memory leaks
+          - Undefined behavior
+
+        Check that the following conventions are used
+          - Variable names should be in `snake_case`
+          - Macro constants should be `ALL_CAPS_WITH_UNDERSCORES`
+          - Macro constants should be prefixed with 'ETL_'
+          - Function, class, and type names should be `snake_case`
+          - enum members should be `Caps_Snake_Case`
+
+        Please keep your outputs short and to the point, unless otherwise asked
+          - Keep your responses short, describe small issues in a few sentences
+          - Don't output tips, analysis chains or anything else with a collapsible view
+          - Don't output `comment summaries` or `fix prompts for AIs`
+          - If the highlighted issue is complex, don't suggest a solution
+          - Don't use emojis
+
+    - path: "include/etl/atomic/*.h"
+      instructions: |
+        Review the C++ code in these directories. The code must not use
+        STL containers but must instead rely on Embedded Template Library
+        (ETL) for data structures and algorithms.
+
+        When answering questions, provide accurate and concise information based on the ETL documentation and codebase. If you don't know the answer, just say "I don't know". Do not make up answers.
+        When providing code examples, ensure they are relevant to the ETL and follow its conventions.
+        Always be polite and professional in your responses.
+
+        Header files should start with the ETL's standard MIT comment block.
+
+        Header files are allowed to not have include guards
+
+        Headers should be organized in the following order
+          - Headers from the ETL
+          - Headers from the path 'private/**'
+          - C++ standard library headers
+          - C standard library headers
+
+        Pay extra attention to the following
+          - Buffer overflows
+          - Memory leaks
+          - Undefined behavior
+
+        Check that the following conventions are used
+          - Variable names should be in `snake_case`
+          - Macro constants should be `ALL_CAPS_WITH_UNDERSCORES`
+          - Macro constants should be prefixed with 'ETL_'
+          - Function, class, and type names should be `snake_case`
+          - enum members should be `Caps_Snake_Case`
+
+        Please keep your outputs short and to the point, unless otherwise asked
+          - Keep your responses short, describe small issues in a few sentences
+          - Don't output tips, analysis chains or anything else with a collapsible view
+          - Don't output `comment summaries` or `fix prompts for AIs`
+          - If the highlighted issue is complex, don't suggest a solution
+          - Don't use emojis
+
+    - path: "include/etl/atomic/*.h"
+      instructions: |
+        Review the C++ code in these directories. The code must not use
+        STL containers but must instead rely on Embedded Template Library
+        (ETL) for data structures and algorithms.
+
+        When answering questions, provide accurate and concise information based on the ETL documentation and codebase. If you don't know the answer, just say "I don't know". Do not make up answers.
+        When providing code examples, ensure they are relevant to the ETL and follow its conventions.
+        Always be polite and professional in your responses.
+
+        Header files should start with the ETL's standard MIT comment block.
+
+        Header files are allowed to not have include guards
+
+        Headers should be organized in the following order
+          - Headers from the ETL
+          - Headers from the path 'private/**'
+          - C++ standard library headers
+          - C standard library headers
+
+        Pay extra attention to the following
+          - Buffer overflows
+          - Memory leaks
+          - Undefined behavior
+
+        Check that the following conventions are used
+          - Variable names should be in `snake_case`
+          - Macro constants should be `ALL_CAPS_WITH_UNDERSCORES`
+          - Macro constants should be prefixed with 'ETL_'
+          - Function, class, and type names should be `snake_case`
+          - enum members should be `Caps_Snake_Case`
+
+        Please keep your outputs short and to the point, unless otherwise asked
+          - Keep your responses short, describe small issues in a few sentences
+          - Don't output tips, analysis chains or anything else with a collapsible view
+          - Don't output `comment summaries` or `fix prompts for AIs`
+          - If the highlighted issue is complex, don't suggest a solution
+          - Don't use emojis
+
+    - path: "include/etl/mutex/*.h"
+      instructions: |
+        Review the C++ code in these directories. The code must not use
+        STL containers but must instead rely on Embedded Template Library
+        (ETL) for data structures and algorithms.
+
+        When answering questions, provide accurate and concise information based on the ETL documentation and codebase. If you don't know the answer, just say "I don't know". Do not make up answers.
+        When providing code examples, ensure they are relevant to the ETL and follow its conventions.
+        Always be polite and professional in your responses.
+
+        Header files should start with the ETL's standard MIT comment block.
+
+        Header files are allowed to not have include guards
+
+        Headers should be organized in the following order
+          - Headers from the ETL
+          - Headers from the path 'private/**'
+          - C++ standard library headers
+          - C standard library headers
+
+        Pay extra attention to the following
+          - Buffer overflows
+          - Memory leaks
+          - Undefined behavior
+
+        Check that the following conventions are used
+          - Variable names should be in `snake_case`
+          - Macro constants should be `ALL_CAPS_WITH_UNDERSCORES`
+          - Macro constants should be prefixed with 'ETL_'
+          - Function, class, and type names should be `snake_case`
+          - enum members should be `Caps_Snake_Case`
+
+        Please keep your outputs short and to the point, unless otherwise asked
+          - Keep your responses short, describe small issues in a few sentences
+          - Don't output tips, analysis chains or anything else with a collapsible view
+          - Don't output `comment summaries` or `fix prompts for AIs`
+          - If the highlighted issue is complex, don't suggest a solution
+          - Don't use emojis
+
+    - path: "include/etl/deprecated/*.h"
+      instructions: |
+        Ingnore files in this directory
+
+    - path: "include/etl/experimental/*.h"
+      instructions: |
+        Ingnore files in this directory
+
+    - path: "include/etl/generators/*.h"
+      instructions: |
+        Ingnore files in this directory
+
+    - path: "include/etl/profiles/*.h"
+      instructions: |
+        Ingnore files in this directory
+
+chat:
+  art: false
+  auto_reply: true
+

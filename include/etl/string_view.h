@@ -47,7 +47,7 @@ SOFTWARE.
   #include <string_view>
 #endif
 
-#if ETL_USING_STL
+#if ETL_USING_STD_OSTREAM
   #include <ostream>
 #endif
 
@@ -366,7 +366,7 @@ namespace etl
       {
         n = etl::min(count, size() - position);
 
-        etl::mem_move(mbegin + position, n, destination);
+        etl::mem_copy(mbegin + position, n, destination);
       }
 
       return n;
@@ -982,7 +982,7 @@ void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_strin
 //*************************************************************************
 /// Operator overload to write to std basic_ostream
 //*************************************************************************
-#if ETL_USING_STL
+#if ETL_USING_STD_OSTREAM
 template <typename T>
 std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
                                                         etl::basic_string_view<T, etl::char_traits<T> > text)

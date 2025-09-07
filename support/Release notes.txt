@@ -1,4 +1,25 @@
 ﻿===============================================================================
+20.43.1
+
+Updates:
+Added automatic use of __builtin_memcpy, __builtin_memmove, __builtin_memset, __builtin_memcmp, and __builtin_memchr for GCC and Clang, if available.
+#1170 Place a typed pointer instead of a bool into etl::typed_storage
+      Modified the storage used by etl::typed_storage to be a union, along the lines of etl::optional.
+      Added etl::typed_storage_ext to wrap external storage.
+
+Fixes:
+#1171 optional of a const arary can't be emplaced with gcc-15
+#1176 Fix GCC __builtin_memcpy errors when compiling with -O2 optimisation
+#1180 Duplicate definition of const_reference in etl::const_set_ext
+#1181 Compilation errors on basic_string
+
+Pull Requests:
+#1169 Remove Unreachable Break Statements
+#1172 Make call interfaces in etl::delegate and etl::closure conditionally noexcept
+#1177 Fix .clang-format
+#1179 Made all 'noexcept' statements use ETL_NOEXCEPT macro
+
+===============================================================================
 20.43.0
 
 Updates:

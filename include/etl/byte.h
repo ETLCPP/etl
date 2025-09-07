@@ -41,7 +41,7 @@ namespace etl
   template <typename TInteger>
   constexpr
     typename etl::enable_if<etl::is_integral<TInteger>::value, TInteger>::type
-    to_integer(etl::byte b) noexcept
+    to_integer(etl::byte b) ETL_NOEXCEPT
   {
     return TInteger(b);
   }
@@ -52,7 +52,7 @@ namespace etl
   template <typename TInteger>
   constexpr
     typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte>::type
-    operator <<(etl::byte b, TInteger shift) noexcept
+    operator <<(etl::byte b, TInteger shift) ETL_NOEXCEPT
   {
     return  etl::byte(static_cast<unsigned int>(b) << shift);
   }
@@ -63,7 +63,7 @@ namespace etl
   template <typename TInteger>
   constexpr
     typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte>::type
-    operator >>(etl::byte b, TInteger shift) noexcept
+    operator >>(etl::byte b, TInteger shift) ETL_NOEXCEPT
   {
     return  etl::byte(static_cast<unsigned int>(b) >> shift);
   }
@@ -74,7 +74,7 @@ namespace etl
   template <typename TInteger>
   constexpr
     typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte&>::type
-    operator <<=(etl::byte& b, TInteger shift) noexcept
+    operator <<=(etl::byte& b, TInteger shift) ETL_NOEXCEPT
   {
     return b = b << shift;;
   }
@@ -85,7 +85,7 @@ namespace etl
   template <typename TInteger>
   constexpr
     typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte&>::type
-    operator >>=(etl::byte& b, TInteger shift) noexcept
+    operator >>=(etl::byte& b, TInteger shift) ETL_NOEXCEPT
   {
     return b = b >> shift;
   }
@@ -93,7 +93,7 @@ namespace etl
   //*************************************************************************
   /// Or.
   //*************************************************************************
-  inline constexpr etl::byte operator |(etl::byte lhs, etl::byte rhs) noexcept
+  inline constexpr etl::byte operator |(etl::byte lhs, etl::byte rhs) ETL_NOEXCEPT
   {
     return etl::byte(static_cast<unsigned int>(lhs) | static_cast<unsigned int>(rhs));
   }
@@ -101,7 +101,7 @@ namespace etl
   //*************************************************************************
   /// And.
   //*************************************************************************
-  inline constexpr etl::byte operator &(etl::byte lhs, etl::byte rhs) noexcept
+  inline constexpr etl::byte operator &(etl::byte lhs, etl::byte rhs) ETL_NOEXCEPT
   {
     return etl::byte(static_cast<unsigned int>(lhs) & static_cast<unsigned int>(rhs));
   }
@@ -109,7 +109,7 @@ namespace etl
   //*************************************************************************
   /// Exclusive Or.
   //*************************************************************************
-  inline constexpr etl::byte operator ^(etl::byte lhs, etl::byte rhs) noexcept
+  inline constexpr etl::byte operator ^(etl::byte lhs, etl::byte rhs) ETL_NOEXCEPT
   {
     return etl::byte(static_cast<unsigned int>(lhs) ^ static_cast<unsigned int>(rhs));
   }
@@ -117,7 +117,7 @@ namespace etl
   //*************************************************************************
   /// Or equals.
   //*************************************************************************
-  inline ETL_CONSTEXPR14 etl::byte& operator |=(etl::byte& lhs, etl::byte rhs) noexcept
+  inline ETL_CONSTEXPR14 etl::byte& operator |=(etl::byte& lhs, etl::byte rhs) ETL_NOEXCEPT
   {
     return lhs = lhs | rhs;
   }
@@ -125,7 +125,7 @@ namespace etl
   //*************************************************************************
   /// And equals
   //*************************************************************************
-  inline ETL_CONSTEXPR14 etl::byte& operator &=(etl::byte& lhs, etl::byte rhs) noexcept
+  inline ETL_CONSTEXPR14 etl::byte& operator &=(etl::byte& lhs, etl::byte rhs) ETL_NOEXCEPT
   {
     return lhs = lhs & rhs;
   }
@@ -133,7 +133,7 @@ namespace etl
   //*************************************************************************
   /// Exclusive or equals.
   //*************************************************************************
-  inline ETL_CONSTEXPR14 etl::byte& operator ^=(etl::byte& lhs, etl::byte rhs) noexcept
+  inline ETL_CONSTEXPR14 etl::byte& operator ^=(etl::byte& lhs, etl::byte rhs) ETL_NOEXCEPT
   {
     return lhs = lhs ^ rhs;
   }
@@ -141,7 +141,7 @@ namespace etl
   //*************************************************************************
   /// Not.
   //*************************************************************************
-  inline constexpr etl::byte operator ~(etl::byte b) noexcept
+  inline constexpr etl::byte operator ~(etl::byte b) ETL_NOEXCEPT
   {
     return etl::byte(~static_cast<unsigned int>(b));
   }

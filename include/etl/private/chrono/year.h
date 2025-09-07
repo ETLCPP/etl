@@ -259,7 +259,7 @@ namespace etl
     /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
-    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::year& y1, const etl::chrono::year& y2) noexcept
+    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(y1) <=> static_cast<unsigned>(y2));
     }
@@ -357,9 +357,9 @@ namespace etl
       /// Literal for years
       //***********************************************************************
 #if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::year operator ""_year(unsigned long long y) noexcept
+      inline ETL_CONSTEXPR14 etl::chrono::year operator ""_year(unsigned long long y) ETL_NOEXCEPT
 #else
-      inline ETL_CONSTEXPR14 etl::chrono::year operator ""_y(unsigned long long y) noexcept
+      inline ETL_CONSTEXPR14 etl::chrono::year operator ""_y(unsigned long long y) ETL_NOEXCEPT
 #endif
       {
         return etl::chrono::year(static_cast<int16_t>(y));

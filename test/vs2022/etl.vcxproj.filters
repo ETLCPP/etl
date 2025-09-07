@@ -3701,6 +3701,18 @@
     <ClCompile Include="..\test_not_null_pointer_constexpr.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\crc8_opensafety.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc16_opensafety_a.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc16_opensafety_b.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\delegate_observable.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3864,6 +3876,15 @@
     </None>
     <None Include="..\..\scripts\convert_headers_to_use_once.bat">
       <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\platformio-update.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.coderabbit.yaml">
+      <Filter>Resource Files\CI</Filter>
+    </None>
+    <None Include="..\..\..\etl-arduino\.github\workflows\platformio-update.yml">
+      <Filter>ETL\Arduino</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

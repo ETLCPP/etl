@@ -268,7 +268,7 @@ namespace etl
   //***********************************************************************
 #if ETL_USING_CPP20
   template <typename TClock, typename TDuration1, typename TDuration2>
-  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::time_point<TClock, TDuration1>& lhs, const etl::chrono::time_point<TClock, TDuration2>& rhs) noexcept
+  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::time_point<TClock, TDuration1>& lhs, const etl::chrono::time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
   {
     return (lhs.time_since_epoch() <=> rhs.time_since_epoch());
   }
