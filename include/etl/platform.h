@@ -253,7 +253,7 @@ SOFTWARE.
 
 //*************************************
 // Indicate if C++ exceptions are enabled for debug asserts.
-#if defined(ETL_DEBUG_THROW_EXCEPTIONS)
+#if ETL_IS_DEBUG_BUILD && defined(ETL_DEBUG_THROW_EXCEPTIONS)
   #define ETL_DEBUG_USING_EXCEPTIONS 1
   #define ETL_DEBUG_NOT_USING_EXCEPTIONS 0
 #else
