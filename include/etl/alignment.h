@@ -649,6 +649,7 @@ namespace etl
       , valid(false)
     {
       ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(t1);
     }
 
     //***************************************************************************
