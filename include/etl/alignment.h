@@ -710,7 +710,7 @@ namespace etl
 #if ETL_USING_CPP11
     //***************************************************************************
     /// Constructs the instance of T forwarding the given \p args to its constructor.
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename... TArgs>
     reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
@@ -723,7 +723,7 @@ namespace etl
 #else
     //***************************************************************************
     /// Constructs the instance of T with type T1
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1>
     reference create(const T1& t1)
@@ -736,7 +736,7 @@ namespace etl
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1, typename T2>
     reference create(const T1& t1, const T2& t2)
@@ -749,7 +749,7 @@ namespace etl
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1, typename T2, typename T3>
     reference create(const T1& t1, const T2& t2, const T3& t3)
@@ -762,7 +762,7 @@ namespace etl
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3, T4
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
