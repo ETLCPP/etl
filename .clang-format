@@ -5,9 +5,15 @@
 
 Language: Cpp
 
-SortIncludes: true
-
 BasedOnStyle: Chromium
+
+SortIncludes: true
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex:    '^(<|")(.*/)?platform\.h(>|")$'
+    Priority: 1
+  - Regex:    '.*'
+    Priority: 2
 
 BinPackParameters: false
 BitFieldColonSpacing: Both

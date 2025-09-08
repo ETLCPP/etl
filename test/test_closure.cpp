@@ -30,6 +30,8 @@ SOFTWARE.
 
 #include "etl/closure.h"
 
+#include <stdexcept>
+
 namespace
 {
   SUITE(test_closure)
@@ -37,6 +39,15 @@ namespace
     int f1(int a1)
     {
       return a1 * 3;
+    }
+
+    int f1_throwing(int)
+    {
+      throw std::runtime_error("throwing function");
+    }
+
+    void f1_void(int)
+    {
     }
 
     int f1_ref(int& a1)
@@ -65,6 +76,8 @@ namespace
     }
 
     etl::delegate<int(int)> df1 = etl::delegate<int(int)>::create<&f1>();
+    etl::delegate<int(int)> df1_throwing = etl::delegate<int(int)>::create<&f1_throwing>();
+    etl::delegate<void(int)> df1_void = etl::delegate<void(int)>::create<&f1_void>();
     etl::delegate<int(int, int)> df2 = etl::delegate<int(int, int)>::create<&f2>();
     etl::delegate<int(int, int, int)> df3 = etl::delegate<int(int, int, int)>::create<&f3>();
     etl::delegate<int(int, int, int, int)> df4 = etl::delegate<int(int, int, int, int)>::create<&f4>();
@@ -97,6 +110,20 @@ namespace
 
       etl::closure<int(int)> c1_lambda(df1_lambda, 5);
       CHECK_EQUAL(16, c1_lambda());
+    }
+
+    //*************************************************************************
+    TEST(test_throwing)
+    {
+      etl::closure<int(int)> c1(df1_throwing, 4);
+      CHECK_THROW(c1(), std::runtime_error);
+    }
+
+    //*************************************************************************
+    TEST(test_void)
+    {
+      etl::closure<void(int)> c1(df1_void, 4);
+      c1();
     }
 
     //*************************************************************************

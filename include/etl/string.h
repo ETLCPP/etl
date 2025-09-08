@@ -48,7 +48,7 @@ namespace etl
   {
     inline namespace string_literals
     {
-      inline constexpr etl::string_view operator ""_sv(const char* str, size_t length) noexcept
+      inline constexpr etl::string_view operator ""_sv(const char* str, size_t length) ETL_NOEXCEPT
       {
         return etl::string_view{ str, length };
       }
@@ -312,8 +312,15 @@ namespace etl
     string_ext(const etl::string_ext& other, value_type* buffer, size_type buffer_size)
       : istring(buffer, buffer_size - 1U)
     {
-      this->initialise();
-      this->assign(other);
+      if (this->is_within_buffer(other.data()))
+      {
+        this->current_size = other.size();
+      }
+      else
+      {
+        this->initialise();
+        this->assign(other);
+      }
     }
 
     //*************************************************************************
@@ -323,8 +330,15 @@ namespace etl
     string_ext(const etl::istring& other, value_type* buffer, size_type buffer_size)
       : istring(buffer, buffer_size - 1U)
     {
-      this->initialise();
-      this->assign(other);
+      if (this->is_within_buffer(other.data()))
+      {
+        this->current_size = other.size();
+      }
+      else
+      {
+        this->initialise();
+        this->assign(other);
+      }
     }
 
     //*************************************************************************
@@ -338,19 +352,27 @@ namespace etl
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->initialise();
-      this->assign(other, position, length);
+      if (this->is_within_buffer(other.data()))
+      {
+        this->current_size = other.size();
+      }
+      else
+      {
+        this->initialise();
+        this->assign(other, position, length);
+      }
     }
 
     //*************************************************************************
     /// Constructor, from null terminated text.
     ///\param text The initial text of the string_ext.
     //*************************************************************************
-    string_ext(const char* text, char* buffer, size_type buffer_size)
+    template <typename TPointer>
+    string_ext(TPointer text, value_type* buffer, size_type buffer_size,
+               typename etl::enable_if<etl::is_same<const value_type*, TPointer>::value, int>::type* = ETL_NULLPTR)
       : istring(buffer, buffer_size - 1U)
     {
-      // Is the initial text at the same address as the buffer?
-      if (text == buffer)
+      if (this->is_within_buffer(text))
       {
         this->current_size = etl::strlen(buffer);
       }
@@ -362,6 +384,25 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Constructor, from null terminated literal text.
+    ///\param text The initial text of the string_ext.
+    //*************************************************************************
+    template <size_t Size>
+    string_ext(const value_type (&literal)[Size], value_type* buffer, size_type buffer_size)
+      : istring(buffer, buffer_size - 1U)
+    {
+      if (this->is_within_buffer(literal))
+      {
+        this->current_size = etl::strlen(literal);
+      }
+      else
+      {
+        this->initialise();
+        this->assign(literal);
+      }
+    }
+
+    //*************************************************************************
     /// Constructor, from null terminated text and count.
     ///\param text  The initial text of the string_ext.
     ///\param count The number of characters to copy.
@@ -369,8 +410,15 @@ namespace etl
     string_ext(const value_type* text, size_type count, value_type* buffer, size_type buffer_size)
       : istring(buffer, buffer_size - 1U)
     {
-      this->initialise();
-      this->assign(text, text + count);
+      if (this->is_within_buffer(text))
+      {
+        this->current_size = count;
+      }
+      else
+      {
+        this->initialise();
+        this->assign(text, text + count);
+      }
     }
 
     //*************************************************************************
@@ -392,7 +440,15 @@ namespace etl
     explicit string_ext(const etl::string_view& view, value_type* buffer, size_type buffer_size)
       : istring(buffer, buffer_size - 1U)
     {
-      this->assign(view.begin(), view.end());
+      if (this->is_within_buffer(view.data()))
+      {
+        this->current_size = view.size();
+      }
+      else
+      {
+        this->initialise();
+        this->assign(view.begin(), view.end());
+      }
     }
 
     //*************************************************************************
@@ -405,7 +461,15 @@ namespace etl
     string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : istring(buffer, buffer_size - 1U)
     {
-      this->assign(first, last);
+      if (this->is_within_buffer(etl::addressof(*first)))
+      {
+        this->current_size = etl::distance(first, last);
+      }
+      else
+      {
+        this->initialise();
+        this->assign(first, last);
+      }     
     }
 
 #if ETL_HAS_INITIALIZER_LIST
@@ -415,6 +479,7 @@ namespace etl
     string_ext(std::initializer_list<value_type> init, value_type* buffer, size_type buffer_size)
       : istring(buffer, buffer_size - 1U)
     {
+      this->initialise();
       this->assign(init.begin(), init.end());
     }
 #endif

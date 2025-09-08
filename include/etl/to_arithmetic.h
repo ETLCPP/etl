@@ -236,31 +236,26 @@ namespace etl
         case etl::radix::binary:
         {
           return (c >= '0') && (c <= '1');
-          break;
         }
 
         case etl::radix::octal:
         {
           return (c >= '0') && (c <= '7');
-          break;
         }
 
         case etl::radix::decimal:
         {
           return (c >= '0') && (c <= '9');
-          break;
         }
 
         case etl::radix::hexadecimal:
         {
           return ((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f'));
-          break;
         }
 
         default:
         {
           return false;
-          break;
         }
       }
     }
@@ -278,7 +273,6 @@ namespace etl
         case etl::radix::decimal:
         {
           return c - '0';
-          break;
         }
 
         case etl::radix::hexadecimal:
@@ -291,13 +285,11 @@ namespace etl
           {
             return (c - 'a') + 10;
           }
-          break;
         }
 
         default:
         {
           return 0;
-          break;
         }
       }
     }

@@ -976,7 +976,36 @@ namespace
         }
       };
     }
+
+    //*************************************************************************
+    using ItemType = etl::array<uint8_t, 2>;
+
+    etl::optional<const ItemType> create_optional_issue_1171() 
+    {
+      ItemType t;
+      t[0] = 1;
+      t[1] = 20;
+
+      return etl::optional<const ItemType>(t);
+    }
+
+    TEST(test_optional_issue_1171)
+    {
+      etl::optional<const ItemType> opt1 = create_optional_issue_1171(); 
+      CHECK_TRUE(opt1.has_value());
+      CHECK_EQUAL(1, (*opt1)[0]);
+      CHECK_EQUAL(20, (*opt1)[1]);
+
+      etl::optional<const ItemType> opt2(create_optional_issue_1171());     
+      CHECK_TRUE(opt2.has_value());
+      CHECK_EQUAL(1, (*opt2)[0]);
+      CHECK_EQUAL(20, (*opt2)[1]);
+
+      etl::optional<const ItemType> opt3;
+      opt3.emplace(create_optional_issue_1171());
+      CHECK_TRUE(opt3.has_value());
+      CHECK_EQUAL(1, (*opt3)[0]);
+      CHECK_EQUAL(20, (*opt3)[1]);
+    }
   };
 }
-
-

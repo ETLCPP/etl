@@ -445,9 +445,6 @@ namespace etl
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
 
-    /// Defines the parameter types
-    using const_reference = const key_type&;
-
     static_assert((etl::is_default_constructible<key_type>::value), "key_type must be default constructible");
 
     //*************************************************************************
