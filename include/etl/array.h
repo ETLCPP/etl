@@ -446,6 +446,8 @@ namespace etl
     //*************************************************************************
     inline iterator insert_at(size_t position, parameter_t value)
     {
+      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+
       return insert(begin() + position, value);
     }
 
@@ -475,6 +477,8 @@ namespace etl
     template <typename TIterator>
     inline iterator insert_at(size_t position, TIterator first, const TIterator last)
     {
+      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+
       return insert(begin() + position, first, last);
     }
 
@@ -515,6 +519,8 @@ namespace etl
     //*************************************************************************
     inline iterator erase_at(size_t position)
     {
+      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+
       return erase(begin() + position);
     }
 
@@ -541,6 +547,8 @@ namespace etl
     //*************************************************************************
     iterator erase_range(size_t first, size_t last)
     {
+      ETL_DEBUG_ASSERT(first <= last && last <= SIZE, ETL_ERROR(array_out_of_range));
+
       return erase(begin() + first, begin() + last);
     }
 
@@ -566,6 +574,8 @@ namespace etl
     //*************************************************************************
     inline iterator erase_at(size_t position, parameter_t value)
     {
+      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+
       return erase(begin() + position, value);
     }
 
@@ -594,6 +604,8 @@ namespace etl
     //*************************************************************************
     iterator erase_range(size_t first, size_t last, parameter_t value)
     {
+      ETL_DEBUG_ASSERT(first <= last && last <= SIZE, ETL_ERROR(array_out_of_range));
+      
       return erase(begin() + first, begin() + last, value);
     }
 
