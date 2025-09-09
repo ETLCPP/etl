@@ -384,7 +384,7 @@ namespace etl
       #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {etl::error_handler::error((e)); throw((e)); return;}                       // Calls the error handler then throws an exception.
       #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); throw((e)); return(v);}           // Calls the error handler then throws an exception.
     #else
-      #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}              // If the condition fails, throws an exception.
+      #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}                    // If the condition fails, throws an exception.
       #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE_CPP11_CONSTEXPR(b, e, v) return (b) ? (v) : throw(e)  // throwing from c++11 constexpr requires ? operator
       #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}          // If the condition fails, throws an exception.
       #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY {throw((e));}} // If the condition fails, throws an exception.
@@ -411,7 +411,7 @@ namespace etl
     #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {assert(false);  return(v);} // Asserts.
   #endif
 #else
-  #define ETL_DEBUG_ASSERT(b, e)                                                    // Does nothing.
+  #define ETL_DEBUG_ASSERT(b, e)                                                                 // Does nothing.
   #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY return;}                      // Returns.
   #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY return(v);}          // Returns a value.
       
