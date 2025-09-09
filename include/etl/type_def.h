@@ -290,14 +290,28 @@ namespace etl
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator <<=(unsigned int rhs) ETL_NOEXCEPT
+    template <typename T>
+    ETL_CONSTEXPR
+#if ETL_USING_CPP11
+      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def&>::type
+#else
+      type_def&
+#endif
+    operator <<=(T rhs) ETL_NOEXCEPT
     {
       value <<= rhs;
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator >>=(unsigned int rhs) ETL_NOEXCEPT
+    template <typename T>
+    ETL_CONSTEXPR
+#if ETL_USING_CPP11
+      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def&>::type
+#else
+      type_def&
+#endif
+     operator >>=(T rhs) ETL_NOEXCEPT
     {
       value >>= rhs;
       return *this;
@@ -589,17 +603,57 @@ namespace etl
     //*********************************************************************
     // << operator
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator <<(const type_def& lhs, unsigned int rhs) ETL_NOEXCEPT
+    template <typename T>
+    friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
+      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def>::type
+#else
+      type_def
+#endif
+      operator <<(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value << rhs);
     }
 
     //*********************************************************************
+    template <typename T>
+    friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
+      typename etl::enable_if<etl::is_arithmetic<T>::value, T>::type
+#else
+      T
+#endif
+      operator <<(T lhs, const type_def& rhs) ETL_NOEXCEPT
+    {
+      return lhs << rhs.value;
+    }
+
+    //*********************************************************************
     // >> operator
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator >>(const type_def& lhs, unsigned int rhs) ETL_NOEXCEPT
+    template <typename T>
+    friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
+      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def>::type
+#else
+      type_def
+#endif
+      operator >>(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value >> rhs);
+    }
+
+    //*********************************************************************
+    template <typename T>
+    friend ETL_CONSTEXPR
+#if ETL_USING_CPP11
+      typename etl::enable_if<etl::is_arithmetic<T>::value, T>::type
+#else
+      T
+#endif
+      operator >>(T lhs, const type_def& rhs) ETL_NOEXCEPT
+    {
+      return lhs >> rhs.value;
     }
 
     //*********************************************************************
