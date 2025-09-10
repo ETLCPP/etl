@@ -3948,9 +3948,4 @@
       <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="io_port.natvis">
-      <Filter>Resource Files</Filter>
-    </Natvis>
-  </ItemGroup>
 </Project>
