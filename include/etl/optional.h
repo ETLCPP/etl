@@ -536,6 +536,17 @@ namespace etl
 
         return storage.u.value;
       }
+
+      //*************************************************************************
+      /// Emplaces with zero arguments, i.e. default construct emplace.
+      //*************************************************************************
+      ETL_CONSTEXPR20_STL
+      T& emplace()
+      {
+        storage.construct();
+
+        return storage.u.value;
+      }
 #else
       //*************************************************************************
       /// Emplaces a value.

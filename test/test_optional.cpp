@@ -218,13 +218,25 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_emplace_zero_parameters)
+    TEST(test_emplace_zero_parameters_fundamental)
     {
       etl::optional<std::uint8_t> result = 1;
-      result.emplace();
+      CHECK_EQUAL(0, static_cast<int>(result.emplace()));
 
       CHECK_TRUE(result.has_value());
       CHECK_EQUAL(0, int(result.value()));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_zero_parameters_non_fundamental)
+    {
+      etl::optional<std::string> result = std::string("abc");
+
+      std::string& ref = result.emplace();
+      CHECK_EQUAL(std::string(), ref);
+      CHECK_EQUAL(&ref, &result.value());
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("", std::string(result.value()));
     }
 
     //*************************************************************************
