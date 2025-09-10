@@ -291,7 +291,7 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
 #if ETL_USING_CPP11
       typename etl::enable_if<etl::is_arithmetic<T>::value, type_def&>::type
 #else
@@ -305,7 +305,7 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
 #if ETL_USING_CPP11
       typename etl::enable_if<etl::is_arithmetic<T>::value, type_def&>::type
 #else
