@@ -451,8 +451,9 @@ namespace etl
     reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (&storage.value) value_type(etl::forward<TArgs>(args)...);
       valid = true;
-      return *::new (&storage.value) value_type(etl::forward<TArgs>(args)...);
+      return *p;
     }
 #else
     //***************************************************************************
@@ -463,8 +464,9 @@ namespace etl
     reference create(const T1& t1)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (&storage.value) value_type(t1);
       valid = true;
-      return *::new (&storage.value) value_type(t1);
+      return *p;
     }
 
     //***************************************************************************
@@ -475,8 +477,9 @@ namespace etl
     reference create(const T1& t1, const T2& t2)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (&storage.value) value_type(t1, t2);
       valid = true;
-      return *::new (&storage.value) value_type(t1, t2);
+      return *p;
     }
 
     //***************************************************************************
@@ -487,8 +490,9 @@ namespace etl
     reference create(const T1& t1, const T2& t2, const T3& t3)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (&storage.value) value_type(t1, t2, t3);
       valid = true;
-      return *::new (&storage.value) value_type(t1, t2, t3);
+      return *p;
     }
 
     //***************************************************************************
@@ -499,8 +503,9 @@ namespace etl
     reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (&storage.value) value_type(t1, t2, t3, t4);
       valid = true;
-      return *::new (&storage.value) value_type(t1, t2, t3, t4);
+      return *p;
     }
 #endif
 
@@ -559,7 +564,7 @@ namespace etl
 
     struct dummy_t {};
 
-    //*******************************
+   //*******************************
     union union_type
     {
       union_type() ETL_NOEXCEPT
@@ -644,6 +649,7 @@ namespace etl
       , valid(false)
     {
       ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(t1);
     }
 
     //***************************************************************************
@@ -704,62 +710,67 @@ namespace etl
 #if ETL_USING_CPP11
     //***************************************************************************
     /// Constructs the instance of T forwarding the given \p args to its constructor.
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename... TArgs>
     reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(etl::forward<TArgs>(args)...);
       valid = true;
-      return *::new (pbuffer) value_type(etl::forward<TArgs>(args)...);
+      return *p;
     }
 #else
     //***************************************************************************
     /// Constructs the instance of T with type T1
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1>
     reference create(const T1& t1)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1);
       valid = true;
-      return *::new (pbuffer) value_type(t1);
+      return *p;
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1, typename T2>
     reference create(const T1& t1, const T2& t2)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1, t2);
       valid = true;
-      return *::new (pbuffer) value_type(t1, t2);
+      return *p;
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1, typename T2, typename T3>
     reference create(const T1& t1, const T2& t2, const T3& t3)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1, t2, t3);
       valid = true;
-      return *::new (pbuffer) value_type(t1, t2, t3);
+      return *p;
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3, T4
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the external buffer.
     //***************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1, t2, t3, t4);
       valid = true;
-      return *::new (pbuffer) value_type(t1, t2, t3, t4);
+      return *p;
     }
 #endif
 
