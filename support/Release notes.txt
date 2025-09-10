@@ -1,4 +1,11 @@
 ﻿===============================================================================
+20.43.2
+
+Pull Requests:
+#1182 Fix etl::typed_storage by supporting omitted destructors
+#1183 Regression fix: Support zero arguments emplace() in etl::optional
+
+===============================================================================
 20.43.1
 
 Updates:
