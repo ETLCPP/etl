@@ -11654,9 +11654,6 @@
     <Image Include="..\..\etl48.png" />
     <Image Include="..\..\favicon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="io_port.natvis" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
