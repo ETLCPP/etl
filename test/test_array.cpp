@@ -134,6 +134,9 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ int d = data[data.size()]; (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -145,6 +148,9 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ int d = data[data.size()]; (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -443,6 +449,10 @@ namespace
       CHECK_EQUAL(data[9], *result);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check3));
       CHECK(isEqual);
+
+      // Insert out of range
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ result = data.insert_at(data.size(), 99); }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -493,6 +503,10 @@ namespace
       CHECK_EQUAL(data[4], *result);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check5));
       CHECK(isEqual);
+
+      // Insert out of range
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ result = data.insert_at(data.size(), &source2[0], &source2[13]); }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -547,6 +561,10 @@ namespace
       CHECK_EQUAL(data[9], *result);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check3b));
       CHECK(isEqual);
+
+      // Erase out of range
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      CHECK_THROW({ result = data.erase_at(data.size()); }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -601,6 +619,13 @@ namespace
       CHECK_EQUAL(data[5], *result);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check3b));
       CHECK(isEqual);
+
+      //ETL_DEBUG and ETL_THROW_EXCEPTIONS are defined
+      // first is greater than last
+      CHECK_THROW({ result = data.erase_range(6, 5, 99); }, etl::array_out_of_range);
+
+      // Erase out of range
+      CHECK_THROW({ result = data.erase_range(5, data.size() + 1, 99); }, etl::array_out_of_range);
     }
 
     //*************************************************************************
