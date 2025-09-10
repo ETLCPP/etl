@@ -116,7 +116,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    reference at(size_t i)
+    reference at(size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -129,7 +129,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    const_reference at(size_t i) const
+    const_reference at(size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -143,7 +143,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    reference operator[](size_t i)
+    reference operator[](size_t i) ETL_NOEXCEPT_EXPR(ETL_DEBUG_NOT_USING_EXCEPTIONS)
     {
       ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -156,7 +156,7 @@ namespace etl
     ///\param i The index of the element to access.
     //*************************************************************************
     ETL_NODISCARD
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_DEBUG_NOT_USING_EXCEPTIONS)
     {
       //throwing from c++11 constexpr requires a special macro
 #if ETL_USING_CPP11 && !ETL_USING_CPP14 && ETL_DEBUG_USING_EXCEPTIONS
@@ -173,7 +173,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    reference front()
+    reference front() ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
 
@@ -184,7 +184,7 @@ namespace etl
     /// Returns a const reference to the first element.
     //*************************************************************************
     ETL_NODISCARD
-    ETL_CONSTEXPR const_reference front() const
+    ETL_CONSTEXPR const_reference front() const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
 
@@ -196,7 +196,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    reference back()
+    reference back() ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
 
@@ -207,7 +207,7 @@ namespace etl
     /// Returns a const reference to the last element.
     //*************************************************************************
     ETL_NODISCARD
-    ETL_CONSTEXPR const_reference back() const
+    ETL_CONSTEXPR const_reference back() const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(SIZE > 0, "Array is empty.");
 
