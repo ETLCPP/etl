@@ -232,14 +232,14 @@ namespace
 
       CHECK_EQUAL(i1 << 2, t1 << 2);
       CHECK_EQUAL(i1 << 2U, t1 << 2U);
-      CHECK_EQUAL(2 << i1, 2 << t1);
-      CHECK_EQUAL(2U << i1, 2U << t1);
-      CHECK_EQUAL(2U << i1, 2U << t1);
+      CHECK_EQUAL(2 << i3, 2 << t3);
+      CHECK_EQUAL(2U << i3, 2U << t3);
       CHECK_EQUAL(i1 << i3, t1 << t3);
+
       CHECK_EQUAL(i1 >> 2, t1 >> 2);
       CHECK_EQUAL(i1 >> 2U, t1 >> 2U);
-      CHECK_EQUAL(2 >> i1, 2 >> t1);
-      CHECK_EQUAL(2U >> i1, 2U >> t1);
+      CHECK_EQUAL(42 >> i3, 42 >> t3);
+      CHECK_EQUAL(42U >> i3, 42U >> t3);
       CHECK_EQUAL(i1 >> i3, t1 >> t3);
 
       CHECK_EQUAL(i1 % uint32_t(23), t1 % uint32_t(23));

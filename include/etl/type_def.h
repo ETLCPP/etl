@@ -293,7 +293,7 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
 #if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def&>::type
+      typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
 #else
       type_def&
 #endif
@@ -307,7 +307,7 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
 #if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def&>::type
+      typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
 #else
       type_def&
 #endif
@@ -606,7 +606,7 @@ namespace etl
     template <typename T>
     friend ETL_CONSTEXPR
 #if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def>::type
+      typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
 #else
       type_def
 #endif
@@ -619,7 +619,7 @@ namespace etl
     template <typename T>
     friend ETL_CONSTEXPR
 #if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_arithmetic<T>::value, T>::type
+      typename etl::enable_if<(etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
 #else
       T
 #endif
@@ -634,7 +634,7 @@ namespace etl
     template <typename T>
     friend ETL_CONSTEXPR
 #if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_arithmetic<T>::value, type_def>::type
+      typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
 #else
       type_def
 #endif
@@ -647,7 +647,7 @@ namespace etl
     template <typename T>
     friend ETL_CONSTEXPR
 #if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_arithmetic<T>::value, T>::type
+      typename etl::enable_if<(etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
 #else
       T
 #endif
