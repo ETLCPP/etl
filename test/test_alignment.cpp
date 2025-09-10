@@ -48,6 +48,7 @@ void f(int)
 {
 }
 
+// Demonstrator class for etl::typed_storage tests
 struct A_t
 {
   A_t(uint32_t v_x, uint8_t v_y)
@@ -56,13 +57,22 @@ struct A_t
   {
   }
 
+  // Just for test purpose. In production code, etl::typed_storage
+  // actually supports the use case of destructors being optimized
+  // away since they are not necessary for global objects that are
+  // never destroyed
   ~A_t()
   {
     x = 0;
     y = 0;
   }
 
-  bool operator==(A_t& other)
+  // etl::typed_storage helps implementing the use case of becoming
+  // independent of the destructor. By deleting the assignment operator,
+  // we make sure that the destructor is not linked
+  A_t& operator=(const A_t&) = delete;
+
+  bool operator==(const A_t& other) const
   {
     return other.x == x && other.y == y;
   }
