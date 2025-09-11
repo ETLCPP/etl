@@ -179,7 +179,9 @@ namespace
       CHECK_EQUAL(i |= 0x003DU, uint32_t(t |= type_t(0x003DU)));
       CHECK_EQUAL(i ^= 0xAA55U, uint32_t(t ^= 0xAA55U));
       CHECK_EQUAL(i ^= 0xAA55U, uint32_t(t ^= type_t(0xAA55U)));
+      CHECK_EQUAL(i <<= 2, uint32_t(t <<= 2));
       CHECK_EQUAL(i <<= 2U, uint32_t(t <<= 2U));
+      CHECK_EQUAL(i >>= 2, uint32_t(t >>= 2));
       CHECK_EQUAL(i >>= 2U, uint32_t(t >>= 2U));
       CHECK_EQUAL(i %= 23, uint32_t(t %= 23));
 
@@ -195,8 +197,10 @@ namespace
       
       uint32_t i1 = 0x5A3DUL;
       uint32_t i2 = 0xB47AUL;
+      uint32_t i3 = 3UL;
       type_t t1(0x5A3DUL);
       type_t t2(0xB47AUL);
+      type_t t3(3UL);
 
       CHECK_EQUAL(i1 + Two, t1 + Two);
       CHECK_EQUAL(Two + i1, Two + t1);
@@ -205,11 +209,11 @@ namespace
       CHECK_EQUAL(i1 - Two, t1 - Two);
       CHECK_EQUAL(i2 - i1, i2 - t1);
       CHECK_EQUAL(i2 - i1, t2 - t1);
-      
+
       CHECK_EQUAL(i1 * Two, t1 * Two);
       CHECK_EQUAL(Two * i1, Two * t1);
       CHECK_EQUAL(i1 * i2, t1 * t2);
-      
+
       CHECK_EQUAL(i1 / Two, t1 / Two);
       CHECK_EQUAL(i2  / i1, i2 / t1);
       CHECK_EQUAL(i2  / i1, t2 / t1);
@@ -227,7 +231,16 @@ namespace
       CHECK_EQUAL(uint32_t(0xAA55) ^ i1, type_t(0xAA55UL) ^ t1);
 
       CHECK_EQUAL(i1 << 2, t1 << 2);
+      CHECK_EQUAL(i1 << 2U, t1 << 2U);
+      CHECK_EQUAL(2 << i3, 2 << t3);
+      CHECK_EQUAL(2U << i3, 2U << t3);
+      CHECK_EQUAL(i1 << i3, t1 << t3);
+
       CHECK_EQUAL(i1 >> 2, t1 >> 2);
+      CHECK_EQUAL(i1 >> 2U, t1 >> 2U);
+      CHECK_EQUAL(42 >> i3, 42 >> t3);
+      CHECK_EQUAL(42U >> i3, 42U >> t3);
+      CHECK_EQUAL(i1 >> i3, t1 >> t3);
 
       CHECK_EQUAL(i1 % uint32_t(23), t1 % uint32_t(23));
       CHECK_EQUAL(uint32_t(23) % i1, uint32_t(23) % t1);
@@ -313,7 +326,7 @@ namespace
 
       return value;
     }
-    
+
     TEST(test_arithmetic_constexpr)
     {
       constexpr arithmetic_type_t value_plus  = CreatePlus();
