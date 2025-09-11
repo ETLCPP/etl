@@ -291,13 +291,8 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
-#else
-      type_def&
-#endif
-    operator <<=(T rhs) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
+     operator <<=(T rhs) ETL_NOEXCEPT
     {
       value <<= rhs;
       return *this;
@@ -305,12 +300,7 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
-#else
-      type_def&
-#endif
+    ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
      operator >>=(T rhs) ETL_NOEXCEPT
     {
       value >>= rhs;
@@ -604,12 +594,7 @@ namespace etl
     // << operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
-#else
-      type_def
-#endif
+    friend ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
       operator <<(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value << rhs);
@@ -617,12 +602,7 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<(etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
-#else
-      T
-#endif
+    friend ETL_CONSTEXPR typename etl::enable_if<(etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
       operator <<(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs << rhs.value;
@@ -632,12 +612,7 @@ namespace etl
     // >> operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
-#else
-      type_def
-#endif
+    friend ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
       operator >>(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value >> rhs);
@@ -646,11 +621,7 @@ namespace etl
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<(etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
-#else
-      T
-#endif
+    typename etl::enable_if<(etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
       operator >>(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs >> rhs.value;
