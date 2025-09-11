@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Minimal Natvis file (removed Version attribute to avoid schema mismatch) -->
+<Natvis xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="etl::delegate&lt;*&gt;">
+		<DisplayString Condition="invocation.stub == 0">[etl::delegate invalid]</DisplayString>
+		<DisplayString Condition="invocation.stub != 0 &amp;&amp; invocation.object == 0">[etl::delegate -> free/static]</DisplayString>
+		<DisplayString Condition="invocation.stub != 0 &amp;&amp; invocation.object != 0">[etl::delegate -> bound instance]</DisplayString>
+		<DisplayString>[etl::delegate]</DisplayString>
+		<Expand>
+			<Item Name="IsValid">invocation.stub != 0</Item>
+			<Item Name="TargetKind" Condition="invocation.stub == 0">"uninitialised"</Item>
+			<Item Name="TargetKind" Condition="invocation.stub != 0 &amp;&amp; invocation.object == 0">"free/static"</Item>
+			<Item Name="TargetKind" Condition="invocation.stub != 0 &amp;&amp; invocation.object != 0">"object / functor"</Item>
+			<Item Name="Object" Condition="invocation.object != 0">(void*)invocation.object</Item>
+			<Item Name="Object" Condition="invocation.object == 0">0x0</Item>
+			<Item Name="Stub">invocation.stub</Item>
+		</Expand>
+	</Type>
+</Natvis>
