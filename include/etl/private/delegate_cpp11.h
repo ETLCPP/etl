@@ -372,7 +372,7 @@ namespace etl
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
-    ETL_CONSTEXPR14 TReturn operator()(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 TReturn operator()(TParams... args) const
     {
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
@@ -386,7 +386,7 @@ namespace etl
     template <typename TRet = TReturn>
     ETL_CONSTEXPR14
     typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool>
-      call_if(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+      call_if(TParams... args) const
     {
       if (is_valid())
       {
@@ -406,7 +406,7 @@ namespace etl
     template <typename TRet = TReturn>
     ETL_CONSTEXPR14
     typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>>
-      call_if(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+      call_if(TParams... args) const
     {
       etl::optional<TReturn> result;
 
@@ -423,7 +423,7 @@ namespace etl
     /// Run time alternative.
     //*************************************************************************
     template <typename TAlternative>
-    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const
     {
       if (is_valid())
       {
@@ -440,7 +440,7 @@ namespace etl
     /// Compile time alternative.
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    ETL_CONSTEXPR14 TReturn call_or(TParams... args) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 TReturn call_or(TParams... args) const
     {
       if (is_valid())
       {
