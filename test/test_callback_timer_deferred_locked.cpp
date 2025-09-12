@@ -1012,6 +1012,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_is_active)
     {
+      timerInsertRemoveTest.clear();
       locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
@@ -1023,9 +1024,15 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
 
+      timer_controller.set_insert_callback(event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::insert_handler>());
+      timer_controller.set_remove_callback(event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::remove_handler>());
+
       timer_controller.start(id1);
       timer_controller.start(id3);
       timer_controller.start(id2);
+
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
 
       timer_controller.enable(true);
 
@@ -1033,11 +1040,17 @@ namespace
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_TRUE(timer_controller.is_active(id3));
 
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
+
       timer_controller.tick(11);
       timer_controller.handle_deferred();
       CHECK_TRUE(timer_controller.is_active(id1));
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
+
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(1, timerInsertRemoveTest.removed);
 
       timer_controller.tick(23 - 11);
       timer_controller.handle_deferred();
@@ -1045,18 +1058,23 @@ namespace
       CHECK_FALSE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
 
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(2, timerInsertRemoveTest.removed);
+
       timer_controller.tick(37 - 23);
       timer_controller.handle_deferred();
       CHECK_FALSE(timer_controller.is_active(id1));
       CHECK_FALSE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
+
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(3, timerInsertRemoveTest.removed);
     }
 
     //*************************************************************************
     TEST(message_timer_time_to_next_with_has_active_timer)
     {
       locks.clear();
-      timerInsertRemoveTest.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -1074,9 +1092,6 @@ namespace
       timer_controller.start(id3);
       timer_controller.start(id2);
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
-
       timer_controller.enable(true);
 
       timer_controller.tick(11);
@@ -1084,32 +1099,20 @@ namespace
       CHECK_EQUAL(23 - 11, timer_controller.time_to_next());
       CHECK_TRUE(timer_controller.has_active_timer());
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(1, timerInsertRemoveTest.removed);
-
       timer_controller.tick(23);
       timer_controller.handle_deferred();
       CHECK_EQUAL(3, timer_controller.time_to_next());
       CHECK_TRUE(timer_controller.has_active_timer());
-
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(2, timerInsertRemoveTest.removed);
 
       timer_controller.tick(2);
       timer_controller.handle_deferred();
       CHECK_EQUAL(1, timer_controller.time_to_next());
       CHECK_TRUE(timer_controller.has_active_timer());
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(2, timerInsertRemoveTest.removed);
-
       timer_controller.tick(1);
       timer_controller.handle_deferred();
       CHECK_EQUAL(static_cast<etl::timer::interval::type>(etl::timer::interval::No_Active_Interval), timer_controller.time_to_next());
       CHECK_FALSE(timer_controller.has_active_timer());
-
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(3, timerInsertRemoveTest.removed);
     }
 
     //*************************************************************************
