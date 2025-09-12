@@ -1,4 +1,10 @@
 ﻿===============================================================================
+20.43.3
+
+Removed ETL_NOEXCEPT from delegate operator(), call_if(), and call_or()
+Removed ETL_NOEXCEPT from closure
+
+===============================================================================
 20.43.2
 
 Pull Requests:
