@@ -355,6 +355,23 @@ namespace etl
 
   protected:
 
+    class callback_node 
+    {
+    public:
+
+      callback_node(callback_type &callback_,uint_least8_t priority_) : callback(callback_), priority(priority_) 
+      {
+      }
+
+      bool operator < (const callback_node& p) const
+      {
+        return this->priority > p.priority; // comparison was inverted here to easy the code design
+      }
+
+      callback_type callback;
+      uint_least8_t priority;
+    };
+
     //*************************************************************************
     /// The configuration of a timer.
     struct timer_data
@@ -642,6 +659,7 @@ namespace etl
     event_callback_type remove_callback;
 
   public:
+
     template <uint_least8_t>
     friend class callback_timer_locked;
 
@@ -666,6 +684,12 @@ namespace etl
     typedef icallback_timer_locked::lock_type     lock_type;
     typedef icallback_timer_locked::unlock_type   unlock_type;
 
+  private:
+
+    typedef icallback_timer_locked::callback_node callback_node;
+
+  public:
+
     //*******************************************
     /// Constructor.
     //*******************************************
@@ -683,8 +707,9 @@ namespace etl
       this->set_locks(try_lock_, lock_, unlock_);
     }
 
-    // Implement virtual functions
-
+    //*******************************************
+    /// Handle the tick call
+    //*******************************************
     bool tick(uint32_t count) final
     {
       if (enabled)
