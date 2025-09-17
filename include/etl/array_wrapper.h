@@ -141,7 +141,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal storage.
     //*************************************************************************
-    pointer data()
+    pointer data() ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -149,7 +149,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const pointer to the first element of the internal storage.
     //*************************************************************************
-    ETL_CONSTEXPR const_pointer data() const
+    ETL_CONSTEXPR const_pointer data() const ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -157,7 +157,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the array.
     //*************************************************************************
-    iterator begin()
+    iterator begin() ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -165,7 +165,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator begin() const
+    ETL_CONSTEXPR const_iterator begin() const ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -173,7 +173,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator cbegin() const
+    ETL_CONSTEXPR const_iterator cbegin() const ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -181,7 +181,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the array.
     //*************************************************************************
-    iterator end()
+    iterator end() ETL_NOEXCEPT
     {
       return &ARRAY_[END];
     }
@@ -189,7 +189,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator end() const
+    ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
     {
       return &ARRAY_[END];
     }
@@ -197,7 +197,7 @@ namespace etl
     //*************************************************************************
     // Returns a const iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator cend() const
+    ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
     {
       return &ARRAY_[END];
     }
@@ -205,7 +205,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    reverse_iterator rbegin()
+    reverse_iterator rbegin() ETL_NOEXCEPT
     {
       return reverse_iterator(&ARRAY_[END]);
     }
@@ -213,7 +213,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator rbegin() const
+    ETL_CONSTEXPR const_reverse_iterator rbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[END]);
     }
@@ -221,7 +221,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator crbegin() const
+    ETL_CONSTEXPR const_reverse_iterator crbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[END]);
     }
@@ -229,7 +229,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the array.
     //*************************************************************************
-    reverse_iterator rend()
+    reverse_iterator rend() ETL_NOEXCEPT
     {
       return reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -237,7 +237,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator rend() const
+    ETL_CONSTEXPR const_reverse_iterator rend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -245,7 +245,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator crend() const
+    ETL_CONSTEXPR const_reverse_iterator crend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -253,7 +253,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size() const
+    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
       return SIZE;
     }
@@ -261,7 +261,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum possible size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
     {
       return MAX_SIZE;
     }
@@ -269,7 +269,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
-    reference operator[](size_t i)
+    reference operator[](size_t i) ETL_NOEXCEPT
     {
       return ARRAY_[i];
     }
@@ -277,7 +277,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT
     {
       return ARRAY_[i];
     }
