@@ -123,7 +123,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR array_view()
+    ETL_CONSTEXPR array_view() ETL_NOEXCEPT
       : mbegin(ETL_NULLPTR),
         mend(ETL_NULLPTR)
     {
@@ -238,7 +238,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_)
+    ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_) ETL_NOEXCEPT
       : mbegin(etl::to_address(begin_)),
         mend(etl::to_address(begin_) + etl::distance(begin_, end_))
     {
@@ -249,7 +249,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator,
               typename TSize>
-    ETL_CONSTEXPR array_view(const TIterator begin_, const TSize size_)
+    ETL_CONSTEXPR array_view(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
       : mbegin(etl::to_address(begin_)),
         mend(etl::to_address(begin_) + size_)
     {
@@ -259,7 +259,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<size_t Array_Size>
-    ETL_CONSTEXPR array_view(T(&begin_)[Array_Size])
+    ETL_CONSTEXPR array_view(T(&begin_)[Array_Size]) ETL_NOEXCEPT
       : mbegin(begin_),
         mend(begin_ + Array_Size)
     {
@@ -268,7 +268,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    ETL_CONSTEXPR array_view(const array_view& other)
+    ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT
       : mbegin(other.mbegin),
         mend(other.mend)
     {
@@ -309,7 +309,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal storage.
     //*************************************************************************
-    pointer data()
+    pointer data() ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -317,7 +317,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const pointer to the first element of the internal storage.
     //*************************************************************************
-    const_pointer data() const
+    const_pointer data() const ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -325,7 +325,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the array.
     //*************************************************************************
-    iterator begin()
+    iterator begin() ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -333,7 +333,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    const_iterator begin() const
+    const_iterator begin() const ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -341,7 +341,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    const_iterator cbegin() const
+    const_iterator cbegin() const ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -349,7 +349,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the array.
     //*************************************************************************
-    iterator end()
+    iterator end() ETL_NOEXCEPT
     {
       return mend;
     }
@@ -357,7 +357,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the end of the array.
     //*************************************************************************
-    const_iterator end() const
+    const_iterator end() const ETL_NOEXCEPT
     {
       return mend;
     }
@@ -365,7 +365,7 @@ namespace etl
     //*************************************************************************
     // Returns a const iterator to the end of the array.
     //*************************************************************************
-    const_iterator cend() const
+    const_iterator cend() const ETL_NOEXCEPT
     {
       return mend;
     }
@@ -373,7 +373,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    reverse_iterator rbegin()
+    reverse_iterator rbegin() ETL_NOEXCEPT
     {
       return reverse_iterator(mend);
     }
@@ -381,7 +381,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    const_reverse_iterator rbegin() const
+    const_reverse_iterator rbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mend);
     }
@@ -389,7 +389,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    const_reverse_iterator crbegin() const
+    const_reverse_iterator crbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mend);
     }
@@ -397,7 +397,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the array.
     //*************************************************************************
-    reverse_iterator rend()
+    reverse_iterator rend() ETL_NOEXCEPT
     {
       return reverse_iterator(mbegin);
     }
@@ -405,7 +405,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    const_reverse_iterator rend() const
+    const_reverse_iterator rend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mbegin);
     }
@@ -413,7 +413,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    const_reverse_iterator crend() const
+    const_reverse_iterator crend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mbegin);
     }
@@ -421,7 +421,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the array size is zero.
     //*************************************************************************
-    ETL_CONSTEXPR bool empty() const
+    ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
       return (mbegin == mend);
     }
@@ -429,7 +429,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size() const
+    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
       return static_cast<size_t>(mend - mbegin);
     }
@@ -437,7 +437,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum possible size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
     {
       return size();
     }
@@ -445,7 +445,7 @@ namespace etl
     //*************************************************************************
     /// Assign from a view.
     //*************************************************************************
-    array_view& operator=(const array_view& other)
+    array_view& operator=(const array_view& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
@@ -477,7 +477,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the indexed value.
     //*************************************************************************
-    reference operator[](const size_t i)
+    reference operator[](const size_t i) ETL_NOEXCEPT
     {
       return mbegin[i];
     }
@@ -486,7 +486,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
-    const_reference operator[](const size_t i) const
+    const_reference operator[](const size_t i) const ETL_NOEXCEPT
     {
       return mbegin[i];
     }
@@ -516,7 +516,7 @@ namespace etl
     //*************************************************************************
     /// Swaps with another array_view.
     //*************************************************************************
-    void swap(array_view& other)
+    void swap(array_view& other) ETL_NOEXCEPT
     {
       using ETL_OR_STD::swap; // Allow ADL
 
@@ -527,7 +527,7 @@ namespace etl
     //*************************************************************************
     /// Shrinks the view by moving its start forward.
     //*************************************************************************
-    void remove_prefix(const size_type n)
+    void remove_prefix(const size_type n) ETL_NOEXCEPT
     {
 		if (n < size())
 			mbegin += n;
@@ -538,7 +538,7 @@ namespace etl
     //*************************************************************************
     /// Shrinks the view by moving its end backward.
     //*************************************************************************
-    void remove_suffix(const size_type n)
+    void remove_suffix(const size_type n) ETL_NOEXCEPT
     {
 		if (n < size())
 			mend -= n;
@@ -647,7 +647,7 @@ namespace etl
 /// Swaps the values.
 //*************************************************************************
 template <typename T>
-void swap(etl::array_view<T>& lhs, etl::array_view<T>& rhs)
+void swap(etl::array_view<T>& lhs, etl::array_view<T>& rhs) ETL_NOEXCEPT
 {
   lhs.swap(rhs);
 }
