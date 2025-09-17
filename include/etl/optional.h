@@ -195,6 +195,7 @@ namespace etl
         storage.construct(etl::forward<TArgs>(args)...);
       }
 
+#if ETL_HAS_INITIALIZER_LIST
       //*******************************************
       /// Construct from initializer_list and arguments.
       //*******************************************
@@ -205,6 +206,7 @@ namespace etl
       {
         storage.construct(ilist, etl::forward<TArgs>(args)...);
       }
+#endif
 #endif
 
       //***************************************************************************
@@ -816,6 +818,7 @@ namespace etl
         storage.construct(etl::forward<TArgs>(args)...);
       }
 
+#if ETL_HAS_INITIALIZER_LIST
       //*******************************************
       /// Construct from initializer_list and arguments.
       //*******************************************
@@ -826,6 +829,7 @@ namespace etl
       {
         storage.construct(ilist, etl::forward<TArgs>(args)...);
       }
+#endif
 #endif
 
       //***************************************************************************
