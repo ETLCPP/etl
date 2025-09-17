@@ -59,7 +59,7 @@ namespace etl
   /// Defined when not using the STL or C++20
   //*****************************************************************************
   template <typename T>
-  ETL_CONSTEXPR T* to_address(T* p) 
+  ETL_CONSTEXPR T* to_address(T* p) ETL_NOEXCEPT
   { 
     return p; 
   }
@@ -70,7 +70,7 @@ namespace etl
   /// Defined when not using the STL or C++20
   //*****************************************************************************
   template <typename Iterator>
-  ETL_CONSTEXPR typename Iterator::pointer to_address(const Iterator& itr)
+  ETL_CONSTEXPR typename Iterator::pointer to_address(const Iterator& itr) ETL_NOEXCEPT
   {
     return etl::to_address(itr.operator->());
   }

@@ -141,7 +141,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR explicit span(const TIterator begin_, const TIterator /*end_*/)
+    ETL_CONSTEXPR explicit span(const TIterator begin_, const TIterator /*end_*/) ETL_NOEXCEPT
       : pbegin(etl::to_address(begin_))
     {
     }
@@ -585,7 +585,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
+    ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_) ETL_NOEXCEPT
       : pbegin(etl::to_address(begin_))
       , pend(etl::to_address(begin_) + etl::distance(begin_, end_))
     {

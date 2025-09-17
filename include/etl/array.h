@@ -397,7 +397,7 @@ namespace etl
     /// Swaps the contents of this array and another.
     ///\param other A reference to the other array.
     //*************************************************************************
-    ETL_CONSTEXPR14 void swap(array& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void swap(array& other) ETL_NOEXCEPT_FROM(ETL_OR_STD::swap(etl::declval<T&>(), etl::declval<T&>()))
     {
       using ETL_OR_STD::swap; // Allow ADL
 
