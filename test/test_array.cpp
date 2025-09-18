@@ -134,6 +134,8 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      CHECK_THROW({ int d = data[data.size()]; (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -145,6 +147,8 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      CHECK_THROW({ int d = data[data.size()]; (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
