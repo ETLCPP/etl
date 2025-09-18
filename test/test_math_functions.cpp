@@ -461,7 +461,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_gdc_for_positive_integers)
+    TEST(test_gcd_for_positive_integers)
     {
       CHECK_EQUAL(1, etl::gcd( 3, 5,  7));
       CHECK_EQUAL(2, etl::gcd( 4, 6,  8));
@@ -471,7 +471,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_gdc_for_negative_integers)
+    TEST(test_gcd_for_negative_integers)
     {
       CHECK_EQUAL(1, etl::gcd( -3, -5, -7));
       CHECK_EQUAL(2, etl::gcd( -4, -6, -8));
@@ -482,7 +482,7 @@ namespace
 
 #if ETL_USING_CPP14
     //*************************************************************************
-    TEST(test_constexpr_gdc)
+    TEST(test_constexpr_gcd)
     {
       constexpr int gcd1 = etl::gcd(3, 5, 7);
       constexpr int gcd2 = etl::gcd(4, 6, 8);
