@@ -370,6 +370,18 @@ namespace etl
     #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
 #endif
 
+#ifdef ETL_CHECK_PUSH_POP
+    #define ETL_ASSERT_CHECK_PUSH_POP(b, e) ETL_ASSERT(b,e)
+#else
+    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)
+#endif
+
+#ifdef ETL_CHECK_EXTRA
+    #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b,e)
+#else
+    #define ETL_ASSERT_CHECK_EXTRA(b, e)
+#endif
+
 #if defined(ETL_VERBOSE_ERRORS)
   #define ETL_ERROR(e) (e(__FILE__, __LINE__))                    // Make an exception with the file name and line number.
   #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v))) // Make an exception with the file name, line number and value.
