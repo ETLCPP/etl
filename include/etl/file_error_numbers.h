@@ -108,4 +108,5 @@ SOFTWARE.
 #define ETL_SPAN_FILE_ID "75"
 #define ETL_ALGORITHM_FILE_ID "76"
 #define ETL_NOT_NULL_FILE_ID "77"
+#define ETL_SIGNAL_FILE_ID "78"
 #endif

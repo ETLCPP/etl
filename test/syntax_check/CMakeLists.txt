@@ -290,6 +290,7 @@ target_sources(tests PRIVATE
 		scheduler.h.t.cpp
 		set.h.t.cpp
 		shared_message.h.t.cpp
+		signal.h.t.cpp
 		singleton.h.t.cpp
 		singleton_base.h.t.cpp
 		smallest.h.t.cpp
