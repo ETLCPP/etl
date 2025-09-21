@@ -35,7 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11
+#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
 #error NOT SUPPORTED FOR C++03 OR BELOW
 #endif
 
