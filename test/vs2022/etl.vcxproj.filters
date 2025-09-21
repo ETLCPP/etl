@@ -3716,6 +3716,12 @@
     <ClCompile Include="..\syntax_check\delegate_observable.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\signal.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_etl_assert.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
