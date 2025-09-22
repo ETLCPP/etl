@@ -308,9 +308,8 @@ namespace etl
     //*************************************************************************
     void push(const_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(queue_full));
+
       ::new (&p_buffer[in]) T(value);
       add_in();
     }
@@ -323,9 +322,8 @@ namespace etl
     //*************************************************************************
     void push(rvalue_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(queue_full));
+
       ::new (&p_buffer[in]) T(etl::move(value));
       add_in();
     }
@@ -340,9 +338,8 @@ namespace etl
     template <typename ... Args>
     reference emplace(Args && ... args)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
+
       reference value = p_buffer[in];
       ::new (&value) T(etl::forward<Args>(args)...);
       add_in();
@@ -355,9 +352,8 @@ namespace etl
     //*************************************************************************
     reference emplace()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
+
       reference value = p_buffer[in];
       ::new (&value) T();
       add_in();
@@ -372,9 +368,8 @@ namespace etl
     template <typename T1>
     reference emplace(const T1& value1)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
+
       reference value = p_buffer[in];
       ::new (&value) T(value1);
       add_in();
@@ -390,9 +385,8 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace(const T1& value1, const T2& value2)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
+
       reference value = p_buffer[in];
       ::new (&value) T(value1, value2);
       add_in();
@@ -409,9 +403,8 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace(const T1& value1, const T2& value2, const T3& value3)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
+
       reference value = p_buffer[in];
       ::new (&value) T(value1, value2, value3);
       add_in();
@@ -429,9 +422,8 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(queue_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
+
       reference value = p_buffer[in];
       ::new (&value) T(value1, value2, value3, value4);
       add_in();
@@ -468,9 +460,8 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(queue_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(queue_empty));
+
       p_buffer[out].~T();
       del_out();
     }

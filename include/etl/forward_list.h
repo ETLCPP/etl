@@ -694,9 +694,7 @@ namespace etl
     //*************************************************************************
     void push_front(const T& value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t& data_node = allocate_data_node(value);
       insert_node_after(start_node, data_node);
@@ -708,9 +706,7 @@ namespace etl
     //*************************************************************************
     void push_front(rvalue_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t& data_node = allocate_data_node(etl::move(value));
       insert_node_after(start_node, data_node);
@@ -724,9 +720,8 @@ namespace etl
     template <typename ... Args>
     reference emplace_front(Args && ... args)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
+
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(etl::forward<Args>(args)...);
       ETL_INCREMENT_DEBUG_COUNT;
@@ -739,9 +734,8 @@ namespace etl
     //*************************************************************************
     reference emplace_front()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
+
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T();
       ETL_INCREMENT_DEBUG_COUNT;
@@ -755,9 +749,8 @@ namespace etl
     template <typename T1>
     reference emplace_front(const T1& value1)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
+
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT;
@@ -771,9 +764,8 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace_front(const T1& value1, const T2& value2)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
+
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2);
       ETL_INCREMENT_DEBUG_COUNT;
@@ -787,9 +779,8 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace_front(const T1& value1, const T2& value2, const T3& value3)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
+
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3);
       ETL_INCREMENT_DEBUG_COUNT;
@@ -803,9 +794,8 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
+
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT;
@@ -819,9 +809,8 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(forward_list_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(forward_list_empty));
+
       remove_node_after(start_node);
     }
 
