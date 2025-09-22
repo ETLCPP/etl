@@ -420,18 +420,31 @@ namespace etl
   #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {return(v);}                 // Returns a value.
 #endif
 
+//*************************************
+#if defined(ETL_CHECK_PUSH_POP)
+    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)           ETL_ASSERT(b, e)
+    #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e) ETL_ASSERT_OR_RETURN(b, e)
+#else
+    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)
+    #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e)
+#endif
+
+//*************************************
+#ifdef ETL_CHECK_INDEX_OPERATOR
+  #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b,e)
+#else
+  #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
+#endif
+
+//*************************************
 #if defined(ETL_VERBOSE_ERRORS)
   #define ETL_ERROR(e) (e(__FILE__, __LINE__))                    // Make an exception with the file name and line number.
   #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v))) // Make an exception with the file name, line number and value.
-#else
-  #define ETL_ERROR(e) (e("", __LINE__))                    // Make an exception with the line number.
-  #define ETL_ERROR_WITH_VALUE(e, v) (e("", __LINE__, (v))) // Make an exception with the file name, line number and value.
-#endif
-
-#if defined(ETL_VERBOSE_ERRORS)
   #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text.
 #else
-  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)   // Use the terse text.
+  #define ETL_ERROR(e) (e("", __LINE__))                        // Make an exception with the line number.
+  #define ETL_ERROR_WITH_VALUE(e, v) (e("", __LINE__, (v)))     // Make an exception with the file name, line number and value.
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text) // Use the terse text.
 #endif
 
 #endif
