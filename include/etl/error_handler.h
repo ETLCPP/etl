@@ -364,10 +364,6 @@ namespace etl
   #endif
 #endif
 
-#if defined(ETL_VERBOSE_ERRORS)
-  #define ETL_ERROR(e) (e(__FILE__, __LINE__))                    // Make an exception with the file name and line number.
-  #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v))) // Make an exception with the file name, line number and value.
-
 #if ETL_IS_DEBUG_BUILD
   #if defined(ETL_DEBUG_USE_ASSERT_FUNCTION)
     #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}}                                 // If the condition fails, calls the assert function
