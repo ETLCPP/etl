@@ -145,7 +145,7 @@ namespace etl
     ETL_CONSTEXPR14
     reference operator[](size_t i) ETL_NOEXCEPT_EXPR(ETL_DEBUG_NOT_USING_EXCEPTIONS)
     {
-      ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(array_out_of_range));
 
       return _buffer[i];
     }
@@ -158,11 +158,11 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_DEBUG_NOT_USING_EXCEPTIONS)
     {
-      //throwing from c++11 constexpr requires a special macro
-#if ETL_USING_CPP11 && !ETL_USING_CPP14 && ETL_DEBUG_USING_EXCEPTIONS
-      ETL_DEBUG_ASSERT_OR_RETURN_VALUE_CPP11_CONSTEXPR(i < SIZE, ETL_ERROR(array_out_of_range), _buffer[i]);
+      // Throwing from c++11 constexpr requires special syntax
+#if ETL_USING_CPP11 && !ETL_USING_CPP14 && ETL_USING_EXCEPTIONS && defined(ETL_CHECK_INDEX_OPERATOR)
+      return i < SIZE ? _buffer[i] : throw(ETL_ERROR(array_out_of_range));
 #else
-      ETL_DEBUG_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(array_out_of_range));
 
       return _buffer[i];
 #endif
@@ -446,7 +446,7 @@ namespace etl
     //*************************************************************************
     inline iterator insert_at(size_t position, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(position < SIZE, ETL_ERROR(array_out_of_range));
 
       return insert(begin() + position, value);
     }
@@ -458,7 +458,7 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator position, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
 
@@ -477,7 +477,7 @@ namespace etl
     template <typename TIterator>
     inline iterator insert_at(size_t position, TIterator first, const TIterator last)
     {
-      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(position < SIZE, ETL_ERROR(array_out_of_range));
 
       return insert(begin() + position, first, last);
     }
@@ -491,7 +491,7 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, const TIterator last)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
       iterator result(p);
@@ -519,7 +519,7 @@ namespace etl
     //*************************************************************************
     inline iterator erase_at(size_t position)
     {
-      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(position < SIZE, ETL_ERROR(array_out_of_range));
 
       return erase(begin() + position);
     }
@@ -531,7 +531,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
       etl::move(p + 1, end(), p);
@@ -547,7 +547,7 @@ namespace etl
     //*************************************************************************
     iterator erase_range(size_t first, size_t last)
     {
-      ETL_DEBUG_ASSERT(first <= last && last <= SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(first <= last && last <= SIZE, ETL_ERROR(array_out_of_range));
 
       return erase(begin() + first, begin() + last);
     }
@@ -560,7 +560,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(first);
       etl::move(last, cend(), p);
@@ -574,7 +574,7 @@ namespace etl
     //*************************************************************************
     inline iterator erase_at(size_t position, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(position < SIZE, ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(position < SIZE, ETL_ERROR(array_out_of_range));
 
       return erase(begin() + position, value);
     }
@@ -586,7 +586,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position < cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(position);
 
@@ -604,8 +604,8 @@ namespace etl
     //*************************************************************************
     iterator erase_range(size_t first, size_t last, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(first <= last && last <= SIZE, ETL_ERROR(array_out_of_range));
-      
+      ETL_ASSERT_CHECK_EXTRA(first <= last && last <= SIZE, ETL_ERROR(array_out_of_range));
+
       return erase(begin() + first, begin() + last, value);
     }
 
@@ -617,7 +617,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
-      ETL_DEBUG_ASSERT(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(array_out_of_range));
 
       iterator p = to_iterator(first);
 
