@@ -1757,9 +1757,8 @@ namespace etl
     //*************************************************************************
     void push_back(const_reference item)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(deque_full));
+      
       create_element_back(item);
     }
 
@@ -1771,9 +1770,8 @@ namespace etl
     //*************************************************************************
     void push_back(rvalue_reference item)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(deque_full));
+      
       create_element_back(etl::move(item));
     }
 #endif
@@ -1786,9 +1784,7 @@ namespace etl
     template <typename ... Args>
     reference emplace_back(Args && ... args)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       ::new (&(*_end)) T(etl::forward<Args>(args)...);
       ++_end;
@@ -1805,9 +1801,7 @@ namespace etl
     //*************************************************************************
     reference emplace_back()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       ::new (&(*_end)) T();
       ++_end;
@@ -1823,9 +1817,7 @@ namespace etl
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       ::new (&(*_end)) T(value1);
       ++_end;
@@ -1841,9 +1833,7 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace_back(const T1& value1, const T2& value2)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       ::new (&(*_end)) T(value1, value2);
       ++_end;
@@ -1859,9 +1849,7 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       ::new (&(*_end)) T(value1, value2, value3);
       ++_end;
@@ -1877,9 +1865,7 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       ::new (&(*_end)) T(value1, value2, value3, value4);
       ++_end;
@@ -1894,9 +1880,8 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(deque_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(deque_empty));
+
       destroy_element_back();
     }
 
@@ -1907,9 +1892,8 @@ namespace etl
     //*************************************************************************
     void push_front(const_reference item)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(deque_full));
+
       create_element_front(item);
     }
 
@@ -1921,9 +1905,8 @@ namespace etl
     //*************************************************************************
     void push_front(rvalue_reference item)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(deque_full));
+
       create_element_front(etl::move(item));
     }
 #endif
@@ -1936,9 +1919,7 @@ namespace etl
     template <typename ... Args>
     reference emplace_front(Args && ... args)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       --_begin;
       ::new (&(*_begin)) T(etl::forward<Args>(args)...);
@@ -1955,9 +1936,7 @@ namespace etl
     //*************************************************************************
     reference emplace_front()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       --_begin;
       ::new (&(*_begin)) T();
@@ -1973,9 +1952,7 @@ namespace etl
     template <typename T1>
     reference emplace_front(const T1& value1)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       --_begin;
       ::new (&(*_begin)) T(value1);
@@ -1991,9 +1968,7 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace_front(const T1& value1, const T2& value2)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       --_begin;
       ::new (&(*_begin)) T(value1, value2);
@@ -2009,9 +1984,7 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace_front(const T1& value1, const T2& value2, const T3& value3)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       --_begin;
       ::new (&(*_begin)) T(value1, value2, value3);
@@ -2027,9 +2000,7 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace_front(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(deque_full));
 
       --_begin;
       ::new (&(*_begin)) T(value1, value2, value3, value4);
@@ -2044,9 +2015,8 @@ namespace etl
     //*************************************************************************
     void pop_front()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(deque_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(deque_empty));
+
       destroy_element_front();
     }
 
