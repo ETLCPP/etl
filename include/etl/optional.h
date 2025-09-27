@@ -195,6 +195,7 @@ namespace etl
         storage.construct(etl::forward<TArgs>(args)...);
       }
 
+#if ETL_HAS_INITIALIZER_LIST
       //*******************************************
       /// Construct from initializer_list and arguments.
       //*******************************************
@@ -205,6 +206,7 @@ namespace etl
       {
         storage.construct(ilist, etl::forward<TArgs>(args)...);
       }
+#endif
 #endif
 
       //***************************************************************************
@@ -816,6 +818,7 @@ namespace etl
         storage.construct(etl::forward<TArgs>(args)...);
       }
 
+#if ETL_HAS_INITIALIZER_LIST
       //*******************************************
       /// Construct from initializer_list and arguments.
       //*******************************************
@@ -826,6 +829,7 @@ namespace etl
       {
         storage.construct(ilist, etl::forward<TArgs>(args)...);
       }
+#endif
 #endif
 
       //***************************************************************************
@@ -2313,7 +2317,7 @@ ETL_CONSTEXPR20_STL void swap(etl::optional<T>& lhs, etl::optional<T>& rhs)
 #undef ETL_OPTIONAL_ENABLE_CPP14
 #undef ETL_OPTIONAL_ENABLE_CPP20_STL
 
+#undef ETL_OPTIONAL_ENABLE_CONSTEXPR_BOOL_RETURN_CPP14
 #undef ETL_OPTIONAL_ENABLE_CONSTEXPR_BOOL_RETURN_CPP20_STL
-#undef ETL_OPTIONAL_ENABLE_COMSTEXPR_BOOL_RETURN_CPP20_STL
 
 #endif

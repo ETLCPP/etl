@@ -433,9 +433,8 @@ namespace etl
     //*********************************************************************
     void push_back(const_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != CAPACITY, ETL_ERROR(vector_full));
+
       create_back(value);
     }
 
@@ -447,9 +446,8 @@ namespace etl
     //*********************************************************************
     void push_back(rvalue_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != CAPACITY, ETL_ERROR(vector_full));
+
       create_back(etl::move(value));
     }
 #endif
@@ -463,9 +461,8 @@ namespace etl
     template <typename ... Args>
     reference emplace_back(Args && ... args)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
+
       ::new (p_end) T(etl::forward<Args>(args)...);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -479,9 +476,8 @@ namespace etl
     //*********************************************************************
     reference emplace_back()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
+
       ::new (p_end) T();
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -496,9 +492,8 @@ namespace etl
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
+
       ::new (p_end) T(value1);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -513,9 +508,8 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace_back(const T1& value1, const T2& value2)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
+
       ::new (p_end) T(value1, value2);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -530,9 +524,8 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
+
       ::new (p_end) T(value1, value2, value3);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -547,9 +540,8 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
+
       ::new (p_end) T(value1, value2, value3, value4);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -560,12 +552,12 @@ namespace etl
     //*************************************************************************
     /// Removes an element from the end of the vector.
     /// Does nothing if the vector is empty.
+    /// If asserts or exceptions are enabled, emits vector_empty if the vector is empty.
     //*************************************************************************
     void pop_back()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(size() > 0, ETL_ERROR(vector_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() > 0, ETL_ERROR(vector_empty));
+
       destroy_back();
     }
 

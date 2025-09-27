@@ -364,18 +364,94 @@ namespace etl
   #endif
 #endif
 
-#if defined(ETL_VERBOSE_ERRORS)
-  #define ETL_ERROR(e) (e(__FILE__, __LINE__))                                  // Make an exception with the file name and line number.
-  #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v)))               // Make an exception with the file name, line number and value.
+#if ETL_IS_DEBUG_BUILD
+  #if defined(ETL_DEBUG_USE_ASSERT_FUNCTION)
+    #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}}                                 // If the condition fails, calls the assert function
+    #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}}               // If the condition fails, calls the assert function and return
+    #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return (v);}}  // If the condition fails, calls the assert function and return a value
+
+    #define ETL_DEBUG_ASSERT_FAIL(e) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}                                          // Calls the assert function
+    #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}                       // Calls the assert function and return
+    #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return (v);}          // Calls the assert function and return a value
+  #elif ETL_DEBUG_USING_EXCEPTIONS
+    #if defined(ETL_DEBUG_LOG_ERRORS)
+      #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e));}}                                // If the condition fails, calls the error handler then throws an exception.
+      #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE_CPP11_CONSTEXPR(b, e, v) if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e));} return (b) ? (v) : throw(e)  // throwing from c++11 constexpr requires ? operator
+      #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e)); return;}}              // If the condition fails, calls the error handler then throws an exception.
+      #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e)); return(v);}}  // If the condition fails, calls the error handler then throws an exception.
+    
+      #define ETL_DEBUG_ASSERT_FAIL(e) {etl::error_handler::error((e)); throw((e));}                                          // Calls the error handler then throws an exception.
+      #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {etl::error_handler::error((e)); throw((e)); return;}                       // Calls the error handler then throws an exception.
+      #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); throw((e)); return(v);}           // Calls the error handler then throws an exception.
+    #else
+      #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}                    // If the condition fails, throws an exception.
+      #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE_CPP11_CONSTEXPR(b, e, v) return (b) ? (v) : throw(e)  // throwing from c++11 constexpr requires ? operator
+      #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {throw((e));}}          // If the condition fails, throws an exception.
+      #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY {throw((e));}} // If the condition fails, throws an exception.
+    
+      #define ETL_DEBUG_ASSERT_FAIL(e) {throw((e));}                              // Throws an exception.
+      #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {throw((e));}                   // Throws an exception.
+      #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {throw((e));}          // Throws an exception.
+    #endif
+  #elif defined(ETL_DEBUG_LOG_ERRORS)
+    #define ETL_DEBUG_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e));}}                                 // If the condition fails, calls the error handler
+    #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); return;}}               // If the condition fails, calls the error handler and return
+    #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); return (v);}}  // If the condition fails, calls the error handler and return a value
+    
+    #define ETL_DEBUG_ASSERT_FAIL(e) {etl::error_handler::error((e));}                                          // Calls the error handler
+    #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {etl::error_handler::error((e)); return;}                       // Calls the error handler and return
+    #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); return (v);}          // Calls the error handler and return a value
+  #else
+    #define ETL_DEBUG_ASSERT(b, e) assert((b))                                                                             // If the condition fails, asserts.
+    #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {assert(false); return;}}                             // If the condition fails, asserts and return.
+    #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY {assert(false); return(v);}}                 // If the condition fails, asserts and return a value.
+    
+    #define ETL_DEBUG_ASSERT_FAIL(e) assert(false)                                    // Asserts.
+    #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {assert(false);  return;}             // Asserts.
+    #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {assert(false);  return(v);} // Asserts.
+  #endif
 #else
-  #define ETL_ERROR(e) (e("", __LINE__))                                        // Make an exception with the line number.
-  #define ETL_ERROR_WITH_VALUE(e, v) (e("", __LINE__, (v)))                     // Make an exception with the file name, line number and value.
+  #define ETL_DEBUG_ASSERT(b, e)                                                                 // Does nothing.
+  #define ETL_DEBUG_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY return;}                      // Returns.
+  #define ETL_DEBUG_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY return(v);}          // Returns a value.
+      
+  #define ETL_DEBUG_ASSERT_FAIL(e)                                                  // Does nothing.
+  #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN(e) {return;}                             // Returns.
+  #define ETL_DEBUG_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {return(v);}                 // Returns a value.
 #endif
 
+//*************************************
+#if defined(ETL_CHECK_PUSH_POP)
+    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)           ETL_ASSERT(b, e)
+    #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e) ETL_ASSERT_OR_RETURN(b, e)
+#else
+    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)
+    #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e)
+#endif
+
+//*************************************
+#ifdef ETL_CHECK_INDEX_OPERATOR
+  #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b,e)
+#else
+  #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
+#endif
+
+//*************************************
+#ifdef ETL_CHECK_EXTRA
+    #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b,e)
+#else
+    #define ETL_ASSERT_CHECK_EXTRA(b, e)
+#endif
+
+//*************************************
 #if defined(ETL_VERBOSE_ERRORS)
+  #define ETL_ERROR(e) (e(__FILE__, __LINE__))                    // Make an exception with the file name and line number.
+  #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v))) // Make an exception with the file name, line number and value.
   #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text) // Use the verbose text.
 #else
-  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)   // Use the terse text.
+  #define ETL_ERROR(e) (e("", __LINE__))                        // Make an exception with the line number.
+  #define ETL_ERROR_WITH_VALUE(e, v) (e("", __LINE__, (v)))     // Make an exception with the file name, line number and value.
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text) // Use the terse text.
 #endif
 
 #endif
