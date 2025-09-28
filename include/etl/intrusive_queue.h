@@ -124,9 +124,7 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_queue_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(intrusive_queue_empty));
 
       link_type* p_front = terminator.etl_next;
 
