@@ -526,7 +526,7 @@ namespace
 
       CHECK(data.front() == compare_data.front());
 
-      Data emptyData;
+      const Data emptyData;
       CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
     }
 
@@ -550,7 +550,7 @@ namespace
 
       CHECK(data.back() == compare_data.back());
 
-      Data emptyData;
+      const Data emptyData;
       CHECK_THROW(emptyData.back(), etl::vector_out_of_bounds);
     }
 
