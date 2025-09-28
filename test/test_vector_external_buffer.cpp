@@ -557,7 +557,6 @@ namespace
       CHECK_THROW(emptyData.back(), etl::vector_out_of_bounds);
     }
 
-
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_data)
     {
@@ -853,6 +852,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
+    {
+      Data data(buffer1, SIZE);
+
+      CHECK_THROW(data.insert(data.end() + 1, 1, 0);, etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
     {
       const size_t INITIAL_SIZE = SIZE;
@@ -930,6 +937,13 @@ namespace
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_range_out_of_bounds)
+    {
+      Data data(buffer1, SIZE);
+
+      CHECK_THROW(data.insert(data.end() + 1, insert_data.cbegin(), insert_data.cend());, etl::vector_out_of_bounds);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_single)
@@ -951,6 +965,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator_outofbounds)
+    {
+      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+
+      CHECK_THROW(data.erase(data.end() + 1);, etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -967,6 +989,14 @@ namespace
                                 compare_data.begin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_outofbounds)
+    {
+      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+
+      CHECK_THROW(data.erase(data.begin(), data.end() + 1);, etl::vector_out_of_bounds);
     }
 
     //*************************************************************************

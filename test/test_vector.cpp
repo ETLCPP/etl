@@ -554,7 +554,6 @@ namespace
       CHECK_THROW(emptyData.back(), etl::vector_out_of_bounds);
     }
 
-
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_data)
     {
