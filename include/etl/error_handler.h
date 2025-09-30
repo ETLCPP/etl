@@ -301,13 +301,13 @@ namespace etl
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e) static_cast<void>(b)                       // Does nothing.
-  #define ETL_ASSERT_OR_RETURN(b, e) static_cast<void>(b)             // Does nothing.
-  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) static_cast<void>(b)    // Does nothing.
+  #define ETL_ASSERT(b, e) static_cast<void>(sizeof(b))                       // Does nothing.
+  #define ETL_ASSERT_OR_RETURN(b, e) static_cast<void>(sizeof(b))             // Does nothing.
+  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) static_cast<void>(sizeof(b))    // Does nothing.
   
-  #define ETL_ASSERT_FAIL(e) static_cast<void>(b)                     // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN(e) static_cast<void>(b)          // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) static_cast<void>(b) // Does nothing.
+  #define ETL_ASSERT_FAIL(e) static_cast<void>(sizeof(b))                     // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN(e) static_cast<void>(sizeof(b))          // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) static_cast<void>(sizeof(b)) // Does nothing.
 #elif defined(ETL_USE_ASSERT_FUNCTION)
   #define ETL_ASSERT(b, e) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}}                                 // If the condition fails, calls the assert function
   #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}}               // If the condition fails, calls the assert function and return
@@ -353,7 +353,7 @@ namespace etl
       #define ETL_ASSERT_FAIL_AND_RETURN(e) {assert(false);  return;}             // Asserts.
       #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {assert(false);  return(v);} // Asserts.
     #else
-      #define ETL_ASSERT(b, e) static_cast<void>(b)                                            // Does nothing.
+      #define ETL_ASSERT(b, e) static_cast<void>(sizeof(b))                                            // Does nothing.
       #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) ETL_UNLIKELY return;}                      // Returns.
       #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) ETL_UNLIKELY return(v);}          // Returns a value.
       
