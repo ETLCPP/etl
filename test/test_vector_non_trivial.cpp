@@ -948,11 +948,18 @@ namespace
 
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const NDC INITIAL_VALUE("1");
 
       DataNDC data;
       data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-      CHECK_THROW(data.insert(data.cbegin() - 1, INITIAL_VALUE), etl::vector_out_of_bounds);
-      CHECK_THROW(data.insert(data.cbegin() + INITIAL_SIZE + 1, INITIAL_VALUE), etl::vector_out_of_bounds);
+      DataNDC data2;
+      CHECK_THROW(data.insert(data2.cbegin(), INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -980,20 +987,28 @@ namespace
 
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const std::string INITIAL_VALUE("1");
 
       DataNDC data;
+      DataNDC data2;
       data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-      CHECK_THROW(data.emplace(data.cbegin() - 1, INITIAL_VALUE), etl::vector_out_of_bounds);
-      CHECK_THROW(data.emplace(data.cbegin() + INITIAL_SIZE + 1, INITIAL_VALUE), etl::vector_out_of_bounds);
+      CHECK_THROW(data.emplace(data2.cbegin(), INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
     TEST(test_emplace_out_of_range)
     {
       DataNDC data;
+      DataNDC data2;
       const std::string INITIAL_VALUE("1");
 
-      CHECK_THROW(data.emplace(data.end() + 1, INITIAL_VALUE);, etl::vector_out_of_bounds);
+      CHECK_THROW(data.emplace(data2.end(), INITIAL_VALUE);, etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1051,9 +1066,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
     {
       DataNDC data;
+      DataNDC data2;
       const NDC INITIAL_VALUE("1");
 
-      CHECK_THROW(data.insert(data.end() + 1, 1, INITIAL_VALUE);, etl::vector_out_of_bounds);
+      CHECK_THROW(data.insert(data2.end(), 1, INITIAL_VALUE);, etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1139,8 +1155,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_range_out_of_bounds)
     {
       DataNDC data;
+      DataNDC data2;
 
-      CHECK_THROW(data.insert(data.end() + 1, insert_data.cbegin(), insert_data.cend());, etl::vector_out_of_bounds);
+      CHECK_THROW(data.insert(data2.end(), insert_data.cbegin(), insert_data.cend());, etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1167,7 +1184,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.erase(data.end() + 1);, etl::vector_out_of_bounds);
+      CHECK_THROW(data.erase(data.end());, etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1193,8 +1210,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_range_outofbounds)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
+      DataNDC data2(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.erase(data.begin(), data.end() + 1);, etl::vector_out_of_bounds);
+      CHECK_THROW(data.erase(data2.begin(), data2.end());, etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
