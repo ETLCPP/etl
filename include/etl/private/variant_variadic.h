@@ -459,7 +459,7 @@ namespace etl
 
     //***************************************************************************
     /// Default constructor.
-    /// Sets the state of the instance to containing no valid data.
+    /// Constructs a variant holding the value-initialized value of the first alternative (index() is zero). 
     //***************************************************************************
 #include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant()
