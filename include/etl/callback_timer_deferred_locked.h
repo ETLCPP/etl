@@ -54,22 +54,7 @@ namespace etl
 
   private:
 
-    class CallbackNode 
-    {
-    public:
-
-      CallbackNode(callback_type &callback_,uint_least8_t priority_) : callback(callback_), priority(priority_) 
-      {
-      }
-            
-      bool operator < (const CallbackNode& p) const
-      {
-        return this->priority > p.priority; // comparison was inverted here to easy the code design
-      }
-
-      callback_type callback;
-      uint_least8_t priority;
-    };
+    typedef icallback_timer_locked::callback_node callback_node;
 
   public:
 
@@ -111,12 +96,13 @@ namespace etl
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
+              remove_callback.call_if(timer.id);
 
               if (timer.callback.is_valid())
               {
                 if (!handler_queue.full())
                 {
-                    handler_queue.push(CallbackNode(timer.callback, timer_priorities[timer.id]));
+                    handler_queue.push(callback_node(timer.callback, timer_priorities[timer.id]));
                 }
               }
 
@@ -125,6 +111,7 @@ namespace etl
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
+                insert_callback.call_if(timer.id);
               }
 
               has_active = !active_list.empty();
@@ -165,7 +152,7 @@ namespace etl
         }
         else
         {
-          CallbackNode &work_todo_callback_node = handler_queue.top();
+          callback_node &work_todo_callback_node = handler_queue.top();
           work_todo_callback = work_todo_callback_node.callback;
           handler_queue.pop();
         }
@@ -211,7 +198,7 @@ namespace etl
 
   private:
 
-    priority_queue<CallbackNode, Max_Handlers_> handler_queue;
+    priority_queue<callback_node, Max_Handlers_> handler_queue;
     uint_least8_t timer_priorities[Max_Timers_];
     timer_data timer_array[Max_Timers_];
   };

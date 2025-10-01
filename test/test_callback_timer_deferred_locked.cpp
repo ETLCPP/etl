@@ -147,12 +147,44 @@ namespace
   using lock_type     = etl::icallback_timer_locked::lock_type;
   using unlock_type   = etl::icallback_timer_locked::unlock_type;
 
+  using event_callback_type = etl::icallback_timer_locked::event_callback_type;
+
   Object object;
   callback_type member_callback  = callback_type::create<Object, object, &Object::callback>();
   callback_type member_callback2 = callback_type::create<Object, object, &Object::callback2>();
   callback_type member_callback_inc1  = callback_type::create<Object, object, &Object::callback_inc1>();
   callback_type member_callback_inc2  = callback_type::create<Object, object, &Object::callback_inc2>();
   callback_type member_callback_inc3  = callback_type::create<Object, object, &Object::callback_inc3>();
+
+  class TimerInsertRemoveTest
+  {
+    public:
+    uint32_t inserted;
+    uint32_t removed;
+    TimerInsertRemoveTest() : inserted(0), removed(0)
+    {
+    }
+
+    void insert_handler(etl::timer::id::type id_)
+    {
+        (void)id_;
+        inserted++;
+    }
+
+    void remove_handler(etl::timer::id::type id_)
+    {
+        (void)id_;
+        removed++;
+    }
+
+    void clear(void)
+    {
+        inserted = 0;
+        removed = 0;
+    }
+  };
+
+  TimerInsertRemoveTest timerInsertRemoveTest;
 
   //***************************************************************************
   // Free function callback via etl::function
@@ -980,6 +1012,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_is_active)
     {
+      timerInsertRemoveTest.clear();
       locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
@@ -991,9 +1024,15 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
 
+      timer_controller.set_insert_callback(event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::insert_handler>());
+      timer_controller.set_remove_callback(event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::remove_handler>());
+
       timer_controller.start(id1);
       timer_controller.start(id3);
       timer_controller.start(id2);
+
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
 
       timer_controller.enable(true);
 
@@ -1001,11 +1040,17 @@ namespace
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_TRUE(timer_controller.is_active(id3));
 
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
+
       timer_controller.tick(11);
       timer_controller.handle_deferred();
       CHECK_TRUE(timer_controller.is_active(id1));
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
+
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(1, timerInsertRemoveTest.removed);
 
       timer_controller.tick(23 - 11);
       timer_controller.handle_deferred();
@@ -1013,11 +1058,17 @@ namespace
       CHECK_FALSE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
 
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(2, timerInsertRemoveTest.removed);
+
       timer_controller.tick(37 - 23);
       timer_controller.handle_deferred();
       CHECK_FALSE(timer_controller.is_active(id1));
       CHECK_FALSE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
+
+      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
+      CHECK_EQUAL(3, timerInsertRemoveTest.removed);
     }
 
     //*************************************************************************
@@ -1034,6 +1085,9 @@ namespace
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
       etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
 
+      timer_controller.set_insert_callback(event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::insert_handler>());
+      timer_controller.set_remove_callback(event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::remove_handler>());
+
       timer_controller.start(id1);
       timer_controller.start(id3);
       timer_controller.start(id2);
@@ -1042,7 +1096,7 @@ namespace
 
       timer_controller.tick(11);
       timer_controller.handle_deferred();
-      CHECK_EQUAL(12, timer_controller.time_to_next());
+      CHECK_EQUAL(23 - 11, timer_controller.time_to_next());
       CHECK_TRUE(timer_controller.has_active_timer());
 
       timer_controller.tick(23);
