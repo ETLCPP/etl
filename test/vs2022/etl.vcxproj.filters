@@ -3895,6 +3895,12 @@
     <None Include="..\..\..\etl-arduino\.github\workflows\platformio-update.yml">
       <Filter>ETL\Arduino</Filter>
     </None>
+    <None Include="..\..\.github\workflows\clang-c++23.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++23.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
