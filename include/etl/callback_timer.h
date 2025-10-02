@@ -77,305 +77,6 @@ SOFTWARE.
 
 namespace etl
 {
-  //*************************************************************************
-  /// The configuration of a timer.
-  struct callback_timer_data
-  {
-    typedef etl::delegate<void(void)> callback_type;
-
-    enum callback_type_id
-    {
-      C_CALLBACK,
-      IFUNCTION,
-      DELEGATE
-    };
-
-    //*******************************************
-    callback_timer_data()
-      : p_callback(ETL_NULLPTR),
-        period(0),
-        delta(etl::timer::state::Inactive),
-        id(etl::timer::id::NO_TIMER),
-        previous(etl::timer::id::NO_TIMER),
-        next(etl::timer::id::NO_TIMER),
-        repeating(true),
-        cbk_type(IFUNCTION)
-    {
-    }
-
-    //*******************************************
-    /// C function callback
-    //*******************************************
-    callback_timer_data(etl::timer::id::type id_,
-                        void                 (*p_callback_)(),
-                        uint32_t             period_,
-                        bool                 repeating_)
-      : p_callback(reinterpret_cast<void*>(p_callback_)),
-        period(period_),
-        delta(etl::timer::state::Inactive),
-        id(id_),
-        previous(etl::timer::id::NO_TIMER),
-        next(etl::timer::id::NO_TIMER),
-        repeating(repeating_),
-        cbk_type(C_CALLBACK)
-    {
-    }
-
-    //*******************************************
-    /// ETL function callback
-    //*******************************************
-    callback_timer_data(etl::timer::id::type  id_,
-                        etl::ifunction<void>& callback_,
-                        uint32_t              period_,
-                        bool                  repeating_)
-      : p_callback(reinterpret_cast<void*>(&callback_)),
-        period(period_),
-        delta(etl::timer::state::Inactive),
-        id(id_),
-        previous(etl::timer::id::NO_TIMER),
-        next(etl::timer::id::NO_TIMER),
-        repeating(repeating_),
-        cbk_type(IFUNCTION)
-    {
-    }
-
-    //*******************************************
-    /// ETL delegate callback
-    //*******************************************
-    callback_timer_data(etl::timer::id::type id_,
-                        callback_type&       callback_,
-                        uint32_t             period_,
-                        bool                 repeating_)
-            : p_callback(reinterpret_cast<void*>(&callback_)),
-              period(period_),
-              delta(etl::timer::state::Inactive),
-              id(id_),
-              previous(etl::timer::id::NO_TIMER),
-              next(etl::timer::id::NO_TIMER),
-              repeating(repeating_),
-              cbk_type(DELEGATE)
-    {
-    }
-
-    //*******************************************
-    /// Returns true if the timer is active.
-    //*******************************************
-    bool is_active() const
-    {
-      return delta != etl::timer::state::Inactive;
-    }
-
-    //*******************************************
-    /// Sets the timer to the inactive state.
-    //*******************************************
-    void set_inactive()
-    {
-      delta = etl::timer::state::Inactive;
-    }
-
-    void*                 p_callback;
-    uint32_t              period;
-    uint32_t              delta;
-    etl::timer::id::type  id;
-    uint_least8_t         previous;
-    uint_least8_t         next;
-    bool                  repeating;
-    callback_type_id      cbk_type;
-
-  private:
-
-    // Disabled.
-    callback_timer_data(const callback_timer_data& other);
-    callback_timer_data& operator =(const callback_timer_data& other);
-  };
-
-  namespace private_callback_timer
-  {
-    //*************************************************************************
-    /// A specialised intrusive linked list for timer data.
-    //*************************************************************************
-    class list
-    {
-    public:
-
-      //*******************************
-      list(etl::callback_timer_data* ptimers_)
-        : head(etl::timer::id::NO_TIMER),
-          tail(etl::timer::id::NO_TIMER),
-          current(etl::timer::id::NO_TIMER),
-          ptimers(ptimers_)
-      {
-      }
-
-      //*******************************
-      bool empty() const
-      {
-        return head == etl::timer::id::NO_TIMER;
-      }
-
-      //*******************************
-      // Inserts the timer at the correct delta position
-      //*******************************
-      void insert(etl::timer::id::type id_)
-      {
-        etl::callback_timer_data& timer = ptimers[id_];
-
-        if (head == etl::timer::id::NO_TIMER)
-        {
-          // No entries yet.
-          head = id_;
-          tail = id_;
-          timer.previous = etl::timer::id::NO_TIMER;
-          timer.next     = etl::timer::id::NO_TIMER;
-        }
-        else
-        {
-          // We already have entries.
-          etl::timer::id::type test_id = begin();
-
-          while (test_id != etl::timer::id::NO_TIMER)
-          {
-            etl::callback_timer_data& test = ptimers[test_id];
-
-            // Find the correct place to insert.
-            if (timer.delta <= test.delta)
-            {
-              if (test.id == head)
-              {
-                head = timer.id;
-              }
-
-              // Insert before test.
-              timer.previous = test.previous;
-              test.previous  = timer.id;
-              timer.next     = test.id;
-
-              // Adjust the next delta to compensate.
-              test.delta -= timer.delta;
-
-              if (timer.previous != etl::timer::id::NO_TIMER)
-              {
-                ptimers[timer.previous].next = timer.id;
-              }
-              break;
-            }
-            else
-            {
-              timer.delta -= test.delta;
-            }
-
-            test_id = next(test_id);
-          }
-
-          // Reached the end?
-          if (test_id == etl::timer::id::NO_TIMER)
-          {
-            // Tag on to the tail.
-            ptimers[tail].next = timer.id;
-            timer.previous     = tail;
-            timer.next         = etl::timer::id::NO_TIMER;
-            tail               = timer.id;
-          }
-        }
-      }
-
-      //*******************************
-      void remove(etl::timer::id::type id_, bool has_expired)
-      {
-        etl::callback_timer_data& timer = ptimers[id_];
-
-        if (head == id_)
-        {
-          head = timer.next;
-        }
-        else
-        {
-          ptimers[timer.previous].next = timer.next;
-        }
-
-        if (tail == id_)
-        {
-          tail = timer.previous;
-        }
-        else
-        {
-          ptimers[timer.next].previous = timer.previous;
-        }
-
-        if (!has_expired)
-        {
-          // Adjust the next delta.
-          if (timer.next != etl::timer::id::NO_TIMER)
-          {
-            ptimers[timer.next].delta += timer.delta;
-          }
-        }
-
-        timer.previous = etl::timer::id::NO_TIMER;
-        timer.next     = etl::timer::id::NO_TIMER;
-        timer.delta    = etl::timer::state::Inactive;
-      }
-
-      //*******************************
-      etl::callback_timer_data& front()
-      {
-        return ptimers[head];
-      }
-
-      //*******************************
-      const etl::callback_timer_data& front() const
-      {
-        return ptimers[head];
-      }
-
-      //*******************************
-      etl::timer::id::type begin()
-      {
-        current = head;
-        return current;
-      }
-
-      //*******************************
-      etl::timer::id::type previous(etl::timer::id::type last)
-      {
-        current = ptimers[last].previous;
-        return current;
-      }
-
-      //*******************************
-      etl::timer::id::type next(etl::timer::id::type last)
-      {
-        current = ptimers[last].next;
-        return current;
-      }
-
-      //*******************************
-      void clear()
-      {
-        etl::timer::id::type id = begin();
-
-        while (id != etl::timer::id::NO_TIMER)
-        {
-          etl::callback_timer_data& timer = ptimers[id];
-          id = next(id);
-          timer.next = etl::timer::id::NO_TIMER;
-        }
-
-        head    = etl::timer::id::NO_TIMER;
-        tail    = etl::timer::id::NO_TIMER;
-        current = etl::timer::id::NO_TIMER;
-      }
-
-    private:
-
-      etl::timer::id::type head;
-      etl::timer::id::type tail;
-      etl::timer::id::type current;
-
-      etl::callback_timer_data* const ptimers;
-    };
-  }
-
   //***************************************************************************
   /// Interface for callback timer
   //***************************************************************************
@@ -384,6 +85,8 @@ namespace etl
   public:
 
     typedef etl::delegate<void(void)> callback_type;
+
+    typedef etl::delegate<void(etl::timer::id::type)> event_callback_type;
 
     //*******************************************
     /// Register a timer.
@@ -401,12 +104,12 @@ namespace etl
         // Search for the free space.
         for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
         {
-          etl::callback_timer_data& timer = timer_array[i];
+          timer_data& timer = timer_array[i];
 
           if (timer.id == etl::timer::id::NO_TIMER)
           {
             // Create in-place.
-            new (&timer) callback_timer_data(i, p_callback_, period_, repeating_);
+            new (&timer) timer_data(i, p_callback_, period_, repeating_);
             ++registered_timers;
             id = i;
             break;
@@ -433,12 +136,12 @@ namespace etl
         // Search for the free space.
         for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
         {
-          etl::callback_timer_data& timer = timer_array[i];
+          timer_data& timer = timer_array[i];
 
           if (timer.id == etl::timer::id::NO_TIMER)
           {
             // Create in-place.
-            new (&timer) callback_timer_data(i, callback_, period_, repeating_);
+            new (&timer) timer_data(i, callback_, period_, repeating_);
             ++registered_timers;
             id = i;
             break;
@@ -466,12 +169,12 @@ namespace etl
               // Search for the free space.
               for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
               {
-                  etl::callback_timer_data& timer = timer_array[i];
+                  timer_data& timer = timer_array[i];
 
                   if (timer.id == etl::timer::id::NO_TIMER)
                   {
                       // Create in-place.
-                      new (&timer) callback_timer_data(i, callback_, period_, repeating_);
+                      new (&timer) timer_data(i, callback_, period_, repeating_);
                       ++registered_timers;
                       id = i;
                       break;
@@ -492,7 +195,7 @@ namespace etl
 
       if (id_ != etl::timer::id::NO_TIMER)
       {
-        etl::callback_timer_data& timer = timer_array[id_];
+        timer_data& timer = timer_array[id_];
 
         if (timer.id != etl::timer::id::NO_TIMER)
         {
@@ -500,11 +203,12 @@ namespace etl
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
           }
 
           // Reset in-place.
-          new (&timer) callback_timer_data();
+          new (&timer) timer_data();
           --registered_timers;
 
           result = true;
@@ -541,7 +245,7 @@ namespace etl
 
       for (int i = 0; i < MAX_TIMERS; ++i)
       {
-        ::new (&timer_array[i]) callback_timer_data();
+        ::new (&timer_array[i]) timer_data();
       }
 
       registered_timers = 0;
@@ -566,32 +270,34 @@ namespace etl
           {
             while (has_active && (count >= active_list.front().delta))
             {
-              etl::callback_timer_data& timer = active_list.front();
+              timer_data& timer = active_list.front();
 
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
+              remove_callback.call_if(timer.id);
 
               if (timer.repeating)
               {
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
+                insert_callback.call_if(timer.id);
               }
 
               if (timer.p_callback != ETL_NULLPTR)
               {
-                if (timer.cbk_type == callback_timer_data::C_CALLBACK)
+                if (timer.cbk_type == timer_data::C_CALLBACK)
                 {
                   // Call the C callback.
                   reinterpret_cast<void(*)()>(timer.p_callback)();
                 }
-                else if(timer.cbk_type == callback_timer_data::IFUNCTION)
+                else if(timer.cbk_type == timer_data::IFUNCTION)
                 {
                   // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
                 }
-                else if(timer.cbk_type == callback_timer_data::DELEGATE)
+                else if(timer.cbk_type == timer_data::DELEGATE)
                 {
                     // Call the delegate callback.
                     (*reinterpret_cast<callback_type*>(timer.p_callback))();
@@ -625,7 +331,7 @@ namespace etl
       // Valid timer id?
       if (id_ != etl::timer::id::NO_TIMER)
       {
-        etl::callback_timer_data& timer = timer_array[id_];
+        timer_data& timer = timer_array[id_];
 
         // Registered timer?
         if (timer.id != etl::timer::id::NO_TIMER)
@@ -637,10 +343,12 @@ namespace etl
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
+              remove_callback.call_if(timer.id);
             }
 
             timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
+            insert_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
 
             result = true;
@@ -661,7 +369,7 @@ namespace etl
       // Valid timer id?
       if (id_ != etl::timer::id::NO_TIMER)
       {
-        etl::callback_timer_data& timer = timer_array[id_];
+        timer_data& timer = timer_array[id_];
 
         // Registered timer?
         if (timer.id != etl::timer::id::NO_TIMER)
@@ -670,6 +378,7 @@ namespace etl
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
           }
 
@@ -743,7 +452,7 @@ namespace etl
       {
         if (has_active_timer())
         {
-          const etl::callback_timer_data& timer = timer_array[id_];
+          const timer_data& timer = timer_array[id_];
 
           // Registered timer?
           if (timer.id != etl::timer::id::NO_TIMER)
@@ -756,12 +465,152 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Set a callback when a timer is inserted on list
+    //*******************************************
+    void set_insert_callback(event_callback_type insert_)
+    {
+      insert_callback = insert_;
+    }
+
+    //*******************************************
+    /// Set a callback when a timer is removed from list
+    //*******************************************
+    void set_remove_callback(event_callback_type remove_)
+    {
+      remove_callback = remove_;
+    }
+
+    //*******************************************
+    void clear_insert_callback()
+    {
+      insert_callback.clear();
+    }
+
+    //*******************************************
+    void clear_remove_callback()
+    {
+      remove_callback.clear();
+    }
+
   protected:
+
+    //*************************************************************************
+    /// The configuration of a timer.
+    struct timer_data
+    {
+      typedef etl::delegate<void(void)> callback_type;
+
+      enum callback_type_id
+      {
+        C_CALLBACK,
+        IFUNCTION,
+        DELEGATE
+      };
+
+      //*******************************************
+      timer_data()
+        : p_callback(ETL_NULLPTR)
+        , period(0)
+        , delta(etl::timer::state::Inactive)
+        , id(etl::timer::id::NO_TIMER)
+        , previous(etl::timer::id::NO_TIMER)
+        , next(etl::timer::id::NO_TIMER)
+        , repeating(true)
+        , cbk_type(IFUNCTION)
+      {
+      }
+
+      //*******************************************
+      /// C function callback
+      //*******************************************
+      timer_data(etl::timer::id::type id_,
+                 void                 (*p_callback_)(),
+                 uint32_t             period_,
+                 bool                 repeating_)
+        : p_callback(reinterpret_cast<void*>(p_callback_))
+        , period(period_)
+        , delta(etl::timer::state::Inactive)
+        , id(id_)
+        , previous(etl::timer::id::NO_TIMER)
+        , next(etl::timer::id::NO_TIMER)
+        , repeating(repeating_)
+        , cbk_type(C_CALLBACK)
+      {
+      }
+
+      //*******************************************
+      /// ETL function callback
+      //*******************************************
+      timer_data(etl::timer::id::type  id_,
+                 etl::ifunction<void>& callback_,
+                 uint32_t              period_,
+                 bool                  repeating_)
+        : p_callback(reinterpret_cast<void*>(&callback_))
+        , period(period_)
+        , delta(etl::timer::state::Inactive)
+        , id(id_)
+        , previous(etl::timer::id::NO_TIMER)
+        , next(etl::timer::id::NO_TIMER)
+        , repeating(repeating_)
+        , cbk_type(IFUNCTION)
+      {
+      }
+
+      //*******************************************
+      /// ETL delegate callback
+      //*******************************************
+      timer_data(etl::timer::id::type id_,
+                 callback_type&       callback_,
+                 uint32_t             period_,
+                 bool                 repeating_)
+        : p_callback(reinterpret_cast<void*>(&callback_)),
+        period(period_),
+        delta(etl::timer::state::Inactive),
+        id(id_),
+        previous(etl::timer::id::NO_TIMER),
+        next(etl::timer::id::NO_TIMER),
+        repeating(repeating_),
+        cbk_type(DELEGATE)
+      {
+      }
+
+      //*******************************************
+      /// Returns true if the timer is active.
+      //*******************************************
+      bool is_active() const
+      {
+        return delta != etl::timer::state::Inactive;
+      }
+
+      //*******************************************
+      /// Sets the timer to the inactive state.
+      //*******************************************
+      void set_inactive()
+      {
+        delta = etl::timer::state::Inactive;
+      }
+
+      void*                 p_callback;
+      uint32_t              period;
+      uint32_t              delta;
+      etl::timer::id::type  id;
+      uint_least8_t         previous;
+      uint_least8_t         next;
+      bool                  repeating;
+      callback_type_id      cbk_type;
+
+    private:
+
+      // Disabled.
+      timer_data(const timer_data& other);
+      timer_data& operator =(const timer_data& other);
+    };
 
     //*******************************************
     /// Constructor.
     //*******************************************
-    icallback_timer(callback_timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
+    icallback_timer(timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
       : timer_array(timer_array_),
         active_list(timer_array_),
         enabled(false),
@@ -783,11 +632,193 @@ namespace etl
       return (id_ < MAX_TIMERS);
     }
 
+    //*************************************************************************
+    class timer_list
+    {
+    public:
+
+      //*******************************
+      timer_list(timer_data* ptimers_)
+        : head(etl::timer::id::NO_TIMER)
+        , tail(etl::timer::id::NO_TIMER)
+        , current(etl::timer::id::NO_TIMER)
+        , ptimers(ptimers_)
+      {
+      }
+
+      //*******************************
+      bool empty() const
+      {
+        return head == etl::timer::id::NO_TIMER;
+      }
+
+      //*******************************
+      // Inserts the timer at the correct delta position
+      //*******************************
+      void insert(etl::timer::id::type id_)
+      {
+        timer_data& timer = ptimers[id_];
+
+        if (head == etl::timer::id::NO_TIMER)
+        {
+          // No entries yet.
+          head = id_;
+          tail = id_;
+          timer.previous = etl::timer::id::NO_TIMER;
+          timer.next = etl::timer::id::NO_TIMER;
+        }
+        else
+        {
+          // We already have entries.
+          etl::timer::id::type test_id = begin();
+
+          while (test_id != etl::timer::id::NO_TIMER)
+          {
+            timer_data& test = ptimers[test_id];
+
+            // Find the correct place to insert.
+            if (timer.delta <= test.delta)
+            {
+              if (test.id == head)
+              {
+                head = timer.id;
+              }
+
+              // Insert before test.
+              timer.previous = test.previous;
+              test.previous = timer.id;
+              timer.next = test.id;
+
+              // Adjust the next delta to compensate.
+              test.delta -= timer.delta;
+
+              if (timer.previous != etl::timer::id::NO_TIMER)
+              {
+                ptimers[timer.previous].next = timer.id;
+              }
+              break;
+            }
+            else
+            {
+              timer.delta -= test.delta;
+            }
+
+            test_id = next(test_id);
+          }
+
+          // Reached the end?
+          if (test_id == etl::timer::id::NO_TIMER)
+          {
+            // Tag on to the tail.
+            ptimers[tail].next = timer.id;
+            timer.previous = tail;
+            timer.next = etl::timer::id::NO_TIMER;
+            tail = timer.id;
+          }
+        }
+      }
+
+      //*******************************
+      void remove(etl::timer::id::type id_, bool has_expired)
+      {
+        timer_data& timer = ptimers[id_];
+
+        if (head == id_)
+        {
+          head = timer.next;
+        }
+        else
+        {
+          ptimers[timer.previous].next = timer.next;
+        }
+
+        if (tail == id_)
+        {
+          tail = timer.previous;
+        }
+        else
+        {
+          ptimers[timer.next].previous = timer.previous;
+        }
+
+        if (!has_expired)
+        {
+          // Adjust the next delta.
+          if (timer.next != etl::timer::id::NO_TIMER)
+          {
+            ptimers[timer.next].delta += timer.delta;
+          }
+        }
+
+        timer.previous = etl::timer::id::NO_TIMER;
+        timer.next = etl::timer::id::NO_TIMER;
+        timer.delta = etl::timer::state::Inactive;
+      }
+
+      //*******************************
+      timer_data& front()
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      const timer_data& front() const
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      etl::timer::id::type begin()
+      {
+        current = head;
+        return current;
+      }
+
+      //*******************************
+      etl::timer::id::type previous(etl::timer::id::type last)
+      {
+        current = ptimers[last].previous;
+        return current;
+      }
+
+      //*******************************
+      etl::timer::id::type next(etl::timer::id::type last)
+      {
+        current = ptimers[last].next;
+        return current;
+      }
+
+      //*******************************
+      void clear()
+      {
+        etl::timer::id::type id = begin();
+
+        while (id != etl::timer::id::NO_TIMER)
+        {
+          timer_data& timer = ptimers[id];
+          id = next(id);
+          timer.next = etl::timer::id::NO_TIMER;
+        }
+
+        head = etl::timer::id::NO_TIMER;
+        tail = etl::timer::id::NO_TIMER;
+        current = etl::timer::id::NO_TIMER;
+      }
+
+    private:
+
+      etl::timer::id::type head;
+      etl::timer::id::type tail;
+      etl::timer::id::type current;
+
+      timer_data* const ptimers;
+    };
+
     // The array of timer data structures.
-    callback_timer_data* const timer_array;
+    timer_data* const timer_array;
 
     // The list of active timers.
-    private_callback_timer::list active_list;
+    timer_list active_list;
 
     volatile bool enabled;
 #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
@@ -805,6 +836,9 @@ namespace etl
     mutable etl::timer_semaphore_t process_semaphore;
 #endif
     uint_least8_t registered_timers;
+
+    event_callback_type insert_callback;
+    event_callback_type remove_callback;
 
   public:
 
@@ -831,7 +865,7 @@ namespace etl
 
   private:
 
-    callback_timer_data timer_array[Max_Timers_];
+    timer_data timer_array[Max_Timers_];
   };
 }
 

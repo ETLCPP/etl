@@ -11376,11 +11376,13 @@
     <None Include="..\..\.github\workflows\clang-c++14.yml" />
     <None Include="..\..\.github\workflows\clang-c++17.yml" />
     <None Include="..\..\.github\workflows\clang-c++20.yml" />
+    <None Include="..\..\.github\workflows\clang-c++23.yml" />
     <None Include="..\..\.github\workflows\clang-syntax-checks.yml" />
     <None Include="..\..\.github\workflows\gcc-c++11.yml" />
     <None Include="..\..\.github\workflows\gcc-c++14.yml" />
     <None Include="..\..\.github\workflows\gcc-c++17.yml" />
     <None Include="..\..\.github\workflows\gcc-c++20.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23.yml" />
     <None Include="..\..\.github\workflows\msvc.yml" />
     <None Include="..\..\.github\workflows\gcc-syntax-checks.yml" />
     <None Include="..\..\.github\workflows\platformio-update.yml" />
