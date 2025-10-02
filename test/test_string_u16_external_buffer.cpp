@@ -406,6 +406,76 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_16bit_range)
+    {
+      TextBuffer buffer{0};
+      Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+
+      CHECK_EQUAL(SIZE, text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+      bool isEqual = Equal(initial_text, text);
+      CHECK(isEqual);
+    }
+
+    TEST_FIXTURE(SetupFixture, test_constructor_from_16bit_const_range)
+    {
+      constexpr etl::u16string_view u16View{STR("16-bit")};
+      TextBuffer buffer{0};
+      Text text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
+
+      CHECK_EQUAL(u16View.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+      bool isEqual = Equal(u16View, text);
+      CHECK(isEqual);
+    }
+
+    TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_range)
+    {
+      etl::string_view u8View{"8-bit"};
+      TextBuffer buffer{0};
+      Text text(u8View.begin(), u8View.end(), buffer.data(), buffer.size());
+
+      CHECK_EQUAL(u8View.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+      
+      bool isEqual = true;
+      for (size_t i = 0U; i < u8View.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(u8View.at(i)))
+        {
+            isEqual = false;
+            break;
+        }
+      }
+      CHECK(isEqual);
+    }
+
+    TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_const_range)
+    {
+      constexpr etl::string_view u8View{"8-bit"};
+      TextBuffer buffer{0};
+      Text text(u8View.begin(), u8View.end(), buffer.data(), buffer.size());
+
+      CHECK_EQUAL(u8View.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+      
+      bool isEqual = true;
+      for (size_t i = 0U; i < u8View.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(u8View.at(i)))
+        {
+            isEqual = false;
+            break;
+        }
+      }
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       TextBuffer buffer{0};
@@ -1394,6 +1464,32 @@ namespace
 #else
       CHECK_FALSE(text.is_truncated());
 #endif
+    }
+
+    TEST_FIXTURE(SetupFixture, test_assign_range_8bit)
+    {
+      constexpr etl::string_view u8Text{"8-bit"};
+
+      TextBuffer buffer{0};
+      Text text(buffer.data(), buffer.size());
+
+      text.assign(u8Text.begin(), u8Text.end());
+
+      // bool is_equal = Equal(compare_text, text);
+      // CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
+      CHECK_EQUAL(u8Text.size(), text.size());
+
+      bool isEqual = true;
+      for (auto i = 0U; i < u8Text.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(u8Text.at(i)))
+        {
+            isEqual = false;
+            break;
+        }
+      }
+      CHECK(isEqual);
     }
 
     //*************************************************************************
