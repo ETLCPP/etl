@@ -10278,6 +10278,7 @@
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_delegate_observable.cpp" />
+    <ClCompile Include="..\test_etl_assert.cpp" />
     <ClCompile Include="..\test_expected.cpp" />
     <ClCompile Include="..\test_function_traits.cpp" />
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
