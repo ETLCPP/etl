@@ -2732,7 +2732,7 @@ namespace etl
     //*********************************************************************
     template <typename TIterator1>
     static
-    typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TIterator1>::type>::value || !(etl::is_same<iterator, typename etl::remove_reference<TIterator1>::type>::value || etl::is_same<const_iterator, typename etl::remove_reference<TIterator1>::type>::value), iterator>::type
+    typename etl::enable_if<!(etl::is_pointer<typename etl::remove_reference<TIterator1>::type>::value && sizeof(typename etl::remove_pointer<typename etl::remove_cvref<TIterator1>::type>::type) == sizeof(value_type)), iterator>::type
       copy_characters(TIterator1 from, size_t n, iterator to)
     {
       size_t count = 0;
