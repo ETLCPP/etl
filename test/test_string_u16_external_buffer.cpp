@@ -406,30 +406,30 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_constructor_from_16bit_range)
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_16bit)
     {
       TextBuffer buffer{0};
       Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
       CHECK_EQUAL(SIZE, text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
-      bool isEqual = Equal(initial_text, text);
-      CHECK(isEqual);
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_constructor_from_16bit_const_range)
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_16bit_const)
     {
       const etl::u16string_view u16View{STR("16-bit")};
       TextBuffer buffer{0};
       Text text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
 
+      bool is_equal = Equal(u16View, text);
+      CHECK(is_equal);
       CHECK_EQUAL(u16View.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
-      bool isEqual = Equal(u16View, text);
-      CHECK(isEqual);
     }
 
     //*************************************************************************
@@ -439,20 +439,11 @@ namespace
       TextBuffer buffer{0};
       Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
 
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
       CHECK_EQUAL(text8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
-      
-      bool isEqual = true;
-      for (size_t i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            isEqual = false;
-            break;
-        }
-      }
-      CHECK(isEqual);
     }
 
     //*************************************************************************
@@ -462,20 +453,11 @@ namespace
       TextBuffer buffer{0};
       Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
 
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
       CHECK_EQUAL(text8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
-      
-      bool isEqual = true;
-      for (size_t i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            isEqual = false;
-            break;
-        }
-      }
-      CHECK(isEqual);
     }
 
     //*************************************************************************
@@ -1479,19 +1461,10 @@ namespace
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
       CHECK_EQUAL(text8Bit.size(), text.size());
-
-      bool isEqual = true;
-      for (auto i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            isEqual = false;
-            break;
-        }
-      }
-      CHECK(isEqual);
     }
 
     //*************************************************************************
@@ -1504,19 +1477,10 @@ namespace
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
       CHECK_EQUAL(text8Bit.size(), text.size());
-
-      bool isEqual = true;
-      for (auto i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            isEqual = false;
-            break;
-        }
-      }
-      CHECK(isEqual);
     }
 
     //*************************************************************************

@@ -311,20 +311,11 @@ namespace
 
       Text text(text8Bit.begin(), text8Bit.end());
 
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
       CHECK_EQUAL(text8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
-
-      bool is_equal = true;
-      for (auto i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            is_equal = false;
-            break;
-        }
-      }
-      CHECK(is_equal);
     }
 
     //*************************************************************************
@@ -335,20 +326,11 @@ namespace
 
       Text text(text8Bit.begin(), text8Bit.end());
 
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
       CHECK_EQUAL(text8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
-
-      bool is_equal = true;
-      for (auto i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            is_equal = false;
-            break;
-        }
-      }
-      CHECK(is_equal);
     }
 
     //*************************************************************************
@@ -1259,17 +1241,9 @@ namespace
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
-      CHECK_FALSE(text.is_truncated());
-      bool is_equal = true;
-      for (auto i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            is_equal = false;
-            break;
-        }
-      }
+      bool is_equal = Equal(text8Bit, text);
       CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
     }
 
     //*************************************************************************
@@ -1281,17 +1255,9 @@ namespace
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
-      CHECK_FALSE(text.is_truncated());
-      bool is_equal = true;
-      for (auto i = 0U; i < text8Bit.size(); i++)
-      {
-        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
-        {
-            is_equal = false;
-            break;
-        }
-      }
+      bool is_equal = Equal(text8Bit, text);
       CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
     }
 
     //*************************************************************************
