@@ -431,20 +431,20 @@ namespace
       CHECK(isEqual);
     }
 
-    TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_range)
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit)
     {
-      etl::string_view view8Bit{"8-bit"};
+      std::string text8Bit{"8-bit"};
       TextBuffer buffer{0};
-      Text text(view8Bit.begin(), view8Bit.end(), buffer.data(), buffer.size());
+      Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
 
-      CHECK_EQUAL(view8Bit.size(), text.size());
+      CHECK_EQUAL(text8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
       
       bool isEqual = true;
-      for (size_t i = 0U; i < view8Bit.size(); i++)
+      for (size_t i = 0U; i < text8Bit.size(); i++)
       {
-        if (text.at(i) != static_cast<Text::value_type>(view8Bit.at(i)))
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
         {
             isEqual = false;
             break;
@@ -453,20 +453,20 @@ namespace
       CHECK(isEqual);
     }
 
-    TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_const_range)
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit_const)
     {
-      const std::array<char const, 6U> view8Bit{"8-bit"};
+      std::array<char const, 6U> const text8Bit{"8-bit"};
       TextBuffer buffer{0};
-      Text text(view8Bit.begin(), view8Bit.end(), buffer.data(), buffer.size());
+      Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
 
-      CHECK_EQUAL(view8Bit.size(), text.size());
+      CHECK_EQUAL(text8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
       
       bool isEqual = true;
-      for (size_t i = 0U; i < view8Bit.size(); i++)
+      for (size_t i = 0U; i < text8Bit.size(); i++)
       {
-        if (text.at(i) != static_cast<Text::value_type>(view8Bit.at(i)))
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
         {
             isEqual = false;
             break;
@@ -1469,22 +1469,49 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range_8bit)
     {
-      constexpr etl::string_view u8Text{"8-bit"};
+      std::string text8Bit{"8-bit"};
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
 
-      text.assign(u8Text.begin(), u8Text.end());
+      text.assign(text8Bit.begin(), text8Bit.end());
 
       // bool is_equal = Equal(compare_text, text);
       // CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
-      CHECK_EQUAL(u8Text.size(), text.size());
+      CHECK_EQUAL(text8Bit.size(), text.size());
 
       bool isEqual = true;
-      for (auto i = 0U; i < u8Text.size(); i++)
+      for (auto i = 0U; i < text8Bit.size(); i++)
       {
-        if (text.at(i) != static_cast<Text::value_type>(u8Text.at(i)))
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
+        {
+            isEqual = false;
+            break;
+        }
+      }
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_range_8bit_const)
+    {
+      std::array<char const, 6U> const text8Bit{"8-bit"};
+
+      TextBuffer buffer{0};
+      Text text(buffer.data(), buffer.size());
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      // bool is_equal = Equal(compare_text, text);
+      // CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
+      CHECK_EQUAL(text8Bit.size(), text.size());
+
+      bool isEqual = true;
+      for (auto i = 0U; i < text8Bit.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
         {
             isEqual = false;
             break;
