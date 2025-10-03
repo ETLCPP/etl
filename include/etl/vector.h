@@ -279,6 +279,7 @@ namespace etl
     //*********************************************************************
     reference operator [](size_t i)
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -289,6 +290,7 @@ namespace etl
     //*********************************************************************
     const_reference operator [](size_t i) const
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -322,6 +324,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(vector_out_of_bounds));
       return *p_buffer;
     }
 
@@ -331,6 +334,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(vector_out_of_bounds));
       return *p_buffer;
     }
 
@@ -340,6 +344,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(vector_out_of_bounds));
       return *(p_end - 1);
     }
 
@@ -349,6 +354,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(vector_out_of_bounds));
       return *(p_end - 1);
     }
 
@@ -570,6 +576,7 @@ namespace etl
     iterator insert(const_iterator position, const_reference value)
     {
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -597,6 +604,7 @@ namespace etl
     iterator insert(const_iterator position, rvalue_reference value)
     {
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -623,6 +631,7 @@ namespace etl
     iterator emplace(const_iterator position, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -650,6 +659,7 @@ namespace etl
     iterator emplace(const_iterator position, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -677,6 +687,7 @@ namespace etl
     iterator emplace(const_iterator position, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -704,6 +715,7 @@ namespace etl
     iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -731,6 +743,7 @@ namespace etl
     iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -765,6 +778,7 @@ namespace etl
     void insert(const_iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT_OR_RETURN((size() + n) <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -804,8 +818,8 @@ namespace etl
       etl::uninitialized_fill_n(p_end, construct_new_n, value);
       ETL_ADD_DEBUG_COUNT(construct_new_n);
 
-        // Copy new.
-        etl::fill_n(p_buffer + insert_begin, copy_new_n, value);
+      // Copy new.
+      etl::fill_n(p_buffer + insert_begin, copy_new_n, value);
 
       p_end += n;
     }
@@ -824,6 +838,7 @@ namespace etl
       size_t count = etl::distance(first, last);
 
       ETL_ASSERT_OR_RETURN((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       size_t insert_n = count;
       size_t insert_begin = etl::distance(cbegin(), position);
@@ -874,6 +889,8 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(vector_out_of_bounds));
+
       etl::move(i_element + 1, end(), i_element);
       destroy_back();
 
@@ -887,6 +904,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(vector_out_of_bounds));
+
       iterator i_element_ = to_iterator(i_element);
 
       etl::move(i_element_ + 1, end(), i_element_);
@@ -905,6 +924,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(vector_out_of_bounds));
+
       iterator first_ = to_iterator(first);
       iterator last_  = to_iterator(last);
 
