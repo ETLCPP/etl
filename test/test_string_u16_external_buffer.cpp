@@ -420,7 +420,7 @@ namespace
 
     TEST_FIXTURE(SetupFixture, test_constructor_from_16bit_const_range)
     {
-      constexpr etl::u16string_view u16View{STR("16-bit")};
+      const etl::u16string_view u16View{STR("16-bit")};
       TextBuffer buffer{0};
       Text text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
 
@@ -455,7 +455,7 @@ namespace
 
     TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_const_range)
     {
-      constexpr etl::string_view view8Bit{"8-bit"};
+      const std::array<char const, 6U> view8Bit{"8-bit"};
       TextBuffer buffer{0};
       Text text(view8Bit.begin(), view8Bit.end(), buffer.data(), buffer.size());
 

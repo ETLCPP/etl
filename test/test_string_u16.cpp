@@ -330,7 +330,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_8bit_const_range)
     {
-      constexpr etl::string_view text8Bit{"8-bit"};
+      const std::array<char const, 6U> text8Bit{"8-bit"};
       TextSTD compare_text(text8Bit.begin(), text8Bit.end());
 
       Text text(text8Bit.begin(), text8Bit.end());
