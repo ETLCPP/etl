@@ -418,6 +418,7 @@ namespace
       CHECK(isEqual);
     }
 
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_16bit_const_range)
     {
       const etl::u16string_view u16View{STR("16-bit")};
@@ -431,6 +432,7 @@ namespace
       CHECK(isEqual);
     }
 
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit)
     {
       std::string text8Bit{"8-bit"};
@@ -453,6 +455,7 @@ namespace
       CHECK(isEqual);
     }
 
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit_const)
     {
       std::array<char const, 6U> const text8Bit{"8-bit"};
@@ -1476,8 +1479,6 @@ namespace
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
-      // bool is_equal = Equal(compare_text, text);
-      // CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
       CHECK_EQUAL(text8Bit.size(), text.size());
 
@@ -1503,8 +1504,6 @@ namespace
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
-      // bool is_equal = Equal(compare_text, text);
-      // CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
       CHECK_EQUAL(text8Bit.size(), text.size());
 
