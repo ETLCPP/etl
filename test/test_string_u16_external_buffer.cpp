@@ -433,18 +433,18 @@ namespace
 
     TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_range)
     {
-      etl::string_view u8View{"8-bit"};
+      etl::string_view view8Bit{"8-bit"};
       TextBuffer buffer{0};
-      Text text(u8View.begin(), u8View.end(), buffer.data(), buffer.size());
+      Text text(view8Bit.begin(), view8Bit.end(), buffer.data(), buffer.size());
 
-      CHECK_EQUAL(u8View.size(), text.size());
+      CHECK_EQUAL(view8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
       
       bool isEqual = true;
-      for (size_t i = 0U; i < u8View.size(); i++)
+      for (size_t i = 0U; i < view8Bit.size(); i++)
       {
-        if (text.at(i) != static_cast<Text::value_type>(u8View.at(i)))
+        if (text.at(i) != static_cast<Text::value_type>(view8Bit.at(i)))
         {
             isEqual = false;
             break;
@@ -455,18 +455,18 @@ namespace
 
     TEST_FIXTURE(SetupFixture, test_constructor_from_8bit_const_range)
     {
-      constexpr etl::string_view u8View{"8-bit"};
+      constexpr etl::string_view view8Bit{"8-bit"};
       TextBuffer buffer{0};
-      Text text(u8View.begin(), u8View.end(), buffer.data(), buffer.size());
+      Text text(view8Bit.begin(), view8Bit.end(), buffer.data(), buffer.size());
 
-      CHECK_EQUAL(u8View.size(), text.size());
+      CHECK_EQUAL(view8Bit.size(), text.size());
       CHECK_FALSE(text.empty());
       CHECK_FALSE(text.is_truncated());
       
       bool isEqual = true;
-      for (size_t i = 0U; i < u8View.size(); i++)
+      for (size_t i = 0U; i < view8Bit.size(); i++)
       {
-        if (text.at(i) != static_cast<Text::value_type>(u8View.at(i)))
+        if (text.at(i) != static_cast<Text::value_type>(view8Bit.at(i)))
         {
             isEqual = false;
             break;
@@ -1466,6 +1466,7 @@ namespace
 #endif
     }
 
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range_8bit)
     {
       constexpr etl::string_view u8Text{"8-bit"};

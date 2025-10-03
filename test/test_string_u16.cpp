@@ -304,6 +304,54 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_8bit_range)
+    {
+      etl::string_view text8Bit{"8-bit"};
+      TextSTD compare_text(text8Bit.begin(), text8Bit.end());
+
+      Text text(text8Bit.begin(), text8Bit.end());
+
+      CHECK_EQUAL(text8Bit.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+
+      bool is_equal = true;
+      for (auto i = 0U; i < text8Bit.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
+        {
+            is_equal = false;
+            break;
+        }
+      }
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_8bit_const_range)
+    {
+      constexpr etl::string_view text8Bit{"8-bit"};
+      TextSTD compare_text(text8Bit.begin(), text8Bit.end());
+
+      Text text(text8Bit.begin(), text8Bit.end());
+
+      CHECK_EQUAL(text8Bit.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+
+      bool is_equal = true;
+      for (auto i = 0U; i < text8Bit.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
+        {
+            is_equal = false;
+            break;
+        }
+      }
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_literal)
     {
       Text text(STR("Hello World"));
@@ -1200,6 +1248,50 @@ namespace
 #else
       CHECK_FALSE(text.is_truncated());
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_8bit_range)
+    {
+      etl::string_view text8Bit{"8-bit"};
+
+      Text text;
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      CHECK_FALSE(text.is_truncated());
+      bool is_equal = true;
+      for (auto i = 0U; i < text8Bit.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
+        {
+            is_equal = false;
+            break;
+        }
+      }
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_8bit_const_range)
+    {
+      etl::string_view text8Bit{"8-bit"};
+
+      Text text;
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      CHECK_FALSE(text.is_truncated());
+      bool is_equal = true;
+      for (auto i = 0U; i < text8Bit.size(); i++)
+      {
+        if (text.at(i) != static_cast<Text::value_type>(text8Bit.at(i)))
+        {
+            is_equal = false;
+            break;
+        }
+      }
+      CHECK(is_equal);
     }
 
     //*************************************************************************
