@@ -341,8 +341,13 @@ SOFTWARE.
   #define ETL_ENUM_CLASS(name)            enum class name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
   #define ETL_LVALUE_REF_QUALIFIER        &
-  #define ETL_NOEXCEPT                    noexcept
-  #define ETL_NOEXCEPT_EXPR(...)          noexcept(__VA_ARGS__)
+  #if ETL_USING_EXCEPTIONS
+    #define ETL_NOEXCEPT                    noexcept
+    #define ETL_NOEXCEPT_EXPR(...)          noexcept(__VA_ARGS__)
+  #else
+    #define ETL_NOEXCEPT
+    #define ETL_NOEXCEPT_EXPR(...)
+  #endif
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONSTEXPR11
