@@ -344,9 +344,11 @@ SOFTWARE.
   #if ETL_USING_EXCEPTIONS
     #define ETL_NOEXCEPT                  noexcept
     #define ETL_NOEXCEPT_EXPR(...)        noexcept(__VA_ARGS__)
+    #define ETL_NOEXCEPT_FROM(x)          noexcept(noexcept(x))
   #else
     #define ETL_NOEXCEPT
     #define ETL_NOEXCEPT_EXPR(...)
+    #define ETL_NOEXCEPT_FROM(x) 
   #endif
 #else
   #define ETL_CONSTEXPR
