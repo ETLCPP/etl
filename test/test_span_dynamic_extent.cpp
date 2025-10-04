@@ -462,8 +462,8 @@ namespace
         CHECK_EQUAL(etldata.at(i), cview.at(i));
       }
 
-      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::array_out_of_range);
-      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::array_out_of_range);
+      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::span_out_of_range);
+      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::span_out_of_range);
     }
 
     //*************************************************************************

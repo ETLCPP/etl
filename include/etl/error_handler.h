@@ -382,8 +382,12 @@ namespace etl
 
 //*************************************
 #ifdef ETL_CHECK_EXTRA
+    #define ETL_CHECKING_EXTRA 1
+    #define ETL_NOT_CHECKING_EXTRA 0
     #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b,e)
 #else
+    #define ETL_CHECKING_EXTRA 0
+    #define ETL_NOT_CHECKING_EXTRA 1
     #define ETL_ASSERT_CHECK_EXTRA(b, e)
 #endif
 
