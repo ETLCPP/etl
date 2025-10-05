@@ -534,9 +534,7 @@ namespace etl
     ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
 #if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
-      bool offset_check = offset <= size();
-      bool count_check = count != etl::dynamic_extent ? count <= (size() - offset) : true;
-      return offset_check && count_check ?
+      return (offset <= size()) && (count != etl::dynamic_extent ? count <= (size() - offset) : true) ?
         ((count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent))
                                         : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count)) :
         throw(ETL_ERROR(span_out_of_range));
@@ -973,9 +971,7 @@ namespace etl
       etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
 #if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
-      bool offset_check = OFFSET <= size();
-      bool count_check = COUNT != etl::dynamic_extent ? COUNT <= (size() - OFFSET) : true;
-      return offset_check && count_check ?
+      return (OFFSET <= size()) && (COUNT != etl::dynamic_extent ? COUNT <= (size() - OFFSET) : true) ?
         ((COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend)
                                         : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT)) :
         throw(ETL_ERROR(span_out_of_range));
