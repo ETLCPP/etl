@@ -375,8 +375,12 @@ namespace etl
 
 //*************************************
 #ifdef ETL_CHECK_INDEX_OPERATOR
+  #define ETL_CHECKING_INDEX_OPERATOR 1
+  #define ETL_NOT_CHECKING_INDEX_OPERATOR 0
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b,e)
 #else
+  #define ETL_CHECKING_INDEX_OPERATOR 0
+  #define ETL_NOT_CHECKING_INDEX_OPERATOR 1
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
 #endif
 
