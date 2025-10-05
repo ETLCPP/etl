@@ -711,9 +711,9 @@ namespace
       CHECK_THROW({ auto span5 = view.subspan<9>(); (void)span5; }, etl::span_out_of_range);
       CHECK_THROW({ auto cspan5 = cview.subspan<9>(); (void)cspan5; }, etl::span_out_of_range);
 
-      #define SPAN6_EXPR ({ auto span6 = view.subspan<2, 7>(); (void)span6; })
+      #define SPAN6_EXPR { auto span6 = view.subspan<2, 7>(); (void)span6; }
       CHECK_THROW(SPAN6_EXPR, etl::span_out_of_range);
-      #define CSPAN6_EXPR ({ auto cspan6 = cview.subspan<2, 7>(); (void)cspan6; })
+      #define CSPAN6_EXPR { auto cspan6 = cview.subspan<2, 7>(); (void)cspan6; }
       CHECK_THROW(CSPAN6_EXPR, etl::span_out_of_range);
 
       CHECK_THROW({ auto span7 = view.subspan(9); (void)span7; }, etl::span_out_of_range);
