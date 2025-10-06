@@ -321,7 +321,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_8bit_const_range)
     {
-      std::array<char const, 6U> const text8Bit{"8-bit"};
+      std::string const text8Bit{"8-bit"};
       TextSTD compare_text(text8Bit.begin(), text8Bit.end());
 
       Text text(text8Bit.begin(), text8Bit.end());
@@ -1249,7 +1249,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range_8bit_const)
     {
-      std::array<char const, 6U> const text8Bit{"8-bit"};
+      std::string const text8Bit{"8-bit"};
 
       Text text;
 
