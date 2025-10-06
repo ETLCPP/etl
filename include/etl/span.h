@@ -111,7 +111,7 @@ namespace etl
   public:
 
     span_out_of_range(string_type file_name_, numeric_type line_number_)
-      : span_exception("array:range", file_name_, line_number_)
+      : span_exception(ETL_ERROR_TEXT("span:range", ETL_SPAN_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
