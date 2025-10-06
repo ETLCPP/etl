@@ -421,7 +421,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_range_16bit_const)
     {
-      const etl::u16string_view u16View{STR("16-bit")};
+      const View u16View{STR("16-bit")};
       TextBuffer buffer{0};
       Text text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
 
