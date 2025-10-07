@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/hfsm.h"
 #include "etl/string.h"
+#include <array>
 
 //                             entry && mode=RxEventDeviation
 //                 ┌─────────────────────────────────────────────────────┐
