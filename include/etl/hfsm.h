@@ -208,7 +208,7 @@ namespace etl
       // Short circuit the activation of any child states if the target state changed
       if (next_state != ifsm_state::No_State_Change)
       {
-        return do_enters_result{next_state, p_target->get_state_id()};
+        return {next_state, p_target->get_state_id()};
       }
 
       // Activate default child if we need to activate any initial states in an active composite state
@@ -223,7 +223,7 @@ namespace etl
           // Short circuit the activation of any child states if the target state changed
           if (next_state != ifsm_state::No_State_Change)
           {
-            return do_enters_result{next_state, p_target->get_state_id()};
+            return {next_state, p_target->get_state_id()};
           }
         }
 
@@ -231,7 +231,7 @@ namespace etl
       }
 
       // Wrapping No_State_Change in a static_cast gets rid of the "undefined reference" error when compiling on C++11
-      return do_enters_result{next_state, static_cast<fsm_state_id_t>(ifsm_state::No_State_Change)};
+      return {next_state, static_cast<fsm_state_id_t>(ifsm_state::No_State_Change)};
     }
 
     //*******************************************
