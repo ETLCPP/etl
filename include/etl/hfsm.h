@@ -73,7 +73,8 @@ namespace etl
           if (result.active_state_id != ifsm_state::No_State_Change)
           {
             // If the active_state_id is not No_State_Change, it means that an on_enter changed the target state.
-            // Set the active state during that change as the present state before processing the state change.
+            // Set the state pointer as the active state to use it as the new origin for the transition to the
+            // updated target state.
             ETL_ASSERT(result.active_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
             p_state = state_list[result.active_state_id];
 
@@ -188,10 +189,10 @@ namespace etl
       {
         if (p_target->p_parent != p_root)
         {
-          // The parent we're calling shouldn't activate its defaults, or this state will be deactivated.
+          // The parent we're calling shouldn't activate its defaults, or this state will be deactivated
           do_enters_result result = do_enters(p_root, p_target->p_parent, false);
 
-          // Short circuit the do enters if the parent state decided that a different state should be entered.
+          // Short circuit the do enters if the parent state decided that a different state should be entered
           if (result.active_state_id != ifsm_state::No_State_Change)
           {
             return result;
@@ -210,7 +211,7 @@ namespace etl
         return do_enters_result{next_state, p_target->get_state_id()};
       }
 
-      // Activate default child if we need to activate any initial states in an active composite state.
+      // Activate default child if we need to activate any initial states in an active composite state
       if (activate_default_children)
       {
         while (p_target->p_default_child != ETL_NULLPTR)
@@ -281,7 +282,7 @@ namespace etl
         {
           // If the active_state_id is not No_State_Change, it means that an on_enter changed the target state.
           // Set the state pointer as the active state to use it as the new origin for the transition to the
-          // updated target state
+          // updated target state.
           ETL_ASSERT(result.active_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
           p_state = state_list[result.active_state_id];
           ETL_ASSERT(result.next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
