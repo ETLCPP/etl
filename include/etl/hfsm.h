@@ -60,18 +60,33 @@ namespace etl
     void start(bool call_on_enter_state = true) ETL_OVERRIDE
     {
       // Can only be started once.
-      if (p_state == ETL_NULLPTR)
+      if (!is_started())
       {
-        p_state = state_list[0];
-        ETL_ASSERT(p_state != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
+        etl::ifsm_state* p_first_state = state_list[0];
+        ETL_ASSERT(p_first_state != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
+        p_state = p_first_state;
 
         if (call_on_enter_state)
         {
-          etl::fsm_state_id_t next_state = do_enters(ETL_NULLPTR, p_state, true);
-
-          if (next_state != ifsm_state::No_State_Change)
+          do_enters_result result = do_enters(ETL_NULLPTR, p_first_state, true);
+          
+          if (result.active_state_id != ifsm_state::No_State_Change)
           {
-            p_state = state_list[next_state];
+            // If the active_state_id is not No_State_Change, it means that an on_enter changed the target state.
+            // Set the state pointer as the active state to use it as the new origin for the transition to the
+            // updated target state.
+            ETL_ASSERT(result.active_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+            p_state = state_list[result.active_state_id];
+
+            process_state_change(result.next_state_id);
+          }
+          else
+          {
+            if (have_changed_state(result.next_state_id))
+            {
+              ETL_ASSERT(result.next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+              p_state = state_list[result.next_state_id];
+            }
           }
         }
       }
@@ -83,7 +98,7 @@ namespace etl
     //*******************************************
     virtual void reset(bool call_on_exit_state = false) ETL_OVERRIDE
     {
-      if ((p_state != ETL_NULLPTR) && call_on_exit_state)
+      if (is_started() && call_on_exit_state)
       {
         do_exits(ETL_NULLPTR, p_state);
       }
@@ -152,9 +167,20 @@ namespace etl
     }
 
     //*******************************************
+    /// Result of a "do_enters()" call
+    //*******************************************
+    struct do_enters_result
+    {
+      // State which is presently being targeted as the next state
+      etl::fsm_state_id_t next_state_id;
+      // State which was active when the on_enter triggered a state change
+      etl::fsm_state_id_t active_state_id;
+    };
+
+    //*******************************************
     /// Entering the state.
     //*******************************************
-    static etl::fsm_state_id_t do_enters(const etl::ifsm_state* p_root, etl::ifsm_state* p_target, bool activate_default_children)
+    static do_enters_result do_enters(const etl::ifsm_state* p_root, etl::ifsm_state* p_target, bool activate_default_children)
     {
       ETL_ASSERT(p_target != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
 
@@ -163,8 +189,14 @@ namespace etl
       {
         if (p_target->p_parent != p_root)
         {
-          // The parent we're calling shouldn't activate its defaults, or this state will be deactivated.
-          do_enters(p_root, p_target->p_parent, false);
+          // The parent we're calling shouldn't activate its defaults, or this state will be deactivated
+          do_enters_result result = do_enters(p_root, p_target->p_parent, false);
+
+          // Short circuit the do enters if the parent state decided that a different state should be entered
+          if (result.active_state_id != ifsm_state::No_State_Change)
+          {
+            return result;
+          }
         }
 
         // Set us as our parent's active child
@@ -172,9 +204,14 @@ namespace etl
       }
 
       etl::fsm_state_id_t next_state = p_target->on_enter_state();
-      ETL_ASSERT(ifsm_state::No_State_Change == next_state, ETL_ERROR(etl::fsm_state_composite_state_change_forbidden));
+      
+      // Short circuit the activation of any child states if the target state changed
+      if (next_state != ifsm_state::No_State_Change)
+      {
+        return {next_state, p_target->get_state_id()};
+      }
 
-      // Activate default child if we need to activate any initial states in an active composite state.
+      // Activate default child if we need to activate any initial states in an active composite state
       if (activate_default_children)
       {
         while (p_target->p_default_child != ETL_NULLPTR)
@@ -182,13 +219,19 @@ namespace etl
           p_target = p_target->p_default_child;
           p_target->p_parent->p_active_child = p_target;
           next_state = p_target->on_enter_state();
-          ETL_ASSERT(ifsm_state::No_State_Change == next_state, ETL_ERROR(etl::fsm_state_composite_state_change_forbidden));
+
+          // Short circuit the activation of any child states if the target state changed
+          if (next_state != ifsm_state::No_State_Change)
+          {
+            return {next_state, p_target->get_state_id()};
+          }
         }
 
         next_state = p_target->get_state_id();
       }
 
-      return next_state;
+      // Wrapping No_State_Change in a static_cast gets rid of the "undefined reference" error when compiling on C++11
+      return {next_state, static_cast<fsm_state_id_t>(ifsm_state::No_State_Change)};
     }
 
     //*******************************************
@@ -217,7 +260,13 @@ namespace etl
     //*******************************************
     etl::fsm_state_id_t process_state_change(etl::fsm_state_id_t next_state_id) ETL_OVERRIDE
     {
-      if (have_changed_state(next_state_id))
+      if (is_self_transition(next_state_id))
+      {
+        p_state->on_exit_state();
+        next_state_id = p_state->on_enter_state();
+      } 
+
+      while (have_changed_state(next_state_id))
       {
         ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
 
@@ -225,17 +274,34 @@ namespace etl
         etl::ifsm_state* p_root       = common_ancestor(p_state, p_next_state);
 
         do_exits(p_root, p_state);
-        next_state_id = do_enters(p_root, p_next_state, true);
 
-        ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
-        p_state = state_list[next_state_id];
-      }
-      else if (is_self_transition(next_state_id))
-      {
-        p_state->on_exit_state();
-        p_state->on_enter_state();
-      }
+        do_enters_result result = do_enters(p_root, p_next_state, true);
+        next_state_id = result.next_state_id;
 
+        if (result.active_state_id != ifsm_state::No_State_Change)
+        {
+          // If the active_state_id is not No_State_Change, it means that an on_enter changed the target state.
+          // Set the state pointer as the active state to use it as the new origin for the transition to the
+          // updated target state.
+          ETL_ASSERT(result.active_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+          p_state = state_list[result.active_state_id];
+          ETL_ASSERT(result.next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+          p_next_state = state_list[result.next_state_id];
+        }
+        else if (result.next_state_id != ifsm_state::No_State_Change)
+        {
+          // If the next state is different, means that default children were activated.
+          // Assign both p_state and p_next_state to get out of the loop.
+          ETL_ASSERT(result.next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+          p_state = state_list[result.next_state_id];
+          p_next_state = state_list[result.next_state_id];
+        }
+        else
+        {
+          p_state = p_next_state;
+        }
+      }
+      
       return p_state->get_state_id();
     }
   };
