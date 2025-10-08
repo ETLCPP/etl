@@ -242,13 +242,23 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if C++ exceptions are enabled.
+// Indicate if C++ exceptions within the ETL are enabled.
 #if defined(ETL_THROW_EXCEPTIONS)
-  #define ETL_USING_EXCEPTIONS 1
+  #define ETL_USING_EXCEPTIONS     1
   #define ETL_NOT_USING_EXCEPTIONS 0
 #else
-  #define ETL_USING_EXCEPTIONS 0
+  #define ETL_USING_EXCEPTIONS     0
   #define ETL_NOT_USING_EXCEPTIONS 1
+#endif
+
+//*************************************
+// Indicate if C++ exceptions are enabled for debug asserts.
+#if ETL_IS_DEBUG_BUILD && defined(ETL_DEBUG_THROW_EXCEPTIONS)
+  #define ETL_DEBUG_USING_EXCEPTIONS     1
+  #define ETL_DEBUG_NOT_USING_EXCEPTIONS 0
+#else
+  #define ETL_DEBUG_USING_EXCEPTIONS     0
+  #define ETL_DEBUG_NOT_USING_EXCEPTIONS 1
 #endif
 
 //*************************************
@@ -331,8 +341,15 @@ SOFTWARE.
   #define ETL_ENUM_CLASS(name)            enum class name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
   #define ETL_LVALUE_REF_QUALIFIER        &
-  #define ETL_NOEXCEPT                    noexcept
-  #define ETL_NOEXCEPT_EXPR(...)          noexcept(__VA_ARGS__)
+  #if ETL_USING_EXCEPTIONS
+    #define ETL_NOEXCEPT                  noexcept
+    #define ETL_NOEXCEPT_EXPR(...)        noexcept(__VA_ARGS__)
+    #define ETL_NOEXCEPT_FROM(x)          noexcept(noexcept(x))
+  #else
+    #define ETL_NOEXCEPT
+    #define ETL_NOEXCEPT_EXPR(...)
+    #define ETL_NOEXCEPT_FROM(x) 
+  #endif
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONSTEXPR11
@@ -344,6 +361,7 @@ SOFTWARE.
   #define ETL_NORETURN
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(...)
+  #define ETL_NOEXCEPT_FROM(x) 
   #define ETL_MOVE(x) x
   #define ETL_ENUM_CLASS(name)            enum name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum name

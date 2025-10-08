@@ -3713,6 +3713,9 @@
     <ClCompile Include="..\syntax_check\delegate_observable.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_etl_assert.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3885,6 +3888,12 @@
     </None>
     <None Include="..\..\..\etl-arduino\.github\workflows\platformio-update.yml">
       <Filter>ETL\Arduino</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++23.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++23.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

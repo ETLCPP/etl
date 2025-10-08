@@ -675,9 +675,7 @@ namespace etl
     //*******************************************
     value_type* operator ->()
     {
-#if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
-#endif
+      ETL_ASSERT_OR_RETURN_VALUE(has_value(), ETL_ERROR(expected_invalid), ETL_NULLPTR);
 
       return etl::addressof(etl::get<value_type>(storage));
     }
@@ -687,9 +685,7 @@ namespace etl
     //*******************************************
     const value_type* operator ->() const
     {
-#if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
-#endif
+      ETL_ASSERT_OR_RETURN_VALUE(has_value(), ETL_ERROR(expected_invalid), ETL_NULLPTR);
 
       return etl::addressof(etl::get<value_type>(storage));
     }
@@ -699,9 +695,7 @@ namespace etl
     //*******************************************
     value_type& operator *() ETL_LVALUE_REF_QUALIFIER
     {
-#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
-#endif
 
       return etl::get<value_type>(storage);
     }
@@ -711,9 +705,7 @@ namespace etl
     //*******************************************
     const value_type& operator *() const ETL_LVALUE_REF_QUALIFIER
     {
-#if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
-#endif
+      ETL_ASSERT_OR_RETURN_VALUE(has_value(), ETL_ERROR(expected_invalid), ETL_NULLPTR);
 
       return etl::get<value_type>(storage);
     }
@@ -724,9 +716,7 @@ namespace etl
     //*******************************************
     value_type&& operator *()&&
     {
-#if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
-#endif
+      ETL_ASSERT_OR_RETURN_VALUE(has_value(), ETL_ERROR(expected_invalid), ETL_NULLPTR);
 
       return etl::move(etl::get<value_type>(storage));
     }
@@ -736,9 +726,7 @@ namespace etl
     //*******************************************
     const value_type&& operator *() const&&
     {
-#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
-#endif
 
       return etl::move(etl::get<value_type>(storage));
     }

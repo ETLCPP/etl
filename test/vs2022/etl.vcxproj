@@ -10257,6 +10257,7 @@
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_delegate_observable.cpp" />
+    <ClCompile Include="..\test_etl_assert.cpp" />
     <ClCompile Include="..\test_expected.cpp" />
     <ClCompile Include="..\test_function_traits.cpp" />
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
@@ -11376,11 +11377,13 @@
     <None Include="..\..\.github\workflows\clang-c++14.yml" />
     <None Include="..\..\.github\workflows\clang-c++17.yml" />
     <None Include="..\..\.github\workflows\clang-c++20.yml" />
+    <None Include="..\..\.github\workflows\clang-c++23.yml" />
     <None Include="..\..\.github\workflows\clang-syntax-checks.yml" />
     <None Include="..\..\.github\workflows\gcc-c++11.yml" />
     <None Include="..\..\.github\workflows\gcc-c++14.yml" />
     <None Include="..\..\.github\workflows\gcc-c++17.yml" />
     <None Include="..\..\.github\workflows\gcc-c++20.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23.yml" />
     <None Include="..\..\.github\workflows\msvc.yml" />
     <None Include="..\..\.github\workflows\gcc-syntax-checks.yml" />
     <None Include="..\..\.github\workflows\platformio-update.yml" />

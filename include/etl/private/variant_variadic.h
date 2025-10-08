@@ -459,7 +459,7 @@ namespace etl
 
     //***************************************************************************
     /// Default constructor.
-    /// Sets the state of the instance to containing no valid data.
+    /// Constructs a variant holding the value-initialized value of the first alternative (index() is zero). 
     //***************************************************************************
 #include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant()
@@ -779,8 +779,8 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Checks whether a valid value is currently stored.
-    ///\return <b>true</b> if the value is valid, otherwise <b>false</b>.
+    /// Checks whether the variant doesn't contain a valid value.
+    ///\return <b>true</b> if the value is invalid, otherwise <b>false</b>.
     //***************************************************************************
     constexpr bool valueless_by_exception() const ETL_NOEXCEPT
     {

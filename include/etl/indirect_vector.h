@@ -757,9 +757,8 @@ namespace etl
     //*********************************************************************
     void push_back(const_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != capacity(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(value);
       lookup.push_back(p);
     }
@@ -772,9 +771,8 @@ namespace etl
     //*********************************************************************
     void push_back(rvalue_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != capacity(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(etl::move(value));
       lookup.push_back(p);
     }

@@ -115,9 +115,8 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_stack_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(intrusive_stack_empty));
+
       link_type* p_next = p_top->etl_next;
       p_top->clear();
       p_top = p_next;
