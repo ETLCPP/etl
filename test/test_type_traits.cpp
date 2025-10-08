@@ -1472,4 +1472,22 @@ namespace
     CHECK_FALSE((etl::is_specialization<other_specialized<int>, specialized>::value));
 #endif
   }
+
+#if ETL_USING_CPP11
+  //*************************************************************************
+  TEST(test_is_constant_evaluated)
+  {
+    const bool c0 = etl::is_constant_evaluated();
+#if !ETL_USING_CPP23 && defined(ETL_COMPILER_MICROSOFT)
+    // Not supported on MSVC via __has_builtin, see determine_builtin_support.h
+    CHECK_FALSE(c0);
+#else
+    CHECK_TRUE(c0);
+#endif
+
+    volatile int i = 1;
+    const bool c1 = (((i == 1) && etl::is_constant_evaluated()) ? true : false);
+    CHECK_FALSE(c1);
+  }
+#endif
 }

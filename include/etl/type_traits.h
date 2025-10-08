@@ -2482,6 +2482,28 @@ typedef integral_constant<bool, true>  true_type;
   template <typename T, template <typename...> class Template>
   inline constexpr bool is_specialization_v = etl::is_specialization<T, Template>::value;
 #endif
+
+  //*********************************************
+  // is_constant_evaluated
+  ETL_CONSTEXPR inline bool is_constant_evaluated() ETL_NOEXCEPT
+  {
+#if ETL_USING_CPP23
+    if consteval
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+#elif ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1
+    // fallback for C++20 on supported compilers
+    return __builtin_is_constant_evaluated();
+#else
+    // default if unsupported
+    return false;
+#endif
+  }
 }
 
 // Helper macros

@@ -55,6 +55,10 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
     #define ETL_USING_BUILTIN_UNDERLYING_TYPE 1
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
+    #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED 1
+  #endif
 #endif
 
 #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for existence of builtin functions? Fix VS2022 intellisense issue.
@@ -80,6 +84,10 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
     #define ETL_USING_BUILTIN_UNDERLYING_TYPE __has_builtin(__underlying_type)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
+    #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED __has_builtin(__builtin_is_constant_evaluated)
   #endif
 
   #if !defined(ETL_USING_BUILTIN_MEMCPY)
@@ -128,6 +136,10 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_UNDERLYING_TYPE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
+  #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED 0
+#endif
+
 #if !defined(ETL_USING_BUILTIN_MEMCPY)
   #define ETL_USING_BUILTIN_MEMCPY 0
 #endif
@@ -160,6 +172,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
     static ETL_CONSTANT bool using_builtin_underlying_type            = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
+    static ETL_CONSTANT bool using_builtin_is_constant_evaluated      = (ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1);
     static ETL_CONSTANT bool using_builtin_memcpy                     = (ETL_USING_BUILTIN_MEMCPY == 1);
     static ETL_CONSTANT bool using_builtin_memmove                    = (ETL_USING_BUILTIN_MEMMOVE == 1);
     static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
