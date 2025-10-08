@@ -406,6 +406,61 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_16bit)
+    {
+      TextBuffer buffer{0};
+      Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+
+      bool is_equal = Equal(initial_text, text);
+      CHECK(is_equal);
+      CHECK_EQUAL(SIZE, text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_16bit_const)
+    {
+      const View u16View{STR("16-bit")};
+      TextBuffer buffer{0};
+      Text text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
+
+      bool is_equal = Equal(u16View, text);
+      CHECK(is_equal);
+      CHECK_EQUAL(u16View.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit)
+    {
+      std::string text8Bit{"8-bit"};
+      TextBuffer buffer{0};
+      Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_EQUAL(text8Bit.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit_const)
+    {
+      std::string const text8Bit{"8-bit"};
+      TextBuffer buffer{0};
+      Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_EQUAL(text8Bit.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       TextBuffer buffer{0};
@@ -1394,6 +1449,38 @@ namespace
 #else
       CHECK_FALSE(text.is_truncated());
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_range_8bit)
+    {
+      std::string text8Bit{"8-bit"};
+
+      TextBuffer buffer{0};
+      Text text(buffer.data(), buffer.size());
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
+      CHECK_EQUAL(text8Bit.size(), text.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_range_8bit_const)
+    {
+      std::string const text8Bit{"8-bit"};
+
+      TextBuffer buffer{0};
+      Text text(buffer.data(), buffer.size());
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
+      CHECK_EQUAL(text8Bit.size(), text.size());
     }
 
     //*************************************************************************

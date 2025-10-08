@@ -305,6 +305,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_8bit_range)
+    {
+      std::string text8Bit{"8-bit"};
+      TextSTD compare_text(text8Bit.begin(), text8Bit.end());
+
+      Text text(text8Bit.begin(), text8Bit.end());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_EQUAL(text8Bit.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_8bit_const_range)
+    {
+      std::string const text8Bit{"8-bit"};
+      TextSTD compare_text(text8Bit.begin(), text8Bit.end());
+
+      Text text(text8Bit.begin(), text8Bit.end());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_EQUAL(text8Bit.size(), text.size());
+      CHECK_FALSE(text.empty());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_literal)
     {
       Text text(STR("Hello World"));
@@ -1201,6 +1231,34 @@ namespace
 #else
       CHECK_FALSE(text.is_truncated());
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_range_8bit)
+    {
+      std::string text8Bit{"8-bit"};
+
+      Text text;
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_range_8bit_const)
+    {
+      std::string const text8Bit{"8-bit"};
+
+      Text text;
+
+      text.assign(text8Bit.begin(), text8Bit.end());
+
+      bool is_equal = Equal(text8Bit, text);
+      CHECK(is_equal);
+      CHECK_FALSE(text.is_truncated());
     }
 
     //*************************************************************************

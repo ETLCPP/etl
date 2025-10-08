@@ -2716,10 +2716,10 @@ namespace etl
     /// Copy characters using pointers.
     /// Returns a pointer to the character after the last copied.
     //*********************************************************************
-    template <typename TIterator1, typename TIterator2>
+    template <typename TIterator1>
     static
-    typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value, TIterator2>::type
-      copy_characters(TIterator1 from, size_t n, TIterator2 to)
+    typename etl::enable_if<etl::is_pointer<typename etl::remove_reference<TIterator1>::type>::value && sizeof(typename etl::remove_pointer<typename etl::remove_cvref<TIterator1>::type>::type) == sizeof(value_type), iterator>::type
+      copy_characters(TIterator1 from, size_t n, iterator to)
     {
       etl::mem_move(from, n, to);
 
@@ -2730,10 +2730,10 @@ namespace etl
     /// Copy characters using non-pointers.
     /// Returns an iterator to the character after the last copied.
     //*********************************************************************
-    template <typename TIterator1, typename TIterator2>
+    template <typename TIterator1>
     static
-    typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value, TIterator2>::type
-      copy_characters(TIterator1 from, size_t n, TIterator2 to)
+    typename etl::enable_if<!(etl::is_pointer<typename etl::remove_reference<TIterator1>::type>::value && sizeof(typename etl::remove_pointer<typename etl::remove_cvref<TIterator1>::type>::type) == sizeof(value_type)), iterator>::type
+      copy_characters(TIterator1 from, size_t n, iterator to)
     {
       size_t count = 0;
 

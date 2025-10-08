@@ -441,7 +441,7 @@ namespace etl
     u32string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : iu32string(buffer, buffer_size - 1U)
     {
-      if (this->is_within_buffer(etl::addressof(*first)))
+      if (this->is_within_buffer(reinterpret_cast<const_iterator>(etl::addressof(*first))))
       {
         this->current_size = etl::distance(first, last);
       }
