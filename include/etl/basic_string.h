@@ -734,17 +734,6 @@ namespace etl
     /// Assigns values to the string.
     /// Truncates if the string does not have enough free space.
     ///\param other The other string.
-    //*********************************************************************
-    template <size_t Size>
-    void assign(const value_type (&literal)[Size])
-    {
-      append_impl(begin(), literal, Size, false, false);
-    }
-
-    //*********************************************************************
-    /// Assigns values to the string.
-    /// Truncates if the string does not have enough free space.
-    ///\param other The other string.
     ///\param length The length to copy.
     //*********************************************************************
     void assign(const_pointer str, size_type n)
