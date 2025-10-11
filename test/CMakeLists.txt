@@ -194,6 +194,7 @@ add_executable(etl_tests
 	test_hash.cpp
 	test_hfsm.cpp
 	test_hfsm_recurse_to_inner_state_on_start.cpp
+	test_hfsm_transition_on_enter.cpp
 	test_histogram.cpp
 	test_index_of_type.cpp
 	test_indirect_vector.cpp

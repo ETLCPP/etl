@@ -161,18 +161,6 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Exception for forbidden state changes.
-  //***************************************************************************
-  class fsm_state_composite_state_change_forbidden : public etl::fsm_exception
-  {
-  public:
-    fsm_state_composite_state_change_forbidden(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:change in composite state forbidden", ETL_FSM_FILE_ID"E"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
   /// Exception for message received but not started.
   //***************************************************************************
   class fsm_not_started : public etl::fsm_exception
@@ -330,7 +318,6 @@ namespace etl
 
       if (p_default_child == ETL_NULLPTR)
       {
-        p_active_child = &state;
         p_default_child = &state;
       }
     }
@@ -481,7 +468,7 @@ namespace etl
     virtual void start(bool call_on_enter_state = true)
     {
       // Can only be started once.
-      if (p_state == ETL_NULLPTR)
+      if (!is_started())
       {
         p_state = state_list[0];
         ETL_ASSERT(p_state != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
@@ -589,7 +576,7 @@ namespace etl
     //*******************************************
     virtual void reset(bool call_on_exit_state = false)
     {
-      if ((p_state != ETL_NULLPTR) && call_on_exit_state)
+      if (is_started() && call_on_exit_state)
       {
         p_state->on_exit_state();
       }
@@ -636,6 +623,12 @@ namespace etl
     //*******************************************
     virtual etl::fsm_state_id_t process_state_change(etl::fsm_state_id_t next_state_id)
     {
+      if (is_self_transition(next_state_id))
+      {
+        p_state->on_exit_state();
+        next_state_id = p_state->on_enter_state();
+      }
+      
       if (have_changed_state(next_state_id))
       {
         ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
@@ -654,11 +647,6 @@ namespace etl
             p_next_state = state_list[next_state_id];
           }
         } while (p_next_state != p_state); // Have we changed state again?
-      }
-      else if (is_self_transition(next_state_id))
-      {
-        p_state->on_exit_state();
-        p_state->on_enter_state();
       }
 
       return p_state->get_state_id();

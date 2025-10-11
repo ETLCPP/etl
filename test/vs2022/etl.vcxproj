@@ -10282,6 +10282,7 @@
     <ClCompile Include="..\test_expected.cpp" />
     <ClCompile Include="..\test_function_traits.cpp" />
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
+    <ClCompile Include="..\test_hfsm_transition_on_enter.cpp" />
     <ClCompile Include="..\test_index_of_type.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
