@@ -1477,7 +1477,7 @@ namespace
   //*************************************************************************
   TEST(test_is_constant_evaluated)
   {
-    const bool c0 = etl::is_constant_evaluated();
+    constexpr bool c0 = etl::is_constant_evaluated();
 #if !ETL_USING_CPP23 && defined(ETL_COMPILER_MICROSOFT)
     // Not supported on MSVC via __has_builtin, see determine_builtin_support.h
     CHECK_FALSE(c0);
