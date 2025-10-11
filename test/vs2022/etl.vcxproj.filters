@@ -1422,12 +1422,6 @@
     <ClInclude Include="..\etl_error_handler\assert_function\etl_profile.h">
       <Filter>Tests\Error Handler\Assert Function</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\singleton_base.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\function_traits.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\type_list.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -1506,9 +1500,6 @@
     <ClInclude Include="..\..\include\etl\crc16_opensafety_b.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc64_iso.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\const_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -1523,6 +1514,18 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\not_null.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton_base.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\signal.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\function_traits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc64_iso.h">
+      <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3711,6 +3714,21 @@
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\delegate_observable.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\signal.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etl_assert.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\signal.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_etl_assert.cpp">
