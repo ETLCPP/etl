@@ -372,25 +372,33 @@ namespace etl
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
-    ETL_CONSTEXPR14 TReturn operator()(TParams... args) const
+    template <typename... TArgs>
+    ETL_CONSTEXPR14
+    return_type operator()(TArgs&&... args) const
     {
+      ETL_STATIC_ASSERT((sizeof...(TArgs) == sizeof...(TParams)), "Incorrect number of parameters passed to delegate");
+      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TArgs&&...>, argument_types>::value), "Incompatible parameter types passed to delegate");
+
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
-      return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      return (*invocation.stub)(invocation.object, etl::forward<TArgs>(args)...);
     }
 
     //*************************************************************************
     /// Execute the delegate if valid.
     /// 'void' return delegate.
     //*************************************************************************
-    template <typename TRet = TReturn>
+    template <typename TRet = TReturn, typename... TArgs>
     ETL_CONSTEXPR14
     typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool>
-      call_if(TParams... args) const
+      call_if(TArgs&&... args) const
     {
+      ETL_STATIC_ASSERT((sizeof...(TArgs) == sizeof...(TParams)), "Incorrect number of parameters passed to delegate");
+      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TArgs&&...>, argument_types>::value), "Incompatible parameter types passed to delegate");
+
       if (is_valid())
       {
-        (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        (*invocation.stub)(invocation.object, etl::forward<TArgs>(args)...);
         return true;
       }
       else
@@ -403,16 +411,19 @@ namespace etl
     /// Execute the delegate if valid.
     /// Non 'void' return delegate.
     //*************************************************************************
-    template <typename TRet = TReturn>
+    template <typename TRet = TReturn, typename... TArgs>
     ETL_CONSTEXPR14
     typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>>
-      call_if(TParams... args) const
+      call_if(TArgs&&... args) const
     {
+      ETL_STATIC_ASSERT((sizeof...(TArgs) == sizeof...(TParams)), "Incorrect number of parameters passed to delegate");
+      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TArgs&&...>, argument_types>::value), "Incompatible parameter types passed to delegate");
+
       etl::optional<TReturn> result;
 
       if (is_valid())
       {
-        result = (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        result = (*invocation.stub)(invocation.object, etl::forward<TArgs>(args)...);
       }
 
       return result;
@@ -422,16 +433,19 @@ namespace etl
     /// Execute the delegate if valid or call alternative.
     /// Run time alternative.
     //*************************************************************************
-    template <typename TAlternative>
-    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const
+    template <typename TAlternative, typename... TArgs>
+    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TArgs&&... args) const
     {
+      ETL_STATIC_ASSERT((sizeof...(TArgs) == sizeof...(TParams)), "Incorrect number of parameters passed to delegate");
+      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TArgs&&...>, argument_types>::value), "Incompatible parameter types passed to delegate");
+
       if (is_valid())
       {
-        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        return (*invocation.stub)(invocation.object, etl::forward<TArgs>(args)...);
       }
       else
       {
-        return alternative(etl::forward<TParams>(args)...);
+        return alternative(etl::forward<TArgs>(args)...);
       }
     }
 
@@ -439,16 +453,19 @@ namespace etl
     /// Execute the delegate if valid or call alternative.
     /// Compile time alternative.
     //*************************************************************************
-    template <TReturn(*Method)(TParams...)>
-    ETL_CONSTEXPR14 TReturn call_or(TParams... args) const
+    template <TReturn(*Method)(TParams...), typename... TArgs>
+    ETL_CONSTEXPR14 TReturn call_or(TArgs&&... args) const
     {
+      ETL_STATIC_ASSERT((sizeof...(TArgs) == sizeof...(TParams)), "Incorrect number of parameters passed to delegate");
+      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TArgs&&...>, argument_types>::value), "Incompatible parameter types passed to delegate");
+
       if (is_valid())
       {
-        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        return (*invocation.stub)(invocation.object, etl::forward<TArgs>(args)...);
       }
       else
       {
-        return (Method)(etl::forward<TParams>(args)...);
+        return (Method)(etl::forward<TArgs>(args)...);
       }
     }
 
