@@ -39,6 +39,11 @@ SOFTWARE.
 #include <type_traits>
 #include <stdexcept>
 
+// Enable exactly one of these at a time to see the corresponding static_assert fire.
+// #define ETL_NEGATIVE_TEST_DELEGATE_BAD_RETURN
+// #define ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_NONCONST
+// #define ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_CONST
+
 namespace
 {
   //*****************************************************************************
@@ -1977,6 +1982,43 @@ namespace
       CHECK(*itr != d2);
       CHECK(*itr == d3);
     }
+
+#if defined(ETL_NEGATIVE_TEST_DELEGATE_BAD_RETURN)
+    //*************************************************************************
+    // Triggers: return type not convertible (void -> int)
+    TEST(test_delegate_static_assert_bad_return)
+    {
+      auto bad = [](int) { /* returns void */ };
+      // static_assert in lambda_stub/const_lambda_stub should trigger:
+      // "etl::delegate: bound lambda/functor is not compatible with the delegate signature"
+      auto d = etl::delegate<int(int)>::create(bad);
+      (void)d;
+    }
+#endif
+
+#if defined(ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_NONCONST)
+    //*************************************************************************
+    // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda takes lvalue ref)
+    TEST(test_delegate_static_assert_param_mismatch_nonconst)
+    {
+      auto bad = [](int&) { /* needs lvalue */ };
+      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
+      auto d = etl::delegate<void(int&&)>::create(bad);
+      (void)d;
+    }
+#endif
+
+#if defined(ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_CONST)
+    //*************************************************************************
+    // Same as above, but binds a const lambda to hit const_lambda_stub
+    TEST(test_delegate_static_assert_param_mismatch_const)
+    {
+      const auto bad = [](int&) { /* needs lvalue */ };
+      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
+      auto d = etl::delegate<void(int&&)>::create(bad);
+      (void)d;
+    }
+#endif
   };
 }
 
