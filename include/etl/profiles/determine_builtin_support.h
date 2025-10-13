@@ -59,6 +59,26 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
     #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED 1
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMCPY)
+    #define ETL_USING_BUILTIN_MEMCPY 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
+    #define ETL_USING_BUILTIN_MEMMOVE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMSET)
+    #define ETL_USING_BUILTIN_MEMSET 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMCMP)
+    #define ETL_USING_BUILTIN_MEMCMP 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMCHR)
+    #define ETL_USING_BUILTIN_MEMCHR 1
+  #endif
 #endif
 
 #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for existence of builtin functions? Fix VS2022 intellisense issue.
