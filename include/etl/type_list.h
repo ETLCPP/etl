@@ -206,6 +206,52 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// Defines a bool constant that is true if the type_list has duplicates of the specified type, otherwise false.
+  //***************************************************************************
+  template <typename T, typename TTypes>
+  struct type_list_has_duplicates_of;
+
+  template <typename T, typename... TTypes>
+  struct type_list_has_duplicates_of<etl::type_list<TTypes...>, T>
+    : public etl::has_duplicates_of<T, TTypes...>
+  {
+  };
+
+  template <typename T>
+  struct type_list_has_duplicates_of<type_list<>, T>
+    : public etl::integral_constant<bool, false>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList, typename T>
+  inline constexpr bool type_list_has_duplicates_of_v = etl::type_list_has_duplicates_of<TTypeList, T>::value;
+#endif
+
+  //***************************************************************************
+  /// Defines an integral constant that is the count of the number of times a type is in the type list.
+  //***************************************************************************
+  template <typename T, typename TTypes>
+  struct type_list_count_of;
+
+  template <typename T, typename... TTypes>
+  struct type_list_count_of<etl::type_list<TTypes...>, T>
+    : public etl::count_of<T, TTypes...>
+  {
+  };
+
+  template <typename T>
+  struct type_list_count_of<type_list<>, T>
+    : public etl::integral_constant<size_t, 0>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList, typename T>
+  inline constexpr size_t type_list_count_of_v = etl::type_list_count_of<TTypeList, T>::value;
+#endif
+
+  //***************************************************************************
   /// Defines an integral constant that is maximum sizeof all types in the type_list.
   /// If the type_list is empty, then defined as 0.
   //***************************************************************************

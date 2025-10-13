@@ -106,6 +106,60 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_type_list_has_duplicates_of)
+    {
+      typedef etl::type_list<char, int, uint32_t> t1;
+      typedef etl::type_list<uint8_t, uint16_t, uint8_t>   t2;
+      typedef etl::type_list<uint16_t> t3;
+      typedef etl::type_list<> t4;
+
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t1,  char>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t1, uint8_t>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t2, int>::value));
+      CHECK_TRUE((etl::type_list_has_duplicates_of<t2,  uint8_t>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t3,  uint16_t>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t3, uint32_t>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t4, uint32_t>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t1,  char>));
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t1, uint8_t>));
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t2, int>));
+      CHECK_TRUE((etl::type_list_has_duplicates_of_v<t2,  uint8_t>));
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t3,  uint16_t>));
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t3, uint32_t>));
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t4, uint32_t>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_count_of)
+    {
+      typedef etl::type_list<char, int, uint32_t> t1;
+      typedef etl::type_list<uint8_t, uint16_t, uint8_t>   t2;
+      typedef etl::type_list<uint16_t> t3;
+      typedef etl::type_list<> t4;
+
+      CHECK_EQUAL(1, (etl::type_list_count_of<t1,  char>::value));
+      CHECK_EQUAL(0, (etl::type_list_count_of<t1, uint8_t>::value));
+      CHECK_EQUAL(0, (etl::type_list_count_of<t2, int>::value));
+      CHECK_EQUAL(2, (etl::type_list_count_of<t2,  uint8_t>::value));
+      CHECK_EQUAL(1, (etl::type_list_count_of<t3,  uint16_t>::value));
+      CHECK_EQUAL(0, (etl::type_list_count_of<t3, uint32_t>::value));
+      CHECK_EQUAL(0, (etl::type_list_count_of<t4, uint32_t>::value));
+
+#if ETL_USING_CPP17
+      CHECK_EQUAL(1, (etl::type_list_count_of_v<t1,  char>));
+      CHECK_EQUAL(0, (etl::type_list_count_of_v<t1, uint8_t>));
+      CHECK_EQUAL(0, (etl::type_list_count_of_v<t2, int>));
+      CHECK_EQUAL(2, (etl::type_list_count_of_v<t2,  uint8_t>));
+      CHECK_EQUAL(1, (etl::type_list_count_of_v<t3,  uint16_t>));
+      CHECK_EQUAL(0, (etl::type_list_count_of_v<t3, uint32_t>));
+      CHECK_EQUAL(0, (etl::type_list_count_of_v<t4, uint32_t>));
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_type_list_index_of_type)
     {
       typedef etl::type_list<char, int, uint32_t> t1;
