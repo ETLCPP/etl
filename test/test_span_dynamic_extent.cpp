@@ -438,6 +438,14 @@ namespace
 
       CHECK_EQUAL(etldata.back(), view.back());
       CHECK_EQUAL(etldata.back(), cview.back());
+
+      View empty_view;
+      CHECK_THROW({ auto front = empty_view.front(); (void)front; }, etl::span_out_of_range);
+      CHECK_THROW({ auto back = empty_view.back(); (void)back; }, etl::span_out_of_range);
+
+      CView empty_cview;
+      CHECK_THROW({ auto front = empty_cview.front(); (void)front; }, etl::span_out_of_range);
+      CHECK_THROW({ auto back = empty_cview.back(); (void)back; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -462,8 +470,8 @@ namespace
         CHECK_EQUAL(etldata.at(i), cview.at(i));
       }
 
-      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::array_out_of_range);
-      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::array_out_of_range);
+      CHECK_THROW({ int d = view.at(view.size()); (void)d; }, etl::span_out_of_range);
+      CHECK_THROW({ int d = cview.at(cview.size()); (void)d; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -477,6 +485,9 @@ namespace
         CHECK_EQUAL(etldata[i], view[i]);
         CHECK_EQUAL(etldata[i], cview[i]);
       }
+
+      CHECK_THROW({ int d = view[view.size()]; (void)d; }, etl::span_out_of_range);
+      CHECK_THROW({ int d = cview[cview.size()]; (void)d; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -559,6 +570,9 @@ namespace
       CHECK(isEqual);
       CHECK_EQUAL(first.size(), cresult.extent);
       CHECK_EQUAL(first.size(), cresult.size());
+
+      CHECK_THROW({ auto result2 = view.first<9>(); (void)result2; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cresult2 = cview.first<9>(); (void)cresult2; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -580,6 +594,9 @@ namespace
       isEqual = std::equal(cresult.begin(), cresult.end(), first.begin());
       CHECK(isEqual);
       CHECK_EQUAL(first.size(), cresult.size());
+
+      CHECK_THROW({ auto result2 = view.first(9); (void)result2; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cresult2 = cview.first(9); (void)cresult2; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -603,6 +620,9 @@ namespace
       CHECK(isEqual);
       CHECK_EQUAL(last.size(), cresult.extent);
       CHECK_EQUAL(last.size(), cresult.size());
+
+      CHECK_THROW({ auto result2 = view.last<9>(); (void)result2; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cresult2 = cview.last<9>(); (void)cresult2; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -624,6 +644,9 @@ namespace
       isEqual = std::equal(cresult.begin(), cresult.end(), last.begin());
       CHECK(isEqual);
       CHECK_EQUAL(last.size(), cresult.size());
+
+      CHECK_THROW({ auto result2 = view.last(9); (void)result2; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cresult2 = cview.last(9); (void)cresult2; }, etl::span_out_of_range);
     }
 
     //*************************************************************************
@@ -685,6 +708,19 @@ namespace
       CHECK_EQUAL(etl::dynamic_extent, cspan4.extent);
       CHECK_EQUAL(sub2.size(), cspan4.size());
 
+      CHECK_THROW({ auto span5 = view.subspan<9>(); (void)span5; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cspan5 = cview.subspan<9>(); (void)cspan5; }, etl::span_out_of_range);
+
+      #define SPAN6_EXPR { auto span6 = view.subspan<2, 7>(); (void)span6; }
+      CHECK_THROW(SPAN6_EXPR, etl::span_out_of_range);
+      #define CSPAN6_EXPR { auto cspan6 = cview.subspan<2, 7>(); (void)cspan6; }
+      CHECK_THROW(CSPAN6_EXPR, etl::span_out_of_range);
+
+      CHECK_THROW({ auto span7 = view.subspan(9); (void)span7; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cspan7 = cview.subspan(9); (void)cspan7; }, etl::span_out_of_range);
+
+      CHECK_THROW({ auto span8 = view.subspan(2, 7); (void)span8; }, etl::span_out_of_range);
+      CHECK_THROW({ auto cspan8 = cview.subspan(2, 7); (void)cspan8; }, etl::span_out_of_range);
     }
 
     //*************************************************************************

@@ -103,6 +103,20 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup span
+  /// The out of range exceptions.
+  //***************************************************************************
+  class span_out_of_range : public span_exception
+  {
+  public:
+
+    span_out_of_range(string_type file_name_, numeric_type line_number_)
+      : span_exception(ETL_ERROR_TEXT("span:range", ETL_SPAN_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Span - Fixed Extent
   //***************************************************************************
   template <typename T, size_t Extent = etl::dynamic_extent>
@@ -241,6 +255,8 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(Extent > 0, "Span is empty");
+
       return *pbegin;
     }
 
@@ -249,6 +265,8 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(Extent > 0, "Span is empty");
+
       return *((pbegin + Extent) - 1);
     }
 
@@ -386,7 +404,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i)
     {
-      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT(i < size(), ETL_ERROR(span_out_of_range));
 
       return pbegin[i];
     }
@@ -396,7 +414,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const
     {
-      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT(i < size(), ETL_ERROR(span_out_of_range));
 
       return pbegin[i];
     }
@@ -406,7 +424,13 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference operator[](const size_t i) const
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR
+      return i < size() ? pbegin[i] : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(span_out_of_range));
+
       return pbegin[i];
+#endif
     }
 
     //*************************************************************************
@@ -416,7 +440,7 @@ namespace etl
     ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> first() const ETL_NOEXCEPT
     {
       // If Extent is static, check that original span contains at least COUNT elements
-      ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) ? COUNT <= Extent : true, "Original span does not contain COUNT elements");
+      ETL_STATIC_ASSERT(COUNT <= Extent, "Original span does not contain COUNT elements");
 
       return etl::span<element_type, COUNT>(pbegin, pbegin + COUNT);
     }
@@ -424,9 +448,15 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view over the first count elements of this span.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return count <= size() ? etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count) : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(count <= size(), ETL_ERROR(span_out_of_range));
+      
       return etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count);
+#endif
     }
 
     //*************************************************************************
@@ -436,7 +466,7 @@ namespace etl
     ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> last() const ETL_NOEXCEPT
     {
       // If Extent is static, check that original span contains at least COUNT elements
-      ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) ? COUNT <= Extent : true, "Original span does not contain COUNT elements");
+      ETL_STATIC_ASSERT(COUNT <= Extent, "Original span does not contain COUNT elements");
 
       return etl::span<element_type, COUNT>(pbegin + Extent - COUNT, (pbegin + Extent));
     }
@@ -444,9 +474,17 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view over the last count elements of this span.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return count <= size() ? 
+        etl::span<element_type, etl::dynamic_extent>((pbegin + Extent) - count, (pbegin + Extent)) : 
+        throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(count <= size(), ETL_ERROR(span_out_of_range));
+
       return etl::span<element_type, etl::dynamic_extent>((pbegin + Extent) - count, (pbegin + Extent));
+#endif
     }
 
 #if ETL_USING_CPP11
@@ -458,10 +496,10 @@ namespace etl
       etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
       // If Extent is static, check that OFFSET is within the original span
-      ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) ? OFFSET <= Extent : true, "OFFSET is not within the original span");
+      ETL_STATIC_ASSERT(OFFSET <= Extent, "OFFSET is not within the original span");
 
       // If count is also static, check that OFFSET + COUNT is within the original span
-      ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) && (COUNT != etl::dynamic_extent) ? COUNT <= (Extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
+      ETL_STATIC_ASSERT((COUNT != etl::dynamic_extent) ? COUNT <= (Extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
 
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, (pbegin + Extent))
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
@@ -474,10 +512,10 @@ namespace etl
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
     {
       // If Extent is static, check that OFFSET is within the original span
-      ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) ? OFFSET <= Extent : true, "OFFSET is not within the original span");
+      ETL_STATIC_ASSERT(OFFSET <= Extent, "OFFSET is not within the original span");
 
       // If count is also static, check that OFFSET + COUNT is within the original span
-      ETL_STATIC_ASSERT((Extent != etl::dynamic_extent) && (COUNT != etl::dynamic_extent) ? COUNT <= (Extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
+      ETL_STATIC_ASSERT((COUNT != etl::dynamic_extent) ? COUNT <= (Extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
 
       if (COUNT == etl::dynamic_extent)
       {
@@ -493,10 +531,20 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from 'offset' over the next 'count' elements of this span.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return (offset <= size()) && (count != etl::dynamic_extent ? count <= (size() - offset) : true) ?
+        ((count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent))
+                                        : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count)) :
+        throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(offset <= size(), ETL_ERROR(span_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(count != etl::dynamic_extent ? count <= (size() - offset) : true, ETL_ERROR(span_out_of_range));
+
       return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent))
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
+#endif
     }
 
     //*************************************************************************
@@ -667,17 +715,29 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the first element.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reference front() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return size() > 0 ? *pbegin : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(span_out_of_range));
+
       return *pbegin;
+#endif
     }
 
     //*************************************************************************
     /// Returns a reference to the last element.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reference back() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return size() > 0 ? *(pend - 1) : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(span_out_of_range));
+
       return *(pend - 1);
+#endif
     }
 
     //*************************************************************************
@@ -815,7 +875,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i)
     {
-      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT(i < size(), ETL_ERROR(span_out_of_range));
 
       return pbegin[i];
     }
@@ -825,7 +885,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const
     {
-      ETL_ASSERT(i < size(), ETL_ERROR(array_out_of_range));
+      ETL_ASSERT(i < size(), ETL_ERROR(span_out_of_range));
 
       return pbegin[i];
     }
@@ -835,41 +895,71 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference operator[](const size_t i) const
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR
+      return i < size() ? pbegin[i] : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(span_out_of_range));
+
       return pbegin[i];
+#endif
     }
 
     //*************************************************************************
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> first() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> first() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return COUNT <= size() ? etl::span<element_type, COUNT>(pbegin, pbegin + COUNT) : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(COUNT <= size(), ETL_ERROR(span_out_of_range));
+
       return etl::span<element_type, COUNT>(pbegin, pbegin + COUNT);
+#endif
     }
 
     //*************************************************************************
     /// Obtains a span that is a view over the first count elements of this span.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return count <= size() ? etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count) : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(count <= size(), ETL_ERROR(span_out_of_range));
+
       return etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count);
+#endif
     }
 
     //*************************************************************************
     /// Obtains a span that is a view over the last COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> last() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> last() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return COUNT <= size() ? etl::span<element_type, COUNT>(pend - COUNT, pend) : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(COUNT <= size(), ETL_ERROR(span_out_of_range));
+
       return etl::span<element_type, COUNT>(pend - COUNT, pend);
+#endif
     }
 
     //*************************************************************************
     /// Obtains a span that is a view over the last count elements of this span.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return count <= size() ? etl::span<element_type, etl::dynamic_extent>(pend - count, pend) : throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(count <= size(), ETL_ERROR(span_out_of_range));
+
       return etl::span<element_type, etl::dynamic_extent>(pend - count, pend);
+#endif
     }
 
 #if ETL_USING_CPP11
@@ -878,10 +968,20 @@ namespace etl
     //*************************************************************************
     template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR
-      etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
+      etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return (OFFSET <= size()) && (COUNT != etl::dynamic_extent ? COUNT <= (size() - OFFSET) : true) ?
+        ((COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend)
+                                        : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT)) :
+        throw(ETL_ERROR(span_out_of_range));
+#else
+      ETL_ASSERT_CHECK_EXTRA(OFFSET <= size(), ETL_ERROR(span_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(COUNT != etl::dynamic_extent ? COUNT <= (size() - OFFSET) : true, ETL_ERROR(span_out_of_range));
+
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend)
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
+#endif
     }
 #else
     //*************************************************************************
@@ -890,6 +990,9 @@ namespace etl
     template <size_t OFFSET, size_t COUNT>
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
     {
+      ETL_ASSERT_CHECK_EXTRA(OFFSET <= size(), ETL_ERROR(span_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(COUNT != etl::dynamic_extent ? COUNT <= (size() - OFFSET) : true, ETL_ERROR(span_out_of_range));
+
       if (COUNT == etl::dynamic_extent)
       {
         return etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend);
@@ -904,8 +1007,11 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from 'offset' over the next 'count' elements of this span.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(offset <= size(), ETL_ERROR(span_out_of_range));
+      ETL_ASSERT_CHECK_EXTRA(count != etl::dynamic_extent ? count <= (size() - offset) : true, ETL_ERROR(span_out_of_range));
+
       return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend)
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }

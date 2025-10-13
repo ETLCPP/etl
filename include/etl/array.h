@@ -159,7 +159,7 @@ namespace etl
     ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_DEBUG_NOT_USING_EXCEPTIONS)
     {
       // Throwing from c++11 constexpr requires special syntax
-#if ETL_USING_CPP11 && !ETL_USING_CPP14 && ETL_USING_EXCEPTIONS && defined(ETL_CHECK_INDEX_OPERATOR)
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR
       return i < SIZE ? _buffer[i] : throw(ETL_ERROR(array_out_of_range));
 #else
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(array_out_of_range));
