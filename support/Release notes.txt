@@ -1,4 +1,24 @@
 ﻿===============================================================================
+20.44.0
+
+Fixes:
+#1186 Fix usage of noexcept
+#1203 Potential issue with forwarding in etl::delegate
+
+Pull Requests:
+#1012 Implement Signal
+#1155 Added callbacks when a timer is inserted or removed
+#1175 Debug assert
+#1188 etl::array checks
+#1190 Enforce Semicolon after ETL_ASSERT
+#1191 Introduce Cast to void for Condition of Assert
+#1192 Allow easy Creation of Generic Exceptions with just a Text
+#1195 Added conditional support of noexcept to fix IAR support
+#1196 Added back in support for populating non 8 bit strings with 8 bit data
+#1198 Add etl::is_constant_evaluated
+#1199 Added support for transitions on state enter for HFSM
+
+===============================================================================
 20.43.4
 
 #1185 Remove noexcept from delegate method stubs.
@@ -26,7 +46,7 @@ Added automatic use of __builtin_memcpy, __builtin_memmove, __builtin_memset, __
       Added etl::typed_storage_ext to wrap external storage.
 
 Fixes:
-#1171 optional of a const arary can't be emplaced with gcc-15
+#1171 optional of a const array can't be emplaced with gcc-15
 #1176 Fix GCC __builtin_memcpy errors when compiling with -O2 optimisation
 #1180 Duplicate definition of const_reference in etl::const_set_ext
 #1181 Compilation errors on basic_string
