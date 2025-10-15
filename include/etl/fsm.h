@@ -180,7 +180,7 @@ namespace etl
   {
   public:
     fsm_reentrant_transition_forbidden(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:reentrant calls to  start/receive/etc. forbidden", ETL_FSM_FILE_ID"G"), file_name_, line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:reentrant calls to start/receive/etc. forbidden", ETL_FSM_FILE_ID"G"), file_name_, line_number_)
     {
     }
   };
