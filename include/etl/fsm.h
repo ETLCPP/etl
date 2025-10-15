@@ -250,8 +250,14 @@ namespace etl
       {
         is_locked = false;
       }
-
+      
     private:
+      // Copy & move semantics disabled since this is a guard.
+      fsm_reentrancy_guard(fsm_reentrancy_guard const&) ETL_DELETE;
+      fsm_reentrancy_guard(fsm_reentrancy_guard&&) ETL_DELETE;
+      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard const&) ETL_DELETE;
+      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard&&) ETL_DELETE;
+
       // Reference to the flag signifying a lock on the state machine.
       bool& is_locked;
     };
