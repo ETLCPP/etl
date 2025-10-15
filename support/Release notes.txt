@@ -1,22 +1,32 @@
 ﻿===============================================================================
 20.44.0
 
+Updates:
+Added etl::type_list_has_duplicates_of and etl::type_list_count_of
+
 Fixes:
 #1186 Fix usage of noexcept
 #1203 Potential issue with forwarding in etl::delegate
+      Improved forwarding of arguments to bound functions.
+      Added compile time checks for functors and lambdas argument compatibility.
 
 Pull Requests:
 #1012 Implement Signal
+      A signal/slot implementation.
 #1155 Added callbacks when a timer is inserted or removed
 #1175 Debug assert
+      Added ETL_DEBUG_ASSERT macro, which is a debug only assert.
+      Added extra assert enable/disable macros.
 #1188 etl::array checks
-#1190 Enforce Semicolon after ETL_ASSERT
-#1191 Introduce Cast to void for Condition of Assert
-#1192 Allow easy Creation of Generic Exceptions with just a Text
+#1190 Enforce semicolon after ETL_ASSERT
+#1191 Introduce cast to void for condition of assert
+      Avoids compiler warnings for unused results of ETL_ASSERT and ETL_DEBUG_ASSERT
+#1192 Allow easy creation of generic exceptions with just a text
 #1195 Added conditional support of noexcept to fix IAR support
 #1196 Added back in support for populating non 8 bit strings with 8 bit data
 #1198 Add etl::is_constant_evaluated
 #1199 Added support for transitions on state enter for HFSM
+#1201 etl::span checks
 
 ===============================================================================
 20.43.4
