@@ -139,6 +139,310 @@ namespace
 {
   SUITE(test_expected)
   {
+    /** OR ELSE */
+    TEST(test_or_else_with_value) {
+      struct OrElse{
+        Expected produceValue() {
+          return Value("produceValue()");
+        }
+      };
+
+      OrElse orElse;
+      bool errorGenerated {false};
+      auto expected = orElse.produceValue().or_else([&errorGenerated](Error e) -> Expected{
+        errorGenerated = true;
+        return Unexpected(e);
+      });
+      CHECK_TRUE(errorGenerated == false);
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("produceValue()", expected.value().v);
+    }
+
+    TEST(test_or_else_with_value_move_constructor) {
+      struct OrElse{
+        ExpectedM produceValueM() {
+          auto s = "produceValueM()";
+          return ValueM(etl::move(s));
+        }
+      };
+
+      OrElse orElse;
+      bool errorGenerated {false};
+      auto expected = orElse.produceValueM().or_else([&errorGenerated](ErrorM e) -> ExpectedM {
+        errorGenerated = true;
+        UnexpectedM unexpected(etl::move(e));
+        return ExpectedM(etl::move(unexpected));
+      });
+      CHECK_TRUE(errorGenerated == false);
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("produceValueM()", expected.value().v);
+    }
+
+    TEST(test_or_else_with_error) {
+      struct OrElse{
+        Expected produceError() {
+          return Unexpected(Error("produceError()"));
+        }
+      };
+
+      OrElse orElse;
+      bool errorGenerated {false};
+      auto expected = orElse.produceError().or_else([&errorGenerated](Error e) -> Expected {
+        CHECK_EQUAL("produceError()", e.e);
+        errorGenerated = true;
+        return Unexpected(e);
+      });
+      CHECK_TRUE(errorGenerated == true);
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceError()", expected.error().e);
+    }
+
+    TEST(test_or_else_with_error_move_constructor) {
+      struct OrElse{
+        ExpectedM produceErrorM() {
+          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
+        }
+      };
+
+      OrElse orElse;
+      bool errorGenerated {false};
+      auto expected = orElse.produceErrorM().or_else([&errorGenerated](ErrorM e) -> ExpectedM {
+        CHECK_EQUAL("produceErrorM()", e.e);
+        errorGenerated = true;
+        UnexpectedM unexpected(etl::move(e));
+        return ExpectedM(etl::move(unexpected));
+      });
+      CHECK_TRUE(errorGenerated == true);
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceErrorM()", expected.error().e);
+    }
+    /** OR ELSE */
+
+
+    /** TRANSFORM */
+    TEST(test_transform_with_value) {
+      struct Transform{
+        Expected produceValue() {
+          return Value("produceValue()");
+        }
+      };
+
+      Transform transform;
+      auto expected = transform.produceValue().transform([](Value v) {
+        CHECK_EQUAL("produceValue()", v.v);
+        auto s = v.v.append(" transformed");
+        return s;
+      });
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("produceValue() transformed", expected.value());
+    }
+
+    TEST(test_transform_with_value_move_constructor) {
+      struct Transform{
+        ExpectedM produceValueM() {
+          auto s = "produceValueM()";
+          return ValueM(etl::move(s));
+        }
+      };
+
+      Transform transform;
+      auto expected = transform.produceValueM().transform([](ValueM v) {
+        CHECK_EQUAL("produceValueM()", v.v);
+        auto s = v.v.append(" transformed");
+        return ValueM(etl::move(s));
+      });
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("produceValueM() transformed", expected.value().v);
+    }
+
+    TEST(test_transform_with_error) {
+      struct Transform{
+        Expected produceError() {
+          return Unexpected(Error("produceError()"));
+        }
+      };
+
+      Transform transform;
+      auto expected = transform.produceError().transform([](Value v) {
+        CHECK_EQUAL("produceValue()", v.v);
+        auto s = v.v.append(" transformed");
+        return s;
+      });
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceError()", expected.error().e);
+    }
+
+    TEST(test_transform_with_error_move_constructor) {
+      struct Transform{
+        ExpectedM produceErrorM() {
+          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
+        }
+      };
+
+      Transform transform;
+      auto expected = transform.produceErrorM().transform([](ValueM v) {
+        CHECK_EQUAL("produceValue()", v.v);
+        auto s = v.v.append(" transformed");
+        return s;
+      });
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceErrorM()", expected.error().e);
+    }
+    /** TRANSFORM */
+    
+    /** AND_THEN */
+    TEST(test_and_then_with_value) {
+      struct AndThen{
+        Expected produceValue() {
+          return Value("produceValue()");
+        }
+      };
+
+      AndThen andThen;
+      auto expected = andThen.produceValue().and_then([](Value v) -> Expected{
+        CHECK_EQUAL("produceValue()", v.v);
+        return Value("and_then");
+      });
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("and_then", expected.value().v);
+    }
+
+    TEST(test_and_then_with_value_move_constructor) {
+      struct AndThen{
+        ExpectedM produceValue() {
+          return ValueM("produceValueM()");
+        }
+      };
+
+      AndThen andThen;
+      auto expected = andThen.produceValue().and_then([](ValueM v) -> ExpectedM {
+        CHECK_EQUAL("produceValueM()", v.v);
+        auto s = "and_then";
+        return ValueM(etl::move(s));
+      });
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("and_then", expected.value().v);
+    }
+
+    TEST(test_and_then_with_error) {
+      struct AndThen{
+        Expected produceError() {
+          return Unexpected(Error("produceError()"));
+        }
+      };
+
+      AndThen andThen;
+      auto expected = andThen.produceError().and_then([](Value v) -> Expected{
+        CHECK_EQUAL("produceValue()", v.v);
+        return Value("and_then");
+      });
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceError()", expected.error().e);
+    }
+
+    TEST(test_and_then_with_error_move_constructor) {
+      struct AndThen{
+        ExpectedM produceErrorM() {
+          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
+        }
+      };
+
+      AndThen andThen;
+      auto expected = andThen.produceErrorM().and_then([](ValueM v) -> ExpectedM {
+        CHECK_EQUAL("produceValueM()", v.v);
+        auto s = "and_then";
+        return ValueM(etl::move(s));
+      });
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceErrorM()", expected.error().e);
+    }
+    /** AND_THEN */
+
+    TEST(test_transform_error_with_value) {
+      struct TransformError {
+        Expected produceValue() {
+          return Value("produceValue()");
+        }
+      };
+
+      TransformError transformError;
+      auto expected = transformError.produceValue().transform_error([](Error e) {
+        auto s = e.e.append("_transform_error");
+        return s;
+      });
+
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("produceValue()", expected.value().v);
+    }
+
+    TEST(test_transform_error_with_value_move_constructor) {
+      struct TransformError {
+        ExpectedM produceValueM() {
+          auto s = "produceValueM()";
+          return ValueM(etl::move(s));
+        }
+      };
+
+      TransformError transformError;
+      auto expected = transformError.produceValueM().transform_error([](ErrorM e) {
+        auto s = e.e.append("_transform_error");
+        return etl::move(s);
+      });
+
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
+      CHECK_EQUAL("produceValueM()", expected.value().v);
+    }
+
+    TEST(test_transform_error_with_error) {
+      struct TransformError {
+        Expected produceError() {
+          return Unexpected(Error("produceError()"));
+        }
+      };
+
+      TransformError transformError;
+      auto expected = transformError.produceError().transform_error([](Error e) {
+        auto s = e.e.append("_transform_error");
+        return s;
+      });
+
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceError()_transform_error", expected.error());
+    }
+
+    TEST(test_transform_error_with_error_move_constructor) {
+      struct TransformError {
+        ExpectedM produceErrorM() {
+          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
+        }
+      };
+
+      TransformError transformError;
+      auto expected = transformError.produceErrorM().transform_error([](ErrorM e) {
+        auto s = e.e.append("_transform_error");
+        return s;
+      });
+
+      CHECK_TRUE(!expected.has_value());
+      CHECK_TRUE(!bool(expected));
+      CHECK_EQUAL("produceErrorM()_transform_error", expected.error());
+    }
+
     //*************************************************************************
     TEST(test_default_constructor)
     {
