@@ -3524,6 +3524,7 @@
     <ClInclude Include="..\..\include\etl\function_traits.h" />
     <ClInclude Include="..\..\include\etl\gcd.h" />
     <ClInclude Include="..\..\include\etl\index_of_type.h" />
+    <ClInclude Include="..\..\include\etl\inplace_function.h" />
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
@@ -10284,6 +10285,7 @@
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
     <ClCompile Include="..\test_hfsm_transition_on_enter.cpp" />
     <ClCompile Include="..\test_index_of_type.cpp" />
+    <ClCompile Include="..\test_inplace_function.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
     <ClCompile Include="..\test_math.cpp" />
