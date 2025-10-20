@@ -1,4 +1,15 @@
 ﻿===============================================================================
+20.44.1
+
+Updates:
+Added perfect forwarding for alternative callback for etl::delegate::call_or()
+
+Pull Requests:
+#1208 array noexcept expr
+      Fixed ETL_NOEXCEPT_EXPR for etl::array
+      Added ETL_NOEXCEPT for zero sized etl::array specialisation.
+
+===============================================================================
 20.44.0
 
 Updates:

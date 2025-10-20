@@ -434,7 +434,7 @@ namespace etl
     /// Run time alternative.
     //*************************************************************************
     template <typename TAlternative, typename... TCallArgs>
-    ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TCallArgs&&... args) const
+    ETL_CONSTEXPR14 TReturn call_or(TAlternative&& alternative, TCallArgs&&... args) const
     {
       ETL_STATIC_ASSERT((sizeof...(TCallArgs) == sizeof...(TArgs)), "Incorrect number of parameters passed to delegate");
       ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TCallArgs&&...>, argument_types>::value), "Incompatible parameter types passed to delegate");
@@ -445,7 +445,7 @@ namespace etl
       }
       else
       {
-        return alternative(etl::forward<TCallArgs>(args)...);
+        return etl::forward<TAlternative>(alternative)(etl::forward<TCallArgs>(args)...);
       }
     }
 
