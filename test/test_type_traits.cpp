@@ -821,6 +821,7 @@ namespace
       struct A { };
       struct B : public A { };
       struct C { };
+      struct D : private A { };
 
       CHECK((std::is_base_of<A, A>::value) == (etl::is_base_of<A, A>::value));
       CHECK((std::is_base_of<A, B>::value) == (etl::is_base_of<A, B>::value));
@@ -831,6 +832,8 @@ namespace
       CHECK((std::is_base_of<C, A>::value) == (etl::is_base_of<C, A>::value));
       CHECK((std::is_base_of<C, B>::value) == (etl::is_base_of<C, B>::value));
       CHECK((std::is_base_of<C, C>::value) == (etl::is_base_of<C, C>::value));
+      CHECK((std::is_base_of<D, A>::value) == (etl::is_base_of<D, A>::value));
+      CHECK((std::is_base_of<A, D>::value) == (etl::is_base_of<A, D>::value));
 
       CHECK((std::is_base_of<char, char>::value) == (etl::is_base_of<char, char>::value));
       CHECK((std::is_base_of<char, int>::value)  == (etl::is_base_of<char, int>::value));
