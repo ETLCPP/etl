@@ -843,6 +843,19 @@ namespace
       auto func3 = etl::make_inplace_function(StaticReturnFunction);
       int result3 = func3();
 
+      //bool is_same1 = (func == func);
+      bool is_same2 = (func == func2);
+      //bool is_same3 = (func2 == func3);
+
+      TestClass testClass;
+      etl::inplace_function<int(), 10, 4> func4(testClass, &TestClass::MemberReturn);
+
+      using ETL_OR_STD::swap;
+      swap(func, func4);
+
+      result      = func();
+      int result4 = func4();
+
       //CHECK_TRUE(func.is_valid());
       //CHECK_TRUE(func);
       //CHECK_EQUAL(1, result);
@@ -1849,7 +1862,6 @@ namespace
       int result = func();
 
       auto result2 = func.call_if();
-
       auto result3 = func.call_or([]() { return 1; });
 
       auto func4 = etl::make_inplace_function(testClass, &TestClass::MemberReturn);

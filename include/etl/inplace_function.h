@@ -37,10 +37,31 @@ SOFTWARE.
 #include "placement_new.h"
 #include "type_traits.h"
 #include "error_handler.h"
+#include "exception.h"
 #include "file_error_numbers.h"
 
 namespace etl
 {
+  class inplace_function_exception : public etl::exception
+  {
+  public:
+
+    inplace_function_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  class inplace_function_uninitialized : public inplace_function_exception
+  {
+  public:
+
+    inplace_function_uninitialized(string_type file_name_, numeric_type line_number_)
+      : inplace_function_exception(ETL_ERROR_TEXT("inplace_function:inplace_function_uninitialized", ETL_INPLACE_FUNCTION_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   //*************************************************************************
   /// VTable for inplace_function
   //*************************************************************************
@@ -58,14 +79,14 @@ namespace etl
     copy_type    copy    = ETL_NULLPTR;
 
     template <typename T>
-    struct member_state
+    struct member_target
     {
       T* obj;
       TReturn (T::*member)(TArgs...);
     };
 
     template <typename T>
-    struct const_member_state
+    struct const_member_target
     {
       const T* obj;
       TReturn (T::*member)(TArgs...) const;
@@ -99,18 +120,18 @@ namespace etl
     template <typename T>
     static const inplace_function_vtable* for_member() 
     {
-      using state_t = member_state<T>;
+      using target_t = member_target<T>;
 
       static const inplace_function_vtable vtable 
       {     
         // invoke
-        [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<state_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
+        [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<target_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
         // destroy
         ETL_NULLPTR,
         // move
-        [](void* dst, void* src) { ::new (dst) state_t(etl::move(*static_cast<state_t*>(src))); },
+        [](void* dst, void* src) { ::new (dst) target_t(etl::move(*static_cast<target_t*>(src))); },
         // copy
-        [](void* dst, const void* src) { ::new (dst) state_t(*static_cast<const state_t*>(src)); }
+        [](void* dst, const void* src) { ::new (dst) target_t(*static_cast<const target_t*>(src)); }
       };
 
       return &vtable;
@@ -122,18 +143,18 @@ namespace etl
     template <typename T>
     static const inplace_function_vtable* for_const_member() 
     {   
-      using state_t = const_member_state<T>;
+      using target_t = const_member_target<T>;
 
       static const inplace_function_vtable vtable 
       {
         // invoke
-        [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<state_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
+        [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<target_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
         // destroy
         ETL_NULLPTR,
         // move
-        [](void* dst, void* src) { ::new (dst) state_t(etl::move(*static_cast<state_t*>(src))); },
+        [](void* dst, void* src) { ::new (dst) target_t(etl::move(*static_cast<target_t*>(src))); },
         // copy
-        [](void* dst, const void* src) { ::new (dst) state_t(*static_cast<const state_t*>(src)); }
+        [](void* dst, const void* src) { ::new (dst) target_t(*static_cast<const target_t*>(src)); }
       };
 
       return &vtable;
@@ -340,15 +361,15 @@ namespace etl
     template <typename TObject>
     void set(TObject& obj, TReturn(TObject::* method)(TArgs...))
     {
-      using state_t = inplace_function_vtable<TReturn, TArgs...>::template member_state<TObject>;
+      using target_t = inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
 
-      static_assert(Object_Size      >= sizeof(state_t),  "etl::inplace_function: SBO size too small");
-      static_assert(Object_Alignment >= alignof(state_t), "etl::inplace_function: SBO alignment too small");
+      static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: SBO size too small");
+      static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: SBO alignment too small");
 
       clear();
 
-      auto* slot = reinterpret_cast<state_t*>(&storage);
-      ::new (slot) state_t{ &obj, method };
+      auto* slot = reinterpret_cast<target_t*>(&storage);
+      ::new (slot) target_t{ &obj, method };
 
       object = &storage;
       vtable = inplace_function_vtable<TReturn, TArgs...>::template for_member<TObject>();
@@ -361,15 +382,15 @@ namespace etl
     template <typename TObject>
     void set(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
     {
-      using state_t = inplace_function_vtable<TReturn, TArgs...>::template const_member_state<TObject>;
+      using target_t = inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
 
-      static_assert(Object_Size      >= sizeof(state_t),  "etl::inplace_function: SBO size too small");
-      static_assert(Object_Alignment >= alignof(state_t), "etl::inplace_function: SBO alignment too small");
+      static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: SBO size too small");
+      static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: SBO alignment too small");
 
       clear();
 
-      auto* slot = reinterpret_cast<state_t*>(&storage);
-      ::new (slot) state_t{ &obj, method };
+      auto* slot = reinterpret_cast<target_t*>(&storage);
+      ::new (slot) target_t{ &obj, method };
 
       object = &storage;
       vtable = inplace_function_vtable<TReturn, TArgs...>::template for_const_member<TObject>();
@@ -404,16 +425,7 @@ namespace etl
     //*************************************************************************
     inplace_function& operator =(function_type f)
     {
-      static_assert(Object_Size      >= sizeof(function_type),  "etl::inplace_function: Object size too small");
-      static_assert(Object_Alignment >= alignof(function_type), "etl::inplace_function: Object alignment too small");
-
-      clear();
-
-      auto* slot = reinterpret_cast<function_type*>(&storage);
-      ::new (slot) function_type(f);
-
-      vtable = inplace_function_vtable<TReturn, TArgs...>::for_function_ptr();
-      object = &storage;
+      set(f);
 
       return *this;
     }
@@ -432,7 +444,7 @@ namespace etl
     //*************************************************************************
     bool operator ==(const inplace_function& rhs) const noexcept
     {
-      return (object == rhs.object);
+      return (vtable == rhs.vtable);
     }
 
     //*************************************************************************
@@ -456,13 +468,14 @@ namespace etl
     //*************************************************************************
     TReturn operator()(TArgs... args) const
     {
-      //ETL_ASSERT(vtable->invoke != ETL_NULLPTR, ETL_ERROR(inplace_function_uninitialised));
+      ETL_ASSERT(is_valid(), ETL_ERROR(inplace_function_uninitialized));
+
       return vtable->invoke(object, etl::forward<TArgs>(args)...);
     }
 
     //*************************************************************************
     /// Execute the is_inplace_function if valid.
-    /// 'void' return is_inplace_function.
+    /// 'void' return.
     //*************************************************************************
     template <typename TRet = TReturn>
     typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool>
@@ -481,7 +494,7 @@ namespace etl
 
     //*************************************************************************
     /// Execute the is_inplace_function if valid.
-    /// Non 'void' return is_inplace_function.
+    /// Non 'void' return.
     //*************************************************************************
     template <typename TRet = TReturn>
     typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>>
@@ -632,13 +645,13 @@ namespace etl
   //*************************************************************************
   template <typename TObject, typename TReturn, typename... TArgs>
   inline etl::inplace_function<TReturn(TArgs...),
-                               sizeof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_state<TObject>),
-                               alignof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_state<TObject>)>
+                               sizeof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>),
+                               alignof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>)>
     make_inplace_function(TObject& obj, TReturn (TObject::*method)(TArgs...))
   {
-    using state_t = typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_state<TObject>;
+    using target_t = typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
 
-    return etl::inplace_function<TReturn(TArgs...), sizeof(state_t), alignof(state_t)>(obj, method);
+    return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(obj, method);
   }
 
   //*************************************************************************
@@ -647,13 +660,13 @@ namespace etl
   //*************************************************************************
   template <typename TObject, typename TReturn, typename... TArgs>
   inline etl::inplace_function<TReturn(TArgs...),
-                               sizeof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_state<TObject>),
-                               alignof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_state<TObject>)>
+                               sizeof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>),
+                               alignof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>)>
     make_inplace_function(const TObject& obj, TReturn (TObject::*method)(TArgs...) const)
   {
-    using state_t = typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_state<TObject>;
+    using target_t = typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
 
-    return etl::inplace_function<TReturn(TArgs...), sizeof(state_t), alignof(state_t)>(obj, method);
+    return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(obj, method);
   }
 
   //*************************************************************************
@@ -661,8 +674,8 @@ namespace etl
   //*************************************************************************
 
   //*************************************************************************
-  template <typename TSignature, size_t Object_Size1, size_t Object_Alignment1, size_t Object_Size2, size_t Object_Alignment2>
-  void swap(etl::inplace_function<TSignature, Object_Size1, Object_Alignment1>& lhs, etl::inplace_function<TSignature, Object_Size2, Object_Alignment2>& rhs) noexcept
+  template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
+  void swap(etl::inplace_function<TSignature, Object_Size, Object_Alignment>& lhs, etl::inplace_function<TSignature, Object_Size, Object_Alignment>& rhs) noexcept
   {
     lhs.swap(rhs);
   }
