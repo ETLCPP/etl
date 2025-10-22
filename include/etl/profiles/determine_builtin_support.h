@@ -98,6 +98,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE (__has_builtin(__has_trivial_destructor) || __has_builtin(__is_trivially_destructible))
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE (__has_builtin(__has_trivial_assign) || __has_builtin(__is_trivially_assignable))
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE (__has_builtin(__has_trivial_copy) || __has_builtin(__is_trivially_copyable))
   #endif
