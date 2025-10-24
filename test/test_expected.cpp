@@ -794,30 +794,40 @@ namespace
     }
 
     //*************************************************************************
-    template <typename TValue, typename TError, typename TExpected>
-    constexpr bool check_expected_type_helper(TExpected& expected) {
-      auto value_type_check = true;
-      if constexpr (!etl::is_void<TValue>::value) {
-        // check value type
-        value_type_check = etl::is_same<
-          etl::decay_t<decltype(expected.value())>, 
+    template <typename TValue, typename TExpected, typename Enable = void>
+    struct value_type_helper {
+      static bool check(TExpected& expected) {
+        return etl::is_same<
+          typename etl::decay<decltype(expected.value())>::type, 
           TValue
         >::value;
       }
-      
-      // check error type
-      auto error_type_check = etl::is_same<
-        etl::decay_t<decltype(expected.error())>, 
-        TError
-      >::value;
+    };
 
-      // check the return expected
-      auto expected_type_check = etl::is_same<
-        etl::decay_t<decltype(expected)>, 
-        etl::expected<TValue, TError>
-      >::value;
+    template <typename TValue, typename TExpected>
+    struct value_type_helper<TValue, TExpected, typename etl::enable_if<etl::is_void<TValue>::value>::type> {
+      static bool check(TExpected& expected) {
+        (void)expected;
+        return true;
+      }
+    };
 
-      return value_type_check && error_type_check && expected_type_check;
+    template <typename TValue, typename TError, typename TExpected>
+    bool check_expected_type_helper(TExpected& expected) {
+
+        bool value_type_ok = value_type_helper<TValue, TExpected>::check(expected);
+
+        bool error_type_ok = etl::is_same<
+            typename etl::decay<decltype(expected.error())>::type, 
+            TError
+        >::value;
+
+        bool expected_type_ok = etl::is_same<
+            typename etl::decay<decltype(expected)>::type, 
+            etl::expected<TValue, TError>
+        >::value;
+
+        return value_type_ok && error_type_ok && expected_type_ok;
     }
 
     //*************************************************************************

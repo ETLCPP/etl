@@ -742,7 +742,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP11
 
     template <typename F, typename T>
     struct deduced_result_type {
@@ -753,7 +753,7 @@ namespace etl
     using deduced_result_type_t = typename deduced_result_type<F, T>::type;
 
     template <typename F>
-    auto transform(F&& f) const & {
+    auto transform(F&& f) const & -> expected<typename deduced_result_type<F, TValue>::type, TError> {
       using U = typename deduced_result_type<F, TValue>::type;
       using new_expected = expected<U,TError>;
 
@@ -767,7 +767,7 @@ namespace etl
     }
 
     template <typename F>
-    auto transform(F&& f) && {
+    auto transform(F&& f) && -> expected<typename deduced_result_type<F, TValue>::type, TError> {
       using U = typename deduced_result_type<F, TValue>::type;
       using new_expected = expected<U,TError>;
 
@@ -781,7 +781,7 @@ namespace etl
     }
 
     template <typename F>
-    auto and_then(F&& f) const & {
+    auto and_then(F&& f) const & -> typename deduced_result_type<F, TValue>::type {
       using new_expected = typename deduced_result_type<F, TValue>::type;
       static_assert(
         is_expected<new_expected>::value,
@@ -802,7 +802,7 @@ namespace etl
     }
 
     template <typename F>
-    auto and_then(F&& f) && {
+    auto and_then(F&& f) && -> typename deduced_result_type<F, TValue>::type {
       using new_expected = typename deduced_result_type<F, TValue>::type;
       static_assert(
         is_expected<new_expected>::value,
@@ -823,7 +823,7 @@ namespace etl
     }
 
     template <typename F>
-    auto or_else(F&& f) const & {
+    auto or_else(F&& f) const & -> typename deduced_result_type<F, TError>::type {
       using new_expected = typename deduced_result_type<F, TError>::type;
 
       static_assert(
@@ -840,7 +840,7 @@ namespace etl
     }
 
     template <typename F>
-    auto or_else(F&& f) && {
+    auto or_else(F&& f) && -> typename deduced_result_type<F, TError>::type{
       using new_expected = typename deduced_result_type<F, TError>::type;
 
       static_assert(
@@ -857,7 +857,7 @@ namespace etl
 
 
     template <typename F>
-    auto transform_error(F&& f) const & {
+    auto transform_error(F&& f) const & -> expected<TValue, typename deduced_result_type<F, TError>::type> {
       using new_error = typename deduced_result_type<F, TError>::type;
       using new_expected = expected<TValue, new_error>;
 
@@ -873,7 +873,7 @@ namespace etl
     }
 
     template <typename F>
-    auto transform_error(F&& f) && {
+    auto transform_error(F&& f) && -> expected<TValue, typename deduced_result_type<F, TError>::type>{
       using new_error = typename deduced_result_type<F, TError>::type;
       using new_expected = expected<TValue, new_error>;
 
@@ -1099,7 +1099,7 @@ namespace etl
       swap(storage, other.storage);
     }
 
-#ifdef ETL_USING_CPP14
+#if ETL_USING_CPP11
   template <typename F, typename T>
   struct deduced_result_type {
     using type = etl::decay_t<decltype(etl::declval<F>()(etl::declval<T&&>()))>;
@@ -1114,7 +1114,7 @@ namespace etl
   using deduced_result_type_t = typename deduced_result_type<F, T>::type;
 
   template <typename F>
-  auto transform(F&& f) const & {
+  auto transform(F&& f) const & -> expected<typename deduced_result_type<F, void>::type, TError>{
     using U = typename deduced_result_type<F, void>::type;
     using new_expected = expected<U,TError>;
 
@@ -1128,7 +1128,7 @@ namespace etl
   }
 
   template <typename F>
-  auto transform(F&& f) && {
+  auto transform(F&& f) && -> expected<typename deduced_result_type<F, void>::type, TError> {
     using U = typename deduced_result_type<F, void>::type;
     using new_expected = expected<U,TError>;
 
@@ -1142,7 +1142,7 @@ namespace etl
   }
 
   template <typename F>
-  auto and_then(F&& f) const & {
+  auto and_then(F&& f) const & -> typename deduced_result_type<F, void>::type{
     using new_expected = typename deduced_result_type<F, void>::type;
     
     static_assert(
@@ -1164,7 +1164,7 @@ namespace etl
   }
 
   template <typename F>
-  auto and_then(F&& f) && {
+  auto and_then(F&& f) && -> typename deduced_result_type<F, void>::type{
     using new_expected = typename deduced_result_type<F, void>::type;
     
     static_assert(
@@ -1186,7 +1186,7 @@ namespace etl
   }
 
   template <typename F>
-  auto or_else(F&& f) const & {
+  auto or_else(F&& f) const & -> typename deduced_result_type<F, TError>::type {
     using new_expected = typename deduced_result_type<F, TError>::type;
 
     static_assert(
@@ -1203,7 +1203,7 @@ namespace etl
   }
 
   template <typename F>
-  auto or_else(F&& f) && {
+  auto or_else(F&& f) && -> typename deduced_result_type<F, TError>::type {
     using new_expected = typename deduced_result_type<F, TError>::type;
 
     static_assert(
@@ -1220,7 +1220,7 @@ namespace etl
 
 
   template <typename F>
-  auto transform_error(F&& f) const & {
+  auto transform_error(F&& f) const & -> expected<void, typename deduced_result_type<F, TError>::type> {
     using new_error = typename deduced_result_type<F, TError>::type;
     using new_expected = expected<void, new_error>;
 
@@ -1236,7 +1236,7 @@ namespace etl
   }
 
   template <typename F>
-  auto transform_error(F&& f) && {
+  auto transform_error(F&& f) && -> expected<void, typename deduced_result_type<F, TError>::type>{
     using new_error = typename deduced_result_type<F, TError>::type;
     using new_expected = expected<void, new_error>;
 
