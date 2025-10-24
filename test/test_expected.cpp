@@ -139,310 +139,6 @@ namespace
 {
   SUITE(test_expected)
   {
-    /** OR ELSE */
-    TEST(test_or_else_with_value) {
-      struct OrElse{
-        Expected produceValue() {
-          return Value("produceValue()");
-        }
-      };
-
-      OrElse orElse;
-      bool errorGenerated {false};
-      auto expected = orElse.produceValue().or_else([&errorGenerated](Error e) -> Expected{
-        errorGenerated = true;
-        return Unexpected(e);
-      });
-      CHECK_TRUE(errorGenerated == false);
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("produceValue()", expected.value().v);
-    }
-
-    TEST(test_or_else_with_value_move_constructor) {
-      struct OrElse{
-        ExpectedM produceValueM() {
-          auto s = "produceValueM()";
-          return ValueM(etl::move(s));
-        }
-      };
-
-      OrElse orElse;
-      bool errorGenerated {false};
-      auto expected = orElse.produceValueM().or_else([&errorGenerated](ErrorM e) -> ExpectedM {
-        errorGenerated = true;
-        UnexpectedM unexpected(etl::move(e));
-        return ExpectedM(etl::move(unexpected));
-      });
-      CHECK_TRUE(errorGenerated == false);
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("produceValueM()", expected.value().v);
-    }
-
-    TEST(test_or_else_with_error) {
-      struct OrElse{
-        Expected produceError() {
-          return Unexpected(Error("produceError()"));
-        }
-      };
-
-      OrElse orElse;
-      bool errorGenerated {false};
-      auto expected = orElse.produceError().or_else([&errorGenerated](Error e) -> Expected {
-        CHECK_EQUAL("produceError()", e.e);
-        errorGenerated = true;
-        return Unexpected(e);
-      });
-      CHECK_TRUE(errorGenerated == true);
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceError()", expected.error().e);
-    }
-
-    TEST(test_or_else_with_error_move_constructor) {
-      struct OrElse{
-        ExpectedM produceErrorM() {
-          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
-        }
-      };
-
-      OrElse orElse;
-      bool errorGenerated {false};
-      auto expected = orElse.produceErrorM().or_else([&errorGenerated](ErrorM e) -> ExpectedM {
-        CHECK_EQUAL("produceErrorM()", e.e);
-        errorGenerated = true;
-        UnexpectedM unexpected(etl::move(e));
-        return ExpectedM(etl::move(unexpected));
-      });
-      CHECK_TRUE(errorGenerated == true);
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceErrorM()", expected.error().e);
-    }
-    /** OR ELSE */
-
-
-    /** TRANSFORM */
-    TEST(test_transform_with_value) {
-      struct Transform{
-        Expected produceValue() {
-          return Value("produceValue()");
-        }
-      };
-
-      Transform transform;
-      auto expected = transform.produceValue().transform([](Value v) {
-        CHECK_EQUAL("produceValue()", v.v);
-        auto s = v.v.append(" transformed");
-        return s;
-      });
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("produceValue() transformed", expected.value());
-    }
-
-    TEST(test_transform_with_value_move_constructor) {
-      struct Transform{
-        ExpectedM produceValueM() {
-          auto s = "produceValueM()";
-          return ValueM(etl::move(s));
-        }
-      };
-
-      Transform transform;
-      auto expected = transform.produceValueM().transform([](ValueM v) {
-        CHECK_EQUAL("produceValueM()", v.v);
-        auto s = v.v.append(" transformed");
-        return ValueM(etl::move(s));
-      });
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("produceValueM() transformed", expected.value().v);
-    }
-
-    TEST(test_transform_with_error) {
-      struct Transform{
-        Expected produceError() {
-          return Unexpected(Error("produceError()"));
-        }
-      };
-
-      Transform transform;
-      auto expected = transform.produceError().transform([](Value v) {
-        CHECK_EQUAL("produceValue()", v.v);
-        auto s = v.v.append(" transformed");
-        return s;
-      });
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceError()", expected.error().e);
-    }
-
-    TEST(test_transform_with_error_move_constructor) {
-      struct Transform{
-        ExpectedM produceErrorM() {
-          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
-        }
-      };
-
-      Transform transform;
-      auto expected = transform.produceErrorM().transform([](ValueM v) {
-        CHECK_EQUAL("produceValue()", v.v);
-        auto s = v.v.append(" transformed");
-        return s;
-      });
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceErrorM()", expected.error().e);
-    }
-    /** TRANSFORM */
-    
-    /** AND_THEN */
-    TEST(test_and_then_with_value) {
-      struct AndThen{
-        Expected produceValue() {
-          return Value("produceValue()");
-        }
-      };
-
-      AndThen andThen;
-      auto expected = andThen.produceValue().and_then([](Value v) -> Expected{
-        CHECK_EQUAL("produceValue()", v.v);
-        return Value("and_then");
-      });
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("and_then", expected.value().v);
-    }
-
-    TEST(test_and_then_with_value_move_constructor) {
-      struct AndThen{
-        ExpectedM produceValue() {
-          return ValueM("produceValueM()");
-        }
-      };
-
-      AndThen andThen;
-      auto expected = andThen.produceValue().and_then([](ValueM v) -> ExpectedM {
-        CHECK_EQUAL("produceValueM()", v.v);
-        auto s = "and_then";
-        return ValueM(etl::move(s));
-      });
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("and_then", expected.value().v);
-    }
-
-    TEST(test_and_then_with_error) {
-      struct AndThen{
-        Expected produceError() {
-          return Unexpected(Error("produceError()"));
-        }
-      };
-
-      AndThen andThen;
-      auto expected = andThen.produceError().and_then([](Value v) -> Expected{
-        CHECK_EQUAL("produceValue()", v.v);
-        return Value("and_then");
-      });
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceError()", expected.error().e);
-    }
-
-    TEST(test_and_then_with_error_move_constructor) {
-      struct AndThen{
-        ExpectedM produceErrorM() {
-          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
-        }
-      };
-
-      AndThen andThen;
-      auto expected = andThen.produceErrorM().and_then([](ValueM v) -> ExpectedM {
-        CHECK_EQUAL("produceValueM()", v.v);
-        auto s = "and_then";
-        return ValueM(etl::move(s));
-      });
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceErrorM()", expected.error().e);
-    }
-    /** AND_THEN */
-
-    TEST(test_transform_error_with_value) {
-      struct TransformError {
-        Expected produceValue() {
-          return Value("produceValue()");
-        }
-      };
-
-      TransformError transformError;
-      auto expected = transformError.produceValue().transform_error([](Error e) {
-        auto s = e.e.append("_transform_error");
-        return s;
-      });
-
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("produceValue()", expected.value().v);
-    }
-
-    TEST(test_transform_error_with_value_move_constructor) {
-      struct TransformError {
-        ExpectedM produceValueM() {
-          auto s = "produceValueM()";
-          return ValueM(etl::move(s));
-        }
-      };
-
-      TransformError transformError;
-      auto expected = transformError.produceValueM().transform_error([](ErrorM e) {
-        auto s = e.e.append("_transform_error");
-        return etl::move(s);
-      });
-
-      CHECK_TRUE(expected.has_value());
-      CHECK_TRUE(bool(expected));
-      CHECK_EQUAL("produceValueM()", expected.value().v);
-    }
-
-    TEST(test_transform_error_with_error) {
-      struct TransformError {
-        Expected produceError() {
-          return Unexpected(Error("produceError()"));
-        }
-      };
-
-      TransformError transformError;
-      auto expected = transformError.produceError().transform_error([](Error e) {
-        auto s = e.e.append("_transform_error");
-        return s;
-      });
-
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceError()_transform_error", expected.error());
-    }
-
-    TEST(test_transform_error_with_error_move_constructor) {
-      struct TransformError {
-        ExpectedM produceErrorM() {
-          return ExpectedM(UnexpectedM(ErrorM("produceErrorM()")));
-        }
-      };
-
-      TransformError transformError;
-      auto expected = transformError.produceErrorM().transform_error([](ErrorM e) {
-        auto s = e.e.append("_transform_error");
-        return s;
-      });
-
-      CHECK_TRUE(!expected.has_value());
-      CHECK_TRUE(!bool(expected));
-      CHECK_EQUAL("produceErrorM()_transform_error", expected.error());
-    }
-
     //*************************************************************************
     TEST(test_default_constructor)
     {
@@ -1095,6 +791,357 @@ namespace
 
       CHECK_TRUE(test_unexp_1_swap == test_unexp_2);
       CHECK_TRUE(test_unexp_2_swap == test_unexp_1);
+    }
+
+    //*************************************************************************
+    template <typename TValue, typename TError, typename TExpected>
+    constexpr bool check_expected_type_helper(TExpected& expected) {
+      auto value_type_check = true;
+      if constexpr (!etl::is_void<TValue>::value) {
+        // check value type
+        value_type_check = etl::is_same<
+          etl::decay_t<decltype(expected.value())>, 
+          TValue
+        >::value;
+      }
+      
+      // check error type
+      auto error_type_check = etl::is_same<
+        etl::decay_t<decltype(expected.error())>, 
+        TError
+      >::value;
+
+      // check the return expected
+      auto expected_type_check = etl::is_same<
+        etl::decay_t<decltype(expected)>, 
+        etl::expected<TValue, TError>
+      >::value;
+
+      return value_type_check && error_type_check && expected_type_check;
+    }
+
+    //*************************************************************************
+    TEST(test_or_else) {
+      Expected expected = {Value("or_else_with_value")};
+      Expected expected_error = {Unexpected(Error("or_else_with_error"))};
+      bool error_generated {false};
+
+      auto expected_out = expected.or_else([&error_generated](Error e) -> Expected {
+        error_generated = true;
+        return Unexpected(e);
+      });
+
+      CHECK_FALSE(error_generated);
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("or_else_with_value", expected_out.value().v);
+
+      auto with_value_type_check = check_expected_type_helper<Value, Error>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.or_else([&error_generated](Error e) -> Expected {
+        error_generated = true;
+        return Unexpected(e);
+      });
+
+      CHECK_TRUE(error_generated);
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<Value,Error>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
+    }
+
+    TEST(test_or_else_move_constructor) {
+      ExpectedM expected = ExpectedM(ValueM("or_else_with_value"));
+      ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("or_else_with_error")));
+      bool error_generated {false};
+
+      auto expected_out = etl::move(expected).or_else([&error_generated](ErrorM e) -> ExpectedM {
+        error_generated = true;
+        UnexpectedM unexpected(etl::move(e));
+        return ExpectedM(etl::move(unexpected));
+      });
+
+      CHECK_FALSE(error_generated);
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("or_else_with_value", expected_out.value().v);
+
+      auto with_value_type_check = check_expected_type_helper<ValueM, ErrorM>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = etl::move(expected_error).or_else([&error_generated](ErrorM e) -> ExpectedM {
+        error_generated = true;
+        CHECK_EQUAL("or_else_with_error", e.e);
+
+        UnexpectedM unexpected(etl::move(e));
+        return ExpectedM(etl::move(unexpected));
+      });
+
+      CHECK_TRUE(error_generated);
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<ValueM,ErrorM>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
+    }
+
+    TEST(test_or_else_void) {
+      ExpectedV expected = ExpectedV();
+      ExpectedV expected_error = ExpectedV(Unexpected(Error("or_else_with_error")));
+      bool error_generated {false};
+
+      auto expected_out = expected.or_else([&error_generated](Error e) -> ExpectedV {
+        error_generated = true;
+        return Unexpected(e);
+      });
+
+      CHECK_FALSE(error_generated);
+      CHECK_TRUE(expected_out.has_value());
+
+      auto with_value_type_check = check_expected_type_helper<void, Error>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.or_else([&error_generated](Error e) -> ExpectedV {
+        error_generated = true;
+        CHECK_EQUAL("or_else_with_error", e.e);
+        return Unexpected(e);
+      });
+
+      CHECK_TRUE(error_generated);
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<void, Error>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_transform) {
+      Expected expected = {Value("transform_with_value")};
+      Expected expected_error = {Unexpected(Error("transform_with_error"))};
+
+      auto expected_out = expected.transform([](Value v) {
+        auto s = v.v.append("_transformed");
+        return s;
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("transform_with_value_transformed", expected_out.value());
+
+      auto with_value_type_check = check_expected_type_helper<std::string, Error>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.transform([](Value v) {
+        auto s = v.v.append("_transformed");
+        return s;
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<std::string,Error>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
+    }
+
+    TEST(test_transform_move_constructor) {
+      ExpectedM expected = {ValueM("transform_with_value")};
+      ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("transform_with_error")));
+
+      auto expected_out = etl::move(expected).transform([](ValueM v) {
+        auto s = v.v.append("_transformed");
+        return etl::move(s);
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("transform_with_value_transformed", expected_out.value());
+
+      auto with_value_type_check = check_expected_type_helper<std::string, ErrorM>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = etl::move(expected_error).transform([](ValueM v) {
+        auto s = v.v.append("_transformed");
+        return etl::move(s);
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<std::string,ErrorM>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
+    }
+
+    TEST(test_transform_void) {
+      ExpectedV expected;
+      ExpectedV expected_error = {Unexpected(Error("transform_with_error"))};
+
+      auto expected_out = expected.transform([]() {
+        std::string s("_transformed");
+        return s;
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("_transformed", expected_out.value());
+      
+      auto with_value_type_check = check_expected_type_helper<std::string, Error>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.transform([]() {
+        std::string s("_transformed");
+        return s;
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<std::string,Error>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
+    }
+    //*************************************************************************
+    
+    TEST(test_and_then) {
+      Expected expected = {Value("and_then_with_value")};
+      Expected expected_error = {Unexpected(Error("and_then_with_error"))};
+
+      auto expected_out = expected.and_then([](Value v) -> Expected {
+        return Value(v.v.append("_and_thened"));
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("and_then_with_value_and_thened", expected_out.value().v);
+
+      auto with_value_type_check = check_expected_type_helper<Value, Error>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.and_then([](Value v) -> Expected {
+        return Value(v.v.append("_and_thened"));
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<Value,Error>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
+    }
+
+    TEST(test_and_then_move_constructor) {
+      ExpectedM expected = ExpectedM(ValueM("and_then_with_value"));
+      ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("and_then_with_error")));
+
+      auto expected_out = etl::move(expected).and_then([](ValueM v) -> ExpectedM {
+        return ValueM(etl::move(v.v.append("_and_thened")));
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("and_then_with_value_and_thened", expected_out.value().v);
+
+      auto with_value_type_check = check_expected_type_helper<ValueM, ErrorM>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = etl::move(expected_error).and_then([](ValueM v) -> ExpectedM {
+        return ValueM(v.v.append("_and_thened"));
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<ValueM,ErrorM>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
+    }
+    
+    TEST(test_and_then_void) {
+      ExpectedV expected;
+      ExpectedV expected_error = {Unexpected(Error("and_then_with_error"))};
+      auto and_thened {false};
+
+      auto expected_out = expected.and_then([&and_thened]() -> ExpectedV {
+        and_thened = true;
+        return ExpectedV();
+      });
+
+      CHECK_TRUE(and_thened);
+      CHECK_TRUE(expected_out.has_value());
+
+      auto with_value_type_check = check_expected_type_helper<void, Error>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      and_thened = false;
+      auto unexpected_out = expected_error.and_then([&and_thened]() -> ExpectedV {
+        and_thened = true;
+        return ExpectedV();
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<void,Error>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
+    }
+    
+    /** AND_THEN */
+
+    TEST(test_transform_error) {
+      Expected expected = {Value("transform_error_with_value")};
+      Expected expected_error = {Unexpected(Error("transform_error_with_error"))};
+
+      auto expected_out = expected.transform_error([](Error e) {
+        auto s = e.e.append("_transformed");
+        return s;
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("transform_error_with_value", expected_out.value().v);
+
+      auto with_value_type_check = check_expected_type_helper<Value, std::string>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.transform_error([](Error e) {
+        std::string s = e.e.append("_transformed");
+        return s;
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<Value,std::string>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("transform_error_with_error_transformed", unexpected_out.error());
+    }
+
+    TEST(test_transform_error_move_constructor) {
+      ExpectedM expected = ExpectedM(ValueM("transform_error_with_value"));
+      ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("transform_error_with_error")));
+
+      auto expected_out = etl::move(expected).transform_error([](ErrorM e) {
+        auto s = e.e.append("_transformed");
+        return s;
+      });
+
+      CHECK_TRUE(expected_out.has_value());
+      CHECK_EQUAL("transform_error_with_value", expected_out.value().v);
+
+      auto with_value_type_check = check_expected_type_helper<ValueM, std::string>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = etl::move(expected_error).transform_error([](ErrorM e) {
+        std::string s = e.e.append("_transformed");
+        return s;
+      });
+
+      CHECK_FALSE(unexpected_out.has_value());
+
+      auto with_error_type_check = check_expected_type_helper<ValueM,std::string>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("transform_error_with_error_transformed", unexpected_out.error());
     }
   };
 }

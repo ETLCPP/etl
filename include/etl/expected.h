@@ -43,6 +43,15 @@ SOFTWARE.
 
 namespace etl
 {
+  // Forward declaration for is_expected
+  template <typename TValue, typename TError> class expected;
+  
+  template <typename T>
+  struct is_expected : etl::false_type {};
+  
+  template <typename TValue, typename TError>
+  struct is_expected<etl::expected<TValue,TError>> : etl::true_type {};
+
   //***************************************************************************
   /// Base exception for et::expected
   //***************************************************************************
@@ -735,141 +744,149 @@ namespace etl
 
 #if ETL_USING_CPP14
 
-  template <typename F, typename T>
-  struct deduced_result_type {
-    using type = std::decay_t<decltype(std::declval<F>()(std::declval<T&&>()))>; //using type = std::decay_t<std::invoke_result_t<F,T>>; 
-  };
+    template <typename F, typename T>
+    struct deduced_result_type {
+      using type = etl::decay_t<decltype(etl::declval<F>()(etl::declval<T&&>()))>; 
+    };
 
-  template <typename F, typename T>
-  using deduced_result_type_t = typename deduced_result_type<F, T>::type;
+    template <typename F, typename T>
+    using deduced_result_type_t = typename deduced_result_type<F, T>::type;
 
-  template <typename F>
-  auto transform(F&& f) const & {
-    using U = typename deduced_result_type<F, TValue>::type;
-    using new_expected = expected<U,TError>;
+    template <typename F>
+    auto transform(F&& f) const & {
+      using U = typename deduced_result_type<F, TValue>::type;
+      using new_expected = expected<U,TError>;
 
-    if (has_value()) {
-        return new_expected(f(etl::get<TValue>(storage)));
-    } else {
-        return new_expected(
-          unexpected<TError>(etl::get<TError>(storage))
-        );
+      if (has_value()) {
+          return new_expected(f(etl::get<TValue>(storage)));
+      } else {
+          return new_expected(
+            unexpected<TError>(etl::get<TError>(storage))
+          );
+      }
     }
-  }
 
-  template <typename F>
-  auto transform(F&& f) && {
-    using U = typename deduced_result_type<F, TValue>::type;
-    using new_expected = expected<U,TError>;
+    template <typename F>
+    auto transform(F&& f) && {
+      using U = typename deduced_result_type<F, TValue>::type;
+      using new_expected = expected<U,TError>;
 
-    if (has_value()) {
-        return new_expected(f(etl::get<TValue>(etl::move(storage))));
-    } else {
-        return new_expected(
-          unexpected<TError>(etl::get<TError>(etl::move(storage)))
-        );
+      if (has_value()) {
+          return new_expected(f(etl::get<TValue>(etl::move(storage))));
+      } else {
+          return new_expected(
+            unexpected<TError>(etl::get<TError>(etl::move(storage)))
+          );
+      }
     }
-  }
 
-  template <typename F>
-  auto and_then(F&& f) const & {
-    using new_expected = typename deduced_result_type<F, TValue>::type;
-    static_assert(
-      etl::is_same<TError, typename new_expected::error_type>::value, 
-      "Error type mismatch"
-    );
+    template <typename F>
+    auto and_then(F&& f) const & {
+      using new_expected = typename deduced_result_type<F, TValue>::type;
+      static_assert(
+        is_expected<new_expected>::value,
+        "and_then must return a etl::expected"  
+      );
+      static_assert(
+        etl::is_same<TError, typename new_expected::error_type>::value, 
+        "Error type mismatch"
+      );
 
-    if (has_value()) {
-        return f(etl::get<TValue>(storage));
-    } else {
-        return new_expected(
-          unexpected<TError>(etl::get<TError>(storage))
-        );
+      if (has_value()) {
+          return f(etl::get<TValue>(storage));
+      } else {
+          return new_expected(
+            unexpected<TError>(etl::get<TError>(storage))
+          );
+      }
     }
-  }
 
-  template <typename F>
-  auto and_then(F&& f) && {
-    using new_expected = typename deduced_result_type<F, TValue>::type;
-    static_assert(
-      etl::is_same<TError, typename new_expected::error_type>::value, 
-      "Error type mismatch"
-    );
+    template <typename F>
+    auto and_then(F&& f) && {
+      using new_expected = typename deduced_result_type<F, TValue>::type;
+      static_assert(
+        is_expected<new_expected>::value,
+        "and_then must return a etl::expected"  
+      );
+      static_assert(
+        etl::is_same<TError, typename new_expected::error_type>::value, 
+        "Error type mismatch"
+      );
 
-    if (has_value()) {
-        return f(etl::get<TValue>(etl::move(storage)));
-    } else {
-        return new_expected(
-          unexpected<TError>(etl::get<TError>(etl::move(storage)))
-        );
+      if (has_value()) {
+          return f(etl::get<TValue>(etl::move(storage)));
+      } else {
+          return new_expected(
+            unexpected<TError>(etl::get<TError>(etl::move(storage)))
+          );
+      }
     }
-  }
 
-  template <typename F>
-  auto or_else(F&& f) const & {
-    using new_expected = typename deduced_result_type<F, TError>::type;
+    template <typename F>
+    auto or_else(F&& f) const & {
+      using new_expected = typename deduced_result_type<F, TError>::type;
 
-    static_assert(
-        etl::is_same<TValue, typename new_expected::value_type>::value,
-        "or_else must return a Result with the same value type"
-    );
+      static_assert(
+          etl::is_same<TValue, typename new_expected::value_type>::value,
+          "or_else must return a Result with the same value type"
+      );
 
-    if (has_value()) {
-        return *this;
-    } else {
-        return new_expected(f(etl::get<TError>(storage)));
+      if (has_value()) {
+          return *this;
+      } else {
+          return new_expected(f(etl::get<TError>(storage)));
 
+      }
     }
-  }
 
-  template <typename F>
-  auto or_else(F&& f) && {
-    using new_expected = typename deduced_result_type<F, TError>::type;
+    template <typename F>
+    auto or_else(F&& f) && {
+      using new_expected = typename deduced_result_type<F, TError>::type;
 
-    static_assert(
-        etl::is_same<TValue, typename new_expected::value_type>::value,
-        "or_else must return a Result with the same value type"
-    );
+      static_assert(
+          etl::is_same<TValue, typename new_expected::value_type>::value,
+          "or_else must return a Result with the same value type"
+      );
 
-    if (has_value()) {
-        return etl::move(*this);
-    } else {
-        return new_expected(f(etl::get<TError>(etl::move(storage))));
+      if (has_value()) {
+          return etl::move(*this);
+      } else {
+          return new_expected(f(etl::get<TError>(etl::move(storage))));
+      }
     }
-  }
 
 
-  template <typename F>
-  auto transform_error(F&& f) const & {
-    using new_error = typename deduced_result_type<F, TError>::type;
-    using new_expected = expected<TValue, new_error>;
+    template <typename F>
+    auto transform_error(F&& f) const & {
+      using new_error = typename deduced_result_type<F, TError>::type;
+      using new_expected = expected<TValue, new_error>;
 
-    if (has_value()) {
-        return new_expected(etl::get<TValue>(storage));
-    } else {
-        return new_expected(
-          unexpected<new_error>(
-            f(etl::get<TError>(storage))
-          )
-        );
+      if (has_value()) {
+          return new_expected(etl::get<TValue>(storage));
+      } else {
+          return new_expected(
+            unexpected<new_error>(
+              f(etl::get<TError>(storage))
+            )
+          );
+      }
     }
-  }
 
-  template <typename F>
-  auto transform_error(F&& f) && {
-    using new_error = typename deduced_result_type<F, TError>::type;
-    using new_expected = expected<TValue, new_error>;
+    template <typename F>
+    auto transform_error(F&& f) && {
+      using new_error = typename deduced_result_type<F, TError>::type;
+      using new_expected = expected<TValue, new_error>;
 
-    if (has_value()) {
-        return new_expected(etl::get<TValue>(etl::move(storage)));
-    } else {
-        return new_expected(
-          unexpected<new_error>(
-            f(etl::get<TError>(etl::move(storage)))
-          )
-        );
+      if (has_value()) {
+          return new_expected(etl::get<TValue>(etl::move(storage)));
+      } else {
+          return new_expected(
+            unexpected<new_error>(
+              f(etl::get<TError>(etl::move(storage)))
+            )
+          );
+      }
     }
-  }
 #endif
 
   private:
@@ -1082,6 +1099,161 @@ namespace etl
       swap(storage, other.storage);
     }
 
+#ifdef ETL_USING_CPP14
+  template <typename F, typename T>
+  struct deduced_result_type {
+    using type = etl::decay_t<decltype(etl::declval<F>()(etl::declval<T&&>()))>;
+  };
+
+  template <typename F>
+  struct deduced_result_type<F,void> {
+    using type = etl::decay_t<decltype(etl::declval<F>()())>;
+  };
+
+  template <typename F, typename T>
+  using deduced_result_type_t = typename deduced_result_type<F, T>::type;
+
+  template <typename F>
+  auto transform(F&& f) const & {
+    using U = typename deduced_result_type<F, void>::type;
+    using new_expected = expected<U,TError>;
+
+    if (has_value()) {
+        return new_expected(f());
+    } else {
+        return new_expected(
+          unexpected<TError>(etl::get<TError>(storage))
+        );
+    }
+  }
+
+  template <typename F>
+  auto transform(F&& f) && {
+    using U = typename deduced_result_type<F, void>::type;
+    using new_expected = expected<U,TError>;
+
+    if (has_value()) {
+        return new_expected(f());
+    } else {
+        return new_expected(
+          unexpected<TError>(etl::get<TError>(etl::move(storage)))
+        );
+    }
+  }
+
+  template <typename F>
+  auto and_then(F&& f) const & {
+    using new_expected = typename deduced_result_type<F, void>::type;
+    
+    static_assert(
+      is_expected<new_expected>::value,
+      "and_then must return a etl::expected"  
+    );
+    static_assert(
+      etl::is_same<TError, typename new_expected::error_type>::value, 
+      "Error type mismatch"
+    );
+
+    if (has_value()) {
+        return f();
+    } else {
+        return new_expected(
+          unexpected<TError>(etl::get<TError>(storage))
+        );
+    }
+  }
+
+  template <typename F>
+  auto and_then(F&& f) && {
+    using new_expected = typename deduced_result_type<F, void>::type;
+    
+    static_assert(
+      is_expected<new_expected>::value,
+      "and_then must return a etl::expected"  
+    );
+    static_assert(
+      etl::is_same<TError, typename new_expected::error_type>::value, 
+      "Error type mismatch"
+    );
+
+    if (has_value()) {
+        return f();
+    } else {
+        return new_expected(
+          unexpected<TError>(etl::get<TError>(etl::move(storage)))
+        );
+    }
+  }
+
+  template <typename F>
+  auto or_else(F&& f) const & {
+    using new_expected = typename deduced_result_type<F, TError>::type;
+
+    static_assert(
+        etl::is_same<void, typename new_expected::value_type>::value,
+        "or_else must return a Result with the same value type"
+    );
+
+    if (has_value()) {
+        return *this;
+    } else {
+        return new_expected(f(etl::get<TError>(storage)));
+
+    }
+  }
+
+  template <typename F>
+  auto or_else(F&& f) && {
+    using new_expected = typename deduced_result_type<F, TError>::type;
+
+    static_assert(
+        etl::is_same<void, typename new_expected::value_type>::value,
+        "or_else must return a Result with the same value type"
+    );
+
+    if (has_value()) {
+        return etl::move(*this);
+    } else {
+        return new_expected(f(etl::get<TError>(etl::move(storage))));
+    }
+  }
+
+
+  template <typename F>
+  auto transform_error(F&& f) const & {
+    using new_error = typename deduced_result_type<F, TError>::type;
+    using new_expected = expected<void, new_error>;
+
+    if (has_value()) {
+        return new_expected();
+    } else {
+        return new_expected(
+          unexpected<new_error>(
+            f(etl::get<TError>(storage))
+          )
+        );
+    }
+  }
+
+  template <typename F>
+  auto transform_error(F&& f) && {
+    using new_error = typename deduced_result_type<F, TError>::type;
+    using new_expected = expected<void, new_error>;
+
+    if (has_value()) {
+        return new_expected();
+    } else {
+        return new_expected(
+          unexpected<new_error>(
+            f(etl::get<TError>(etl::move(storage)))
+          )
+        );
+    }
+  }
+
+#endif
+  
+    
   private:
 
     enum
