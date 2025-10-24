@@ -834,6 +834,10 @@ namespace
     TEST(test_or_else) {
       Expected expected = {Value("or_else_with_value")};
       Expected expected_error = {Unexpected(Error("or_else_with_error"))};
+
+      const Expected expected_const = {Value("const_or_else_with_value")};
+      const Expected expected_error_const = {Unexpected(Error("const_or_else_with_error"))};
+
       bool error_generated {false};
 
       auto expected_out = expected.or_else([&error_generated](Error e) -> Expected {
@@ -848,6 +852,17 @@ namespace
       auto with_value_type_check = check_expected_type_helper<Value, Error>(expected_out);
       CHECK_TRUE(with_value_type_check);
 
+      error_generated = false;
+      auto expected_const_out = expected_const.or_else([&error_generated](const Error& e) -> Expected {
+        error_generated = true;
+        return Unexpected(e);
+      });
+
+      CHECK_FALSE(error_generated);
+      CHECK_TRUE(expected_const_out.has_value());
+      CHECK_EQUAL("const_or_else_with_value", expected_const_out.value().v);
+
+      error_generated = false;
       auto unexpected_out = expected_error.or_else([&error_generated](Error e) -> Expected {
         error_generated = true;
         return Unexpected(e);
@@ -860,6 +875,21 @@ namespace
       CHECK_TRUE(with_error_type_check);
 
       CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
+
+
+      error_generated = false;
+      auto unexpected_const_out = expected_error_const.or_else([&error_generated](const Error& e) -> Expected {
+        error_generated = true;
+        return Unexpected(e);
+      });
+
+      CHECK_TRUE(error_generated);
+      CHECK_FALSE(unexpected_const_out.has_value());
+
+      auto with_error_const_type_check = check_expected_type_helper<Value,Error>(unexpected_const_out);
+      CHECK_TRUE(with_error_const_type_check);
+
+      CHECK_EQUAL("const_or_else_with_error", unexpected_const_out.error().e);
     }
 
     TEST(test_or_else_move_constructor) {
@@ -895,6 +925,14 @@ namespace
       CHECK_TRUE(with_error_type_check);
 
       CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
+
+      //The following should NOT compile. The const & overload should attempt to copy
+      // const ExpectedM expected_error_const = ExpectedM(ValueM("or_else_with_value"));
+      // expected_error_const.or_else([&error_generated](ErrorM e) -> const ExpectedM { 
+      //   error_generated = true;
+      //   UnexpectedM unexpected(etl::move(e));
+      //   return ExpectedM(etl::move(unexpected));
+      // });
     }
 
     TEST(test_or_else_void) {
@@ -926,6 +964,46 @@ namespace
       CHECK_TRUE(with_error_type_check);
 
       CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
+    }
+
+    TEST(test_or_else_change_error) {
+      Expected expected_error = {Unexpected(Error("or_else_with_error"))};
+      ExpectedV expectedV_error = ExpectedV(Unexpected(Error("or_else_with_error")));
+
+      auto change_to_string = expectedV_error.or_else([](Error e) -> etl::expected<void, std::string> {
+        return etl::unexpected<std::string>(e.e.append("_to_string"));
+      });
+
+      auto with_error_type_check = check_expected_type_helper<void,std::string>(change_to_string);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("or_else_with_error_to_string", change_to_string.error());
+    }
+
+    TEST(test_or_else_change_error_move_constructor) {
+      ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("or_else_with_error")));
+
+      auto change_to_string = etl::move(expected_error).or_else([](ErrorM e) -> etl::expected<ValueM, std::string> {
+        return etl::unexpected<std::string>(e.e.append("_to_string"));
+      });
+
+      auto with_error_type_check = check_expected_type_helper<ValueM,std::string>(change_to_string);
+      CHECK_TRUE(with_error_type_check);
+
+      CHECK_EQUAL("or_else_with_error_to_string", change_to_string.error());
+    }
+
+    TEST(test_or_else_const_rvalue) {
+      bool error_generated {false};
+      
+      auto unexpected_out = ExpectedM(UnexpectedM(ErrorM("temp_const_error"))).or_else([&error_generated](ErrorM e) -> ExpectedM {
+          error_generated = true;
+          CHECK_EQUAL("temp_const_error", e.e);
+          return ExpectedM(UnexpectedM(etl::move(e)));
+      });
+      
+      CHECK_TRUE(error_generated);
+      CHECK_EQUAL("temp_const_error", unexpected_out.error().e);
     }
 
     //*************************************************************************
