@@ -48,6 +48,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 1
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
   #endif
@@ -152,6 +156,10 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 0
+#endif
+
 #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 0
 #endif
@@ -194,6 +202,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_constructible           = (ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_constructible = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_assignable    = (ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
     static ETL_CONSTANT bool using_builtin_underlying_type            = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
     static ETL_CONSTANT bool using_builtin_is_constant_evaluated      = (ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1);

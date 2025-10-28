@@ -1789,53 +1789,28 @@ typedef integral_constant<bool, true>  true_type;
 
   //*********************************************
   // is_trivially_constructible
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
   using is_trivially_constructible = std::is_trivially_constructible<T>;
-#else
-  template <typename T>
-  using is_trivially_constructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
-#endif
 
   //*********************************************
   // is_trivially_copy_constructible
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
   using is_trivially_copy_constructible = std::is_trivially_copy_constructible<T>;
-#else
-  template <typename T>
-  using is_trivially_copy_constructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
-#endif
 
   //*********************************************
   // is_trivially_destructible
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
   using is_trivially_destructible = std::is_trivially_destructible<T>;
-#else
-  template <typename T>
-  using is_trivially_destructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
-#endif
 
   //*********************************************
   // is_trivially_copy_assignable
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
   using is_trivially_copy_assignable = std::is_trivially_copy_assignable<T>;
-#else
-  template <typename T>
-  using is_trivially_copy_assignable = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
-#endif
 
   //*********************************************
   // is_trivially_copyable
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
   using is_trivially_copyable = std::is_trivially_copyable<T>;
-#else
-  template <typename T>
-  using is_trivially_copyable = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
-#endif
 
 #elif defined(ETL_USER_DEFINED_TYPE_TRAITS)
 

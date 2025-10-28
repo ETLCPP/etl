@@ -48,7 +48,6 @@ SOFTWARE.
 #endif
 #define ETL_NO_NULLPTR_SUPPORT                     1
 #define ETL_NO_LARGE_CHAR_SUPPORT                  ETL_CPP11_NOT_SUPPORTED
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
 #define ETL_STLPORT                                1
 
 #endif
