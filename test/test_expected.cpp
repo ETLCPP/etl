@@ -1039,7 +1039,7 @@ namespace
       ExpectedM expected = {ValueM("transform_with_value")};
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("transform_with_error")));
 
-      auto expected_out = etl::move(expected).transform([](ValueM v) {
+      auto expected_out = etl::move(expected).transform([](ValueM&& v) {
         auto s = v.v.append("_transformed");
         return etl::move(s);
       });
@@ -1090,6 +1090,7 @@ namespace
 
       CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
     }
+
     //*************************************************************************
     
     TEST(test_and_then) {
@@ -1174,7 +1175,7 @@ namespace
       CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
     }
     
-    /** AND_THEN */
+    // /** AND_THEN */
 
     TEST(test_transform_error) {
       Expected expected = {Value("transform_error_with_value")};
