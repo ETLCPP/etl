@@ -973,7 +973,7 @@ namespace etl
       if (has_value()) {
         return expected<TValue, U>(etl::get<TValue>(storage));
       } else {
-        return expected<TValue, U>(unexpected(
+        return expected<TValue, U>(unexpected<U>(
           (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
         ));
       }
@@ -992,7 +992,7 @@ namespace etl
       if (has_value()) {
         return expected<TValue, U>(etl::get<TValue>(storage));
       } else {
-        return expected<TValue, U>(unexpected(
+        return expected<TValue, U>(unexpected<U>(
           (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
         ));
       }
@@ -1011,7 +1011,7 @@ namespace etl
       if (has_value()) {
         return expected<TValue, U>(etl::move(etl::get<TValue>(storage)));
       } else {
-        return expected<TValue, U>(unexpected(
+        return expected<TValue, U>(unexpected<U>(
           (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))
         ));
       }
@@ -1030,7 +1030,7 @@ namespace etl
       if (has_value()) {
         return expected<TValue, U>(etl::get<TValue>(storage));
       } else {
-        return expected<TValue, U>(unexpected(
+        return expected<TValue, U>(unexpected<U>(
           (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
         ));
       }
@@ -1464,7 +1464,7 @@ ETL_CONSTEXPR auto transform_error(F&& f) & -> expected<void, U> {
   if (has_value()) {
     return expected<void, U>();
   } else {
-    return expected<void, U>(unexpected(
+    return expected<void, U>(unexpected<U>(
       (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
     ));
   }
@@ -1481,7 +1481,7 @@ ETL_CONSTEXPR auto transform_error(F&& f) const & -> expected<void, U> {
   if (has_value()) {
     return expected<void, U>();
   } else {
-    return expected<void, U>(unexpected(
+    return expected<void, U>(unexpected<U>(
       (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
     ));
   }
@@ -1498,7 +1498,7 @@ ETL_CONSTEXPR auto transform_error(F&& f) && -> expected<void, U> {
   if (has_value()) {
     return expected<void, U>();
   } else {
-    return expected<void, U>(unexpected(
+    return expected<void, U>(unexpected<U>(
       (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))
     ));
   }
@@ -1515,7 +1515,7 @@ ETL_CONSTEXPR auto transform_error(F&& f) const && -> expected<void, U> {
   if (has_value()) {
     return expected<void, U>();
   } else {
-    return expected<void, U>(unexpected(
+    return expected<void, U>(unexpected<U>(
       (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
     ));
   }

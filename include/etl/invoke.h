@@ -75,7 +75,7 @@ namespace etl {
     typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
         etl::is_member_function_pointer<DFn>::value && 
-        !etl::is_pointer_v<etl::decay_t<T>>
+        !etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
   ETL_CONSTEXPR auto invoke(F&& f, T&& t, TArgs&&... args)
@@ -91,7 +91,7 @@ namespace etl {
     typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
         etl::is_member_function_pointer<DFn>::value && 
-        etl::is_pointer_v<etl::decay_t<T>>
+        etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
   ETL_CONSTEXPR auto invoke(F&& f, T&& t, TArgs&&... args)
@@ -106,7 +106,7 @@ namespace etl {
     typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
         etl::is_member_object_pointer<DFn>::value && 
-        !etl::is_pointer_v<etl::decay_t<T>>
+        !etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
   constexpr auto invoke(F&& f, T&& t)
