@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_INVOKE_INCLUDED
 #define ETL_INVOKE_INCLUDED
 
+#include "platform.h"
 #include "functional.h"
 #include "function_traits.h"
 #include "type_traits.h"
@@ -41,19 +42,21 @@ namespace etl {
 
   /// is T a function -- a function cannot be const qualified like a variable
   template<typename T> struct is_function : public etl::integral_constant<bool, !etl::is_const<const T>::value> { };
-  template<typename T> struct is_function<T&> : public false_type { };
-  template<typename T> struct is_function<T&&> : public false_type { };
+  template<typename T> struct is_function<T&> : public etl::false_type { };
+  template<typename T> struct is_function<T&&> : public etl::false_type { };
 
-  ///  
-  template<typename  T> struct is_member_pointer_helper : std::false_type {};
-  template<typename T, typename C> struct is_member_pointer_helper<T C::*> : std::true_type {};
-  template<typename T> struct is_member_pointer : is_member_pointer_helper<typename std::remove_cv<T>::type> {};
+  /// is T a member pointer
+  template<typename  T> struct is_member_pointer_helper : etl::false_type {};
+  template<typename T, typename C> struct is_member_pointer_helper<T C::*> : etl::true_type {};
+  template<typename T> struct is_member_pointer : is_member_pointer_helper<etl::remove_cv_t<T>> {};
 
-  template <typename> struct is_member_function_pointer_helper : std::false_type {};
+  /// is T a member function pointer
+  template <typename> struct is_member_function_pointer_helper : etl::false_type {};
   template <typename T, typename C> struct is_member_function_pointer_helper<T C::*> : public etl::is_function<T>::type {};
   template <typename T> struct is_member_function_pointer : public is_member_function_pointer_helper<etl::remove_cv_t<T>>::type {};
 
-  template<typename> struct is_member_object_pointer_helper : public false_type { };
+  /// is T a member object pointer
+  template<typename> struct is_member_object_pointer_helper : public etl::false_type { };
   template<typename T, typename C> struct is_member_object_pointer_helper<T C::*> : public __not_<etl::is_function<T>>::type { };
   template<typename T> struct is_member_object_pointer : public is_member_object_pointer_helper<etl::remove_cv_t<T>>::type {};
 
@@ -74,8 +77,8 @@ namespace etl {
     typename... TArgs,
     typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-        etl::is_member_function_pointer<DFn>::value && 
-        !etl::is_pointer<etl::decay_t<T>>::value
+      etl::is_member_function_pointer<DFn>::value && 
+      !etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
   ETL_CONSTEXPR auto invoke(F&& f, T&& t, TArgs&&... args)
@@ -90,8 +93,8 @@ namespace etl {
     typename ... TArgs,
     typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-        etl::is_member_function_pointer<DFn>::value && 
-        etl::is_pointer<etl::decay_t<T>>::value
+      etl::is_member_function_pointer<DFn>::value && 
+      etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
   ETL_CONSTEXPR auto invoke(F&& f, T&& t, TArgs&&... args)
@@ -105,14 +108,29 @@ namespace etl {
     typename T,
     typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-        etl::is_member_object_pointer<DFn>::value && 
-        !etl::is_pointer<etl::decay_t<T>>::value
+      etl::is_member_object_pointer<DFn>::value && 
+      !etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
-  constexpr auto invoke(F&& f, T&& t)
+  ETL_CONSTEXPR auto invoke(F&& f, T&& t)
       -> decltype(etl::forward<T>(t).*f)
   {
       return etl::forward<T>(t).*f;
+  }
+
+  template <
+    typename F,
+    typename T,
+    typename DFn = etl::decay_t<F>,
+    typename = typename etl::enable_if<
+      etl::is_member_object_pointer<DFn>::value &&
+      etl::is_pointer<etl::decay_t<T>>::value
+    >::type
+  >
+  ETL_CONSTEXPR auto invoke(F&& f, T&& t)
+      -> decltype(((*etl::forward<T>(t)).*f))
+  {
+      return ((*etl::forward<T>(t)).*f);
   }
 
   template <class F, class, class ... Us> struct invoke_result_impl;

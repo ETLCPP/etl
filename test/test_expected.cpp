@@ -892,6 +892,8 @@ namespace
       CHECK_EQUAL("const_or_else_with_error", unexpected_const_out.error().e);
     }
 
+    //*************************************************************************
+
     TEST(test_or_else_move_constructor) {
       ExpectedM expected = ExpectedM(ValueM("or_else_with_value"));
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("or_else_with_error")));
@@ -935,6 +937,8 @@ namespace
       // });
     }
 
+    //*************************************************************************
+
     TEST(test_or_else_void) {
       ExpectedV expected = ExpectedV();
       ExpectedV expected_error = ExpectedV(Unexpected(Error("or_else_with_error")));
@@ -966,6 +970,8 @@ namespace
       CHECK_EQUAL("or_else_with_error", unexpected_out.error().e);
     }
 
+    //*************************************************************************
+
     TEST(test_or_else_change_error) {
       Expected expected_error = {Unexpected(Error("or_else_with_error"))};
       ExpectedV expectedV_error = ExpectedV(Unexpected(Error("or_else_with_error")));
@@ -980,6 +986,8 @@ namespace
       CHECK_EQUAL("or_else_with_error_to_string", change_to_string.error());
     }
 
+    //*************************************************************************
+
     TEST(test_or_else_change_error_move_constructor) {
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("or_else_with_error")));
 
@@ -992,6 +1000,8 @@ namespace
 
       CHECK_EQUAL("or_else_with_error_to_string", change_to_string.error());
     }
+    
+    //*************************************************************************
 
     TEST(test_or_else_const_rvalue) {
       bool error_generated {false};
@@ -1007,6 +1017,7 @@ namespace
     }
 
     //*************************************************************************
+
     TEST(test_transform) {
       Expected expected = {Value("transform_with_value")};
       Expected expected_error = {Unexpected(Error("transform_with_error"))};
@@ -1035,6 +1046,8 @@ namespace
       CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
     }
 
+    //*************************************************************************
+
     TEST(test_transform_move_constructor) {
       ExpectedM expected = {ValueM("transform_with_value")};
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("transform_with_error")));
@@ -1062,6 +1075,8 @@ namespace
 
       CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
     }
+
+    //*************************************************************************
 
     TEST(test_transform_void) {
       ExpectedV expected;
@@ -1118,6 +1133,8 @@ namespace
 
       CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
     }
+  
+    //*************************************************************************
 
     TEST(test_and_then_move_constructor) {
       ExpectedM expected = ExpectedM(ValueM("and_then_with_value"));
@@ -1144,6 +1161,8 @@ namespace
 
       CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
     }
+
+    //*************************************************************************
     
     TEST(test_and_then_void) {
       ExpectedV expected;
@@ -1175,7 +1194,7 @@ namespace
       CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
     }
     
-    // /** AND_THEN */
+    //*************************************************************************
 
     TEST(test_transform_error) {
       Expected expected = {Value("transform_error_with_value")};
@@ -1204,6 +1223,8 @@ namespace
 
       CHECK_EQUAL("transform_error_with_error_transformed", unexpected_out.error());
     }
+
+    //*************************************************************************
 
     TEST(test_transform_error_move_constructor) {
       ExpectedM expected = ExpectedM(ValueM("transform_error_with_value"));

@@ -806,7 +806,7 @@ namespace etl
     >
     ETL_CONSTEXPR auto transform(F&& f) const && -> expected<U, TError>{
       if (has_value()) {
-        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<const TValue>(storage)));
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
       } else {
         return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
       }
@@ -895,6 +895,7 @@ namespace etl
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TValue>::value &&
+        etl::is_expected<U>::value &&
         etl::is_same<typename U::value_type, TValue>::value
       >::type
     >
@@ -913,6 +914,7 @@ namespace etl
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TValue>::value &&
+        etl::is_expected<U>::value &&
         etl::is_same<typename U::value_type, TValue>::value
       >::type
     >
@@ -931,6 +933,7 @@ namespace etl
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_move_constructible<TValue>::value &&
+        etl::is_expected<U>::value &&
         etl::is_same<typename U::value_type, TValue>::value
       >::type
     >
@@ -949,6 +952,7 @@ namespace etl
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TValue>::value &&
+        etl::is_expected<U>::value &&
         etl::is_same<typename U::value_type, TValue>::value
       >::type
     >
@@ -1390,6 +1394,7 @@ template <
   typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
   typename = typename etl::enable_if<
     !etl::is_void<U>::value &&
+    etl::is_expected<U>::value &&
     etl::is_same<void, typename U::value_type>::value
   >::type
 >
@@ -1407,6 +1412,7 @@ template <
   typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
   typename = typename etl::enable_if<
     !etl::is_void<U>::value &&
+    etl::is_expected<U>::value &&
     etl::is_same<void, typename U::value_type>::value
   >::type
 >
@@ -1424,6 +1430,7 @@ template <
   typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
   typename = typename etl::enable_if<
     !etl::is_void<U>::value &&
+    etl::is_expected<U>::value &&
     etl::is_same<void, typename U::value_type>::value
   >::type
 >
@@ -1441,6 +1448,7 @@ template <
   typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
   typename = typename etl::enable_if<
     !etl::is_void<U>::value &&
+    etl::is_expected<U>::value &&
     etl::is_same<void, typename U::value_type>::value
   >::type
 >
