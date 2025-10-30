@@ -41,6 +41,10 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#if ETL_USING_CPP11 && ETL_USING_STL
+    #include <cstddef>
+#endif
+
 ///\defgroup alignment alignment
 /// Creates a variable of the specified type at the specified alignment.
 /// \ingroup utilities
@@ -842,6 +846,46 @@ namespace etl
     swap(lhs.pbuffer, rhs.pbuffer);
     swap(lhs.valid,   rhs.valid);
   }
+
+  //***************************************************************************
+  /// max_align_t
+  /// A POD type that has at least the platform's maximum fundamental alignment.
+  /// \ingroup alignment
+  //***************************************************************************
+  namespace private_max_align
+  {
+    struct Dummy
+    {
+      int member_data;
+      int member_func(double) { return 0; }
+    };
+  }
+
+  union max_align_t
+  {
+    int_least8_t  i8;
+    int_least16_t i16;
+    int32_t       i32;
+#if ETL_USING_64BIT_TYPES
+    int64_t i64;
+#endif
+    intmax_t im;
+    float    f;
+    double   d;
+    long double ld;
+    void* vp;
+    void (*fp)();
+    int (private_max_align::Dummy::* mfp)(double);
+    int private_max_align::Dummy::* mdp;
+#if defined(__SSE__) || defined(_M_IX86_FP)
+#include <xmmintrin.h>
+    __m128 simd;
+#endif
+#if defined(__AVX__)
+#include <immintrin.h>
+    __m256 simd256;
+#endif
+  };
 }
 
 #endif
