@@ -812,7 +812,7 @@ namespace etl
     {
       if (has_value())
       {
-        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage))));
       }
       else
       {
@@ -896,7 +896,7 @@ namespace etl
     {
       if (has_value())
       {
-        return etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage));
+        return etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage)));
       }
       else
       {
@@ -984,7 +984,7 @@ namespace etl
       }
       else
       {
-        return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
+        return U(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))));
       }
     }
 
@@ -1064,7 +1064,7 @@ namespace etl
       else
       {
         return expected<TValue, U>(unexpected<U>(
-          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
+          (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))));
       }
     }
 #endif
@@ -1508,7 +1508,7 @@ namespace etl
       }
       else
       {
-        return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
+        return U(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))));
       }
     }
 
@@ -1584,7 +1584,7 @@ namespace etl
       else
       {
         return expected<void, U>(unexpected<U>(
-          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
+          (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))));
       }
     }
 
