@@ -36,12 +36,16 @@ SOFTWARE.
 #include "optional.h"
 #include "placement_new.h"
 #include "type_traits.h"
+#include "function_traits.h"
 #include "error_handler.h"
 #include "exception.h"
 #include "file_error_numbers.h"
 
 namespace etl
 {
+  //*************************************************************************
+  /// Exception base for inplace_function
+  //*************************************************************************
   class inplace_function_exception : public etl::exception
   {
   public:
@@ -52,145 +56,246 @@ namespace etl
     }
   };
 
+  //*************************************************************************
+  /// Inplace function uninitialized exception.
+  //*************************************************************************
   class inplace_function_uninitialized : public inplace_function_exception
   {
   public:
 
     inplace_function_uninitialized(string_type file_name_, numeric_type line_number_)
-      : inplace_function_exception(ETL_ERROR_TEXT("inplace_function:inplace_function_uninitialized", ETL_INPLACE_FUNCTION_FILE_ID"A"), file_name_, line_number_)
+      : inplace_function_exception(ETL_ERROR_TEXT("inplace_function:uninitialized", ETL_INPLACE_FUNCTION_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
 
-  //*************************************************************************
-  /// VTable for inplace_function
-  //*************************************************************************
-  template <typename TReturn, typename... TArgs>
-  struct inplace_function_vtable
+  namespace private_inplace_function
   {
-    using invoke_type  = TReturn(*)(void*, TArgs...);
-    using destroy_type = void(*)(void*);
-    using move_type    = void(*)(void* dst, void* src);
-    using copy_type    = void(*)(void* dst, const void* src);
+    //*************************************************************************
+    // Helpers to deduce lambda/functor signature from operator()
+    //*************************************************************************
+    template <typename> 
+    struct lambda_signature;
 
-    invoke_type  invoke  = ETL_NULLPTR;
-    destroy_type destroy = ETL_NULLPTR;
-    move_type    move    = ETL_NULLPTR;
-    copy_type    copy    = ETL_NULLPTR;
+    // non-noexcept
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...)> { using type = R(A...); };
 
-    template <typename T>
-    struct member_target
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) const> { using type = R(A...); };
+
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) volatile> { using type = R(A...); };
+
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) const volatile> { using type = R(A...); };
+
+#if ETL_USING_CPP17
+    // noexcept
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) noexcept> { using type = R(A...); };
+
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) const noexcept> { using type = R(A...); };
+
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) volatile noexcept> { using type = R(A...); };
+
+    template <typename C, typename R, typename... A>
+    struct lambda_signature<R (C::*)(A...) const volatile noexcept> { using type = R(A...); };
+#endif
+
+    //*************************************************************************
+    /// VTable for inplace_function
+    //*************************************************************************
+    template <typename TReturn, typename... TArgs>
+    struct inplace_function_vtable
     {
-      T* obj;
-      TReturn (T::*member)(TArgs...);
+      using invoke_type  = TReturn(*)(void*, TArgs...);
+      using destroy_type = void(*)(void*);
+      using move_type    = void(*)(void* dst, void* src);
+      using copy_type    = void(*)(void* dst, const void* src);
+
+      invoke_type  invoke  = nullptr;
+      destroy_type destroy = destroy_type(nullptr);
+      move_type    move    = nullptr;
+      copy_type    copy    = nullptr;
+
+      //***********************************
+      /// Target for non-const member function
+      //***********************************
+      template <typename T>
+      struct member_target
+      {
+        T* obj;
+        TReturn(T::* member)(TArgs...);
+      };
+
+      //***********************************
+      /// Target for const member function
+      //***********************************
+      template <typename T>
+      struct const_member_target
+      {
+        const T* obj;
+        TReturn(T::* member)(TArgs...) const;
+      };
+
+      //*******************************************
+      // Create a vtable for free function pointer
+      //*******************************************
+      static const inplace_function_vtable* for_function_ptr()
+      {
+        using function_type = TReturn(*)(TArgs...);
+
+        static const inplace_function_vtable vtable
+        {
+          // invoke
+          [](void* p, TArgs... a) -> TReturn { auto* fn = static_cast<function_type*>(p); return (*fn)(etl::forward<TArgs>(a)...); },
+          // destroy
+          destroy_type(nullptr),
+          // move
+          [](void* dst, void* src) { ::new (dst) function_type(*static_cast<function_type*>(src)); },
+          // copy
+          [](void* dst, const void* src) { ::new (dst) function_type(*static_cast<const function_type*>(src)); }
+        };
+
+        return &vtable;
+      }
+
+      //*******************************************
+      // Create a vtable for non-const member
+      //*******************************************
+      template <typename T>
+      static const inplace_function_vtable* for_member()
+      {
+        using target_t = member_target<T>;
+
+        static const inplace_function_vtable vtable
+        {
+          // invoke
+          [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<target_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
+          // destroy
+          destroy_type(nullptr),
+          // move
+          [](void* dst, void* src) { ::new (dst) target_t(etl::move(*static_cast<target_t*>(src))); },
+          // copy
+          [](void* dst, const void* src) { ::new (dst) target_t(*static_cast<const target_t*>(src)); }
+        };
+
+        return &vtable;
+      }
+
+      //*******************************************
+      // Create a vtable for const member
+      //*******************************************
+      template <typename T>
+      static const inplace_function_vtable* for_const_member()
+      {
+        using target_t = const_member_target<T>;
+
+        static const inplace_function_vtable vtable
+        {
+          // invoke
+          [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<target_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
+          // destroy
+          destroy_type(nullptr),
+          // move
+          [](void* dst, void* src) { ::new (dst) target_t(etl::move(*static_cast<target_t*>(src))); },
+          // copy
+          [](void* dst, const void* src) { ::new (dst) target_t(*static_cast<const target_t*>(src)); }
+        };
+
+        return &vtable;
+      }
+
+      //*******************************************
+      // Create a vtable for functor/lambda type
+      //*******************************************
+      template <typename T>
+      static const inplace_function_vtable* for_functor()
+      {
+        // Choose destroy and move stubs based on trivial destructibility.
+        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value
+                                     ? destroy_type(nullptr)
+                                     : static_cast<destroy_type>(+[](void* p) { static_cast<T*>(p)->~T(); });
+
+        move_type move_ptr = etl::is_trivially_destructible<T>::value
+                               ? static_cast<move_type>(+[](void* dst, void* src) {::new (dst) T(etl::move(*static_cast<T*>(src)));})
+                               : static_cast<move_type>(+[](void* dst, void* src) {::new (dst) T(etl::move(*static_cast<T*>(src))); static_cast<T*>(src)->~T();});
+
+        static const inplace_function_vtable vtable
+        {
+          // invoke
+          [](void* p, TArgs... a) -> TReturn { return (*static_cast<T*>(p))(etl::forward<TArgs>(a)...); },
+          // destroy
+          destroy_ptr,
+          // move
+          move_ptr,
+          // copy
+          [](void* dst, const void* src) { ::new (dst) T(*static_cast<const T*>(src)); }
+        };
+
+        return &vtable;
+      }
+
+      //*******************************************
+      // Create a vtable for compile-time bound free function
+      //*******************************************
+      template <TReturn(*Function)(TArgs...)>
+      static const inplace_function_vtable* for_compile_time_function()
+      {
+        static const inplace_function_vtable vtable
+        {
+          // invoke ignores object and calls the known function.
+          [](void*, TArgs... a) -> TReturn { return Function(etl::forward<TArgs>(a)...); },
+          nullptr, // destroy
+          nullptr, // move
+          nullptr  // copy
+        };
+
+        return &vtable;
+      }
+
+      //*******************************************
+      // Create a vtable for compile-time bound non-const member function + object
+      //*******************************************
+      template <typename T, TReturn(T::* Method)(TArgs...), T* Object>
+      static const inplace_function_vtable* for_compile_time_member()
+      {
+        static const inplace_function_vtable vtable
+        {
+          // invoke ignores object and uses the known object + member pointer.
+          [](void*, TArgs... a) -> TReturn { return (Object->*Method)(etl::forward<TArgs>(a)...); },
+          nullptr, // destroy
+          nullptr, // move
+          nullptr  // copy
+        };
+
+        return &vtable;
+      }
+
+      //*******************************************
+      // Create a vtable for compile-time bound const member function + object
+      //*******************************************
+      template <typename T, TReturn(T::* Method)(TArgs...) const, const T* Object>
+      static const inplace_function_vtable* for_compile_time_const_member()
+      {
+        static const inplace_function_vtable vtable
+        {
+          [](void*, TArgs... a) -> TReturn { return (Object->*Method)(etl::forward<TArgs>(a)...); },
+          nullptr, // destroy
+          nullptr, // move
+          nullptr  // copy
+        };
+
+        return &vtable;
+      }
     };
-
-    template <typename T>
-    struct const_member_target
-    {
-      const T* obj;
-      TReturn (T::*member)(TArgs...) const;
-    };
-
-    //*******************************************
-    // Create vtable for free function pointer
-    //*******************************************
-    static const inplace_function_vtable* for_function_ptr() 
-    {
-      using function_type = TReturn(*)(TArgs...);
-
-      static const inplace_function_vtable vtable
-      {
-        // invoke
-        [](void* p, TArgs... a) -> TReturn { auto* fn = static_cast<function_type*>(p); return (*fn)(etl::forward<TArgs>(a)...); },
-        // destroy
-        ETL_NULLPTR,
-        // move
-        [](void* dst, void* src) { ::new (dst) function_type(*static_cast<function_type*>(src)); },
-        // copy
-        [](void* dst, const void* src) { ::new (dst) function_type(*static_cast<const function_type*>(src)); }
-      };
-
-      return &vtable;
-    }
-
-    //*******************************************
-    // Create vtable for non-const member
-    //*******************************************
-    template <typename T>
-    static const inplace_function_vtable* for_member() 
-    {
-      using target_t = member_target<T>;
-
-      static const inplace_function_vtable vtable 
-      {     
-        // invoke
-        [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<target_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
-        // destroy
-        ETL_NULLPTR,
-        // move
-        [](void* dst, void* src) { ::new (dst) target_t(etl::move(*static_cast<target_t*>(src))); },
-        // copy
-        [](void* dst, const void* src) { ::new (dst) target_t(*static_cast<const target_t*>(src)); }
-      };
-
-      return &vtable;
-    }
-
-    //*******************************************
-    // Create vtable for const member
-    //*******************************************
-    template <typename T>
-    static const inplace_function_vtable* for_const_member() 
-    {   
-      using target_t = const_member_target<T>;
-
-      static const inplace_function_vtable vtable 
-      {
-        // invoke
-        [](void* p, TArgs... a) -> TReturn { auto* s = static_cast<target_t*>(p); return (s->obj->*s->member)(etl::forward<TArgs>(a)...); },
-        // destroy
-        ETL_NULLPTR,
-        // move
-        [](void* dst, void* src) { ::new (dst) target_t(etl::move(*static_cast<target_t*>(src))); },
-        // copy
-        [](void* dst, const void* src) { ::new (dst) target_t(*static_cast<const target_t*>(src)); }
-      };
-
-      return &vtable;
-    }
-
-    //*******************************************
-    // Create vtable for functor/lambda type
-    //*******************************************
-    template <typename T>
-    static const inplace_function_vtable* for_functor() 
-    {
-      // Choose destroy and move stubs based on trivial destructibility.
-      destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? ETL_NULLPTR 
-                                                                        : [](void* p) { static_cast<T*>(p)->~T(); };
-
-      move_type move_ptr = etl::is_trivially_destructible<T>::value ? [](void* dst, void* src) { ::new (dst) T(etl::move(*static_cast<T*>(src))); }
-                                                                  : [](void* dst, void* src) { ::new (dst) T(etl::move(*static_cast<T*>(src))); static_cast<T*>(src)->~T(); };
-
-      static const inplace_function_vtable vtable 
-      {
-        // invoke
-        [](void* p, TArgs... a) -> TReturn { return (*static_cast<T*>(p))(etl::forward<TArgs>(a)...); },
-        // destroy
-        destroy_ptr,
-        // move
-        move_ptr,
-        // copy
-        [](void* dst, const void* src) { ::new (dst) T(*static_cast<const T*>(src)); }
-      };
-
-      return &vtable;
-    }
-  };
+  }
 
   //*************************************************************************
-  template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
+  template <typename TSignature, size_t Object_Size = 16, size_t Object_Alignment = alignof(etl::max_align_t)>
   class inplace_function;
 
   //*************************************************************************
@@ -210,7 +315,7 @@ namespace etl
     using this_type     = inplace_function<TReturn(TArgs...), Object_Size, Object_Alignment>;
     using function_type = TReturn(*)(TArgs...);
     using storage_type  = etl::uninitialized_buffer<Object_Size, 1, Object_Alignment>;
-    using vtable_type   = inplace_function_vtable<TReturn, TArgs...>;
+    using vtable_type   = private_inplace_function::inplace_function_vtable<TReturn, TArgs...>;
 
   public:
 
@@ -268,6 +373,188 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Construct from function pointer.
+    //*************************************************************************
+    inplace_function(function_type f)
+    {
+      set(f);
+    }
+
+    //*************************************************************************
+    /// Construct from object + non-const member function (runtime).
+    /// Stores {object*, member ptr} in storage and dispatches via stub.
+    //*************************************************************************
+    template <typename TObject>
+    inplace_function(TObject& obj, TReturn (TObject::*method)(TArgs...))
+    {
+      set(obj, method);
+    }
+
+    //*************************************************************************
+    /// Construct from object + const member function (runtime).
+    /// Stores {object*, member ptr} in storage and dispatches via stub.
+    //*************************************************************************
+    template <typename TObject>
+    inplace_function(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
+    {
+      set(obj, method);
+    }
+
+    //*************************************************************************
+    /// Construct from lambda/functor (runtime, storage-owned).
+    /// Stores the callable into storage and dispatches via a typed stub.
+    //*************************************************************************
+    template <typename TLambda,
+              typename T = typename etl::decay<TLambda>::type,
+              typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
+    inplace_function(TLambda&& lambda)
+    {
+      set(etl::forward<TLambda>(lambda));
+    }
+    
+    //*************************************************************************
+    /// Create from function pointer (runtime).
+    /// Stores the pointer into storage and dispatches via stub.
+    //*************************************************************************
+    void set(function_type f)
+    {
+      static_assert(Object_Size      >= sizeof(function_type),  "etl::inplace_function: storage size too small");
+      static_assert(Object_Alignment >= alignof(function_type), "etl::inplace_function: storage alignment too small");
+
+      clear();
+
+      auto* slot = reinterpret_cast<function_type*>(&storage);
+      ::new (slot) function_type(f);
+
+      vtable = vtable_type::for_function_ptr();
+      object = &storage;
+    }
+
+    //*************************************************************************
+    /// Create from object + member function (runtime).
+    /// Stores {object*, member ptr} in storage and dispatches via stub.
+    //*************************************************************************
+    template <typename TObject>
+    void set(TObject& obj, TReturn(TObject::* method)(TArgs...))
+    {
+      using target_t = vtable_type::template member_target<TObject>;
+
+      static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: storage size too small");
+      static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: storage alignment too small");
+
+      clear();
+
+      auto* slot = reinterpret_cast<target_t*>(&storage);
+      ::new (slot) target_t{ &obj, method };
+
+      object = &storage;
+      vtable = vtable_type::template for_member<TObject>();
+    }
+
+    //*************************************************************************
+    /// Create from object + const member function (runtime).
+    /// Stores {object*, member ptr} in storage and dispatches via stub.
+    //*************************************************************************
+    template <typename TObject>
+    void set(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
+    {
+      using target_t = vtable_type::template const_member_target<TObject>;
+
+      static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: storage size too small");
+      static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: storage alignment too small");
+
+      clear();
+
+      auto* slot = reinterpret_cast<target_t*>(&storage);
+      ::new (slot) target_t{ &obj, method };
+
+      object = &storage;
+      vtable = vtable_type::template for_const_member<TObject>();
+    }
+
+    //*************************************************************************
+    /// Create from lambda/functor (runtime, storage-owned).
+    /// Stores the callable into storage and dispatches via a typed stub.
+    //*************************************************************************
+    template <typename TLambda,
+              typename T = typename etl::decay<TLambda>::type,
+              typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
+    void set(TLambda&& lambda)
+    {
+      static_assert(Object_Size      >= sizeof(T),  "etl::inplace_function: Object size too small");
+      static_assert(Object_Alignment >= alignof(T), "etl::inplace_function: Object alignment too small");
+
+      void* slot = &storage;
+      ::new (slot) T(etl::forward<TLambda>(lambda));
+
+      object = &storage;
+      vtable = vtable_type::template for_functor<T>();
+    }
+
+    //*************************************************************************
+    /// Set from a compile-time bound free function (no payload stored).
+    /// Function must have external linkage.
+    /// Usage: ipf.template set<&FreeFn>();
+    //*************************************************************************
+    template <TReturn(*Function)(TArgs...)>
+    void set()
+    {
+      clear();
+      vtable = vtable_type::template for_compile_time_function<Function>();
+      object = nullptr;
+    }
+
+    //*************************************************************************
+    // Set from a compile-time bound non-const member + instance reference.
+    // Instance must have external linkage when used as an NTTP.
+    //*************************************************************************
+    template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instance>
+    void set()
+    {
+      clear();
+      vtable = vtable_type::template for_compile_time_member<TObject, Method, &Instance>();
+      object = nullptr;
+    }
+
+    //*************************************************************************
+    // Set from a compile-time bound const member + instance reference.
+    //*************************************************************************
+    template <typename TObject, TReturn(TObject::*Method)(TArgs...) const, const TObject& Instance>
+    void set()
+    {
+      clear();
+      vtable = vtable_type::template for_compile_time_const_member<TObject, Method, &Instance>();
+      object = nullptr;
+    }
+
+    //*************************************************************************
+    /// Free function (external linkage)
+    //*************************************************************************
+    template <TReturn(*Function)(TArgs...)>
+    static this_type create()
+    {
+      return this_type(vtable_type::template for_compile_time_function<Function>(), nullptr);
+    }
+
+    //*************************************************************************
+    // Non-const member + instance reference (compile time)
+    //*************************************************************************
+    template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instance>
+    static this_type create()
+    {
+      return this_type(vtable_type::template for_compile_time_member<TObject, Method, &Instance>(), nullptr);
+    }
+
+    //*************************************************************************
+    // Const member + instance reference (compile time)
+    //*************************************************************************
+    template <typename TObject, TReturn(TObject::*Method)(TArgs...) const, const TObject& Instance>
+    static this_type create()
+    {
+      return this_type(vtable_type::template for_compile_time_const_member<TObject, Method, &Instance>(), nullptr);
+    }
+
+    //*************************************************************************
     /// Assignment operator
     //*************************************************************************
     inplace_function& operator =(const inplace_function& rhs)
@@ -296,125 +583,7 @@ namespace etl
     }
 
     //*************************************************************************
-    // Create from function pointer.
-    //*************************************************************************
-    inplace_function(function_type f)
-    {
-      set(f);
-    }
-
-    //*************************************************************************
-    // Create from object + non-const member function (runtime).
-    // Stores {object*, member ptr} in SBO and dispatches via stub.
-    //*************************************************************************
-    template <typename TObject>
-    inplace_function(TObject& obj, TReturn (TObject::*method)(TArgs...))
-    {
-      set(obj, method);
-    }
-
-    //*************************************************************************
-    // Create from object + const member function (runtime).
-    // Stores {object*, member ptr} in SBO and dispatches via stub.
-    //*************************************************************************
-    template <typename TObject>
-    inplace_function(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
-    {
-      set(obj, method);
-    }
-
-    //*************************************************************************
-    // Create from lambda/functor (runtime, SBO-owned).
-    // Stores the callable into SBO and dispatches via a typed stub.
-    //*************************************************************************
-    template <typename TLambda,
-              typename T = typename etl::decay<TLambda>::type,
-              typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
-    inplace_function(TLambda&& lambda)
-    {
-      set(etl::forward<TLambda>(lambda));
-    }
-    
-    //*************************************************************************
-    // Create from function pointer (runtime).
-    // Stores the pointer into SBO and dispatches via stub.
-    //*************************************************************************
-    void set(function_type f)
-    {
-      static_assert(Object_Size      >= sizeof(function_type),   "etl::inplace_function: SBO size too small");
-      static_assert(Object_Alignment >= alignof(function_type), "etl::inplace_function: SBO alignment too small");
-
-      clear();
-
-      auto* slot = reinterpret_cast<function_type*>(&storage);
-      ::new (slot) function_type(f);
-
-      vtable = inplace_function_vtable<TReturn, TArgs...>::for_function_ptr();
-
-      object = &storage;
-    }
-
-    //*************************************************************************
-    // Create from object + member function (runtime).
-    // Stores {object*, member ptr} in SBO and dispatches via stub.
-    //*************************************************************************
-    template <typename TObject>
-    void set(TObject& obj, TReturn(TObject::* method)(TArgs...))
-    {
-      using target_t = inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
-
-      static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: SBO size too small");
-      static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: SBO alignment too small");
-
-      clear();
-
-      auto* slot = reinterpret_cast<target_t*>(&storage);
-      ::new (slot) target_t{ &obj, method };
-
-      object = &storage;
-      vtable = inplace_function_vtable<TReturn, TArgs...>::template for_member<TObject>();
-    }
-
-    //*************************************************************************
-    // Create from object + const member function (runtime).
-    // Stores {object*, member ptr} in SBO and dispatches via stub.
-    //*************************************************************************
-    template <typename TObject>
-    void set(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
-    {
-      using target_t = inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
-
-      static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: SBO size too small");
-      static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: SBO alignment too small");
-
-      clear();
-
-      auto* slot = reinterpret_cast<target_t*>(&storage);
-      ::new (slot) target_t{ &obj, method };
-
-      object = &storage;
-      vtable = inplace_function_vtable<TReturn, TArgs...>::template for_const_member<TObject>();
-    }
-
-    //*************************************************************************
-    // Create from lambda/functor (runtime, SBO-owned).
-    // Stores the callable into SBO and dispatches via a typed stub.
-    //*************************************************************************
-    template <typename TLambda,
-              typename T = typename etl::decay<TLambda>::type,
-              typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
-    void set(TLambda&& lambda)
-    {
-      static_assert(Object_Size      >= sizeof(T),  "etl::inplace_function: Object size too small");
-      static_assert(Object_Alignment >= alignof(T), "etl::inplace_function: Object alignment too small");
-
-      void* slot = &storage;
-      ::new (slot) T(etl::forward<TLambda>(lambda));
-
-      object = &storage;
-      vtable = inplace_function_vtable<TReturn, TArgs...>::template for_functor<T>();
-    }
-
+    /// Assignment from nullptr
     //*************************************************************************
     inplace_function& operator =(etl::nullptr_t) noexcept
     {
@@ -423,6 +592,8 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment from function pointer
+    //*************************************************************************
     inplace_function& operator =(function_type f)
     {
       set(f);
@@ -430,6 +601,23 @@ namespace etl
       return *this;
     }
 
+    //*************************************************************************
+    // Assignment from lambda/functor (runtime, storage-owned).
+    // Enabled only for class types that are not etl::inplace_function.
+    //*************************************************************************
+    template <typename TLambda, 
+              typename T = typename etl::decay<TLambda>::type, 
+              typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
+    inplace_function& operator =(TLambda&& lambda)
+    {
+      set(etl::forward<TLambda>(lambda));
+      return *this;
+    }
+
+  // ...
+
+    //*************************************************************************
+    /// Swap with another inplace_function
     //*************************************************************************
     void swap(inplace_function& other)
     {
@@ -442,11 +630,15 @@ namespace etl
     }
       
     //*************************************************************************
+    /// Equality operator
+    //*************************************************************************
     bool operator ==(const inplace_function& rhs) const noexcept
     {
       return (vtable == rhs.vtable);
     }
 
+    //*************************************************************************
+    /// Inequality operator
     //*************************************************************************
     bool operator !=(const inplace_function& rhs) const noexcept
     {
@@ -454,17 +646,23 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Checks if the inplace_function is valid (has a target).
+    //*************************************************************************
     bool is_valid() const noexcept
     {
-      return (vtable != ETL_NULLPTR);
+      return (vtable != nullptr);
     }
 
+    //*************************************************************************
+    /// Boolean conversion operator.
     //*************************************************************************
     explicit operator bool() const noexcept
     {
       return is_valid();
     }
 
+    //*************************************************************************
+    /// Execute the inplace_function.
     //*************************************************************************
     TReturn operator()(TArgs... args) const
     {
@@ -544,10 +742,8 @@ namespace etl
       }
     }
 
-  private:
-
     //*************************************************************************
-    /// clear
+    /// Clears the inplace_function
     //*************************************************************************
     void clear() noexcept 
     {
@@ -558,8 +754,8 @@ namespace etl
           vtable->destroy(object);
         }
 
-        vtable = ETL_NULLPTR;
-        object = ETL_NULLPTR;
+        vtable = nullptr;
+        object = nullptr;
       }
     }
 
@@ -577,6 +773,15 @@ namespace etl
     // Allow cross-size access to internals
     template <typename, size_t, size_t>
     friend class inplace_function;
+
+    //*************************************************************************
+    // Direct-initialization constructor for CT-bound vtables (no payload).
+    //*************************************************************************
+    explicit inplace_function(const vtable_type* vt, void* obj) noexcept
+      : object(obj)
+      , vtable(vt)
+      , storage()
+    {}
 
     ////*************************************************************************
     // clone_from
@@ -610,25 +815,25 @@ namespace etl
         vtable->move(&storage, &other.storage); 
         object = &storage; 
 
-        other.vtable  = ETL_NULLPTR;
-        other.object = ETL_NULLPTR;
+        other.vtable = nullptr;
+        other.object = nullptr;
       }
       else 
       { 
         object = other.object; 
-        other.vtable  = ETL_NULLPTR; 
-        other.object = ETL_NULLPTR;
+        other.vtable = nullptr; 
+        other.object = nullptr;
       }
     }
 
-    void*              object = ETL_NULLPTR;
-    const vtable_type* vtable  = ETL_NULLPTR;
+    void*              object = nullptr;
+    const vtable_type* vtable = nullptr;
     storage_type       storage;
   };
 
   //*************************************************************************
-  // Helper to build an inplace_function from a free function pointer known at compile time.
-  // Usage: auto f = etl::make_inplace_function<YourFreeFunction>();
+  /// Helper to build an inplace_function from a free function pointer known at compile time.
+  /// Usage: auto ipf = etl::make_inplace_function<YourFreeFunction>();
   //*************************************************************************
   template <typename TReturn, typename... TArgs>
   inline etl::inplace_function<TReturn(TArgs...), sizeof(TReturn(*)(TArgs...)), alignof(TReturn(*)(TArgs...))>
@@ -640,39 +845,105 @@ namespace etl
   }
 
   //*************************************************************************
-  // Helper to build an inplace_function bound to a non-const member function.
-  // Usage: auto f = etl::make_inplace_function(obj, &Type::Method);
+  /// Helper to build an inplace_function bound to a non-const member function.
+  /// Usage: auto ipf = etl::make_inplace_function(obj, &Type::Method);
   //*************************************************************************
   template <typename TObject, typename TReturn, typename... TArgs>
   inline etl::inplace_function<TReturn(TArgs...),
-                               sizeof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>),
-                               alignof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>)>
+                               sizeof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>),
+                               alignof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>)>
     make_inplace_function(TObject& obj, TReturn (TObject::*method)(TArgs...))
   {
-    using target_t = typename etl::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
+    using target_t = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
 
     return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(obj, method);
   }
 
   //*************************************************************************
-  // Helper to build an inplace_function bound to a const member function.
-  // Usage: auto f = etl::make_inplace_function(obj, &Type::Method)  // obj is const
+  /// Helper to build an inplace_function bound to a const member function.
+  /// Usage: auto ipf = etl::make_inplace_function(obj, &Type::Method)  // obj is const
   //*************************************************************************
   template <typename TObject, typename TReturn, typename... TArgs>
   inline etl::inplace_function<TReturn(TArgs...),
-                               sizeof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>),
-                               alignof(typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>)>
+                               sizeof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>),
+                               alignof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>)>
     make_inplace_function(const TObject& obj, TReturn (TObject::*method)(TArgs...) const)
   {
-    using target_t = typename etl::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
+    using target_t = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
 
     return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(obj, method);
   }
 
   //*************************************************************************
-  // TODO: Needs lambda make_inplace_function
+  /// Helper to build an inplace_function from a lambda/functor (non-generic, non-overloaded).
+  /// Deduces R(Args...) from &T::operator().
+  /// Usage: auto ipf = etl::make_inplace_function(lambda_or_functor);
   //*************************************************************************
+  template <typename TLambda,
+            typename T = typename etl::decay<TLambda>::type,
+            typename = typename etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>,
+            typename TSignature = typename etl::private_inplace_function::lambda_signature<decltype(&T::operator())>::type>
+  inline etl::inplace_function<TSignature, sizeof(T), alignof(T)>
+    make_inplace_function(TLambda&& lambda)
+  {
+    return etl::inplace_function<TSignature, sizeof(T), alignof(T)>(etl::forward<TLambda>(lambda));
+  }
 
+  //*************************************************************************
+  /// Helper to build an inplace_function from a lambda/functor with explicit signature.
+  /// Use this for generic lambdas or overloaded operator().
+  /// Usage: auto ipf = etl::make_inplace_function<int(int)>(lambda_or_functor);
+  //*************************************************************************
+  template <typename TSignature, 
+            typename TLambda,
+            typename T = typename etl::decay<TLambda>::type,
+            typename = typename etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
+  inline etl::inplace_function<TSignature, sizeof(T), alignof(T)>
+    make_inplace_function(TLambda&& lambda)
+  {
+    return etl::inplace_function<TSignature, sizeof(T), alignof(T)>(etl::forward<TLambda>(lambda));
+  }
+
+#if ETL_USING_CPP17
+  //*************************************************************************
+  // Make a inplace_function from a function at compile time.
+  //*************************************************************************
+  template <auto Function>
+  ETL_NODISCARD
+  auto make_inplace_function()
+  {
+    using function_type = typename etl::function_traits<decltype(Function)>::function_type;
+
+    return etl::inplace_function<function_type, 1, 1>::template create<Function>();
+  }
+
+  //*************************************************************************
+  /// Make a inplace_function from a member function at compile time.
+  //*************************************************************************
+  template <typename T, auto Method, T& Instance, typename = etl::enable_if_t<!etl::function_traits<decltype(Method)>::is_const>>
+  ETL_NODISCARD
+  auto make_inplace_function()
+  {
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+
+    return etl::inplace_function<function_type, 1, 1>::template create<T, Method, Instance>();
+  }
+
+  //*************************************************************************
+  /// Make a inplace_function from a const member function at compile time.
+  //*************************************************************************
+  template <typename T, auto Method, const T& Instance, typename = etl::enable_if_t<etl::function_traits<decltype(Method)>::is_const>>
+  ETL_NODISCARD
+  auto make_inplace_function()
+  {
+    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+
+    return etl::inplace_function<function_type, 1, 1>::template create<T, Method, Instance>();
+  }
+#endif
+
+  //*************************************************************************
+  /// Swap two inplace_functions.
   //*************************************************************************
   template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
   void swap(etl::inplace_function<TSignature, Object_Size, Object_Alignment>& lhs, etl::inplace_function<TSignature, Object_Size, Object_Alignment>& rhs) noexcept
@@ -681,14 +952,20 @@ namespace etl
   }
 
   //*************************************************************************
+  /// Check two inplace_functions for equality.
+  //*************************************************************************
   template <typename TSignature, size_t Object_Size1, size_t Object_Alignment1, size_t Object_Size2, size_t Object_Alignment2>
+  ETL_NODISCARD
   bool operator ==(etl::inplace_function<TSignature, Object_Size1, Object_Alignment1>& lhs, etl::inplace_function<TSignature, Object_Size2, Object_Alignment2>& rhs)
   {
     return lhs.operator==(rhs);
   }
 
   //*************************************************************************
+  /// Check two inplace_functions for inequality.
+  //*************************************************************************
   template <typename TSignature, size_t Object_Size1, size_t Object_Alignment1, size_t Object_Size2, size_t Object_Alignment2>
+  ETL_NODISCARD
   bool operator !=(etl::inplace_function<TSignature, Object_Size1, Object_Alignment1>& lhs, etl::inplace_function<TSignature, Object_Size2, Object_Alignment2>& rhs)
   {
     return !(lhs == rhs);
