@@ -43,6 +43,13 @@ namespace
   }
 
   //*****************************************************************************
+  // The free noexcept function taking no parameters.
+  //*****************************************************************************
+  void free_void_noexcept() noexcept
+  {
+  }
+
+  //*****************************************************************************
   // The free function taking an int parameter.
   //*****************************************************************************
   int free_int(int i, int j)
@@ -64,6 +71,30 @@ namespace
     }
 
     void member_void_const() const
+    {
+    }
+
+    void member_void_noexcept() noexcept
+    {
+    }
+
+    void member_void_const_noexcept() const noexcept
+    {
+    }
+
+    void member_void_volatile() volatile
+    {
+    }
+
+    void member_void_volatile_noexcept() volatile noexcept
+    {
+    }
+
+    void member_void_const_volatile() const volatile
+    {
+    }
+
+    void member_void_const_volatile_noexcept() const volatile noexcept
     {
     }
 
@@ -107,6 +138,32 @@ namespace
       CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_member_function);
       CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_free_function_free_void_noexcept)
+    {
+      free_void_noexcept(); // Keep clang happy
+
+      using traits = etl::function_traits<decltype(&free_void_noexcept)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));     
+
+      CHECK_TRUE(traits::is_function);
+      CHECK_FALSE(traits::is_member_function);
+      CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      CHECK_TRUE(traits::is_noexcept);
+#else
+      CHECK_FALSE(traits::is_noexcept);
+#endif
       CHECK_EQUAL(0, traits::argument_count);
     }
 
@@ -125,6 +182,8 @@ namespace
       CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_member_function);
       CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2 , traits::argument_count);
     }
 
@@ -141,6 +200,8 @@ namespace
       CHECK_FALSE(traits::is_function);
       CHECK_TRUE(traits::is_member_function);
       CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(0, traits::argument_count);
     }
 
@@ -157,6 +218,132 @@ namespace
       CHECK_FALSE(traits::is_function);
       CHECK_TRUE(traits::is_member_function);
       CHECK_TRUE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_void_noexcept)
+    {
+      using traits = etl::function_traits<decltype(&Object::member_void_noexcept)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      CHECK_TRUE(traits::is_noexcept);
+#else
+      CHECK_FALSE(traits::is_noexcept);
+#endif
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_void_const_noexcept)
+    {
+      using traits = etl::function_traits<decltype(&Object::member_void_const_noexcept)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_TRUE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      CHECK_TRUE(traits::is_noexcept);
+#else
+      CHECK_FALSE(traits::is_noexcept);
+#endif
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_void_volatile)
+    {
+      using traits = etl::function_traits<decltype(&Object::member_void_volatile)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_FALSE(traits::is_const);
+      CHECK_TRUE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_void_const_volatile)
+    {
+      using traits = etl::function_traits<decltype(&Object::member_void_const_volatile)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_TRUE(traits::is_const);
+      CHECK_TRUE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_void_volatile_noexcept)
+    {
+      using traits = etl::function_traits<decltype(&Object::member_void_volatile_noexcept)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_FALSE(traits::is_const);
+      CHECK_TRUE(traits::is_volatile);
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      CHECK_TRUE(traits::is_noexcept);
+#else
+      CHECK_FALSE(traits::is_noexcept);
+#endif
+      CHECK_EQUAL(0, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_void_const_volatile_noexcept)
+    {
+      using traits = etl::function_traits<decltype(&Object::member_void_const_volatile_noexcept)>;
+
+      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_TRUE(traits::is_const);
+      CHECK_TRUE(traits::is_volatile);
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      CHECK_TRUE(traits::is_noexcept);
+#else
+      CHECK_FALSE(traits::is_noexcept);
+#endif
       CHECK_EQUAL(0, traits::argument_count);
     }
 
@@ -173,6 +360,8 @@ namespace
       CHECK_FALSE(traits::is_function);
       CHECK_TRUE(traits::is_member_function);
       CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::argument_count);
     }
 
@@ -189,6 +378,8 @@ namespace
       CHECK_FALSE(traits::is_function);
       CHECK_TRUE(traits::is_member_function);
       CHECK_TRUE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::argument_count);
     }
 
@@ -205,7 +396,55 @@ namespace
       CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_member_function);
       CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(1, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_lambda)
+    {
+      auto lambda = [](int a, const std::string& s) -> long { return static_cast<long>(a + s.size()); };
+
+      using traits = etl::function_traits<decltype(lambda)>;
+
+      CHECK_TRUE((std::is_same<long(int, const std::string&),           traits::function_type>::value));
+      CHECK_TRUE((std::is_same<long,                                    traits::return_type>::value));
+      CHECK_TRUE((std::is_same<decltype(lambda),                        traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<int, const std::string&>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_TRUE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
+      CHECK_EQUAL(2, traits::argument_count);
+    }
+
+    //*************************************************************************
+    TEST(test_functor)
+    {
+      struct functor
+      {
+        long operator()(int a, const std::string& s)
+        {
+          return static_cast<long>(a + s.size());
+        };
+      };
+
+      using traits = etl::function_traits<functor>;
+
+      CHECK_TRUE((std::is_same<long(int, const std::string&),           traits::function_type>::value));
+      CHECK_TRUE((std::is_same<long,                                    traits::return_type>::value));
+      CHECK_TRUE((std::is_same<functor,                                 traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<int, const std::string&>, traits::argument_types>::value));
+
+      CHECK_FALSE(traits::is_function);
+      CHECK_TRUE(traits::is_member_function);
+      CHECK_FALSE(traits::is_const);
+      CHECK_FALSE(traits::is_volatile);
+      CHECK_FALSE(traits::is_noexcept);
+      CHECK_EQUAL(2, traits::argument_count);
     }
   };
 }
