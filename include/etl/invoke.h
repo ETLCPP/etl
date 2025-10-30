@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2022 John Wellbelove
+Copyright(c) 2025 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
 #include "utility.h"
 
 namespace etl {
-  template <typename T> struct __not_ : etl::integral_constant<bool, !bool(T::value)> {};
+  template <typename T> struct logical_not_t : etl::integral_constant<bool, !bool(T::value)> {};
 
   /// is T a function -- a function cannot be const qualified like a variable
   template<typename T> struct is_function : public etl::integral_constant<bool, !etl::is_const<const T>::value> { };
@@ -57,7 +57,7 @@ namespace etl {
 
   /// is T a member object pointer
   template<typename> struct is_member_object_pointer_helper : public etl::false_type { };
-  template<typename T, typename C> struct is_member_object_pointer_helper<T C::*> : public __not_<etl::is_function<T>>::type { };
+  template<typename T, typename C> struct is_member_object_pointer_helper<T C::*> : public logical_not_t<etl::is_function<T>>::type { };
   template<typename T> struct is_member_object_pointer : public is_member_object_pointer_helper<etl::remove_cv_t<T>>::type {};
 
   template <
@@ -75,9 +75,8 @@ namespace etl {
     typename F, 
     typename T, 
     typename... TArgs,
-    typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-      etl::is_member_function_pointer<DFn>::value && 
+      etl::is_member_function_pointer<etl::decay_t<F>>::value && 
       !etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
@@ -91,9 +90,8 @@ namespace etl {
     typename F, 
     typename T, 
     typename ... TArgs,
-    typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-      etl::is_member_function_pointer<DFn>::value && 
+      etl::is_member_function_pointer<etl::decay_t<F>>::value && 
       etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
@@ -106,9 +104,8 @@ namespace etl {
   template <
     typename F, 
     typename T,
-    typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-      etl::is_member_object_pointer<DFn>::value && 
+      etl::is_member_object_pointer<etl::decay_t<F>>::value && 
       !etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
@@ -121,9 +118,8 @@ namespace etl {
   template <
     typename F,
     typename T,
-    typename DFn = etl::decay_t<F>,
     typename = typename etl::enable_if<
-      etl::is_member_object_pointer<DFn>::value &&
+      etl::is_member_object_pointer<etl::decay_t<F>>::value &&
       etl::is_pointer<etl::decay_t<T>>::value
     >::type
   >
@@ -145,13 +141,9 @@ namespace etl {
   };
 
   template <typename F, typename... Us>
-  using invoke_result = invoke_result_impl<F, void, Us...>;
+  using invoke_result_t = typename invoke_result_impl<F, void, Us...>::type;
 
-  template <typename F, typename... Us>
-  using invoke_result_t = typename invoke_result<F, Us...>::type;
-
-  template <typename F, typename ... Us>
-  using deduced_result_type = typename invoke_result<F, Us...>::type;
+  
 }
 
 #endif

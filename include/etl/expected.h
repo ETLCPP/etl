@@ -745,69 +745,77 @@ namespace etl
 
 #if ETL_USING_CPP11
     template <
-      typename F, 
-      typename V = TValue&, 
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename F,
+      typename V = TValue&,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_copy_constructible<TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform(F&& f) & -> expected<U, TError>{
-      if (has_value()) {
+        etl::is_copy_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) & -> expected<U, TError>
+    {
+      if (has_value())
+      {
         return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
-        } else {
+      }
+      else
+      {
         return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
       }
     }
 
     template <
-      typename F, 
-      typename V = const TValue&, 
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename F,
+      typename V = const TValue&,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_copy_constructible<TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform(F&& f) const & -> expected<U, TError>{
-      if (has_value()) {
+        etl::is_copy_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) const& -> expected<U, TError>
+    {
+      if (has_value())
+      {
         return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
-      } else {
+      }
+      else
+      {
         return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
       }
     }
 
     template <
-      typename F, 
-      typename V = TValue&&, 
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename F,
+      typename V = TValue&&,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_move_constructible<TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform(F&& f) && -> expected<U, TError>{
-      if (has_value()) {
+        etl::is_move_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) && -> expected<U, TError>
+    {
+      if (has_value())
+      {
         return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage))));
-      } else {
+      }
+      else
+      {
         return expected<U, TError>(unexpected<TError>(etl::move(etl::get<TError>(storage))));
       }
     }
 
     template <
-      typename F, 
-      typename V = const TValue&&, 
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename F,
+      typename V = const TValue&&,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_copy_constructible<TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform(F&& f) const && -> expected<U, TError>{
-      if (has_value()) {
+        etl::is_copy_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) const&& -> expected<U, TError>
+    {
+      if (has_value())
+      {
         return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
-      } else {
+      }
+      else
+      {
         return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
       }
     }
@@ -815,18 +823,20 @@ namespace etl
     template <
       typename F,
       typename V = TValue&,
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
-        !etl::is_void<U>::value && 
+        !etl::is_void<U>::value &&
         etl::is_copy_constructible<TError>::value &&
         etl::is_expected<U>::value &&
-        etl::is_same<typename U::error_type, TError>::value
-        >::type
-      >
-    ETL_CONSTEXPR auto and_then(F&& f) & -> U {
-      if (has_value()) {
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) & -> U
+    {
+      if (has_value())
+      {
         return etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return U(unexpected<TError>(etl::get<TError>(storage)));
       }
     }
@@ -834,18 +844,20 @@ namespace etl
     template <
       typename F,
       typename V = const TValue&,
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TError>::value &&
-        etl::is_expected<U>::value && 
-        etl::is_same<typename U::error_type, TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto and_then(F&& f) const & -> U {
-      if (has_value()) {
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) const& -> U
+    {
+      if (has_value())
+      {
         return etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return U(unexpected<TError>(etl::get<TError>(storage)));
       }
     }
@@ -853,18 +865,20 @@ namespace etl
     template <
       typename F,
       typename V = TValue&&,
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_move_constructible<TError>::value &&
-        etl::is_expected<U>::value && 
-        etl::is_same<typename U::error_type, TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto and_then(F&& f) && -> U {
-      if (has_value()) {
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) && -> U
+    {
+      if (has_value())
+      {
         return etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage)));
-      } else {
+      }
+      else
+      {
         return U(unexpected<TError>(etl::move(etl::get<TError>(storage))));
       }
     }
@@ -872,94 +886,104 @@ namespace etl
     template <
       typename F,
       typename V = const TValue&&,
-      typename U = etl::remove_cvref_t<invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TError>::value &&
-        etl::is_expected<U>::value && 
-        etl::is_same<typename U::error_type, TError>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto and_then(F&& f) const && -> U {
-      if (has_value()) {
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) const&& -> U
+    {
+      if (has_value())
+      {
         return etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return U(unexpected<TError>(etl::get<TError>(storage)));
       }
     }
 
     template <
-      typename F, 
+      typename F,
       typename V = TError&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TValue>::value &&
         etl::is_expected<U>::value &&
-        etl::is_same<typename U::value_type, TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto or_else(F&& f) & -> U {
-      if (has_value()) {
+        etl::is_same<typename U::value_type, TValue>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) & -> U
+    {
+      if (has_value())
+      {
         return U(etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
       }
     }
 
     template <
-      typename F, 
+      typename F,
       typename V = const TError&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TValue>::value &&
         etl::is_expected<U>::value &&
-        etl::is_same<typename U::value_type, TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto or_else(F&& f) const & -> U {
-      if (has_value()) {
+        etl::is_same<typename U::value_type, TValue>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) const& -> U
+    {
+      if (has_value())
+      {
         return U(etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
       }
     }
 
     template <
-      typename F, 
+      typename F,
       typename V = TError&&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_move_constructible<TValue>::value &&
         etl::is_expected<U>::value &&
-        etl::is_same<typename U::value_type, TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto or_else(F&& f) && -> U {
-      if (has_value()) {
+        etl::is_same<typename U::value_type, TValue>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) && -> U
+    {
+      if (has_value())
+      {
         return U(etl::move(etl::get<TValue>(storage)));
-      } else {
+      }
+      else
+      {
         return U(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))));
       }
     }
 
     template <
-      typename F, 
+      typename F,
       typename V = const TError&&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
         etl::is_copy_constructible<TValue>::value &&
         etl::is_expected<U>::value &&
-        etl::is_same<typename U::value_type, TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto or_else(F&& f) const && -> U {
-      if (has_value()) {
+        etl::is_same<typename U::value_type, TValue>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) const&& -> U
+    {
+      if (has_value())
+      {
         return U(etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
       }
     }
@@ -967,76 +991,80 @@ namespace etl
     template <
       typename F,
       typename V = TError&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_copy_constructible<TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform_error(F&& f) & -> expected<TValue, U> {
-      if (has_value()) {
+        etl::is_copy_constructible<TValue>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) & -> expected<TValue, U>
+    {
+      if (has_value())
+      {
         return expected<TValue, U>(etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return expected<TValue, U>(unexpected<U>(
-          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
-        ));
+          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
       }
     }
 
     template <
       typename F,
       typename V = const TError&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_copy_constructible<TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform_error(F&& f) const & -> expected<TValue, U> {
-      if (has_value()) {
+        etl::is_copy_constructible<TValue>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) const& -> expected<TValue, U>
+    {
+      if (has_value())
+      {
         return expected<TValue, U>(etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return expected<TValue, U>(unexpected<U>(
-          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
-        ));
+          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
       }
     }
 
     template <
       typename F,
       typename V = TError&&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_move_constructible<TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform_error(F&& f) && -> expected<TValue, U> {
-      if (has_value()) {
+        etl::is_move_constructible<TValue>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) && -> expected<TValue, U>
+    {
+      if (has_value())
+      {
         return expected<TValue, U>(etl::move(etl::get<TValue>(storage)));
-      } else {
+      }
+      else
+      {
         return expected<TValue, U>(unexpected<U>(
-          (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))
-        ));
+          (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))));
       }
     }
 
     template <
       typename F,
       typename V = const TError&&,
-      typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
       typename = typename etl::enable_if<
         !etl::is_void<U>::value &&
-        etl::is_copy_constructible<TValue>::value
-      >::type
-    >
-    ETL_CONSTEXPR auto transform_error(F&& f) const && -> expected<TValue, U> {
-      if (has_value()) {
+        etl::is_copy_constructible<TValue>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) const&& -> expected<TValue, U>
+    {
+      if (has_value())
+      {
         return expected<TValue, U>(etl::get<TValue>(storage));
-      } else {
+      }
+      else
+      {
         return expected<TValue, U>(unexpected<U>(
-          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
-        ));
+          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
       }
     }
 #endif
@@ -1252,282 +1280,313 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-template <
-  typename F, 
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_copy_constructible<TError>::value
-  >::type
->
-ETL_CONSTEXPR auto transform(F&& f) & -> expected<U, TError>{
-  if (has_value()) {
-    return expected<U, TError>(etl::forward<F>(f)());
-    } else {
-    return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_copy_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) & -> expected<U, TError>
+    {
+      if (has_value())
+      {
+        return expected<U, TError>(etl::forward<F>(f)());
+      }
+      else
+      {
+        return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F, 
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_copy_constructible<TError>::value
-  >::type
->
-ETL_CONSTEXPR auto transform(F&& f) const & -> expected<U, TError>{
-  if (has_value()) {
-    return expected<U, TError>(etl::forward<F>(f)());
-  } else {
-    return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_copy_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) const& -> expected<U, TError>
+    {
+      if (has_value())
+      {
+        return expected<U, TError>(etl::forward<F>(f)());
+      }
+      else
+      {
+        return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F, 
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_move_constructible<TError>::value
-  >::type
->
-ETL_CONSTEXPR auto transform(F&& f) && -> expected<U, TError>{
-  if (has_value()) {
-    return expected<U, TError>(etl::forward<F>(f)());
-  } else {
-    return expected<U, TError>(unexpected<TError>(etl::move(etl::get<TError>(storage))));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_move_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) && -> expected<U, TError>
+    {
+      if (has_value())
+      {
+        return expected<U, TError>(etl::forward<F>(f)());
+      }
+      else
+      {
+        return expected<U, TError>(unexpected<TError>(etl::move(etl::get<TError>(storage))));
+      }
+    }
 
-template <
-  typename F, 
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_copy_constructible<TError>::value
-  >::type
->
-ETL_CONSTEXPR auto transform(F&& f) const && -> expected<U, TError>{
-  if (has_value()) {
-    return expected<U, TError>(etl::forward<F>(f)());
-  } else {
-    return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_copy_constructible<TError>::value>::type>
+    ETL_CONSTEXPR auto transform(F&& f) const&& -> expected<U, TError>
+    {
+      if (has_value())
+      {
+        return expected<U, TError>(etl::forward<F>(f)());
+      }
+      else
+      {
+        return expected<U, TError>(unexpected<TError>(etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F,
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value && 
-    etl::is_copy_constructible<TError>::value &&
-    etl::is_expected<U>::value &&
-    etl::is_same<typename U::error_type, TError>::value
-    >::type
-  >
-ETL_CONSTEXPR auto and_then(F&& f) & -> U {
-  if (has_value()) {
-    return etl::forward<F>(f)();
-  } else {
-    return U(unexpected<TError>(etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_copy_constructible<TError>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) & -> U
+    {
+      if (has_value())
+      {
+        return etl::forward<F>(f)();
+      }
+      else
+      {
+        return U(unexpected<TError>(etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F,
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_copy_constructible<TError>::value &&
-    etl::is_expected<U>::value && 
-    etl::is_same<typename U::error_type, TError>::value
-  >::type
->
-ETL_CONSTEXPR auto and_then(F&& f) const & -> U {
-  if (has_value()) {
-    return etl::forward<F>(f)();
-  } else {
-    return U(unexpected<TError>(etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_copy_constructible<TError>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) const& -> U
+    {
+      if (has_value())
+      {
+        return etl::forward<F>(f)();
+      }
+      else
+      {
+        return U(unexpected<TError>(etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F,
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_move_constructible<TError>::value &&
-    etl::is_expected<U>::value && 
-    etl::is_same<typename U::error_type, TError>::value
-  >::type
->
-ETL_CONSTEXPR auto and_then(F&& f) && -> U {
-  if (has_value()) {
-    return etl::forward<F>(f)();
-  } else {
-    return U(unexpected<TError>(etl::move(etl::get<TError>(storage))));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_move_constructible<TError>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) && -> U
+    {
+      if (has_value())
+      {
+        return etl::forward<F>(f)();
+      }
+      else
+      {
+        return U(unexpected<TError>(etl::move(etl::get<TError>(storage))));
+      }
+    }
 
-template <
-  typename F,
-  typename U = etl::remove_cvref_t<invoke_result_t<F>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_copy_constructible<TError>::value &&
-    etl::is_expected<U>::value && 
-    etl::is_same<typename U::error_type, TError>::value
-  >::type
->
-ETL_CONSTEXPR auto and_then(F&& f) const && -> U {
-  if (has_value()) {
-    return etl::forward<F>(f)();
-  } else {
-    return U(unexpected<TError>(etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename U = etl::remove_cvref_t<invoke_result_t<F>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_copy_constructible<TError>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<typename U::error_type, TError>::value>::type>
+    ETL_CONSTEXPR auto and_then(F&& f) const&& -> U
+    {
+      if (has_value())
+      {
+        return etl::forward<F>(f)();
+      }
+      else
+      {
+        return U(unexpected<TError>(etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F, 
-  typename V = TError&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_expected<U>::value &&
-    etl::is_same<void, typename U::value_type>::value
-  >::type
->
-ETL_CONSTEXPR auto or_else(F&& f) & -> U {
-  if (has_value()) {
-    return U();
-  } else {
-    return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename V = TError&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<void, typename U::value_type>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) & -> U
+    {
+      if (has_value())
+      {
+        return U();
+      }
+      else
+      {
+        return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F, 
-  typename V = const TError&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_expected<U>::value &&
-    etl::is_same<void, typename U::value_type>::value
-  >::type
->
-ETL_CONSTEXPR auto or_else(F&& f) const & -> U {
-  if (has_value()) {
-    return U();
-  } else {
-    return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename V = const TError&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<void, typename U::value_type>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) const& -> U
+    {
+      if (has_value())
+      {
+        return U();
+      }
+      else
+      {
+        return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F, 
-  typename V = TError&&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_expected<U>::value &&
-    etl::is_same<void, typename U::value_type>::value
-  >::type
->
-ETL_CONSTEXPR auto or_else(F&& f) && -> U {
-  if (has_value()) {
-    return U();
-  } else {
-    return U(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))));
-  }
-}
+    template <
+      typename F,
+      typename V = TError&&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<void, typename U::value_type>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) && -> U
+    {
+      if (has_value())
+      {
+        return U();
+      }
+      else
+      {
+        return U(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))));
+      }
+    }
 
-template <
-  typename F, 
-  typename V = const TError&&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value &&
-    etl::is_expected<U>::value &&
-    etl::is_same<void, typename U::value_type>::value
-  >::type
->
-ETL_CONSTEXPR auto or_else(F&& f) const && -> U {
-  if (has_value()) {
-    return U();
-  } else {
-    return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
-  }
-}
+    template <
+      typename F,
+      typename V = const TError&&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value &&
+        etl::is_expected<U>::value &&
+        etl::is_same<void, typename U::value_type>::value>::type>
+    ETL_CONSTEXPR auto or_else(F&& f) const&& -> U
+    {
+      if (has_value())
+      {
+        return U();
+      }
+      else
+      {
+        return U(etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)));
+      }
+    }
 
-template <
-  typename F,
-  typename V = TError&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value
-  >::type
->
-ETL_CONSTEXPR auto transform_error(F&& f) & -> expected<void, U> {
-  if (has_value()) {
-    return expected<void, U>();
-  } else {
-    return expected<void, U>(unexpected<U>(
-      (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
-    ));
-  }
-}
+    template <
+      typename F,
+      typename V = TError&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) & -> expected<void, U>
+    {
+      if (has_value())
+      {
+        return expected<void, U>();
+      }
+      else
+      {
+        return expected<void, U>(unexpected<U>(
+          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
+      }
+    }
 
-template <
-  typename F,
-  typename V = const TError&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value>::type
->
-ETL_CONSTEXPR auto transform_error(F&& f) const & -> expected<void, U> {
-  if (has_value()) {
-    return expected<void, U>();
-  } else {
-    return expected<void, U>(unexpected<U>(
-      (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
-    ));
-  }
-}
+    template <
+      typename F,
+      typename V = const TError&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) const& -> expected<void, U>
+    {
+      if (has_value())
+      {
+        return expected<void, U>();
+      }
+      else
+      {
+        return expected<void, U>(unexpected<U>(
+          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
+      }
+    }
 
-template <
-  typename F,
-  typename V = TError&&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value>::type
->
-ETL_CONSTEXPR auto transform_error(F&& f) && -> expected<void, U> {
-  if (has_value()) {
-    return expected<void, U>();
-  } else {
-    return expected<void, U>(unexpected<U>(
-      (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))
-    ));
-  }
-}
+    template <
+      typename F,
+      typename V = TError&&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) && -> expected<void, U>
+    {
+      if (has_value())
+      {
+        return expected<void, U>();
+      }
+      else
+      {
+        return expected<void, U>(unexpected<U>(
+          (etl::invoke(etl::forward<F>(f), etl::move(etl::get<TError>(storage))))));
+      }
+    }
 
-template <
-  typename F,
-  typename V = const TError&&,
-  typename U = etl::remove_cvref_t<etl::invoke_result_t<F,V>>,
-  typename = typename etl::enable_if<
-    !etl::is_void<U>::value>::type
->
-ETL_CONSTEXPR auto transform_error(F&& f) const && -> expected<void, U> {
-  if (has_value()) {
-    return expected<void, U>();
-  } else {
-    return expected<void, U>(unexpected<U>(
-      (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))
-    ));
-  }
-}
+    template <
+      typename F,
+      typename V = const TError&&,
+      typename U = etl::remove_cvref_t<etl::invoke_result_t<F, V>>,
+      typename = typename etl::enable_if<
+        !etl::is_void<U>::value>::type>
+    ETL_CONSTEXPR auto transform_error(F&& f) const&& -> expected<void, U>
+    {
+      if (has_value())
+      {
+        return expected<void, U>();
+      }
+      else
+      {
+        return expected<void, U>(unexpected<U>(
+          (etl::invoke(etl::forward<F>(f), etl::get<TError>(storage)))));
+      }
+    }
 
 #endif
   
