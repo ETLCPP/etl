@@ -129,10 +129,10 @@ namespace etl {
       return ((*etl::forward<T>(t)).*f);
   }
 
-  template <class F, class, class ... Us> struct invoke_result_impl;
+  template <class F, class, class ... Us> struct invoke_result;
 
   template <typename F, typename... Us>
-  struct invoke_result_impl<
+  struct invoke_result<
       F,
       etl::void_t<decltype(etl::invoke(etl::declval<F>(), etl::declval<Us>()...))>,
       Us...
@@ -141,8 +141,7 @@ namespace etl {
   };
 
   template <typename F, typename... Us>
-  using invoke_result_t = typename invoke_result_impl<F, void, Us...>::type;
-
+  using invoke_result_t = typename invoke_result<F, void, Us...>::type;
   
 }
 
