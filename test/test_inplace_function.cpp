@@ -990,27 +990,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_static_return_parameter_equality)
-    {
-      etl::inplace_function<int(int, Moveable&&)> func1;
-      etl::inplace_function<int(int, Moveable&&)> func2;
-      etl::inplace_function<int(int, Moveable&&)> func3(StaticReturnParameterFunction);
-      etl::inplace_function<int(int, Moveable&&)> func4(StaticReturnParameterFunction);
-      etl::inplace_function<int(int, Moveable&&)> func5(StaticReturnParameterFunctionAlternate);
-
-      CHECK_TRUE(func1 == func2);
-      CHECK_TRUE(func2 == func1);
-      CHECK_TRUE(func3 == func4);
-      CHECK_TRUE(func4 == func3);
-      CHECK_TRUE(func1 != func3);
-      CHECK_TRUE(func3 != func1);
-      CHECK_TRUE(func1 != func4);
-      CHECK_TRUE(func4 != func1);
-      CHECK_TRUE(func4 != func5);
-      CHECK_TRUE(func5 != func4);
-    }
-
-    //*************************************************************************
     // Test Lambda Functions
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_return_parameter)
@@ -1085,223 +1064,160 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda)
     {
-      //auto lambda = []()
-      //{
-      //  function_called = FunctionCalled::Lambda_Return_Called;
-      //  text_called     = "Lambda_Return_Called";
-      //  return 1;
-      //};
+      auto lambda = []()
+      {
+        function_called = FunctionCalled::Lambda_Return_Called;
+        text_called     = "Lambda_Return_Called";
+        return 1;
+      };
 
-      //etl::inplace_function<int(), sizeof(decltype(lambda)), alignof(decltype(lambda))> func(lambda);
-      //int result = func();
-      //CHECK_TRUE(func.is_valid());
-      //CHECK_TRUE(func);
-      //CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Called);
-      //CHECK_EQUAL("Lambda_Return_Called", text_called);
-      //CHECK_EQUAL(1, result);
+      etl::inplace_function<int(), sizeof(decltype(lambda)), alignof(decltype(lambda))> func(lambda);
+      int result = func();
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Called);
+      CHECK_EQUAL("Lambda_Return_Called", text_called);
+      CHECK_EQUAL(1, result);
     }
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_lambda_assignment_from_lambda)
-//    {
-//      auto lambda = []()
-//      {
-//        function_called = FunctionCalled::Lambda_Return_Called;
-//        text_called = "Lambda_Return_Called";
-//        return 1;
-//      };
-//
-//      auto lambdaAlternate = []()
-//      {
-//        function_called = FunctionCalled::Lambda_Return_Alternate_Called;
-//        text_called = "Lambda_Return_Alternate_Called";
-//        return 2;
-//      };
-//
-//      etl::inplace_function<int(void)> func(lambda);
-//      int result = func();
-//      CHECK_TRUE(func.is_valid());
-//
-//      func = lambdaAlternate;
-//      result = func();
-//
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Alternate_Called);
-//      CHECK_EQUAL("Lambda_Return_Alternate_Called", text_called);
-//      CHECK_EQUAL(2, result);
-//    }
-//
-//#if ETL_USING_CPP17
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_lambda_constexpr)
-//    {
-//      static constexpr auto lambda = []()
-//      {
-//        return 1;
-//      };
-//
-//      using LambdaType = decltype(lambda);
-//
-//      constexpr etl::inplace_function<int(LambdaType&)> func(&LambdaType::operator());
-//      constexpr int result = func(lambda);
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_EQUAL(1, result);
-//    }
-//#endif
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_lambda_return_parameter_assignment)
-//    {
-//      auto lambda1 = [](int i_, Moveable&& m_)
-//      {
-//        function_called = FunctionCalled::Lambda_Return_Parameter_Called;
-//        text_called     = m_.text;
-//        return i_;
-//      };
-//
-//      auto lambda2 = [](int i_, Moveable&& m_)
-//      {
-//        function_called = FunctionCalled::Lambda_Return_Parameter_Alternate_Called;
-//        text_called     = m_.text;
-//        return i_;
-//      };
-//
-//      etl::inplace_function<int(int, Moveable&&)> func1 = lambda1;
-//      etl::inplace_function<int(int, Moveable&&)> func2 = lambda2;
-//
-//      func2 = func1;
-//
-//      int result;
-//
-//      result = func1(1, Moveable("Lambda_Return_Parameter_Called"));
-//      CHECK_TRUE(func1.is_valid());
-//      CHECK_TRUE(func1);
-//      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Parameter_Called);
-//      CHECK_EQUAL("Lambda_Return_Parameter_Called", text_called);
-//      CHECK_EQUAL(1, result);
-//
-//      result = func2(2, Moveable("Lambda_Return_Parameter_Called"));
-//      CHECK_TRUE(func2.is_valid());
-//      CHECK_TRUE(func2);
-//      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Parameter_Called);
-//      CHECK_EQUAL("Lambda_Return_Parameter_Called", text_called);
-//      CHECK_EQUAL(2, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_lambda_return_parameter_equality)
-//    {
-//      auto lambda1 = [](int i_, Moveable&& m_)
-//      {
-//        return i_;
-//      };
-//
-//      auto lambda2 = [](int i_, Moveable&& m_)
-//      {
-//        return i_;
-//      };
-//
-//      etl::inplace_function<int(int, Moveable&&)> func1;
-//      etl::inplace_function<int(int, Moveable&&)> func2;
-//      etl::inplace_function<int(int, Moveable&&)> func3(lambda1);
-//      etl::inplace_function<int(int, Moveable&&)> func4(lambda1);
-//      etl::inplace_function<int(int, Moveable&&)> func5(lambda2);
-//
-//      CHECK_TRUE(func1 == func2);
-//      CHECK_TRUE(func2 == func1);
-//      CHECK_TRUE(func3 == func4);
-//      CHECK_TRUE(func4 == func3);
-//      CHECK_TRUE(func1 != func3);
-//      CHECK_TRUE(func3 != func1);
-//      CHECK_TRUE(func1 != func4);
-//      CHECK_TRUE(func4 != func1);
-//      CHECK_TRUE(func4 != func5);
-//      CHECK_TRUE(func5 != func4);
-//    }
-//
-//    //*************************************************************************
-//    // Test Functor Functions
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_parameter)
-//    {
-//      Functor functor;
-//
-//      etl::inplace_function<int(int, Moveable&&)> func(functor);
-//      int result = func(1, Moveable("Functor_Return_Parameter_Called"));
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Parameter_Called);
-//      CHECK_EQUAL("Functor_Return_Parameter_Called", text_called);
-//      CHECK_EQUAL(1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_constexpr)
-//    {
-//      constexpr FunctorConstexpr functor;
-//
-//      constexpr etl::inplace_function<int(const FunctorConstexpr&, int)> func(&FunctorConstexpr::operator());
-//      constexpr int result = func(functor, 1);
-//
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_EQUAL(1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_const)
-//    {
-//      const Functor functor;
-//
-//      etl::inplace_function<int(int, Moveable&&)> func(functor);
-//      int result = func(1, Moveable("Functor_Return_Parameter_Const_Called"));
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Parameter_Const_Called);
-//      CHECK_EQUAL("Functor_Return_Parameter_Const_Called", text_called);
-//      CHECK_EQUAL(1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_assignment_from_functor)
-//    {
-//      Functor functor;
-//      FunctorAlternate functorAlternate;
-//
-//      etl::inplace_function<int(int, Moveable&&)> func(functor);
-//      int result = func(1, Moveable("Functor_Return_Parameter_Called"));
-//      CHECK_TRUE(func.is_valid());
-//      
-//      func = functorAlternate;
-//      result = func(1, Moveable("Functor_Alternate_Return_Parameter_Called"));
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_TRUE(function_called == FunctionCalled::Functor_Alternate_Return_Parameter_Called);
-//      CHECK_EQUAL("Functor_Alternate_Return_Parameter_Called", text_called);
-//      CHECK_EQUAL(1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_assignment_from_const_functor)
-//    {
-//      const Functor functor;
-//      const FunctorAlternate functorAlternate;
-//
-//      etl::inplace_function<int(int, Moveable&&)> func(functor);
-//      int result = func(1, Moveable("Functor_Return_Parameter_Const_Called"));
-//      CHECK_TRUE(func.is_valid());
-//
-//      func = functorAlternate;
-//      result = func(1, Moveable("Functor_Alternate_Return_Parameter_Const_Called"));
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_TRUE(function_called == FunctionCalled::Functor_Alternate_Return_Parameter_Const_Called);
-//      CHECK_EQUAL("Functor_Alternate_Return_Parameter_Const_Called", text_called);
-//      CHECK_EQUAL(1, result);
-//    }
-//
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lambda_assignment_from_lambda)
+    {
+      auto lambda = []()
+      {
+        function_called = FunctionCalled::Lambda_Return_Called;
+        text_called = "Lambda_Return_Called";
+        return 1;
+      };
+
+      auto lambdaAlternate = []()
+      {
+        function_called = FunctionCalled::Lambda_Return_Alternate_Called;
+        text_called = "Lambda_Return_Alternate_Called";
+        return 2;
+      };
+
+      etl::inplace_function<int(void)> func(lambda);
+      int result = func();
+      CHECK_TRUE(func.is_valid());
+
+      func = lambdaAlternate;
+      result = func();
+
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Alternate_Called);
+      CHECK_EQUAL("Lambda_Return_Alternate_Called", text_called);
+      CHECK_EQUAL(2, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lambda_return_parameter_assignment)
+    {
+      auto lambda1 = [](int i_, Moveable&& m_)
+      {
+        function_called = FunctionCalled::Lambda_Return_Parameter_Called;
+        text_called     = m_.text;
+        return i_;
+      };
+
+      auto lambda2 = [](int i_, Moveable&& m_)
+      {
+        function_called = FunctionCalled::Lambda_Return_Parameter_Alternate_Called;
+        text_called     = m_.text;
+        return i_;
+      };
+
+      etl::inplace_function<int(int, Moveable&&)> func1 = lambda1;
+      etl::inplace_function<int(int, Moveable&&)> func2 = lambda2;
+
+      func2 = func1;
+
+      int result;
+
+      result = func1(1, Moveable("Lambda_Return_Parameter_Called"));
+      CHECK_TRUE(func1.is_valid());
+      CHECK_TRUE(func1);
+      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Parameter_Called);
+      CHECK_EQUAL("Lambda_Return_Parameter_Called", text_called);
+      CHECK_EQUAL(1, result);
+
+      result = func2(2, Moveable("Lambda_Return_Parameter_Called"));
+      CHECK_TRUE(func2.is_valid());
+      CHECK_TRUE(func2);
+      CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Parameter_Called);
+      CHECK_EQUAL("Lambda_Return_Parameter_Called", text_called);
+      CHECK_EQUAL(2, result);
+    }
+
+    //*************************************************************************
+    // Test Functor Functions
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_functor_return_parameter)
+    {
+      Functor functor;
+
+      etl::inplace_function<int(int, Moveable&&), sizeof(Functor), alignof(Functor)> func(functor);
+      int result = func(1, Moveable("Functor_Return_Parameter_Called"));
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Parameter_Called);
+      CHECK_EQUAL("Functor_Return_Parameter_Called", text_called);
+      CHECK_EQUAL(1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_const)
+    {
+      const Functor functor;
+
+      etl::inplace_function<int(int, Moveable&&), sizeof(Functor), alignof(Functor)> func(functor);
+      int result = func(1, Moveable("Functor_Return_Parameter_Const_Called"));
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Parameter_Const_Called);
+      CHECK_EQUAL("Functor_Return_Parameter_Const_Called", text_called);
+      CHECK_EQUAL(1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_assignment_from_functor)
+    {
+      Functor functor;
+      FunctorAlternate functorAlternate;
+
+      etl::inplace_function<int(int, Moveable&&), sizeof(Functor), alignof(Functor)> func(functor);
+      int result = func(1, Moveable("Functor_Return_Parameter_Called"));
+      CHECK_TRUE(func.is_valid());
+      
+      func = functorAlternate;
+      result = func(1, Moveable("Functor_Alternate_Return_Parameter_Called"));
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Functor_Alternate_Return_Parameter_Called);
+      CHECK_EQUAL("Functor_Alternate_Return_Parameter_Called", text_called);
+      CHECK_EQUAL(1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_functor_return_parameter_assignment_from_const_functor)
+    {
+      const Functor functor;
+      const FunctorAlternate functorAlternate;
+
+      etl::inplace_function<int(int, Moveable&&), sizeof(Functor), alignof(Functor)> func(functor);
+      int result = func(1, Moveable("Functor_Return_Parameter_Const_Called"));
+      CHECK_TRUE(func.is_valid());
+
+      func = functorAlternate;
+      result = func(1, Moveable("Functor_Alternate_Return_Parameter_Const_Called"));
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Functor_Alternate_Return_Parameter_Const_Called);
+      CHECK_EQUAL("Functor_Alternate_Return_Parameter_Const_Called", text_called);
+      CHECK_EQUAL(1, result);
+    }
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_functor_return)
     {
@@ -1309,44 +1225,32 @@ namespace
 
       etl::inplace_function<int(), sizeof(Functor), alignof(Functor)> func(functor);
       int result = func();
-      //CHECK_TRUE(func.is_valid());
-      //CHECK_TRUE(func);
-      //CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Called);
-      //CHECK_EQUAL("Functor_Return_Called", text_called);
-      //CHECK_EQUAL(0, result);
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Called);
+      CHECK_EQUAL("Functor_Return_Called", text_called);
+      CHECK_EQUAL(0, result);
     }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_constexpr)
-//    {
-//      static constexpr FunctorConstexpr functor;
-//
-//      constexpr etl::inplace_function<int(const FunctorConstexpr&)> func(&FunctorConstexpr::operator());
-//      constexpr int result = func(functor);
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_EQUAL(1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_functor_return_assignment_from_functor)
-//    {
-//      Functor functor;
-//      FunctorAlternate functorAlternate;
-//
-//      etl::inplace_function<int(void)> func(functor);
-//      int result = func();
-//      CHECK_TRUE(func.is_valid());
-//
-//      func = functorAlternate;
-//      result = func();
-//      CHECK_TRUE(func.is_valid());
-//      CHECK_TRUE(func);
-//      CHECK_TRUE(function_called == FunctionCalled::Functor_Alternate_Return_Called);
-//      CHECK_EQUAL("Functor_Alternate_Return_Called", text_called);
-//      CHECK_EQUAL(0, result);
-//    }
-//
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_functor_return_assignment_from_functor)
+    {
+      Functor functor;
+      FunctorAlternate functorAlternate;
+
+      etl::inplace_function<int(void), sizeof(Functor), alignof(Functor)> func(functor);
+      int result = func();
+      CHECK_TRUE(func.is_valid());
+
+      func = functorAlternate;
+      result = func();
+      CHECK_TRUE(func.is_valid());
+      CHECK_TRUE(func);
+      CHECK_TRUE(function_called == FunctionCalled::Functor_Alternate_Return_Called);
+      CHECK_EQUAL("Functor_Alternate_Return_Called", text_called);
+      CHECK_EQUAL(0, result);
+    }
+
 //    //*************************************************************************
 //    TEST_FIXTURE(SetupFixture, test_functor_return_const)
 //    {
@@ -1413,6 +1317,79 @@ namespace
 //      CHECK_TRUE(func5 != func4);
 //    }
 //
+      //*************************************************************************
+      TEST_FIXTURE(SetupFixture, test_functor_deduced_storage_and_alignment)
+      {
+        Functor functor;
+        etl::inplace_function_for<int(), Functor> func(functor);
+
+        func();
+        CHECK_TRUE(func.is_valid());
+        CHECK_TRUE(func);
+        CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Called);
+        CHECK_EQUAL("Functor_Return_Called", text_called);
+      }
+
+      //*************************************************************************
+      TEST_FIXTURE(SetupFixture, test_const_functor_deduced_storage_and_alignment)
+      {
+        const Functor functor;
+        etl::inplace_function_for<int(), Functor> func(functor);
+
+        func();
+        CHECK_TRUE(func.is_valid());
+        CHECK_TRUE(func);
+        CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Const_Called);
+        CHECK_EQUAL("Functor_Return_Const_Called", text_called);
+      }
+
+      //*************************************************************************
+      TEST_FIXTURE(SetupFixture, test_lambda_deduced_storage_and_alignment)
+      {
+        auto lambda = []()
+          {
+            function_called = FunctionCalled::Lambda_Return_Called;
+            text_called     = "Lambda_Return_Called";
+            return 1;
+          };
+
+        etl::inplace_function_for<int(), decltype(lambda)> func(lambda);
+
+        int result = func();
+        CHECK_TRUE(func.is_valid());
+        CHECK_TRUE(func);
+        CHECK_TRUE(function_called == FunctionCalled::Lambda_Return_Called);
+        CHECK_EQUAL("Lambda_Return_Called", text_called);
+        CHECK_EQUAL(1, result);
+      }
+
+      //*************************************************************************
+      TEST_FIXTURE(SetupFixture, test_functor_make_inplace_function_deduced_storage_and_alignment)
+      {
+        Functor functor;
+        auto func = etl::make_inplace_function<int()>(functor);
+
+        func();
+        CHECK_TRUE(func.is_valid());
+        CHECK_TRUE(func);
+        CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Called);
+        CHECK_EQUAL("Functor_Return_Called", text_called);
+      }
+
+      //*************************************************************************
+      TEST_FIXTURE(SetupFixture, test_const_functor_make_inplace_function_deduced_storage_and_alignment)
+      {
+        const Functor functor;
+        auto func = etl::make_inplace_function<int()>(functor);
+
+        func();
+        CHECK_TRUE(func.is_valid());
+        CHECK_TRUE(func);
+        CHECK_TRUE(function_called == FunctionCalled::Functor_Return_Const_Called);
+        CHECK_EQUAL("Functor_Return_Const_Called", text_called);
+      }
+
+      // 
 //    //*************************************************************************
 //    // Test Member Return Parameter Function
 //    //*************************************************************************
