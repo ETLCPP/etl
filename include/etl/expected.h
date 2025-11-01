@@ -836,7 +836,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage))));
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
       }
       else
       {
@@ -916,7 +916,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&&>::type>::type;
       if (has_value())
       {
-        return etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage)));
+        return etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage));
       }
       else
       {
@@ -989,7 +989,7 @@ namespace etl
       typename F,
       typename = typename etl::enable_if<
         !etl::is_void<typename etl::remove_cvref<typename invoke_result<F, void, const TError&&>::type>::type>::value &&
-        etl::is_move_constructible<TValue>::value &&
+        etl::is_copy_constructible<TValue>::value &&
         etl::is_expected<typename etl::remove_cvref<typename invoke_result<F, void, const TError&&>::type>::type>::value &&
         etl::is_same<typename etl::remove_cvref<typename invoke_result<F, void, const TError&&>::type>::type::value_type, TValue>::value>::type>
     auto or_else(F&& f) const && -> typename etl::remove_cvref<typename invoke_result<F, void, const TError&&>::type>::type
@@ -997,7 +997,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename invoke_result<F, void, const TError&&>::type>::type;
       if (has_value())
       {
-        return U(etl::move(etl::get<TValue>(storage)));
+        return U(etl::get<TValue>(storage));
       }
       else
       {
@@ -1097,7 +1097,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<TValue, U>(etl::move(etl::get<TValue>(storage)));
+        return expected<TValue, U>(etl::get<TValue>(storage));
       }
       else
       {
