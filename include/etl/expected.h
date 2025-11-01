@@ -836,7 +836,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage)));
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage))));
       }
       else
       {
@@ -916,7 +916,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&&>::type>::type;
       if (has_value())
       {
-        return etl::invoke(etl::forward<F>(f), etl::get<TValue>(storage));
+        return etl::invoke(etl::forward<F>(f), etl::move(etl::get<TValue>(storage)));
       }
       else
       {
