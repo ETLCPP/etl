@@ -1306,7 +1306,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<U, TError>(etl::forward<F>(f)());
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f)));
       }
       else
       {
@@ -1328,7 +1328,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<U, TError>(etl::forward<F>(f)());
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f)));
       }
       else
       {
@@ -1350,7 +1350,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<U, TError>(etl::forward<F>(f)());
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f)));
       }
       else
       {
@@ -1372,7 +1372,7 @@ namespace etl
 
       if (has_value())
       {
-        return expected<U, TError>(etl::forward<F>(f)());
+        return expected<U, TError>(etl::invoke(etl::forward<F>(f)));
       }
       else
       {
@@ -1392,7 +1392,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       if (has_value())
       {
-        return etl::forward<F>(f)();
+        return etl::invoke(etl::forward<F>(f));
       }
       else
       {
@@ -1412,7 +1412,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       if (has_value())
       {
-        return etl::forward<F>(f)();
+        return etl::invoke(etl::forward<F>(f));
       }
       else
       {
@@ -1432,7 +1432,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       if (has_value())
       {
-        return etl::forward<F>(f)();
+        return etl::invoke(etl::forward<F>(f));
       }
       else
       {
@@ -1452,7 +1452,7 @@ namespace etl
       using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       if (has_value())
       {
-        return etl::forward<F>(f)();
+        return etl::invoke(etl::forward<F>(f));
       }
       else
       {
