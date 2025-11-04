@@ -2504,6 +2504,95 @@ typedef integral_constant<bool, true>  true_type;
     return false;
 #endif
   }
+
+#if ETL_USING_CPP11
+  //*********************************
+  /// Check if T is a function type
+  //*********************************
+  template<typename T>
+  struct is_function 
+  {
+    static const bool value = false;
+  };
+
+  // For normal function type
+  template<typename Ret, typename... Args>
+  struct is_function<Ret(Args...)> 
+  {
+    static const bool value = true;
+  };
+
+  // For const function type
+  template<typename Ret, typename... Args>
+  struct is_function<Ret(Args...) const> 
+  {
+    static const bool value = true;
+  };
+
+  // For volatile function type
+  template<typename Ret, typename... Args>
+  struct is_function<Ret(Args...) volatile> 
+  {
+    static const bool value = true;
+  };
+
+  // For const volatile function type
+  template<typename Ret, typename... Args>
+  struct is_function<Ret(Args...) const volatile> 
+  {
+    static const bool value = true;
+  };
+
+  // For variadic function type
+  template<typename Ret, typename... Args>
+  struct is_function<Ret(Args..., ...)>
+  {
+    static const bool value = true;
+  };
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************
+  /// Check for the presence of operator()
+  //*********************************
+  template <typename T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value, int> = 0>
+  struct has_call_operator
+  {
+    template <typename U>
+    static auto test(int) -> decltype(&U::operator(), etl::true_type());
+
+    template <typename>
+    static etl::false_type test(...);
+
+    static const bool value = etl::is_same<decltype(test<T>(0)), etl::true_type>::value;
+  };
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************
+  /// Check that there is only one operator()
+  //*********************************
+  template <typename T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value, int> = 0>
+  struct has_unique_call_operator
+  {
+    //*********************************
+    // Test for presence of operator()
+    //*********************************
+    template <typename U>
+    static auto test(int) -> decltype(&U::operator(), etl::true_type());
+
+    //*********************************
+    // Fallback
+    //*********************************
+    template <typename>
+    static auto test(...) -> etl::false_type;
+
+    //*********************************
+    // <b>true</b> if operator() exists and is unique
+    //*********************************
+    static const bool value = decltype(test<etl::decay_t<T>>(0))::value;
+  };
+#endif
 }
 
 // Helper macros

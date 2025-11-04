@@ -101,8 +101,8 @@ namespace etl
       template <typename T>
       struct member_target
       {
-        T* obj;
         TReturn(T::* member)(TArgs...);
+        T* obj;
       };
 
       //***********************************
@@ -110,9 +110,9 @@ namespace etl
       //***********************************
       template <typename T>
       struct const_member_target
-      {
-        const T* obj;
+      {       
         TReturn(T::* member)(TArgs...) const;
+        const T* obj;
       };
 
       //*******************************************
@@ -327,6 +327,51 @@ namespace etl
 
     template <size_t A>
     struct max_value_pack<A> : etl::integral_constant<size_t, A> {};
+
+    //*********************************
+    // Helper to check for call operator
+    //*********************************
+    //template <typename T>
+    //struct has_call_operator
+    //{
+    //  template <typename U>
+    //  static auto test(int) -> decltype(&U::operator(), etl::true_type());
+
+    //  template <typename>
+    //  static etl::false_type test(...);
+
+    //  static const bool value = etl::is_same<decltype(test<T>(0)), etl::true_type>::value;
+    //};
+
+    ////*********************************
+    //// Helper to check for unique call operator
+    ////*********************************
+    //template <typename T>
+    //struct has_unique_call_operator
+    //{
+    //  //*********************************
+    //  // Test for presence of operator()
+    //  //*********************************
+    //  template <typename U>
+    //  static auto test(int) -> decltype(&U::operator(), etl::true_type());
+
+    //  //*********************************
+    //  // Fallback
+    //  //*********************************
+    //  template <typename>
+    //  static auto test(...) -> etl::false_type;
+
+    //  //*********************************
+    //  // <b>true</b> if operator() exists and is unique
+    //  //*********************************
+    //  static const bool value = decltype(test<etl::decay_t<T>>(0))::value;
+    //};
+
+    //*********************************
+    // Helper to get pointer to call operator
+    //*********************************
+    template <typename U>
+    using call_operator_ptr_t = decltype(&U::operator());
   }
 
   //*************************************************************************
@@ -425,9 +470,9 @@ namespace etl
     /// Stores {object*, member ptr} in storage and dispatches via stub.
     //*************************************************************************
     template <typename TObject>
-    inplace_function(TObject& obj, TReturn (TObject::*method)(TArgs...))
+    inplace_function(TReturn (TObject::*method)(TArgs...), TObject& obj)
     {
-      set(obj, method);
+      set(method, obj);
     }
 
     //*************************************************************************
@@ -435,9 +480,9 @@ namespace etl
     /// Stores {object*, member ptr} in storage and dispatches via stub.
     //*************************************************************************
     template <typename TObject>
-    inplace_function(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
+    inplace_function(TReturn(TObject::* method)(TArgs...) const, const TObject& obj)
     {
-      set(obj, method);
+      set(method, obj);
     }
 
     //*************************************************************************
@@ -475,7 +520,8 @@ namespace etl
 
       clear();
 
-      auto* slot = reinterpret_cast<function_type*>(&storage);
+      // Construct the object in the storage.
+      void* slot = &storage;
       ::new (slot) function_type(f);
 
       vtable = vtable_type::for_function_ptr();
@@ -487,7 +533,7 @@ namespace etl
     /// Stores {object*, member ptr} in storage and dispatches via stub.
     //*************************************************************************
     template <typename TObject>
-    void set(TObject& obj, TReturn(TObject::* method)(TArgs...))
+    void set(TReturn(TObject::* method)(TArgs...), TObject& obj)
     {
       using target_t = vtable_type::template member_target<TObject>;
 
@@ -496,8 +542,9 @@ namespace etl
 
       clear();
 
+      // Construct the object in the storage.
       auto* slot = reinterpret_cast<target_t*>(&storage);
-      ::new (slot) target_t{ &obj, method };
+      ::new (slot) target_t{ method, &obj };
 
       object = &storage;
       vtable = vtable_type::template for_member<TObject>();
@@ -508,7 +555,7 @@ namespace etl
     /// Stores {object*, member ptr} in storage and dispatches via stub.
     //*************************************************************************
     template <typename TObject>
-    void set(const TObject& obj, TReturn(TObject::* method)(TArgs...) const)
+    void set(TReturn(TObject::* method)(TArgs...) const, const TObject& obj)
     {
       using target_t = vtable_type::template const_member_target<TObject>;
 
@@ -517,8 +564,9 @@ namespace etl
 
       clear();
 
+      // Construct the object in the storage.
       auto* slot = reinterpret_cast<target_t*>(&storage);
-      ::new (slot) target_t{ &obj, method };
+      ::new (slot) target_t{ method, &obj };
 
       object = &storage;
       vtable = vtable_type::template for_const_member<TObject>();
@@ -536,6 +584,9 @@ namespace etl
       static_assert(Object_Size      >= sizeof(T),  "etl::inplace_function: Object size too small");
       static_assert(Object_Alignment >= alignof(T), "etl::inplace_function: Object alignment too small");
 
+      clear();
+
+      // Construct the object in the storage.
       void* slot = &storage;
       ::new (slot) T(lambda);
 
@@ -555,6 +606,9 @@ namespace etl
       static_assert(Object_Size      >= sizeof(T),  "etl::inplace_function: Object size too small");
       static_assert(Object_Alignment >= alignof(T), "etl::inplace_function: Object alignment too small");
 
+      clear();
+
+      // Construct the object in the storage.
       void* slot = &storage;
       ::new (slot) T(lambda);
 
@@ -571,8 +625,9 @@ namespace etl
     void set()
     {
       clear();
-      vtable = vtable_type::template for_compile_time_function<Function>();
+
       object = nullptr;
+      vtable = vtable_type::template for_compile_time_function<Function>();
     }
 
     //*************************************************************************
@@ -583,8 +638,9 @@ namespace etl
     void set()
     {
       clear();
-      vtable = vtable_type::template for_compile_time_member<TObject, Method, &Instance>();
+
       object = nullptr;
+      vtable = vtable_type::template for_compile_time_member<TObject, Method, &Instance>();
     }
 
     //*************************************************************************
@@ -594,8 +650,43 @@ namespace etl
     void set()
     {
       clear();
-      vtable = vtable_type::template for_compile_time_const_member<TObject, Method, &Instance>();
+
       object = nullptr;
+      vtable = vtable_type::template for_compile_time_const_member<TObject, Method, &Instance>();
+    }
+
+    //*************************************************************************
+    // operator() + instance reference (compile-time, non-const)
+    //*************************************************************************
+    template <typename TObject,
+              TObject& Instance,
+              typename T = etl::decay_t<TObject>,
+              typename = etl::enable_if_t<etl::is_class<T>::value &&
+                                          etl::has_call_operator<T>::value &&
+                                          !etl::function_traits<decltype(&T::operator())>::is_const>>
+    void set()
+    {
+      clear();
+
+      object = nullptr;
+      vtable = vtable_type::template for_compile_time_operator<TObject, &Instance>();
+    }
+
+    //*************************************************************************
+    // operator() + instance reference (compile-time, const)
+    //*************************************************************************
+    template <typename TObject,
+              const TObject& Instance,
+              typename T = etl::decay_t<TObject>,
+              typename = etl::enable_if_t<etl::is_class<T>::value &&
+                                          etl::has_call_operator<T>::value &&
+                                          etl::function_traits<decltype(&T::operator())>::is_const>>
+    void set()
+    {
+      clear();
+
+      object = nullptr;
+      vtable = vtable_type::template for_compile_time_operator<const TObject, &Instance>();
     }
 
     //*************************************************************************
@@ -625,29 +716,14 @@ namespace etl
       return this_type(vtable_type::template for_compile_time_const_member<TObject, Method, &Instance>(), nullptr);
     }
 
+    //*************************************************************************
     // operator() + instance reference (compile time, non-const)
+    //*************************************************************************
     template <typename TObject, TObject& Instance>
     static this_type create()
     {
       return this_type(vtable_type::template for_compile_time_operator<TObject, &Instance>(), nullptr);
     }
-
-    //// (optional) matching set() helpers
-    //template <typename TObject, TObject& Instance>
-    //void set()
-    //{
-    //  clear();
-    //  vtable = vtable_type::template for_compile_time_operator<TObject, &Instance>();
-    //  object = nullptr;
-    //}
-
-    //template <typename TObject, const TObject& Instance>
-    //void set()
-    //{
-    //  clear();
-    //  vtable = vtable_type::template for_compile_time_const_operator<TObject, &Instance>();
-    //  object = nullptr;
-    //}
 
     //*************************************************************************
     /// Assignment operator
@@ -832,9 +908,9 @@ namespace etl
     {
       if (is_valid())
       {
-        if (vtable->destroy)
+        if (vtable->destroy && object)
         {
-          vtable->destroy(object);
+          vtable->destroy(static_cast<void*>(&storage));
         }
 
         vtable = nullptr;
@@ -937,11 +1013,11 @@ namespace etl
   etl::inplace_function<TReturn(TArgs...),
                                sizeof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>),
                                alignof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>)>
-    make_inplace_function(TObject& obj, TReturn (TObject::*method)(TArgs...))
+    make_inplace_function(TReturn (TObject::*method)(TArgs...), TObject& obj)
   {
     using target_t = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
 
-    return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(obj, method);
+    return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(method, obj);
   }
 
   //*************************************************************************
@@ -953,11 +1029,11 @@ namespace etl
   etl::inplace_function<TReturn(TArgs...),
                                sizeof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>),
                                alignof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>)>
-    make_inplace_function(const TObject& obj, TReturn (TObject::*method)(TArgs...) const)
+    make_inplace_function(TReturn (TObject::*method)(TArgs...) const, const TObject& obj)
   {
     using target_t = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
 
-    return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(obj, method);
+    return etl::inplace_function<TReturn(TArgs...), sizeof(target_t), alignof(target_t)>(method, obj);
   }
 
   //*************************************************************************
@@ -993,11 +1069,17 @@ namespace etl
   //*************************************************************************
   // Make a inplace_function from a function at compile time.
   //*************************************************************************
-  template <auto Function>
+  //*************************************************************************
+  // Make a inplace_function from a function at compile time.
+  // Only participates for free function pointers (not member function pointers).
+  //*************************************************************************
+  template <auto Function,
+            typename F = decltype(Function),
+            typename = etl::enable_if_t<etl::is_pointer<F>::value && etl::is_function<etl::remove_pointer_t<F>>::value>>
   ETL_NODISCARD
   auto make_inplace_function()
   {
-    using function_type = typename etl::function_traits<decltype(Function)>::function_type;
+    using function_type = typename etl::function_traits<F>::function_type;
 
     return etl::inplace_function<function_type, 1, 1>::template create<Function>();
   }
@@ -1029,7 +1111,10 @@ namespace etl
   //*************************************************************************
   /// Make a inplace_function from operator() at compile time.
   //*************************************************************************
-  template <typename TObject, TObject& Instance>
+  template <typename TObject,
+            TObject& Instance,
+            typename T = etl::decay_t<TObject>,
+            typename = etl::enable_if_t<etl::is_class<T>::value && etl::has_call_operator<T>::value>>
   ETL_NODISCARD
   auto make_inplace_function()
   {
