@@ -751,6 +751,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_operator_const_void_compile_time)
+    {
+      auto d = etl::delegate<void(void)>::create<const Object, const_object_static>();
+
+      d();
+
+      CHECK(function_called == FunctionCalled::Operator_Const_Called);
+    }
+
+    //*************************************************************************
 #if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_make_delegate_member_operator_void_compile_time)
     {
