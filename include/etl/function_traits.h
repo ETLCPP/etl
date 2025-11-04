@@ -35,509 +35,205 @@ SOFTWARE.
 #include "type_list.h"
 #include "type_traits.h"
 
-#if ETL_USING_CPP11
 namespace etl
 {
   //***************************************************************************
-  /// A template to extract the function type traits.
+  // Primary template (unspecialized)
   //***************************************************************************
-  template <typename T>
+  template <typename T, typename Enable = void>
   struct function_traits;
 
   //***************************************************************************
-  /// Specialisation for function pointers
+  // Base for plain function type TReturn(TArgs...)
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(*)(TArgs...)>
+  struct function_traits<TReturn(TArgs...), void>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = void;                                   ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
+    using function_type  = TReturn(TArgs...);
+    using return_type    = TReturn;
+    using object_type    = void;
+    using argument_types = etl::type_list<TArgs...>;
 
-    static constexpr bool   is_function        = true;             ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = false;            ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = false;            ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    static constexpr bool   is_function        = true;
+    static constexpr bool   is_member_function = false;
+    static constexpr bool   is_const           = false;
+    static constexpr bool   is_volatile        = false;
+    static constexpr bool   is_noexcept        = false;
+    static constexpr size_t argument_count     = sizeof...(TArgs);
   };
 
-#if ETL_USING_CPP17
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...)>::is_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...)>::is_member_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...)>::is_const;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...)>::is_volatile;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...)>::is_noexcept;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr size_t function_traits<TReturn(*)(TArgs...)>::argument_count;
-#endif
-
   //***************************************************************************
-  /// Specialisation for function references
+  // Free function pointer
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(&)(TArgs...)>
-  {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = void;                                   ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
+  struct function_traits<TReturn(*)(TArgs...), void> : function_traits<TReturn(TArgs...)> {};
 
-    static constexpr bool   is_function        = true;             ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = false;            ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = false;            ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
-  };
-
-#if ETL_USING_CPP17
+  //***************************************************************************
+  // Free function reference
+  //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...)>::is_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...)>::is_member_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...)>::is_const;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...)>::is_volatile;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...)>::is_noexcept;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr size_t function_traits<TReturn(&)(TArgs...)>::argument_count;
-#endif
-
-  //***************************************************************************
-  /// Specialisation for member function pointers
-  //***************************************************************************
-  template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...)>
-  {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = false;            ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
-  };
-
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...)>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...)>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...)>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...)>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...)>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...)>::argument_count;
-#endif
-
-  //***************************************************************************
-  /// Specialisation for const member function pointers
-  //***************************************************************************
-  template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) const>
-  {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = true;             ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = false;            ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
-  };
-
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) const>::argument_count;
-#endif
-
-  //***************************************************************************
-  /// Specialisation for volatile member function pointers
-  //***************************************************************************
-  template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) volatile>
-  {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = true;             ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = false;            ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
-  };
-
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) volatile>::argument_count;
-#endif
-
-  //***************************************************************************
-  /// Specialisation for const volatile member function pointers
-  //***************************************************************************
-  template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) const volatile>
-  {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = true;             ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = true;             ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = false;            ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
-  };
-
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) const volatile>::argument_count;
-#endif
+  struct function_traits<TReturn(&)(TArgs...), void> : function_traits<TReturn(TArgs...)> {};
 
 #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   //***************************************************************************
-  /// Specialisation for noexcept function pointers
+  // Free noexcept function pointer
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(*)(TArgs...) noexcept>
+  struct function_traits<TReturn(*)(TArgs...) noexcept, void> : function_traits<TReturn(TArgs...)>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = void;                                   ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = true;             ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = false;            ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = true;             ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    static constexpr bool is_noexcept = true;
   };
 
-#if ETL_USING_CPP17
+  //***************************************************************************
+  // Free noexcept function reference.
+  //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept>::is_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept>::is_member_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept>::is_const;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept>::is_volatile;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept>::is_noexcept;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr size_t function_traits<TReturn(*)(TArgs...) noexcept>::argument_count;
+  struct function_traits<TReturn(&)(TArgs...) noexcept, void> : function_traits<TReturn(TArgs...)>
+  {
+    static constexpr bool is_noexcept = true;
+  };
 #endif
 
   //***************************************************************************
-  /// Specialisation for noexcept function references
+  // Member function pointers
   //***************************************************************************
-  template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(&)(TArgs...) noexcept>
+  template <typename TReturn, typename TObject, typename... TArgs>
+  struct function_traits<TReturn (TObject::*)(TArgs...), void> : function_traits<TReturn(TArgs...)>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = void;                                   ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = true;             ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = false;            ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = true;             ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    using object_type = TObject;
+    static constexpr bool is_function        = false;
+    static constexpr bool is_member_function = true;
   };
 
-#if ETL_USING_CPP17
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...) noexcept>::is_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...) noexcept>::is_member_function;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...) noexcept>::is_const;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...) noexcept>::is_volatile;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(&)(TArgs...) noexcept>::is_noexcept;
-
-  template <typename TReturn, typename... TArgs>
-  constexpr size_t function_traits<TReturn(&)(TArgs...) noexcept>::argument_count;
-#endif
-
   //***************************************************************************
-  /// Specialisation for noexcept member function pointers
+  // Const member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) noexcept>
+  struct function_traits<TReturn (TObject::*)(TArgs...) const, void> : function_traits<TReturn(TObject::*)(TArgs...)>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = true;             ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    static constexpr bool is_const = true;
   };
 
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) noexcept>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) noexcept>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) noexcept>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) noexcept>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) noexcept>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) noexcept>::argument_count;
-#endif
-
   //***************************************************************************
-  /// Specialisation for const noexcept member function pointers
+  // Volatile member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) const noexcept>
+  struct function_traits<TReturn (TObject::*)(TArgs...) volatile, void> : function_traits<TReturn(TObject::*)(TArgs...)>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = true;             ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = false;            ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = true;             ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    static constexpr bool is_volatile = true;
   };
 
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const noexcept>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const noexcept>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const noexcept>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const noexcept>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const noexcept>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) const noexcept>::argument_count;
-#endif
-
   //***************************************************************************
-  /// Specialisation for volatile noexcept member function pointers
+  // Const volatile member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>
+  struct function_traits<TReturn (TObject::*)(TArgs...) const volatile, void> : function_traits<TReturn(TObject::*)(TArgs...)>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = false;            ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = true;             ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = true;             ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    static constexpr bool is_const    = true;
+    static constexpr bool is_volatile = true;
   };
 
-#if ETL_USING_CPP17
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>::is_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>::is_member_function;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) volatile noexcept>::argument_count;
-#endif
-
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   //***************************************************************************
-  /// Specialisation for volatile const noexcept member function pointers
+  // Noexcept member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>
+  struct function_traits<TReturn (TObject::*)(TArgs...) noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...)>
   {
-    using function_type  = TReturn(TArgs...);                      ///< The signature of the function.
-    using return_type    = TReturn;                                ///< The return type.
-    using object_type    = TObject;                                ///< The object type, if a member function.
-    using argument_types = etl::type_list<TArgs...>;               ///< An etl::type_list containing the function argument types.
-
-    static constexpr bool   is_function        = false;            ///< <b>true</b> if the type is a free, static or global function, otherwise <b>false</b>.
-    static constexpr bool   is_member_function = true;             ///< <b>true</b> if the type is a member function, otherwise <b>false</b>.
-    static constexpr bool   is_const           = true;             ///< <b>true</b> if the type is a const member function, otherwise <b>false</b>.
-    static constexpr bool   is_volatile        = true;             ///< <b>true</b> if the type is a volatile member function, otherwise <b>false</b>.
-    static constexpr bool   is_noexcept        = true;             ///< <b>true</b> if the type is a noexcept, otherwise <b>false</b>.
-    static constexpr size_t argument_count     = sizeof...(TArgs); ///< The number of arguments that the function takes.
+    static constexpr bool is_noexcept = true;
   };
 
-#if ETL_USING_CPP17
+  //***************************************************************************
+  // Const noexcept member function pointers
+  //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>::is_function;
+  struct function_traits<TReturn (TObject::*)(TArgs...) const noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...) const>
+  {
+    static constexpr bool is_noexcept = true;
+  };
 
+  //***************************************************************************
+  // Volatile noexcept member function pointers
+  //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>::is_member_function;
+  struct function_traits<TReturn (TObject::*)(TArgs...) volatile noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...) volatile>
+  {
+    static constexpr bool is_noexcept = true;
+  };
 
+  //***************************************************************************
+  // Const volatile noexcept member function pointers
+  //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>::is_const;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>::is_volatile;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>::is_noexcept;
-
-  template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr size_t function_traits<TReturn(TObject::*)(TArgs...) const volatile noexcept>::argument_count;
+  struct function_traits<TReturn (TObject::*)(TArgs...) const volatile noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...) const volatile>
+  {
+    static constexpr bool is_noexcept = true;
+  };
 #endif
 
-#endif
-
-  // Forward cv/ref to the unqualified type
+  //***************************************************************************
+  // Forward cv/ref on the whole type to the unqualified type.
+  //***************************************************************************
   template <typename T>
-  struct function_traits<T&> : function_traits<etl::remove_reference_t<T>> {};
-
-  template <typename T>
-  struct function_traits<T&&> : function_traits<etl::remove_reference<T>> {};
+  struct function_traits<T&, void> : function_traits<etl::remove_reference_t<T>> {};
 
   template <typename T>
-  struct function_traits<const T> : function_traits<etl::remove_const<T>> {};
+  struct function_traits<T&&, void> : function_traits<etl::remove_reference_t<T>> {};
 
   template <typename T>
-  struct function_traits<volatile T> : function_traits<etl::remove_volatile<T>> {};
+  struct function_traits<const T, void> : function_traits<etl::remove_const_t<T>> {};
 
   template <typename T>
-  struct function_traits<const volatile T> : function_traits<etl::remove_cv<T>> {};
+  struct function_traits<volatile T, void> : function_traits<etl::remove_volatile_t<T>> {};
 
-  // Catch-all for functors/lambdas that have a single, non-template operator()
-  // Delegates to the existing member function pointer specialization via &T::operator().
   template <typename T>
-  struct function_traits : function_traits<decltype(&T::operator())>
+  struct function_traits<const volatile T, void> : function_traits<etl::remove_cv_t<T>> {};
+
+  //***************************************************************************
+  // Functors / lambdas: enable only for class types that have a unique operator()
+  //***************************************************************************
+  namespace private_function_traits
+  {
+    //*********************************
+    // Helper to check for unique call operator
+    //*********************************
+    template <typename U>
+    struct has_unique_call_operator
+    {
+      //*********************************
+      // Test for presence of operator()
+      //*********************************
+      template <typename X>
+      static auto test(int) -> decltype(&X::operator(), etl::true_type());
+
+      //*********************************
+      // Fallback
+      //*********************************
+      template <typename>
+      static auto test(...) -> etl::false_type;
+
+      //*********************************
+      // <b>true</b> if operator() exists and is unique
+      //*********************************
+      static const bool value = decltype(test<etl::decay_t<U>>(0))::value;
+    };
+
+    //*********************************
+    // Helper to get pointer to call operator
+    //*********************************
+    template <typename U>
+    using call_operator_ptr_t = decltype(&U::operator());
+  }
+
+  //***************************************************************************
+  /// Functors / lambdas specialization
+  //***************************************************************************
+  template <typename T>
+  struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value && 
+                                             private_function_traits::has_unique_call_operator<T>::value>>
+    : function_traits<private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
   {
   };
 }
-#endif
 
 #endif
