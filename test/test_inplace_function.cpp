@@ -284,14 +284,35 @@ namespace
   Object object_static;
   const Object const_object_static;
 
-#if ETL_USING_CPP17
   Functor functor_static;
   const FunctorConst const_functor_static;
-#endif
 
 #if ETL_USING_CPP17
   static auto global_lambda = [](int i, int j) { return i + j; };
 #endif
+
+  //*******************************************
+  // Functor with destructable_data
+  struct DestructibleObject
+  {
+    DestructibleObject()
+    {
+      destructior_called = false;
+    }
+
+    ~DestructibleObject()
+    {
+      destructior_called = true;
+    }
+
+    void operator()(int, int)
+    {
+    }
+
+    static bool destructior_called;
+  };
+
+  bool DestructibleObject::destructior_called = false;
 }
 
 namespace
@@ -611,7 +632,7 @@ namespace
     {
       static auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
 
-      auto ipf = etl::make_inplace_function<lambda>();
+      auto ipf = etl::make_inplace_function<decltype(lambda), lambda>();
 
       ipf(VALUE1, VALUE2);
 
@@ -631,32 +652,6 @@ namespace
 
       CHECK(function_called == FunctionCalled::Operator_Called);
     }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_operator_void_run_time)
-    {
-      Functor object;
-
-      auto ipf = etl::make_inplace_function(object);
-
-      ipf();
-
-      CHECK(function_called == FunctionCalled::Operator_Called);
-    }
-
-#if ETL_USING_CPP17
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_operator_void_compile_time)
-    {
-      static Functor object;
-
-      auto ipf = etl::make_inplace_function<object>();
-
-      ipf();
-
-      CHECK(function_called == FunctionCalled::Operator_Called);
-    }
-#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void_const)
@@ -703,7 +698,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_operator_void_run_time)
+    TEST_FIXTURE(SetupFixture, test_make_inplace_functor_operator_void_run_time)
     {
       auto ipf = etl::make_inplace_function(functor_static);
 
@@ -714,7 +709,7 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_CPP17
-    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_operator_void_compile_time)
+    TEST_FIXTURE(SetupFixture, test_make_inplace_functor_operator_void_compile_time)
     {
       auto ipf = etl::make_inplace_function<Functor, functor_static>();
 
@@ -777,7 +772,7 @@ namespace
     {
       static Object object;
 
-      auto ipf = etl::make_inplace_function(object, &Object::member_void);
+      auto ipf = etl::make_inplace_function(&Object::member_void, object);
 
       ipf();
 
@@ -815,7 +810,7 @@ namespace
     {
       static const Object object;
 
-      auto ipf = etl::make_inplace_function(object, &Object::member_void_const);
+      auto ipf = etl::make_inplace_function(&Object::member_void_const, object);
 
       ipf();
 
@@ -836,365 +831,418 @@ namespace
     }
 #endif
 
-    ////*************************************************************************
-    //TEST_FIXTURE(SetupFixture, test_member_int)
-    //{
-    //  Object object;
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_int)
+    {
+      static Object object;
 
-    //  auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(object);
+      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, object>();
 
-    //  ipf(VALUE1, VALUE2);
+      ipf(VALUE1, VALUE2);
 
-    //  CHECK(function_called == FunctionCalled::Member_Int_Called);
-    //  CHECK(parameter_correct);
-    //}
-
-//    //*************************************************************************
-//#if ETL_USING_CPP17
-//    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int)
-//    {
-//      Object object;
-//
-//      auto ipf = etl::make_inplace_function<Object, &Object::member_int>(object);
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Called);
-//      CHECK(parameter_correct);
-//    }
-//#endif
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_int_const)
-//    {
-//      const Object object;
-//
-//      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int_const>(object);
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//#if ETL_USING_CPP17
-//    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_const)
-//    {
-//      const Object object;
-//
-//      auto ipf = etl::make_inplace_function<Object, &Object::member_int_const>(object);
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//#endif
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_reference)
-//    {
-//      Object object;
-//      auto ipf = etl::inplace_function<void(const Data&, int)>::create<Object, &Object::member_reference>(object);
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_reference_const)
-//    {
-//      const Object object;
-//      auto ipf = etl::inplace_function<void(const Data&, int)>::create<Object, &Object::member_reference_const>(object);
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_moveableonly)
-//    {
-//      Object object;
-//      auto ipf = etl::inplace_function<void(MoveableOnlyData&&)>::create<Object, &Object::member_moveableonly>(object);
-//
-//      MoveableOnlyData data;
-//      data.ipf = VALUE1;
-//
-//      ipf(std::move(data));
-//
-//      CHECK(function_called == FunctionCalled::Member_Moveableonly_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_static)
-//    {
-//      auto ipf = etl::inplace_function<void(const Data&, int)>::create<Object::member_static>();
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Static_Called);
-//      CHECK(parameter_correct);
-//    }
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
 
     //*************************************************************************
-    //#if ETL_USING_CPP17
-    //    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_static)
-    //    {
-    //      auto ipf = etl::make_inplace_function<Object::member_static>();
-    //
-    //      Data data;
-    //      data.ipf = VALUE1;
-    //
-    //      ipf(data, VALUE2);
-    //
-    //      CHECK(function_called == FunctionCalled::Member_Static_Called);
-    //      CHECK(parameter_correct);
-    //    }
-    //#endif
+    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_run_time)
+    {
+      static Object object;
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_void_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(void)>::create<Object, &Object::member_void, object_static>();
-//
-//      ipf();
-//
-//      CHECK(function_called == FunctionCalled::Member_Void_Called);
-//    }
-//
-//    //*************************************************************************
-//#if ETL_USING_CPP17
-//    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_void_compile_time)
-//    {
-//      auto ipf = etl::make_inplace_function<Object, &Object::member_void, object_static>();
-//
-//      ipf();
-//
-//      CHECK(function_called == FunctionCalled::Member_Void_Called);
-//    }
-//#endif
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_void_const_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(void)>::create<Object, &Object::member_void_const, const_object_static>();
-//
-//      ipf();
-//
-//      CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
-//    }
+      auto ipf = etl::make_inplace_function(&Object::member_int, object);
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_int_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, object_static>();
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//#if ETL_USING_CPP17
-//    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_compile_time)
-//    {
-//      auto ipf = etl::make_inplace_function<Object, &Object::member_int, object_static>();
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Called);
-//      CHECK(parameter_correct);
-//    }
-//#endif
+      ipf(VALUE1, VALUE2);
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_int_const_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int_const, const_object_static>();
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//#if ETL_USING_CPP17
-//    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_const_compile_time)
-//    {
-//      auto ipf = etl::make_inplace_function<Object, &Object::member_int_const, const_object_static>();
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//#endif
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_reference_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(const Data&, int)>::create<Object, object_static, &Object::member_reference>();
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_reference_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(const Data&, int)>::create<Object, &Object::member_reference, object_static>();
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Called);
-//      CHECK(parameter_correct);
-//    }
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_member_reference_const_compile_time)
-//    {
-//      auto ipf = etl::inplace_function<void(const Data&, int)>::create<Object, &Object::member_reference_const, const_object_static>();
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
-//      CHECK(parameter_correct);
-//    }
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_compile_time)
+    {
+      static Object object;
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_set_free_int)
-//    {
-//      etl::inplace_function<void(int, int)> ipf;
-//
-//      ipf.set<free_int>();
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Free_Int_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_set_lambda_int)
-//    {
-//      etl::inplace_function<void(int, int)> ipf;
-//
-//      ipf.set([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); });
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Lambda_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_set_member_reference)
-//    {
-//      Object object;
-//      etl::inplace_function<void(const Data&, int)> ipf;
-//
-//      ipf.set<Object, &Object::member_reference>(object);
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_set_const_member_reference)
-//    {
-//      Object object;
-//      etl::inplace_function<void(const Data&, int)> ipf;
-//
-//      ipf.set<Object, &Object::member_reference_const>(object);
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_set_member_reference_compile_time)
-//    {
-//      etl::inplace_function<void(const Data&, int)> ipf;
-//
-//      ipf.set<Object, &Object::member_reference, object_static>();
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_set_member_reference_const_compile_time)
-//    {
-//      etl::inplace_function<void(const Data&, int)> ipf;
-//
-//      ipf.set<Object, &Object::member_reference_const, const_object_static>();
-//
-//      Data data;
-//      data.ipf = VALUE1;
-//
-//      ipf(data, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
-//      CHECK(parameter_correct);
-//    }
-//#endif
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_copy_construct)
-//    {
-//      Object object;
-//
-//      auto d1 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(object);
-//      auto d2(d1);
-//
-//      d2(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Called);
-//      CHECK(parameter_correct);
-//    }
+      auto ipf = etl::make_inplace_function<Object, &Object::member_int, object>();
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_int_const)
+    {
+      static Object object;
+
+      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int_const, object>();
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_const_run_time)
+    {
+      static Object object;
+
+      auto ipf = etl::make_inplace_function(&Object::member_int_const, object);
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_const_compile_time)
+    {
+      static Object object;
+
+      auto ipf = etl::make_inplace_function<Object, &Object::member_int_const, object>();
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_reference)
+    {
+      Object object;
+      auto ipf = etl::inplace_function<void(const Data&, int)>(&Object::member_reference, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_member_reference_run_time)
+    {
+      Object object;
+      auto ipf = etl::make_inplace_function(&Object::member_reference, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_member_reference_compile_time)
+    {
+      static Object object;
+      auto ipf = etl::make_inplace_function<Object, &Object::member_reference, object>();
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_reference_const)
+    {
+      Object object;
+      auto ipf = etl::inplace_function<void(const Data&, int)>(&Object::member_reference_const, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_member_reference_run_time_const)
+    {
+      Object object;
+      auto ipf = etl::make_inplace_function(&Object::member_reference_const, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_member_reference_compile_time_const)
+    {
+      static Object object;
+      auto ipf = etl::make_inplace_function<Object, &Object::member_reference_const, object>();
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_moveableonly)
+    {
+      Object object;
+      auto ipf = etl::inplace_function<void(MoveableOnlyData&&)>(&Object::member_moveableonly, object);
+
+      MoveableOnlyData data;
+      data.ipf = VALUE1;
+
+      ipf(std::move(data));
+
+      CHECK(function_called == FunctionCalled::Member_Moveableonly_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_static)
+    {
+      auto ipf = etl::inplace_function<void(const Data&, int)>(Object::member_static);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Static_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_member_static_run_time)
+    {
+      auto ipf = etl::make_inplace_function(Object::member_static);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Static_Called);
+      CHECK(parameter_correct);
+    }
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_member_static_compile_time)
+    {
+      auto ipf = etl::make_inplace_function<Object::member_static>();
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Static_Called);
+      CHECK(parameter_correct);
+    }
+#endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_free_int_run_time)
+    {
+      DestructibleObject object;
+
+      etl::inplace_function<void(int, int)> ipf(object);
+
+      ipf.set(free_int);
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Free_Int_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_free_int_compile_time)
+    {
+      etl::inplace_function<void(int, int)> ipf;
+
+      ipf.set<free_int>();
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Free_Int_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_lambda_int_run_time)
+    {
+      etl::inplace_function<void(int, int)> ipf;
+
+      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+
+      ipf.set(lambda);
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_lambda_int_compile_time)
+    {
+      etl::inplace_function<void(int, int)> ipf;
+
+      static auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+
+      ipf.set<lambda>();
+
+      ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_functor_run_time)
+    {
+      etl::inplace_function<void(void)> ipf;
+
+      Functor functor;
+
+      ipf.set(functor);
+
+      ipf();
+
+      CHECK(function_called == FunctionCalled::Operator_Called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_functor_compile_time)
+    {
+      etl::inplace_function<void(void)> ipf;
+
+      static Functor functor;
+
+      ipf.set<Functor, functor_static>();
+
+      ipf();
+
+      CHECK(function_called == FunctionCalled::Operator_Called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference_run_time)
+    {
+      Object object;
+      etl::inplace_function<void(const Data&, int)> ipf;
+
+      ipf.set(&Object::member_reference, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference_compile_time)
+    {
+      Object object;
+      etl::inplace_function<void(const Data&, int)> ipf;
+
+      ipf.set(&Object::member_reference, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference_const_run_time)
+    {
+      const Object object;
+      etl::inplace_function<void(const Data&, int)> ipf;
+
+      ipf.set(&Object::member_reference_const, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference_const_compile_time)
+    {
+      const Object object;
+      etl::inplace_function<void(const Data&, int)> ipf;
+
+      ipf.set(&Object::member_reference_const, object);
+
+      Data data;
+      data.ipf = VALUE1;
+
+      ipf(data, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_construct_run_time_contruction)
+    {
+      Object object;
+
+      auto d1 = etl::inplace_function<void(int, int)>(&Object::member_int, object);
+      auto d2(d1);
+
+      d2(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_construct_compile_time_contruction)
+    {
+      static Object object;
+
+      auto d1 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, object>();
+      auto d2(d1);
+
+      d2(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
 
 //    //*************************************************************************
 //    TEST_FIXTURE(SetupFixture, test_assignment)
