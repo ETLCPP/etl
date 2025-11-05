@@ -1024,6 +1024,7 @@ namespace
     TEST(test_transform) {
       Expected expected = {Value("transform_with_value")};
       Expected expected_error = {Unexpected(Error("transform_with_error"))};
+      const Expected expected_const = {Value("const_transform_with_value")};
 
       auto expected_out = expected.transform([](Value v) {
         auto s = v.v.append("_transformed");
@@ -1035,6 +1036,18 @@ namespace
 
       auto with_value_type_check = check_expected_type_helper<std::string, Error>(expected_out);
       CHECK_TRUE(with_value_type_check);
+
+
+      auto expected_out_const = expected_const.transform([](const Value& v) {
+        auto s = v;
+        return s.v.append("_transformed");
+      });
+
+      CHECK_TRUE(expected_out_const.has_value());
+      CHECK_EQUAL("const_transform_with_value_transformed", expected_out_const.value());
+
+      auto const_with_value_type_check = check_expected_type_helper<std::string, Error>(expected_out_const);
+      CHECK_TRUE(const_with_value_type_check);
 
       auto unexpected_out = expected_error.transform([](Value v) {
         auto s = v.v.append("_transformed");
@@ -1137,11 +1150,31 @@ namespace
       CHECK_EQUAL("transform_with_error", unexpected_out.error().e);
     }
 
-    // //*************************************************************************
+    //*************************************************************************
+
+    TEST(test_transform_to_void) {
+      Expected expected {Value("transform_to_void")};
+      
+      bool executed {false};
+      auto expected_out = expected.transform([&executed](Value v) {
+        (void) v;
+        executed = true;
+        CHECK_EQUAL("transform_to_void", v.v);
+        return;
+      });
+
+      auto to_void_type_check = check_expected_type_helper<void, Error>(expected_out);
+      CHECK_TRUE(to_void_type_check);
+
+      CHECK_TRUE(expected_out.has_value());
+    }
+
+    //*************************************************************************
     
     TEST(test_and_then) {
       Expected expected = {Value("and_then_with_value")};
       Expected expected_error = {Unexpected(Error("and_then_with_error"))};
+      const Expected expected_const = {Value("const_and_then_with_value")};
 
       auto expected_out = expected.and_then([](Value v) -> Expected {
         return Value(v.v.append("_and_thened"));
@@ -1152,6 +1185,17 @@ namespace
 
       auto with_value_type_check = check_expected_type_helper<Value, Error>(expected_out);
       CHECK_TRUE(with_value_type_check);
+
+      auto expected_out_const = expected_const.and_then([](const Value& v) -> Expected {
+        auto s = v;
+        return Value(s.v.append("_and_thened"));
+      });
+
+      CHECK_TRUE(expected_out_const.has_value());
+      CHECK_EQUAL("const_and_then_with_value_and_thened", expected_out_const.value().v);
+
+      auto const_with_value_type_check = check_expected_type_helper<Value, Error>(expected_out_const);
+      CHECK_TRUE(const_with_value_type_check);
 
       auto unexpected_out = expected_error.and_then([](Value v) -> Expected {
         return Value(v.v.append("_and_thened"));
@@ -1329,6 +1373,36 @@ namespace
       
       CHECK_TRUE(error_generated);
       CHECK_EQUAL("temp_const_error", unexpected_out.error());
+    }
+
+    TEST(test_transform_error_void_value) {
+      ExpectedV expected;
+      ExpectedV expected_error = UnexpectedV(Error("transform_error_void_value"));
+      bool executed {false};
+
+      auto expected_out = expected.transform_error([&executed](const Error& e) {
+        executed = true;
+        return e.e;
+      });
+
+      CHECK_FALSE(executed);
+      CHECK_TRUE(expected_out.has_value());
+
+      auto with_value_type_check = check_expected_type_helper<void, std::string>(expected_out);
+      CHECK_TRUE(with_value_type_check);
+
+      auto unexpected_out = expected_error.transform_error([&executed](const Error& e) {
+        executed = true;
+        auto s = e.e;
+        return s.append("_transformed");
+      });
+
+      CHECK_TRUE(executed);
+      CHECK_EQUAL("transform_error_void_value_transformed", unexpected_out.error());
+
+      auto with_error_type_check = check_expected_type_helper<void, std::string>(unexpected_out);
+      CHECK_TRUE(with_error_type_check);
+
     }
   };
 }
