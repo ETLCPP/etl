@@ -43,10 +43,7 @@ namespace etl
   // Primary template (unspecialized)
   //***************************************************************************
   template <typename T, typename Enable = void>
-  struct function_traits
-  {
-    static_assert(sizeof(T) == 0, "function_traits can only be instantiated with a function type, a function pointer, a function reference, a member function pointer, or a functor/lambda with a unique operator().");
-  };
+  struct function_traits;
 
   //***************************************************************************
   // Base for plain function type TReturn(TArgs...)
@@ -180,19 +177,10 @@ namespace etl
   // Forward cv/ref on the whole type to the unqualified type.
   //***************************************************************************
   template <typename T>
-  struct function_traits<T&, void> : function_traits<etl::remove_reference_t<T>> {};
-
-  template <typename T>
-  struct function_traits<T&&, void> : function_traits<etl::remove_reference_t<T>> {};
-
-  template <typename T>
-  struct function_traits<const T, void> : function_traits<etl::remove_const_t<T>> {};
-
-  template <typename T>
-  struct function_traits<volatile T, void> : function_traits<etl::remove_volatile_t<T>> {};
-
-  template <typename T>
-  struct function_traits<const volatile T, void> : function_traits<etl::remove_cv_t<T>> {};
+  struct function_traits<T, etl::enable_if_t<!etl::is_same<T, etl::remove_cvref_t<T>>::value>>
+    : function_traits<etl::remove_cvref_t<T>>
+  {
+  };
 
   //***************************************************************************
   // Functors / lambdas: enable only for class types that have a unique operator()
@@ -207,7 +195,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Functors / lambdas specialization
+  /// Functors / lambdas specialisation
   //***************************************************************************
   template <typename T>
   struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value && 
@@ -215,6 +203,16 @@ namespace etl
     : function_traits<private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
   {
   };
+
+  //***************************************************************************
+  /// Detect whether function_traits<T> provides the nested types we need.
+  //***************************************************************************
+  template <typename T, typename = void>
+  struct function_traits_available : etl::false_type {};
+
+  template <typename T>
+  struct function_traits_available<T, etl::void_t<typename etl::function_traits<T>::return_type, 
+                                                  typename etl::function_traits<T>::argument_types>> : etl::true_type {};
 }
 
 #endif
