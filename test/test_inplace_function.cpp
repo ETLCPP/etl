@@ -292,20 +292,21 @@ namespace
 #endif
 
   //*******************************************
-  // Functor with destructable_data
+  // Functor with that is destructible and movable
   //*******************************************
   struct DestructibleMovableObject
   {
     DestructibleMovableObject()
     {
-      destructior_called       = false;
+      destructor_called        = false;
       copy_constructior_called = false;
       move_constructior_called = false;
+      function_operator_called = false;
     }
 
     ~DestructibleMovableObject()
     {
-      destructior_called = true;
+      destructor_called = true;
     }
 
     DestructibleMovableObject(const DestructibleMovableObject&)
@@ -320,16 +321,19 @@ namespace
 
     void operator()(int, int)
     {
+      function_operator_called = true;
     }
 
-    static bool destructior_called;
+    static bool destructor_called;
     static bool copy_constructior_called;
     static bool move_constructior_called;
+    static bool function_operator_called;
   };
 
-  bool DestructibleMovableObject::destructior_called       = false;
+  bool DestructibleMovableObject::destructor_called        = false;
   bool DestructibleMovableObject::copy_constructior_called = false;
   bool DestructibleMovableObject::move_constructior_called = false;
+  bool DestructibleMovableObject::function_operator_called = false;
 }
 
 namespace
@@ -1092,7 +1096,7 @@ namespace
 
       ipf.set(free_int);
 
-      CHECK_TRUE(DestructibleMovableObject::destructior_called);
+      CHECK_TRUE(DestructibleMovableObject::destructor_called);
 
       ipf(VALUE1, VALUE2);
 
@@ -1270,118 +1274,132 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_assignment)
+    TEST_FIXTURE(SetupFixture, test_copy_assignment)
     {
-      Object object;
+      DestructibleMovableObject object;
 
-      auto d1 = etl::inplace_function<void(int, int)>(&Object::member_int, object);
+      auto d1 = etl::inplace_function<void(int, int)>(object);
       etl::inplace_function<void(int, int)> d2;
 
       d2 = d1;
 
       d2(VALUE1, VALUE2);
 
-      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK_TRUE(DestructibleMovableObject::function_operator_called);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DestructibleMovableObject object;
+
+      auto d1 = etl::inplace_function<void(int, int)>(object);
+      etl::inplace_function<void(int, int)> d2;
+
+      d2 = etl::move(d1);
+
+      d2(VALUE1, VALUE2);
+
+      CHECK_TRUE(DestructibleMovableObject::function_operator_called);
+    }
+
+    //*************************************************************************
+    TEST(test_vector_of_inplace_functions)
+    {
+      etl::vector<etl::inplace_function<int(int)>, 5> vector_of_inplace_functions;
+
+      vector_of_inplace_functions.push_back(etl::inplace_function<int(int)>::create<times_2>());
+
+      CHECK_EQUAL(42, vector_of_inplace_functions.front()(21));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_run_time_normal)
+    {
+      auto ipf = etl::inplace_function<int(int, int)>(normal);
+
+      int result = ipf.call_or(alternative, VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_run_time_alternative)
+    {
+      etl::inplace_function<int(int, int)> ipf;
+
+      int result = ipf.call_or(alternative, VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_compile_time_alternative)
+    {
+      etl::inplace_function<int(int, int)> ipf;
+
+      int result = ipf.call_or<alternative>(VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_inplace_function_alternative)
+    {
+      etl::inplace_function<int(int, int)> ipf;
+
+      auto alt = etl::inplace_function<int(int, int)>::create<alternative>();
+
+      int result = ipf.call_or(alt, VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_valid)
+    {
+      auto ipf = etl::inplace_function<int(int, int)>::create<normal>();
+
+      etl::optional<int> result = ipf.call_if(VALUE1, VALUE2);
+
+      CHECK(bool(result));
+      CHECK_EQUAL(VALUE1 + VALUE2, result.value());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_not_valid)
+    {
+      etl::inplace_function<int(int, int)> ipf;
+
+      etl::optional<int> result = ipf.call_if(VALUE1, VALUE2);
+
+      CHECK(!bool(result));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_valid_returning_void)
+    {
+      auto ipf = etl::inplace_function<void(int, int)>::create<normal_returning_void>();
+
+      bool was_called = ipf.call_if(VALUE1, VALUE2);
+
+      CHECK(was_called);
+      CHECK(function_called == FunctionCalled::Normal_Returning_Void_Called);
       CHECK(parameter_correct);
     }
 
-//    //*************************************************************************
-//    TEST(test_vector_of_inplace_functions)
-//    {
-//      etl::vector<etl::inplace_function<int(int)>, 5> vector_of_inplace_functions;
-//
-//      vector_of_inplace_functions.push_back(etl::inplace_function<int(int)>::create<times_2>());
-//
-//      CHECK_EQUAL(42, vector_of_inplace_functions.front()(21));
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_or_run_time_normal)
-//    {
-//      auto ipf = etl::inplace_function<int(int, int)>::create<normal>();
-//
-//      int result = ipf.call_or(alternative, VALUE1, VALUE2);
-//
-//      CHECK_EQUAL(VALUE1 + VALUE2, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_or_run_time_alternative)
-//    {
-//      etl::inplace_function<int(int, int)> ipf;
-//
-//      int result = ipf.call_or(alternative, VALUE1, VALUE2);
-//
-//      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_or_compile_time_alternative)
-//    {
-//      etl::inplace_function<int(int, int)> ipf;
-//
-//      int result = ipf.call_or<alternative>(VALUE1, VALUE2);
-//
-//      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_or_inplace_function_alternative)
-//    {
-//      etl::inplace_function<int(int, int)> ipf;
-//
-//      auto alt = etl::inplace_function<int(int, int)>::create<alternative>();
-//
-//      int result = ipf.call_or(alt, VALUE1, VALUE2);
-//
-//      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_if_and_valid)
-//    {
-//      auto ipf = etl::inplace_function<int(int, int)>::create<normal>();
-//
-//      etl::optional<int> result = ipf.call_if(VALUE1, VALUE2);
-//
-//      CHECK(bool(result));
-//      CHECK_EQUAL(VALUE1 + VALUE2, result.value());
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_if_and_not_valid)
-//    {
-//      etl::inplace_function<int(int, int)> ipf;
-//
-//      etl::optional<int> result = ipf.call_if(VALUE1, VALUE2);
-//
-//      CHECK(!bool(result));
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_if_and_valid_returning_void)
-//    {
-//      auto ipf = etl::inplace_function<void(int, int)>::create<normal_returning_void>();
-//
-//      bool was_called = ipf.call_if(VALUE1, VALUE2);
-//
-//      CHECK(was_called);
-//      CHECK(function_called == FunctionCalled::Normal_Returning_Void_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_call_if_and_not_valid_returning_void)
-//    {
-//      etl::inplace_function<void(int, int)> ipf;
-//
-//      bool was_called = ipf.call_if(VALUE1, VALUE2);
-//
-//      CHECK(!was_called);
-//      CHECK(function_called == FunctionCalled::Not_Called);
-//      CHECK(!parameter_correct);
-//    }
-//
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_not_valid_returning_void)
+    {
+      etl::inplace_function<void(int, int)> ipf;
+
+      bool was_called = ipf.call_if(VALUE1, VALUE2);
+
+      CHECK(!was_called);
+      CHECK(function_called == FunctionCalled::Not_Called);
+      CHECK(!parameter_correct);
+    }
+
 //    //*************************************************************************
 //    TEST_FIXTURE(SetupFixture, test_construct_from_std_function_from_free_int)
 //    {
