@@ -858,7 +858,7 @@ namespace etl
     {
       if (exp.has_value())
       {
-        return expected<TRet, TError>(etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(etl::get<TValue>(exp.storage))));
+        return expected<TRet, TError>(etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(etl::get<Value_Type>(exp.storage))));
       }
       else
       {
@@ -871,7 +871,7 @@ namespace etl
     {
       if (exp.has_value())
       {
-        etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(etl::get<TValue>(exp.storage)));
+        etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(etl::get<Value_Type>(exp.storage)));
         return expected<void, TError>();
       }
       else
@@ -885,7 +885,7 @@ namespace etl
     {
       if (exp.has_value())
       {
-        return etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(etl::get<TValue>(exp.storage)));
+        return etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(etl::get<Value_Type>(exp.storage)));
       }
       else
       {
@@ -902,7 +902,7 @@ namespace etl
       }
       else
       {
-        return etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<TError>(exp.storage)));
+        return etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<Error_Type>(exp.storage)));
       }
     }
 
@@ -915,7 +915,7 @@ namespace etl
       }
       else
       {
-        return expected<TValue, TRet>(unexpected<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<TError>(exp.storage)))));
+        return expected<TValue, TRet>(unexpected<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<Error_Type>(exp.storage)))));
       }
     }
   };
@@ -1275,7 +1275,7 @@ namespace etl
       }
       else
       {
-        return etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<TError>(exp.storage)));
+        return etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<Error_Type>(exp.storage)));
       }
     }
 
@@ -1288,7 +1288,7 @@ namespace etl
       }
       else
       {
-        return expected<void, TRet>(unexpected<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<TError>(exp.storage)))));
+        return expected<void, TRet>(unexpected<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<Error_Type>(exp.storage)))));
       }
     }
   };
