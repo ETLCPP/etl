@@ -35,13 +35,18 @@ SOFTWARE.
 #include "type_list.h"
 #include "type_traits.h"
 
+#if ETL_USING_CPP11
+
 namespace etl
 {
   //***************************************************************************
   // Primary template (unspecialized)
   //***************************************************************************
   template <typename T, typename Enable = void>
-  struct function_traits;
+  struct function_traits
+  {
+    static_assert(sizeof(T) == 0, "function_traits can only be instantiated with a function type, a function pointer, a function reference, a member function pointer, or a functor/lambda with a unique operator().");
+  };
 
   //***************************************************************************
   // Base for plain function type TReturn(TArgs...)
@@ -195,30 +200,6 @@ namespace etl
   namespace private_function_traits
   {
     //*********************************
-    // Helper to check for unique call operator
-    //*********************************
-    template <typename U>
-    struct has_unique_call_operator
-    {
-      //*********************************
-      // Test for presence of operator()
-      //*********************************
-      template <typename X>
-      static auto test(int) -> decltype(&X::operator(), etl::true_type());
-
-      //*********************************
-      // Fallback
-      //*********************************
-      template <typename>
-      static auto test(...) -> etl::false_type;
-
-      //*********************************
-      // <b>true</b> if operator() exists and is unique
-      //*********************************
-      static const bool value = decltype(test<etl::decay_t<U>>(0))::value;
-    };
-
-    //*********************************
     // Helper to get pointer to call operator
     //*********************************
     template <typename U>
@@ -230,10 +211,11 @@ namespace etl
   //***************************************************************************
   template <typename T>
   struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value && 
-                                             private_function_traits::has_unique_call_operator<T>::value>>
+                                             etl::has_unique_call_operator<T>::value>>
     : function_traits<private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
   {
   };
 }
 
+#endif
 #endif

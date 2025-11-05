@@ -293,6 +293,7 @@ namespace
 
   //*******************************************
   // Functor with destructable_data
+  //*******************************************
   struct DestructibleMovableObject
   {
     DestructibleMovableObject()
@@ -1268,24 +1269,24 @@ namespace
       CHECK(parameter_correct);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment)
+    {
+      Object object;
+
+      auto d1 = etl::inplace_function<void(int, int)>(&Object::member_int, object);
+      etl::inplace_function<void(int, int)> d2;
+
+      d2 = d1;
+
+      d2(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Member_Int_Called);
+      CHECK(parameter_correct);
+    }
+
 //    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_assignment)
-//    {
-//      Object object;
-//
-//      auto d1 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(object);
-//      etl::inplace_function<void(int, int)> d2;
-//
-//      d2 = d1;
-//
-//      d2(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Member_Int_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST(test_issue_418)
+//    TEST(test_vector_of_inplace_functions)
 //    {
 //      etl::vector<etl::inplace_function<int(int)>, 5> vector_of_inplace_functions;
 //
