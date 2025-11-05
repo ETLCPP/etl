@@ -87,13 +87,13 @@ namespace etl
     {
       using invoke_type = TReturn(*)(void*, TArgs...);
       using destroy_type = void(*)(void*);
-      using move_type = void(*)(void* dst, void* src);
-      using copy_type = void(*)(void* dst, const void* src);
+      using move_type = void(*)(void* src,       void* dst);
+      using copy_type = void(*)(const void* src, void* dst);
 
-      invoke_type  invoke = nullptr;
+      invoke_type  invoke  = nullptr;
       destroy_type destroy = nullptr;
-      move_type    move = nullptr;
-      copy_type    copy = nullptr;
+      move_type    move    = nullptr;
+      copy_type    copy    = nullptr;
 
       //*******************************************
       /// Target for non-const member function
@@ -119,7 +119,7 @@ namespace etl
       // Common helpers to reduce duplication
       //*******************************************
       template <typename T>
-      static void copy_construct(void* dst, const void* src)
+      static void copy_construct(const void* src, void* dst)
       {
         ::new (dst) T(*static_cast<const T*>(src));
       }
@@ -878,7 +878,7 @@ namespace etl
 
       if (vtable && vtable->copy) 
       { 
-        vtable->copy(&storage, &other.storage); 
+        vtable->copy(&other.storage, &storage); 
       }
     }
 
@@ -892,7 +892,7 @@ namespace etl
 
       if (vtable && vtable->move) 
       { 
-        vtable->move(&storage, &other.storage); 
+        vtable->move(&other.storage, &storage); 
       }
 
       other.vtable = nullptr; 
