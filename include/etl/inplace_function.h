@@ -116,7 +116,7 @@ namespace etl
       };
 
       //*******************************************
-      // Common helpers to reduce duplication
+      // Copy construct from src storage.
       //*******************************************
       template <typename T>
       static void copy_construct(const void* src, void* dst)
@@ -124,6 +124,9 @@ namespace etl
         ::new (dst) T(*static_cast<const T*>(src));
       }
 
+      //*******************************************
+      // Move construct from src storage.
+      //*******************************************
       template <typename T, bool DestroySrc>
       static void move_construct(void* dst, void* src)
       {
