@@ -744,99 +744,99 @@ namespace etl
 #endif
 
 #if ETL_USING_CPP11
-    template <typename F>
-    auto transform(F&& f) & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&>::type>::type>
+    auto transform(F&& f) & -> expected<U, TError>
+    {
       return transform_impl<F, this_type&, U, TValue&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform(F&& f) const & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&>::type>::type>
+    auto transform(F&& f) const& -> expected<U, TError>
+    {
       return transform_impl<F, const this_type&, U, const TValue&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform(F&& f) && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&&>::type>::type>
+    auto transform(F&& f) && -> expected<U, TError>
+    {
       return transform_impl<F, this_type&&, U, TValue&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto transform(F&& f) const && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&&>::type>::type>
+    auto transform(F&& f) const&& -> expected<U, TError>
+    {
       return transform_impl<F, const this_type&&, U, const TValue&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto and_then(F&& f) & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&>::type>::type>
+    auto and_then(F&& f) & -> U
+    {
       return and_then_impl<F, this_type&, U, TValue&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto and_then(F&& f) const & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&>::type>::type>
+    auto and_then(F&& f) const& -> U
+    {
       return and_then_impl<F, const this_type&, U, const TValue&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto and_then(F&& f) && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TValue&&>::type>::type>
+    auto and_then(F&& f) && -> U
+    {
       return and_then_impl<F, this_type&&, U, TValue&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto and_then(F&& f) const && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TValue&&>::type>::type>
+    auto and_then(F&& f) const&& -> U
+    {
       return and_then_impl<F, const this_type&&, U, const TValue&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto or_else(F&& f) & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type>
+    auto or_else(F&& f) & -> U
+    {
       return or_else_impl<F, this_type&, U, TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto or_else(F&& f) const & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type>
+    auto or_else(F&& f) const & -> U
+    {
       return or_else_impl<F, const this_type&, U, const TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto or_else(F&& f) && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type>
+    auto or_else(F&& f) && -> U
+    {
       return or_else_impl<F, this_type&&, U, TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto or_else(F&& f) const && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type>
+    auto or_else(F&& f) const && -> U
+    {
       return or_else_impl<F, const this_type&&, U, const TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto transform_error(F&& f) & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type>
+    auto transform_error(F&& f) & -> expected<TValue, U>
+    {
       return transform_error_impl<F, this_type&, U, TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform_error(F&& f) const & {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type>
+    auto transform_error(F&& f) const & -> expected<TValue, U>
+    {
       return transform_error_impl<F, const this_type&, U, const TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform_error(F&& f) && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type>
+    auto transform_error(F&& f) && -> expected<TValue, U>
+    {
       return transform_error_impl<F, this_type&&, U, TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto transform_error(F&& f) const && {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type;
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type>
+    auto transform_error(F&& f) const&& -> expected<TValue, U>
+    {
       return transform_error_impl<F, const this_type&&, U, const TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 #endif
@@ -1118,115 +1118,99 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    template <typename F>
-    auto transform(F&& f) &
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto transform(F&& f) & -> expected<U, TError>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return transform_impl<F, this_type&, U>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform(F&& f) const&
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto transform(F&& f) const & -> expected<U, TError>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return transform_impl<F, const this_type&, U>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform(F&& f) &&
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto transform(F&& f) && -> expected<U, TError>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return transform_impl<F, this_type&&, U>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto transform(F&& f) const &&
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto transform(F&& f) const && -> expected<U, TError>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return transform_impl<F, const this_type&&, U>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template<typename F>
-    auto and_then(F&& f) &
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto and_then(F&& f) & -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return and_then_impl<F, this_type&, U>(etl::forward<F>(f), *this);
     }
 
-    template<typename F>
-    auto and_then(F&& f) const &
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto and_then(F&& f) const & -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return and_then_impl<F, const this_type&, U>(etl::forward<F>(f), *this);
     }
 
-    template<typename F>
-    auto and_then(F&& f) &&
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto and_then(F&& f) && -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return and_then_impl<F, this_type&&, U>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template<typename F>
-    auto and_then(F&& f) const &&
+    template<typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type>
+    auto and_then(F&& f) const && -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void>::type>::type;
       return and_then_impl<F, const this_type&&, U>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto or_else(F&& f) &
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type>
+    auto or_else(F&& f) & -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type;
       return or_else_impl<F, this_type&, U, TError&>(etl::forward<F>(f), *this);
     }
     
-    template <typename F>
-    auto or_else(F&& f) const &
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type>
+    auto or_else(F&& f) const & -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type;
       return or_else_impl<F, const this_type&, U, const TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto or_else(F&& f) &&
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type>
+    auto or_else(F&& f) && -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type;
       return or_else_impl<F, this_type&&, U, TError&&>(etl::forward<F>(f), etl::move(*this));
     }
     
-    template <typename F>
-    auto or_else(F&& f) const &&
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type>
+    auto or_else(F&& f) const && -> U
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type;
       return or_else_impl<F, const this_type&&, U, const TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto transform_error(F&& f) & 
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type>
+    auto transform_error(F&& f) & -> expected<void, U>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type;
       return transform_error_impl<F, this_type&, U, TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform_error(F&& f) const & 
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type>
+    auto transform_error(F&& f) const & -> expected<void, U>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type;
       return transform_error_impl<F, const this_type&, U, const TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F>
-    auto transform_error(F&& f) &&
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type>
+    auto transform_error(F&& f) && -> expected<void, U>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type;
       return transform_error_impl<F, this_type&&, U, TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F>
-    auto transform_error(F&& f) const && 
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type>
+    auto transform_error(F&& f) const && -> expected<void, U>
     {
-      using U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&&>::type>::type;
       return transform_error_impl<F, const this_type&&, U, const TError&&>(etl::forward<F>(f), *this);
     }
 #endif
