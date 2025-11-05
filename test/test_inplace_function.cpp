@@ -293,16 +293,28 @@ namespace
 
   //*******************************************
   // Functor with destructable_data
-  struct DestructibleObject
+  struct DestructibleMovableObject
   {
-    DestructibleObject()
+    DestructibleMovableObject()
     {
-      destructior_called = false;
+      destructior_called       = false;
+      copy_constructior_called = false;
+      move_constructior_called = false;
     }
 
-    ~DestructibleObject()
+    ~DestructibleMovableObject()
     {
       destructior_called = true;
+    }
+
+    DestructibleMovableObject(const DestructibleMovableObject&)
+    {
+      copy_constructior_called = true;
+    }
+
+    DestructibleMovableObject(DestructibleMovableObject&&)
+    {
+      move_constructior_called = true;
     }
 
     void operator()(int, int)
@@ -310,9 +322,13 @@ namespace
     }
 
     static bool destructior_called;
+    static bool copy_constructior_called;
+    static bool move_constructior_called;
   };
 
-  bool DestructibleObject::destructior_called = false;
+  bool DestructibleMovableObject::destructior_called       = false;
+  bool DestructibleMovableObject::copy_constructior_called = false;
+  bool DestructibleMovableObject::move_constructior_called = false;
 }
 
 namespace
@@ -943,6 +959,7 @@ namespace
       CHECK(parameter_correct);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_member_reference_compile_time)
     {
@@ -957,6 +974,7 @@ namespace
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference_const)
@@ -988,6 +1006,7 @@ namespace
       CHECK(parameter_correct);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_member_reference_compile_time_const)
     {
@@ -1002,6 +1021,7 @@ namespace
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_moveableonly)
@@ -1065,11 +1085,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_free_int_run_time)
     {
-      DestructibleObject object;
-
+      // Start with a destructible object to check that it is properly destroyed
+      DestructibleMovableObject object;
       etl::inplace_function<void(int, int)> ipf(object);
 
       ipf.set(free_int);
+
+      CHECK_TRUE(DestructibleMovableObject::destructior_called);
 
       ipf(VALUE1, VALUE2);
 
@@ -1105,6 +1127,7 @@ namespace
       CHECK(parameter_correct);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_lambda_int_compile_time)
     {
@@ -1119,6 +1142,7 @@ namespace
       CHECK(function_called == FunctionCalled::Lambda_Called);
       CHECK(parameter_correct);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_functor_run_time)
