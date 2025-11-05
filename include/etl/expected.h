@@ -798,7 +798,7 @@ namespace etl
       return or_else_impl<F, this_type&, U, TError&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&&>::type>::type>
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type>
     auto or_else(F&& f) const & -> U
     {
       return or_else_impl<F, const this_type&, U, const TError&>(etl::forward<F>(f), *this);
@@ -1166,7 +1166,7 @@ namespace etl
       return and_then_impl<F, const this_type&&, U>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, const TError&>::type>::type>
+    template <typename F, typename U = typename etl::remove_cvref<typename etl::invoke_result<F, void, TError&>::type>::type>
     auto or_else(F&& f) & -> U
     {
       return or_else_impl<F, this_type&, U, TError&>(etl::forward<F>(f), *this);
