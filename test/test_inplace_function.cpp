@@ -38,9 +38,9 @@ SOFTWARE.
 #include <stdexcept>
 
 // Enable exactly one of these at a time to see the corresponding static_assert fire.
-//#define ETL_NEGATIVE_TEST_DELEGATE_BAD_RETURN
-//#define ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_NONCONST
-//#define ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_CONST
+//#define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN
+//#define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST
+//#define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_CONST
 
 namespace
 {
@@ -1439,8 +1439,6 @@ namespace
       function_called = FunctionCalled::Not_Called;
       size = ipf();
       CHECK_TRUE(function_called == FunctionCalled::Operator_Called);
-      CHECK_EQUAL(functor32.size(), ipf.size());
-      CHECK_EQUAL(functor32.size(), size);
     }
 
     //*************************************************************************
@@ -1454,9 +1452,6 @@ namespace
 
       size_t largest_size      = etl::largest<FunctorSized<8>, FunctorSized<16>, FunctorSized<32>>::size;
       size_t largest_alignment = etl::largest<FunctorSized<8>, FunctorSized<16>, FunctorSized<32>>::alignment;
-
-      CHECK_EQUAL(largest_size,      ipf.size());
-      CHECK_EQUAL(largest_alignment, ipf.alignment());
 
       int size = 0;
 
@@ -1487,11 +1482,6 @@ namespace
 
       CHECK_TRUE(bool(ipf));
       CHECK_EQUAL(7, ipf(3, 4));
-
-      // Size/alignment match the function pointer type
-      using fn_ptr = int(*)(int, int);
-      CHECK_EQUAL(sizeof(fn_ptr),  ipf.size());
-      CHECK_EQUAL(alignof(fn_ptr), ipf.alignment());
     }
 
     //*************************************************************************
@@ -1504,13 +1494,9 @@ namespace
 
       CHECK_TRUE(ipf.is_valid());
       CHECK_EQUAL(13, ipf(6, 7));
-
-      using fn_ptr = int(*)(int, int);
-      CHECK_EQUAL(sizeof(fn_ptr),  ipf.size());
-      CHECK_EQUAL(alignof(fn_ptr), ipf.alignment());
     }
 
-#if defined(ETL_NEGATIVE_TEST_DELEGATE_BAD_RETURN)
+#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
     //*************************************************************************
     // Triggers: return type not convertible (void -> int)
     TEST(test_inplace_function_static_assert_bad_return)
@@ -1523,7 +1509,7 @@ namespace
     }
 #endif
 
-#if defined(ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_NONCONST)
+#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST)
     //*************************************************************************
     // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda takes lvalue ref)
     TEST(test_inplace_function_static_assert_param_mismatch_nonconst)
@@ -1535,7 +1521,7 @@ namespace
     }
 #endif
 
-#if defined(ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_CONST)
+#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_CONST)
     //*************************************************************************
     // Same as above, but binds a const lambda to hit const_lambda_stub
     TEST(test_inplace_function_static_assert_param_mismatch_const)
@@ -1547,101 +1533,90 @@ namespace
     }
 #endif
 
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_construct_from_std_function_from_free_int)
-//    {
-//      std::function<void(int, int)> std_function(free_int);
-//
-//      etl::inplace_function<void(int, int)> ipf(std_function);
-//
-//      ipf(VALUE1, VALUE2);
-//
-//      CHECK(function_called == FunctionCalled::Free_Int_Called);
-//      CHECK(parameter_correct);
-//    }
-//
-//    //*************************************************************************
-//    TEST_FIXTURE(SetupFixture, test_inplace_function_identification)
-//    {
-//      Object test1;
-//      Object test2;
-//
-//      auto d1 = etl::inplace_function<void(int, int)>::create<free_int>();
-//      auto d2 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(test1);
-//      auto d3 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(test2);
-//
-//      etl::inplace_function<void(int, int)> d4;
-//
-//      using Delegate_List = std::vector<etl::inplace_function<void(int, int)>>;
-//
-//      Delegate_List inplace_function_list = { d1, d2, d3 };
-//
-//      Delegate_List::const_iterator itr;
-//
-//      d4 = d1;
-//
-//      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-//      CHECK(*itr == d1);
-//      CHECK(*itr != d2);
-//      CHECK(*itr != d3);
-//
-//      d4 = d2;
-//
-//      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-//      CHECK(*itr != d1);
-//      CHECK(*itr == d2);
-//      CHECK(*itr != d3);
-//
-//      d4 = d3;
-//
-//      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-//      CHECK(*itr != d1);
-//      CHECK(*itr != d2);
-//      CHECK(*itr == d3);
-//
-//      d4 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(test2); // Same as d3
-//      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-//      CHECK(*itr != d1);
-//      CHECK(*itr != d2);
-//      CHECK(*itr == d3);
-//    }
-//
-//#if defined(ETL_NEGATIVE_TEST_DELEGATE_BAD_RETURN)
-//    //*************************************************************************
-//    // Triggers: return type not convertible (void -> int)
-//    TEST(test_inplace_function_static_assert_bad_return)
-//    {
-//      auto bad = [](int) { /* returns void */ };
-//      // static_assert in lambda_stub/const_lambda_stub should trigger:
-//      // "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature"
-//      auto ipf = etl::inplace_function<int(int)>::create(bad);
-//      (void)ipf;
-//    }
-//#endif
-//
-//#if defined(ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_NONCONST)
-//    //*************************************************************************
-//    // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda takes lvalue ref)
-//    TEST(test_inplace_function_static_assert_param_mismatch_nonconst)
-//    {
-//      auto bad = [](int&) { /* needs lvalue */ };
-//      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
-//      auto ipf = etl::inplace_function<void(int&&)>::create(bad);
-//      (void)ipf;
-//    }
-//#endif
-//
-//#if defined(ETL_NEGATIVE_TEST_DELEGATE_RVALUE_PARAM_MISMATCH_CONST)
-//    //*************************************************************************
-//    // Same as above, but binds a const lambda to hit const_lambda_stub
-//    TEST(test_inplace_function_static_assert_param_mismatch_const)
-//    {
-//      const auto bad = [](int&) { /* needs lvalue */ };
-//      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
-//      auto ipf = etl::inplace_function<void(int&&)>::create(bad);
-//      (void)ipf;
-//    }
-//#endif
+    //*************************************************************************
+    //TEST_FIXTURE(SetupFixture, test_inplace_function_identification)
+    //{
+    //  static Object test1;
+    //  static Object test2;
+
+    //  auto d1 = etl::inplace_function<void(int, int)>::create<free_int>();
+    //  auto d2 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test1>();
+    //  auto d3 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test2>();
+
+    //  etl::inplace_function<void(int, int)> d4;
+
+    //  using Function_List = std::vector<etl::inplace_function<void(int, int)>>;
+
+    //  Function_List inplace_function_list = { d1, d2, d3 };
+
+    //  Function_List::const_iterator itr;
+
+    //  d4 = d1;
+
+    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+    //  bool b = (*itr == d1);
+    //  
+    //  CHECK(*itr == d1);
+    //  CHECK(*itr != d2);
+    //  CHECK(*itr != d3);
+
+    //  d4 = d2;
+
+    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+    //  CHECK(*itr != d1);
+    //  CHECK(*itr == d2);
+    //  CHECK(*itr != d3);
+
+    //  d4 = d3;
+
+    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+    //  CHECK(*itr != d1);
+    //  CHECK(*itr != d2);
+    //  CHECK(*itr == d3);
+
+    //  d4 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(test2); // Same as d3
+    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+    //  CHECK(*itr != d1);
+    //  CHECK(*itr != d2);
+    //  CHECK(*itr == d3);
+    //}
+
+#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
+    //*************************************************************************
+    // Triggers: return type not convertible (void -> int)
+    TEST(test_inplace_function_static_assert_bad_return)
+    {
+      auto bad = [](int) { /* returns void */ };
+      // static_assert in lambda_stub/const_lambda_stub should trigger:
+      // "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature"
+      auto ipf = etl::inplace_function<int(int)>(bad);
+      (void)ipf;
+    }
+#endif
+
+#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST)
+    //*************************************************************************
+    // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda takes lvalue ref)
+    TEST(test_inplace_function_static_assert_param_mismatch_nonconst)
+    {
+      auto bad = [](int&) { /* needs lvalue */ };
+      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
+      auto ipf = etl::inplace_function<void(int&&)>(bad);
+      (void)ipf;
+    }
+#endif
+
+#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_CONST)
+    //*************************************************************************
+    // Same as above, but binds a const lambda to hit const_lambda_stub
+    TEST(test_inplace_function_static_assert_param_mismatch_const)
+    {
+      const auto bad = [](int&) { /* needs lvalue */ };
+      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
+      auto ipf = etl::inplace_function<void(int&&)>(bad);
+      (void)ipf;
+    }
+#endif
   };
 }
 

@@ -310,8 +310,8 @@ namespace
 
       CHECK_TRUE((etl::is_invokable_r<int,  L, double>::value));
       CHECK_TRUE((etl::is_invokable_r<void, L, double>::value));
-      CHECK_TRUE((etl::is_invokable_r<int,  L, int>::value)); // int -> double parameter conv
-      CHECK_FALSE((etl::is_invokable_r<bad_ref, L, double>::value)); // bad return conv
+      CHECK_TRUE((etl::is_invokable_r<int,  L, int>::value));      // int -> double parameter conv
+      CHECK_FALSE((etl::is_invokable_r<char*, L, double>::value)); // bad return conv
 
       // Function pointer returning void
       using FP = void(*)(int);

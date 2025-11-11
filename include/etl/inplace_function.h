@@ -365,6 +365,18 @@ namespace etl
     using argument_types = etl::type_list<TArgs...>;
 
     //*************************************************************************
+    /// Invokability trait bound to this inplace_function's signature
+    /// Usage: <code>inplace_function<R(Args...)>::is_invokable<Callable>::value</code>
+    //*************************************************************************
+    template <typename TCallable>
+    using is_invokable = etl::is_invokable<TCallable, TReturn(TArgs...)>;
+
+#if ETL_USING_CPP17
+    template <typename TCallable>
+    static constexpr bool is_invokable_v = is_invokable<TCallable>::value;
+#endif
+
+    //*************************************************************************
     /// Default constructor
     //*************************************************************************
     inplace_function() noexcept = default;
@@ -475,7 +487,7 @@ namespace etl
     //*************************************************************************
     void set(function_type f)
     {
-      static_assert(etl::is_invokable<function_type, TReturn(TArgs...)>::value,
+      static_assert(is_invokable<function_type>::value,
                     "etl::inplace_function: function pointer is not compatible with the inplace_function signature");
 
       static_assert(Object_Size      >= sizeof(function_type),  "etl::inplace_function: storage size too small");
@@ -496,7 +508,7 @@ namespace etl
     template <typename TObject>
     void set(TReturn(TObject::* method)(TArgs...), TObject& obj)
     {
-      static_assert(etl::is_invokable<decltype(method), TReturn(TArgs...)>::value,
+      static_assert(is_invokable<decltype(method)>::value,
                     "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
 
       using target_t = vtable_type::template member_target<TObject>;
@@ -519,7 +531,7 @@ namespace etl
     template <typename TObject>
     void set(TReturn(TObject::* method)(TArgs...) const, const TObject& obj)
     {
-      static_assert(etl::is_invokable<decltype(method), TReturn(TArgs...)>::value,
+      static_assert(is_invokable<decltype(method)>::value,
                     "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
 
       using target_t = vtable_type::template const_member_target<TObject>;
@@ -545,7 +557,7 @@ namespace etl
               typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
     void set(TLambda& lambda)
     {
-      static_assert(etl::is_invokable<T, TReturn(TArgs...)>::value,
+      static_assert(is_invokable<T>::value,
                     "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
 
       static_assert(Object_Size      >= sizeof(T),  "etl::inplace_function: Object size too small");
@@ -569,7 +581,7 @@ namespace etl
               typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
     void set(const TLambda& lambda)
     {
-      static_assert(etl::is_invokable<T, TReturn(TArgs...)>::value,
+      static_assert(is_invokable<T>::value,
                     "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
 
       //// For const functors, ensure operator() is const so invocation via const T* is valid.
@@ -595,6 +607,9 @@ namespace etl
     template <TReturn(*Function)(TArgs...)>
     void set()
     {
+      static_assert(is_invokable<decltype(Function)>::value,
+                    "etl::inplace_function: function pointer is not compatible with the inplace_function signature");
+
       clear();
       vtable = vtable_type::template for_compile_time_function<Function>();
     }
@@ -606,6 +621,9 @@ namespace etl
     template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instance>
     void set()
     {
+      static_assert(is_invokable<decltype(Method)>::value,
+                    "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
+
       clear();
       vtable = vtable_type::template for_compile_time_member<TObject, Method, &Instance>();
     }
@@ -616,6 +634,9 @@ namespace etl
     template <typename TObject, TReturn(TObject::*Method)(TArgs...) const, const TObject& Instance>
     void set()
     {
+      static_assert(is_invokable<decltype(Method)>::value,
+                    "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
+
       clear();
       vtable = vtable_type::template for_compile_time_const_member<TObject, Method, &Instance>();
     }
@@ -631,6 +652,9 @@ namespace etl
                                           !etl::function_traits<decltype(&T::operator())>::is_const>>
     void set()
     {
+      static_assert(is_invokable<T>::value,
+                    "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
+
       clear();
       vtable = vtable_type::template for_compile_time_operator<TObject, &Instance>();
     }
@@ -646,6 +670,9 @@ namespace etl
                                           etl::function_traits<decltype(&T::operator())>::is_const>>
     void set()
     {
+      static_assert(is_invokable<T>::value,
+                    "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
+
       clear();
       vtable = vtable_type::template for_compile_time_operator<const TObject, &Instance>();
     }
@@ -684,24 +711,6 @@ namespace etl
     static this_type create()
     {
       return this_type(vtable_type::template for_compile_time_operator<TObject, &Instance>());
-    }
-
-    //*************************************************************************
-    /// Returns the size of the object storage.
-    //*************************************************************************
-    ETL_NODISCARD
-    size_t size() const noexcept
-    {
-      return Object_Size;
-    }
-
-    //*************************************************************************
-    /// Returns the alignment of the object storage.
-    //*************************************************************************
-    ETL_NODISCARD
-    size_t alignment() const noexcept
-    {
-      return Object_Alignment;
     }
 
     //*************************************************************************
