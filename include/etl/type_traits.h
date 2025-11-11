@@ -788,6 +788,7 @@ namespace etl
 
   //***************************************************************************
   /// is_convertible
+  ///\ingroup type_traits
 #if ETL_USING_CPP11
   namespace private_type_traits
   {
@@ -2497,7 +2498,7 @@ typedef integral_constant<bool, true>  true_type;
       return false;
     }
 #elif ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1
-    // fallback for C++20 on supported compilers
+    // fallback for TObject++20 on supported compilers
     return __builtin_is_constant_evaluated();
 #else
     // default if unsupported
@@ -2549,6 +2550,11 @@ typedef integral_constant<bool, true>  true_type;
   {
     static const bool value = true;
   };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_function_v = etl::is_function<T>::value;
+#endif
 #endif
 
 #if ETL_USING_CPP11
@@ -2566,6 +2572,11 @@ typedef integral_constant<bool, true>  true_type;
 
     static const bool value = etl::is_same<decltype(test<T>(0)), etl::true_type>::value;
   };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_call_operator_v = etl::has_call_operator<T>::value;
+#endif
 #endif
 
 #if ETL_USING_CPP11
@@ -2592,148 +2603,184 @@ typedef integral_constant<bool, true>  true_type;
     //*********************************
     static const bool value = decltype(test<etl::decay_t<T>>(0))::value;
   };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_unique_call_operator_v = etl::has_unique_call_operator<T>::value;
+#endif
 #endif
 
   //***************************************************************************
-  // is_invokable
-  // Invocability traits
+  /// Is T a member pointer
   //***************************************************************************
-#if ETL_USING_CPP11
-  namespace private_invoke_traits
+  namespace private_type_traits
   {
-    //*********************************
-    // Detect if 'F(TArgs...)' is a valid expression when F is a function/functor/lambda.
-    template <typename TFunction, typename... TArgs>
-    struct is_direct_callable
-    {
-      template <typename U>
-      static auto test(int) -> decltype(etl::declval<typename etl::decay<U>::type>()(etl::declval<TArgs>()...), etl::true_type());
+    template<typename T>
+    struct is_member_pointer_helper : etl::false_type {};
 
-      template <typename>
-      static etl::false_type test(...);
+    template<typename T, typename TObject>
+    struct is_member_pointer_helper<T TObject::*> : etl::true_type {};
+  }
+  
+  template<typename T> 
+  struct is_member_pointer : private_type_traits::is_member_pointer_helper<etl::remove_cv_t<T>> {};
 
-      static const bool value = etl::is_same<decltype(test<TFunction>(0)), etl::true_type>::value;
-    };
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_pointer_v = etl::is_member_pointer<T>::value;
+#endif
 
-    //*********************************
-    // Return type of 'TFunction(TArgs...)' when it is valid (used only when is_direct_callable is true).
-    template <typename TFunction, typename... TArgs>
-    struct direct_call_result
-    {
-      typedef decltype(etl::declval<typename etl::decay<TFunction>::type>()(etl::declval<TArgs>()...)) type;
-    };
-
-    //*********************************
-    // Detect if '(obj.*pmf)(TArgs...)' is a valid expression for member function pointers.
-    template <typename PMF, typename C, typename... TArgs>
-    struct is_member_callable
-    {
-      template <typename T>
-      static auto test(int) -> decltype((etl::declval<C&>().*etl::declval<T>())(etl::declval<TArgs>()...), etl::true_type());
-
-      template <typename>
-      static etl::false_type test(...);
-
-      static const bool value = etl::is_same<decltype(test<PMF>(0)), etl::true_type>::value;
-    };
-
-    //*********************************
-    // Result of '(obj.*pmf)(TArgs...)' when it is valid (used only when is_member_callable is true).
-    template <typename PMF, typename C, typename... TArgs>
-    struct member_call_result
-    {
-      typedef decltype((etl::declval<C&>().*etl::declval<PMF>())(etl::declval<TArgs>()...)) type;
-    };
+  //***************************************************************************
+  /// Is T a member function pointer
+  //***************************************************************************
+  namespace private_type_traits
+  {
+    template <typename> 
+    struct is_member_function_pointer_helper : etl::false_type {};
+    
+    template <typename T, typename TObject> 
+    struct is_member_function_pointer_helper<T TObject::*> : public etl::is_function<T>::type {};
   }
 
-  // Primary template: not invokable.
-  template <typename TCallable, typename TSignature, typename Enable = void>
-  struct is_invokable : etl::false_type {};
+  template <typename T> 
+  struct is_member_function_pointer : public private_type_traits::is_member_function_pointer_helper<etl::remove_cv_t<T>>::type {};
 
-  // Generic: callable via 'TFunction(TArgs...)' (functions, function pointers/references, functors, lambdas).
-  template <typename TFunction, typename TReturn, typename... TArgs>
-  struct is_invokable<TFunction, TReturn(TArgs...), typename etl::enable_if<private_invoke_traits::is_direct_callable<TFunction, TArgs...>::value>::type>
-    : etl::bool_constant<etl::is_void<TReturn>::value ||
-                         etl::is_convertible<typename private_invoke_traits::direct_call_result<TFunction, TArgs...>::type, TReturn>::value>
-  {
-  };
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_function_pointer_v = etl::is_member_function_pointer<T>::value;
+#endif
 
-  // Member function pointer specializations
-  // non-const
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...), TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...), TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...), TObject, TArgs...>::type, TReturn>::value)>
+  //***************************************************************************
+  /// Is T a member object pointer
+  //***************************************************************************
+  namespace private_type_traits
   {
-  };
+    template <typename T> 
+    struct logical_not_t : etl::integral_constant<bool, !bool(T::value)> {};
 
-  // const
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) const, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) const, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) const, TObject, TArgs...>::type, TReturn>::value)>
-  {
-  };
+    template<typename> 
+    struct is_member_object_pointer_helper : public etl::false_type {};
 
-  // volatile
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) volatile, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) volatile, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) volatile, TObject, TArgs...>::type, TReturn>::value)>
-  {
-  };
+    template<typename T, typename TObject> 
+    struct is_member_object_pointer_helper<T TObject::*> : public logical_not_t<etl::is_function<T>>::type {};
+  }
 
-  // const volatile
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) const volatile, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) const volatile, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) const volatile, TObject, TArgs...>::type, TReturn>::value)>
+  template<typename T> struct is_member_object_pointer : public private_type_traits::is_member_object_pointer_helper<etl::remove_cv_t<T>>::type {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_object_pointer_v = etl::is_member_object_pointer<T>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  // is_invokable
+  //***************************************************************************
+  namespace private_is_invokable_traits
   {
-  };
+    // Direct callable
+    template <typename TFunction, typename... TArgs>
+    using when_direct_invocable = etl::void_t<decltype(etl::declval<etl::remove_cvref_t<TFunction>>()(etl::declval<TArgs>()...))>;
+
+    // Member call
+    template <typename TFunction, typename TObject, typename... TArgs>
+    using when_member_invocable_obj = etl::void_t<decltype((etl::declval<TObject>().*etl::declval<TFunction>())(etl::declval<TArgs>()...))>;
+
+    // Return type check
+    template <typename TRequiredReturn, typename TReturn>
+    struct is_return_convertible : etl::bool_constant<etl::is_void<TReturn>::value || etl::is_convertible<TRequiredReturn, TReturn>::value>
+    {
+    };
+
+    // Map a PMF to the object expression type required to invoke it
+    template <typename PMF> 
+    struct pmf_object;
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...)> { using type = TObject&; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) const> { using type = const TObject&; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) volatile> { using type = volatile TObject&; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) const volatile> { using type = const volatile TObject&; };
 
 #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
-  // noexcept variants
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) noexcept, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) noexcept, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                         etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) noexcept, TObject, TArgs...>::type, TReturn>::value)>
-  {
-  };
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) noexcept> { using type = TObject&; };
 
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) const noexcept, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) const noexcept, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) const noexcept, TObject, TArgs...>::type, TReturn>::value)
-    >
-  {
-  };
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) const noexcept> { using type = const TObject&; };
 
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) volatile noexcept, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) volatile noexcept, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) volatile noexcept, TObject, TArgs...>::type, TReturn>::value)>
-  {
-  };
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) volatile noexcept> { using type = volatile TObject&; };
 
-  template <typename TRequestedReturn, typename TObject, typename... TParameterPack, typename TReturn, typename... TArgs>
-  struct is_invokable<TRequestedReturn (TObject::*)(TParameterPack...) const volatile noexcept, TReturn(TArgs...), void>
-    : etl::bool_constant<private_invoke_traits::is_member_callable<TRequestedReturn (TObject::*)(TParameterPack...) const volatile noexcept, TObject, TArgs...>::value &&
-                         (etl::is_void<TReturn>::value ||
-                          etl::is_convertible<typename private_invoke_traits::member_call_result<TRequestedReturn (TObject::*)(TParameterPack...) const volatile noexcept, TObject, TArgs...>::type, TReturn>::value)>
-  {
-  };
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_object<TReturn (TObject::*)(TParams...) const volatile noexcept> { using type = const volatile TObject&; };
 #endif
+
+    template <typename PMF>
+    using pmf_object_t = typename pmf_object<PMF>::type;
+
+    // Map a PMF to its declared return type
+    template <typename PMF> 
+    struct pmf_return;
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...)> { using type = TReturn; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) const> { using type = TReturn; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) volatile> { using type = TReturn; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) const volatile> { using type = TReturn; };
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) noexcept> { using type = TReturn; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) const noexcept> { using type = TReturn; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) volatile noexcept> { using type = TReturn; };
+
+    template <typename TReturn, typename TObject, typename... TParams>
+    struct pmf_return<TReturn (TObject::*)(TParams...) const volatile noexcept> { using type = TReturn; };
+#endif
+
+    template <typename PMF>
+    using pmf_return_t = typename pmf_return<PMF>::type;
+  }
+
+  // Primary template
+  template <typename TCallable, typename TSignature, typename Enable = void>
+  struct is_invokable : etl::false_type { };
+
+  // Direct callable: function, pointer, functor, lambda
+  template <typename TFunction, typename TReturn, typename... TArgs>
+  struct is_invokable<TFunction, TReturn(TArgs...),
+                      private_is_invokable_traits::when_direct_invocable<TFunction, TArgs...>>
+    : private_is_invokable_traits::is_return_convertible<decltype(etl::declval<etl::remove_cvref_t<TFunction>>()(etl::declval<TArgs>()...)), TReturn>
+  {
+  };
+
+  // Member function pointer: single combined specialization using PMF helpers
+  template <typename PMF, typename TReturn, typename... TArgs>
+  struct is_invokable<PMF, TReturn(TArgs...),
+                      private_is_invokable_traits::when_member_invocable_obj<PMF, private_is_invokable_traits::pmf_object_t<PMF>, TArgs...>>
+    : private_is_invokable_traits::is_return_convertible<private_is_invokable_traits::pmf_return_t<PMF>, TReturn>
+  {
+  };
 
   //*********************************
   /// is_invokable_r
-  /// Check if invoking TCallable with TArgs... is valid and the result is convertible to TReturn.
   //*********************************
   template <typename TReturn, typename TCallable, typename... TArgs>
   struct is_invokable_r : is_invokable<TCallable, TReturn(TArgs...)> {};
@@ -2745,26 +2792,14 @@ typedef integral_constant<bool, true>  true_type;
   
   //*********************************
   /// is_invokable_with
-  /// Check if TCallable can be invoked with TArgs...
   //*********************************
   template <typename TCallable, typename... TArgs>
   struct is_invokable_with : is_invokable<TCallable, void(TArgs...)> {};
 
 #if ETL_USING_CPP17
   template <typename TCallable, typename... TArgs>
-  inline constexpr bool is_invokable_with_v =  is_invokable_with<TCallable, TArgs...>::value;
-#endif
+  inline constexpr bool is_invokable_with_v = etl::is_invokable_with<TCallable, TArgs...>::value;
 #endif
 }
-
-// Helper macros
-#define ETL_IS_CHAR_TYPE(type)        (etl::is_same<char, type>::value || etl::is_same<signed char, type>::value || etl::is_same<unsigned char, type>::value)
-#define ETL_IS_NOT_CHAR_TYPE(type)    (!ETL_IS_CHAR_TYPE(type))
-
-#define ETL_IS_POINTER_TYPE(type)     (etl::is_pointer<type>::value)
-#define ETL_IS_NOT_POINTER_TYPE(type) (!ETL_IS_POINTER_TYPE(type))
-
-#define ETL_TARGET_IS_TRIVIALLY_COPYABLE(type)     (etl::is_trivially_copyable<typename etl::iterator_traits<type>::value_type>::value)
-#define ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(type) (!ETL_TARGET_IS_TRIVIALLY_COPYABLE(type))
-
+#endif // ETL_USING_CPP11
 #endif // ETL_TYPE_TRAITS_INCLUDED

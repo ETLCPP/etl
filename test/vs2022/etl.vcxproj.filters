@@ -3740,6 +3740,12 @@
     <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_hfsm_transition_on_enter.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_is_invokable.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
