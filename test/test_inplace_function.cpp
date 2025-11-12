@@ -1497,52 +1497,52 @@ namespace
     }
 
     //*************************************************************************
-    //TEST_FIXTURE(SetupFixture, test_inplace_function_identification)
-    //{
-    //  static Object test1;
-    //  static Object test2;
+    TEST_FIXTURE(SetupFixture, test_inplace_function_identification)
+    {
+      static Object test1;
+      static Object test2;
 
-    //  auto d1 = etl::inplace_function<void(int, int)>::create<free_int>();
-    //  auto d2 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test1>();
-    //  auto d3 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test2>();
+      auto d1 = etl::inplace_function<void(int, int)>::create<free_int>();
+      auto d2 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test1>();
+      auto d3 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test2>();
 
-    //  etl::inplace_function<void(int, int)> d4;
+      etl::inplace_function<void(int, int)> d4;
 
-    //  using Function_List = std::vector<etl::inplace_function<void(int, int)>>;
+      using Function_List = std::vector<etl::inplace_function<void(int, int)>>;
 
-    //  Function_List inplace_function_list = { d1, d2, d3 };
+      Function_List inplace_function_list = { d1, d2, d3 };
 
-    //  Function_List::const_iterator itr;
+      Function_List::const_iterator itr;
 
-    //  d4 = d1;
+      d4 = d1;
 
-    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-    //  bool b = (*itr == d1);
-    //  
-    //  CHECK(*itr == d1);
-    //  CHECK(*itr != d2);
-    //  CHECK(*itr != d3);
+      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+      bool b = (*itr == d1);
+      
+      CHECK(*itr == d1);
+      CHECK(*itr != d2);
+      CHECK(*itr != d3);
 
-    //  d4 = d2;
+      d4 = d2;
 
-    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-    //  CHECK(*itr != d1);
-    //  CHECK(*itr == d2);
-    //  CHECK(*itr != d3);
+      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+      CHECK(*itr != d1);
+      CHECK(*itr == d2);
+      CHECK(*itr != d3);
 
-    //  d4 = d3;
+      d4 = d3;
 
-    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-    //  CHECK(*itr != d1);
-    //  CHECK(*itr != d2);
-    //  CHECK(*itr == d3);
+      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+      CHECK(*itr != d1);
+      CHECK(*itr != d2);
+      CHECK(*itr == d3);
 
-    //  d4 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int>(test2); // Same as d3
-    //  itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-    //  CHECK(*itr != d1);
-    //  CHECK(*itr != d2);
-    //  CHECK(*itr == d3);
-    //}
+      d4 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test2>(); // Same as d3
+      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
+      CHECK(*itr != d1);
+      CHECK(*itr != d2);
+      CHECK(*itr == d3);
+    }
 
 #if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
     //*************************************************************************

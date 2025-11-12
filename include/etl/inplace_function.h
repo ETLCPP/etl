@@ -85,15 +85,17 @@ namespace etl
     template <typename TReturn, typename... TArgs>
     struct inplace_function_vtable
     {
-      using invoke_type = TReturn(*)(void*, TArgs...);
+      using invoke_type  = TReturn(*)(void*, TArgs...);
       using destroy_type = void(*)(void*);
-      using move_type = void(*)(void* src,       void* dst);
-      using copy_type = void(*)(const void* src, void* dst);
+      using move_type    = void(*)(void* src,       void* dst);
+      using copy_type    = void(*)(const void* src, void* dst);
+      using equals_type  = bool(*)(const void*, const void*);
 
       invoke_type  invoke  = nullptr;
       destroy_type destroy = nullptr;
       move_type    move    = nullptr;
       copy_type    copy    = nullptr;
+      equals_type  equals  = nullptr;
 
       //*******************************************
       /// Target for non-const member function
@@ -139,6 +141,42 @@ namespace etl
       }
 
       //*******************************************
+      // Detection: has operator==(const U&, const U&) and result is bool-convertible
+      template <typename U, typename = void>
+      struct has_equality : etl::false_type 
+      {
+      };
+
+      template <typename U>
+      struct has_equality<U, etl::void_t<decltype(etl::declval<const U&>() == etl::declval<const U&>())>>
+        : etl::bool_constant<etl::is_convertible<decltype(etl::declval<const U&>() == etl::declval<const U&>()), bool>::value> 
+      {
+      };
+
+      //*******************************************
+      // equals factory: Returns a function pointer only when U is Equality Comparable
+      template <typename U>
+      static typename etl::enable_if<has_equality<U>::value, equals_type>::type
+      make_equals()
+      {
+        return [](const void* lhs, const void* rhs) -> bool
+        {
+          const U& l = *static_cast<const U*>(lhs);
+          const U& r = *static_cast<const U*>(rhs);
+          return l == r; // ADL
+        };
+      }
+
+      //*******************************************
+      // equals factory: Returns a function pointer when U is not Equality Comparable
+      template <typename U>
+      static typename etl::enable_if<!has_equality<U>::value, equals_type>::type
+      make_equals()
+      {
+        return nullptr;
+      }
+
+      //*******************************************
       // Create a vtable for free function pointer
       //*******************************************
       static const inplace_function_vtable* for_function_ptr()
@@ -154,7 +192,14 @@ namespace etl
           // move (same as copy for function pointer)
           &move_construct<function_type, false>,
           // copy
-          &copy_construct<function_type>
+          &copy_construct<function_type>,
+          // equals (compare stored function pointer values)
+          [](const void* lhs, const void* rhs) -> bool
+          {
+            auto* l = static_cast<const function_type*>(lhs);
+            auto* r = static_cast<const function_type*>(rhs);
+            return *l == *r;
+          }
         };
 
         return &vtable;
@@ -177,7 +222,14 @@ namespace etl
           // move (same as copy; trivially copyable)
           &move_construct<target_t, false>,
           // copy
-          &copy_construct<target_t>
+          &copy_construct<target_t>,
+          // equals (same object address and same member pointer)
+          [](const void* lhs, const void* rhs) -> bool
+          {
+            auto* l = static_cast<const target_t*>(lhs);
+            auto* r = static_cast<const target_t*>(rhs);
+            return (l->obj == r->obj) && (l->member == r->member);
+          }
         };
 
         return &vtable;
@@ -200,7 +252,13 @@ namespace etl
           // move (same as copy; trivially copyable)
           &move_construct<target_t, false>,
           // copy
-          &copy_construct<target_t>
+          &copy_construct<target_t>,
+          [](const void* lhs, const void* rhs) -> bool
+          {
+            auto* l = static_cast<const target_t*>(lhs);
+            auto* r = static_cast<const target_t*>(rhs);
+            return (l->obj == r->obj) && (l->member == r->member);
+          }
         };
 
         return &vtable;
@@ -217,7 +275,7 @@ namespace etl
 
         destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value
           ? nullptr
-          : static_cast<destroy_type>(+[](void* p) { static_cast<T*>(p)->~T(); });
+          : static_cast<destroy_type>([](void* p) { static_cast<T*>(p)->~T(); });
 
         static const inplace_function_vtable vtable
         {
@@ -228,7 +286,8 @@ namespace etl
           // move
           &move_construct<T, destroy_src_on_move>,
           // copy
-          &copy_construct<T>
+          &copy_construct<T>,
+          make_equals<T>() // value-equality only if T defines operator==
         };
 
         return &vtable;
@@ -245,7 +304,7 @@ namespace etl
 
         destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value
           ? nullptr
-          : static_cast<destroy_type>(+[](void* p) { static_cast<T*>(p)->~T(); });
+          : static_cast<destroy_type>([](void* p) { static_cast<T*>(p)->~T(); });
 
         static const inplace_function_vtable vtable
         {
@@ -256,7 +315,8 @@ namespace etl
           // move
           &move_construct<T, destroy_src_on_move>,
           // copy
-          &copy_construct<T>
+          &copy_construct<T>,
+          make_equals<T>() // Value-equality only if T defines operator==
         };
 
         return &vtable;
@@ -272,9 +332,11 @@ namespace etl
         {
           // invoke ignores object and calls the known function.
           [](void*, TArgs... a) -> TReturn { return Function(etl::forward<TArgs>(a)...); },
-          nullptr, // destroy
-          nullptr, // move
-          nullptr  // copy
+          nullptr, 
+          nullptr, 
+          nullptr,
+          // Same vtable instance => same target identity
+          [](const void*, const void*) -> bool { return true; }
         };
 
         return &vtable;
@@ -288,11 +350,12 @@ namespace etl
       {
         static const inplace_function_vtable vtable
         {
-          // invoke ignores object and uses the known object + member pointer.
           [](void*, TArgs... a) -> TReturn { return (Object->*Method)(etl::forward<TArgs>(a)...); },
-          nullptr, // destroy
-          nullptr, // move
-          nullptr  // copy
+          nullptr, 
+          nullptr, 
+          nullptr,
+          // Same vtable instance => same target identity
+          [](const void*, const void*) -> bool { return true; }
         };
 
         return &vtable;
@@ -307,16 +370,18 @@ namespace etl
         static const inplace_function_vtable vtable
         {
           [](void*, TArgs... a) -> TReturn { return (Object->*Method)(etl::forward<TArgs>(a)...); },
-          nullptr, // destroy
-          nullptr, // move
-          nullptr  // copy
+          nullptr, 
+          nullptr, 
+          nullptr,
+          // Same vtable instance => same target identity
+          [](const void*, const void*) -> bool { return true; }
         };
 
         return &vtable;
       }
 
       //*******************************************
-      // Compile-time bound operator() + object
+      // Create a vtable for compile-time bound operator() + object
       //*******************************************
       template <typename T, T* Object>
       static const inplace_function_vtable* for_compile_time_operator()
@@ -324,9 +389,11 @@ namespace etl
         static const inplace_function_vtable vtable
         {
           [](void*, TArgs... a) -> TReturn { return (*Object).operator()(etl::forward<TArgs>(a)...); },
-          nullptr, // destroy
-          nullptr, // move
-          nullptr  // copy
+          nullptr, 
+          nullptr, 
+          nullptr,
+          // Same vtable instance => same target identity
+          [](const void*, const void*) -> bool { return true; }
         };
 
         return &vtable;
@@ -773,6 +840,37 @@ namespace etl
       set(etl::forward<TLambda>(lambda));
 
       return *this;
+    }
+
+    //*************************************************************************
+    /// Equality operator
+    //*************************************************************************
+    template <size_t Other_Object_Size, size_t Other_Object_Alignment>
+    bool operator ==(const etl::inplace_function<TReturn(TArgs...), Other_Object_Size, Other_Object_Alignment>& rhs) const
+    {
+      // If both empty then equal, else if one empty then not equal.
+      if (vtable == nullptr || rhs.vtable == nullptr)
+      {
+        return vtable == rhs.vtable;
+      }
+
+      // If different target family/identity then not equal
+      if (vtable != rhs.vtable)
+      {
+        return false;
+      }
+
+      // Same vtable, compare payloads if handler exists
+      return vtable->equals ? vtable->equals(&storage, &rhs.storage) : false;
+    }
+
+    //*************************************************************************
+    /// Inequality operator
+    //*************************************************************************
+    template <size_t Other_Object_Size, size_t Other_Object_Alignment>
+    bool operator !=(const etl::inplace_function<TReturn(TArgs...), Other_Object_Size, Other_Object_Alignment>& rhs) const
+    {
+      return !(*this == rhs);
     }
 
     //*************************************************************************
