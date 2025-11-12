@@ -788,6 +788,43 @@ namespace
       CHECK_EQUAL(9U, sizeof(packed));
     }
 #endif
+
+    //*********************************
+    TEST(test_swap)
+    {
+      uint32_t a = 0x12345678;
+      uint32_t b = 0x87654321;
+
+      ETL_OR_STD::swap(a, b);
+
+      CHECK_EQUAL(a, 0x87654321);
+      CHECK_EQUAL(b, 0x12345678);
+
+      uint32_t* p_a = &a;
+      uint32_t* p_b = &b;
+
+      ETL_OR_STD::swap(p_a, p_b);
+
+      CHECK_EQUAL(a, 0x87654321);
+      CHECK_EQUAL(b, 0x12345678);
+      CHECK_EQUAL(p_a, &b);
+      CHECK_EQUAL(p_b, &a);
+
+      uint32_t a_a[4] {0x12345678, 0x23456789, 0x34567890, 0x09876543};
+      uint32_t a_b[4] {0x12abcd78, 0x23abcd89, 0x34abcd90, 0x09abcd43};
+
+      ETL_OR_STD::swap(a_a, a_b);
+
+      CHECK_EQUAL(a_a[0], 0x12abcd78);
+      CHECK_EQUAL(a_a[1], 0x23abcd89);
+      CHECK_EQUAL(a_a[2], 0x34abcd90);
+      CHECK_EQUAL(a_a[3], 0x09abcd43);
+
+      CHECK_EQUAL(a_b[0], 0x12345678);
+      CHECK_EQUAL(a_b[1], 0x23456789);
+      CHECK_EQUAL(a_b[2], 0x34567890);
+      CHECK_EQUAL(a_b[3], 0x09876543);
+    }
   };
 
 #if ETL_USING_CPP17 && !defined(ETL_FORCE_CPP11_NONTYPE)
