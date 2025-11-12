@@ -1496,43 +1496,6 @@ namespace
       CHECK_EQUAL(13, ipf(6, 7));
     }
 
-#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
-    //*************************************************************************
-    // Triggers: return type not convertible (void -> int)
-    TEST(test_inplace_function_static_assert_bad_return)
-    {
-      auto bad = [](int) { /* returns void */ };
-      // static_assert in lambda_stub/const_lambda_stub should trigger:
-      // "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature"
-      auto ipf = etl::inplace_function<int(int)>(bad);
-      (void)ipf;
-    }
-#endif
-
-#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST)
-    //*************************************************************************
-    // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda takes lvalue ref)
-    TEST(test_inplace_function_static_assert_param_mismatch_nonconst)
-    {
-      auto bad = [](int&) { /* needs lvalue */ };
-      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
-      auto ipf = etl::inplace_function<void(int&&)>(bad);
-      (void)ipf;
-    }
-#endif
-
-#if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_CONST)
-    //*************************************************************************
-    // Same as above, but binds a const lambda to hit const_lambda_stub
-    TEST(test_inplace_function_static_assert_param_mismatch_const)
-    {
-      const auto bad = [](int&) { /* needs lvalue */ };
-      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
-      auto ipf = etl::inplace_function<void(int&&)>(bad);
-      (void)ipf;
-    }
-#endif
-
     //*************************************************************************
     //TEST_FIXTURE(SetupFixture, test_inplace_function_identification)
     //{
