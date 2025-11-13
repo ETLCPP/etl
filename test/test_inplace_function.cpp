@@ -690,6 +690,56 @@ namespace
 #endif
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_capturing_lambda_int)
+    {
+      int value = VALUE1;
+
+      auto lambda = [value](int i, int j) -> int { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return value + VALUE1 + VALUE2; };
+
+      etl::inplace_function<int(int, int)> ipf(lambda);
+
+      int result = ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE1 + VALUE2);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_inplace_function_capturing_lambda_int_run_time)
+    {
+      int value = VALUE1;
+
+      auto lambda = [value](int i, int j) -> int { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return value + VALUE1 + VALUE2; };
+
+      auto ipf = etl::make_inplace_function(lambda);
+
+      int result = ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE1 + VALUE2);
+    }
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_inplace_function_capturing_lambda_int_compile_time)
+    {
+      int value = VALUE1;
+
+      static auto lambda = [value](int i, int j) -> int { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return value + VALUE1 + VALUE2; };
+
+      auto ipf = etl::make_inplace_function<decltype(lambda), lambda>();
+
+      int result = ipf(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE1 + VALUE2);
+    }
+#endif
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_operator_void)
     {
       Object object;
@@ -1544,6 +1594,29 @@ namespace
       CHECK(*itr == d3);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_to_an_ipf_of_function_over_a_lambda_and_back)
+    {
+      etl::inplace_function<int(int i, int j)> ipf;
+
+      int value = 1;
+      auto lambda = [value](int i, int j) -> int { return value + i + j; };
+
+      int result = 0;
+
+      ipf = lambda;
+      result = ipf(2, 3);
+      CHECK_EQUAL(1 + 2 + 3, result);
+
+      ipf = normal;
+      result = ipf(3, 4);
+      CHECK_EQUAL(3 + 4, result);
+
+      ipf = lambda;
+      result = ipf(5, 6);
+      CHECK_EQUAL(1 + 5 + 6, result);
+    }
+
 #if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
     //*************************************************************************
     // Triggers: return type not convertible (void -> int)
@@ -1563,7 +1636,7 @@ namespace
     TEST(test_inplace_function_static_assert_param_mismatch_nonconst)
     {
       auto bad = [](int&) { /* needs lvalue */ };
-      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
+      // Not invocable with int&&, so is_compatible_callable is false, so static_assert triggers
       auto ipf = etl::inplace_function<void(int&&)>(bad);
       (void)ipf;
     }
@@ -1575,7 +1648,7 @@ namespace
     TEST(test_inplace_function_static_assert_param_mismatch_const)
     {
       const auto bad = [](int&) { /* needs lvalue */ };
-      // Not invocable with int&&, so is_compatible_callable is false -> static_assert fires
+      // Not invocable with int&&, so is_compatible_callable is false, so static_assert triggers
       auto ipf = etl::inplace_function<void(int&&)>(bad);
       (void)ipf;
     }
