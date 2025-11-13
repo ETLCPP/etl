@@ -392,6 +392,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_inplace_function_size_and_alignment)
+    {
+      using InplaceFunction84  = etl::inplace_function<int(float, long),  8, 4>;
+      using InplaceFunction168 = etl::inplace_function<int(float, long), 16, 8>;
+
+      // Check the sizes.
+      CHECK_EQUAL(8,  InplaceFunction84::size());
+      CHECK_EQUAL(16, InplaceFunction168::size());
+
+      // Check the alignments.
+      CHECK_EQUAL(4, InplaceFunction84::alignment());
+      CHECK_EQUAL(8, InplaceFunction168::alignment());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_false)
     {
       etl::inplace_function<void(void)> ipf;
@@ -1348,6 +1363,31 @@ namespace
 
       CHECK(function_called == FunctionCalled::Member_Int_Called);
       CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_construct_different_size)
+    {
+      auto d1 = etl::inplace_function<void(int, int), 8, 8>(free_int);
+      auto d2 = etl::inplace_function<void(int, int), 16, 8>(free_int);
+      auto d3 = etl::inplace_function<void(int, int), 16, 4>(free_int);
+      auto d4 = etl::inplace_function<void(int, int), 8, 4>(free_int);
+
+      decltype(d1) d1_1_copy(d1);
+      decltype(d1) d1_4_copy(d4);
+
+      decltype(d2) d2_1_copy(d1);
+      decltype(d2) d2_2_copy(d2);
+
+      decltype(d3) d3_3_copy(d3);
+      decltype(d3) d3_4_copy(d4);
+
+      CHECK_TRUE(d1 == d1_1_copy);
+      CHECK_TRUE(d1 == d1_4_copy);
+      CHECK_TRUE(d2 == d2_1_copy);
+      CHECK_TRUE(d2 == d2_2_copy);
+      CHECK_TRUE(d3 == d3_3_copy);
+      CHECK_TRUE(d3 == d3_4_copy);
     }
 
     //*************************************************************************

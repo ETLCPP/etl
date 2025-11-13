@@ -462,8 +462,8 @@ namespace etl
     template <size_t Other_Object_Size, size_t Other_Object_Alignment>
     inplace_function(const etl::inplace_function<TReturn(TArgs...), Other_Object_Size, Other_Object_Alignment>& other)
     {
-      static_assert(Object_Size      >= Other_Object_Size,      "etl::inplace_function: Object size too small");
-      static_assert(Object_Alignment >= Other_Object_Alignment, "etl::inplace_function: Object alignment too small");
+      static_assert(Object_Size      >= Other_Object_Size,      "etl::inplace_function: Destination object size too small");
+      static_assert(Object_Alignment >= Other_Object_Alignment, "etl::inplace_function: Destination object alignment too small");
 
       clone_from(other);
     }
@@ -482,8 +482,8 @@ namespace etl
     template <size_t Other_Object_Size, size_t Other_Object_Alignment>
     inplace_function(etl::inplace_function<TReturn(TArgs...), Other_Object_Size, Other_Object_Alignment>&& other) noexcept
     {
-      static_assert(Object_Size      >= Other_Object_Size,      "etl::inplace_function: Object size too small");
-      static_assert(Object_Alignment >= Other_Object_Alignment, "etl::inplace_function: Object alignment too small");
+      static_assert(Object_Size      >= Other_Object_Size,      "etl::inplace_function: Destination object size too small");
+      static_assert(Object_Alignment >= Other_Object_Alignment, "etl::inplace_function: Destination object alignment too small");
 
       move_from(other);
     }
@@ -1001,6 +1001,24 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Get the storage size
+    //*************************************************************************
+    ETL_NODISCARD
+    static constexpr size_t size() noexcept
+    {
+      return Object_Size;
+    }
+
+    //*************************************************************************
+    /// Get the storage alignment
+    //*************************************************************************
+    ETL_NODISCARD
+    static constexpr size_t alignment() noexcept
+    {
+      return Object_Alignment;
+    }
+
   private:
 
     // Allow cross-size access to internals
@@ -1025,7 +1043,7 @@ namespace etl
 
       if (vtable && vtable->copy) 
       { 
-        vtable->copy(&other.storage, &storage); 
+        vtable->copy(&other.storage, &storage);
       }
     }
 
