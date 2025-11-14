@@ -1319,6 +1319,8 @@ namespace etl
     //*********************************************************************
     etl::ibasic_string<T>& erase(size_type position, size_type length_ = npos)
     {
+      ETL_ASSERT_CHECK_EXTRA(position <= size(), ETL_ERROR(string_out_of_bounds));
+
       // Limit the length.
       length_ = etl::min(length_, size() - position);
 
@@ -1334,6 +1336,8 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(string_out_of_bounds));
+
       etl::mem_move(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
@@ -1347,6 +1351,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(string_out_of_bounds));
+      
       iterator i_element_(to_iterator(i_element));
 
       etl::mem_move(i_element + 1, end(), i_element_);
@@ -1365,6 +1371,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(string_out_of_bounds));
+
       iterator first_ = to_iterator(first);
       iterator last_  = to_iterator(last);
 
