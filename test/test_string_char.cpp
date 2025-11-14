@@ -910,6 +910,8 @@ namespace
       }
 
       CHECK_FALSE(text.is_truncated());
+
+      CHECK_THROW(text[text.size()], etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -924,6 +926,8 @@ namespace
       }
 
       CHECK_FALSE(text.is_truncated());
+
+      CHECK_THROW(text[text.size()], etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -964,6 +968,9 @@ namespace
 
       CHECK(text.front() == compare_text.front());
       CHECK_FALSE(text.is_truncated());
+
+      Text emptyText;
+      CHECK_THROW(emptyText.front(), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -974,6 +981,9 @@ namespace
 
       CHECK(text.front() == compare_text.front());
       CHECK_FALSE(text.is_truncated());
+
+      const Text emptyText;
+      CHECK_THROW(emptyText.front(), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -984,6 +994,9 @@ namespace
 
       CHECK(text.back() == compare_text.back());
       CHECK_FALSE(text.is_truncated());
+
+      Text emptyText;
+      CHECK_THROW(emptyText.back(), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -994,6 +1007,9 @@ namespace
 
       CHECK(text.back() == compare_text.back());
       CHECK_FALSE(text.is_truncated());
+
+      const Text emptyText;
+      CHECK_THROW(emptyText.back(), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1328,6 +1344,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const value_t INITIAL_VALUE  = STR('A');
+
+      Text text;
+      text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
+
+      Text text2;
+
+      CHECK_THROW(text.insert(text2.cbegin(), INITIAL_VALUE), etl::string_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
       TextSTD compare_text(initial_text.begin(), initial_text.end());
@@ -1400,6 +1430,21 @@ namespace
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t INSERT_SIZE = 3UL;
+      const value_t INITIAL_VALUE  = STR('A');
+
+      Text text;
+      text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
+
+      Text text2;
+
+      CHECK_THROW(text.insert(text2.cbegin(), INSERT_SIZE, INITIAL_VALUE), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1499,6 +1544,19 @@ namespace
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_range_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+
+      Text text;
+      text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
+
+      Text text2;
+
+      CHECK_THROW(text.insert(text2.cbegin(), insert_text.cbegin(), insert_text.cend()), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
@@ -3267,6 +3325,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_outofbounds)
+    {
+      Text text(initial_text.c_str());
+
+      CHECK_THROW(text.erase(text.end()), etl::string_out_of_bounds);
+      CHECK_THROW(text.erase(text.cend()), etl::string_out_of_bounds);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_position_outofbounds)
+    {
+      Text text(initial_text.c_str());
+
+      CHECK_THROW(text.erase(text.size() + 1), etl::string_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       TextSTD compare_text(initial_text.c_str());
@@ -3281,6 +3356,15 @@ namespace
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK_FALSE(text.is_truncated());
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_outofbounds)
+    {
+      Text text(initial_text.c_str());
+      Text text2(initial_text.c_str());
+
+      CHECK_THROW(text.erase(text2.begin(), text2.end()), etl::string_out_of_bounds);
     }
 
     //*************************************************************************
