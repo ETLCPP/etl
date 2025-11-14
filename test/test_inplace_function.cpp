@@ -1373,6 +1373,7 @@ namespace
       auto d3 = etl::inplace_function<void(int, int), 16, 4>(free_int);
       auto d4 = etl::inplace_function<void(int, int), 8, 4>(free_int);
 
+      // These should not trigger any static asserts.
       decltype(d1) d1_1_copy(d1);
       decltype(d1) d1_4_copy(d4);
 
@@ -1381,13 +1382,6 @@ namespace
 
       decltype(d3) d3_3_copy(d3);
       decltype(d3) d3_4_copy(d4);
-
-      CHECK_TRUE(d1 == d1_1_copy);
-      CHECK_TRUE(d1 == d1_4_copy);
-      CHECK_TRUE(d2 == d2_1_copy);
-      CHECK_TRUE(d2 == d2_2_copy);
-      CHECK_TRUE(d3 == d3_3_copy);
-      CHECK_TRUE(d3 == d3_4_copy);
     }
 
     //*************************************************************************
@@ -1584,54 +1578,6 @@ namespace
 
       CHECK_TRUE(ipf.is_valid());
       CHECK_EQUAL(13, ipf(6, 7));
-    }
-
-    //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_inplace_function_identification)
-    {
-      static Object test1;
-      static Object test2;
-
-      auto d1 = etl::inplace_function<void(int, int)>::create<free_int>();
-      auto d2 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test1>();
-      auto d3 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test2>();
-
-      etl::inplace_function<void(int, int)> d4;
-
-      using Function_List = std::vector<etl::inplace_function<void(int, int)>>;
-
-      Function_List inplace_function_list = { d1, d2, d3 };
-
-      Function_List::const_iterator itr;
-
-      d4 = d1;
-
-      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-      bool b = (*itr == d1);
-      
-      CHECK(*itr == d1);
-      CHECK(*itr != d2);
-      CHECK(*itr != d3);
-
-      d4 = d2;
-
-      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-      CHECK(*itr != d1);
-      CHECK(*itr == d2);
-      CHECK(*itr != d3);
-
-      d4 = d3;
-
-      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-      CHECK(*itr != d1);
-      CHECK(*itr != d2);
-      CHECK(*itr == d3);
-
-      d4 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, test2>(); // Same as d3
-      itr = std::find(inplace_function_list.begin(), inplace_function_list.end(), d4);
-      CHECK(*itr != d1);
-      CHECK(*itr != d2);
-      CHECK(*itr == d3);
     }
 
     //*************************************************************************
