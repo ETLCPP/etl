@@ -199,6 +199,7 @@ target_sources(tests PRIVATE
 		imemory_block_allocator.h.t.cpp
 		indirect_vector.h.t.cpp
 		initializer_list.h.t.cpp
+		inplace_function.h.t.cpp
 		instance_count.h.t.cpp
 		integral_limits.h.t.cpp
 		intrusive_forward_list.h.t.cpp
