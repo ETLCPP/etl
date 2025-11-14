@@ -631,8 +631,8 @@ namespace
       Text text(initial_text.c_str());
       const Text constText(initial_text.c_str());
 
-      CHECK_EQUAL(&text[initial_text.size()],      text.end());
-      CHECK_EQUAL(&constText[initial_text.size()], constText.end());
+      CHECK_EQUAL(text.begin() + text.size(),      text.end());
+      CHECK_EQUAL(constText.begin() + constText.size(), constText.end());
     }
 
     //*************************************************************************
@@ -5060,7 +5060,7 @@ namespace
       // Test with actual string type.
       Text text(STR("ABCDEFHIJKL"));
       size_t hash = etl::hash<Text>()(text);
-      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]), reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()), reinterpret_cast<const uint8_t*>(text.data_end()));
       CHECK_EQUAL(compare_hash, hash);
 
       // Test with interface string type.
@@ -5322,7 +5322,7 @@ namespace
 
       for (size_t i = text.size(); i < text.max_size(); ++i)
       {
-        CHECK_EQUAL(0, text[i]);
+        CHECK_EQUAL(0, text.data()[i]);
       }
     }
 
@@ -5340,7 +5340,7 @@ namespace
 
       for (size_t i = text.size(); i < text.max_size(); ++i)
       {
-        CHECK_EQUAL(0, text[i]);
+        CHECK_EQUAL(0, text.data()[i]);
       }
     }
 

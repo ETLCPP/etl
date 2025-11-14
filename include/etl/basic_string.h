@@ -560,6 +560,7 @@ namespace etl
     //*********************************************************************
     reference operator [](size_type i)
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -570,6 +571,7 @@ namespace etl
     //*********************************************************************
     const_reference operator [](size_type i) const
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -603,6 +605,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
       return p_buffer[0];
     }
 
@@ -612,6 +615,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
       return p_buffer[0];
     }
 
@@ -621,6 +625,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(current_size > 0, ETL_ERROR(string_out_of_bounds));
       return p_buffer[current_size - 1];
     }
 
@@ -630,6 +635,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(current_size > 0, ETL_ERROR(string_out_of_bounds));
       return p_buffer[current_size - 1];
     }
 
@@ -932,6 +938,8 @@ namespace etl
     //*********************************************************************
     iterator insert(const_iterator position, T value)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+
       // Quick hack, as iterators are pointers.
       iterator insert_position = to_iterator(position);
 
@@ -984,6 +992,8 @@ namespace etl
     //*********************************************************************
     iterator insert(const_iterator position, size_type n, T value)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+
       iterator position_ = to_iterator(position);
 
       if (n == 0)
@@ -1071,6 +1081,8 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, TIterator last)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+      
       iterator position_ = to_iterator(position);
 
       if (first == last)
