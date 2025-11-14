@@ -3746,6 +3746,9 @@
     <ClCompile Include="..\test_is_invokable.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\inplace_function.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
