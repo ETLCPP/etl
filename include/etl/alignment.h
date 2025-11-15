@@ -877,14 +877,6 @@ namespace etl
     void (*fp)();
     int (private_max_align::Dummy::* mfp)(double);
     int private_max_align::Dummy::* mdp;
-#if defined(__SSE__) || defined(_M_IX86_FP)
-#include <xmmintrin.h>
-    __m128 simd;
-#endif
-#if defined(__AVX__)
-#include <immintrin.h>
-    __m256 simd256;
-#endif
   };
 }
 
