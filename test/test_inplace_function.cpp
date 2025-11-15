@@ -475,7 +475,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_free_void_compile_time)
     {
-      auto ipf = etl::make_inplace_function<free_void>();
+      auto ipf = etl::make_inplace_function<&free_void>();
 
       ipf();
 
@@ -538,7 +538,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_free_int_compile_time)
     {
-      auto ipf = etl::make_inplace_function<free_int>();
+      auto ipf = etl::make_inplace_function<&free_int>();
 
       ipf(VALUE1, VALUE2);
 
@@ -593,7 +593,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_free_reference_compile_time)
     {
-      auto ipf = etl::make_inplace_function<free_reference>();
+      auto ipf = etl::make_inplace_function<&free_reference>();
 
       Data data;
       data.ipf = VALUE1;
@@ -651,7 +651,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_free_moveableonly_compile_time)
     {
-      auto ipf = etl::make_inplace_function<free_moveableonly>();
+      auto ipf = etl::make_inplace_function<&free_moveableonly>();
 
       MoveableOnlyData data;
       data.ipf = VALUE1;
@@ -1201,7 +1201,7 @@ namespace
     {
       etl::inplace_function<void(int, int)> ipf;
 
-      ipf.set<free_int>();
+      ipf.set<&free_int>();
 
       ipf(VALUE1, VALUE2);
 
