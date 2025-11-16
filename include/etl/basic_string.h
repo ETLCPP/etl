@@ -1082,6 +1082,7 @@ namespace etl
     iterator insert(const_iterator position, TIterator first, TIterator last)
     {
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+      ETL_ASSERT_CHECK_EXTRA(first <= last, ETL_ERROR(string_iterator));
       
       iterator position_ = to_iterator(position);
 

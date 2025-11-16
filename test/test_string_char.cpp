@@ -1560,6 +1560,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_range_swapped_iterators)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+
+      Text text;
+      text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
+
+      CHECK_THROW(text.insert(text.cbegin(), insert_text.cend(), insert_text.cbegin()), etl::string_iterator);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
       const size_t INITIAL_SIZE = 5UL;
