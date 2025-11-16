@@ -1211,7 +1211,7 @@ namespace
       CHECK_FALSE(text.is_truncated());
 
       TextBuffer buffer2{0};
-      Text emptyText(buffer2.data(), buffer.size());
+      Text emptyText(buffer2.data(), buffer2.size());
       CHECK_THROW(emptyText.front(), etl::string_out_of_bounds);
     }
 
@@ -1227,7 +1227,7 @@ namespace
       CHECK_FALSE(text.is_truncated());
 
       TextBuffer buffer2{0};
-      const Text emptyText(buffer2.data(), buffer.size());
+      const Text emptyText(buffer2.data(), buffer2.size());
       CHECK_THROW(emptyText.front(), etl::string_out_of_bounds);
     }
 
@@ -1243,7 +1243,7 @@ namespace
       CHECK_FALSE(text.is_truncated());
 
       TextBuffer buffer2{0};
-      Text emptyText(buffer2.data(), buffer.size());
+      Text emptyText(buffer2.data(), buffer2.size());
       CHECK_THROW(emptyText.back(), etl::string_out_of_bounds);
     }
 
@@ -1259,7 +1259,7 @@ namespace
       CHECK_FALSE(text.is_truncated());
 
       TextBuffer buffer2{0};
-      const Text emptyText(buffer2.data(), buffer.size());
+      const Text emptyText(buffer2.data(), buffer2.size());
       CHECK_THROW(emptyText.back(), etl::string_out_of_bounds);
     }
 

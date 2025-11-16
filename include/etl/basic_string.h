@@ -625,8 +625,8 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      ETL_ASSERT_CHECK_EXTRA(current_size > 0, ETL_ERROR(string_out_of_bounds));
-      return p_buffer[current_size - 1];
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
+      return p_buffer[size() - 1];
     }
 
     //*********************************************************************
@@ -635,8 +635,8 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      ETL_ASSERT_CHECK_EXTRA(current_size > 0, ETL_ERROR(string_out_of_bounds));
-      return p_buffer[current_size - 1];
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
+      return p_buffer[size() - 1];
     }
 
     //*********************************************************************
