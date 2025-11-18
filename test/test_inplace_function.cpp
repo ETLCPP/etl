@@ -966,8 +966,6 @@ namespace
 #if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_compile_time)
     {
-      static Object object;
-
       auto ipf = etl::make_inplace_function<Object, &Object::member_int, object_static>();
 
       ipf(VALUE1, VALUE2);
