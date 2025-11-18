@@ -3743,7 +3743,7 @@
     <ClCompile Include="..\test_hfsm_transition_on_enter.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_is_invokable.cpp">
+    <ClCompile Include="..\test_is_invocable.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\inplace_function.h.t.cpp">

@@ -10326,7 +10326,7 @@
     <ClCompile Include="..\test_index_of_type.cpp" />
     <ClCompile Include="..\test_inplace_function.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
-    <ClCompile Include="..\test_is_invokable.cpp" />
+    <ClCompile Include="..\test_is_invocable.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
     <ClCompile Include="..\test_math.cpp" />
     <ClCompile Include="..\test_math_functions.cpp" />
