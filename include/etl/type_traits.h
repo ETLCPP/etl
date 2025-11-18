@@ -2516,40 +2516,33 @@ typedef integral_constant<bool, true>  true_type;
     static const bool value = false;
   };
 
-  // For normal function type
+  // Plain / cv-qualified
   template<typename Ret, typename... TArgs>
-  struct is_function<Ret(TArgs...)> 
-  {
-    static const bool value = true;
-  };
+  struct is_function<Ret(TArgs...)> { static const bool value = true; };
+  template<typename Ret, typename... TArgs>
+  struct is_function<Ret(TArgs...) const> { static const bool value = true; };
+  template<typename Ret, typename... TArgs>
+  struct is_function<Ret(TArgs...) volatile> { static const bool value = true; };
+  template<typename Ret, typename... TArgs>
+  struct is_function<Ret(TArgs...) const volatile> { static const bool value = true; };
 
-  // For const function type
+  // Variadic
   template<typename Ret, typename... TArgs>
-  struct is_function<Ret(TArgs...) const> 
-  {
-    static const bool value = true;
-  };
+  struct is_function<Ret(TArgs..., ...)> { static const bool value = true; };
 
-  // For volatile function type
+  // noexcept variants (if supported by the toolchain)
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   template<typename Ret, typename... TArgs>
-  struct is_function<Ret(TArgs...) volatile> 
-  {
-    static const bool value = true;
-  };
-
-  // For const volatile function type
+  struct is_function<Ret(TArgs...) noexcept> { static const bool value = true; };
   template<typename Ret, typename... TArgs>
-  struct is_function<Ret(TArgs...) const volatile> 
-  {
-    static const bool value = true;
-  };
-
-  // For variadic function type
+  struct is_function<Ret(TArgs...) const noexcept> { static const bool value = true; };
   template<typename Ret, typename... TArgs>
-  struct is_function<Ret(TArgs..., ...)>
-  {
-    static const bool value = true;
-  };
+  struct is_function<Ret(TArgs...) volatile noexcept> { static const bool value = true; };
+  template<typename Ret, typename... TArgs>
+  struct is_function<Ret(TArgs...) const volatile noexcept> { static const bool value = true; };
+  template<typename Ret, typename... TArgs>
+  struct is_function<Ret(TArgs..., ...) noexcept> { static const bool value = true; };
+#endif
 
 #if ETL_USING_CPP17
   template <typename T>
