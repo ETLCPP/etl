@@ -294,11 +294,13 @@ namespace
   Functor functor_static;
   const FunctorConst const_functor_static;
 
+#if ETL_USING_CPP17
   static auto global_lambda = [](int i, int j)
     {
       function_called = FunctionCalled::Lambda_Called;
       parameter_correct = (i == VALUE1) && (j == VALUE2);
     };
+#endif
 
   //*******************************************
   // Functor with that is destructible and movable
@@ -1003,8 +1005,6 @@ namespace
 #if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_const_compile_time)
     {
-      static Object object;
-
       auto ipf = etl::make_inplace_function<Object, &Object::member_int_const, object_static>();
 
       ipf(VALUE1, VALUE2);
@@ -1578,6 +1578,77 @@ namespace
       ipf = lambda;
       result = ipf(5, 6);
       CHECK_EQUAL(1 + 5 + 6, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_valid_valid)
+    {
+      // ipf1 -> normal, ipf2 -> alternative
+      etl::inplace_function<int(int, int)> ipf1(normal);
+      etl::inplace_function<int(int, int)> ipf2(alternative);
+
+      int r1_before = ipf1(VALUE1, VALUE2);
+      int r2_before = ipf2(VALUE1, VALUE2);
+      CHECK_EQUAL(VALUE1 + VALUE2,     r1_before);
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, r2_before);
+
+      swap(ipf1, ipf2); // ADL swap uses member swap
+
+      int r1_after = ipf1(VALUE1, VALUE2);
+      int r2_after = ipf2(VALUE1, VALUE2);
+      // After swap ipf1 should now hold 'alternative', ipf2 should hold 'normal'
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, r1_after);
+      CHECK_EQUAL(VALUE1 + VALUE2,     r2_after);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_valid_empty)
+    {
+      etl::inplace_function<int(int, int)> ipf_valid(normal);
+      etl::inplace_function<int(int, int)> ipf_empty; // default constructed
+
+      CHECK_TRUE(ipf_valid.is_valid());
+      CHECK_FALSE(ipf_empty.is_valid());
+
+      swap(ipf_valid, ipf_empty);
+
+      // ipf_valid should now be empty, ipf_empty should now have 'normal'
+      CHECK_FALSE(ipf_valid.is_valid());
+      CHECK_TRUE(ipf_empty.is_valid());
+
+      CHECK_EQUAL(VALUE1 + VALUE2, ipf_empty(VALUE1, VALUE2));
+      CHECK_THROW(ipf_valid(VALUE1, VALUE2), etl::inplace_function_uninitialized);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_self_noop)
+    {
+      etl::inplace_function<int(int, int)> ipf(normal);
+      int before = ipf(VALUE1, VALUE2);
+      ipf.swap(ipf); // self-swap should be a no-op
+      int after  = ipf(VALUE1, VALUE2);
+      CHECK_EQUAL(before, after);
+      CHECK_EQUAL(VALUE1 + VALUE2, after);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_runtime_functor_and_function)
+    {
+      struct PlusOne
+      {
+        int operator()(int a, int b) { return a + b + 1; }
+      } functor;
+
+      etl::inplace_function<int(int, int)> ipf_functor(functor);
+      etl::inplace_function<int(int, int)> ipf_function(normal);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, ipf_functor(VALUE1, VALUE2));
+      CHECK_EQUAL(VALUE1 + VALUE2,     ipf_function(VALUE1, VALUE2));
+
+      ipf_functor.swap(ipf_function);
+
+      CHECK_EQUAL(VALUE1 + VALUE2,     ipf_functor(VALUE1, VALUE2));     // now holds 'normal'
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, ipf_function(VALUE1, VALUE2));    // now holds functor
     }
 
 #if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
