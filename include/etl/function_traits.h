@@ -61,7 +61,7 @@ namespace etl
     static constexpr bool   is_const           = false;
     static constexpr bool   is_volatile        = false;
     static constexpr bool   is_noexcept        = false;
-    static constexpr size_t argument_count     = sizeof...(TArgs);
+    static constexpr size_t arity              = sizeof...(TArgs);
   };
 
   //***************************************************************************

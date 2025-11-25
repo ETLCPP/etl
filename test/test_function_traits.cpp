@@ -140,7 +140,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -164,7 +164,7 @@ namespace
 #else
       CHECK_FALSE(traits::is_noexcept);
 #endif
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -184,7 +184,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2 , traits::argument_count);
+      CHECK_EQUAL(2, traits::arity);
     }
 
     //*************************************************************************
@@ -202,7 +202,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -220,7 +220,7 @@ namespace
       CHECK_TRUE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -242,7 +242,7 @@ namespace
 #else
       CHECK_FALSE(traits::is_noexcept);
 #endif
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -264,7 +264,7 @@ namespace
 #else
       CHECK_FALSE(traits::is_noexcept);
 #endif
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -282,7 +282,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_TRUE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -300,7 +300,7 @@ namespace
       CHECK_TRUE(traits::is_const);
       CHECK_TRUE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -322,7 +322,7 @@ namespace
 #else
       CHECK_FALSE(traits::is_noexcept);
 #endif
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -344,7 +344,7 @@ namespace
 #else
       CHECK_FALSE(traits::is_noexcept);
 #endif
-      CHECK_EQUAL(0, traits::argument_count);
+      CHECK_EQUAL(0, traits::arity);
     }
 
     //*************************************************************************
@@ -362,7 +362,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2, traits::argument_count);
+      CHECK_EQUAL(2, traits::arity);
     }
 
     //*************************************************************************
@@ -380,7 +380,7 @@ namespace
       CHECK_TRUE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2, traits::argument_count);
+      CHECK_EQUAL(2, traits::arity);
     }
 
     //*************************************************************************
@@ -398,7 +398,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(1, traits::argument_count);
+      CHECK_EQUAL(1, traits::arity);
     }
 
     //*************************************************************************
@@ -418,7 +418,7 @@ namespace
       CHECK_TRUE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2, traits::argument_count);
+      CHECK_EQUAL(2, traits::arity);
     }
 
     //*************************************************************************
@@ -444,7 +444,7 @@ namespace
       CHECK_FALSE(traits::is_const);
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2, traits::argument_count);
+      CHECK_EQUAL(2, traits::arity);
     }
   };
 }
