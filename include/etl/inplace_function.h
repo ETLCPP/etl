@@ -1294,7 +1294,7 @@ namespace etl
 
 #if ETL_USING_CPP17
   //*************************************************************************
-  // Make a inplace_function from a function at compile time.
+  // Make an inplace_function from a function at compile time.
   // Only participates for free function pointers (not member function pointers).
   //*************************************************************************
   template <auto Function,
@@ -1309,11 +1309,16 @@ namespace etl
   }
 
   //*************************************************************************
-  /// Make a inplace_function from a member function at compile time.
+  /// Make an inplace_function from a member function at compile time.
   //*************************************************************************
-  template <typename TObject, auto Method, TObject& Instance, typename = etl::enable_if_t<!etl::function_traits<decltype(Method)>::is_const>>
-  ETL_NODISCARD
-  auto make_inplace_function()
+  template <typename TObject, 
+            auto Method, 
+            TObject& Instance,
+            typename T = decltype(Method),
+            typename = etl::enable_if_t<etl::is_member_function_pointer<T>::value>,
+            typename = etl::enable_if_t<!etl::function_traits<T>::is_const>>
+    ETL_NODISCARD
+    auto make_inplace_function()
   {
     using function_type = typename etl::function_traits<decltype(Method)>::function_type;
 
@@ -1321,19 +1326,24 @@ namespace etl
   }
 
   //*************************************************************************
-  /// Make a inplace_function from a const member function at compile time.
+  /// Make an inplace_function from a const member function at compile time.
   //*************************************************************************
-  template <typename TObject, auto Method, const TObject& Instance, typename = etl::enable_if_t<etl::function_traits<decltype(Method)>::is_const>>
-  ETL_NODISCARD
-  auto make_inplace_function()
+  template <typename TObject, 
+            auto Method, 
+            const TObject& Instance,
+            typename T = decltype(Method),
+            typename = etl::enable_if_t<etl::is_member_function_pointer<T>::value>,
+            typename = etl::enable_if_t<etl::function_traits<T>::is_const>>
+    ETL_NODISCARD
+    auto make_inplace_function()
   {
-    using function_type = typename etl::function_traits<decltype(Method)>::function_type;
+    using function_type = typename etl::function_traits<T>::function_type;
 
     return etl::inplace_function<function_type, 1, 1>::template create<TObject, Method, Instance>();
   }
 
   //*************************************************************************
-  /// Make a inplace_function from operator() at compile time.
+  /// Make an inplace_function from operator() at compile time.
   //*************************************************************************
   template <typename TObject,
             TObject& Instance,
