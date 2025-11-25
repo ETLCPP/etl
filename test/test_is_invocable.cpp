@@ -36,204 +36,682 @@ SOFTWARE.
 
 namespace
 {
-  // Free functions
-  int f0() { return 0; }
-  long f1(double, const char*) { return 0; }
-  void fv(int) { }
+  //*************************************************************************
+  // Callable subjects
+  int   free_add(int a, int b) { return a + b; }
+  short free_short(int a) { return static_cast<short>(a); }
+  int   free_noexcept(int v) noexcept { return v; }
+  int   free_throw(int v) { throw v; return v; }
 
-  // Add a noexcept free function
-  int fn_noexcept(int x) noexcept { return x; }
-
-  // Functors
-  struct Overloaded
-  {
-    int operator()(int) const { return 1; }
-
-    long operator()(int, int) const { return 2L; }
-
-    template <typename T>
-    T operator()(T t) const { return t; }
+  // C-style variadic function
+  int varfn(int first, ...)
+  { 
+    return first; 
   };
 
-  struct Members
+  //*********************************************
+  struct Base
   {
-    int f(int) { return 1; }
-    int fc(int) const { return 2; }
-    int fv(int) volatile { return 3; }
-    int fcv(int) const volatile { return 4; }
+    int data;
+    Base(int d = 10) : data(d) {}
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
-    int fn(int) noexcept { return 5; }
-    int fcn(int) const noexcept { return 6; }
-    int fvn(int) volatile noexcept { return 7; }
-    int fcvn(int) const volatile noexcept { return 8; }
+    int add(int v) { return data + v; }
+    int add_const(int v) const { return data + v + 1; }
+
+    int ref_only(int v)& { return data + v + 2; }
+    int rref_only(int v)&& { return data + v + 3; }
+
+    static int static_function(int v) { return v * 2; }
+    int noexcept_member(int v) noexcept { return data + v; }
+  };
+
+  //*********************************************
+  struct NotBase
+  {
+    int data;
+    NotBase(int d = 0) : data(d) {}
+  };
+
+  //*********************************************
+  struct Derived : Base
+  {
+    Derived(int d = 20) : Base(d) {}
+  };
+
+  //*********************************************
+  struct NotDerived : NotBase
+  {
+    NotDerived(int d = 20) : NotBase(d) {}
+  };
+
+  //*********************************************
+  struct VolatileBase
+  {
+    int x;
+    VolatileBase(int v = 0) : x(v) {}
+    int read() const volatile { return x; }
+  };
+
+  //*********************************************
+  struct Functor
+  {
+    int factor;
+    explicit Functor(int f) : factor(f) {}
+    int operator()(int x) { return x * factor; }
+  };
+
+  //*********************************************
+  struct ConstFunctor
+  {
+    int bias;
+    explicit ConstFunctor(int b) : bias(b) {}
+    int operator()(int x) const { return x + bias; }
+  };
+
+  //*********************************************
+  struct OverloadedFunctor
+  {
+    int operator()(int)& { return 1; }
+    int operator()(int)&& { return 2; }
+  };
+
+  //*********************************************
+  struct MoveOnlyFunctor
+  {
+    MoveOnlyFunctor() = default;
+    MoveOnlyFunctor(const MoveOnlyFunctor&) = delete;
+    MoveOnlyFunctor(MoveOnlyFunctor&&) = default;
+    int operator()(int x) { return x + 100; }
+  };
+
+  //*********************************************
+  struct NothrowFunctor
+  {
+    int operator()() const noexcept { return 7; }
+  };
+
+  //*********************************************
+  struct ThrowingFunctor
+  {
+    int operator()() { throw 42; }
+  };
+
+  //*********************************************
+  struct MemberObj
+  {
+    int i;
+    const int ci;
+    MemberObj(int v) : i(v), ci(v + 1) {}
+    int get(int add) { return i + add; }
+  };
+
+  //*********************************************
+  template <typename T>
+  struct IntegralOnly
+  {
+    template <typename U, typename = typename etl::enable_if<etl::is_integral<U>::value>::type>
+    int operator()(U u) { return static_cast<int>(u) + 10; }
+
+    template <typename U, typename = typename etl::enable_if<!etl::is_integral<U>::value>::type, typename = void>
+    int operator()(U) = delete;
+  };
+
+  //*********************************************
+  // Non-capturing lambda (convertible to function pointer)
+  static auto lambda_nc = [](int a, int b) { return a + b; };
+
+  //*********************************************
+  // Capturing lambda
+  static int capture_value = 5;
+  static auto lambda_cap = [cv = capture_value](int a) { return a + cv; };
+
+#if ETL_USING_CPP14
+  //*********************************************
+  // Generic lambda (C++14+)
+  static auto lambda_generic = [](auto x, auto y) { return x + y; };
 #endif
+
+  //*********************************************
+  // Overload set (not directly a single callable type for traits)
+  int  overload(int)  { return 0; }
+  long overload(long) { return 0; }
+
+  int takes_ptr(const int* p) { return *p; }
+
+  //*********************************************
+  struct Selective
+  {
+    template <typename T, etl::enable_if_t<etl::is_same<int, T>::value, int> = 0>
+    int operator()(T) { return 1; }
+
+    template <typename T, etl::enable_if_t<etl::is_same<char, T>::value, int> = 0>
+    char operator()(T) { return 1; }
+
+    template <typename T, etl::enable_if_t<!etl::is_integral<T>::value, int> = 0>
+    int operator()(T) = delete;
   };
 }
 
-namespace
+//*************************************************************************
+// Unit tests for etl::is_invocable / etl::is_invocable_r
+//*************************************************************************
+SUITE(test_is_invocable)
 {
-  SUITE(test_is_invocable)
+  //*************************************************************************
+  TEST(use_free_functions)
   {
-    //*************************************************************************
-    // Free function pointer invocability
-    TEST(free_function_basic)
-    {
-      static auto temp = f0();
-      (void)temp;
+    // Ensure that clang does not discard them as unused.
+    CHECK_TRUE(free_add(1, 2) != 0);
+    CHECK_TRUE(free_short(1) != 0);
+    CHECK_TRUE(free_noexcept(1) != 0);
+    CHECK_THROW(free_throw(1), int);
+    CHECK_TRUE(lambda_nc(1, 2) != 0);
+    CHECK_TRUE(lambda_cap(1) != 0);
+    CHECK_TRUE(lambda_generic(1, 2) != 0);
+    CHECK_TRUE(varfn(1, 2, 3) != 0);
 
-      // Exact match
-      CHECK_TRUE((etl::is_invocable<decltype(f0)>::value));
-      CHECK_TRUE((etl::is_invocable_r<int,  decltype(f0)>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, decltype(f0)>::value));
+    int value = 10;
+    CHECK_EQUAL(10, takes_ptr(&value));
+  }
 
-      // Wrong arity
-      CHECK_FALSE((etl::is_invocable<decltype(f0), int>::value));
+  //*************************************************************************
+  TEST(test_free_function)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(free_add), int, int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(free_add), int>::value));                      // Arity mismatch   
+    CHECK_FALSE((etl::is_invocable<decltype(free_add), std::string, std::string>::value)); // Non-convertible argument
+  }
 
-      // Return type not convertible
-      CHECK_FALSE((etl::is_invocable_r<std::string, decltype(f0)>::value));
-    }
+  //*************************************************************************
+  TEST(test_free_function_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(free_add), int, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(free_add), int, int>::value)); // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(free_add), int>::value));              // Arity mismatch   
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(free_add), std::string, int>::value)); // Non-convertible argument
+  }
 
-    //*************************************************************************
-    TEST(free_function_with_args_and_conversions)
-    {
-      static auto temp = f1(1.2, nullptr);
-      (void)temp;
+  //*************************************************************************
+  TEST(test_free_function_pointer_variable)
+  {
+    int (*fp)(int, int) = &free_add;
 
-      // Exact match
-      CHECK_TRUE((etl::is_invocable<decltype(f1), double, const char*>::value));
-      CHECK_TRUE((etl::is_invocable_r<long,   decltype(f1), double, const char*>::value));
-      CHECK_TRUE((etl::is_invocable_r<void,   decltype(f1), double, const char*>::value));
-      CHECK_TRUE((etl::is_invocable_r<double, decltype(f1), double, const char*>::value)); // return convertible
+    CHECK_TRUE((etl::is_invocable<decltype(fp), int, int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(fp), int>::value));                     // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(fp), std::string>::value));             // Non-convertible argument
+  }
 
-      // Wrong arity
-      CHECK_FALSE((etl::is_invocable<decltype(f1), double>::value));
+  //*************************************************************************
+  TEST(test_free_function_pointer_variable_return)
+  {
+    int (*fp)(int, int) = &free_add;
 
-      // Wrong return type
-      CHECK_FALSE((etl::is_invocable_r<std::string, decltype(f1), double, const char*>::value));
-    }
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(fp), int, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(fp), int, int>::value));         // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(fp), int>::value));              // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(fp), std::string, int>::value)); // Non-convertible argument
+  }
 
-    //*************************************************************************
-    TEST(void_return_conversion)
-    {
-      fv(1);
+  //*************************************************************************
+  TEST(test_function_pointer_const_qualification)
+  {
+    int (*const cfn)(int, int) = &free_add;
 
-      using FPV = decltype(&fv);
-      CHECK_TRUE((etl::is_invocable<FPV, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, FPV, int>::value));
-      CHECK_FALSE((etl::is_invocable_r<int,  FPV, int>::value)); // void not convertible to int
-    }
+    CHECK_TRUE((etl::is_invocable<decltype(cfn), int, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(cfn), int, int>::value));
+  }
 
-    //*************************************************************************
-    TEST(noexcept_free_function_pointer)
-    {
-      static auto temp = fn_noexcept(1);
-      (void)temp;
+  //*************************************************************************
+  TEST(test_free_function_noexcept)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(free_noexcept), int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(free_noexcept), int, int>::value));                // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(free_noexcept), std::string>::value));             // Non-convertible argument
+  }
 
-      using FPFN = decltype(&fn_noexcept);
-      CHECK_TRUE((etl::is_invocable<FPFN, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<int,  FPFN, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, FPFN, int>::value));
-      CHECK_FALSE((etl::is_invocable<FPFN>::value)); // wrong arity
-    }
+  //*************************************************************************
+  TEST(test_free_function_noexcept_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(free_noexcept), int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(free_noexcept), int>::value));      // Return mismatch
+    CHECK_FALSE((etl::is_invocable<int, decltype(free_noexcept), int, int>::value));           // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(free_noexcept), std::string, int>::value)); // Non-convertible argument
+  }
 
-    //*************************************************************************
-    TEST(member_function_pointers_object_and_pointer)
-    {
-      using P   = int (Members::*)(int);
-      using PC  = int (Members::*)(int) const;
-      using PV  = int (Members::*)(int) volatile;
-      using PCV = int (Members::*)(int) const volatile;
+  //*************************************************************************
+  TEST(test_free_function_throw)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(free_throw), int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(free_throw), int, int>::value));                // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(free_throw), std::string>::value));             // Non-convertible argument
+  }
 
-      // Non-const member function: object and pointer
-      CHECK_TRUE((etl::is_invocable<P,  Members&,  int>::value));
-      CHECK_TRUE((etl::is_invocable<P,  Members*,  int>::value));
-      CHECK_TRUE((etl::is_invocable_r<int,  P, Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, P, Members&, int>::value));
+  //*************************************************************************
+  TEST(test_free_function_throw_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(free_throw), int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(free_throw), int>::value));      // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(free_throw), int, int>::value));         // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(free_throw), std::string, int>::value)); // Non-convertible argument
+  }
 
-      // Wrong arity / param type
-      CHECK_FALSE((etl::is_invocable<P, Members&>::value));
-      CHECK_FALSE((etl::is_invocable<P, Members&, const char*>::value));
+  //*************************************************************************
+  TEST(test_no_throw_invocable)
+  {
+    CHECK_TRUE((etl::is_nothrow_invocable<decltype(free_noexcept), int>::value));
+    CHECK_FALSE((etl::is_nothrow_invocable<decltype(free_noexcept), int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_nothrow_invocable<decltype(free_noexcept), std::string>::value)); // Non-convertible argument
+    CHECK_FALSE((etl::is_nothrow_invocable<decltype(free_throw), int>::value));
+    CHECK_FALSE((etl::is_nothrow_invocable<decltype(free_throw), int, int>::value));       // Arity mismatch
+    CHECK_FALSE((etl::is_nothrow_invocable<decltype(free_throw), std::string>::value));    // Non-convertible argument
+  }
 
-      // const member function: requires const object
-      CHECK_TRUE((etl::is_invocable<PC,  const Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable<PC,  const Members*, int>::value));
-      CHECK_FALSE((etl::is_invocable<PC,  Members&, const char*>::value));
+  //*************************************************************************
+  TEST(test_no_throw_invocable_return)
+  {
+    CHECK_TRUE((etl::is_nothrow_invocable_r<int, decltype(free_noexcept), int>::value));
+    CHECK_FALSE((etl::is_nothrow_invocable_r<std::string, decltype(free_noexcept), int>::value));      // Return mismatch
+    CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_noexcept), int, int>::value));         // Arity mismatch
+    CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_noexcept), std::string, int>::value)); // Non-convertible argument
+    CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_throw), int>::value));
+    CHECK_FALSE((etl::is_nothrow_invocable_r<std::string, decltype(free_throw), int>::value));         // Return mismatch
+    CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_throw), int, int>::value));            // Arity mismatch
+    CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_throw), std::string, int>::value));    // Non-convertible argument
+  }
 
-      // volatile member function: requires volatile object
-      CHECK_TRUE((etl::is_invocable<PV,  volatile Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable<PV,  volatile Members*, int>::value));
+  //*************************************************************************
+  TEST(test_static_member_function)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::static_function), int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::static_function), int, int>::value));           // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::static_function), std::string>::value));        // Non-convertible argument
+  }
 
-      // const volatile member function
-      CHECK_TRUE((etl::is_invocable<PCV, const volatile Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable<PCV, const volatile Members*, int>::value));
-    }
+  //*************************************************************************
+  TEST(test_static_member_function_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(&Base::static_function), int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(&Base::static_function), int>::value)); // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(&Base::static_function), int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int, decltype(&Base::static_function), std::string>::value)); // Non-convertible argument
+  }
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
-    //*************************************************************************
-    TEST(member_function_pointers_noexcept)
-    {
-      using PN   = int (Members::*)(int) noexcept;
-      using PCN  = int (Members::*)(int) const noexcept;
-      using PVN  = int (Members::*)(int) volatile noexcept;
-      using PCVN = int (Members::*)(int) const volatile noexcept;
+  //*************************************************************************
+  TEST(test_member_function)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::add),  Base&,    int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), Base&,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), NotBase&, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), NotBase&, std::string>::value)); // Non-convertible argument
+    
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::add),  Base*,    int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), Base*,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), NotBase*, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), NotBase*, std::string>::value)); // Non-convertible argument
 
-      CHECK_TRUE((etl::is_invocable<PN,   Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable<PCN,  const Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable<PVN,  volatile Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable<PCVN, const volatile Members&, int>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::add_const),  const Base&,    int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add_const), const Base&,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add_const), const NotBase&, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add_const), const Base&,    std::string>::value)); // Non-convertible argument
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add),       const Base&,    int>::value));         // Not const function
 
-      CHECK_TRUE((etl::is_invocable_r<int,  PN,  Members&, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, PN,  Members&, int>::value));
 
-      // Negative
-      CHECK_FALSE((etl::is_invocable<PN, Members&>::value));
-      CHECK_FALSE((etl::is_invocable<PCN, Members&, const char*>::value));
-    }
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::add_const),  const Base*,    int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add_const), const Base*,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add_const), const NotBase*, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add_const), const Base*,    std::string>::value)); // Non-convertible argument
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add),       const Base*,    int>::value));         // Not const function
+  }
+
+  //*************************************************************************
+  TEST(test_member_function_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(&Base::add), Base&,    int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(&Base::add), Base&,    int>::value));         // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add), Base&,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add), NotBase&, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add), NotBase&, std::string>::value)); // Non-convertible argument
+
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(&Base::add), Base*,    int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(&Base::add), Base*,    int>::value));         // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add), Base*,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add), NotBase*, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add), NotBase*, std::string>::value)); // Non-convertible argument
+
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(&Base::add_const), const Base&,    int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(&Base::add_const), const Base&,    int>::value));         // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add_const), const Base&,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add_const), const NotBase&, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add_const), const Base&,    std::string>::value)); // Non-convertible argument
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add),       const Base&,    int>::value));         // Not const function
+
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(&Base::add_const), const Base*,    int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(&Base::add_const), const Base*,    int>::value));         // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add_const), const Base*,    int, int>::value));    // Arity mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add_const), const NotBase*, int>::value));         // Wrong object type
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add_const), const Base*,    std::string>::value)); // Non-convertible argument
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(&Base::add),       const Base*,    int>::value));         // Not const function
+  }
+
+  //*************************************************************************
+  TEST(test_member_function_noexcept)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::noexcept_member), Base&, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(&Base::noexcept_member), Base&, int>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_member_functions_ref_qualification)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::ref_only), Base&, int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::ref_only), Base&&, int>::value)); // rvalue object disallowed
+
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::rref_only), Base&&, int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::rref_only), Base&, int>::value)); // lvalue object disallowed
+  }
+
+  //************************************************************************* 
+  TEST(test_inheritance_member_function)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::add), Derived&, int>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(&Base::add), Derived*, int>::value));
+
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), NotDerived&, int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&Base::add), NotDerived*, int>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_member_function_volatile)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(&VolatileBase::read), const volatile VolatileBase&>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(&VolatileBase::read), Base&>::value));
+
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(&VolatileBase::read), volatile VolatileBase&>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_member_object_pointer)
+  {
+    int MemberObj::* p_int = &MemberObj::i;
+
+    CHECK_TRUE((etl::is_invocable<decltype(p_int), MemberObj&>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(p_int), MemberObj*>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(p_int)>::value));      // Needs object
+    CHECK_FALSE((etl::is_invocable<decltype(p_int), int>::value)); // Wrong object type
+
+    // Non-const object: result is int&, should satisfy int&
+    CHECK_TRUE((etl::is_invocable_r<int&, decltype(p_int), MemberObj&>::value));
+
+    // Const object: result is const int&, cannot bind to int&
+    CHECK_FALSE((etl::is_invocable_r<int&, decltype(p_int), const MemberObj&>::value));
+
+    // Const object can bind to const int&
+    CHECK_TRUE((etl::is_invocable_r<const int&, decltype(p_int), const MemberObj&>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_functor_non_const)
+  {
+    CHECK_TRUE((etl::is_invocable<Functor, int>::value));
+    CHECK_FALSE((etl::is_invocable<Functor, int, int>::value));           // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_functor_non_const_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<void,         Functor, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int,          Functor, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, Functor, int>::value));           // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         Functor, int, int>::value));      // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_functor_const)
+  {
+    CHECK_TRUE((etl::is_invocable<ConstFunctor,  int>::value));
+    CHECK_FALSE((etl::is_invocable<ConstFunctor, int, int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_functor_const_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<void,         ConstFunctor, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int,          ConstFunctor, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, ConstFunctor, int>::value));      // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         ConstFunctor, int, int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_move_only_functor)
+  {
+    CHECK_TRUE((etl::is_invocable<MoveOnlyFunctor,  int>::value));
+    CHECK_FALSE((etl::is_invocable<MoveOnlyFunctor, int, int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_move_only_functor_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<void,         MoveOnlyFunctor, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int,          MoveOnlyFunctor, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, MoveOnlyFunctor, int>::value));      // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         MoveOnlyFunctor, int, int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_overloaded_functor_ref_qualifier)
+  {
+    // lvalue should pick operator()&
+    CHECK_TRUE((etl::is_invocable<OverloadedFunctor&, int>::value));
+    CHECK_FALSE((etl::is_invocable<OverloadedFunctor&, int, int>::value));
+
+    // rvalue temporary should pick operator()&&
+    CHECK_TRUE((etl::is_invocable<OverloadedFunctor&&, int>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_nothrow_and_throwing_functors)
+  {
+    CHECK_TRUE((etl::is_invocable<NothrowFunctor>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, NothrowFunctor>::value));
+
+    CHECK_TRUE((etl::is_invocable<ThrowingFunctor>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, ThrowingFunctor>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_lambda_non_capturing)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(lambda_nc), int, int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(lambda_nc), int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_lambda_non_capturing_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<void, decltype(lambda_nc), int, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(lambda_nc), int, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(lambda_nc), int>::value)); // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(lambda_nc), int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_lambda_capturing)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(lambda_cap), int>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(lambda_cap), int, int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_lambda_capturing_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<void,         decltype(lambda_cap), int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(lambda_cap), int>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(lambda_cap), int>::value));      // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(lambda_cap), int, int>::value)); // Arity mismatch
+  }
+
+#if ETL_USING_CPP14
+  //*************************************************************************
+  TEST(test_lambda_generic)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(lambda_generic), int, int>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(lambda_generic), long, short>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(lambda_generic), int>::value)); // Arity mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_lambda_generic_return)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int,          decltype(lambda_generic), int, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<long,         decltype(lambda_generic), long, short>::value));
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(lambda_generic), int, int>::value)); // Return mismatch
+    CHECK_FALSE((etl::is_invocable_r<int,         decltype(lambda_generic), int>::value));      // Arity mismatch
+  }
 #endif
 
-    //*************************************************************************
-    TEST(functor_overloads_and_template)
+  //*************************************************************************
+  TEST(test_template_functor_integral_only)
+  {
+    CHECK_TRUE((etl::is_invocable<IntegralOnly<int>, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, IntegralOnly<int>, int>::value));
+    CHECK_FALSE((etl::is_invocable<IntegralOnly<int>, double>::value));
+    CHECK_FALSE((etl::is_invocable<IntegralOnly<int>, float>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_return_type_conversion)
+  {
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(free_short), int>::value));          // short -> int
+    CHECK_TRUE((etl::is_invocable_r<short, decltype(free_short), int>::value));        // exact
+    CHECK_TRUE((etl::is_invocable_r<void, decltype(free_short), int>::value));         // short -> void
+    CHECK_FALSE((etl::is_invocable_r<std::string, decltype(free_short), int>::value)); // mismatch
+  }
+
+  //*************************************************************************
+  TEST(test_additional_user_defined_conversion)
+  {
+    struct Converter { operator int() const { return 11; } };
+
+    CHECK_TRUE((etl::is_invocable<decltype(free_add), Converter, int>::value)); // Converter -> int
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(free_add), Converter, int>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_overload_set)
+  {
+    // Selecting explicit overload
+    int (*ov_i)(int)   = &overload;
+    long (*ov_l)(long) = &overload;
+
+    CHECK_TRUE((etl::is_invocable<decltype(ov_i), int>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(ov_l), long>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_overload_set_return)
+  {
+    int (*ov_i)(int)   = &overload;
+    long (*ov_l)(long) = &overload;
+
+    CHECK_TRUE((etl::is_invocable_r<int,  decltype(ov_i), int>::value));
+    CHECK_TRUE((etl::is_invocable_r<long, decltype(ov_l), long>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_deleted_overload)
+  {
+    struct DeletedOverload
     {
-      using F = Overloaded;
+      int operator()(double) { return 0; }
+      int operator()(int) = delete;
+    };
 
-      // Overloaded operator()(int)
-      CHECK_TRUE((etl::is_invocable<F, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<int,  F, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, F, int>::value));
-      CHECK_FALSE((etl::is_invocable<F>::value)); // wrong arity
+    CHECK_TRUE((etl::is_invocable<DeletedOverload,  double>::value));
+    CHECK_FALSE((etl::is_invocable<DeletedOverload, int>::value)); // deleted
+  }
 
-      // Overloaded operator()(int,int)
-      CHECK_TRUE((etl::is_invocable<F, int, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<long, F, int, int>::value));
+  //*************************************************************************
+  TEST(test_variadic_free_function)
+  {
+    CHECK_TRUE((etl::is_invocable<decltype(varfn), int>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(varfn), int, double, const char*>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(varfn)>::value)); // Needs at least one argument
+  }
 
-      // Templated operator()(T)
-      CHECK_TRUE((etl::is_invocable<F, double>::value));
-      CHECK_TRUE((etl::is_invocable_r<double, F, double>::value));
+  //*************************************************************************
+  TEST(test_array_decay_argument)
+  {  
+    CHECK_TRUE((etl::is_invocable<decltype(takes_ptr), int*>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(takes_ptr), int[1]>::value)); // array decays
+    CHECK_FALSE((etl::is_invocable<decltype(takes_ptr), long*>::value));
+    CHECK_FALSE((etl::is_invocable<decltype(takes_ptr)>::value));
+  }
 
-      // Negative: wrong param type (no const char* -> int for operator()(int))
-      CHECK_FALSE((etl::is_invocable_r<int, F, const char*>::value));
-    }
+  //*************************************************************************
+  TEST(test_template_functor_multiple_enable_if)
+  {
+    CHECK_TRUE((etl::is_invocable<Selective, int>::value));
+    CHECK_TRUE((etl::is_invocable<Selective, char>::value));
+    CHECK_FALSE((etl::is_invocable<Selective, double>::value));
+  }
 
-    //*************************************************************************
-    TEST(lambda_invocability)
+  //*************************************************************************
+  TEST(test_rvalue_ref_member_on_temporary)
+  {
+    struct RR
     {
-      auto lambda = [](double x) -> int { return static_cast<int>(x) + 1; };
-      static auto temp = lambda(1.2);
-      (void)temp;
+      int f() && { return 1; }
+      int g() &  { return 2; }
+    };
 
-      using L = decltype(lambda);
+    CHECK_TRUE((etl::is_invocable<decltype(&RR::f), RR&&>::value));    // rvalue-qualified on temporary
+    CHECK_FALSE((etl::is_invocable<decltype(&RR::f), RR&>::value));    // cannot call on lvalue
+    CHECK_TRUE((etl::is_invocable<decltype(&RR::g), RR&>::value));     // lvalue-qualified
+    CHECK_FALSE((etl::is_invocable<decltype(&RR::g), RR&&>::value));   // cannot call on rvalue
+  }
 
-      CHECK_TRUE((etl::is_invocable<L, double>::value));
-      CHECK_TRUE((etl::is_invocable_r<int,  L, double>::value));
-      CHECK_TRUE((etl::is_invocable_r<void, L, double>::value));
+  //*************************************************************************
+  TEST(test_void_return_exactness)
+  {
+    struct VoidFn 
+    { 
+      void operator()(int) {} 
+    };
 
-      // Parameter conversion int -> double
-      CHECK_TRUE((etl::is_invocable<L, int>::value));
-      CHECK_TRUE((etl::is_invocable_r<int, L, int>::value));
+    CHECK_TRUE((etl::is_invocable<VoidFn, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<void, VoidFn, int>::value));
+    CHECK_FALSE((etl::is_invocable_r<int, VoidFn, int>::value)); // void not convertible to int
+  }
 
-      // Wrong arity
-      CHECK_FALSE((etl::is_invocable<L>::value));
-    }
-  };
+  //*************************************************************************
+  TEST(test_conversion_chain_failure)
+  {
+    enum class E : unsigned 
+    { 
+      A = 0 
+    };
+    
+    struct NeedsE 
+    { 
+      int operator()(E) 
+      { 
+        return 0; 
+      } 
+    };
+
+    // int not implicitly convertible to scoped enum
+    CHECK_FALSE((etl::is_invocable<NeedsE, int>::value));
+    
+    // Underlying type convertible when cast explicit; still trait should be false without cast
+    CHECK_FALSE((etl::is_invocable_r<int, NeedsE, int>::value));
+  }
+
+  //*************************************************************************
+  TEST(test_invoke_with_null_member_pointer_type_only)
+  {
+    int (Base::*pmf)(int) = nullptr;
+
+    // Trait should report invocable even though runtime call would be UB
+    CHECK_TRUE((etl::is_invocable<decltype(pmf), Base*, int>::value));
+  }
 }
