@@ -183,6 +183,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_is_reference_wrapper)
+    {
+      int a = 0;
+      etl::reference_wrapper<int> ra(a);
+
+      CHECK_TRUE(etl::is_reference_wrapper<etl::reference_wrapper<int>>::value);
+      CHECK_FALSE(etl::is_reference_wrapper<int>::value);
+
+#if ETL_USING_CPP17
+      CHECK_TRUE(etl::is_reference_wrapper_v<etl::reference_wrapper<int>>);
+      CHECK_FALSE(etl::is_reference_wrapper_v<int>);
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_ref)
     {
       int a = 0;
