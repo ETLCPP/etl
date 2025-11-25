@@ -3752,6 +3752,9 @@
     <ClCompile Include="..\test_signal.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_invoke.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
