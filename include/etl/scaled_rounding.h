@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_SCALED_ROUNDING_INCLUDED
 #define ETL_SCALED_ROUNDING_INCLUDED
 
+#include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "absolute.h"

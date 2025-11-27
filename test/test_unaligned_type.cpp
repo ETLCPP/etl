@@ -1008,6 +1008,9 @@ namespace
 
       CHECK_EQUAL(0x1234, test_le.value());
       CHECK_EQUAL(0x1234, test_be.value());
+
+      CHECK_EQUAL(0x1234, test_le);
+      CHECK_EQUAL(0x1234, test_be);
     }
 
     //*************************************************************************

@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_LCM_INCLUDED
 #define ETL_LCM_INCLUDED
 
+#include "platform.h"
 #include "type_traits.h"
 #include "absolute.h"
 #include "static_assert.h"

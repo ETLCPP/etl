@@ -28,9 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_GDC_INCLUDED
-#define ETL_GDC_INCLUDED
+#ifndef ETL_GCD_INCLUDED
+#define ETL_GCD_INCLUDED
 
+#include "platform.h"
 #include "type_traits.h"
 #include "absolute.h"
 #include "static_assert.h"
