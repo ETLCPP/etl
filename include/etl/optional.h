@@ -471,7 +471,7 @@ namespace etl
       etl::enable_if_t<etl::is_convertible<U, T>::value, T>
         value_or(U&& default_value) const&
       {
-        return has_value() ? value() : etl::forward<T>(default_value);
+        return has_value() ? value() : static_cast<T>(etl::forward<U>(default_value));
       }
 
       //***************************************************************************
@@ -482,7 +482,7 @@ namespace etl
       etl::enable_if_t<etl::is_convertible<U, T>::value, T>
         value_or(U&& default_value)&&
       {
-        return has_value() ? etl::move(value()) : etl::forward<T>(default_value);
+        return has_value() ? etl::move(value()) : static_cast<T>(etl::forward<U>(default_value));
       }
 #endif
 
@@ -1085,7 +1085,7 @@ namespace etl
       etl::enable_if_t<etl::is_convertible<U, T>::value, T>
         value_or(U&& default_value) const&
       {
-        return has_value() ? value() : etl::forward<T>(default_value);
+        return has_value() ? value() : static_cast<T>(etl::forward<U>(default_value));
       }
 
       //***************************************************************************
@@ -1096,7 +1096,7 @@ namespace etl
       etl::enable_if_t<etl::is_convertible<U, T>::value, T>
         value_or(U&& default_value)&&
       {
-        return has_value() ? etl::move(value()) : etl::forward<T>(default_value);
+        return has_value() ? etl::move(value()) : static_cast<T>(etl::forward<U>(default_value));
       }
 #endif
 

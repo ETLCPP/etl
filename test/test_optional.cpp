@@ -299,6 +299,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_value_or_const)
+    {
+      using FundamentalType = int;
+      using NonFundamentalType = std::string;
+
+      const FundamentalType constFT{ 5 };
+      int resultFT = etl::optional<FundamentalType>{}.value_or(constFT);
+      CHECK_EQUAL(5, resultFT);
+
+      const NonFundamentalType constNFT{ "Default" };
+      NonFundamentalType resultNFT = etl::optional<NonFundamentalType>{}.value_or(constNFT);
+      CHECK_EQUAL("Default", resultNFT);
+    }
+
+    //*************************************************************************
     struct github_bug_720_bug_helper
     {
       int value{ 5 };
