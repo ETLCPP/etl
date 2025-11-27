@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_CUMULATIVE_MOVING_AVERAGE_INCLUDED
 #define ETL_CUMULATIVE_MOVING_AVERAGE_INCLUDED
 
+#include "platform.h"
 #include "type_traits.h"
 #include "iterator.h"
 

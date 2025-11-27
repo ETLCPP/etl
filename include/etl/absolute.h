@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_ABSOLUTE_INCLUDED
 #define ETL_ABSOLUTE_INCLUDED
 
+#include "platform.h"
 #include "type_traits.h"
 #include "integral_limits.h"
 

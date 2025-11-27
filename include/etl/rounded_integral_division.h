@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_ROUNDED_INTEGRAL_DIVISION_INCLUDED
 #define ETL_ROUNDED_INTEGRAL_DIVISION_INCLUDED
 
+#include "platform.h"
 #include "type_traits.h"
 #include "absolute.h"
 #include "utility.h"
