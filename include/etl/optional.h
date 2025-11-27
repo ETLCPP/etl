@@ -39,6 +39,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "initializer_list.h"
 
 namespace etl
 {
