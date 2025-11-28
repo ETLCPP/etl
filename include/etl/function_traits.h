@@ -39,6 +39,13 @@ SOFTWARE.
 
 namespace etl
 {
+  namespace private_function_traits
+  {
+    // Checks to see if the template parameter pack is a single void.
+    template <typename...> struct is_single_void : etl::false_type {};
+    template <> struct is_single_void<void> : etl::true_type {};
+  }
+
   //***************************************************************************
   // Primary template (unspecialized)
   //***************************************************************************
@@ -57,14 +64,6 @@ namespace etl
     // Checks if the function is invocable with the specified argument types.
     template <bool Correct_Arity, typename... UArgs>
     struct is_invocable_with_impl;
-
-    //*******************************************
-    // Specialization for void (no arguments).
-    template <>
-    struct is_invocable_with_impl<false, void>
-      : etl::bool_constant<sizeof...(TArgs) == 0>
-    {
-    };
 
     //*******************************************
     // Specialization for wrong number of arguments.
@@ -99,13 +98,17 @@ namespace etl
     
 #if ETL_USING_CPP14
     template <typename... UArgs>
-    static constexpr bool is_invocable_with = is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>::value;
+    static constexpr bool is_invocable_with = private_function_traits::is_single_void<UArgs...>::value
+                                              ? (arity == 0)
+                                              : is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>::value;
 #else
     //*******************************************
     /// Checks if the function is invocable with the specified argument types.
     template <typename... UArgs>
     struct is_invocable_with 
-      : is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>
+      : etl::bool_constant<private_function_traits::is_single_void<UArgs...>::value
+                           ? (arity == 0)
+                           : is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>::value>
     {
     };
 #endif
