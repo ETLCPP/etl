@@ -42,7 +42,11 @@ SOFTWARE.
 namespace etl 
 {
   //****************************************************************************
-  // Pointer to member function + reference_wrapper
+  // invoke implementation
+  //****************************************************************************
+
+  //****************************************************************************
+  /// Pointer to member function + reference_wrapper
   template <typename TFunction, 
             typename TRefWrapper, 
             typename... TArgs,
@@ -55,7 +59,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // Pointer to member function + pointer to object
+  /// Pointer to member function + pointer to object
   template <typename TFunction, 
             typename TPtr, 
             typename... TArgs,
@@ -68,7 +72,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // Pointer to member function + object (or derived) reference
+  /// Pointer to member function + object (or derived) reference
   template <typename TFunction, 
             typename TObject,
             typename... TArgs,
@@ -82,7 +86,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // Pointer to member object + reference_wrapper
+  /// Pointer to member object + reference_wrapper
   template <typename TFunction, 
             typename TRefWrapper,
             typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
@@ -94,7 +98,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // Pointer to member object + pointer to object
+  /// Pointer to member object + pointer to object
   template <typename TFunction, typename TPtr,
             typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
                                         etl::is_pointer<etl::decay_t<TPtr>>::value>>
@@ -105,7 +109,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // Pointer to member object + object (or derived) reference
+  /// Pointer to member object + object (or derived) reference
   template <typename TFunction, 
             typename TObject,
             typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
@@ -118,7 +122,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // General callable (function object / lambda / function pointer)
+  /// General callable (function object / lambda / function pointer)
   template <typename TFunction, 
             typename... TArgs,
             typename = etl::enable_if_t<!etl::is_member_pointer<etl::decay_t<TFunction>>::value>>
@@ -128,6 +132,9 @@ namespace etl
     return etl::forward<TFunction>(f)(etl::forward<TArgs>(args)...);
   }
 
+  //****************************************************************************
+  // is_invocable implementation
+  //****************************************************************************
   namespace private_invoke
   {
     //*******************************************
@@ -173,7 +180,7 @@ namespace etl
   }
 
   //****************************************************************************
-  // invoke_result<TFunction, TArgs...>
+  /// invoke_result<TFunction, TArgs...>
   template <typename TFunction, typename... TArgs>
   struct invoke_result
   {
@@ -192,7 +199,7 @@ namespace etl
   using invoke_result_t = typename invoke_result<TFunction, TArgs...>::type;
 
   //****************************************************************************
-  // is_invocable<TFunction, TArgs...>
+  /// is_invocable<TFunction, TArgs...>
   template <typename TFunction, typename... TArgs>
   struct is_invocable
     : etl::bool_constant<private_invoke::is_invocable_expr<private_invoke::effective_callable_t<TFunction>, TArgs...>::value>
@@ -209,25 +216,25 @@ namespace etl
                                             etl::false_type>>
   {};
 
+#if ETL_USING_CPP17
   //****************************************************************************
-  // is_nothrow_invocable<TFunction, TArgs...>
+  /// is_nothrow_invocable<TFunction, TArgs...>
   template <typename TFunction, typename... TArgs>
   struct is_nothrow_invocable
-    : etl::bool_constant<is_invocable<TFunction, TArgs...>::value &&
+    : etl::bool_constant<etl::is_invocable<TFunction, TArgs...>::value &&
                          etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept>
-  {
-  };
+  {};
 
   //****************************************************************************
-  // is_nothrow_invocable_r<TReturn, TFunction, TArgs...>
+  /// is_nothrow_invocable_r<TReturn, TFunction, TArgs...>
   template <typename TReturn, typename TFunction, typename... TArgs>
   struct is_nothrow_invocable_r 
-    : etl::bool_constant<is_invocable_r<TReturn, TFunction, TArgs...>::value &&
+    : etl::bool_constant<etl::is_invocable_r<TReturn, TFunction, TArgs...>::value &&
                          etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept &&
                          (etl::is_same<TReturn, void>::value ||
                           etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
-  {
-  };
+  {};
+#endif
 
 #if ETL_USING_CPP17
   template <typename TFunction, typename... TArgs>
