@@ -21,7 +21,7 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+FITNESS FOR TArgs PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -51,6 +51,39 @@ namespace etl
   template <typename TReturn, typename... TArgs>
   struct function_traits<TReturn(TArgs...), void>
   {
+  private:
+
+    //*******************************************
+    // Checks if the function is invocable with the specified argument types.
+    template <bool Correct_Arity, typename... UArgs>
+    struct is_invocable_with_impl;
+
+    //*******************************************
+    // Specialization for void (no arguments).
+    template <>
+    struct is_invocable_with_impl<false, void>
+      : etl::bool_constant<sizeof...(TArgs) == 0>
+    {
+    };
+
+    //*******************************************
+    // Specialization for wrong number of arguments.
+    template <typename... UArgs>
+    struct is_invocable_with_impl<false, UArgs...>
+      : etl::false_type 
+    {
+    };
+
+    //*******************************************
+    // Specialization for correct number of arguments.
+    template <typename... UArgs>
+    struct is_invocable_with_impl<true, UArgs...>
+      : etl::conjunction<etl::is_convertible<UArgs, TArgs>...>
+    {
+    };
+
+  public:
+
     using function_type  = TReturn(TArgs...);
     using return_type    = TReturn;
     using object_type    = void;
@@ -58,10 +91,24 @@ namespace etl
 
     static constexpr bool   is_function        = true;
     static constexpr bool   is_member_function = false;
+    static constexpr bool   is_functor         = false;
     static constexpr bool   is_const           = false;
     static constexpr bool   is_volatile        = false;
     static constexpr bool   is_noexcept        = false;
     static constexpr size_t arity              = sizeof...(TArgs);
+    
+#if ETL_USING_CPP14
+    template <typename... UArgs>
+    static constexpr bool is_invocable_with = is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>::value;
+#else
+    //*******************************************
+    /// Checks if the function is invocable with the specified argument types.
+    template <typename... UArgs>
+    struct is_invocable_with 
+      : is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>
+    {
+    };
+#endif
   };
 
   //***************************************************************************
@@ -198,10 +245,11 @@ namespace etl
   /// Functors / lambdas specialisation
   //***************************************************************************
   template <typename T>
-  struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value && 
-                                             etl::has_unique_call_operator<T>::value>>
+  struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value&&
+    etl::has_unique_call_operator<T>::value>>
     : function_traits<private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
   {
+    static constexpr bool is_functor = true;
   };
 
   //***************************************************************************
