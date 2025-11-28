@@ -152,6 +152,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -192,6 +204,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_FALSE((traits::is_invocable_with<void>));
+      CHECK_TRUE((traits::is_invocable_with<int, int>));
+      CHECK_TRUE((traits::is_invocable_with<char, short>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_FALSE((traits::is_invocable_with<void>::value));
+      CHECK_TRUE((traits::is_invocable_with<int, int>::value));
+      CHECK_TRUE((traits::is_invocable_with<char, short>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -211,6 +235,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -230,6 +266,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -253,6 +301,18 @@ namespace
       CHECK_FALSE(traits::is_noexcept);
 #endif
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -276,6 +336,18 @@ namespace
       CHECK_FALSE(traits::is_noexcept);
 #endif
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#endif
     }
 
     //*************************************************************************
@@ -295,6 +367,18 @@ namespace
       CHECK_TRUE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -314,6 +398,18 @@ namespace
       CHECK_TRUE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -337,6 +433,18 @@ namespace
       CHECK_FALSE(traits::is_noexcept);
 #endif
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -360,6 +468,18 @@ namespace
       CHECK_FALSE(traits::is_noexcept);
 #endif
       CHECK_EQUAL(0, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_TRUE((traits::is_invocable_with<>));
+      CHECK_TRUE((traits::is_invocable_with<void>));
+      CHECK_FALSE((traits::is_invocable_with<int>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_TRUE((traits::is_invocable_with<>::value));
+      CHECK_TRUE((traits::is_invocable_with<void>::value));
+      CHECK_FALSE((traits::is_invocable_with<int>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -379,6 +499,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_FALSE((traits::is_invocable_with<void>));
+      CHECK_TRUE((traits::is_invocable_with<int, int>));
+      CHECK_TRUE((traits::is_invocable_with<char, short>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_FALSE((traits::is_invocable_with<void>::value));
+      CHECK_TRUE((traits::is_invocable_with<int, int>::value));
+      CHECK_TRUE((traits::is_invocable_with<char, short>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -398,6 +530,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_FALSE((traits::is_invocable_with<void>));
+      CHECK_TRUE((traits::is_invocable_with<int, int>));
+      CHECK_TRUE((traits::is_invocable_with<char, short>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_FALSE((traits::is_invocable_with<void>::value));
+      CHECK_TRUE((traits::is_invocable_with<int, int>::value));
+      CHECK_TRUE((traits::is_invocable_with<char, short>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -417,6 +561,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(1, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_FALSE((traits::is_invocable_with<void>));
+      CHECK_TRUE((traits::is_invocable_with<int>));
+      CHECK_TRUE((traits::is_invocable_with<char>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_FALSE((traits::is_invocable_with<void>::value));
+      CHECK_TRUE((traits::is_invocable_with<int>::value));
+      CHECK_TRUE((traits::is_invocable_with<char>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -438,6 +594,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_FALSE((traits::is_invocable_with<void>));
+      CHECK_TRUE((traits::is_invocable_with<int, const std::string&>));
+      CHECK_TRUE((traits::is_invocable_with<char, const std::string&>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_FALSE((traits::is_invocable_with<void>::value));
+      CHECK_TRUE((traits::is_invocable_with<int, const std::string&>::value));
+      CHECK_TRUE((traits::is_invocable_with<char, const std::string&>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
@@ -465,6 +633,18 @@ namespace
       CHECK_FALSE(traits::is_volatile);
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::arity);
+
+#if ETL_USING_CPP14 
+      CHECK_FALSE((traits::is_invocable_with<void>));
+      CHECK_TRUE((traits::is_invocable_with<int, const std::string&>));
+      CHECK_TRUE((traits::is_invocable_with<char, const std::string&>));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>));
+#else
+      CHECK_FALSE((traits::is_invocable_with<void>::value));
+      CHECK_TRUE((traits::is_invocable_with<int, const std::string&>::value));
+      CHECK_TRUE((traits::is_invocable_with<char, const std::string&>::value));
+      CHECK_FALSE((traits::is_invocable_with<char, int, long>::value));
+#endif
     }
 
     //*************************************************************************
