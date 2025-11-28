@@ -140,9 +140,6 @@ namespace
   struct MemberObj
   {
     int i;
-    const int ci;
-    MemberObj(int v) : i(v), ci(v + 1) {}
-    int get(int add) { return i + add; }
   };
 
   //*********************************************
@@ -159,11 +156,6 @@ namespace
   //*********************************************
   // Non-capturing lambda (convertible to function pointer)
   static auto lambda_nc = [](int a, int b) { return a + b; };
-
-  //*********************************************
-  // Capturing lambda
-  static int capture_value = 5;
-  static auto lambda_cap = [cv = capture_value](int a) { return a + cv; };
 
 #if ETL_USING_CPP14
   //*********************************************
@@ -206,8 +198,9 @@ SUITE(test_is_invocable)
     CHECK_TRUE(free_noexcept(1) != 0);
     CHECK_THROW(free_throw(1), int);
     CHECK_TRUE(lambda_nc(1, 2) != 0);
-    CHECK_TRUE(lambda_cap(1) != 0);
+#if ETL_USING_CPP14
     CHECK_TRUE(lambda_generic(1, 2) != 0);
+#endif
     CHECK_TRUE(varfn(1, 2, 3) != 0);
 
     int value = 10;
@@ -255,10 +248,10 @@ SUITE(test_is_invocable)
   //*************************************************************************
   TEST(test_function_pointer_const_qualification)
   {
-    int (*const cfn)(int, int) = &free_add;
+    int (*const cfp)(int, int) = &free_add;
 
-    CHECK_TRUE((etl::is_invocable<decltype(cfn), int, int>::value));
-    CHECK_TRUE((etl::is_invocable_r<int, decltype(cfn), int, int>::value));
+    CHECK_TRUE((etl::is_invocable<decltype(cfp), int, int>::value));
+    CHECK_TRUE((etl::is_invocable_r<int, decltype(cfp), int, int>::value));
   }
 
   //*************************************************************************
@@ -295,6 +288,7 @@ SUITE(test_is_invocable)
     CHECK_FALSE((etl::is_invocable_r<int, decltype(free_throw), std::string, int>::value)); // Non-convertible argument
   }
 
+#if ETL_USING_CPP17
   //*************************************************************************
   TEST(test_no_throw_invocable)
   {
@@ -318,6 +312,7 @@ SUITE(test_is_invocable)
     CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_throw), int, int>::value));            // Arity mismatch
     CHECK_FALSE((etl::is_nothrow_invocable_r<int, decltype(free_throw), std::string, int>::value));    // Non-convertible argument
   }
+#endif
 
   //*************************************************************************
   TEST(test_static_member_function)
@@ -537,6 +532,9 @@ SUITE(test_is_invocable)
   //*************************************************************************
   TEST(test_lambda_capturing)
   {
+    int capture_value = 5;
+    auto lambda_cap = [capture_value](int a) { return a + capture_value; };
+
     CHECK_TRUE((etl::is_invocable<decltype(lambda_cap), int>::value));
     CHECK_FALSE((etl::is_invocable<decltype(lambda_cap), int, int>::value)); // Arity mismatch
   }
@@ -544,6 +542,9 @@ SUITE(test_is_invocable)
   //*************************************************************************
   TEST(test_lambda_capturing_return)
   {
+    int capture_value = 5;
+    auto lambda_cap = [capture_value](int a) { return a + capture_value; };
+
     CHECK_TRUE((etl::is_invocable_r<void,         decltype(lambda_cap), int>::value));
     CHECK_TRUE((etl::is_invocable_r<int,          decltype(lambda_cap), int>::value));
     CHECK_FALSE((etl::is_invocable_r<std::string, decltype(lambda_cap), int>::value));      // Return mismatch
