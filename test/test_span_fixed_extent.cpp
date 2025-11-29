@@ -1223,7 +1223,7 @@ namespace
       uint8_t data[] = { 0x01, 0x02, 0x03, 0x04, 0x05 };
       etl::span<uint8_t, 5> data0 = data;
 
-      etl::span<etl::be_uint16_t> data1 = data0.reinterpret_as<etl::be_uint16_t>();
+      auto data1 = data0.reinterpret_as<etl::be_uint16_t>();
 
       CHECK_EQUAL(data1.size(), 2);
       CHECK(data1[0] == 0x102);
@@ -1237,13 +1237,13 @@ namespace
       etl::span<uint32_t, 3> data0 = data;
       CHECK_EQUAL(data0.size(), 3);
 
-      etl::span<uint8_t> data1 = data0.reinterpret_as<uint8_t>();
+      auto data1 = data0.reinterpret_as<uint8_t>();
       CHECK_EQUAL(data1.size(), 12);
 
-      etl::span<uint16_t> data2 = data1.subspan(2).reinterpret_as<uint16_t>();
+      auto data2 = data1.subspan<2>().reinterpret_as<uint16_t>();
       CHECK_EQUAL(data2.size(), 5);
 
-      CHECK_THROW(data2 = data1.subspan(1).reinterpret_as<uint16_t>(), etl::span_alignment_exception);
+      CHECK_THROW(data2 = data1.subspan<1>().reinterpret_as<uint16_t>(), etl::span_alignment_exception);
     }
 
     //*************************************************************************
