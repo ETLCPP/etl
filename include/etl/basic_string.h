@@ -2776,6 +2776,8 @@ namespace etl
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
+#else
+      (void)truncated;
 #endif
 
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
@@ -2783,6 +2785,8 @@ namespace etl
       {
         set_secure();
       }
+#else
+      (void)secure;
 #endif
 
       // Limit the actual distance to the capacity.
@@ -2822,6 +2826,8 @@ namespace etl
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
+#else
+      (void)truncated;
 #endif
 
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
@@ -2829,6 +2835,8 @@ namespace etl
       {
         set_secure();
       }
+#else
+      (void)secure;
 #endif
 
       cleanup();
