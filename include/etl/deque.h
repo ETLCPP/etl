@@ -1758,7 +1758,7 @@ namespace etl
     void push_back(const_reference item)
     {
       ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(deque_full));
-      
+
       create_element_back(item);
     }
 
@@ -1771,7 +1771,7 @@ namespace etl
     void push_back(rvalue_reference item)
     {
       ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(deque_full));
-      
+
       create_element_back(etl::move(item));
     }
 #endif
@@ -2484,9 +2484,7 @@ namespace etl
         void repair()
 #endif
     {
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::deque_incompatible_type));
-#endif
 
       etl::ideque<T>::repair_buffer(reinterpret_cast<T*>(buffer.raw));
     }
