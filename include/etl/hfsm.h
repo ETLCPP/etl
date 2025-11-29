@@ -59,6 +59,8 @@ namespace etl
     //*******************************************
     void start(bool call_on_enter_state = true) ETL_OVERRIDE
     {
+      private_fsm::fsm_reentrancy_guard transition_lock(is_processing_state_change);
+
       // Can only be started once.
       if (!is_started())
       {
@@ -98,6 +100,8 @@ namespace etl
     //*******************************************
     virtual void reset(bool call_on_exit_state = false) ETL_OVERRIDE
     {
+      private_fsm::fsm_reentrancy_guard transition_lock(is_processing_state_change);
+
       if (is_started() && call_on_exit_state)
       {
         do_exits(ETL_NULLPTR, p_state);
