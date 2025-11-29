@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_NEGATIVE_INCLUDED
 #define ETL_NEGATIVE_INCLUDED
 
+#include "platform.h"
 #include "type_traits.h"
 
 namespace etl
