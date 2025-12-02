@@ -39,13 +39,6 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_function_traits
-  {
-    // Checks to see if the template parameter pack is a single void.
-    template <typename...> struct is_single_void : etl::false_type {};
-    template <> struct is_single_void<void> : etl::true_type {};
-  }
-
   //***************************************************************************
   // Primary template (unspecialized)
   //***************************************************************************
@@ -58,29 +51,6 @@ namespace etl
   template <typename TReturn, typename... TArgs>
   struct function_traits<TReturn(TArgs...), void>
   {
-  private:
-
-    //*******************************************
-    // Checks if the function is invocable with the specified argument types.
-    template <bool Correct_Arity, typename... UArgs>
-    struct is_invocable_with_impl;
-
-    //*******************************************
-    // Specialization for wrong number of arguments.
-    template <typename... UArgs>
-    struct is_invocable_with_impl<false, UArgs...>
-      : etl::false_type 
-    {
-    };
-
-    //*******************************************
-    // Specialization for correct number of arguments.
-    template <typename... UArgs>
-    struct is_invocable_with_impl<true, UArgs...>
-      : etl::conjunction<etl::is_convertible<UArgs, TArgs>...>
-    {
-    };
-
   public:
 
     using function_type  = TReturn(TArgs...);
@@ -96,22 +66,8 @@ namespace etl
     static constexpr bool   is_noexcept        = false;
     static constexpr size_t arity              = sizeof...(TArgs);
     
-#if ETL_USING_CPP14
-    template <typename... UArgs>
-    static constexpr bool is_invocable_with = private_function_traits::is_single_void<UArgs...>::value
-                                              ? (arity == 0)
-                                              : is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>::value;
-#else
-    //*******************************************
-    /// Checks if the function is invocable with the specified argument types.
-    template <typename... UArgs>
-    struct is_invocable_with 
-      : etl::bool_constant<private_function_traits::is_single_void<UArgs...>::value
-                           ? (arity == 0)
-                           : is_invocable_with_impl<sizeof...(TArgs) == sizeof...(UArgs), UArgs...>::value>
-    {
-    };
-#endif
+    ETL_DEPRECATED_REASON("Use etl::function_traits::arity instead")
+    static constexpr size_t argument_count     = arity;
   };
 
   //***************************************************************************
@@ -249,7 +205,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value&&
-    etl::has_unique_call_operator<T>::value>>
+                            etl::has_unique_call_operator<T>::value>>
     : function_traits<private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
   {
     static constexpr bool is_functor = true;
@@ -264,6 +220,58 @@ namespace etl
   template <typename T>
   struct function_traits_available<T, etl::void_t<typename etl::function_traits<T>::return_type, 
                                                   typename etl::function_traits<T>::argument_types>> : etl::true_type {};
+
+  //***************************************************************************
+  // Out-of-class definitions for the function_traits static members
+  //***************************************************************************
+  // free/function primary template
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(TArgs...), void>::is_function;
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(TArgs...), void>::is_member_function;
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(TArgs...), void>::is_functor;
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(TArgs...), void>::is_const;
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(TArgs...), void>::is_volatile;
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(TArgs...), void>::is_noexcept;
+  template <typename TReturn, typename... TArgs>
+  constexpr size_t function_traits<TReturn(TArgs...), void>::arity;
+
+  // member-function-pointer specialization
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...), void>::is_function;
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...), void>::is_member_function;
+
+  // cv/ref-qualified member-function pointer flags
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const, void>::is_const;
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) volatile, void>::is_volatile;
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile, void>::is_const;
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile, void>::is_volatile;
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  template <typename TReturn, typename... TArgs>
+  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept, void>::is_noexcept;
+
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) noexcept, void>::is_noexcept;
+
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const noexcept, void>::is_noexcept;
+
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) volatile noexcept, void>::is_noexcept;
+
+  template <typename TReturn, typename TObject, typename... TArgs>
+  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile noexcept, void>::is_noexcept;
+#endif
 }
 
 #endif

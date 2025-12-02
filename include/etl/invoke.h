@@ -155,6 +155,23 @@ namespace etl
     };
 
     //*******************************************
+    // Core detection of invocability.
+    // Succeeds if the invocation expression is well-formed.
+    template <typename TFunction, typename... TArgs>
+    struct is_invocable_expr<TFunction, etl::type_list<TArgs...>>
+    {
+      template <typename U>
+      static auto test(int) -> decltype((void)etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...), etl::true_type{});
+
+      template <typename>
+      static etl::false_type test(...);
+
+      using type = decltype(test<TFunction>(0));
+
+      static ETL_CONSTANT bool value = type::value;
+    };
+
+    //*******************************************
     // Result type of a valid invocation.
     template <typename TFunction, typename... TArgs>
     struct invoke_result_impl
@@ -162,6 +179,20 @@ namespace etl
       template <typename U>
       static auto test(int) -> decltype(etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...));
       
+      template <typename>
+      static void test(...);
+
+      using type = decltype(test<TFunction>(0));
+    };
+
+    //*******************************************
+    // Result type of a valid invocation.
+    template <typename TFunction, typename... TArgs>
+    struct invoke_result_impl<TFunction, etl::type_list<TArgs...>>
+    {
+      template <typename U>
+      static auto test(int) -> decltype(etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...));
+
       template <typename>
       static void test(...);
 
@@ -195,6 +226,22 @@ namespace etl
                                     void>;
   };
 
+  //****************************************************************************
+  /// invoke_result<TFunction, etl::type_list<TArgs...>>
+  template <typename TFunction, typename... TArgs>
+  struct invoke_result<TFunction, etl::type_list<TArgs...>>
+  {
+  private:
+
+    using FC = private_invoke::effective_callable_t<TFunction>;
+
+  public:
+
+    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value,
+      private_invoke::invoke_result_impl_t<FC, TArgs...>,
+      void>;
+  };
+
   template <typename TFunction, typename... TArgs>
   using invoke_result_t = typename invoke_result<TFunction, TArgs...>::type;
 
@@ -203,7 +250,16 @@ namespace etl
   template <typename TFunction, typename... TArgs>
   struct is_invocable
     : etl::bool_constant<private_invoke::is_invocable_expr<private_invoke::effective_callable_t<TFunction>, TArgs...>::value>
-  {};
+  {
+  };
+
+  //****************************************************************************
+  // Specialization to allow `etl::type_list<...>` as the second template parameter.
+  template <typename TFunction, typename... TArgs>
+  struct is_invocable<TFunction, etl::type_list<TArgs...>>
+    : is_invocable<TFunction, TArgs...>
+  {
+  };
 
   //****************************************************************************
   // is_invocable_r<TReturn, TFunction, TArgs...>
@@ -214,7 +270,32 @@ namespace etl
                          etl::conditional_t<is_invocable<TFunction, TArgs...>::value,
                                             etl::bool_constant<etl::is_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value>,
                                             etl::false_type>>
-  {};
+  {
+  };
+
+  //****************************************************************************
+  // Specialization to allow `etl::type_list<...>` as the second template parameter.
+  template <typename TReturn, typename TFunction, typename... TArgs>
+  struct is_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>>
+    : is_invocable_r<TReturn, TFunction, TArgs...>
+  {
+  };
+
+  //****************************************************************************
+  // Specialization to allow `etl::type_list<...>` when there is a preceding object argument.
+  template <typename TFunction, typename TObject, typename... TArgs>
+  struct is_invocable<TFunction, TObject, etl::type_list<TArgs...>>
+    : is_invocable<TFunction, TObject, TArgs...>
+  {
+  };
+
+  //****************************************************************************
+  // Specialization for is_invocable_r with a preceding object argument.
+  template <typename TReturn, typename TFunction, typename TObject, typename... TArgs>
+  struct is_invocable_r<TReturn, TFunction, TObject, etl::type_list<TArgs...>>
+    : is_invocable_r<TReturn, TFunction, TObject, TArgs...>
+  {
+  };
 
 #if ETL_USING_CPP17
   //****************************************************************************
@@ -223,7 +304,8 @@ namespace etl
   struct is_nothrow_invocable
     : etl::bool_constant<etl::is_invocable<TFunction, TArgs...>::value &&
                          etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept>
-  {};
+  {
+  };
 
   //****************************************************************************
   /// is_nothrow_invocable_r<TReturn, TFunction, TArgs...>
@@ -233,6 +315,26 @@ namespace etl
                          etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept &&
                          (etl::is_same<TReturn, void>::value ||
                           etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
+  {
+  };
+
+  //****************************************************************************
+  /// is_nothrow_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>>
+  template <typename TReturn, typename TFunction, typename... TArgs>
+  struct is_nothrow_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>>
+    : etl::bool_constant<etl::is_invocable_r<TReturn, TFunction, TArgs...>::value &&
+                         etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept &&
+                         (etl::is_same<TReturn, void>::value ||
+                          etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
+  {
+  };
+
+  //****************************************************************************
+  // Specialization to allow `etl::type_list<...>` when there is a preceding object argument
+  // for the nothrow-with-return trait.
+  template <typename TReturn, typename TFunction, typename TObject, typename... TArgs>
+  struct is_nothrow_invocable_r<TReturn, TFunction, TObject, etl::type_list<TArgs...>>
+    : is_nothrow_invocable_r<TReturn, TFunction, TObject, TArgs...>
   {};
 #endif
 

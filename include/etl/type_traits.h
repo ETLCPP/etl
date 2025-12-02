@@ -2544,7 +2544,7 @@ typedef integral_constant<bool, true>  true_type;
       return false;
     }
 #elif ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1
-    // fallback for TObject++20 on supported compilers
+    // Fallback for C++20 on supported compilers
     return __builtin_is_constant_evaluated();
 #else
     // default if unsupported
@@ -2659,7 +2659,7 @@ typedef integral_constant<bool, true>  true_type;
     template<typename T, typename TObject>
     struct is_member_pointer_helper<T TObject::*> : etl::true_type {};
   }
-  
+
   template<typename T> 
   struct is_member_pointer : private_type_traits::is_member_pointer_helper<etl::remove_cv_t<T>> {};
 
@@ -2711,7 +2711,7 @@ typedef integral_constant<bool, true>  true_type;
   template <typename R, typename C, typename... A> struct is_member_function_pointer<R(C::*)(A..., ...) const> : etl::true_type {};
   template <typename R, typename C, typename... A> struct is_member_function_pointer<R(C::*)(A..., ...) volatile> : etl::true_type {};
   template <typename R, typename C, typename... A> struct is_member_function_pointer<R(C::*)(A..., ...) const volatile> : etl::true_type {};
-  
+
 #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   template <typename R, typename C, typename... A> struct is_member_function_pointer<R(C::*)(A..., ...) noexcept> : etl::true_type {};
   template <typename R, typename C, typename... A> struct is_member_function_pointer<R(C::*)(A..., ...) const noexcept> : etl::true_type {};
@@ -2767,4 +2767,15 @@ typedef integral_constant<bool, true>  true_type;
   inline constexpr bool is_member_object_pointer_v = etl::is_member_object_pointer<T>::value;
 #endif
 }
+
+// Helper macros
+#define ETL_IS_CHAR_TYPE(type)        (etl::is_same<char, type>::value || etl::is_same<signed char, type>::value || etl::is_same<unsigned char, type>::value)
+#define ETL_IS_NOT_CHAR_TYPE(type)    (!ETL_IS_CHAR_TYPE(type))
+
+#define ETL_IS_POINTER_TYPE(type)     (etl::is_pointer<type>::value)
+#define ETL_IS_NOT_POINTER_TYPE(type) (!ETL_IS_POINTER_TYPE(type))
+
+#define ETL_TARGET_IS_TRIVIALLY_COPYABLE(type)     (etl::is_trivially_copyable<typename etl::iterator_traits<type>::value_type>::value)
+#define ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(type) (!ETL_TARGET_IS_TRIVIALLY_COPYABLE(type))
+
 #endif // ETL_TYPE_TRAITS_INCLUDED
