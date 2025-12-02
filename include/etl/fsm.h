@@ -221,7 +221,7 @@ namespace etl
     struct check_ids<Id, TState0, TRest...>
       : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
     {
-    };
+    };   
 
     //***************************************************************************
     /// RAII detection mechanism to catch reentrant calls to methods that might

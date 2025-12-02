@@ -1003,87 +1003,104 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20 - Optimised -O2|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++23|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++23 - No STL|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual messages|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++ 20 - No Tests|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - Optimised O2|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17 - No STL|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -1129,7 +1146,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MSVC - No STL -O2|Win32'">
     <LinkIncremental>false</LinkIncremental>
