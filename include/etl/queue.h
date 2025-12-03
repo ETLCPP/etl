@@ -97,6 +97,20 @@ namespace etl
     }
   };
 
+    //***************************************************************************
+  /// The exception thrown when the access would go out of bounds.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_out_of_bounds : public queue_exception
+  {
+  public:
+
+    queue_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:bounds", ETL_QUEUE_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
   //***************************************************************************
   /// The base class for all queues.
   ///\ingroup queue
@@ -271,6 +285,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(queue_out_of_bounds));
       return p_buffer[out];
     }
 
@@ -280,6 +295,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(queue_out_of_bounds));
       return p_buffer[out];
     }
 
@@ -289,6 +305,7 @@ namespace etl
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(queue_out_of_bounds));
       return p_buffer[in == 0 ? CAPACITY - 1 : in - 1];
     }
 
@@ -298,6 +315,7 @@ namespace etl
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(queue_out_of_bounds));
       return p_buffer[in == 0 ? CAPACITY - 1 : in - 1];
     }
 
