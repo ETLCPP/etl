@@ -71,7 +71,7 @@ namespace etl
 
   // Partial specialization for etl::array
   template <typename T, size_t SIZE_>
-  struct is_etl_array<etl::array<T, SIZE_>> : etl::true_type {};
+  struct is_etl_array<etl::array<T, SIZE_>> { static const bool value = true; };
 
   //***************************************************************************
   // Tag to indicate a class is a span.
