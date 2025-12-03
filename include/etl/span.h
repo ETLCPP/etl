@@ -55,6 +55,7 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_USING_STL && ETL_USING_CPP11
   // Primary template for non-std::array types
   template <typename T>
   struct is_std_array : etl::false_type {};
@@ -62,6 +63,7 @@ namespace etl
   // Partial specialization for std::array
   template <typename T, std::size_t N>
   struct is_std_array<std::array<T, N>> : etl::true_type {};
+#endif
 
   // Primary template for non-etl::array types
   template <typename T>
@@ -268,6 +270,7 @@ namespace etl
       ETL_ASSERT(other.size() == Extent, ETL_ERROR(span_size_mismatch));
     }
 
+#if ETL_USING_STL && ETL_USING_CPP11
     //*************************************************************************
     /// Constructor from std array.
     //*************************************************************************
@@ -276,6 +279,7 @@ namespace etl
       : pbegin(other.data())
     {
     }
+#endif
 
     //*************************************************************************
     /// Constructor from etl array.
