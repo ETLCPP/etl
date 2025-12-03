@@ -55,11 +55,11 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USING_STL && ETL_USING_CPP11
   // Primary template for non-std::array types
   template <typename T>
   struct is_std_array : etl::false_type {};
 
+#if ETL_USING_STL && ETL_USING_CPP11
   // Partial specialization for std::array
   template <typename T, std::size_t N>
   struct is_std_array<std::array<T, N>> : etl::true_type {};
