@@ -55,23 +55,19 @@ SOFTWARE.
 
 namespace etl
 {
-  // Primary template for non-std::array types
-  template <typename T>
-  struct is_std_array : etl::false_type {};
-
+  template <typename T> struct is_std_array : etl::false_type {};
 #if ETL_USING_STL && ETL_USING_CPP11
-  // Partial specialization for std::array
-  template <typename T, std::size_t N>
-  struct is_std_array<std::array<T, N>> : etl::true_type {};
+  template <typename T, size_t N> struct is_std_array<std::array<T, N>> : etl::true_type {};
 #endif
+  template <typename T> struct is_std_array<const T> : is_std_array<T> {};
+  template <typename T> struct is_std_array<volatile T> : is_std_array<T> {};
+  template <typename T> struct is_std_array<const volatile T> : is_std_array<T> {};
 
-  // Primary template for non-etl::array types
-  template <typename T>
-  struct is_etl_array : etl::false_type {};
-
-  // Partial specialization for etl::array
-  template <typename T, size_t N>
-  struct is_etl_array<etl::array<T, N> > : etl::true_type {};
+  template <typename T> struct is_etl_array : etl::false_type {};
+  template <typename T, size_t N> struct is_etl_array<etl::array<T, N> > : etl::true_type {};
+  template <typename T> struct is_etl_array<const T> : is_etl_array<T> {};
+  template <typename T> struct is_etl_array<volatile T> : is_etl_array<T> {};
+  template <typename T> struct is_etl_array<const volatile T> : is_etl_array<T> {};
 
   //***************************************************************************
   // Tag to indicate a class is a span.
@@ -279,6 +275,15 @@ namespace etl
       : pbegin(other.data())
     {
     }
+
+    //*************************************************************************
+    /// Constructor from const std array.
+    //*************************************************************************
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(const std::array<U, Size>& other, typename etl::enable_if<Size == Extent && etl::is_const<T>::value, void>::type* = 0) ETL_NOEXCEPT
+      : pbegin(other.data())
+    {
+    }
 #endif
 
     //*************************************************************************
@@ -286,6 +291,15 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t Size>
     ETL_CONSTEXPR span(etl::array<U, Size>& other, typename etl::enable_if<Size == Extent, void>::type* = 0) ETL_NOEXCEPT
+      : pbegin(other.data())
+    {
+    }
+
+    //*************************************************************************
+    /// Constructor from const etl array.
+    //*************************************************************************
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(const etl::array<U, Size>& other, typename etl::enable_if<Size == Extent && etl::is_const<T>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(other.data())
     {
     }
