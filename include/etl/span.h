@@ -70,7 +70,7 @@ namespace etl
   struct is_etl_array : etl::false_type {};
 
   // Partial specialization for etl::array
-  template <typename T, std::size_t N>
+  template <typename T, size_t N>
   struct is_etl_array<etl::array<T, N>> : etl::true_type {};
 
   //***************************************************************************
