@@ -216,6 +216,8 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     span(TContainer& a, typename etl::enable_if<!etl::is_base_of<span_tag, typename etl::remove_reference<TContainer>::type>::value &&
+                                                !etl::is_std_array<typename etl::remove_reference<TContainer>::type>::value &&
+                                                !etl::is_etl_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                 !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                 !etl::is_array<TContainer>::value &&
                                                 etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
@@ -229,6 +231,8 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     span(const TContainer& a, typename etl::enable_if<!etl::is_base_of<span_tag, typename etl::remove_reference<TContainer>::type>::value &&
+                                                      !etl::is_std_array<typename etl::remove_reference<TContainer>::type>::value &&
+                                                      !etl::is_etl_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                       !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                       !etl::is_array<TContainer>::value&&
                                                       etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
