@@ -848,12 +848,15 @@ namespace
     TEST(test_issue_486)
     {
       //std::array<char, 10> c;
+      //etl::array<char, 10> c2;
 
       // Should not compile.
       //etl::span<char, 11> value(c);
+      //etl::span<char, 11> value2(c2);
 
       // Should not compile.
       //f_issue_486(c);
+      //f_issue_486(c2);
     }
 
     //*************************************************************************
