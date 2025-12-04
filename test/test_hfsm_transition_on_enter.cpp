@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/hfsm.h"
 #include "etl/string.h"
 #include <array>
+#include <memory>
 
 //                             entry && mode=RxEventDeviation
 //                 ┌─────────────────────────────────────────────────────┐
@@ -357,6 +358,25 @@ namespace
       sm.test_data.clear();
       sm.reset(true);
       CHECK_EQUAL("X1X2X3", sm.test_data.c_str());
+    }
+
+    //*************************************************************************
+    TEST(reentrant_receives)
+    {
+      EntryTestSM sm;
+      sm.start(false);
+      sm.receive(ToS5Event{});
+      sm.test_data.clear();
+      sm.runMode = EntryTestSM::RxEventDuringTransition;
+      CHECK_THROW(sm.receive(ToS6Event{}),etl::fsm_reentrant_transition_forbidden);
+    }
+
+    //*************************************************************************
+    TEST(reentrant_receives_on_start)
+    {
+      EntryTestSM sm;
+      sm.runMode = EntryTestSM::RxEventDuringTransition;
+      CHECK_THROW(sm.start(true),etl::fsm_reentrant_transition_forbidden);
     }
   }
 
