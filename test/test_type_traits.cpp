@@ -1665,4 +1665,38 @@ namespace
     CHECK_FALSE((etl::is_function<int MF::*>::value));
     CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
   }
+
+  //*************************************************************************
+  // Function type detection: variadic
+  TEST(test_is_function_trait_variadic)
+  {
+    CHECK_TRUE((etl::is_function<int(int, ...)>::value));
+    CHECK_TRUE((etl::is_function<void(int, ...)>::value));
+    CHECK_TRUE((etl::is_function<const void(int, ...)>::value));
+    CHECK_TRUE((etl::is_function<volatile void(int, ...)>::value));
+    CHECK_TRUE((etl::is_function<const volatile void(int, ...)>::value));
+  }
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  //*************************************************************************
+  // Function type detection: noexcept
+  TEST(test_is_function_trait_noexcept)
+  {
+    CHECK_TRUE((etl::is_function<void() noexcept>::value));
+    CHECK_TRUE((etl::is_function<const void() noexcept>::value));
+    CHECK_TRUE((etl::is_function<volatile void() noexcept>::value));
+    CHECK_TRUE((etl::is_function<const volatile void() noexcept>::value));
+  }
+
+  //*************************************************************************
+  // Function type detection: variadic + noexcept
+  TEST(test_is_function_trait_variadic_noexcept)
+  {
+    CHECK_TRUE((etl::is_function<int(int, ...) noexcept>::value));
+    CHECK_TRUE((etl::is_function<void(int, ...) noexcept>::value));
+    CHECK_TRUE((etl::is_function<const void(int, ...) noexcept>::value));
+    CHECK_TRUE((etl::is_function<volatile void(int, ...) noexcept>::value));
+    CHECK_TRUE((etl::is_function<const volatile void(int, ...) noexcept>::value));
+  }
+#endif
 }
