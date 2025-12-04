@@ -2646,7 +2646,7 @@ typedef integral_constant<bool, true>  true_type;
     //*********************************
     // <b>true</b> if operator() exists and is unique
     //*********************************
-    static const bool value = decltype(test<etl::decay_t<T>>(0))::value;
+    static constexpr bool value = decltype(test<etl::decay_t<T>>(0))::value;
   };
 
 #if ETL_USING_CPP17
@@ -2712,14 +2712,11 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   namespace private_type_traits
   {
-    template <typename T> 
-    struct logical_not_t : etl::integral_constant<bool, !bool(T::value)> {};
-
     template<typename> 
     struct is_member_object_pointer_helper : public etl::false_type {};
 
     template<typename T, typename TObject> 
-    struct is_member_object_pointer_helper<T TObject::*> : public logical_not_t<etl::is_function<T>>::type {};
+    struct is_member_object_pointer_helper<T TObject::*> : public etl::negation<etl::is_function<T>> {};
   }
 
   template<typename T> struct is_member_object_pointer : public private_type_traits::is_member_object_pointer_helper<etl::remove_cv_t<T>>::type {};
