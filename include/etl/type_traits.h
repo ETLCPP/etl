@@ -2639,7 +2639,7 @@ typedef integral_constant<bool, true>  true_type;
     //*********************************
     // <b>true</b> if operator() exists and is unique
     //*********************************
-    static const bool value = decltype(test<etl::decay_t<T>>(0))::value;
+    static constexpr bool value = decltype(test<etl::decay_t<T>>(0))::value;
   };
 
 #if ETL_USING_CPP17
