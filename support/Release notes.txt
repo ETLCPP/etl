@@ -1,4 +1,26 @@
 ﻿===============================================================================
+20.44.2
+
+Updates:
+Replaced locally defined logical_not_t with etl::negation
+
+Fixes:
+#1228 unused parameter 'secure'
+#1224 Passing a const in optional::value_or() not compiling
+
+Pull Requests:
+#1210 Fixed span reinterpret_as should return fixed span
+#1211 Change generators to reflect changes in fsm.h and type_traits.h
+#1217 Add const specialization for etl::get_object_at
+#1218 Cleanup platform.h includes, add missing test for unaligned_type
+#1221 Add test for swap
+#1222 Basic string checks
+#1223 Fix is_truncated in basic_string
+#1225 Fix value_or not taking const in optional
+#1226 Add missing include to optional
+#1229 variant_legacy.h: Rename template parameters
+
+===============================================================================
 20.44.1
 
 Updates:

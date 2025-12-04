@@ -1,0 +1,25 @@
+name: generator checks
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  generator-run:
+    name: Header Generator
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Generate
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-cogapp
+        cd include/etl/generators && bash generate.bat
+
+    - name: Check Generated Headers For Changes
+      run: |
+        git diff --exit-code

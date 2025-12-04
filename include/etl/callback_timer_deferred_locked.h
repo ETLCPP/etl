@@ -29,6 +29,7 @@ SOFTWARE.
 #ifndef ETL_CALLBACK_TIMER_DEFERRED_LOCKED_INCLUDED
 #define ETL_CALLBACK_TIMER_DEFERRED_LOCKED_INCLUDED
 
+#include "platform.h"
 #include "callback_timer_locked.h"
 #include "etl/nullptr.h"
 #include "etl/optional.h"
