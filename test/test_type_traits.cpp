@@ -140,6 +140,55 @@ namespace
   struct other_specialized
   {
   };
+
+  struct MF
+  {
+    int f(int)                         { return 0; }
+    int fc(int) const                  { return 0; }
+    int fv(int) volatile               { return 0; }
+    int fcv(int) const volatile        { return 0; }
+
+#if ETL_USING_CPP11
+    int fl(int) &                      { return 0; }
+    int flc(int) const &               { return 0; }
+    int flv(int) volatile &            { return 0; }
+    int flcv(int) const volatile &     { return 0; }
+
+    int fr(int) &&                     { return 0; }
+    int frc(int) const &&              { return 0; }
+    int frv(int) volatile &&           { return 0; }
+    int frcv(int) const volatile &&    { return 0; }
+#endif
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+    int fn(int) noexcept                         { return 0; }
+    int fnc(int) const noexcept                  { return 0; }
+    int fnv(int) volatile noexcept               { return 0; }
+    int fncv(int) const volatile noexcept        { return 0; }
+
+#if ETL_USING_CPP11
+    int fnl(int) & noexcept                      { return 0; }
+    int fnlc(int) const & noexcept               { return 0; }
+    int fnlv(int) volatile & noexcept            { return 0; }
+    int fnlcv(int) const volatile & noexcept     { return 0; }
+
+    int fnr(int) && noexcept                     { return 0; }
+    int fnrc(int) const && noexcept              { return 0; }
+    int fnrv(int) volatile && noexcept           { return 0; }
+    int fnrcv(int) const volatile && noexcept    { return 0; }
+#endif
+#endif
+
+    int var(int, ...)                 { return 0; }
+    int varc(int, ...) const          { return 0; }
+  };
+
+  struct MO
+  {
+    int data;
+  };
+
+  int free_fn(int) { return 0; }
 }
 
 // Definitions for when the STL and compiler built-ins are not available.
@@ -1490,4 +1539,120 @@ namespace
     CHECK_FALSE(c1);
   }
 #endif
+
+  //*************************************************************************
+  // Basic cv for member function pointers
+  TEST(test_is_member_function_pointer_cv)
+  {
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) volatile>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const volatile>::value));
+  }
+
+  //*************************************************************************
+  // Ref-qualified member function pointers
+  TEST(test_is_member_function_pointer_ref_qualified)
+  {
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) &>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const &>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) volatile &>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const volatile &>::value));
+
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) &&>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const &&>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) volatile &&>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const volatile &&>::value));
+  }
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  //*************************************************************************
+  // noexcept member function pointers (and ref-qualified if supported)
+  TEST(test_is_member_function_pointer_noexcept)
+  {
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) volatile noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const volatile noexcept>::value));
+  }
+
+  TEST(test_is_member_function_pointer_ref_noexcept)
+  {
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) & noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const & noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) volatile & noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const volatile & noexcept>::value));
+
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) && noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const && noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) volatile && noexcept>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int) const volatile && noexcept>::value));
+  }
+#endif
+
+  //*************************************************************************
+  // Variadic member function pointers
+  TEST(test_is_member_function_pointer_variadic)
+  {
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int, ...)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int, ...) const>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int, ...) volatile>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<int (MF::*)(int, ...) const volatile>::value));
+  }
+
+  //*************************************************************************
+  // Negative tests for member function pointer trait
+  TEST(test_is_member_function_pointer_negative)
+  {
+    // Free function pointer
+    CHECK_FALSE((etl::is_member_function_pointer<decltype(&free_fn)>::value));
+
+    // Member object pointer
+    CHECK_FALSE((etl::is_member_function_pointer<int MF::*>::value));
+
+    // Plain function type (not pointer)
+    CHECK_FALSE((etl::is_member_function_pointer<int(int)>::value));
+
+    // Non-function type
+    CHECK_FALSE((etl::is_member_function_pointer<int>::value));
+  }
+
+  //*************************************************************************
+  // Member object pointer trait
+  TEST(test_is_member_object_pointer)
+  {
+    CHECK_TRUE((etl::is_member_object_pointer<int MO::*>::value));
+
+    // Not a member object pointer
+    CHECK_FALSE((etl::is_member_object_pointer<int (MF::*)(int)>::value));
+    CHECK_FALSE((etl::is_member_object_pointer<int*>::value));
+  }
+
+  //*************************************************************************
+  // Member pointer (either member object or member function pointer)
+  TEST(test_is_member_pointer_any)
+  {
+    CHECK_TRUE((etl::is_member_pointer<int MF::*>::value));
+    CHECK_TRUE((etl::is_member_pointer<int (MF::*)(int)>::value));
+
+    // Not member pointers
+    CHECK_FALSE((etl::is_member_pointer<int*>::value));
+    CHECK_FALSE((etl::is_member_pointer<decltype(&free_fn)>::value));
+  }
+
+  //*************************************************************************
+  // Function type detection
+  TEST(test_is_function_trait)
+  {
+    CHECK_TRUE((etl::is_function<int(int)>::value));
+    CHECK_TRUE((etl::is_function<void()>::value));
+    CHECK_TRUE((etl::is_function<const void()>::value));
+    CHECK_TRUE((etl::is_function<volatile void()>::value));
+    CHECK_TRUE((etl::is_function<const volatile void()>::value));
+
+    CHECK_FALSE((etl::is_function<int>::value));
+    CHECK_FALSE((etl::is_function<int*>::value));
+    CHECK_FALSE((etl::is_function<int MF::*>::value));
+    CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
+  }
 }
