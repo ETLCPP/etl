@@ -1689,13 +1689,5 @@ namespace
     CHECK_FALSE((etl::is_function<int*>::value));
     CHECK_FALSE((etl::is_function<int MF::*>::value));
     CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
-
-    using ptr_t       = decltype(&free_fn);
-    using const_ptr_t = typename std::add_const<ptr_t>::type;
-    using ref_ptr_t   = ptr_t&;
-
-    CHECK_TRUE(etl::is_function<ptr_t>::value);
-    CHECK_TRUE(etl::is_function<const_ptr_t>::value);
-    CHECK_TRUE(etl::is_function<ref_ptr_t>::value);
   }
 }
