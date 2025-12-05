@@ -212,47 +212,47 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Detect whether function_traits<T> provides the nested types we need.
-  //***************************************************************************
-  template <typename T, typename = void>
-  struct function_traits_available : etl::false_type {};
-
-  template <typename T>
-  struct function_traits_available<T, etl::void_t<typename etl::function_traits<T>::return_type, 
-                                                  typename etl::function_traits<T>::argument_types>> : etl::true_type {};
-
-  //***************************************************************************
   // Out-of-class definitions for the function_traits static members
   //***************************************************************************
   // free/function primary template
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_function;
+
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_member_function;
+  
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_functor;
+  
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_const;
+  
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_volatile;
+  
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_noexcept;
+  
   template <typename TReturn, typename... TArgs>
   constexpr size_t function_traits<TReturn(TArgs...), void>::arity;
 
   // member-function-pointer specialization
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...), void>::is_function;
+
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...), void>::is_member_function;
 
   // cv/ref-qualified member-function pointer flags
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const, void>::is_const;
+  
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) volatile, void>::is_volatile;
+  
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile, void>::is_const;
+  
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile, void>::is_volatile;
 
@@ -272,6 +272,13 @@ namespace etl
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile noexcept, void>::is_noexcept;
 #endif
+
+  //***************************************************************************
+  // Functor / lambda specialization: provide out-of-class definition for is_functor
+  //***************************************************************************
+  template <typename T>
+  constexpr bool function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value &&
+                                                     etl::has_unique_call_operator<T>::value>>::is_functor;
 }
 
 #endif

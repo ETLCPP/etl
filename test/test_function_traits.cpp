@@ -456,5 +456,44 @@ namespace
       CHECK_FALSE(traits::is_noexcept);
       CHECK_EQUAL(2, traits::arity);
     }
+
+    //*************************************************************************
+    // Forwarding of top-level cv/ref on the whole type to the unqualified type
+    TEST(test_function_traits_forward_cvref_free_ptr)
+    {
+      using ptr_t       = decltype(&free_void);
+      using const_ptr_t = typename std::add_const<ptr_t>::type;   // void(* const)()
+      using ref_ptr_t   = ptr_t&;                                  // void(*&)()
+
+      using traits_c = etl::function_traits<const_ptr_t>;
+      using traits_r = etl::function_traits<ref_ptr_t>;
+
+      CHECK_TRUE((std::is_same<void(void), traits_c::function_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits_r::function_type>::value));
+      CHECK_TRUE(traits_c::is_function);
+      CHECK_TRUE(traits_r::is_function);
+      CHECK_FALSE(traits_c::is_member_function);
+      CHECK_FALSE(traits_r::is_member_function);
+    }
+
+    //*************************************************************************
+    TEST(test_function_traits_forward_cvref_member_ptr)
+    {
+      using mptr_t       = decltype(&Object::member_int);
+      using const_mptr_t = typename std::add_const<mptr_t>::type; // int (Object::* const)(int,int)
+      using ref_mptr_t   = mptr_t&;                               // int (Object::*&)(int,int)
+
+      using traits_c = etl::function_traits<const_mptr_t>;
+      using traits_r = etl::function_traits<ref_mptr_t>;
+
+      CHECK_TRUE((std::is_same<int(int, int), traits_c::function_type>::value));
+      CHECK_TRUE((std::is_same<int(int, int), traits_r::function_type>::value));
+      CHECK_FALSE(traits_c::is_function);
+      CHECK_FALSE(traits_r::is_function);
+      CHECK_TRUE(traits_c::is_member_function);
+      CHECK_TRUE(traits_r::is_member_function);
+      CHECK_TRUE((std::is_same<Object, traits_c::object_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits_r::object_type>::value));
+    }
   };
 }
