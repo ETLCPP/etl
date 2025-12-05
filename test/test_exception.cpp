@@ -61,5 +61,21 @@ namespace
         CHECK_EQUAL(123, c.line_number());
       }     
     }
+
+#if ETL_HAS_EXCEPTION_STD_BASE
+    TEST(test_exception_std_base)
+    {
+      etl::exception e("An exception", "Some file", 123);
+
+      try
+      {
+        throw e;
+      }
+      catch (std::exception& c)
+      {
+        CHECK_EQUAL(std::string("An exception"), std::string(c.what()));
+      }
+    }
+#endif
   };
 }

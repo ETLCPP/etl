@@ -294,6 +294,17 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if etl::exception is to be derived from std::exception.
+#if defined(ETL_EXCEPTION_STD_BASE)
+#if ETL_NOT_USING_STL
+  #error "Requested std base for etl::exception, but STL is not used"
+#endif
+  #define ETL_HAS_EXCEPTION_STD_BASE 1
+#else
+  #define ETL_HAS_EXCEPTION_STD_BASE 0
+#endif
+
+//*************************************
 // Indicate if etl::literals::chrono_literals uses ETL verbose style.
 #if defined(ETL_USE_VERBOSE_CHRONO_LITERALS) && ETL_USING_CPP11
 #define ETL_USING_VERBOSE_CHRONO_LITERALS 1
