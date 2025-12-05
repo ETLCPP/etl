@@ -89,7 +89,7 @@ namespace etl
     /// \return const char* to the reason.
     //***************************************************************************
     ETL_EXCEPTION_CONSTEXPR
-    string_type what() const noexcept
+    string_type what() const ETL_NOEXCEPT
 #if ETL_HAS_EXCEPTION_STD_BASE
       override
 #endif
