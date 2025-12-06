@@ -157,6 +157,7 @@ namespace etl
     //*******************************************
     // Core detection of invocability.
     // Succeeds if the invocation expression is well-formed.
+    // Using etl::type_list for the argument list.
     template <typename TFunction, typename... TArgs>
     struct is_invocable_expr<TFunction, etl::type_list<TArgs...>>
     {
