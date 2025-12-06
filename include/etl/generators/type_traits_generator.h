@@ -2571,10 +2571,13 @@ typedef integral_constant<bool, true>  true_type;
   // Plain / cv-qualified
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...)> : etl::true_type {};
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) const> : etl::true_type {};
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) volatile> : etl::true_type {};
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) const volatile> : etl::true_type {};
 
@@ -2582,18 +2585,41 @@ typedef integral_constant<bool, true>  true_type;
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs..., ...)> : etl::true_type {};
 
-  // noexcept variants (if supported by the toolchain)
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) volatile> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const volatile> : etl::true_type {};
+
+  // noexcept variants (if supported)
 #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) noexcept> : etl::true_type {};
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) const noexcept> : etl::true_type {};
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) volatile noexcept> : etl::true_type {};
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs...) const volatile noexcept> : etl::true_type {};
+
+
   template<typename TReturn, typename... TArgs>
   struct is_function<TReturn(TArgs..., ...) noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) volatile noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const volatile noexcept> : etl::true_type {};
 #endif
 
 #if ETL_USING_CPP17
