@@ -117,6 +117,16 @@ namespace
       (void)j;
     }
   };
+
+  //*****************************************************************************
+  // A functor with a unique operator()
+  //*****************************************************************************
+  struct Functor { int operator()(int x) { return x + 1; } };
+
+  //*****************************************************************************
+  // A functor with a unique operator()
+  //*****************************************************************************
+  struct FunctorConst { int operator()(int x) const { return x + 1; } };
 }
 
 namespace
@@ -494,6 +504,31 @@ namespace
       CHECK_TRUE(traits_r::is_member_function);
       CHECK_TRUE((std::is_same<Object, traits_c::object_type>::value));
       CHECK_TRUE((std::is_same<Object, traits_r::object_type>::value));
+    }
+
+    //*************************************************************************
+    // Ensure function_traits resolves for Functor and const Functor
+    TEST(test_function_traits_functor_and_const_functor)
+    {
+      using traits_f  = etl::function_traits<Functor>;
+      using traits_cf = etl::function_traits<FunctorConst>;
+
+      // Both should be recognized as functor types
+      CHECK_TRUE(traits_f::is_functor);
+      CHECK_TRUE(traits_cf::is_functor);
+
+      // The function_type should be int(int)
+      CHECK_TRUE((std::is_same<int(int), traits_f::function_type>::value));
+      CHECK_TRUE((std::is_same<int(int), traits_cf::function_type>::value));
+
+      // const Functor should be marked const
+      CHECK_FALSE(traits_f::is_const);
+      CHECK_TRUE(traits_cf::is_const);
+
+      CHECK_TRUE((std::is_same<Functor, traits_f::object_type>::value));
+      CHECK_TRUE((std::is_same<FunctorConst, traits_cf::object_type>::value));
+      CHECK_EQUAL(1, traits_f::arity);
+      CHECK_EQUAL(1, traits_cf::arity);
     }
   };
 }

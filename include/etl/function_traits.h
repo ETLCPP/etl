@@ -183,7 +183,8 @@ namespace etl
   // Forward cv/ref on the whole type to the unqualified type.
   //***************************************************************************
   template <typename T>
-  struct function_traits<T, etl::enable_if_t<!etl::is_same<T, etl::remove_cvref_t<T>>::value>>
+  struct function_traits<T, etl::enable_if_t<!etl::is_same<T, etl::remove_cvref_t<T>>::value &&
+                                             !etl::is_class<etl::decay_t<T>>::value>>
     : function_traits<etl::remove_cvref_t<T>>
   {
   };
@@ -274,7 +275,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  // Functor / lambda specialization: provide out-of-class definition for is_functor
+  // Functor / lambda specialisation: provide out-of-class definition for is_functor
   //***************************************************************************
   template <typename T>
   constexpr bool function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value &&
