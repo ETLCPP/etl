@@ -62,7 +62,7 @@ namespace
       }     
     }
 
-#if ETL_HAS_EXCEPTION_STD_BASE
+#if ETL_USING_STD_EXCEPTION
     TEST(test_exception_std_base)
     {
       etl::exception e("An exception", "Some file", 123);

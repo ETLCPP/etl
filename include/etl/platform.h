@@ -295,13 +295,13 @@ SOFTWARE.
 
 //*************************************
 // Indicate if etl::exception is to be derived from std::exception.
-#if defined(ETL_EXCEPTION_STD_BASE)
+#if defined(ETL_USE_STD_EXCEPTION)
 #if ETL_NOT_USING_STL
   #error "Requested std base for etl::exception, but STL is not used"
 #endif
-  #define ETL_HAS_EXCEPTION_STD_BASE 1
+  #define ETL_USING_STD_EXCEPTION 1
 #else
-  #define ETL_HAS_EXCEPTION_STD_BASE 0
+  #define ETL_USING_STD_EXCEPTION 0
 #endif
 
 //*************************************

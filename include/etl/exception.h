@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_HAS_EXCEPTION_STD_BASE
+#if ETL_USING_STD_EXCEPTION
 #include <exception>
 
   #define ETL_EXCEPTION_CONSTEXPR
@@ -52,7 +52,7 @@ namespace etl
   /// A low overhead exception base class.
   //***************************************************************************
   class exception
-#if ETL_HAS_EXCEPTION_STD_BASE
+#if ETL_USING_STD_EXCEPTION
     : public std::exception
 #endif
   {
@@ -90,7 +90,7 @@ namespace etl
     //***************************************************************************
     ETL_EXCEPTION_CONSTEXPR
     string_type what() const ETL_NOEXCEPT
-#if ETL_HAS_EXCEPTION_STD_BASE
+#if ETL_USING_STD_EXCEPTION
       override
 #endif
     {
