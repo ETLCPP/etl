@@ -326,6 +326,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if noexcept is part of the function type.
+#if !defined(ETL_HAS_NOEXCEPT_FUNCTION_TYPE)
+  #if defined(__cpp_noexcept_function_type) && (__cpp_noexcept_function_type >= 201510)
+    #define ETL_HAS_NOEXCEPT_FUNCTION_TYPE 1
+  #else
+    #define ETL_HAS_NOEXCEPT_FUNCTION_TYPE 0
+  #endif
+#endif
+
+//*************************************
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_USING_CPP11
@@ -652,6 +662,7 @@ namespace etl
     static ETL_CONSTANT bool has_chrono_literals_microseconds = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_chrono_literals_nanoseconds  = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_std_byteswap                 = (ETL_HAS_STD_BYTESWAP == 1);
+    static ETL_CONSTANT bool has_noexcept_function_type       = (ETL_HAS_NOEXCEPT_FUNCTION_TYPE == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
