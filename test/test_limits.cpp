@@ -49,6 +49,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -90,6 +91,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -131,6 +133,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -172,6 +175,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -213,6 +217,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -254,6 +259,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -295,6 +301,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -336,6 +343,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -377,6 +385,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -418,6 +427,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -459,6 +469,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -500,6 +511,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -541,6 +553,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -582,6 +595,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
@@ -623,6 +637,7 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
 #endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+#endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
       CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
