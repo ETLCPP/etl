@@ -3716,9 +3716,6 @@
     <ClCompile Include="..\syntax_check\delegate_observable.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_signal.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\syntax_check\signal.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
@@ -3733,6 +3730,12 @@
     </ClCompile>
     <ClCompile Include="..\test_etl_assert.cpp">
       <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hfsm_transition_on_enter.cpp">
+      <Filter>Tests\State Machines</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

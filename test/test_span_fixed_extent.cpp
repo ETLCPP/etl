@@ -428,7 +428,7 @@ namespace
       CHECK_EQUAL(etldata.back(), view.back());
       CHECK_EQUAL(etldata.back(), cview.back());
 
-      //these should trigger static asserts
+      // These should trigger static asserts
       // auto empty_view = view.subspan<0, 0>();
       // CHECK_THROW({ auto front = empty_view.front(); (void)front; }, etl::span_out_of_range);
       // CHECK_THROW({ auto back = empty_view.back(); (void)back; }, etl::span_out_of_range);
@@ -561,7 +561,7 @@ namespace
       CHECK_EQUAL(first.size(), cresult.extent);
       CHECK_EQUAL(first.size(), cresult.size());
 
-      //these should trigger static asserts
+      // These should trigger static asserts
       // CHECK_THROW({ auto result2 = view.first<11>(); (void)result2; }, etl::span_out_of_range);
       // CHECK_THROW({ auto cresult2 = cview.first<11>(); (void)cresult2; }, etl::span_out_of_range);
     }
