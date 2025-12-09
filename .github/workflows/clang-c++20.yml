@@ -100,7 +100,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-15]
 
     steps:
     - uses: actions/checkout@v4
@@ -122,7 +122,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-15]
 
     steps:
     - uses: actions/checkout@v4
@@ -144,7 +144,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-15]
 
     steps:
     - uses: actions/checkout@v4
@@ -166,7 +166,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-15]
 
     steps:
     - uses: actions/checkout@v4
