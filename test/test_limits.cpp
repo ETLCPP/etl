@@ -47,7 +47,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -89,7 +88,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -131,7 +129,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -173,7 +170,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -215,7 +211,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -257,7 +252,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -299,7 +293,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -341,7 +334,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -383,7 +375,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -425,7 +416,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -467,7 +457,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -509,7 +498,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -551,7 +539,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -593,7 +580,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
@@ -635,7 +621,6 @@ namespace
       CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
       CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-#endif
       CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
 #endif
       CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
