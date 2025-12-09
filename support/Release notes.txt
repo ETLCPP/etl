@@ -19,6 +19,7 @@ Pull Requests:
 #1225 Fix value_or not taking const in optional
 #1226 Add missing include to optional
 #1229 variant_legacy.h: Rename template parameters
+#1231 Issue 1212 span constructor
 
 ===============================================================================
 20.44.1
