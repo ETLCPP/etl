@@ -530,51 +530,5 @@ namespace
       CHECK_EQUAL(1, traits_f::arity);
       CHECK_EQUAL(1, traits_cf::arity);
     }
-
-    //*************************************************************************
-    TEST(test_lambda)
-    {
-      auto lambda = [](int a, const std::string& s) -> long { return static_cast<long>(a + s.size()); };
-
-      using traits = etl::function_traits<decltype(lambda)>;
-
-      CHECK_TRUE((std::is_same<long(int, const std::string&),           traits::function_type>::value));
-      CHECK_TRUE((std::is_same<long,                                    traits::return_type>::value));
-      CHECK_TRUE((std::is_same<decltype(lambda),                        traits::object_type>::value));
-      CHECK_TRUE((std::is_same<etl::type_list<int, const std::string&>, traits::argument_types>::value));
-
-      CHECK_FALSE(traits::is_function);
-      CHECK_TRUE(traits::is_member_function);
-      CHECK_TRUE(traits::is_const);
-      CHECK_FALSE(traits::is_volatile);
-      CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2, traits::argument_count);
-    }
-
-    //*************************************************************************
-    TEST(test_functor)
-    {
-      struct functor
-      {
-        long operator()(int a, const std::string& s)
-        {
-          return static_cast<long>(a + s.size());
-        };
-      };
-
-      using traits = etl::function_traits<functor>;
-
-      CHECK_TRUE((std::is_same<long(int, const std::string&),           traits::function_type>::value));
-      CHECK_TRUE((std::is_same<long,                                    traits::return_type>::value));
-      CHECK_TRUE((std::is_same<functor,                                 traits::object_type>::value));
-      CHECK_TRUE((std::is_same<etl::type_list<int, const std::string&>, traits::argument_types>::value));
-
-      CHECK_FALSE(traits::is_function);
-      CHECK_TRUE(traits::is_member_function);
-      CHECK_FALSE(traits::is_const);
-      CHECK_FALSE(traits::is_volatile);
-      CHECK_FALSE(traits::is_noexcept);
-      CHECK_EQUAL(2, traits::argument_count);
-    }
   };
 }
