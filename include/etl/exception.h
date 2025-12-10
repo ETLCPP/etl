@@ -49,11 +49,11 @@ namespace etl
 
     typedef const char* string_type;
     typedef int         numeric_type;
-
-#if defined(ETL_VERBOSE_ERRORS)
+    
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
+#if defined(ETL_VERBOSE_ERRORS)
     ETL_CONSTEXPR
     exception(string_type reason_, string_type file_, numeric_type line_)
       : reason_text(reason_),
@@ -61,12 +61,15 @@ namespace etl
         line(line_)
     {
     }
-#else
-    //*************************************************************************
-    /// Constructor.
-    //*************************************************************************
+#elif defined(ETL_MINIMAL_ERRORS)
     ETL_CONSTEXPR
     exception(string_type /*reason_*/, string_type /*file_*/, numeric_type /*line_*/)
+    {
+    }
+#else
+    ETL_CONSTEXPR
+    exception(string_type reason_, string_type /*file_*/, numeric_type /*line_*/)
+      : reason_text(reason_)
     {
     }
 #endif
@@ -78,7 +81,7 @@ namespace etl
     ETL_CONSTEXPR
     string_type what() const
     {
-#if defined(ETL_VERBOSE_ERRORS)
+#if !defined(ETL_MINIMAL_ERRORS)
       return reason_text;
 #else
       return "";
@@ -116,8 +119,11 @@ namespace etl
 
   private:
 
+#if !defined(ETL_MINIMAL_ERRORS)
+  string_type  reason_text; ///< The reason for the exception.
+#endif
+
 #if defined(ETL_VERBOSE_ERRORS)
-    string_type  reason_text; ///< The reason for the exception.
     string_type  file_text;   ///< The file for the exception.
     numeric_type line;   ///< The line for the exception.
 #endif
