@@ -166,6 +166,7 @@ namespace
     int fnv(int) volatile noexcept               { return 0; }
     int fncv(int) const volatile noexcept        { return 0; }
 
+#if ETL_USING_CPP11
     int fnl(int) & noexcept                      { return 0; }
     int fnlc(int) const & noexcept               { return 0; }
     int fnlv(int) volatile & noexcept            { return 0; }
@@ -176,9 +177,10 @@ namespace
     int fnrv(int) volatile && noexcept           { return 0; }
     int fnrcv(int) const volatile && noexcept    { return 0; }
 #endif
+#endif
 
-    int fvar(int, ...)                 { return 0; }
-    int fvarc(int, ...) const          { return 0; }
+    int var(int, ...)                 { return 0; }
+    int varc(int, ...) const          { return 0; }
   };
 
   struct MO
