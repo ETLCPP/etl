@@ -33,6 +33,7 @@ SOFTWARE.
 #include <iterator>
 #include <string>
 #include <vector>
+#include <type_traits>
 #include <stdint.h>
 #include <string.h>
 
