@@ -43,6 +43,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include <type_traits>
 
 namespace
 {
