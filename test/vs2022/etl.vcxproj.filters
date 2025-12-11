@@ -3728,9 +3728,6 @@
     <ClCompile Include="..\test_etl_assert.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_signal.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\syntax_check\signal.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
@@ -3740,15 +3737,12 @@
     <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_hfsm_transition_on_enter.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_is_invocable.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\inplace_function.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
-    </ClCompile>      
+    </ClCompile>
     <ClCompile Include="..\test_signal.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
@@ -3757,6 +3751,12 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\invoke.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hfsm_transition_on_enter.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
