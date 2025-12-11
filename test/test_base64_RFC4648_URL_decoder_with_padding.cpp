@@ -776,7 +776,7 @@ namespace
 #if ETL_USING_EXCEPTIONS
       CHECK_THROW((b64.decode(encoded[10].data(), encoded[10].size())), etl::base64_overflow);
 #else
-      CHECK_FALSE(b64.decode(encoded[10].data(), encoded[10].size());
+      CHECK_FALSE(b64.decode(encoded[10].data(), encoded[10].size()));
       CHECK_TRUE(b64.error());
 #endif
     }
