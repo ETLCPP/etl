@@ -159,7 +159,7 @@ namespace etl
     private:
 
       // All types of variant are friends.
-      template <typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7, typename U8>
+      template <typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8>
       friend class variant;
 
       //***************************************************************************
@@ -668,21 +668,21 @@ namespace etl
       /// For variants with differing declarations.
       ///\return <b>true</b> if the types are the same, otherwise <b>false</b>.
       //***************************************************************************
-      template <typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7, typename U8>
-      bool is_same_type(const variant<U1, U2, U3, U4, U5, U6, U7, U8>& other) const
+      template <typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8>
+      bool is_same_type(const variant<V1, V2, V3, V4, V5, V6, V7, V8>& other) const
       {
         bool is_same = false;
 
         switch (other.type_id)
         {
-        case 0: is_same = (type_id == Type_Id_Lookup<U1>::type_id); break;
-        case 1: is_same = (type_id == Type_Id_Lookup<U2>::type_id); break;
-        case 2: is_same = (type_id == Type_Id_Lookup<U3>::type_id); break;
-        case 3: is_same = (type_id == Type_Id_Lookup<U4>::type_id); break;
-        case 4: is_same = (type_id == Type_Id_Lookup<U5>::type_id); break;
-        case 5: is_same = (type_id == Type_Id_Lookup<U6>::type_id); break;
-        case 6: is_same = (type_id == Type_Id_Lookup<U7>::type_id); break;
-        case 7: is_same = (type_id == Type_Id_Lookup<U8>::type_id); break;
+        case 0: is_same = (type_id == Type_Id_Lookup<V1>::type_id); break;
+        case 1: is_same = (type_id == Type_Id_Lookup<V2>::type_id); break;
+        case 2: is_same = (type_id == Type_Id_Lookup<V3>::type_id); break;
+        case 3: is_same = (type_id == Type_Id_Lookup<V4>::type_id); break;
+        case 4: is_same = (type_id == Type_Id_Lookup<V5>::type_id); break;
+        case 5: is_same = (type_id == Type_Id_Lookup<V6>::type_id); break;
+        case 6: is_same = (type_id == Type_Id_Lookup<V7>::type_id); break;
+        case 7: is_same = (type_id == Type_Id_Lookup<V8>::type_id); break;
         default: break;
         }
 

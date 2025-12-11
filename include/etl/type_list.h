@@ -185,7 +185,7 @@ namespace etl
   //***************************************************************************
   /// Defines a bool constant that is true if the type_list contains the specified type, otherwise false.
   //***************************************************************************
-  template <typename T, typename TTypes>
+  template <typename TTypeList, typename T>
   struct type_list_contains;
 
   template <typename T, typename... TTypes>
@@ -208,7 +208,7 @@ namespace etl
   //***************************************************************************
   /// Defines a bool constant that is true if the type_list has duplicates of the specified type, otherwise false.
   //***************************************************************************
-  template <typename T, typename TTypes>
+  template <typename TTypeList, typename T>
   struct type_list_has_duplicates_of;
 
   template <typename T, typename... TTypes>
@@ -231,7 +231,7 @@ namespace etl
   //***************************************************************************
   /// Defines an integral constant that is the count of the number of times a type is in the type list.
   //***************************************************************************
-  template <typename T, typename TTypes>
+  template <typename TTypeList, typename T>
   struct type_list_count_of;
 
   template <typename T, typename... TTypes>

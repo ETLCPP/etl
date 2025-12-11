@@ -141,7 +141,6 @@ namespace
     TEST_FIXTURE(SetupFixture, test_make_string_with_capacity_truncated)
     {
       constexpr size_t CAPACITY = 10UL;
-      size_t length = strlen("Hello World");
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       CHECK_THROW(auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World"),  etl::string_truncation);
@@ -149,6 +148,8 @@ namespace
       CHECK_THROW(auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World"), etl::string_truncation);;
       CHECK_THROW(auto u32text = etl::make_string_with_capacity<CAPACITY>(U"Hello World"), etl::string_truncation);;
 #else
+      size_t length = strlen("Hello World");
+
       auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
       auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World");
       auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World");

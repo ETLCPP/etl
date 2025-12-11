@@ -172,6 +172,19 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// Exception for call to receive/start/etc. while receive/start/etc. is already happening.
+  /// A call like that could result in an infinite loop or landing in an incorrect state.
+  //***************************************************************************
+  class fsm_reentrant_transition_forbidden : public etl::fsm_exception
+  {
+  public:
+    fsm_reentrant_transition_forbidden(string_type file_name_, numeric_type line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:reentrant calls to start/receive/etc. forbidden", ETL_FSM_FILE_ID"G"), file_name_, line_number_)
+    {
+    }
+  };
+
   namespace private_fsm
   {
     template <typename T = void>
@@ -209,6 +222,47 @@ namespace etl
       : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
     {
     };   
+
+    //***************************************************************************
+    /// RAII detection mechanism to catch reentrant calls to methods that might
+    /// transition the state machine to a different state.
+    /// This is not a mutex.
+    //***************************************************************************
+    class fsm_reentrancy_guard
+    {
+    public:
+      //*******************************************
+      /// Constructor.
+      /// Checks if another method has locked reentrancy.
+      //*******************************************
+      fsm_reentrancy_guard(bool& transition_guard_flag)
+        : is_locked(transition_guard_flag)
+      {
+        ETL_ASSERT(!is_locked, ETL_ERROR(etl::fsm_reentrant_transition_forbidden));
+        is_locked = true;
+      }
+
+      //*******************************************
+      /// Destructor.
+      /// Releases lock on reentrancy.
+      //*******************************************
+      ~fsm_reentrancy_guard() ETL_NOEXCEPT
+      {
+        is_locked = false;
+      }
+      
+    private:
+      // Reference to the flag signifying a lock on the state machine.
+      bool& is_locked;
+      
+      // Copy & move semantics disabled since this is a guard.
+      fsm_reentrancy_guard(fsm_reentrancy_guard const&) ETL_DELETE;
+      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard const&) ETL_DELETE;
+#if ETL_USING_CPP11
+      fsm_reentrancy_guard(fsm_reentrancy_guard&&) ETL_DELETE;
+      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard&&) ETL_DELETE;
+#endif
+    };
   }
 
   class ifsm_state;
@@ -417,6 +471,7 @@ namespace etl
       , p_state(ETL_NULLPTR)
       , state_list(ETL_NULLPTR)
       , number_of_states(0U)
+      , is_processing_state_change(false)
     {
     }
 
@@ -467,6 +522,8 @@ namespace etl
     //*******************************************
     virtual void start(bool call_on_enter_state = true)
     {
+      private_fsm::fsm_reentrancy_guard transition_lock(is_processing_state_change);
+
       // Can only be started once.
       if (!is_started())
       {
@@ -497,6 +554,8 @@ namespace etl
     //*******************************************
     void receive(const etl::imessage& message) ETL_OVERRIDE
     {
+      private_fsm::fsm_reentrancy_guard transition_lock(is_processing_state_change);
+
       if (is_started())
       {
         etl::fsm_state_id_t next_state_id = p_state->process_event(message);
@@ -514,6 +573,8 @@ namespace etl
     //*******************************************
     etl::fsm_state_id_t transition_to(etl::fsm_state_id_t new_state_id)
     {
+      private_fsm::fsm_reentrancy_guard transition_lock(is_processing_state_change);
+
       if (is_started())
       {
         return process_state_change(new_state_id);
@@ -576,6 +637,8 @@ namespace etl
     //*******************************************
     virtual void reset(bool call_on_exit_state = false)
     {
+      private_fsm::fsm_reentrancy_guard transition_lock(is_processing_state_change);
+
       if (is_started() && call_on_exit_state)
       {
         p_state->on_exit_state();
@@ -655,6 +718,7 @@ namespace etl
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.
     etl::ifsm_state**   state_list;       ///< The list of added states.
     etl::fsm_state_id_t number_of_states; ///< The number of states.
+    bool is_processing_state_change;      ///< Whether a method call that could potentially trigger a state change is active
   };
 
   //*************************************************************************************************

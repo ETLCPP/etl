@@ -560,6 +560,7 @@ namespace etl
     //*********************************************************************
     reference operator [](size_type i)
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -570,6 +571,7 @@ namespace etl
     //*********************************************************************
     const_reference operator [](size_type i) const
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_out_of_bounds));
       return p_buffer[i];
     }
 
@@ -603,6 +605,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
       return p_buffer[0];
     }
 
@@ -612,6 +615,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
       return p_buffer[0];
     }
 
@@ -621,7 +625,8 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      return p_buffer[current_size - 1];
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
+      return p_buffer[size() - 1];
     }
 
     //*********************************************************************
@@ -630,7 +635,8 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      return p_buffer[current_size - 1];
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_out_of_bounds));
+      return p_buffer[size() - 1];
     }
 
     //*********************************************************************
@@ -764,7 +770,7 @@ namespace etl
       set_truncated(n > CAPACITY);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
+      ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
@@ -912,7 +918,7 @@ namespace etl
       set_truncated(n > free_space);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
+      ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
@@ -932,6 +938,8 @@ namespace etl
     //*********************************************************************
     iterator insert(const_iterator position, T value)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+
       // Quick hack, as iterators are pointers.
       iterator insert_position = to_iterator(position);
 
@@ -984,6 +992,8 @@ namespace etl
     //*********************************************************************
     iterator insert(const_iterator position, size_type n, T value)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+
       iterator position_ = to_iterator(position);
 
       if (n == 0)
@@ -1071,6 +1081,9 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, TIterator last)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(string_out_of_bounds));
+      ETL_ASSERT_CHECK_EXTRA(first <= last, ETL_ERROR(string_iterator));
+      
       iterator position_ = to_iterator(position);
 
       if (first == last)
@@ -1307,6 +1320,8 @@ namespace etl
     //*********************************************************************
     etl::ibasic_string<T>& erase(size_type position, size_type length_ = npos)
     {
+      ETL_ASSERT_CHECK_EXTRA(position <= size(), ETL_ERROR(string_out_of_bounds));
+
       // Limit the length.
       length_ = etl::min(length_, size() - position);
 
@@ -1322,6 +1337,8 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(string_out_of_bounds));
+
       etl::mem_move(i_element + 1, end(), i_element);
       p_buffer[--current_size] = 0;
 
@@ -1335,6 +1352,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(string_out_of_bounds));
+      
       iterator i_element_(to_iterator(i_element));
 
       etl::mem_move(i_element + 1, end(), i_element_);
@@ -1353,6 +1372,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(string_out_of_bounds));
+
       iterator first_ = to_iterator(first);
       iterator last_  = to_iterator(last);
 
@@ -2753,8 +2774,10 @@ namespace etl
       set_truncated((count > free_space) || this->is_truncated() || truncated);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
+      ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
+#else
+      (void)truncated;
 #endif
 
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
@@ -2762,6 +2785,8 @@ namespace etl
       {
         set_secure();
       }
+#else
+      (void)secure;
 #endif
 
       // Limit the actual distance to the capacity.
@@ -2799,8 +2824,10 @@ namespace etl
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(truncated);
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(is_truncated == false, ETL_ERROR(string_truncation));
+      ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
+#else
+      (void)truncated;
 #endif
 
 #if ETL_HAS_STRING_CLEAR_AFTER_USE
@@ -2808,6 +2835,8 @@ namespace etl
       {
         set_secure();
       }
+#else
+      (void)secure;
 #endif
 
       cleanup();

@@ -140,6 +140,67 @@ namespace
   struct other_specialized
   {
   };
+
+  struct MF
+  {
+    int f(int)                         { return 0; }
+    int fc(int) const                  { return 0; }
+    int fv(int) volatile               { return 0; }
+    int fcv(int) const volatile        { return 0; }
+
+#if ETL_USING_CPP11
+    int fl(int) &                      { return 0; }
+    int flc(int) const &               { return 0; }
+    int flv(int) volatile &            { return 0; }
+    int flcv(int) const volatile &     { return 0; }
+
+    int fr(int) &&                     { return 0; }
+    int frc(int) const &&              { return 0; }
+    int frv(int) volatile &&           { return 0; }
+    int frcv(int) const volatile &&    { return 0; }
+#endif
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+    int fn(int) noexcept                         { return 0; }
+    int fnc(int) const noexcept                  { return 0; }
+    int fnv(int) volatile noexcept               { return 0; }
+    int fncv(int) const volatile noexcept        { return 0; }
+
+    int fnl(int) & noexcept                      { return 0; }
+    int fnlc(int) const & noexcept               { return 0; }
+    int fnlv(int) volatile & noexcept            { return 0; }
+    int fnlcv(int) const volatile & noexcept     { return 0; }
+
+    int fnr(int) && noexcept                     { return 0; }
+    int fnrc(int) const && noexcept              { return 0; }
+    int fnrv(int) volatile && noexcept           { return 0; }
+    int fnrcv(int) const volatile && noexcept    { return 0; }
+#endif
+
+    int fvar(int, ...)                 { return 0; }
+    int fvarc(int, ...) const          { return 0; }
+  };
+
+  struct MO
+  {
+    int data;
+  };
+
+  static int f(int) { return 0; }
+  static int fvar(...) { return 0; }
+  static int fvar2(int, ...) { return 0; }
+
+  template <typename T, typename... TArgs>
+  static T ft(TArgs...) { return T(); }
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  static int fn(int) noexcept { return 0; }
+  static int fnvar(...) noexcept { return 0; }
+  static int fnvar2(int, ...) noexcept { return 0; }
+
+  template <typename T, typename... TArgs>
+  static T fnt(TArgs...) noexcept { return T(); }
+#endif
 }
 
 // Definitions for when the STL and compiler built-ins are not available.
@@ -1490,4 +1551,118 @@ namespace
     CHECK_FALSE(c1);
   }
 #endif
+
+  //*************************************************************************
+  // Basic cv for member function pointers
+  TEST(test_is_member_function_pointer)
+  {
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::f)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fc)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fv)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fcv)>::value));
+
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fl)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flc)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flv)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flcv)>::value));
+
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fr)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frc)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frv)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frcv)>::value));
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fn)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnc)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnv)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fncv)>::value));
+
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnl)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlc)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlv)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlcv)>::value));
+
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnr)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrc)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrv)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrcv)>::value));
+#endif
+
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fvar)>::value));
+    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fvarc)>::value));
+  }
+
+  //*************************************************************************
+  // Negative tests for member function pointer trait
+  TEST(test_is_member_function_pointer_negative)
+  {
+    (void)f(0);
+
+    // Free function pointer
+    CHECK_FALSE((etl::is_member_function_pointer<decltype(&f)>::value));
+
+    // Member object pointer
+    CHECK_FALSE((etl::is_member_function_pointer<int MF::*>::value));
+
+    // Plain function type (not pointer)
+    CHECK_FALSE((etl::is_member_function_pointer<int(int)>::value));
+
+    // Non-function type
+    CHECK_FALSE((etl::is_member_function_pointer<int>::value));
+  }
+
+  //*************************************************************************
+  // Member object pointer trait
+  TEST(test_is_member_object_pointer)
+  {
+    CHECK_TRUE((etl::is_member_object_pointer<int MO::*>::value));
+
+    // Not a member object pointer
+    CHECK_FALSE((etl::is_member_object_pointer<int (MF::*)(int)>::value));
+    CHECK_FALSE((etl::is_member_object_pointer<int*>::value));
+  }
+
+  //*************************************************************************
+  // Member pointer (either member object or member function pointer)
+  TEST(test_is_member_pointer_any)
+  {
+    CHECK_TRUE((etl::is_member_pointer<int MF::*>::value));
+    CHECK_TRUE((etl::is_member_pointer<int (MF::*)(int)>::value));
+
+    // Not member pointers
+    CHECK_FALSE((etl::is_member_pointer<int*>::value));
+    CHECK_FALSE((etl::is_member_pointer<decltype(f)>::value));
+  }
+
+  //*************************************************************************
+  // Function type detection
+  TEST(test_is_function)
+  {
+    (void)f(0);
+    (void)fvar();
+    (void)fvar2(0); 
+    (void)ft<int, int, double>(0, 0.0);
+
+    CHECK_TRUE((etl::is_function<decltype(f)>::value));
+    CHECK_TRUE((etl::is_function<decltype(fvar)>::value));
+    CHECK_TRUE((etl::is_function<decltype(fvar2)>::value));
+    CHECK_TRUE((etl::is_function<decltype(ft<int, int, double>)>::value));
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+    (void)fn(0);
+    (void)fnvar();
+    (void)fnvar2(0);
+    (void)fnt<int, int, double>(0, 0.0);
+
+    CHECK_TRUE((etl::is_function<decltype(fn)>::value));
+    CHECK_TRUE((etl::is_function<decltype(fnvar)>::value));
+    CHECK_TRUE((etl::is_function<decltype(fnvar2)>::value));
+    CHECK_TRUE((etl::is_function<decltype(fnt<int, int, double>)>::value));
+#endif
+
+    CHECK_FALSE((etl::is_function<int>::value));
+    CHECK_FALSE((etl::is_function<int*>::value));
+    CHECK_FALSE((etl::is_function<int MF::*>::value));
+    CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
+  }
 }

@@ -43,6 +43,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include <type_traits>
 
 namespace
 {
@@ -1256,7 +1257,7 @@ namespace
       uint32_t expected[8] = { 0x12345678, 0x76543210, 0x01452367, 0x23670145, 0x67234501, 0x45016723, 0x01324576, 0x76453201 };
       uint32_t data[12]    = { 0x12345678, 0x76543210, 0x01452367, 0x23670145, 0x67234501, 0x45016723, 0x01324576, 0x76453201, 0, 0, 0, 0 };
       const uint32_t* data_begin = &data[0];
-      
+
       uint32_t* result = etl::mem_move(data_begin, 8, data + 4);
       CHECK(std::equal(expected, expected + 8, data + 4));
       CHECK(result == data + 4);
@@ -1269,7 +1270,7 @@ namespace
       uint32_t same[8] = { 0x12345678, 0x76543210, 0x01452367, 0x23670145, 0x67234501, 0x45016723, 0x01324576, 0x76453201 };
       uint32_t grtr[8] = { 0x12345678, 0x76543210, 0x01452367, 0x23670145, 0x67235501, 0x45016723, 0x01324576, 0x76453201 };
       uint32_t less[8] = { 0x12345678, 0x76543210, 0x01452367, 0x23670145, 0x67134501, 0x45016723, 0x01324576, 0x76453201 };
-      
+
       CHECK(etl::mem_compare(data, data + 8, same) == 0);
       CHECK(etl::mem_compare(data, data + 8, grtr) > 0);
       CHECK(etl::mem_compare(data, data + 8, less) < 0);
@@ -1443,7 +1444,7 @@ namespace
     }
 
     //*************************************************************************
-    class Base 
+    class Base
     {
     public:
       virtual ~Base() {};
@@ -1452,21 +1453,21 @@ namespace
 
     static bool function_was_called = false;
 
-    class Derived : public Base 
+    class Derived : public Base
     {
     public:
-      Derived() 
+      Derived()
       {
         function_was_called = false;
       }
 
-      void function() 
+      void function()
       {
         function_was_called = true;
       }
     };
 
-    void call(etl::unique_ptr<Base> ptr) 
+    void call(etl::unique_ptr<Base> ptr)
     {
       ptr->function();
     }
@@ -1477,13 +1478,13 @@ namespace
 
       etl::unique_ptr<Derived> ptr(new Derived());
       CHECK(ptr.get() != ETL_NULLPTR);
-      
+
       call(etl::move(ptr));
       CHECK(function_was_called);
       CHECK(ptr.get() == ETL_NULLPTR);
     }
 
-    
+
     struct Flags
     {
       Flags()
@@ -1530,7 +1531,7 @@ namespace
         int a;
         int b;
       };
-     
+
       alignas(Data) char buffer1[sizeof(Data)];
       char* pbuffer1 = buffer1;
 
@@ -1581,14 +1582,14 @@ namespace
       CHECK_FALSE(flags.destructed);
       CHECK_EQUAL(1, rdata1b.a);
       CHECK_EQUAL(2, rdata1b.b);
-      
+
       flags.Clear();
       Data& rdata2b = etl::get_object_at<Data>(pbuffer2b);
       CHECK_FALSE(flags.constructed);
       CHECK_FALSE(flags.destructed);
       CHECK_EQUAL(data2.a, rdata2b.a);
       CHECK_EQUAL(data2.b, rdata2b.b);
-      
+
       flags.Clear();
       Data& rdata3b = etl::get_object_at<Data>(pbuffer3b);
       CHECK_FALSE(flags.constructed);
@@ -1610,6 +1611,33 @@ namespace
       etl::destroy_object_at<Data>(pbuffer3b);
       CHECK_FALSE(flags.constructed);
       CHECK_TRUE(flags.destructed);
+    }
+
+    TEST(test_get_object_at_const_specialization)
+    {
+      struct Data
+      {
+        Data()
+          : a(1)
+          , b(2)
+        {
+          flags.constructed = true;
+        }
+
+        ~Data() = default;
+
+        int a;
+        int b;
+      };
+
+      std::array<uint8_t, 32U> buffer{};
+      etl::construct_object_at(buffer.data(), Data());
+      const void* bufferPointer = buffer.data();
+
+      const Data& rdata = etl::get_object_at<Data>(bufferPointer);
+      CHECK_TRUE(flags.constructed);
+      CHECK_TRUE(rdata.a == 1);
+      CHECK_TRUE(rdata.b == 2);
     }
 
     TEST(test_construct_get_destroy_object_misaligned)

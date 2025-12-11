@@ -55,6 +55,20 @@ SOFTWARE.
 
 namespace etl
 {
+  template <typename T> struct is_std_array : etl::false_type {};
+#if ETL_USING_STL && ETL_USING_CPP11
+  template <typename T, size_t N> struct is_std_array<std::array<T, N>> : etl::true_type {};
+#endif
+  template <typename T> struct is_std_array<const T> : is_std_array<T> {};
+  template <typename T> struct is_std_array<volatile T> : is_std_array<T> {};
+  template <typename T> struct is_std_array<const volatile T> : is_std_array<T> {};
+
+  template <typename T> struct is_etl_array : etl::false_type {};
+  template <typename T, size_t N> struct is_etl_array<etl::array<T, N> > : etl::true_type {};
+  template <typename T> struct is_etl_array<const T> : is_etl_array<T> {};
+  template <typename T> struct is_etl_array<volatile T> : is_etl_array<T> {};
+  template <typename T> struct is_etl_array<const volatile T> : is_etl_array<T> {};
+
   //***************************************************************************
   // Tag to indicate a class is a span.
   //***************************************************************************
@@ -186,8 +200,10 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer, typename = typename etl::enable_if<!etl::is_base_of<span_tag, etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_std_array<etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_etl_array<etl::remove_reference_t<TContainer>>::value &&
                                                                       !etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
-                                                                      !etl::is_array<etl::remove_reference_t<TContainer>>::value&&
+                                                                      !etl::is_array<etl::remove_reference_t<TContainer>>::value &&
                                                                       etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
     ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
       : pbegin(a.data())
@@ -200,6 +216,8 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     span(TContainer& a, typename etl::enable_if<!etl::is_base_of<span_tag, typename etl::remove_reference<TContainer>::type>::value &&
+                                                !etl::is_std_array<typename etl::remove_reference<TContainer>::type>::value &&
+                                                !etl::is_etl_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                 !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                 !etl::is_array<TContainer>::value &&
                                                 etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
@@ -213,6 +231,8 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     span(const TContainer& a, typename etl::enable_if<!etl::is_base_of<span_tag, typename etl::remove_reference<TContainer>::type>::value &&
+                                                      !etl::is_std_array<typename etl::remove_reference<TContainer>::type>::value &&
+                                                      !etl::is_etl_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                       !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                       !etl::is_array<TContainer>::value&&
                                                       etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
@@ -248,6 +268,44 @@ namespace etl
       : pbegin(other.data())
     {
       ETL_ASSERT(other.size() == Extent, ETL_ERROR(span_size_mismatch));
+    }
+
+#if ETL_USING_STL && ETL_USING_CPP11
+    //*************************************************************************
+    /// Constructor from std array.
+    //*************************************************************************
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(std::array<U, Size>& other, typename etl::enable_if<Size == Extent, void>::type* = 0) ETL_NOEXCEPT
+      : pbegin(other.data())
+    {
+    }
+
+    //*************************************************************************
+    /// Constructor from const std array.
+    //*************************************************************************
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(const std::array<U, Size>& other, typename etl::enable_if<Size == Extent && etl::is_const<T>::value, void>::type* = 0) ETL_NOEXCEPT
+      : pbegin(other.data())
+    {
+    }
+#endif
+
+    //*************************************************************************
+    /// Constructor from etl array.
+    //*************************************************************************
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(etl::array<U, Size>& other, typename etl::enable_if<Size == Extent, void>::type* = 0) ETL_NOEXCEPT
+      : pbegin(other.data())
+    {
+    }
+
+    //*************************************************************************
+    /// Constructor from const etl array.
+    //*************************************************************************
+    template <typename U, size_t Size>
+    ETL_CONSTEXPR span(const etl::array<U, Size>& other, typename etl::enable_if<Size == Extent && etl::is_const<T>::value, void>::type* = 0) ETL_NOEXCEPT
+      : pbegin(other.data())
+    {
     }
 
     //*************************************************************************
@@ -561,11 +619,11 @@ namespace etl
     /// Reinterpret the span as a span with different element type.
     //*************************************************************************
     template<typename TNew>
-    ETL_NODISCARD ETL_CONSTEXPR14 etl::span<TNew, etl::dynamic_extent> reinterpret_as() const
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::span<TNew, Extent * sizeof(element_type) / sizeof(TNew)> reinterpret_as() const
     {
       ETL_ASSERT(etl::is_aligned<etl::alignment_of<TNew>::value>(pbegin), ETL_ERROR(span_alignment_exception));
 
-      return etl::span<TNew, etl::dynamic_extent>(reinterpret_cast<TNew*>(pbegin),
+      return etl::span<TNew, Extent * sizeof(element_type) / sizeof(TNew)>(reinterpret_cast<TNew*>(pbegin),
                        Extent * sizeof(element_type) / sizeof(TNew));
     }
 

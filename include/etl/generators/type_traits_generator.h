@@ -800,6 +800,7 @@ namespace etl
 
   //***************************************************************************
   /// is_convertible
+  ///\ingroup type_traits
 #if ETL_USING_CPP11
   namespace private_type_traits
   {
@@ -828,11 +829,34 @@ namespace etl
                                               decltype(private_type_traits::nonvoid_convertible<TFrom, TTo>(0))::value) ||
                                               (etl::is_void<TFrom>::value && etl::is_void<TTo>::value)> {};
 #endif
+
+  // Is convertible and the conversion is noexcept.
+  template <typename TFrom, typename TTo>
+  struct is_nothrow_convertible
+  {
+  private:
+    // Helper: a function taking TTo to require the conversion.
+    static void sink(TTo) noexcept;
+
+    // Selected only if 'sink(declval<TFrom>())' is a valid expression.
+    template <typename F>
+    static auto test(int) -> etl::bool_constant<noexcept(sink(etl::declval<F>()))>;
+
+    // Fallback if conversion is not viable.
+    template <typename>
+    static etl::false_type test(...);
+
+  public:
+    static ETL_CONSTANT bool value = decltype(test<TFrom>(0))::value;
+  };
 #endif
 
 #if ETL_USING_CPP17
   template <typename TFrom, typename TTo >
   inline constexpr bool is_convertible_v = etl::is_convertible<TFrom, TTo>::value;
+
+  template <typename TFrom, typename TTo >
+  inline constexpr bool is_nothrow_convertible_v = etl::is_nothrow_convertible<TFrom, TTo>::value;
 #endif
 
   //***************************************************************************
@@ -1353,11 +1377,34 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP11
   template <typename TFrom, typename TTo>
   struct is_convertible : std::is_convertible<TFrom, TTo> {};
+
+  // Is convertible and the conversion is noexcept.
+  template <typename TFrom, typename TTo>
+  struct is_nothrow_convertible
+  {
+  private:
+    // Helper: a function taking TTo to require the conversion.
+    static void sink(TTo) noexcept;
+
+    // Selected only if 'sink(declval<TFrom>())' is a valid expression.
+    template <typename F>
+    static auto test(int) -> etl::bool_constant<noexcept(sink(etl::declval<F>()))>;
+
+    // Fallback if conversion is not viable.
+    template <typename>
+    static etl::false_type test(...);
+
+  public:
+    static ETL_CONSTANT bool value = decltype(test<TFrom>(0))::value;
+  };
 #endif
 
 #if ETL_USING_CPP17
   template <typename TFrom, typename TTo>
   inline constexpr bool is_convertible_v = std::is_convertible_v<TFrom, TTo>;
+
+  template <typename TFrom, typename TTo >
+  inline constexpr bool is_nothrow_convertible_v = is_nothrow_convertible<TFrom, TTo>::value;
 #endif
 
   //***************************************************************************
@@ -2124,17 +2171,17 @@ typedef integral_constant<bool, true>  true_type;
   /// is_constructible
   namespace private_type_traits 
   {
-    template <class, class T, class... Args>
+    template <class, class T, class... TArgs>
     struct is_constructible_ : etl::false_type {};
 
-    template <class T, class... Args>
-    struct is_constructible_<void_t<decltype(T(etl::declval<Args>()...))>, T, Args...> : etl::true_type {};
+    template <class T, class... TArgs>
+    struct is_constructible_<void_t<decltype(T(etl::declval<TArgs>()...))>, T, TArgs...> : etl::true_type {};
   }
 
   //*********************************************
   // is_constructible
-  template <class T, class... Args>
-  using is_constructible = private_type_traits::is_constructible_<void_t<>, T, Args...>;
+  template <class T, class... TArgs>
+  using is_constructible = private_type_traits::is_constructible_<void_t<>, T, TArgs...>;
 
   //*********************************************
   // is_copy_constructible
@@ -2488,6 +2535,270 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T, template <typename...> class Template>
   inline constexpr bool is_specialization_v = etl::is_specialization<T, Template>::value;
+#endif
+
+  //*********************************************
+  // is_constant_evaluated
+  ETL_CONSTEXPR inline bool is_constant_evaluated() ETL_NOEXCEPT
+  {
+#if ETL_USING_CPP23
+    if consteval
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+#elif ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1
+    // Fallback for C++20 on supported compilers
+    return __builtin_is_constant_evaluated();
+#else
+    // default if unsupported
+    return false;
+#endif
+  }
+
+#if ETL_USING_CPP11
+  //*********************************
+  /// Check if T is a function type
+  //*********************************
+  template<typename T>
+  struct is_function : etl::false_type
+  {
+  };
+
+  // Plain / cv-qualified
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...)> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) const> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) volatile> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) const volatile> : etl::true_type {};
+
+  // Variadic
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...)> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) volatile> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const volatile> : etl::true_type {};
+
+  // noexcept variants (if supported)
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) const noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) volatile noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs...) const volatile noexcept> : etl::true_type {};
+
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) volatile noexcept> : etl::true_type {};
+
+  template<typename TReturn, typename... TArgs>
+  struct is_function<TReturn(TArgs..., ...) const volatile noexcept> : etl::true_type {};
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_function_v = etl::is_function<T>::value;
+#endif
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************
+  /// Check for the presence of operator()
+  //*********************************
+  template <typename T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value, int> = 0>
+  struct has_call_operator
+  {
+    template <typename U>
+    static auto test(int) -> decltype(&U::operator(), etl::true_type());
+
+    template <typename>
+    static etl::false_type test(...);
+
+    static const bool value = etl::is_same<decltype(test<T>(0)), etl::true_type>::value;
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_call_operator_v = etl::has_call_operator<T>::value;
+#endif
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Check that there is only one operator()
+  //***************************************************************************
+  template <typename T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value, int> = 0>
+  struct has_unique_call_operator
+  {
+    //*********************************
+    // Test for presence of operator()
+    //*********************************
+    template <typename U>
+    static auto test(int) -> decltype(&U::operator(), etl::true_type());
+
+    //*********************************
+    // Fallback
+    //*********************************
+    template <typename>
+    static auto test(...) -> etl::false_type;
+
+    //*********************************
+    // <b>true</b> if operator() exists and is unique
+    //*********************************
+    static constexpr bool value = decltype(test<etl::decay_t<T>>(0))::value;
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_unique_call_operator_v = etl::has_unique_call_operator<T>::value;
+#endif
+#endif
+
+  //***************************************************************************
+  /// Is T a member pointer
+  //***************************************************************************
+  namespace private_type_traits
+  {
+    template<typename T>
+    struct is_member_pointer_helper : etl::false_type {};
+
+    template<typename T, typename TObject>
+    struct is_member_pointer_helper<T TObject::*> : etl::true_type {};
+  }
+
+  template<typename T> 
+  struct is_member_pointer : private_type_traits::is_member_pointer_helper<typename etl::remove_cv<T>::type> {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_pointer_v = etl::is_member_pointer<T>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Is T a member function pointer
+  //***************************************************************************
+  template <typename T> struct is_member_function_pointer : etl::false_type {};
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...)> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) volatile> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const volatile> : etl::true_type {};
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) noexcept> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const noexcept> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) volatile noexcept> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const volatile noexcept> : etl::true_type {};
+#endif
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) &>                : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const &>          : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) volatile &>       : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const volatile &> : etl::true_type {};
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) &&>               : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const &&>         : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) volatile &&>      : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const volatile &&>: etl::true_type {};
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) & noexcept>                : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const & noexcept>          : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) volatile & noexcept>       : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const volatile & noexcept> : etl::true_type {};
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) && noexcept>               : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const && noexcept>         : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) volatile && noexcept>      : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs...) const volatile && noexcept>: etl::true_type {};
+#endif
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...)> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) volatile> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const volatile> : etl::true_type {};
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) noexcept> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const noexcept> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) volatile noexcept> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const volatile noexcept> : etl::true_type {};
+#endif
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) &>                : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const &>          : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) volatile &>       : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const volatile &> : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) &&>               : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const &&>         : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) volatile &&>      : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const volatile &&>: etl::true_type {};
+
+#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) & noexcept>                : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const & noexcept>          : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) volatile & noexcept>       : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const volatile & noexcept> : etl::true_type {};
+
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) && noexcept>               : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const && noexcept>         : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) volatile && noexcept>      : etl::true_type {};
+  template <typename TReturn, typename TObject, typename... TArgs> struct is_member_function_pointer<TReturn(TObject::*)(TArgs..., ...) const volatile && noexcept>: etl::true_type {};
+#endif
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_function_pointer_v = etl::is_member_function_pointer<T>::value;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Is T a member object pointer
+  //***************************************************************************
+  namespace private_type_traits
+  {
+    template<typename> 
+    struct is_member_object_pointer_helper : public etl::false_type {};
+
+    template<typename T, typename TObject> 
+    struct is_member_object_pointer_helper<T TObject::*> : public etl::negation<etl::is_function<T>> {};
+  }
+
+  template<typename T> struct is_member_object_pointer : public private_type_traits::is_member_object_pointer_helper<etl::remove_cv_t<T>>::type {};
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_object_pointer_v = etl::is_member_object_pointer<T>::value;
 #endif
 }
 
