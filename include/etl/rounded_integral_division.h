@@ -414,7 +414,7 @@ namespace etl
     const T quotient  = numerator / denominator;
 
     // Work with magnitudes in unsigned form (avoids abs() overflow)
-    typedef typename std::make_unsigned<T>::type utype;
+    typedef typename etl::make_unsigned<T>::type utype;
     utype abs_remainder   = remainder < 0 ? utype(0) - utype(remainder) : utype(remainder);
     utype abs_denominator = denominator < 0 ? utype(0) - utype(denominator)       : utype(denominator);
 
