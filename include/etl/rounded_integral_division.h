@@ -519,16 +519,16 @@ namespace etl
                           T>::type
     divide_round_half_down(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T quotient            = numerator / denominator;
-    const T remainder           = numerator % denominator;
-    const T abs_denominator     = etl::absolute(denominator);
-    const T abs_remainderainder = etl::absolute(remainder);
+    const T quotient        = numerator / denominator;
+    const T remainder       = numerator % denominator;
+    const T abs_denominator = etl::absolute(denominator);
+    const T abs_remainder   = etl::absolute(remainder);
 
     // Direction: +1 if result should be more positive, -1 if more negative
     const T direction = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
 
     // Only round away from zero if remainder is strictly greater than half the divisor
-    return abs_remainderainder > (abs_denominator / 2) ? quotient + direction : quotient;
+    return abs_remainder > (abs_denominator / 2) ? quotient + direction : quotient;
   }
 
   //***************************************************************************
@@ -730,17 +730,17 @@ namespace etl
                           T>::type
     divide_round_half_odd(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T quotient            = numerator / denominator;
-    const T remainder           = numerator % denominator;
-    const T abs_denominator     = etl::absolute(denominator);
-    const T abs_remainderainder = etl::absolute(remainder);
-    const T direction           = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
+    const T quotient        = numerator / denominator;
+    const T remainder       = numerator % denominator;
+    const T abs_denominator = etl::absolute(denominator);
+    const T abs_remainder   = etl::absolute(remainder);
+    const T direction       = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
 
-    if ((abs_remainderainder * 2) < abs_denominator)
+    if ((abs_remainder * 2) < abs_denominator)
     {
       return quotient;
     }
-    else if ((abs_remainderainder * 2) > abs_denominator)
+    else if ((abs_remainder * 2) > abs_denominator)
     {
       return quotient + direction;
     }
