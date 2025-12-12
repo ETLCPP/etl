@@ -202,7 +202,7 @@ namespace etl
     size_type top_index;      ///< The index of the top of the stack.
     size_type current_size;   ///< The number of items in the stack.
     const size_type CAPACITY; ///< The maximum number of items in the stack.
-    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
+    ETL_DECLARE_DEBUG_COUNT   ///< For internal debugging purposes.
   };
 
   //***************************************************************************

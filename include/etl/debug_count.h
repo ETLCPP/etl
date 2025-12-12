@@ -42,7 +42,7 @@ SOFTWARE.
 
 #if defined(ETL_DEBUG_COUNT)
 
-  #define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count
+  #define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count;
   #define ETL_SET_DEBUG_COUNT(n)               etl_debug_count.set(n)
   #define ETL_GET_DEBUG_COUNT                  etl_debug_count.get()
   #define ETL_INCREMENT_DEBUG_COUNT            ++etl_debug_count

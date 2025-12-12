@@ -222,7 +222,7 @@ namespace etl
     size_type out;           ///< Where to get the oldest data.
     size_type current_size;   ///< The number of items in the queue.
     const size_type CAPACITY; ///< The maximum number of items in the queue.
-    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
+    ETL_DECLARE_DEBUG_COUNT   ///< For internal debugging purposes.
 
   };
 
