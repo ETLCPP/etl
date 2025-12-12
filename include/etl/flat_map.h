@@ -1019,7 +1019,7 @@ namespace etl
     TKeyCompare compare;
 
     /// Internal debugging.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
 #if ETL_USING_CPP11
     //*************************************************************************

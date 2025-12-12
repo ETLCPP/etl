@@ -352,7 +352,7 @@ namespace etl
     etl::ipool* p_node_pool;    ///< The pool of data nodes used in the list.
     size_type   MAX_SIZE;       ///< The maximum size of the forward_list.
     bool        pool_is_shared; ///< If <b>true</b> then the pool is shared between lists.
-    ETL_DECLARE_DEBUG_COUNT;    ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT    ///< Internal debugging.
   };
 
   //***************************************************************************

@@ -213,7 +213,7 @@ namespace etl
     size_type       current_size; ///< The current number of elements in the deque.
     const size_type CAPACITY;     ///< The maximum number of elements in the deque.
     const size_type Buffer_Size;  ///< The number of elements in the buffer.
-    ETL_DECLARE_DEBUG_COUNT;       ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT       ///< Internal debugging.
   };
 
   //***************************************************************************
