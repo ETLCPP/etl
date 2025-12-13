@@ -641,7 +641,47 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// is_class
+  namespace private_type_traits
+  {
+    template <typename T> char test(int T::*); // Match for classes.
+
+    struct dummy { char c[2]; };
+    template <typename T> dummy test(...);     // Match for non-classes.
+  }
+
+  template <typename T>
+  struct is_class : etl::bool_constant<sizeof(private_type_traits::test<T>(0)) == 1U> {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_class_v = is_class<T>::value;
+#endif
+
+  //***************************************************************************
   /// is_base_of
+#if ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    template<typename B>
+    etl::true_type test_ptr_conv(const volatile B*);
+    template<typename>
+    etl::false_type test_ptr_conv(const volatile void*);
+
+    template<typename B, typename D>
+    auto test_is_base_of(int) -> decltype(test_ptr_conv<B>(static_cast<D*>(nullptr)));
+    template<typename, typename>
+    auto test_is_base_of(...) -> etl::true_type; // private or ambiguous base
+  }
+
+  template<typename TBase, typename TDerived>
+  struct is_base_of: etl::integral_constant<
+    bool,
+    etl::is_class<TBase>::value &&
+    etl::is_class<TDerived>::value &&
+    decltype(private_type_traits::test_is_base_of<TBase, TDerived>(0))::value
+    > {};
+#else
   template<typename TBase,
            typename TDerived,
            const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value || etl::is_array<TDerived>::value)>
@@ -663,28 +703,11 @@ namespace etl
   {
     static const bool value = false;
   };
+#endif
 
 #if ETL_USING_CPP17
   template <typename T1, typename T2>
   inline constexpr bool is_base_of_v = is_base_of<T1, T2>::value;
-#endif
-
-  //***************************************************************************
-  /// is_class
-  namespace private_type_traits
-  {
-    template <typename T> char test(int T::*); // Match for classes.
-
-    struct dummy { char c[2]; };
-    template <typename T> dummy test(...);     // Match for non-classes.
-  }
-
-  template <typename T>
-  struct is_class : etl::bool_constant<sizeof(private_type_traits::test<T>(0)) == 1U> {};
-
-#if ETL_USING_CPP17
-  template <typename T>
-  inline constexpr bool is_class_v = is_class<T>::value;
 #endif
 
   //***************************************************************************
@@ -2792,6 +2815,217 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_member_object_pointer_v = etl::is_member_object_pointer<T>::value;
+#endif
+
+#if ETL_USING_CPP20
+  template <class... TArgs>
+  struct common_reference;
+
+  template <class... TArgs>
+  using common_reference_t = typename etl::common_reference<TArgs...>::type;
+
+  template <class T, class U, template <class> class TQual, template <class> class UQual>
+  struct basic_common_reference
+  {
+  };
+
+  // If sizeof...(T) is 0: no member
+  template <>
+  struct common_reference<>
+  {
+  };
+
+  // If sizeof...(T) is 1
+  template <class T>
+  struct common_reference<T>
+  {
+    using type = T;
+  };
+
+  namespace private_type_traits
+  {
+    template <class T1, class T2>
+    using cond_res = decltype(false ? etl::declval<T1 (&)()>()() : etl::declval<T2 (&)()>()());
+
+    template <class From>
+    struct copy_cv
+    {
+      template <class To>
+      using apply = To;
+    };
+
+    template <class From>
+    struct copy_cv<const From>
+    {
+      template <class To>
+      using apply = const To;
+    };
+
+    template <class From>
+    struct copy_cv<volatile From>
+    {
+      template <class To>
+      using apply = volatile To;
+    };
+
+    template <class From>
+    struct copy_cv<const volatile From>
+    {
+      template <class To>
+      using apply = const volatile To;
+    };
+
+    template <class From, class To>
+    using copy_cv_t = typename copy_cv<From>::template apply<To>;
+
+    template <class From>
+    struct copy_cvref
+    {
+      template <class To>
+      using apply = copy_cv_t<From, To>;
+    };
+
+    template <class From>
+    struct copy_cvref<From&>
+    {
+      template <class To>
+      using apply = add_lvalue_reference_t<copy_cv_t<From, To>>;
+    };
+
+    template <class From>
+    struct copy_cvref<From&&>
+    {
+      template <class To>
+      using apply = add_lvalue_reference_t<copy_cv_t<From, To>>;
+    };
+
+    template <class From, class To>
+    using copy_cvref_t = typename copy_cvref<From>::template apply<To>;
+
+    template <class T1>
+    struct xref
+    {
+      template <class T2>
+      using apply = copy_cvref_t<T1, T2>;
+    };
+
+    template <class T1, class T2, class T1_RR = remove_reference_t<T1>, class T2_RR = remove_reference_t<T2>>
+    struct common_ref;
+
+    template <class T1, class T2>
+    using common_ref_t = typename common_ref<T1, T2>::type;
+
+    template <class T1, class T2>
+    using cv_cond_res = cond_res<copy_cv_t<T1, T2>&, copy_cv_t<T2, T1>&>;
+
+    template <class T1, class T2, class T1_RR, class T2_RR>
+      requires requires { typename cv_cond_res<T1_RR, T2_RR>; } &&
+        is_reference_v<cv_cond_res<T1_RR, T2_RR>>
+    struct common_ref<T1&, T2&, T1_RR, T2_RR>
+    {
+      using type = cv_cond_res<T1_RR, T2_RR>;
+    };
+
+    template <class T1, class T2>
+    using common_ref_rr = remove_reference_t<common_ref_t<T1&, T2&>>&&;
+
+    template <class T1, class T2, class T1_R, class T2_R>
+      requires requires { typename common_ref_rr<T1_R, T2_R>; } &&
+        is_convertible_v<T1&&, common_ref_rr<T1_R, T2_R>> &&
+        is_convertible_v<T2&&, common_ref_rr<T1_R, T2_R>>
+    struct common_ref<T1&&, T2&&, T1_R, T2_R>
+    {
+      using type = common_ref_rr<T1_R, T2_R>;
+    };
+
+    template <class T1, class T2>
+    using common_ref_cr = common_ref_t<const T1&, T2&>;
+
+    template <class T1, class T2, class T3, class T4>
+      requires requires { typename common_ref_cr<T3, T4>; } &&
+        is_convertible_v<T1&&, common_ref_cr<T3, T4>>
+    struct common_ref<T1&&, T2&, T3, T4>
+    {
+      using type = common_ref_cr<T3, T4>;
+    };
+
+    template <class T1, class T2, class T3, class T4>
+    struct common_ref<T1&, T2&&, T3, T4>: common_ref<T2&&, T1&>
+    {
+    };
+
+    template <class T1, class T2, class T3, class T4>
+    struct common_ref
+    {
+    };
+
+    template <class T1, class T2>
+    struct common_reference_impl3;
+
+    template <class T1, class T2>
+    struct common_reference_impl2: common_reference_impl3<T1, T2>
+    {
+    };
+
+    template <class T1, class T2>
+    struct common_reference_impl1: common_reference_impl2<T1, T2>
+    {
+    };
+  }
+
+  // If sizeof...(T) is 2
+  template <class T1, class T2>
+  struct common_reference<T1, T2>: private_type_traits::common_reference_impl1<T1, T2>
+  {
+  };
+
+  namespace private_type_traits
+  {
+    template <class T1, class T2>
+      requires is_reference_v<T1> && is_reference_v<T2> && requires { typename common_ref_t<T1, T2>; } &&
+               is_convertible_v<add_pointer_t<T1>, add_pointer_t<common_ref_t<T1, T2>>> &&
+               is_convertible_v<add_pointer_t<T2>, add_pointer_t<common_ref_t<T1, T2>>>
+    struct common_reference_impl1<T1, T2>
+    {
+      using type = common_ref_t<T1, T2>;
+    };
+
+    template <class T1, class T2>
+    using basic_common_reference_t =
+      typename basic_common_reference<remove_cvref_t<T1>,
+                                      remove_cvref_t<T2>,
+                                      xref<T1>::template apply,
+                                      xref<T2>::template apply>::type;
+
+    template <class T1, class T2>
+      requires requires { typename basic_common_reference_t<T1, T2>; }
+    struct common_reference_impl2<T1, T2>
+    {
+      using type = basic_common_reference_t<T1, T2>;
+    };
+
+    template <class T1, class T2>
+      requires requires { typename cond_res<T1, T2>; }
+    struct common_reference_impl3<T1, T2>
+    {
+      using type = cond_res<T1, T2>;
+    };
+
+    template <class T1, class T2>
+    struct common_reference_impl3: common_type<T1, T2>
+    {
+    };
+  }
+
+  template <class T1, class T2, class T3, class... TArgs>
+    requires requires { typename common_reference_t<T1, T2>; }
+  struct common_reference<T1, T2, T3, TArgs...> : common_reference<common_reference_t<T1, T2>, T3, TArgs...> {};
+
+  template<class... TArgs>
+  struct common_reference
+  {
+  };
+
 #endif
 }
 

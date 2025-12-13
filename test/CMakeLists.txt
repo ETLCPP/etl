@@ -86,6 +86,7 @@ add_executable(etl_tests
 	test_closure.cpp
 	test_closure_constexpr.cpp
 	test_compare.cpp
+	test_concepts.cpp
 	test_constant.cpp
 	test_const_map.cpp
 	test_const_map_constexpr.cpp
