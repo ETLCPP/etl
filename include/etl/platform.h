@@ -84,6 +84,12 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Do a validity check for error settings, only one is allowed.
+#if defined(ETL_VERBOSE_ERRORS) && defined(ETL_MINIMAL_ERRORS)
+  #error "ETL_VERBOSE_ERRORS and ETL_MINIMAL_ERRORS are mutually exclusive"
+#endif
+
+//*************************************
 // Helper macros, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
 // With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
