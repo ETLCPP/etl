@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 John Wellbelove
+Copyright(c) 2023 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,11 +28,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_UNIT_TEST_FRAMEWORK_INCLUDED
-#define ETL_UNIT_TEST_FRAMEWORK_INCLUDED
+/*
+ * The header include guard has been intentionally omitted.
+ * This file is intended to evaluated multiple times by design.
+ */
 
-#include "etl/private/diagnostic_null_dereference_push.h"
-#include "UnitTest++/UnitTest++.h"
-#include "etl/private/diagnostic_pop.h"
+#if defined(__GNUC__) && (__GNUC__ >= 11) && !defined(__clang__) && !defined(__llvm__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 
+#if defined(__clang__) || defined(__llvm__)
+  #pragma clang diagnostic push
 #endif
