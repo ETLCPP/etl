@@ -209,6 +209,7 @@ add_executable(etl_tests
 	test_invert.cpp
 	test_io_port.cpp
 	test_iterator.cpp
+	test_invoke.cpp
 	test_jenkins.cpp
 	test_largest.cpp
 	test_limiter.cpp
