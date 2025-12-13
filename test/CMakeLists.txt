@@ -184,6 +184,7 @@ add_executable(etl_tests
 	test_flat_multiset.cpp
 	test_flat_set.cpp
 	test_fnv_1.cpp
+	test_format.cpp
 	test_format_spec.cpp
 	test_forward_list.cpp
 	test_forward_list_shared_pool.cpp
@@ -260,6 +261,7 @@ add_executable(etl_tests
 	test_poly_span_fixed_extent.cpp
 	test_pool.cpp
 	test_pool_external_buffer.cpp
+	test_print.cpp
 	test_priority_queue.cpp
 	test_pseudo_moving_average.cpp
 	test_quantize.cpp
