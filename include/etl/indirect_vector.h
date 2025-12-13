@@ -757,7 +757,7 @@ namespace etl
     //*********************************************************************
     void push_back(const_reference value)
     {
-      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(value);
       lookup.push_back(p);
@@ -771,7 +771,7 @@ namespace etl
     //*********************************************************************
     void push_back(rvalue_reference value)
     {
-      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(etl::move(value));
       lookup.push_back(p);
@@ -787,6 +787,8 @@ namespace etl
     template <typename ... Args>
     reference emplace_back(Args && ... args)
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(etl::forward<Args>(args)...);
       lookup.push_back(p);
       return back();
@@ -799,6 +801,8 @@ namespace etl
     //*********************************************************************
     reference emplace_back()
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(T());
       lookup.push_back(p);
       return back();
@@ -812,6 +816,8 @@ namespace etl
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(T(value1));
       lookup.push_back(p);
       return back();
@@ -825,6 +831,8 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace_back(const T1& value1, const T2& value2)
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(T(value1, value2));
       lookup.push_back(p);
       return back();
@@ -838,6 +846,8 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(T(value1, value2, value3));
       lookup.push_back(p);
       return back();
@@ -851,6 +861,8 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(T(value1, value2, value3, value4));
       lookup.push_back(p);
       return back();
@@ -862,7 +874,7 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
-      ETL_ASSERT(!empty(), ETL_ERROR(vector_empty));
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(vector_empty));
 
       reference object = back();
       storage.destroy<T>(etl::addressof(object));

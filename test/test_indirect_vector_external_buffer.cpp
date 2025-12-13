@@ -876,6 +876,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_excess)
+    {
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(lookup, pool);
+
+      for (size_t i = 0UL; i < SIZE; ++i)
+      {
+        std::string value(" ");
+        value[0] = char('A' + i);
+        data.emplace_back(value);
+      }
+
+      CHECK_THROW(data.emplace_back("Z"), etl::vector_full);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_unique_ptr)
     {
       LookupUniquePtr lookup;
