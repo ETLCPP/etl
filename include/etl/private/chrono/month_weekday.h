@@ -186,9 +186,9 @@ namespace etl
 
       uint8_t buffer[sizeof(a) + sizeof(b) + sizeof(c)];
 
-      memcpy(buffer,             &a, sizeof(a));
-      memcpy(buffer + sizeof(a), &b, sizeof(b));
-      memcpy(buffer + sizeof(b), &b, sizeof(c));
+      memcpy(buffer,                         &a, sizeof(a));
+      memcpy(buffer + sizeof(a),             &b, sizeof(b));
+      memcpy(buffer + sizeof(a) + sizeof(b), &c, sizeof(c));
 
       return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(a) + sizeof(b) + sizeof(c));
     }
