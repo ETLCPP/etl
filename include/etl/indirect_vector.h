@@ -932,7 +932,7 @@ namespace etl
     //*************************************************************************
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
-    iterator emplace(iterator position, Args && ... args)
+    iterator emplace(const_iterator position, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
@@ -940,10 +940,10 @@ namespace etl
       T* p = storage.create<T>(T(etl::forward<Args>(args)...));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 #else
-    iterator emplace(iterator position)
+    iterator emplace(const_iterator position)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
@@ -951,11 +951,11 @@ namespace etl
       T* p = storage.create<T>(T());
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1>
-    iterator emplace(iterator position, const T1& value1)
+    iterator emplace(const_iterator position, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
@@ -963,11 +963,11 @@ namespace etl
       T* p = storage.create<T>(T(value1));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1, typename T2>
-    iterator emplace(iterator position, const T1& value1, const T2& value2)
+    iterator emplace(const_iterator position, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
@@ -975,11 +975,11 @@ namespace etl
       T* p = storage.create<T>(T(value1, value2));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1, typename T2, typename T3>
-    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3)
+    iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
@@ -987,11 +987,11 @@ namespace etl
       T* p = storage.create<T>(T(value1, value2, value3));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1, typename T2, typename T3, typename T4>
-    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
@@ -999,7 +999,7 @@ namespace etl
       T* p = storage.create<T>(T(value1, value2, value3, value4));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 #endif
 
