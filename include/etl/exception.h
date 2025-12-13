@@ -33,6 +33,14 @@ SOFTWARE.
 
 #include "platform.h"
 
+#if ETL_USING_STD_EXCEPTION
+#include <exception>
+
+  #define ETL_EXCEPTION_CONSTEXPR
+#else
+  #define ETL_EXCEPTION_CONSTEXPR ETL_CONSTEXPR
+#endif
+
 ///\defgroup exception exception
 /// The base class for all ETL exceptions.
 ///\ingroup utilities
@@ -44,6 +52,9 @@ namespace etl
   /// A low overhead exception base class.
   //***************************************************************************
   class exception
+#if ETL_USING_STD_EXCEPTION
+    : public std::exception
+#endif
   {
   public:
 
@@ -54,7 +65,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     exception(string_type reason_, string_type file_, numeric_type line_)
       : reason_text(reason_),
         file_text(file_),
@@ -65,7 +76,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     exception(string_type reason_, string_type /*file_*/, numeric_type line_)
       : reason_text(reason_),
         line(line_)
@@ -77,8 +88,11 @@ namespace etl
     /// Gets the reason for the exception.
     /// \return const char* to the reason.
     //***************************************************************************
-    ETL_CONSTEXPR
-    string_type what() const
+    ETL_EXCEPTION_CONSTEXPR
+    string_type what() const ETL_NOEXCEPT
+#if ETL_USING_STD_EXCEPTION
+      override
+#endif
     {
       return reason_text;
     }

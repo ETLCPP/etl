@@ -294,6 +294,17 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if etl::exception is to be derived from std::exception.
+#if defined(ETL_USE_STD_EXCEPTION)
+#if ETL_NOT_USING_STL
+  #error "Requested std base for etl::exception, but STL is not used"
+#endif
+  #define ETL_USING_STD_EXCEPTION 1
+#else
+  #define ETL_USING_STD_EXCEPTION 0
+#endif
+
+//*************************************
 // Indicate if etl::literals::chrono_literals uses ETL verbose style.
 #if defined(ETL_USE_VERBOSE_CHRONO_LITERALS) && ETL_USING_CPP11
 #define ETL_USING_VERBOSE_CHRONO_LITERALS 1
@@ -631,6 +642,7 @@ namespace etl
     static ETL_CONSTANT bool using_legacy_bitset              = (ETL_USING_LEGACY_BITSET == 1);
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
     static ETL_CONSTANT bool using_libc_wchar_h               = (ETL_USING_LIBC_WCHAR_H == 1);
+    static ETL_CONSTANT bool using_std_exception              = (ETL_USING_STD_EXCEPTION == 1);
     
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
