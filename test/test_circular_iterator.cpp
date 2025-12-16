@@ -699,5 +699,5 @@ namespace
       CHECK(ci1 != ci3);
       CHECK(ci3 != ci1);
     }
-  };
+  }
 }

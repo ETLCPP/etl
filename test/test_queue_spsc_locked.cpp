@@ -720,5 +720,5 @@ namespace
       }
     }
 #endif
-  };
+  }
 }

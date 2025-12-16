@@ -792,5 +792,5 @@ namespace
       CHECK_TRUE(test_unexp_1_swap == test_unexp_2);
       CHECK_TRUE(test_unexp_2_swap == test_unexp_1);
     }
-  };
+  }
 }

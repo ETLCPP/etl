@@ -287,5 +287,5 @@ namespace
       CHECK(expected == common.workList);
       CHECK(common.watchdog_called);
     }
-  };
+  }
 }

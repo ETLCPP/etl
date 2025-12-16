@@ -61,5 +61,5 @@ namespace
       CHECK_EQUAL((int64_t)etl::integral_limits<int64_t>::max, C3::value);
       CHECK((etl::is_same<int64_t, C3::value_type>::value));
     }
-  };
+  }
 }

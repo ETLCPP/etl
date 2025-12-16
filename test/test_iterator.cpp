@@ -580,5 +580,5 @@ namespace
     //  CHECK_EQUAL(expected.size(), output.size());
     //  CHECK(std::equal(output.begin(), output.end(), expected.begin()));
     //}
-  };
+  }
 }

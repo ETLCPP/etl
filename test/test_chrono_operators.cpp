@@ -281,5 +281,5 @@ namespace
       CHECK_EQUAL(etl::chrono::May,    ymdl5.month());
       CHECK_EQUAL(etl::chrono::weekday_last(etl::chrono::Friday).weekday().c_encoding(), ymdl5.weekday().c_encoding());
     }
-  };
+  }
 }

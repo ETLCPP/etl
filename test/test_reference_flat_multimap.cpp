@@ -918,5 +918,5 @@ namespace
       CHECK_EQUAL(compare_data.count(4), data.count(Key(4)));
       CHECK_EQUAL(compare_data.count(5), data.count(Key(5)));
     }
-  };
+  }
 }

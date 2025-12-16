@@ -786,6 +786,6 @@ namespace
       CHECK_TRUE(b64.error());
 #endif
     }
-  };
+  }
 }
 

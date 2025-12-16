@@ -392,7 +392,7 @@ namespace
       }
     }
 #endif
-  };
+  }
 }
 
 #endif // ETL_HAS_ATOMIC

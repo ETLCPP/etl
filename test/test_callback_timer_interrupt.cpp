@@ -996,5 +996,5 @@ namespace
       // Check the 
       CHECK_EQUAL(0U, ScopedGuard::guard_count);
     }
-  };
+  }
 }

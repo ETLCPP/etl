@@ -891,5 +891,5 @@ namespace
       CHECK_EQUAL(std::numeric_limits<uint32_t>::max(), etl::divide_round_half_odd(std::numeric_limits<uint32_t>::max(), uint32_t(1)));
       CHECK_EQUAL(uint32_t(0U),                         etl::divide_round_half_odd(uint32_t(1),                          std::numeric_limits<uint32_t>::max()));
     }
-  };
+  }
 }

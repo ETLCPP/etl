@@ -1700,5 +1700,5 @@ namespace
 
       CHECK(is_equal);
     }
-  };
+  }
 }

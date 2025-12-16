@@ -376,5 +376,5 @@ namespace
       isEqual = std::equal(output2.begin(), output2.end(), histogram.begin());
       CHECK(isEqual);
     }
-  };
+  }
 }

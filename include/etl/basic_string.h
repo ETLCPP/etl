@@ -1015,7 +1015,7 @@ namespace etl
         ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
-        return to_iterator(position);;
+        return to_iterator(position);
       }
 
       // Fills the string to the end?

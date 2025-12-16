@@ -406,7 +406,7 @@ namespace etl
     //*************************************************************************
     bool pop_from_unlocked(reference value)
     {
-      return pop_implementation(value);;
+      return pop_implementation(value);
     }
 
     //*************************************************************************

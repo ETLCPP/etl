@@ -448,7 +448,7 @@ namespace
         long operator()(int a, const std::string& s)
         {
           return static_cast<long>(a + s.size());
-        };
+        }
       };
 
       using traits = etl::function_traits<functor>;
@@ -530,5 +530,5 @@ namespace
       CHECK_EQUAL(1, traits_f::arity);
       CHECK_EQUAL(1, traits_cf::arity);
     }
-  };
+  }
 }

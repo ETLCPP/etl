@@ -2504,5 +2504,5 @@ namespace
       CHECK_EQUAL(0, result5);
       CHECK_EQUAL(10, result6);
     }
-  };
+  }
 }

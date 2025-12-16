@@ -61,5 +61,5 @@ namespace
         CHECK_EQUAL(123, c.line_number());
       }     
     }
-  };
+  }
 }

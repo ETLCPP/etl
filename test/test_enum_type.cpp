@@ -150,5 +150,5 @@ namespace
 
       CHECK_EQUAL(expected, actual.get_enum());
     }
-  };
+  }
 }

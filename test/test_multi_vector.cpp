@@ -574,5 +574,5 @@ namespace
       CHECK(data     >= data);
       CHECK(!(lesser >= data));
     }
-  };
+  }
 }

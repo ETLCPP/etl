@@ -313,5 +313,5 @@ namespace
       CHECK_EQUAL(65535U, hashes.size());
     }
 #endif
-  };
+  }
 }

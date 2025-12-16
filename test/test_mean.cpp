@@ -112,5 +112,5 @@ namespace
       mean_result = mean1.get_mean();
       CHECK_CLOSE(4.5, mean_result, 0.1);
     }
-  };
+  }
 }

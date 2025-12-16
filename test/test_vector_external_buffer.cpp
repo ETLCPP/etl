@@ -1320,5 +1320,5 @@ namespace
       CHECK_EQUAL(raw[4].i, dest[6].i);
       CHECK_EQUAL(raw[5].i, dest[7].i);
     }
-  };
+  }
 }

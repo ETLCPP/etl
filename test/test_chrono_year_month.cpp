@@ -144,5 +144,5 @@ namespace
       CHECK_TRUE(ym1 != ym2);  // Different year
       CHECK_TRUE(ym1 != ym3);  // Different month
     }
-  };
+  }
 }

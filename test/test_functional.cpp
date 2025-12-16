@@ -379,5 +379,5 @@ namespace
       result = f3(mft, "Arg1", " : Arg2");
       CHECK_EQUAL("Function3_Const: Arg1 : Arg2", result);
     }
-  };
+  }
 }

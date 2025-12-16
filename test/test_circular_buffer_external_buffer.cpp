@@ -1096,5 +1096,5 @@ namespace
 
       CHECK(data1 != data2);
     }
-  };
+  }
 }
