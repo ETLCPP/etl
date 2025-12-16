@@ -40,6 +40,7 @@ target_compile_options(tests
 	    PRIVATE
 		-fsyntax-only
 		-pedantic-errors
+		-Werror
 		-Wextra-semi
 		)
 endif ()
@@ -48,6 +49,7 @@ target_compile_options(tests
 	    PRIVATE
 		-fsyntax-only
 		-pedantic-errors
+		-Werror
 		-Wextra-semi
 		-Wextra-semi-stmt
 		-Wc++11-extra-semi

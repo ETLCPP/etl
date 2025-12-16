@@ -460,7 +460,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
-#			-pedantic-errors
+			-pedantic-errors
 			-Wall
 			-Wextra
 			-Werror
@@ -477,7 +477,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
-#			-pedantic-errors
+			-pedantic-errors
 			-Wall
 			-Wextra
 			-Werror
