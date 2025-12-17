@@ -57,7 +57,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <typename TInput, typename TOutput = uint16_t>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
         typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 8U) &&
                                     etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 16U),
                                 TOutput>::type
@@ -77,7 +77,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <typename TInput, typename TOutput = uint32_t>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
         typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 16U) &&
                                     etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 32U),
                                 TOutput>::type
@@ -98,7 +98,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <typename TInput, typename TOutput = uint64_t>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
         typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 32U) &&
                                     etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 64U),
                                 TOutput>::type
@@ -160,7 +160,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <typename TInput, typename TOutput = uint8_t>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
         typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 16U) &&
                                     etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 8U),
                                 TOutput>::type
@@ -190,7 +190,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <typename TInput, typename TOutput = uint16_t>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
         typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 32U) &&
                                     etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 16U),
                                 TOutput>::type
@@ -220,7 +220,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <typename TInput, typename TOutput = uint32_t>
-    ETL_CONSTEXPR
+    ETL_CONSTEXPR14
         typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 64U) &&
                                     etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 32U),
                                 TOutput>::type

@@ -7,7 +7,6 @@
 
 SUITE(test_manchester)
 {
-
   TEST(encode8){
     CHECK_EQUAL(0xAAAA, (etl::manchester_encode<uint8_t>(0x00U)));
     CHECK_EQUAL(0x5555, (etl::manchester_encode<uint8_t>(0xFFU)));
