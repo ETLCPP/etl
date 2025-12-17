@@ -217,6 +217,7 @@ add_executable(etl_tests
 	test_list_shared_pool.cpp
 	test_macros.cpp
 	test_make_string.cpp
+	test_manchester.cpp
 	test_map.cpp
 	test_math.cpp
 	test_math_functions.cpp
