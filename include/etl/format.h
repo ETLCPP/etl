@@ -914,17 +914,17 @@ namespace etl
     {
       if (value <= 9)
       {
-        *it = '0' + value;
+        *it = static_cast<char_type>('0' + static_cast<typename etl::make_unsigned<T>::type>(value));
       }
       else
       {
         if (spec.type.has_value() && is_uppercase(spec.type.value()))
         {
-          *it = 'A' + (value - 10);
+          *it = static_cast<char_type>('A' + static_cast<typename etl::make_unsigned<T>::type>(value - 10));
         }
         else
         {
-          *it = 'a' + (value - 10);
+          *it = static_cast<char_type>('a' + static_cast<typename etl::make_unsigned<T>::type>(value - 10));
         }
       }
       ++it;
@@ -955,7 +955,7 @@ namespace etl
     {
       using UnsignedT = typename etl::make_unsigned<T>::type;
 
-      UnsignedT unsigned_value = static_cast<UnsignedT>(value < 0 ? -value : value);
+      UnsignedT unsigned_value = etl::absolute_unsigned(value);
 
       size_t base = base_from_spec<default_base>(spec);
       UnsignedT highest_digit = get_highest_digit<UnsignedT>(unsigned_value, base);
@@ -2195,10 +2195,7 @@ namespace etl
       {
         private_format::output<OutputIt>(fmt_context, c);
       }
-    };
-
-    // plain strings need it, back insert iterators don't:
-    //*fmt_context.out() = '\0';
+    }
 
     return fmt_context.out();
   }

@@ -80,8 +80,8 @@ namespace
       CHECK_EQUAL("1 2", test_format(s, "{} {}", 1, 2));
       CHECK_EQUAL("-123", test_format(s, "{}", -123));
       CHECK_EQUAL("-314748364", test_format(s, "{}", (int)-314748364));
-      CHECK_EQUAL("2147483647", test_format(s, "{}", (int)2147483647));
-      CHECK_EQUAL("-2147483648", test_format(s, "{}", (int)-2147483648));
+      CHECK_EQUAL("2147483647", test_format(s, "{}", INT32_MAX));
+      CHECK_EQUAL("-2147483648", test_format(s, "{}", INT32_MIN));
       CHECK_EQUAL("0", test_format(s, "{}", 0));
       CHECK_EQUAL("-1", test_format(s, "{}", -1));
     }
