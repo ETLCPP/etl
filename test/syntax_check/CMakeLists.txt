@@ -198,6 +198,7 @@ target_sources(tests PRIVATE
 		flat_multiset.h.t.cpp
 		flat_set.h.t.cpp
 		fnv_1.h.t.cpp
+		format.h.t.cpp
 		format_spec.h.t.cpp
 		forward_list.h.t.cpp
 		frame_check_sequence.h.t.cpp
