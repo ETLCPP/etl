@@ -114,6 +114,7 @@ target_sources(tests PRIVATE
 		char_traits.h.t.cpp
 		checksum.h.t.cpp
 		chrono.h.t.cpp
+		concepts.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		closure.h.t.cpp

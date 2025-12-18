@@ -62,32 +62,37 @@ namespace etl
 
   namespace private_concepts
   {
-    template <class T, class U>
+    template <typename T, typename U>
     concept same_as_helper = etl::is_same_v<T, U>;
   }
 
-  template <class T, class U>
+  //***************************************************************************
+  template <typename T, typename U>
   concept same_as = private_concepts::same_as_helper<T, U> && private_concepts::same_as_helper<U, T>;
 
-  template <class Derived, class Base>
+  //***************************************************************************
+  template <typename Derived, typename Base>
   concept derived_from =
     etl::is_base_of_v<Base, Derived> &&
     etl::is_convertible_v<const volatile Derived*, const volatile Base*>;
 
-  template <class From, class To>
+  //***************************************************************************
+  template <typename From, typename To>
   concept convertible_to =
     etl::is_convertible_v<From, To> &&
     requires {
       static_cast<To>(etl::declval<From>());
     };
 
-  template< class T, class U >
+  //***************************************************************************
+  template< class T, typename U >
   concept common_reference_with =
     etl::same_as<etl::common_reference_t<T, U>, etl::common_reference_t<U, T>> &&
     etl::convertible_to<T, etl::common_reference_t<T, U>> &&
     etl::convertible_to<U, etl::common_reference_t<T, U>>;
 
-  template <class T, class U>
+  //***************************************************************************
+  template <typename T, typename U>
   concept common_with =
     etl::same_as<etl::common_type_t<T, U>, etl::common_type_t<U, T>> &&
     requires {
@@ -103,19 +108,24 @@ namespace etl
             etl::add_lvalue_reference_t<const T>,
             etl::add_lvalue_reference_t<const U>>>;
 
-  template <class T>
+  //***************************************************************************
+  template <typename T>
   concept integral = etl::is_integral_v<T>;
 
-  template <class T>
+  //***************************************************************************
+  template <typename T>
   concept signed_integral = etl::integral<T> && etl::is_signed_v<T>;
 
-  template <class T>
+  //***************************************************************************
+  template <typename T>
   concept unsigned_integral = etl::integral<T> && !etl::signed_integral<T>;
 
-  template <class T>
+  //***************************************************************************
+  template <typename T>
   concept floating_point = etl::is_floating_point_v<T>;
 
-  template <class LHS, class RHS>
+  //***************************************************************************
+  template <typename LHS, typename RHS>
   concept assignable_from =
     etl::is_lvalue_reference_v<LHS> &&
     etl::common_reference_with<
@@ -128,5 +138,7 @@ namespace etl
 #endif
 }
 
+#else
+  #error This header requires C++20. Please set the compiler standard to at least C++20.
 #endif
 #endif
