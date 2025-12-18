@@ -816,7 +816,6 @@ namespace
     template <typename TValue, typename TError, typename TExpected>
     bool check_expected_type_helper(TExpected& expected) 
     {
-
       bool value_type_ok = value_type_helper<TValue, TExpected>::check(expected);
 
       bool error_type_ok = etl::is_same<typename etl::decay<decltype(expected.error())>::type, TError>::value;
@@ -827,7 +826,6 @@ namespace
     }
 
     //*************************************************************************
-
     TEST(test_or_else) 
     {
       Expected expected = {Value("or_else_with_value")};
@@ -893,8 +891,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_or_else_move_constructor) {
+    TEST(test_or_else_move_constructor) 
+    {
       ExpectedM expected = ExpectedM(ValueM("or_else_with_value"));
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("or_else_with_error")));
       bool error_generated {false};
@@ -938,8 +936,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_or_else_void) {
+    TEST(test_or_else_void) 
+    {
       ExpectedV expected = ExpectedV();
       ExpectedV expected_error = ExpectedV(Unexpected(Error("or_else_with_error")));
       bool error_generated {false};
@@ -971,8 +969,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_or_else_change_error) {
+    TEST(test_or_else_change_error) 
+    {
       Expected expected_error = {Unexpected(Error("or_else_with_error"))};
       ExpectedV expectedV_error = ExpectedV(Unexpected(Error("or_else_with_error")));
 
@@ -987,8 +985,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_or_else_change_error_move_constructor) {
+    TEST(test_or_else_change_error_move_constructor) 
+    {
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("or_else_with_error")));
 
       auto change_to_string = etl::move(expected_error).or_else([](ErrorM e) -> etl::expected<ValueM, std::string> {
@@ -1002,8 +1000,8 @@ namespace
     }
     
     //*************************************************************************
-
-    TEST(test_or_else_const_rvalue) {
+    TEST(test_or_else_const_rvalue) 
+    {
       bool error_generated {false};
       auto temp_expected = Expected(Unexpected(Error("temp_const_error")));
 
@@ -1019,8 +1017,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_transform) {
+    TEST(test_transform) 
+    {
       Expected expected = {Value("transform_with_value")};
       Expected expected_error = {Unexpected(Error("transform_with_error"))};
       const Expected expected_const = {Value("const_transform_with_value")};
@@ -1062,8 +1060,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_transform_move_constructor) {
+    TEST(test_transform_move_constructor) 
+    {
       ExpectedM expected = {ValueM("transform_with_value")};
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("transform_with_error")));
 
@@ -1092,8 +1090,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_transform_void) {
+    TEST(test_transform_void) 
+    {
       ExpectedV expected;
       ExpectedV expected_error = {Unexpected(Error("transform_with_error"))};
 
@@ -1150,8 +1148,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_transform_to_void) {
+    TEST(test_transform_to_void) 
+    {
       Expected expected {Value("transform_to_void")};
       
       bool executed {false};
@@ -1168,9 +1166,9 @@ namespace
       CHECK_TRUE(expected_out.has_value());
     }
 
-    //*************************************************************************
-    
-    TEST(test_and_then) {
+    //*************************************************************************   
+    TEST(test_and_then) 
+    {
       Expected expected = {Value("and_then_with_value")};
       Expected expected_error = {Unexpected(Error("and_then_with_error"))};
       const Expected expected_const = {Value("const_and_then_with_value")};
@@ -1209,8 +1207,8 @@ namespace
     }
   
     //*************************************************************************
-
-    TEST(test_and_then_move_constructor) {
+    TEST(test_and_then_move_constructor) 
+    {
       ExpectedM expected = ExpectedM(ValueM("and_then_with_value"));
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("and_then_with_error")));
 
@@ -1236,9 +1234,9 @@ namespace
       CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
     }
 
-    //*************************************************************************
-    
-    TEST(test_and_then_void) {
+    //*************************************************************************    
+    TEST(test_and_then_void) 
+    {
       ExpectedV expected;
       ExpectedV expected_error = {Unexpected(Error("and_then_with_error"))};
       auto and_thened {false};
@@ -1268,7 +1266,9 @@ namespace
       CHECK_EQUAL("and_then_with_error", unexpected_out.error().e);
     }
 
-    TEST(test_and_then_void_move) {
+    //*************************************************************************
+    TEST(test_and_then_void_move) 
+    {
       ExpectedVM expected;
       ExpectedVM expected_error = {UnexpectedM(ErrorM("and_then_with_error"))};
       auto and_thened {false};
@@ -1299,8 +1299,8 @@ namespace
     }
     
     //*************************************************************************
-
-    TEST(test_transform_error) {
+    TEST(test_transform_error) 
+    {
       Expected expected = {Value("transform_error_with_value")};
       Expected expected_error = {Unexpected(Error("transform_error_with_error"))};
 
@@ -1329,8 +1329,8 @@ namespace
     }
 
     //*************************************************************************
-
-    TEST(test_transform_error_move_constructor) {
+    TEST(test_transform_error_move_constructor) 
+    {
       ExpectedM expected = ExpectedM(ValueM("transform_error_with_value"));
       ExpectedM expected_error = ExpectedM(UnexpectedM(ErrorM("transform_error_with_error")));
 
@@ -1358,7 +1358,9 @@ namespace
       CHECK_EQUAL("transform_error_with_error_transformed", unexpected_out.error());
     }
 
-    TEST(test_transform_error_const_rvalue) {
+    //*************************************************************************
+    TEST(test_transform_error_const_rvalue) 
+    {
       bool error_generated {false};
       auto temp_expected = Expected(Unexpected(Error("temp_const_error")));
 
@@ -1374,7 +1376,9 @@ namespace
       CHECK_EQUAL("temp_const_error", unexpected_out.error());
     }
 
-    TEST(test_transform_error_void_value) {
+    //*************************************************************************
+    TEST(test_transform_error_void_value) 
+    {
       ExpectedV expected;
       ExpectedV expected_error = UnexpectedV(Error("transform_error_void_value"));
       bool executed {false};
@@ -1403,5 +1407,5 @@ namespace
       CHECK_TRUE(with_error_type_check);
 
     }
-  };
+  }
 }
