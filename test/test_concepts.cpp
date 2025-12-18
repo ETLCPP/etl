@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/concepts.h"
-
 #include <atomic>
 #include <string>
 
 #if ETL_USING_CPP20
+#include "etl/concepts.h"
+
 namespace
 {
   class A
