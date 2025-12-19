@@ -305,9 +305,9 @@ namespace etl
   #define ETL_ASSERT_OR_RETURN(b, e) static_cast<void>(sizeof(b))             // Does nothing.
   #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) static_cast<void>(sizeof(b))    // Does nothing.
   
-  #define ETL_ASSERT_FAIL(e) static_cast<void>(sizeof(b))                     // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN(e) static_cast<void>(sizeof(b))          // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) static_cast<void>(sizeof(b)) // Does nothing.
+  #define ETL_ASSERT_FAIL(e) ETL_DO_NOTHING                                   // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN(e) ETL_DO_NOTHING                        // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) ETL_DO_NOTHING               // Does nothing.
 #elif defined(ETL_USE_ASSERT_FUNCTION)
   #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}} while(false)                                 // If the condition fails, calls the assert function
   #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}} while(false)               // If the condition fails, calls the assert function and return
