@@ -144,6 +144,21 @@ namespace etl
 #endif
 
   //***************************************************************************
+  // is_reference_wrapper
+  // Detect etl::reference_wrapper<T>
+  //***************************************************************************
+  template <typename T> 
+  struct is_reference_wrapper : etl::false_type {};
+  
+  template <typename T> 
+  struct is_reference_wrapper<etl::reference_wrapper<T> > : etl::true_type {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_reference_wrapper_v = is_reference_wrapper<T>::value;
+#endif
+
+  //***************************************************************************
   /// unary_function
   //***************************************************************************
   template <typename TArgumentType, typename TResultType>
