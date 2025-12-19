@@ -36,6 +36,10 @@ SOFTWARE.
 #include "utility.h"
 #include "type_traits.h"
 
+#if ETL_NOT_USING_CPP20 && !defined(ETL_IN_UNIT_TEST)
+  #error NOT SUPPORTED FOR BELOW C++20
+#endif
+
 #if ETL_USING_CPP20
 
 #if ETL_USING_STL
@@ -137,8 +141,5 @@ namespace etl
 
 #endif
 }
-
-#else
-  #error This header requires C++20. Please set the compiler standard to at least C++20.
 #endif
 #endif
