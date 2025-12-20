@@ -213,8 +213,17 @@ namespace etl
 
   //****************************************************************************
   /// invoke_result<TFunction, TArgs...>
-  template <typename TFunction, typename... TArgs>
+  template <typename TFunction, typename, typename... TArgs> 
   struct invoke_result
+  {
+    using type = void;
+  };
+
+  //*******************************************
+  template <typename TFunction, typename... TArgs>
+  struct invoke_result<TFunction,
+                       etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>,
+                       TArgs...> 
   {
   private:
 
@@ -243,8 +252,19 @@ namespace etl
       void>;
   };
 
+  //*******************************************
+  // Specialization to allow `etl::type_list<...>` as the second template parameter.
   template <typename TFunction, typename... TArgs>
-  using invoke_result_t = typename invoke_result<TFunction, TArgs...>::type;
+  struct invoke_result<TFunction,
+                       etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>,
+                       etl::type_list<TArgs...>> 
+  {
+    using type = decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...));
+  };
+
+  //*******************************************
+  template <typename TFunction, typename... TArgs>
+  using invoke_result_t = typename invoke_result<TFunction, void, TArgs...>::type;
 
   //****************************************************************************
   /// is_invocable<TFunction, TArgs...>
