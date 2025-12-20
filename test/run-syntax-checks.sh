@@ -5,11 +5,32 @@ echo -e
 
 configuration_name="Configuration Name Not Set"
 
+# Define colours
 FailColour='\033[38;2;255;128;128m'
 PassColour='\033[38;2;128;255;128m'
 TitleColour='\033[38;2;107;210;255m'
 HelpColour='\033[38;2;250;180;250m'
 NoColour='\033[0m'
+CommandColour='\033[38;2;255;255;128m'
+
+# Save cursor position
+tput sc
+
+# Clear screen
+tput clear
+
+# Write fixed header on line 1
+tput cup 0 0
+echo $CommandColour "run-syntax-checks.sh" $1 $2 $3 $4 $5 $NoColour
+
+# Define scrolling region from line 2 to bottom
+tput csr 2 $(($(tput lines) - 1))
+
+# Restore cursor position
+tput rc
+
+# Move cursor to start of scrollable area
+tput cup 1 0
 
 ParseGitBranch() 
 {
@@ -80,6 +101,25 @@ ChecksCompleted()
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }
+
+cleanup() 
+{
+    # Reset scroll region to full screen
+    tput csr 0 $(($(tput lines) - 1))
+    # Move cursor to a safe line (bottom of terminal)
+    tput cup $(($(tput lines) - 1)) 0
+}
+
+ctrl_c() 
+{
+	# Reset scroll region to full screen
+    tput csr 0 $(($(tput lines) - 1))
+    # Move cursor to a safe line (bottom of terminal)
+    tput cup $(($(tput lines) - 1)) 0
+}
+
+trap ctrl_c INT
+trap cleanup EXIT
 
 cd syntax_check || exit 1
 echo "" > log.txt
