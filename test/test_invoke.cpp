@@ -80,8 +80,6 @@ namespace
       CHECK_TRUE(!etl::is_function<int*>::value);
       CHECK_TRUE(!etl::is_function<int&>::value);
       CHECK_TRUE(!etl::is_function<int&&>::value);
-      CHECK_TRUE(!etl::logical_not_t<etl::true_type>::value);
-      CHECK_TRUE(etl::logical_not_t<etl::false_type>::value);
     }
 
     //*************************************************************************

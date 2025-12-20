@@ -10304,6 +10304,7 @@
     <ClCompile Include="..\test_hfsm_transition_on_enter.cpp" />
     <ClCompile Include="..\test_index_of_type.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
+    <ClCompile Include="..\test_invoke.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
     <ClCompile Include="..\test_math.cpp" />
     <ClCompile Include="..\test_math_functions.cpp" />
