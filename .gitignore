@@ -411,3 +411,4 @@ examples/UniquePtrWithPool/UniquePtrWithPool
 test/vs2022/Debug Clang C++20 - Optimised -O2
 include/etl/header_file_list.txt
 temp
+test/syntax_check/build-make

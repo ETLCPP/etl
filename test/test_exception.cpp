@@ -77,5 +77,5 @@ namespace
       }
     }
 #endif
-  };
+  }
 }
