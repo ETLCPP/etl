@@ -198,16 +198,20 @@ namespace
 
     //*******************************************
     // int
-    void member_int(int i, int j)
+    int member_int(int i, int j)
     {
       function_called = FunctionCalled::Member_Int_Called;
       parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+      return i + j + 1; 
     }
 
-    void member_int_const(int i, int j) const
+    int member_int_const(int i, int j) const
     {
       function_called = FunctionCalled::Member_Int_Const_Called;
       parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+      return i + j + 1;
     }
 
     //*******************************************
@@ -943,7 +947,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int)
     {
-      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, object_static>();
+      auto ipf = etl::inplace_function<int(int, int)>::create<Object, &Object::member_int, object_static>();
 
       ipf(VALUE1, VALUE2);
 
@@ -980,7 +984,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int_const)
     {
-      auto ipf = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int_const, object_static>();
+      auto ipf = etl::inplace_function<int(int, int)>::create<Object, &Object::member_int_const, object_static>();
 
       ipf(VALUE1, VALUE2);
 
@@ -1324,7 +1328,7 @@ namespace
     {
       Object object;
 
-      auto d1 = etl::inplace_function<void(int, int)>(&Object::member_int, object);
+      auto d1 = etl::inplace_function<int(int, int)>(&Object::member_int, object);
       auto d2(d1);
 
       d2(VALUE1, VALUE2);
@@ -1336,7 +1340,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_construct_compile_time_contruction)
     {
-      auto d1 = etl::inplace_function<void(int, int)>::create<Object, &Object::member_int, object_static>();
+      auto d1 = etl::inplace_function<int(int, int)>::create<Object, &Object::member_int, object_static>();
       auto d2(d1);
 
       d2(VALUE1, VALUE2);
@@ -1583,9 +1587,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_swap_valid_valid)
     {
-      // ipf1 -> normal, ipf2 -> alternative
+      Object object;
+
+      // ipf1 -> normal, ipf2 -> member_int
       etl::inplace_function<int(int, int)> ipf1(normal);
-      etl::inplace_function<int(int, int)> ipf2(alternative);
+      etl::inplace_function<int(int, int)> ipf2(&Object::member_int, object);
 
       int r1_before = ipf1(VALUE1, VALUE2);
       int r2_before = ipf2(VALUE1, VALUE2);
@@ -1596,7 +1602,7 @@ namespace
 
       int r1_after = ipf1(VALUE1, VALUE2);
       int r2_after = ipf2(VALUE1, VALUE2);
-      // After swap ipf1 should now hold 'alternative', ipf2 should hold 'normal'
+      // After swap ipf1 should now hold 'member_int', ipf2 should hold 'normal'
       CHECK_EQUAL(VALUE1 + VALUE2 + 1, r1_after);
       CHECK_EQUAL(VALUE1 + VALUE2,     r2_after);
     }
@@ -1618,6 +1624,22 @@ namespace
 
       CHECK_EQUAL(VALUE1 + VALUE2, ipf_empty(VALUE1, VALUE2));
       CHECK_THROW(ipf_valid(VALUE1, VALUE2), etl::inplace_function_uninitialized);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_empty_empty)
+    {
+      etl::inplace_function<int(int, int)> ipf_empty1; // default constructed
+      etl::inplace_function<int(int, int)> ipf_empty2; // default constructed
+
+      CHECK_FALSE(ipf_empty1.is_valid());
+      CHECK_FALSE(ipf_empty2.is_valid());
+
+      swap(ipf_empty1, ipf_empty2);
+
+      // Both should still be empty
+      CHECK_FALSE(ipf_empty1.is_valid());
+      CHECK_FALSE(ipf_empty2.is_valid());
     }
 
     //*************************************************************************

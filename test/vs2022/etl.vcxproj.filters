@@ -223,15 +223,15 @@
     <Filter Include="Tests\Error Handler\Assert Function">
       <UniqueIdentifier>{f51cb264-5376-47db-89d9-a515e1ac4af7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Callbacks &amp; Delegates">
+      <UniqueIdentifier>{63916bad-db0b-4382-8316-0c4c984f65b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\exception.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\function.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\array.h">
@@ -626,9 +626,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\multi_array.h">
       <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\delegate.h">
-      <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\delegate_service.h">
       <Filter>ETL\Frameworks</Filter>
@@ -1503,9 +1500,6 @@
     <ClInclude Include="..\..\include\etl\const_multimap.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\delegate_observable.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\rounded_integral_division.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -1527,11 +1521,20 @@
     <ClInclude Include="..\..\include\etl\crc64_iso.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\inplace_function.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\invoke.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate.h">
+      <Filter>ETL\Callbacks &amp; Delegates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate_observable.h">
+      <Filter>ETL\Callbacks &amp; Delegates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\inplace_function.h">
+      <Filter>ETL\Callbacks &amp; Delegates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\function.h">
+      <Filter>ETL\Callbacks &amp; Delegates</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
