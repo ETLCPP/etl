@@ -1530,6 +1530,12 @@
     <ClInclude Include="..\..\include\etl\callback.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\concepts.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\invoke.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3745,6 +3751,15 @@
     </ClCompile>
     <ClCompile Include="..\test_format.cpp">
       <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\concepts.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_concepts.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_invoke.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
