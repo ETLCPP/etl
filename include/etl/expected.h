@@ -51,7 +51,7 @@ namespace etl
   struct is_expected : etl::false_type {};
   
   template <typename TValue, typename TError>
-  struct is_expected<expected<TValue,TError>> : etl::true_type {};
+  struct is_expected<expected<TValue,TError> > : etl::true_type {};
 
   //***************************************************************************
   /// Base exception for et::expected
@@ -853,6 +853,7 @@ namespace etl
     typedef etl::variant<etl::monostate, value_type, error_type> storage_type;
     storage_type storage;
 
+#if ETL_USING_CPP11
     template <typename F, typename TExp, typename TRet, typename TValueRef, typename = typename etl::enable_if<!etl::is_void<TRet>::value>::type>
     auto transform_impl(F&& f, TExp&& exp) const -> expected<TRet, TError>
     {
@@ -918,6 +919,7 @@ namespace etl
         return expected<TValue, TRet>(unexpected<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<Error_Type>(exp.storage)))));
       }
     }
+#endif
   };
 
   //*****************************************************************************
@@ -1226,6 +1228,7 @@ namespace etl
 
     etl::variant<etl::monostate, error_type> storage;
 
+#if ETL_USING_CPP11
     template <typename F, typename TExp, typename TRet, typename = typename etl::enable_if<!etl::is_void<TRet>::value>::type>
     auto transform_impl(F&& f, TExp&& exp) const -> expected<TRet, TError>
     {
@@ -1291,6 +1294,7 @@ namespace etl
         return expected<void, TRet>(unexpected<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TErrorRef>(etl::get<Error_Type>(exp.storage)))));
       }
     }
+#endif
   };
 }
 
