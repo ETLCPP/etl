@@ -473,11 +473,13 @@ namespace
       CHECK_EQUAL("0X3F4", test_format(s, "{:#X}", 0x3f4));
       CHECK_EQUAL("34", test_format(s, "{:o}", 034));
       CHECK_EQUAL("034", test_format(s, "{:#o}", 034));
+#if ETL_USING_CPP14
       CHECK_EQUAL("1010", test_format(s, "{:b}", 0b1010));
       CHECK_EQUAL("0b1010", test_format(s, "{:#b}", 0b1010));
       CHECK_EQUAL("1010", test_format(s, "{:B}", 0b1010));
       CHECK_EQUAL("0B1010", test_format(s, "{:#B}", 0b1010));
       CHECK_EQUAL("-0B1010", test_format(s, "{:#B}", -0b1010));
+#endif
       CHECK_EQUAL("C", test_format(s, "{:c}", 67));
       CHECK_EQUAL("00067", test_format(s, "{:05d}", 67));
       CHECK_EQUAL("+00067", test_format(s, "{:+05d}", 67));
