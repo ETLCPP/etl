@@ -53,7 +53,7 @@ namespace
   std::mt19937 urng(rng());
 
   using Vector = std::vector<int>;
-  Vector data = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+  Vector data = { 2, 1, 1, 4, 3, 6, 5, 8, 7, 10, 10, 9 };
 
   using VectorM = std::vector<ItemM>;
 
