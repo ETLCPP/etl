@@ -34,8 +34,7 @@ SOFTWARE.
 #include "platform.h"
 
 #if ETL_USING_STD_EXCEPTION
-#include <exception>
-
+  #include <exception>
   #define ETL_EXCEPTION_CONSTEXPR
 #else
   #define ETL_EXCEPTION_CONSTEXPR ETL_CONSTEXPR
@@ -65,7 +64,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
 #if defined(ETL_VERBOSE_ERRORS)
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     exception(string_type reason_, string_type file_, numeric_type line_)
       : reason_text(reason_),
         file_text(file_),
@@ -73,12 +72,12 @@ namespace etl
     {
     }
 #elif defined(ETL_MINIMAL_ERRORS)
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     exception(string_type /*reason_*/, string_type /*file_*/, numeric_type /*line_*/)
     {
     }
 #else
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     exception(string_type reason_, string_type /*file_*/, numeric_type /*line_*/)
       : reason_text(reason_)
     {
@@ -107,7 +106,7 @@ namespace etl
     /// Gets the file for the exception.
     /// \return const char* to the file.
     //***************************************************************************
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     string_type file_name() const
     {
 #if defined(ETL_VERBOSE_ERRORS)
@@ -121,7 +120,7 @@ namespace etl
     /// Gets the line for the exception.
     /// \return int as line number.
     //***************************************************************************
-    ETL_CONSTEXPR
+    ETL_EXCEPTION_CONSTEXPR
     numeric_type line_number() const
     {
 #if defined(ETL_VERBOSE_ERRORS)
