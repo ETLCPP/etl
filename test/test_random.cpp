@@ -411,5 +411,6 @@ namespace
         CHECK(n <= high);
       }
     }
-  }
+
+  };
 }

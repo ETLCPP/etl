@@ -2013,5 +2013,5 @@ namespace
       CHECK(i1 == *i2);
       CHECK(&i1 == i2);
     }
-  }
+  };
 }

@@ -1034,5 +1034,5 @@ namespace
       CHECK_EQUAL(1, (*opt3)[0]);
       CHECK_EQUAL(20, (*opt3)[1]);
     }
-  }
+  };
 }

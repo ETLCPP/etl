@@ -453,9 +453,7 @@ namespace etl
         }
         else
         {
-#include "etl/private/diagnostic_array_bounds_push.h"
           static_cast<TDerived*>(this)->on_receive_unknown(msg);
-#include "etl/private/diagnostic_pop.h"
         }
       }
     }
@@ -463,7 +461,6 @@ namespace etl
     template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
-#include "etl/private/diagnostic_array_bounds_push.h"
       if constexpr (etl::is_one_of<TMessage, TMessageTypes...>::value)
       {
         static_cast<TDerived*>(this)->on_receive(msg);
@@ -479,7 +476,6 @@ namespace etl
           static_cast<TDerived*>(this)->on_receive_unknown(msg);
         }
       }
-#include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -516,9 +512,7 @@ namespace etl
     {
       if (TMessage::ID == msg.get_message_id())
       {
-#include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
-#include "etl/private/diagnostic_pop.h"
         return true;
       }
       else
@@ -599,7 +593,6 @@ namespace etl
     {
       const etl::message_id_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -631,16 +624,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -653,9 +643,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -750,7 +738,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -781,16 +768,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -803,9 +787,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -901,7 +883,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -931,16 +912,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -953,9 +931,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1051,7 +1027,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1080,16 +1055,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1102,9 +1074,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1199,7 +1169,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1227,16 +1196,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1249,9 +1215,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1346,7 +1310,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1373,16 +1336,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1395,9 +1355,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1492,7 +1450,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1518,16 +1475,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1540,9 +1494,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1637,7 +1589,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1662,16 +1613,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1684,9 +1632,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1780,7 +1726,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1804,16 +1749,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1826,9 +1768,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1922,7 +1862,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1945,16 +1884,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1967,9 +1903,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -2062,7 +1996,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2084,16 +2017,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2106,9 +2036,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -2201,7 +2129,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2222,16 +2149,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2244,9 +2168,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -2338,7 +2260,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2358,16 +2279,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2380,9 +2298,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -2474,7 +2390,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2493,16 +2408,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2515,9 +2427,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -2609,7 +2519,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2627,16 +2536,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2649,9 +2555,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -2743,7 +2647,6 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2760,16 +2663,13 @@ namespace etl
            break;
         }
       }
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2782,9 +2682,7 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
       }
     }
 

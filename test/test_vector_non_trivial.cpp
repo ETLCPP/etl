@@ -1407,5 +1407,5 @@ namespace
       const DataNDC initial2(initial_data.begin(), initial_data.end());
       CHECK((initial >= initial2) == (initial_data >= initial_data));
     }
-  }
+  };
 }

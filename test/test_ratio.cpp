@@ -225,5 +225,6 @@ namespace
       CHECK((etl::ratio_greater_equal_v<r1, r2>));
 #endif
     }
-  }
+  };
+
 }

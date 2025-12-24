@@ -465,9 +465,7 @@ namespace etl
         }
         else
         {
-#include "etl/private/diagnostic_array_bounds_push.h"
           static_cast<TDerived*>(this)->on_receive_unknown(msg);
-#include "etl/private/diagnostic_pop.h"
         }
       }
     }
@@ -475,7 +473,6 @@ namespace etl
     template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
-#include "etl/private/diagnostic_array_bounds_push.h"
       if constexpr (etl::is_one_of<TMessage, TMessageTypes...>::value)
       {
         static_cast<TDerived*>(this)->on_receive(msg);
@@ -491,7 +488,6 @@ namespace etl
           static_cast<TDerived*>(this)->on_receive_unknown(msg);
         }
       }
-#include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -528,9 +524,7 @@ namespace etl
     {
       if (TMessage::ID == msg.get_message_id())
       {
-#include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
-#include "etl/private/diagnostic_pop.h"
         return true;
       }
       else
@@ -624,7 +618,6 @@ namespace etl
       cog.outl("  {")
       cog.outl("    const etl::message_id_t id = msg.get_message_id();")
       cog.outl("")
-      cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
       cog.outl("    switch (id)")
       cog.outl("    {")
       for n in range(1, int(Handlers) + 1):
@@ -644,7 +637,6 @@ namespace etl
       cog.outl("         break;")
       cog.outl("      }")
       cog.outl("    }")
-      cog.outl("#include \"etl/private/diagnostic_pop.h\"")
       cog.outl("  }")
       cog.outl("")
       cog.outl("  template <typename TMessage>")
@@ -654,9 +646,7 @@ namespace etl
       cog.outl("T%s>::value, void>::type" % int(Handlers))
       cog.outl("    receive(const TMessage& msg)")
       cog.outl("  {")
-      cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
       cog.outl("    static_cast<TDerived*>(this)->on_receive(msg);")
-      cog.outl("#include \"etl/private/diagnostic_pop.h\"")
       cog.outl("  }")
       cog.outl("")
       cog.outl("  template <typename TMessage>")
@@ -672,9 +662,7 @@ namespace etl
       cog.outl("    }")
       cog.outl("    else")
       cog.outl("    {")
-      cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
       cog.outl("      static_cast<TDerived*>(this)->on_receive_unknown(msg);")
-      cog.outl("#include \"etl/private/diagnostic_pop.h\"")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
@@ -798,7 +786,6 @@ namespace etl
           cog.outl("  {")
           cog.outl("    const size_t id = msg.get_message_id();")
           cog.outl("")
-          cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
           cog.outl("    switch (id)")
           cog.outl("    {")
           for t in range(1, n + 1):
@@ -818,7 +805,6 @@ namespace etl
           cog.outl("         break;")
           cog.outl("      }")
           cog.outl("    }")
-          cog.outl("#include \"etl/private/diagnostic_pop.h\"")
           cog.outl("  }")
           cog.outl("")
           cog.outl("  template <typename TMessage>")
@@ -828,9 +814,7 @@ namespace etl
           cog.outl("T%s>::value, void>::type" % n)
           cog.outl("    receive(const TMessage& msg)")
           cog.outl("  {")
-          cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
           cog.outl("    static_cast<TDerived*>(this)->on_receive(msg);")
-          cog.outl("#include \"etl/private/diagnostic_pop.h\"")
           cog.outl("  }")
           cog.outl("")
           cog.outl("  template <typename TMessage>")
@@ -846,9 +830,7 @@ namespace etl
           cog.outl("    }")
           cog.outl("    else")
           cog.outl("    {")
-          cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
           cog.outl("      static_cast<TDerived*>(this)->on_receive_unknown(msg);")
-          cog.outl("#include \"etl/private/diagnostic_pop.h\"")
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("")

@@ -112,7 +112,7 @@ namespace
   //*****************************************************************************
   void free_int(int i, int j)
   {
-    function_called = FunctionCalled::Free_Int_Called;
+    function_called = FunctionCalled::Free_Int_Called;;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
   }
 
@@ -1832,7 +1832,7 @@ namespace
       Object object;
 
       auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
-      auto d2 = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);
+      auto d2 = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);;
 
       CHECK(d1 != d2);
     }
@@ -2029,7 +2029,7 @@ namespace
       (void)d;
     }
 #endif
-  }
+  };
 }
 
 #endif
