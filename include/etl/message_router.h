@@ -64,6 +64,7 @@ SOFTWARE.
 #include "placement_new.h"
 #include "successor.h"
 #include "type_traits.h"
+#include "type_list.h"
 
 #include <stdint.h>
 
@@ -410,7 +411,8 @@ namespace etl
   {
   public:
 
-    typedef etl::message_packet<TMessageTypes...> message_packet;
+    using message_packet = etl::message_packet<TMessageTypes...>;
+    using type_list      = etl::type_list<TMessageTypes...>;
 
     //**********************************************
     message_router()
@@ -566,6 +568,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  T16> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -716,6 +722,10 @@ namespace etl
   public:
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  T15> message_packet;
+
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>;
+#endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -868,6 +878,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  T14> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1018,6 +1032,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  T13> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1166,6 +1184,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  T12> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1313,6 +1335,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  T11> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1459,6 +1485,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9,  T10> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1604,6 +1634,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8,  T9> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1747,6 +1781,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7,  T8> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -1889,6 +1927,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6,  T7> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6, T7>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2029,6 +2071,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4, T5,  T6> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5, T6>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2168,6 +2214,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3, T4,  T5> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4, T5>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2305,6 +2355,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2, T3,  T4> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3, T4>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2441,6 +2495,10 @@ namespace etl
 
     typedef etl::message_packet<T1, T2,  T3> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2, T3>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2576,6 +2634,10 @@ namespace etl
 
     typedef etl::message_packet<T1,  T2> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1, T2>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2710,6 +2772,10 @@ namespace etl
 
     typedef etl::message_packet< T1> message_packet;
 
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<T1>;
+#endif
+
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -2829,6 +2895,77 @@ namespace etl
     {
       return true;
     }
+  };
+
+  // Helper: select type at index I from a `type_list`, or `void` if out of range.
+  template <size_t I, typename TList>
+  struct message_router_type_or_void
+  {
+    typedef typename etl::conditional<(I < etl::type_list_size<TList>::value),
+      etl::type_list_type_at_index<TList, I>,
+      etl::type_identity<void>>::type::type type;
+  };
+
+  // For C++14 and below, map the `type_list` to up to 16 message type parameters (fill with `void`).
+  template <typename TDerived, typename... TMessageTypes>
+  class message_router<TDerived, etl::type_list<TMessageTypes...>, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
+    : public message_router<TDerived,
+                            typename etl::message_router_type_or_void<0,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<1,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<2,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<3,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<4,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<5,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<6,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<7,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<8,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<9,  etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<10, etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<11, etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<12, etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<13, etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<14, etl::type_list<TMessageTypes...>>::type,
+                            typename etl::message_router_type_or_void<15, etl::type_list<TMessageTypes...>>::type>
+  {
+    // Enforce the maximum number of message types supported by the C++14 implementation.
+    static_assert(sizeof...(TMessageTypes) <= 16, "etl::message_router supports up to 16 message types for C++14");
+
+  public:
+    using base = message_router<TDerived,
+                                typename etl::message_router_type_or_void<0,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<1,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<2,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<3,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<4,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<5,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<6,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<7,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<8,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<9,  etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<10, etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<11, etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<12, etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<13, etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<14, etl::type_list<TMessageTypes...>>::type,
+                                typename etl::message_router_type_or_void<15, etl::type_list<TMessageTypes...>>::type>;
+
+    using base::base; // Inherit constructors
+    using typename base::message_packet;
+    using type_list = etl::type_list<TMessageTypes...>;
+  };
+#endif
+
+#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
+  template <typename TDerived, typename... TMessageTypes>
+  class message_router<TDerived, etl::type_list<TMessageTypes...>>
+    : public message_router<TDerived, TMessageTypes...>
+  {
+  public:
+
+    using this_type = message_router<TDerived, etl::type_list<TMessageTypes...>>;
+    using base_type = message_router<TDerived, TMessageTypes...>;
+    using type_list = etl::type_list<TMessageTypes...>;
+    using base_type::base_type;
   };
 #endif
 }

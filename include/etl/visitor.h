@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
+#include "type_list.h"
 
 //*****************************************************************************
 ///\defgroup visitor visitor
@@ -64,6 +65,7 @@ namespace etl
 
     using visitable<T1>::accept;
     using visitable<Types...>::accept;
+    using type_list = etl::type_list<T1, Types...>;
   };
 
   //*****************************************************************
@@ -75,9 +77,28 @@ namespace etl
   {
   public:
 
+    using type_list = etl::type_list<T1>;
+
     virtual ~visitable() = default;
 
     virtual void accept(T1&) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitable class for an etl::type_list.
+  /// Expands the type_list into the existing variadic visitable.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename... TTypes>
+  class visitable<etl::type_list<TTypes...>> : public visitable<TTypes...>
+  {
+    ETL_STATIC_ASSERT(sizeof...(TTypes) != 0, "etl::type_list must not be empty");
+
+  public:
+
+    using type_list = etl::type_list<TTypes...>;
+
+    using visitable<TTypes...>::accept;
   };
 
 #else
@@ -185,6 +206,21 @@ namespace etl
     virtual ~visitor() = default;
 
     virtual void visit(T1) = 0;
+  };
+
+  //*****************************************************************
+  /// The visitor class for an etl::type_list.
+  /// Expands the type_list into the existing variadic visitor.
+  ///\ingroup visitor
+  //*****************************************************************
+  template <typename... TTypes>
+  class visitor<etl::type_list<TTypes...>> : public visitor<TTypes...>
+  {
+    ETL_STATIC_ASSERT(sizeof...(TTypes) != 0, "etl::type_list must not be empty");
+
+  public:
+
+    using visitor<TTypes...>::visit;
   };
 
 #else

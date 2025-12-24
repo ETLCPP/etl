@@ -321,6 +321,8 @@ namespace etl
   {
   public:
 
+    using type_list = etl::type_list<T1>;
+
     virtual ~observer() = default;
 
     virtual void notification(T1) = 0;
@@ -336,6 +338,8 @@ namespace etl
   class observer<void>
   {
   public:
+
+    using type_list = etl::type_list<>;
 
     virtual ~observer() = default;
 
@@ -356,6 +360,19 @@ namespace etl
 
     using observer<TTypes...>::notification;
     using type_list = etl::type_list<TTypes...>;
+  };
+
+  //*****************************************************************
+  /// The specialised observer class for etl::type_list.
+  ///\ingroup observer
+  //****************************************************************
+  template <typename... TTypes>
+  class observer<etl::type_list<TTypes...>> : public observer<TTypes...>
+  {
+  public:
+
+    using observer<TTypes...>::observer;
+    using observer<TTypes...>::notification;
   };
 
 #else
