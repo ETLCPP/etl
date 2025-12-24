@@ -1926,5 +1926,5 @@ namespace
       CHECK(data1 < data3);
       CHECK(data3 > data1);
     }
-  };
+  }
 }

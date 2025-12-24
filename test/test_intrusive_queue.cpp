@@ -438,5 +438,5 @@ namespace
       queueD.pop();
       CHECK_EQUAL(queueD.back(), queueDR.back());
     }
-  };
+  }
 }

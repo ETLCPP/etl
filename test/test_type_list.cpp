@@ -261,6 +261,6 @@ namespace
       //CHECK_FALSE((etl::type_lists_are_convertible_v<t1, t5>));
 #endif
     }
-  };
+  }
 #endif
 }

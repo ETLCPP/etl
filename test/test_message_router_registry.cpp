@@ -392,5 +392,5 @@ namespace
       CHECK_EQUAL(ROUTER1, (*citr).get_message_router_id());
       CHECK_EQUAL(ROUTER1, citr->get_message_router_id());
     }
-  };
+  }
 }

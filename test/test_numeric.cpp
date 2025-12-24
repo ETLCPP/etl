@@ -204,5 +204,5 @@ namespace
       CHECK_CLOSE(10.0, etl::lerp(10.0, 10.0, 1),   0.001);
       CHECK_CLOSE(10.0, etl::lerp(10,   10,   1),   0.001);
     }
-  };
+  }
 }

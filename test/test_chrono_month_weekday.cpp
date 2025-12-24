@@ -120,5 +120,5 @@ namespace
       CHECK_EQUAL(256U, hashes.size());
     }
 #endif
-  };
+  }
 }

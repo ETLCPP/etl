@@ -73,7 +73,7 @@ namespace etl
   {
   public:
 
-    virtual ~ireference_counter() {};
+    virtual ~ireference_counter() {}
     virtual void set_reference_count(int32_t value) = 0;
     virtual void increment_reference_count() = 0;
     ETL_NODISCARD virtual int32_t decrement_reference_count() = 0;

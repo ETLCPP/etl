@@ -284,5 +284,5 @@ namespace
       c.destroy();
       CHECK_FALSE(c.has_value());
     }
-  };
+  }
 }

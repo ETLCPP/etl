@@ -397,5 +397,5 @@ namespace
       CHECK_THROW(c = memCast.ref<char>(), etl::mem_cast_nullptr_exception);
       CHECK(c == 0);
     }
-  };
+  }
 }

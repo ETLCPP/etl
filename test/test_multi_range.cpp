@@ -431,5 +431,5 @@ namespace
 
       outer.detach_all();
     }
-  };
+  }
 }

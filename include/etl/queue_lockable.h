@@ -227,7 +227,7 @@ namespace etl
     //*************************************************************************
     bool full_implementation() const
     {
-      return (current_size == Max_Size);;
+      return (current_size == Max_Size);
     }
 
     //*************************************************************************
@@ -781,7 +781,7 @@ namespace etl
     //*************************************************************************
     reference front_implementation()
     {
-      return p_buffer[this->read_index];;
+      return p_buffer[this->read_index];
     }
 
     //*************************************************************************
@@ -789,7 +789,7 @@ namespace etl
     //*************************************************************************
     const_reference front_implementation() const
     {
-      return p_buffer[this->read_index];;
+      return p_buffer[this->read_index];
     }
 
     // Disable copy construction and assignment.

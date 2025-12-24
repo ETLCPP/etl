@@ -61,5 +61,5 @@ namespace
   #error Endianness unknown: Test not possible
 #endif
     }
-  };
+  }
 }

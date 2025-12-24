@@ -160,5 +160,5 @@ namespace
       CHECK_FALSE(nn1 >= nn2);
       CHECK_TRUE(nn2 >= nn1);
     }
-  };
+  }
 }

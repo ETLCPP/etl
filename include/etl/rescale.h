@@ -68,7 +68,7 @@ namespace etl
     //*****************************************************************
     TOutput operator ()(TInput value) const
     {
-      return TOutput(((value - input_min_value) * multiplier)) + output_min_value;;
+      return TOutput(((value - input_min_value) * multiplier)) + output_min_value;
     }
 
   private:

@@ -1521,6 +1521,12 @@
     <ClInclude Include="..\..\include\etl\crc64_iso.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback.h">
+      <Filter>ETL\U<Filter>ETL\Callbacks &amp; Delegates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\concepts.h">
+      <Filter>ETL\Callbacks &amp; Delegates</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\invoke.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -3759,6 +3765,21 @@
       <Filter>Tests\State Machines</Filter>
     </ClCompile>
     <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\format.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_format.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\concepts.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_concepts.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_invoke.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
   </ItemGroup>

@@ -557,7 +557,9 @@ namespace
       while (ms_itr != ms_end_itr)
       {
         //  Fill the multi span
+#include "etl/private/diagnostic_null_dereference_push.h"
         *ms_itr++ = *exp_itr++;
+#include "etl/private/diagnostic_pop.h"
       }
 
       while (ms_itr != ms_end_itr)
@@ -625,7 +627,9 @@ namespace
 
       for (size_t i = 0; i < expected.size(); ++i)
       {
+#include "etl/private/diagnostic_null_dereference_push.h"
         *ms_itr = *exp_itr;
+#include "etl/private/diagnostic_pop.h"
 
         if (i < expected.size() - 1)
         {
@@ -761,5 +765,5 @@ namespace
         CHECK_EQUAL(expected[i], ms_int[i]);
       }
     }
-  };
+  }
 }

@@ -76,7 +76,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte&>::type
     operator <<=(etl::byte& b, TInteger shift) ETL_NOEXCEPT
   {
-    return b = b << shift;;
+    return b = b << shift;
   }
 
   //*************************************************************************

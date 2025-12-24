@@ -875,5 +875,5 @@ namespace
       CHECK(key_state.add(false));
       CHECK(!key_state.is_set());
     }
-  };
+  }
 }

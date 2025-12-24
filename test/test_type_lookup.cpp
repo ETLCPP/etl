@@ -425,7 +425,7 @@ namespace
       CHECK((etl::is_same<Type2, typename Type_Type_Lookup1::type_from_type_t<Type1>>::value));
     }
 #endif
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

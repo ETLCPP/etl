@@ -188,5 +188,5 @@ namespace
 
       CHECK(error_received);
     }
-  };
+  }
 }

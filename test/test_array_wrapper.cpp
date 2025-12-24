@@ -567,7 +567,7 @@ namespace
 
       CHECK_EQUAL(compare_hash, hash);
     }
-  };
+  }
 }
 
 #if defined(ETL_COMPILER_CLANG)

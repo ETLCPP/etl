@@ -98,5 +98,5 @@ namespace
       bool isEqual = std::equal(output2.begin(), output2.end(), result2a.begin(), Compare());
       CHECK(isEqual);
     }
-  };
+  }
 }

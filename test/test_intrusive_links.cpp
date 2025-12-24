@@ -1730,5 +1730,5 @@ namespace
       CHECK(a.etl_left   == nullptr);
       CHECK(a.etl_right  == &c);
     }
-  };
+  }
 }

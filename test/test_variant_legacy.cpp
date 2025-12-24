@@ -961,7 +961,7 @@ namespace
       type = etl::legacy::visit<int16_t>(visitor, variant_const);
       CHECK_EQUAL(70, type);
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

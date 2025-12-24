@@ -750,7 +750,7 @@ namespace
       CHECK(int_type(char_traits::eof())     != char_traits::not_eof(char_traits::eof()));
       CHECK(int_type(char_traits::eof() + 1) == char_traits::not_eof(char_traits::eof() + 1));
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

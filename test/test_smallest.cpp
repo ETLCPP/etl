@@ -456,5 +456,5 @@ namespace
       type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<INT64_MAX>>::value;
       CHECK(type);
     }
-  };
+  }
 }

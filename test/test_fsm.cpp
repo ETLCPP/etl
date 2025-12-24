@@ -780,5 +780,5 @@ namespace
       CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::Locked, int(motorControl.get_state().get_state_id()));
     }
-  };
+  }
 }

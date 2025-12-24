@@ -606,7 +606,7 @@ namespace etl
         i_element->~value_type();
         storage.release(etl::addressof(*i_element));
         refmap_t::erase(i_element);
-        ETL_DECREMENT_DEBUG_COUNT;;
+        ETL_DECREMENT_DEBUG_COUNT;
         return 1;
       }
     }
@@ -627,7 +627,7 @@ namespace etl
         i_element->~value_type();
         storage.release(etl::addressof(*i_element));
         refmap_t::erase(i_element);
-        ETL_DECREMENT_DEBUG_COUNT;;
+        ETL_DECREMENT_DEBUG_COUNT;
         return 1;
       }
     }

@@ -75,8 +75,8 @@ namespace etl
 {
 #if defined(ETL_USE_ATOMIC_BUILTINS)
 
-#define ETL_BUILTIN_LOCK   while (__atomic_test_and_set(&flag, etl::memory_order_seq_cst)) {}
-#define ETL_BUILTIN_UNLOCK __atomic_clear(&flag, etl::memory_order_seq_cst);
+#define ETL_BUILTIN_LOCK   do { while (__atomic_test_and_set(&flag, etl::memory_order_seq_cst)) {} } while (0)
+#define ETL_BUILTIN_UNLOCK do { __atomic_clear(&flag, etl::memory_order_seq_cst); } while (0)
 
   //***************************************************************************
   // Atomic type for pre C++11 GCC compilers that support the builtin '__atomic' functions.
@@ -1021,8 +1021,8 @@ namespace etl
 
 #if defined(ETL_USE_SYNC_BUILTINS)
 
-#define ETL_BUILTIN_LOCK   while (__sync_lock_test_and_set(&flag, 1U)) {}
-#define ETL_BUILTIN_UNLOCK __sync_lock_release(&flag);
+#define ETL_BUILTIN_LOCK   do { while (__sync_lock_test_and_set(&flag, 1U)) {} } while(0)
+#define ETL_BUILTIN_UNLOCK do { __sync_lock_release(&flag); } while(0)
 
   //***************************************************************************
   // Atomic type for pre C++11 GCC compilers that support the builtin '__sync' functions.

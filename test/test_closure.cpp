@@ -187,5 +187,5 @@ namespace
       //c.bind(1, 2, 3);          // Argument count mismatch
       //c.bind(1, std::string()); // Argument is not convertible
     }
-  };
+  }
 }

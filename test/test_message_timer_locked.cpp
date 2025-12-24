@@ -958,5 +958,5 @@ namespace
       CHECK_EQUAL(0U, locks.lock_count);
     }
 #endif
-  };
+  }
 }

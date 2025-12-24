@@ -1589,7 +1589,7 @@ namespace
 
       CHECK(textview.end() == itr);
     }
-  };
+  }
 }
 
 #endif

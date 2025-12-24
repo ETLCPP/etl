@@ -35,10 +35,26 @@ set_target_properties(tests PROPERTIES
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS ON
         )
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 target_compile_options(tests
 	    PRIVATE
 		-fsyntax-only
+		-pedantic-errors
+		-Werror
+		-Wextra-semi
 		)
+endif ()
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+target_compile_options(tests
+	    PRIVATE
+		-fsyntax-only
+		-pedantic-errors
+		-Werror
+		-Wextra-semi
+		-Wextra-semi-stmt
+		-Wc++11-extra-semi
+		)
+endif ()
 
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
@@ -98,6 +114,7 @@ target_sources(tests PRIVATE
 		char_traits.h.t.cpp
 		checksum.h.t.cpp
 		chrono.h.t.cpp
+		concepts.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		closure.h.t.cpp
@@ -182,6 +199,7 @@ target_sources(tests PRIVATE
 		flat_multiset.h.t.cpp
 		flat_set.h.t.cpp
 		fnv_1.h.t.cpp
+		format.h.t.cpp
 		format_spec.h.t.cpp
 		forward_list.h.t.cpp
 		frame_check_sequence.h.t.cpp

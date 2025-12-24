@@ -730,5 +730,5 @@ namespace
       CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
     }
-  };
+  }
 }

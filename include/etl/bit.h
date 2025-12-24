@@ -138,7 +138,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
     countr_one(T value) ETL_NOEXCEPT
   {
-    return etl::count_trailing_ones(value);;
+    return etl::count_trailing_ones(value);
   }
 
 

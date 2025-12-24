@@ -1192,7 +1192,7 @@ namespace
       CHECK_EQUAL(object2.i, result2.i);
       CHECK_EQUAL(object2.c, result2.c);
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

@@ -84,5 +84,5 @@ namespace
       CHECK_TRUE(etl::chrono::microseconds(1000) == 1000_microseconds);
       CHECK_TRUE(etl::chrono::nanoseconds(10000) == 10000_nanoseconds);
     }
-  };
+  }
 }
