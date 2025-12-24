@@ -234,6 +234,7 @@ add_executable(etl_tests
 	test_message_bus.cpp
 	test_message_packet.cpp
 	test_message_router.cpp
+	test_message_router_with_type_list.cpp
 	test_message_router_registry.cpp
 	test_message_timer.cpp
 	test_message_timer_atomic.cpp
@@ -252,6 +253,7 @@ add_executable(etl_tests
 	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp
+	test_observer_with_type_list.cpp
 	test_optional.cpp
 	test_overload.cpp
 	test_packet.cpp
@@ -370,6 +372,7 @@ add_executable(etl_tests
 	test_vector_pointer.cpp
 	test_vector_pointer_external_buffer.cpp
 	test_visitor.cpp
+	test_visitor_with_type_list.cpp
 	test_xor_checksum.cpp
 	test_xor_rotate_checksum.cpp
   )

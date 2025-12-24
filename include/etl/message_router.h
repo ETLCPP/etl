@@ -550,9 +550,158 @@ namespace etl
       }
     }
   };
+#elif ETL_USING_CPP14 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
+  //*************************************************************************************************
+  // Unified C++11/14 variadic implementation (no fold expressions).
+  //*************************************************************************************************
+  template <typename TDerived, typename... TMessageTypes>
+  class message_router : public imessage_router
+  {
+  public:
+    typedef etl::message_packet<TMessageTypes...> message_packet;
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<TMessageTypes...>;
+#endif
+
+    // Constructors (inherit public base ones)
+    message_router()
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
+    {
+    }
+
+    message_router(etl::imessage_router& successor_)
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
+    {
+    }
+
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    using etl::imessage_router::receive;
+
+    // Route by runtime message_id with pack expansion via initializer list.
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
+    {
+      const etl::message_id_t id = msg.get_message_id();
+      bool handled = false;
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      // Expand across TMessageTypes... and attempt cast/dispatch on matching IDs.
+      int dummy[] = {0, (handled = handled || try_receive_one<TMessageTypes>(id, msg), 0)...};
+      (void)dummy;
+#include "etl/private/diagnostic_pop.h"
+
+      if (!handled)
+      {
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
+      }
+    }
+
+    // Overload for concrete message types; forwards to on_receive or successor.
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, void>::type
+      receive(const TMessage& msg)
+    {
+#include "etl/private/diagnostic_array_bounds_push.h"
+      if (is_in_message_set<TMessage>())
+      {
+        static_cast<TDerived*>(this)->on_receive(msg);
+      }
+      else
+      {
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
+      }
+#include "etl/private/diagnostic_pop.h"
+    }
+
+    using imessage_router::accepts;
+
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+      bool accepted = false;
+      int dummy[] = {0, (accepted = accepted || accepts_one<TMessageTypes>(id), 0)...};
+      (void)dummy;
+      if (!accepted)
+      {
+        if (has_successor())
+        {
+          return get_successor().accepts(id);
+        }
+      }
+      return accepted;
+    }
+
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE { return false; }
+    bool is_producer() const ETL_OVERRIDE { return true; }
+    bool is_consumer() const ETL_OVERRIDE { return true; }
+
+  private:
+    // Helper: is T in the message set?
+    template <typename T>
+    static ETL_CONSTEXPR bool is_in_message_set()
+    {
+      return etl::is_one_of<T, TMessageTypes...>::value;
+    }
+
+    // Try to handle one type by ID match and cast.
+    template <typename TMessage>
+    bool try_receive_one(etl::message_id_t id, const etl::imessage& msg)
+    {
+      if (TMessage::ID == id)
+      {
+        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        return true;
+      }
+      return false;
+    }
+
+    // Accepts one type by ID
+    template <typename TMessage>
+    bool accepts_one(etl::message_id_t id) const
+    {
+      return TMessage::ID == id;
+    }
+  };
+
+  // Convenience bridge: allow message_router<TDerived, etl::type_list<Ts...>>
+  template <typename TDerived, typename... TMessageTypes>
+  class message_router<TDerived, etl::type_list<TMessageTypes...>>
+    : public message_router<TDerived, TMessageTypes...>
+  {
+  public:
+    typedef message_router<TDerived, TMessageTypes...> base_type;
+#if ETL_USING_CPP11
+    using type_list = etl::type_list<TMessageTypes...>;
+#endif
+
+    using base_type::base_type; // inherit constructors
+  };
 #else
 //*************************************************************************************************
-// For C++14 and below.
+// For C++03.
 //*************************************************************************************************
   //***************************************************************************
   // The definition for all 16 message types.
@@ -2955,7 +3104,7 @@ namespace etl
   };
 #endif
 
-#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   template <typename TDerived, typename... TMessageTypes>
   class message_router<TDerived, etl::type_list<TMessageTypes...>>
     : public message_router<TDerived, TMessageTypes...>
