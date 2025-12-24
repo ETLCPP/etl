@@ -45,6 +45,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 #include "functional.h"
+#include "type_list.h"
 
 #include "private/tuple_element.h"
 #include "private/tuple_size.h"
@@ -131,6 +132,7 @@ namespace etl
     using value_type          = void;                        ///< The type contained by this tuple.
     using this_type           = tuple<>;                     ///< The type of this tuple.
     using base_type           = void;                        ///< The type of the base tuple.
+    using type_list           = etl::type_list<>;                      ///< The type list for this tuple.
     using index_sequence_type = etl::make_index_sequence<0>; ///< The index_sequence type for this tuple.
 
     //*********************************
@@ -233,6 +235,7 @@ namespace etl
     using value_type          = THead;                  ///< The type contained by this tuple.
     using this_type           = tuple<THead, TTail...>; ///< The type of this tuple.
     using base_type           = tuple<TTail...>;        ///< The type of the base tuple.
+    using type_list           = etl::type_list<THead, TTail...>;  ///< The type list for this tuple.
     using index_sequence_type = etl::make_index_sequence<number_of_types<THead, TTail...>()>; ///< The index_sequence type for this tuple.
 
     //*********************************
