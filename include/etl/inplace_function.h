@@ -117,7 +117,7 @@ namespace etl
       struct member_target
       {
         TReturn (TObject::* member)(TArgs...);
-        TObject* obj;
+        TObject obj;
       };
 
       //*****************************************
@@ -126,8 +126,8 @@ namespace etl
       template <typename TObject>
       struct const_member_target
       {
-        TReturn (TObject::* member)(TArgs...) const;
-        const TObject* obj;
+        TReturn(TObject::* member)(TArgs...) const;
+        TObject obj;
       };
 
       //*****************************************
@@ -191,7 +191,7 @@ namespace etl
       static R stub_member(void* p, TArgs... a)
       {
         auto* s = static_cast<Target*>(p);
-        return (s->obj->*s->member)(etl::forward<TArgs>(a)...);
+        return (s->obj.*(s->member))(etl::forward<TArgs>(a)...);
       }
 
       //*****************************************
@@ -201,7 +201,7 @@ namespace etl
       static void stub_member(void* p, TArgs... a)
       {
         auto* s = static_cast<Target*>(p);
-        (s->obj->*s->member)(etl::forward<TArgs>(a)...);
+        (s->obj.*(s->member))(etl::forward<TArgs>(a)...);
       }
 
       //*****************************************
@@ -334,9 +334,14 @@ namespace etl
       static const inplace_function_vtable* for_member()
       {
         using target_t = member_target<T>;
+        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<T>::value;
+
+        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? nullptr
+                                                                            : &inplace_function_vtable::template destroy_stub<target_t>;
+
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_member<target_t>,
-                                                    nullptr,
-                                                    &inplace_function_vtable::template move_construct<target_t, false>,
+                                                    destroy_ptr,
+                                                    &inplace_function_vtable::template move_construct<target_t, destroy_src_on_move>,
                                                     &inplace_function_vtable::template copy_construct<target_t>);
         return &vtable;
       }
@@ -348,9 +353,14 @@ namespace etl
       static const inplace_function_vtable* for_const_member()
       {
         using target_t = const_member_target<T>;
+        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<T>::value;
+
+        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? nullptr
+                                                                            : &inplace_function_vtable::template destroy_stub<target_t>;
+
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_member<target_t>,
-                                                    nullptr,
-                                                    &inplace_function_vtable::template move_construct<target_t, false>,
+                                                    destroy_ptr,
+                                                    &inplace_function_vtable::template move_construct<target_t, destroy_src_on_move>,
                                                     &inplace_function_vtable::template copy_construct<target_t>);
         return &vtable;
       }
@@ -570,10 +580,10 @@ namespace etl
     /// \param method The member function pointer.
     /// \param obj    The object.
     //*************************************************************************
-    template <typename TObject>
-    inplace_function(TReturn (TObject::*method)(TArgs...), TObject& obj)
+    template <typename TObject, typename TObjectArg>
+    inplace_function(TReturn (TObject::*method)(TArgs...), TObjectArg&& obj)
     {
-      set(method, obj);
+      set(method, etl::forward<TObjectArg>(obj));
     }
 
     //*************************************************************************
@@ -582,10 +592,10 @@ namespace etl
     /// \param method The member function pointer.
     /// \param obj    The object.
     //*************************************************************************
-    template <typename TObject>
-    inplace_function(TReturn(TObject::* method)(TArgs...) const, const TObject& obj)
+    template <typename TObject, typename TObjectArg>
+    inplace_function(TReturn (TObject::*method)(TArgs...) const, TObjectArg&& obj)
     {
-      set(method, obj);
+      set(method, etl::forward<TObjectArg>(obj));
     }
 
     //*************************************************************************
@@ -641,24 +651,21 @@ namespace etl
     /// \param method The member function pointer.
     /// \param obj    The object.
     //*************************************************************************
-    template <typename TObject>
-    void set(TReturn(TObject::* method)(TArgs...), TObject& obj)
+    template <typename TObject, typename TObjectArg>
+    void set(TReturn(TObject::* method)(TArgs...), TObjectArg&& obj)
     {
-      // Validate that 'method' is invocable with (TObject&, TArgs...) and returns TReturn
-      static_assert(etl::is_invocable_r<TReturn, decltype(method), TObject&, TArgs...>::value,
+      using D = etl::decay_t<TObjectArg>;
+      static_assert(etl::is_invocable_r<TReturn, decltype(method), D&, TArgs...>::value,
                     "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
 
-      using target_t = typename vtable_type::template member_target<TObject>;
+      using target_t = typename vtable_type::template member_target<D>;
 
       static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: storage size too small");
       static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: storage alignment too small");
 
       clear();
-
-      // Construct the object in the storage.
-      ::new (storage_ptr()) target_t{ method, &obj };
-            
-      vtable = vtable_type::template for_member<TObject>();
+      ::new (storage_ptr()) target_t{ method, etl::forward<TObjectArg>(obj) };
+      vtable = vtable_type::template for_member<D>();
     }
 
     //*************************************************************************
@@ -667,25 +674,21 @@ namespace etl
     /// \param method The member function pointer.
     /// \param obj    The object.
     //*************************************************************************
-    template <typename TObject>
-    void set(TReturn(TObject::* method)(TArgs...) const, const TObject& obj)
+    template <typename TObject, typename TObjectArg>
+    void set(TReturn(TObject::* method)(TArgs...) const, TObjectArg&& obj)
     {
-      // Validate that 'method' is invocable with (TObject&, TArgs...) and returns TReturn
-      static_assert(etl::is_invocable_r<TReturn, decltype(method), const TObject&, TArgs...>::value,
+      using D = etl::decay_t<TObjectArg>;
+      static_assert(etl::is_invocable_r<TReturn, decltype(method), D&, TArgs...>::value,
                     "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
 
-      using target_t = typename vtable_type::template const_member_target<TObject>;
+      using target_t = typename vtable_type::template const_member_target<D>;
 
       static_assert(Object_Size      >= sizeof(target_t),  "etl::inplace_function: storage size too small");
       static_assert(Object_Alignment >= alignof(target_t), "etl::inplace_function: storage alignment too small");
 
       clear();
-
-      // Construct the object in the storage.
-      ::new (storage_ptr()) target_t{ method, &obj };
-
-      
-      vtable = vtable_type::template for_const_member<TObject>();
+      ::new (storage_ptr()) target_t{ method, etl::forward<TObjectArg>(obj) };
+      vtable = vtable_type::template for_const_member<D>();
     }
 
     //*************************************************************************

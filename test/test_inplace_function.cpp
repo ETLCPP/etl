@@ -185,6 +185,12 @@ namespace
   public:
 
     //*******************************************
+    Object()
+      : call_count(0)
+    {
+    }
+
+    //*******************************************
     // void
     void member_void()
     {
@@ -203,6 +209,8 @@ namespace
       function_called = FunctionCalled::Member_Int_Called;
       parameter_correct = (i == VALUE1) && (j == VALUE2);
 
+      ++call_count;
+
       return i + j + 1; 
     }
 
@@ -210,6 +218,8 @@ namespace
     {
       function_called = FunctionCalled::Member_Int_Const_Called;
       parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+      ++call_count;
 
       return i + j + 1;
     }
@@ -226,6 +236,8 @@ namespace
     {
       function_called = FunctionCalled::Member_Reference_Const_Called;
       parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
+
+      ++call_count;
     }
 
     //*******************************************
@@ -234,6 +246,8 @@ namespace
     {
       function_called = FunctionCalled::Member_Moveableonly_Called;
       parameter_correct = (data.ipf == VALUE1);
+
+      ++call_count;
     }
 
     //*******************************************
@@ -249,6 +263,8 @@ namespace
     void operator()()
     {
       function_called = FunctionCalled::Operator_Called;
+
+      ++call_count;
     }
 
     //*******************************************
@@ -256,7 +272,11 @@ namespace
     void operator()() const
     {
       function_called = FunctionCalled::Operator_Const_Called;
+
+      ++call_count;
     }
+
+    mutable int call_count;
   };
 
   //*******************************************
@@ -312,6 +332,7 @@ namespace
   struct DestructibleMovableObject
   {
     DestructibleMovableObject()
+      : call_count(0)
     {
       destructor_called        = false;
       copy_constructior_called = false;
@@ -324,12 +345,14 @@ namespace
       destructor_called = true;
     }
 
-    DestructibleMovableObject(const DestructibleMovableObject&)
+    DestructibleMovableObject(const DestructibleMovableObject& other)
+      : call_count(other.call_count)
     {
       copy_constructior_called = true;
     }
 
-    DestructibleMovableObject(DestructibleMovableObject&&)
+    DestructibleMovableObject(DestructibleMovableObject&& other)
+      : call_count(other.call_count)
     {
       move_constructior_called = true;
     }
@@ -337,12 +360,15 @@ namespace
     void operator()(int, int)
     {
       function_operator_called = true;
+      ++call_count;
     }
 
     static bool destructor_called;
     static bool copy_constructior_called;
     static bool move_constructior_called;
     static bool function_operator_called;
+
+    int call_count;
   };
 
   bool DestructibleMovableObject::destructor_called        = false;
@@ -771,6 +797,7 @@ namespace
 
       ipf();
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Operator_Called);
     }
 
@@ -783,6 +810,7 @@ namespace
 
       ipf();
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Operator_Const_Called);
     }
 
@@ -873,6 +901,7 @@ namespace
 
       ipf();
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Operator_Called);
     }
 
@@ -895,6 +924,7 @@ namespace
 
       ipf();
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Void_Called);
     }
 
@@ -929,6 +959,7 @@ namespace
 
       ipf();
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
     }
 
@@ -958,12 +989,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_run_time)
     {
-      static Object object;
+      Object object;
 
-      auto ipf = etl::make_inplace_function(&Object::member_int, object);
+      auto ipf = etl::make_inplace_function(&Object::member_int, object); // Pass it by value to the implace function.
 
       ipf(VALUE1, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Int_Called);
       CHECK(parameter_correct);
     }
@@ -995,12 +1027,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_inplace_function_member_int_const_run_time)
     {
-      static Object object;
+      Object object;
 
       auto ipf = etl::make_inplace_function(&Object::member_int_const, object);
 
       ipf(VALUE1, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1029,6 +1062,7 @@ namespace
 
       ipf(data, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
@@ -1044,6 +1078,7 @@ namespace
 
       ipf(data, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
@@ -1075,6 +1110,7 @@ namespace
 
       ipf(data, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1090,6 +1126,7 @@ namespace
 
       ipf(data, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1121,6 +1158,7 @@ namespace
 
       ipf(std::move(data));
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Moveableonly_Called);
       CHECK(parameter_correct);
     }
@@ -1182,6 +1220,7 @@ namespace
 
       ipf(VALUE1, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Free_Int_Called);
       CHECK(parameter_correct);
     }
@@ -1268,6 +1307,7 @@ namespace
 
       ipf(data, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
@@ -1302,6 +1342,7 @@ namespace
 
       ipf(data, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1333,6 +1374,7 @@ namespace
 
       d2(VALUE1, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Int_Called);
       CHECK(parameter_correct);
     }
@@ -1380,6 +1422,7 @@ namespace
 
       d2(VALUE1, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK_TRUE(DestructibleMovableObject::function_operator_called);
     }
 
@@ -1395,6 +1438,7 @@ namespace
 
       d2(VALUE1, VALUE2);
 
+      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
       CHECK_TRUE(DestructibleMovableObject::function_operator_called);
     }
 
