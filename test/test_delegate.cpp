@@ -279,18 +279,18 @@ namespace
     return a * 2;
   }
 
-  Object object_static;
-  const Object const_object_static;
-
-#if ETL_USING_CPP17
-  Functor functor_static;
-  const FunctorConst const_functor_static;
-#endif
-
 #if ETL_USING_CPP17
   static auto global_lambda = [](int i, int j) { return i + j; };
 #endif
 }
+
+Object object_static;
+const Object const_object_static;
+
+#if ETL_USING_CPP17
+Functor functor_static;
+const FunctorConst const_functor_static;
+#endif
 
 namespace
 {
