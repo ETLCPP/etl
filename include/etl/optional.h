@@ -1326,6 +1326,8 @@ namespace etl
   public:
 
     typedef T value_type;
+    typedef T* iterator;
+    typedef const T* const_iterator;
 
 #if ETL_USING_CPP11
     //***************************************************************************
@@ -1698,6 +1700,42 @@ namespace etl
       return *this;
     }
 #endif
+
+    //***************************************************************************
+    /// Returns an iterator to the beginning of the optional.
+    //***************************************************************************
+    ETL_CONSTEXPR20_STL
+    iterator begin() ETL_NOEXCEPT
+    {
+      return this->has_value() ? this->operator->() : ETL_NULLPTR;
+    }
+
+    //***************************************************************************
+    /// Returns a const iterator to the beginning of the optional.
+    //***************************************************************************
+    ETL_CONSTEXPR20_STL
+    const_iterator begin() const ETL_NOEXCEPT
+    {
+      return this->has_value() ? this->operator->() : ETL_NULLPTR;
+    }
+
+    //***************************************************************************
+    /// Returns an iterator to the end of the optional.
+    //***************************************************************************
+    ETL_CONSTEXPR20_STL
+    iterator end() ETL_NOEXCEPT
+    {
+      return this->has_value() ? this->operator->() + 1 : ETL_NULLPTR;
+    }
+
+    //***************************************************************************
+    /// Returns a const iterator to the end of the optional.
+    //***************************************************************************
+    ETL_CONSTEXPR20_STL
+    const_iterator end() const ETL_NOEXCEPT
+    {
+      return this->has_value() ? this->operator->() + 1 : ETL_NULLPTR;
+    }
   };
 
 #include "private/diagnostic_uninitialized_push.h"
