@@ -32,6 +32,9 @@ SOFTWARE.
 #define ETL_INPLACE_FUNCTION_INCLUDED
 
 #include "platform.h"
+
+#if ETL_USING_CPP11
+
 #include "utility.h"
 #include "optional.h"
 #include "placement_new.h"
@@ -1517,4 +1520,5 @@ namespace etl
   }
 }
 
+#endif
 #endif
