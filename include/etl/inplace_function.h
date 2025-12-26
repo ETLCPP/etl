@@ -261,7 +261,7 @@ namespace etl
       //*****************************************
       // Compile-time bound member + object - returning value
       //*****************************************
-      template <typename T, TReturn(T::* Method)(TArgs...), T* Object, typename R = TReturn, etl::enable_if_t<!etl::is_void<R>::value, int> = 0>
+      template <typename TObject, TReturn(TObject::* Method)(TArgs...), TObject* Object, typename R = TReturn, etl::enable_if_t<!etl::is_void<R>::value, int> = 0>
       static R stub_ct_member(void*, TArgs... a)
       {
         return (Object->*Method)(etl::forward<TArgs>(a)...);
@@ -270,7 +270,7 @@ namespace etl
       //*****************************************
       // Compile-time bound member + object - returning void
       //*****************************************
-      template <typename T, TReturn(T::* Method)(TArgs...), T* Object, typename R = TReturn, etl::enable_if_t<etl::is_void<R>::value, int> = 0>
+      template <typename TObject, TReturn(TObject::* Method)(TArgs...), TObject* Object, typename R = TReturn, etl::enable_if_t<etl::is_void<R>::value, int> = 0>
       static void stub_ct_member(void*, TArgs... a)
       {
         (Object->*Method)(etl::forward<TArgs>(a)...);
@@ -279,7 +279,7 @@ namespace etl
       //*****************************************
       // Compile-time bound const member + object - returning value
       //*****************************************
-      template <typename T, TReturn(T::* Method)(TArgs...) const, const T* Object, typename R = TReturn, etl::enable_if_t<!etl::is_void<R>::value, int> = 0>
+      template <typename TObject, TReturn(TObject::* Method)(TArgs...) const, const TObject* Object, typename R = TReturn, etl::enable_if_t<!etl::is_void<R>::value, int> = 0>
       static R stub_ct_const_member(void*, TArgs... a)
       {
         return (Object->*Method)(etl::forward<TArgs>(a)...);
@@ -288,7 +288,7 @@ namespace etl
       //*****************************************
       // Compile-time bound const member + object - returning void
       //*****************************************
-      template <typename T, TReturn(T::* Method)(TArgs...) const, const T* Object, typename R = TReturn, etl::enable_if_t<etl::is_void<R>::value, int> = 0>
+      template <typename TObject, TReturn(TObject::* Method)(TArgs...) const, const TObject* Object, typename R = TReturn, etl::enable_if_t<etl::is_void<R>::value, int> = 0>
       static void stub_ct_const_member(void*, TArgs... a)
       {
         (Object->*Method)(etl::forward<TArgs>(a)...);
@@ -297,7 +297,7 @@ namespace etl
       //*****************************************
       // Compile-time bound operator() + object - returning value
       //*****************************************
-      template <typename T, T* Object, typename R = TReturn, etl::enable_if_t<!etl::is_void<R>::value, int> = 0>
+      template <typename TObject, TObject* Object, typename R = TReturn, etl::enable_if_t<!etl::is_void<R>::value, int> = 0>
       static R stub_ct_operator(void*, TArgs... a)
       {
         return (*Object)(etl::forward<TArgs>(a)...);
@@ -306,7 +306,7 @@ namespace etl
       //*****************************************
       // Compile-time bound operator() + object - returning void
       //*****************************************
-      template <typename T, T* Object, typename R = TReturn, etl::enable_if_t<etl::is_void<R>::value, int> = 0>
+      template <typename TObject, TObject* Object, typename R = TReturn, etl::enable_if_t<etl::is_void<R>::value, int> = 0>
       static void stub_ct_operator(void*, TArgs... a)
       {
         (*Object)(etl::forward<TArgs>(a)...);
@@ -330,14 +330,14 @@ namespace etl
       //*****************************************
       // Member function pointer
       //*****************************************
-      template <typename T>
+      template <typename TObject>
       static const inplace_function_vtable* for_member()
       {
-        using target_t = member_target<T>;
-        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<T>::value;
+        using target_t = member_target<TObject>;
+        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
 
-        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? nullptr
-                                                                            : &inplace_function_vtable::template destroy_stub<target_t>;
+        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                  : &inplace_function_vtable::template destroy_stub<target_t>;
 
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_member<target_t>,
                                                     destroy_ptr,
@@ -349,14 +349,14 @@ namespace etl
       //*****************************************
       // Const member function pointer
       //*****************************************
-      template <typename T>
+      template <typename TObject>
       static const inplace_function_vtable* for_const_member()
       {
-        using target_t = const_member_target<T>;
-        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<T>::value;
+        using target_t = const_member_target<TObject>;
+        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
 
-        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? nullptr
-                                                                            : &inplace_function_vtable::template destroy_stub<target_t>;
+        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                  : &inplace_function_vtable::template destroy_stub<target_t>;
 
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_member<target_t>,
                                                     destroy_ptr,
@@ -368,36 +368,36 @@ namespace etl
       //*****************************************
       // Functor / lambda
       //*****************************************
-      template <typename T>
+      template <typename TObject>
       static const inplace_function_vtable* for_functor()
       {
-        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<T>::value;
+        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
 
-        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? nullptr
-                                                                            : &inplace_function_vtable::template destroy_stub<T>;
+        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                  : &inplace_function_vtable::template destroy_stub<TObject>;
         
-        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_functor<T>,
+        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_functor<TObject>,
                                                     destroy_ptr,
-                                                    &inplace_function_vtable::template move_construct<T, destroy_src_on_move>,
-                                                    &inplace_function_vtable::template copy_construct<T>);
+                                                    &inplace_function_vtable::template move_construct<TObject, destroy_src_on_move>,
+                                                    &inplace_function_vtable::template copy_construct<TObject>);
         return &vtable;
       }
 
       //*****************************************
       // Const functor / lambda
       //*****************************************
-      template <typename T>
+      template <typename TObject>
       static const inplace_function_vtable* for_const_functor()
       {
-        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<T>::value;
+        constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
         
-        destroy_type destroy_ptr = etl::is_trivially_destructible<T>::value ? nullptr
-                                                                            : &inplace_function_vtable::template destroy_stub<T>;
+        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                  : &inplace_function_vtable::template destroy_stub<TObject>;
 
-        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_const_functor<T>,
+        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_const_functor<TObject>,
                                                     destroy_ptr,
-                                                    &inplace_function_vtable::template move_construct<T, destroy_src_on_move>,
-                                                    &inplace_function_vtable::template copy_construct<T>);
+                                                    &inplace_function_vtable::template move_construct<TObject, destroy_src_on_move>,
+                                                    &inplace_function_vtable::template copy_construct<TObject>);
         return &vtable;
       }
 
@@ -417,10 +417,10 @@ namespace etl
       //*****************************************
       // Compile-time bound member function + object
       //*****************************************
-      template <typename T, TReturn(T::* Method)(TArgs...), T* Object>
+      template <typename TObject, TReturn(TObject::* Method)(TArgs...), TObject* Object>
       static const inplace_function_vtable* for_compile_time_member()
       {
-        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_ct_member<T, Method, Object>,
+        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_ct_member<TObject, Method, Object>,
                                                     nullptr, 
                                                     nullptr, 
                                                     nullptr);
@@ -430,10 +430,10 @@ namespace etl
       //*****************************************
       // Compile-time bound const member function + object
       //*****************************************
-      template <typename T, TReturn(T::* Method)(TArgs...) const, const T* Object>
+      template <typename TObject, TReturn(TObject::* Method)(TArgs...) const, const TObject* Object>
       static const inplace_function_vtable* for_compile_time_const_member()
       {
-        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_ct_const_member<T, Method, Object>,
+        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_ct_const_member<TObject, Method, Object>,
                                                     nullptr, 
                                                     nullptr, 
                                                     nullptr);
@@ -443,10 +443,10 @@ namespace etl
       //*****************************************
       // Compile-time bound operator() + object
       //*****************************************
-      template <typename T, T* Object>
+      template <typename TObject, TObject* Object>
       static const inplace_function_vtable* for_compile_time_operator()
       {
-        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_ct_operator<T, Object>,
+        static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_ct_operator<TObject, Object>,
                                                     nullptr, 
                                                     nullptr, 
                                                     nullptr);
@@ -487,26 +487,14 @@ namespace etl
   class inplace_function<TReturn(TArgs...), Object_Size, Object_Alignment>
   {
     using this_type      = inplace_function<TReturn(TArgs...), Object_Size, Object_Alignment>;
-    using function_type  = TReturn(*)(TArgs...);
     using storage_type   = etl::uninitialized_buffer<Object_Size, 1, Object_Alignment>;
     using vtable_type    = private_inplace_function::inplace_function_vtable<TReturn, TArgs...>;
 
   public:
 
+    using function_type  = TReturn(*)(TArgs...);
     using return_type    = TReturn;
     using argument_types = etl::type_list<TArgs...>;
-
-    //*************************************************************************
-    /// Invokability trait bound to this inplace_function's signature
-    /// Usage: <code>inplace_function<R(Args...)>::etl::is_invocable<Callable>::value</code>
-    //*************************************************************************
-    template <typename TCallable>
-    using is_invocable = etl::is_invocable<TCallable, TReturn(TArgs...)>;
-
-#if ETL_USING_CPP17
-    template <typename TCallable>
-    static constexpr bool is_invocable_v = etl::is_invocable<TCallable>::value;
-#endif
 
     //*************************************************************************
     /// Default constructor

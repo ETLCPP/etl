@@ -176,109 +176,6 @@ namespace
     throw std::runtime_error("throwing function with two parameters");
   }
 
-
-  //*****************************************************************************
-  // The test class with member functions.
-  //*****************************************************************************
-  class Object
-  {
-  public:
-
-    //*******************************************
-    Object()
-      : call_count(0)
-    {
-    }
-
-    //*******************************************
-    // void
-    void member_void()
-    {
-      function_called = FunctionCalled::Member_Void_Called;
-    }
-
-    void member_void_const() const
-    {
-      function_called = FunctionCalled::Member_Void_Const_Called;
-    }
-
-    //*******************************************
-    // int
-    int member_int(int i, int j)
-    {
-      function_called = FunctionCalled::Member_Int_Called;
-      parameter_correct = (i == VALUE1) && (j == VALUE2);
-
-      ++call_count;
-
-      return i + j + 1; 
-    }
-
-    int member_int_const(int i, int j) const
-    {
-      function_called = FunctionCalled::Member_Int_Const_Called;
-      parameter_correct = (i == VALUE1) && (j == VALUE2);
-
-      ++call_count;
-
-      return i + j + 1;
-    }
-
-    //*******************************************
-    // reference
-    void member_reference(const Data& data, int j)
-    {
-      function_called = FunctionCalled::Member_Reference_Called;
-      parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
-    }
-
-    void member_reference_const(const Data& data, int j) const
-    {
-      function_called = FunctionCalled::Member_Reference_Const_Called;
-      parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
-
-      ++call_count;
-    }
-
-    //*******************************************
-    // moveable only data
-    void member_moveableonly(MoveableOnlyData&& data)
-    {
-      function_called = FunctionCalled::Member_Moveableonly_Called;
-      parameter_correct = (data.ipf == VALUE1);
-
-      ++call_count;
-    }
-
-    //*******************************************
-    // static
-    static void member_static(const Data& data, int j)
-    {
-      function_called = FunctionCalled::Member_Static_Called;
-      parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
-    }
-
-    //*******************************************
-    // operator()
-    void operator()()
-    {
-      function_called = FunctionCalled::Operator_Called;
-
-      ++call_count;
-    }
-
-    //*******************************************
-    // operator() const
-    void operator()() const
-    {
-      function_called = FunctionCalled::Operator_Const_Called;
-
-      ++call_count;
-    }
-
-    mutable int call_count;
-  };
-
   //*******************************************
   // Functor with non-const operator()
   struct Functor
@@ -311,12 +208,6 @@ namespace
   {
     return i + j;
   }
-
-  Object object_static;
-  const Object const_object_static;
-
-  Functor functor_static;
-  const FunctorConst const_functor_static;
 
 #if ETL_USING_CPP17
   static auto global_lambda = [](int i, int j)
@@ -396,6 +287,114 @@ namespace
     char data[Size];
   };
 }
+
+//*****************************************************************************
+// The test class with member functions.
+//*****************************************************************************
+class Object
+{
+public:
+
+  //*******************************************
+  constexpr Object()
+    : call_count(0)
+  {
+  }
+
+  //*******************************************
+  // void
+  void member_void()
+  {
+    function_called = FunctionCalled::Member_Void_Called;
+  }
+
+  void member_void_const() const
+  {
+    function_called = FunctionCalled::Member_Void_Const_Called;
+  }
+
+  //*******************************************
+  // int
+  int member_int(int i, int j)
+  {
+    function_called = FunctionCalled::Member_Int_Called;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+    ++call_count;
+
+    return i + j + 1; 
+  }
+
+  int member_int_const(int i, int j) const
+  {
+    function_called = FunctionCalled::Member_Int_Const_Called;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+    ++call_count;
+
+    return i + j + 1;
+  }
+
+  //*******************************************
+  // reference
+  void member_reference(const Data& data, int j)
+  {
+    function_called = FunctionCalled::Member_Reference_Called;
+    parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
+  }
+
+  void member_reference_const(const Data& data, int j) const
+  {
+    function_called = FunctionCalled::Member_Reference_Const_Called;
+    parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
+
+    ++call_count;
+  }
+
+  //*******************************************
+  // moveable only data
+  void member_moveableonly(MoveableOnlyData&& data)
+  {
+    function_called = FunctionCalled::Member_Moveableonly_Called;
+    parameter_correct = (data.ipf == VALUE1);
+
+    ++call_count;
+  }
+
+  //*******************************************
+  // static
+  static void member_static(const Data& data, int j)
+  {
+    function_called = FunctionCalled::Member_Static_Called;
+    parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
+  }
+
+  //*******************************************
+  // operator()
+  void operator()()
+  {
+    function_called = FunctionCalled::Operator_Called;
+
+    ++call_count;
+  }
+
+  //*******************************************
+  // operator() const
+  void operator()() const
+  {
+    function_called = FunctionCalled::Operator_Const_Called;
+
+    ++call_count;
+  }
+
+  mutable int call_count;
+};
+
+Object object_static;
+constexpr const Object const_object_static;
+
+Functor functor_static;
+const FunctorConst const_functor_static;
 
 namespace
 {
