@@ -199,6 +199,7 @@ add_executable(etl_tests
 	test_index_of_type.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
+	test_invoke.cpp
 	test_inplace_function.cpp
 	test_instance_count.cpp
 	test_integral_limits.cpp

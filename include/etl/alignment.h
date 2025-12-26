@@ -41,9 +41,9 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#if ETL_USING_CPP11 && ETL_USING_STL
-    #include <cstddef>
-#endif
+//#if ETL_USING_CPP11 && ETL_USING_STL
+//    #include <cstddef>
+//#endif
 
 ///\defgroup alignment alignment
 /// Creates a variable of the specified type at the specified alignment.
@@ -854,7 +854,7 @@ namespace etl
   //***************************************************************************
   namespace private_max_align
   {
-    struct Dummy
+    struct dummy_t
     {
       int member_data;
       int member_func(double) { return 0; }
@@ -875,8 +875,8 @@ namespace etl
     long double ld;
     void* vp;
     void (*fp)();
-    int (private_max_align::Dummy::* mfp)(double);
-    int private_max_align::Dummy::* mdp;
+    int (private_max_align::dummy_t::* mfp)(double);
+    int private_max_align::dummy_t::* mdp;
   };
 }
 

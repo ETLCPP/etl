@@ -118,7 +118,7 @@ namespace etl
   {
   public:
 
-    using function_type  = TReturn (*)(TArgs...);
+    using function_type  = TReturn(TArgs...);
     using return_type    = TReturn;
     using argument_types = etl::type_list<TArgs...>;
 
@@ -284,7 +284,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create from const instance method (Compile time
+    /// Create from const instance method (Compile time).
     /// Deprecated API.
     ///\tparam TObject  The object type.
     ///\tparam Instance The instance reference.
@@ -592,6 +592,8 @@ namespace etl
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate& operator =(TLambda& instance) ETL_NOEXCEPT
     {
+      static_assert(etl::is_invocable_r<TReturn, TLambda&, TArgs...>::value, "etl::delegate: bound lambda/functor is not compatible with the delegate signature");
+
       assign((void*)(&instance), lambda_stub<TLambda>);
       return *this;
     }
@@ -603,6 +605,8 @@ namespace etl
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate& operator =(const TLambda& instance) ETL_NOEXCEPT
     {
+      static_assert(etl::is_invocable_r<TReturn, const TLambda&, TArgs...>::value, "etl::delegate: bound lambda/functor is not compatible with the delegate signature");
+
       assign((void*)(&instance), const_lambda_stub<TLambda>);
       return *this;
     }

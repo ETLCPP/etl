@@ -110,7 +110,7 @@ namespace
   //*****************************************************************************
   void free_int(int i, int j)
   {
-    function_called = FunctionCalled::Free_Int_Called;;
+    function_called = FunctionCalled::Free_Int_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
   }
 

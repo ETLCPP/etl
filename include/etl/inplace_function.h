@@ -21,7 +21,7 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR TArgs PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -495,7 +495,8 @@ namespace etl
 
   public:
 
-    using function_type  = TReturn(*)(TArgs...);
+    using function_type  = TReturn(TArgs...);
+    using function_ptr   = TReturn(*)(TArgs...);
     using return_type    = TReturn;
     using argument_types = etl::type_list<TArgs...>;
 
@@ -560,7 +561,7 @@ namespace etl
     /// Construct from function pointer.
     /// \param f The function pointer.
     //*************************************************************************
-    inplace_function(function_type f)
+    inplace_function(function_ptr f)
     {
       set(f);
     }
@@ -619,19 +620,19 @@ namespace etl
     /// Create from function pointer (runtime).
     /// \param f The function pointer.
     //*************************************************************************
-    void set(function_type f)
+    void set(function_ptr f)
     {
       // Validate that 'f' is invocable with (TArgs...) and returns TReturn
-      static_assert(etl::is_invocable_r<TReturn, function_type, TArgs...>::value,
+      static_assert(etl::is_invocable_r<TReturn, function_ptr, TArgs...>::value,
                     "etl::inplace_function: function pointer is not compatible with the inplace_function signature");
 
-      static_assert(Object_Size      >= sizeof(function_type),  "etl::inplace_function: storage size too small");
-      static_assert(Object_Alignment >= alignof(function_type), "etl::inplace_function: storage alignment too small");
+      static_assert(Object_Size      >= sizeof(function_ptr),  "etl::inplace_function: storage size too small");
+      static_assert(Object_Alignment >= alignof(function_ptr), "etl::inplace_function: storage alignment too small");
 
       clear();
 
       // Construct the object in the storage.
-      ::new (storage_ptr()) function_type(f);
+      ::new (storage_ptr()) function_ptr(f);
 
       vtable = vtable_type::for_function_ptr();
     }
@@ -718,7 +719,7 @@ namespace etl
               typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
     void set(const TLambda& lambda)
     {
-      static_assert(etl::is_invocable<const T>::value,
+      static_assert(etl::is_invocable_r<TReturn, const T, TArgs...>::value,
                     "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
 
       static_assert(Object_Size      >= sizeof(T),  "etl::inplace_function: Object size too small");
@@ -758,7 +759,7 @@ namespace etl
     template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instance>
     void set()
     {
-      static_assert(etl::is_invocable<decltype(Method)>::value,
+      static_assert(etl::is_invocable_r<TReturn, decltype(Method), TObject&, TArgs...>::value,
                     "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
 
       clear();
@@ -921,7 +922,7 @@ namespace etl
     /// \param f The function pointer.
     /// \return The current inplace_function.
     //*************************************************************************
-    inplace_function& operator =(function_type f)
+    inplace_function& operator =(function_ptr f)
     {
       set(f);
 
@@ -1296,9 +1297,9 @@ namespace etl
   etl::inplace_function<TReturn(TArgs...), sizeof(TReturn(*)(TArgs...)), alignof(TReturn(*)(TArgs...))>
     make_inplace_function(TReturn(*function)(TArgs...))
   {
-    using function_type = TReturn(*)(TArgs...);
+    using function_ptr = TReturn(*)(TArgs...);
 
-    return etl::inplace_function_for<TReturn(TArgs...), function_type>(function);
+    return etl::inplace_function_for<TReturn(TArgs...), function_ptr>(function);
   }
 
   //*************************************************************************
@@ -1475,7 +1476,7 @@ namespace etl
   //*************************************************************************
   template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
   ETL_NODISCARD
-  bool operator ==(etl::inplace_function<TSignature, Object_Size, Object_Alignment>& lhs, etl::nullptr_t)
+  bool operator ==(const etl::inplace_function<TSignature, Object_Size, Object_Alignment>& lhs, etl::nullptr_t)
   {
     return !lhs.is_valid();
   }
@@ -1488,7 +1489,7 @@ namespace etl
   //*************************************************************************
   template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
   ETL_NODISCARD
-  bool operator ==(etl::nullptr_t, etl::inplace_function<TSignature, Object_Size, Object_Alignment>& rhs)
+  bool operator ==(etl::nullptr_t, const etl::inplace_function<TSignature, Object_Size, Object_Alignment>& rhs)
   {
     return !rhs.is_valid();
   }
@@ -1501,7 +1502,7 @@ namespace etl
   //*************************************************************************
   template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
   ETL_NODISCARD
-  bool operator !=(etl::inplace_function<TSignature, Object_Size, Object_Alignment>& lhs, etl::nullptr_t)
+  bool operator !=(const etl::inplace_function<TSignature, Object_Size, Object_Alignment>& lhs, etl::nullptr_t)
   {
     return lhs.is_valid();
   }
@@ -1514,7 +1515,7 @@ namespace etl
   //*************************************************************************
   template <typename TSignature, size_t Object_Size, size_t Object_Alignment>
   ETL_NODISCARD
-  bool operator !=(etl::nullptr_t, etl::inplace_function<TSignature, Object_Size, Object_Alignment>& rhs)
+  bool operator !=(etl::nullptr_t, const etl::inplace_function<TSignature, Object_Size, Object_Alignment>& rhs)
   {
     return rhs.is_valid();
   }
