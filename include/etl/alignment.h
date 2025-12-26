@@ -41,10 +41,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-//#if ETL_USING_CPP11 && ETL_USING_STL
-//    #include <cstddef>
-//#endif
-
 ///\defgroup alignment alignment
 /// Creates a variable of the specified type at the specified alignment.
 /// \ingroup utilities

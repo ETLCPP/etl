@@ -776,7 +776,7 @@ namespace etl
     template <typename TObject, TReturn(TObject::*Method)(TArgs...) const, const TObject& Instance>
     void set()
     {
-      static_assert(etl::is_invocable<decltype(Method)>::value,
+      static_assert(etl::is_invocable_r<TReturn, decltype(Method), const TObject&, TArgs...>::value,
                     "etl::inplace_function: bound member function is not compatible with the inplace_function signature");
 
       clear();
@@ -796,7 +796,7 @@ namespace etl
                                           !etl::function_traits<decltype(&T::operator())>::is_const>>
     void set()
     {
-      static_assert(etl::is_invocable<T>::value,
+      static_assert(etl::is_invocable_r<TReturn, T, TArgs...>::value,
                     "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
 
       clear();
@@ -816,7 +816,7 @@ namespace etl
                                           etl::function_traits<decltype(&T::operator())>::is_const>>
     void set()
     {
-      static_assert(etl::is_invocable<T>::value,
+      static_assert(etl::is_invocable_r<TReturn, const T, TArgs...>::value,
                     "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature");
 
       clear();
