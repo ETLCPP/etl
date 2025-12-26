@@ -234,7 +234,7 @@ namespace etl
     ///\param instance The instance.
     ///\returns The delegate.
     //*************************************************************************
-    template <typename TObjectT, TReturn(T::*Method)(TArgs...) const>
+    template <typename TObject, TReturn(TObject::*Method)(TArgs...) const>
     ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create(const TObject& instance) ETL_NOEXCEPT
     {
