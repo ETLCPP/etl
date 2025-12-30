@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/span.h"
 #include "etl/array.h"
 #include "etl/unaligned_type.h"
+#include "etl/vector.h"
 
 #include <array>
 #include <vector>
@@ -776,6 +777,24 @@ namespace
       CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
       CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
+    }
+
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_etl_vector)
+    {
+      etl::vector<int, 10U> data = { 1, 2, 3, 4 };
+      const etl::vector<int, 10U> data2 = { 1, 2, 3, 4 };
+
+      etl::span s = data;
+      etl::span cs = data2;
+
+      CHECK_EQUAL(etl::dynamic_extent, s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
+      CHECK_EQUAL(etl::dynamic_extent, cs.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data2), cs.size());
+
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
+      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cs.front())>>));
     }
 
     //*************************************************************************

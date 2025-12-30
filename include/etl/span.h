@@ -1258,6 +1258,18 @@ namespace etl
   span(const etl::array<T, Size>&)
     -> span<const T, Size>;
 
+  //forward declare etl::vector
+  template <typename T, size_t Size>
+  class vector;
+
+  template<typename T, size_t Size>
+  span(etl::vector<T, Size>&)
+    -> span<T>;
+  
+  template<typename T, size_t Size>
+  span(const etl::vector<T, Size>&)
+    -> span<const T>;
+
 #if ETL_USING_STL && ETL_USING_CPP11
   template <typename T, size_t Size>
   span(std::array<T, Size>&)
