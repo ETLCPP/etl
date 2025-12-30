@@ -782,19 +782,34 @@ namespace
     //*************************************************************************
     TEST(test_template_deduction_guide_for_etl_vector)
     {
-      etl::vector<int, 10U> data = { 1, 2, 3, 4 };
-      const etl::vector<int, 10U> data2 = { 1, 2, 3, 4 };
+      const size_t max_size = 10;
+      const size_t size = 4;
+      int buffer1[max_size];
+      int buffer2[max_size];
+      etl::vector<int, max_size> data = { 1, 2, 3, 4 };
+      const etl::vector<int, max_size> data2 = { 1, 2, 3, 4 };
+      etl::vector_ext<int> data_ext(size, buffer1, max_size);
+      const etl::vector_ext<int> data2_ext(size, buffer2, max_size);
 
-      etl::span s = data;
-      etl::span cs = data2;
+      etl::span span = data;
+      etl::span cspan = data2;
+      etl::span span_ext = data_ext;
+      etl::span cspan_ext = data2_ext;
 
-      CHECK_EQUAL(etl::dynamic_extent, s.extent);
-      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
-      CHECK_EQUAL(etl::dynamic_extent, cs.extent);
-      CHECK_EQUAL(ETL_OR_STD17::size(data2), cs.size());
+      CHECK_EQUAL(etl::dynamic_extent, span.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), span.size());
+      CHECK_EQUAL(etl::dynamic_extent, cspan.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data2), cspan.size());
 
-      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
-      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cs.front())>>));
+      CHECK_EQUAL(etl::dynamic_extent, span_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data_ext), span_ext.size());
+      CHECK_EQUAL(etl::dynamic_extent, cspan_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data2_ext), cspan_ext.size());
+
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
+      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cspan.front())>>));
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span_ext.front())>>));
+      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cspan_ext.front())>>));
     }
 
     //*************************************************************************
