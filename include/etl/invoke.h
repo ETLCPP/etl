@@ -36,7 +36,6 @@ SOFTWARE.
 #include "function_traits.h"
 #include "type_traits.h"
 #include "utility.h"
-#include "type_list.h"
 
 #if ETL_USING_CPP11
 
@@ -174,6 +173,37 @@ namespace etl
     };
 
     //*******************************************
+    // Result type of a valid invocation.
+    template <typename TFunction, typename... TArgs>
+    struct invoke_result_impl
+    {
+      template <typename U>
+      static auto test(int) -> decltype(etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...));
+      
+      template <typename>
+      static void test(...);
+
+      using type = decltype(test<TFunction>(0));
+    };
+
+    //*******************************************
+    // Result type of a valid invocation.
+    template <typename TFunction, typename... TArgs>
+    struct invoke_result_impl<TFunction, etl::type_list<TArgs...>>
+    {
+      template <typename U>
+      static auto test(int) -> decltype(etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...));
+
+      template <typename>
+      static void test(...);
+
+      using type = decltype(test<TFunction>(0));
+    };
+
+    template <typename TFunction, typename... TArgs>
+    using invoke_result_impl_t = typename invoke_result_impl<TFunction, TArgs...>::type;
+
+    //*******************************************
     // Map raw function type to pointer.
     template <typename TFunction>
     using effective_callable_t = etl::conditional_t<etl::is_function<etl::remove_reference_t<TFunction>>::value,
@@ -195,7 +225,31 @@ namespace etl
                        etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>,
                        TArgs...> 
   {
-    using type = decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...));
+  private:
+
+    using FC = private_invoke::effective_callable_t<TFunction>;
+  
+  public:
+  
+    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value,
+                                    private_invoke::invoke_result_impl_t<FC, TArgs...>,
+                                    void>;
+  };
+
+  //****************************************************************************
+  /// invoke_result<TFunction, etl::type_list<TArgs...>>
+  template <typename TFunction, typename... TArgs>
+  struct invoke_result<TFunction, etl::type_list<TArgs...>>
+  {
+  private:
+
+    using FC = private_invoke::effective_callable_t<TFunction>;
+
+  public:
+
+    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value,
+      private_invoke::invoke_result_impl_t<FC, TArgs...>,
+      void>;
   };
 
   //*******************************************
