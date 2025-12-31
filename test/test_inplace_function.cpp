@@ -226,8 +226,8 @@ namespace
       : call_count(0)
     {
       destructor_called        = false;
-      copy_constructior_called = false;
-      move_constructior_called = false;
+      copy_constructor_called  = false;
+      move_constructor_called  = false;
       function_operator_called = false;
     }
 
@@ -239,13 +239,13 @@ namespace
     DestructibleMovableObject(const DestructibleMovableObject& other)
       : call_count(other.call_count)
     {
-      copy_constructior_called = true;
+      copy_constructor_called = true;
     }
 
     DestructibleMovableObject(DestructibleMovableObject&& other)
       : call_count(other.call_count)
     {
-      move_constructior_called = true;
+      move_constructor_called = true;
     }
 
     void operator()(int, int)
@@ -255,16 +255,16 @@ namespace
     }
 
     static bool destructor_called;
-    static bool copy_constructior_called;
-    static bool move_constructior_called;
+    static bool copy_constructor_called;
+    static bool move_constructor_called;
     static bool function_operator_called;
 
     int call_count;
   };
 
   bool DestructibleMovableObject::destructor_called        = false;
-  bool DestructibleMovableObject::copy_constructior_called = false;
-  bool DestructibleMovableObject::move_constructior_called = false;
+  bool DestructibleMovableObject::copy_constructor_called  = false;
+  bool DestructibleMovableObject::move_constructor_called  = false;
   bool DestructibleMovableObject::function_operator_called = false;
 
   //*******************************************
