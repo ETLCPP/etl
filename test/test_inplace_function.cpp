@@ -995,7 +995,7 @@ namespace
     {
       Object object;
 
-      auto ipf = etl::make_inplace_function(&Object::member_int, object); // Pass it by value to the implace function.
+      auto ipf = etl::make_inplace_function(&Object::member_int, object); // Pass it by value to the inplace function.
 
       ipf(VALUE1, VALUE2);
 
