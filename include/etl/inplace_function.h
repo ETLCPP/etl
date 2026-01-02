@@ -518,6 +518,8 @@ namespace etl
 
     //*************************************************************************
     /// Copy constructor for different object buffer sizes
+    /// Static asserts if the destination buffer is too small.
+    /// Static assert if the destination alignment is too small.
     /// \param other The other inplace_function to copy from.
     ///*************************************************************************
     template <size_t Other_Object_Size, size_t Other_Object_Alignment>
@@ -539,7 +541,9 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Move constructor for different object buffer sizes
+    /// Move constructor for different object buffer 
+    /// Static asserts if the destination buffer is too small.
+    /// Static assert if the destination alignment is too small.
     /// \param other The other inplace_function to move from.
     //*************************************************************************
     template <size_t Other_Object_Size, size_t Other_Object_Alignment>
@@ -593,7 +597,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from lambda/functor (runtime, storage-owned).
+    /// Construct from lambda/functor (runtime).
     /// \tparam TLambda The lambda/functor type.
     /// \param lambda  The lambda/functor.
     //*************************************************************************
@@ -606,7 +610,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from const lambda/functor (runtime, storage-owned).
+    /// Construct from const lambda/functor (runtime).
     /// \tparam TLambda The lambda/functor type.
     /// \param lambda  The lambda/functor.
     //*************************************************************************
@@ -686,7 +690,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create from lambda/functor (runtime, storage-owned).
+    /// Create from lambda/functor (runtime).
     /// \tparam TLambda The lambda/functor type.
     /// \param lambda  The lambda/functor.
     //*************************************************************************
@@ -712,7 +716,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create from const lambda/functor (runtime, storage-owned).
+    /// Create from const lambda/functor (runtime).
     /// \tparam TLambda The lambda/functor type.
     /// \param lambda  The lambda/functor.
     //*************************************************************************
@@ -932,7 +936,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Assignment from lambda/functor (runtime, storage-owned).
+    /// Assignment from lambda/functor (runtime).
     /// Enabled only for class types that are not etl::inplace_function.
     /// \tparam TLambda The lambda/functor type.
     /// \param lambda  The lambda/functor.
@@ -998,7 +1002,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Execute the is_inplace_function if valid.
+    /// Execute the inplace_function, if valid.
     /// 'void' return.
     /// \param args The arguments to pass to the inplace_function.
     /// \return <b>true</b> if executed, <b>false</b> if not valid.
@@ -1019,7 +1023,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Execute the is_inplace_function if valid.
+    /// Execute the inplace_function if valid.
     /// Non 'void' return.
     /// \param args The arguments to pass to the inplace_function.
     /// \return etl::optional with result if executed, empty etl::optional if not valid.
@@ -1039,7 +1043,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Execute the is_inplace_function if valid or call alternative.
+    /// Execute the inplace_function if valid or call alternative.
     /// Run time alternative.
     /// \tparam TAlternative The alternative callable.
     /// \param alternative The alternative callable.
@@ -1060,7 +1064,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Execute the is_inplace_function if valid or call alternative.
+    /// Execute the inplace_function if valid or call alternative.
     /// Compile time alternative.
     /// \tparam Alternative The alternative callable.
     /// \param args The arguments to pass to the inplace_function or alternative.
@@ -1289,7 +1293,7 @@ namespace etl
                                                          etl::largest<etl::decay_t<T0>, etl::decay_t<TRest>...>::alignment>;
 
   //*************************************************************************
-  /// Helper to build an inplace_function from a free function pointer known at compile time.
+  /// Helper to build an inplace_function from a free function pointer.
   /// Usage: auto ipf = etl::make_inplace_function<YourFreeFunction>();
   /// \param function The function pointer.
   /// \return The constructed inplace_function.
