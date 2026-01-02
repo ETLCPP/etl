@@ -489,14 +489,16 @@ namespace etl
   template <typename TReturn, typename... TArgs, size_t Object_Size, size_t Object_Alignment>
   class inplace_function<TReturn(TArgs...), Object_Size, Object_Alignment>
   {
+  private:
+
     using this_type      = inplace_function<TReturn(TArgs...), Object_Size, Object_Alignment>;
     using storage_type   = etl::uninitialized_buffer<Object_Size, 1, Object_Alignment>;
     using vtable_type    = private_inplace_function::inplace_function_vtable<TReturn, TArgs...>;
+    using function_ptr   = TReturn(*)(TArgs...);
 
   public:
 
     using function_type  = TReturn(TArgs...);
-    using function_ptr   = TReturn(*)(TArgs...);
     using return_type    = TReturn;
     using argument_types = etl::type_list<TArgs...>;
 
