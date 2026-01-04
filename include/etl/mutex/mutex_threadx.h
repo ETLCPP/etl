@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MUTEX_THREAD_INCLUDED
-#define ETL_MUTEX_THREAD_INCLUDED
+#ifndef ETL_MUTEX_THREADX_INCLUDED
+#define ETL_MUTEX_THREADX_INCLUDED
 
 #include "../platform.h"
 
@@ -45,7 +45,12 @@ namespace etl
 
     mutex()
     {
-      tx_mutex_create(&mutex_handle, "mutex", TX_INHERIT);
+      tx_mutex_create(&mutex_handle, "etl mutex", TX_INHERIT);
+    }
+
+    ~mutex()
+    {
+      tx_mutex_delete(&mutex_handle);
     }
 
     void lock()
@@ -63,7 +68,7 @@ namespace etl
       tx_mutex_put(&mutex_handle);
     }
 
-   private:
+  private:
     // Non-copyable
     mutex(const mutex&) ETL_DELETE;
     mutex& operator=(const mutex&) ETL_DELETE;
