@@ -376,14 +376,14 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
         
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -398,14 +398,14 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -420,7 +420,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -444,7 +444,7 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -459,7 +459,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -483,7 +483,7 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -498,14 +498,14 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
 
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -520,14 +520,14 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
 
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -542,7 +542,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -566,7 +566,7 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -581,7 +581,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -605,7 +605,7 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -620,7 +620,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -637,7 +637,7 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -652,7 +652,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -669,7 +669,7 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 
         CHECK_TRUE(received_final_block);
@@ -684,7 +684,7 @@ namespace
     {
       codec_full_buffer b64;
 
-      for (size_t i = 4; i < 256; ++i)
+      for (size_t i = 4; i < input_data.size(); ++i)
       {
         b64.restart();
 
@@ -705,7 +705,7 @@ namespace
 
         b64.flush();
 
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(b64.begin(), b64.end());
 
         CHECK_EQUAL(expected.size(), actual.size());
