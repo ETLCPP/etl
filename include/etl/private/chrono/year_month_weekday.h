@@ -99,7 +99,7 @@ namespace etl
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_weekday(const etl::chrono::local_days& ld) ETL_NOEXCEPT
         : y(0)
-        , m(0)
+        , m(0U)
         , wdi(etl::chrono::weekday(0), 0U)
       {
         year_month_weekday ymwd(sys_days(ld.time_since_epoch()));
