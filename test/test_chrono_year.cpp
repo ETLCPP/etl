@@ -59,8 +59,6 @@ namespace
     TEST(test_default_constructor)
     {
       etl::chrono::year year;
-
-      CHECK_TRUE(year.ok());
     }
 
     //*************************************************************************
@@ -71,7 +69,7 @@ namespace
         etl::chrono::year year(i);
 
         CHECK_TRUE(year.ok());
-        CHECK_EQUAL(i, int(year));
+        CHECK_EQUAL(i, static_cast<int>(year));
       }
     }
 
@@ -87,7 +85,7 @@ namespace
         etl::chrono::year this_year = ++year;
 
         CHECK_TRUE(year.ok());
-        CHECK_EQUAL(count, year);
+        CHECK_EQUAL(count, static_cast<int>(year));
         CHECK_EQUAL(this_year, year);
       }
     }
@@ -226,16 +224,11 @@ namespace
     //*************************************************************************
     TEST(test_year_minus_year)
     {
-      etl::chrono::year year(256);
-      etl::chrono::years years(2);
+      etl::chrono::year y1(2056);
+      etl::chrono::year y2(2);
 
-      for (int i = 0; i < 128; ++i)
-      {
-        year = years - year;
-
-        CHECK_TRUE(year.ok());
-        CHECK_EQUAL((256 - (2 * i)) - 2, int(year));
-      }
+      CHECK_TRUE(y1 - y2 == etl::chrono::years(2054));
+      CHECK_TRUE(y2 - y1 == etl::chrono::years(-2054));
     }
 
     //*************************************************************************
@@ -256,8 +249,8 @@ namespace
     //*************************************************************************
     TEST(test_min_max_year)
     {
-      CHECK_EQUAL(-32767, etl::chrono::year::min());
-      CHECK_EQUAL(32767,  etl::chrono::year::max());
+      CHECK_EQUAL(-32767, static_cast<int>(etl::chrono::year::min()));
+      CHECK_EQUAL(32767,  static_cast<int>(etl::chrono::year::max()));
     }
 #endif
 

@@ -48,10 +48,7 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      ETL_CONSTEXPR year_month_day()
-        : y()
-        , m()
-        , d()
+      year_month_day()
       {
       }
 
@@ -76,6 +73,9 @@ namespace etl
       /// Construct from sys_days.
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_day(const etl::chrono::sys_days& sd) ETL_NOEXCEPT
+        : y(0)
+        , m(0)
+        , d(0)
       {
         // Days since 1970-01-01
         int days_since_epoch = static_cast<int>(sd.time_since_epoch().count());
@@ -101,7 +101,7 @@ namespace etl
         // Find the month
         while (true)
         {
-          unsigned char days_in_month = etl::chrono::private_chrono::days_in_month[current_month];
+          unsigned char days_in_month = etl::chrono::private_chrono::days_in_month[static_cast<unsigned>(current_month)];
           if (current_month == etl::chrono::February && current_year.is_leap())
           {
             ++days_in_month;
@@ -126,6 +126,9 @@ namespace etl
       /// Construct from local_days.
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_day(const etl::chrono::local_days& ld) ETL_NOEXCEPT
+        : y(0)
+        , m(0)
+        , d(0)
       {
         etl::chrono::year_month_day ymd = sys_days(ld.time_since_epoch());
 
@@ -254,7 +257,7 @@ namespace etl
         // Add days for months in the current year
         for (etl::chrono::month mth(1); mth < this->month(); ++mth)
         {
-          day_count += private_chrono::days_in_month[mth];
+          day_count += private_chrono::days_in_month[static_cast<unsigned>(mth)];
 
           if (mth == etl::chrono::February && this->year().is_leap())
           {
@@ -289,7 +292,7 @@ namespace etl
 
         if (y.ok() && m.ok())
         {
-          count = private_chrono::days_in_month[m];
+          count = private_chrono::days_in_month[static_cast<unsigned>(m)];
 
           if (y.is_leap() && (m == February))
           {
@@ -507,9 +510,9 @@ namespace etl
       ETL_NODISCARD
       ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
       {
-        etl::chrono::day d = etl::chrono::day(etl::chrono::private_chrono::days_in_month[m]);
+        etl::chrono::day d = etl::chrono::day(etl::chrono::private_chrono::days_in_month[static_cast<unsigned>(m)]);
 
-        return (d == 28) && y.is_leap() ? etl::chrono::day(29) : d;
+        return (d == etl::chrono::day(28)) && y.is_leap() ? etl::chrono::day(29) : d;
       }
 
       //*************************************************************************
@@ -788,7 +791,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month_day& ymd) const
     {
-      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ymd.year()));
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<int>(ymd.year()));
       etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ymd.month()));
       etl::chrono::day::rep   d = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(ymd.day()));
 
@@ -812,7 +815,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month_day_last& ymdl) const
     {
-      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ymdl.year()));
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<int>(ymdl.year()));
       etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ymdl.month()));
       etl::chrono::day::rep   d = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(ymdl.day()));
 
