@@ -43,9 +43,7 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      ETL_CONSTEXPR year_month()
-        : y()
-        , m()
+      year_month()
       {
       }
 
@@ -135,7 +133,12 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::year_month operator +(const etl::chrono::year_month& ym,
                                                               const etl::chrono::months&     dm) ETL_NOEXCEPT
     {
-      return etl::chrono::year_month(ym.year(), ym.month() + dm);
+      int dmonths = static_cast<int>(static_cast<unsigned>(ym.month())) - 1 + dm.count();
+      int dyears = (dmonths - 11 * (dmonths < 0)) / 12;
+      dmonths -= dyears * 12;
+      ++dmonths;
+      return etl::chrono::year_month((ym.year() + etl::chrono::years(dyears)),
+                                     etl::chrono::month(static_cast<unsigned>(dmonths)));
     }
 
     //*************************************************************************
@@ -144,7 +147,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::year_month operator +(const etl::chrono::months& dm,
                                                               const etl::chrono::year_month& ym) ETL_NOEXCEPT
     {
-      return etl::chrono::year_month(ym.year(), ym.month() + dm);
+      return ym + dm;
     }
 
     //*************************************************************************
@@ -162,7 +165,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::year_month operator -(const etl::chrono::year_month& ym,
                                                               const etl::chrono::months&     dm) ETL_NOEXCEPT
     {
-      return etl::chrono::year_month(ym.year(), ym.month() - dm);
+      return ym + -dm;
     }
 
     //*************************************************************************
@@ -171,7 +174,9 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::months operator -(const etl::chrono::year_month& ym1,
                                                           const etl::chrono::year_month& ym2) ETL_NOEXCEPT
     {
-      return etl::chrono::months(static_cast<int>(((int(ym1.year()) - int(ym2.year())) * 12) + (unsigned(ym1.month()) - unsigned(ym2.month()))));
+      return etl::chrono::months(
+        (ym1.year() - ym2.year()) + etl::chrono::months(
+          static_cast<unsigned>(ym1.month()) - static_cast<unsigned>(ym2.month())));
     }
 
     //*************************************************************************
@@ -273,7 +278,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month& ym) const
     {    
-      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ym.year()));
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<int>(ym.year()));
       etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ym.month()));
 
       uint8_t buffer[sizeof(y) + sizeof(m)];
