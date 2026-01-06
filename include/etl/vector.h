@@ -1900,6 +1900,17 @@ namespace etl
 
     return d;
   }
+
+  //*********************************************************************
+  /// Overloaded swap for etl::ivector<T> 
+  ///\param lhs The first vector to swap with.
+  ///\param rhs The second vector to swap with.
+  //*********************************************************************
+  template<typename T>
+  void swap(ivector<T>& lhs, ivector<T>& rhs)
+  {
+    lhs.swap(rhs);
+  }
 }
 
 #endif

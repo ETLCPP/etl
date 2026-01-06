@@ -1415,7 +1415,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_same_capacity)
+    TEST_FIXTURE(SetupFixture, test_swap_same_capacity)
     {
       DataNDC etl_data(swap_data.begin(), swap_data.end());
       DataNDC etl_data2(swap_other_data.begin(), swap_other_data.end());
@@ -1441,7 +1441,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_different_capacity)
+    TEST_FIXTURE(SetupFixture, test_swap_different_capacity)
     {
       const size_t other_size = 6;
       DataNDC etl_data(swap_data.begin(), swap_data.end());
@@ -1468,7 +1468,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(swap_insufficient_capacity)
+    TEST(test_swap_insufficient_capacity)
     {
       etl::vector<DC, 4> etl_data(4);
       etl::vector<DC, 6> etl_data2(6);

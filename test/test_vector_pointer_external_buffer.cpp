@@ -2021,7 +2021,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_same_capacity)
+    TEST_FIXTURE(SetupFixture, test_swap_same_capacity)
     {
       Data etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
       Data etl_data2(swap_other_data.begin(), swap_other_data.end(), buffer2, SIZE);
@@ -2047,7 +2047,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_const_same_capacity)
+    TEST_FIXTURE(SetupFixture, test_swap_const_same_capacity)
     {
       CData etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
       CData etl_data2(swap_other_data.begin(), swap_other_data.end(), buffer2, SIZE);
@@ -2073,7 +2073,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_different_capacity)
+    TEST_FIXTURE(SetupFixture, test_swap_different_capacity)
     {
       const size_t other_size = 6;
       Data etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
@@ -2100,7 +2100,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_const_different_capacity)
+    TEST_FIXTURE(SetupFixture, test_swap_const_different_capacity)
     {
       const size_t other_size = 6;
       CData etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
@@ -2127,7 +2127,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(swap_insufficient_capacity)
+    TEST(test_swap_insufficient_capacity)
     {
       Data etl_data(4, buffer1, 4);
       etl::vector<int*, SIZE> etl_data2(6);
@@ -2137,7 +2137,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(swap_const_insufficient_capacity)
+    TEST(test_swap_const_insufficient_capacity)
     {
       CData etl_data(4, buffer1, 4);
       etl::vector<const int*, SIZE> etl_data2(6);
@@ -2147,7 +2147,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_between_internal_and_external)
+    TEST_FIXTURE(SetupFixture, test_swap_between_internal_and_external)
     {
       const size_t other_size = 6;
       Data etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
@@ -2174,7 +2174,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, swap_const_between_internal_and_external)
+    TEST_FIXTURE(SetupFixture, test_swap_const_between_internal_and_external)
     {
       const size_t other_size = 6;
       CData etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
