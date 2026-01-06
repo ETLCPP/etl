@@ -187,12 +187,12 @@ namespace etl
         while (!input.empty())
         {
             const TEncode& in = *reinterpret_cast<const TEncode*>(input.data());
-            typename etl::manchester_encoded<TEncode>::type& out = *reinterpret_cast<etl::manchester_encoded<TEncode>::type*>(output.data());
+            typename etl::manchester_encoded<TEncode>::type& out = *reinterpret_cast<typename etl::manchester_encoded<TEncode>::type*>(output.data());
 
             etl::manchester_encode_in_place(in, out);
 
             input.advance(sizeof(TEncode));
-            output.advance(sizeof(etl::manchester_encoded<TEncode>::type));
+            output.advance(sizeof(typename etl::manchester_encoded<TEncode>::type));
         }
     }
 
@@ -313,12 +313,12 @@ namespace etl
         while (!input.empty())
         {
             const TDecode& in = *reinterpret_cast<const TDecode*>(input.data());
-            typename etl::manchester_decoded<TDecode>::type& out = *reinterpret_cast<etl::manchester_decoded<TDecode>::type*>(output.data());
+            typename etl::manchester_decoded<TDecode>::type& out = *reinterpret_cast<typename etl::manchester_decoded<TDecode>::type*>(output.data());
 
             etl::manchester_decode_in_place(in, out);
 
             input.advance(sizeof(TDecode));
-            output.advance(sizeof(etl::manchester_decoded<TDecode>::type));
+            output.advance(sizeof(typename etl::manchester_decoded<TDecode>::type));
         }
     }
 
