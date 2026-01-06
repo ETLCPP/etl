@@ -40,10 +40,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <etl/limits.h>
 #include <etl/platform.h>
 #include <etl/span.h>
-#include <etl/type_traits.h>
+#include <etl/static_assert.h>
 
 namespace etl
 {
@@ -54,7 +53,7 @@ namespace etl
     template <typename T>
     struct manchester_encoded
     {
-        static_assert(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
+        ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
     };
 
     template <>
@@ -76,7 +75,7 @@ namespace etl
     template <typename T>
     struct manchester_decoded
     {
-        static_assert(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
+        ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
     };
 
     template <>

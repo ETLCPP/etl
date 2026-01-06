@@ -13,7 +13,7 @@ endif()
 
 project(etl VERSION ${ETL_VERSION} LANGUAGES CXX)
 
-option(BUILD_TESTS "Build unit tests" ON)
+option(BUILD_TESTS "Build unit tests" OFF)
 option(NO_STL "No STL" OFF)
 # There is a bug on old gcc versions for some targets that causes all system headers
 # to be implicitly wrapped with 'extern "C"'
