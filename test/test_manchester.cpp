@@ -148,5 +148,5 @@ constexpr etl::array<uint8_t, 4> manchester_encoded(etl::span<const uint_least8_
 constexpr etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0XAA, 0xAA};
 
 constexpr etl::array<uint8_t, 4> bla = manchester_encoded(input);
-static_assert(bla[0] == 0);
+static_assert(bla[0] == 0, "Compile time computation of many values failed");
 #endif
