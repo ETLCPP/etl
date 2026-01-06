@@ -966,7 +966,7 @@ namespace etl
       typename ivector<T>::iterator smaller_itr = smaller.begin();
       typename ivector<T>::iterator larger_itr = larger.begin();
 
-      while (smaller_itr < smaller.end())
+      while(smaller_itr < smaller.end())
       {
         ETL_OR_STD::swap(*smaller_itr, *larger_itr);
         ++smaller_itr;

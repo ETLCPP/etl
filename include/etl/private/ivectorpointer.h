@@ -486,7 +486,7 @@ namespace etl
       typename ivector<T*>::iterator smaller_itr = smaller.begin();
       typename ivector<T*>::iterator larger_itr = larger.begin();
 
-      while (smaller_itr < smaller.end())
+      while(smaller_itr < smaller.end())
       {
         ETL_OR_STD::swap(*smaller_itr, *larger_itr);
         ++smaller_itr;
@@ -946,7 +946,7 @@ namespace etl
       typename ivector<const T*>::iterator smaller_itr = smaller.begin();
       typename ivector<const T*>::iterator larger_itr = larger.begin();
 
-      while (smaller_itr < smaller.end())
+      while(smaller_itr < smaller.end())
       {
         ETL_OR_STD::swap(*smaller_itr, *larger_itr);
         ++smaller_itr;
@@ -1122,6 +1122,17 @@ namespace etl
   //*********************************************************************
   template<typename T>
   void swap(ivector<T*>& lhs, ivector<T*>& rhs)
+  {
+    lhs.swap(rhs);
+  }
+
+  //*********************************************************************
+  /// Overloaded swap for etl::ivector<const T*> 
+  ///\param lhs The first vector to swap with.
+  ///\param rhs The second vector to swap with.
+  //*********************************************************************
+  template<typename T>
+  void swap(ivector<const T*>& lhs, ivector<const T*>& rhs)
   {
     lhs.swap(rhs);
   }
