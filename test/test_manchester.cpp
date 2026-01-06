@@ -14,10 +14,12 @@ SUITE(test_manchester)
     CHECK_EQUAL(0xAAA9, (etl::manchester_encode<uint8_t>(0x01U)));
     CHECK_EQUAL(0x6AAA, (etl::manchester_encode<uint8_t>(0x80U)));
 
+#if ETL_USING_CPP14
     static_assert(0xAAAA == etl::manchester_encode<uint8_t>(0x00U));
     static_assert(0x5555 == etl::manchester_encode<uint8_t>(0xFFU));
     static_assert(0xAAA9 == etl::manchester_encode<uint8_t>(0x01U));
     static_assert(0x6AAA == etl::manchester_encode<uint8_t>(0x80U));
+#endif
   }
 
   TEST(encode16)
@@ -137,6 +139,7 @@ SUITE(test_manchester)
   }
 };
 
+#if ETL_USING_CPP14
 constexpr etl::array<uint8_t, 4> manchester_encoded(etl::span<const uint_least8_t> input)
 {
   alignas(uint8_t) etl::array<uint8_t, 4> output {0, 0, 0, 0};
@@ -149,3 +152,4 @@ constexpr etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA
 
 constexpr etl::array<uint8_t, 4> bla = manchester_encoded(input);
 static_assert(bla[0] == 0);
+#endif
