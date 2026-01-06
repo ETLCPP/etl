@@ -107,7 +107,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    ETL_CONSTEXPR void manchester_encode_in_place<uint8_t>(uint8_t in, uint16_t& out)
+    ETL_CONSTEXPR14 void manchester_encode_in_place<uint8_t>(uint8_t in, uint16_t& out)
     {
         out = in;
 
@@ -131,7 +131,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    ETL_CONSTEXPR void manchester_encode_in_place(uint16_t in, uint32_t& out)
+    ETL_CONSTEXPR14 void manchester_encode_in_place(uint16_t in, uint32_t& out)
     {
         out = in;
 
@@ -156,7 +156,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    ETL_CONSTEXPR void manchester_encode_in_place(uint32_t in, uint64_t& out)
+    ETL_CONSTEXPR14 void manchester_encode_in_place(uint32_t in, uint64_t& out)
     {
         out = in;
 
@@ -198,7 +198,7 @@ namespace etl
 
 
     template <typename TDecode>
-    ETL_CONSTEXPR void manchester_decode_in_place(TDecode in, typename manchester_decoded<TDecode>::type& out) ETL_DELETE;
+    ETL_CONSTEXPR14 void manchester_decode_in_place(TDecode in, typename manchester_decoded<TDecode>::type& out) ETL_DELETE;
 
     template <typename TDecode>
     ETL_NODISCARD ETL_CONSTEXPR14 typename manchester_decoded<TDecode>::type manchester_decode(TDecode in) ETL_DELETE;
@@ -212,7 +212,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template<>
-    ETL_CONSTEXPR void manchester_decode_in_place(uint16_t in, uint8_t& out)
+    ETL_CONSTEXPR14 void manchester_decode_in_place(uint16_t in, uint8_t& out)
     {
         in = (in ^ 0xAAAAU) & 0x5555U;
         in = (in | (in >> 1)) & 0x3333U;
@@ -244,7 +244,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template<>
-    ETL_CONSTEXPR void manchester_decode_in_place(uint32_t in, uint16_t& out)
+    ETL_CONSTEXPR14 void manchester_decode_in_place(uint32_t in, uint16_t& out)
     {
         in = (in ^ 0xAAAAAAAAUL) & 0x55555555UL;
         in = (in | (in >> 1)) & 0x33333333UL;
@@ -276,7 +276,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template<>
-    ETL_CONSTEXPR void manchester_decode_in_place(uint64_t in, uint32_t& out)
+    ETL_CONSTEXPR14 void manchester_decode_in_place(uint64_t in, uint32_t& out)
     {
         in = (in ^ 0xAAAAAAAAAAAAAAAAULL) & 0x5555555555555555ULL;
         in = (in | (in >> 1)) & 0x3333333333333333ULL;
