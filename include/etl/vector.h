@@ -947,6 +947,43 @@ namespace etl
       return first_;
     }
 
+    //*********************************************************************
+    /// Swap contents with another vector.  Performs operation on each individual element.
+    ///\param other The other vector to swap with.
+    //*********************************************************************
+    void swap(ivector<T>& other)
+    {
+      if (this == &other)
+      {
+        return;
+      }
+
+      ETL_ASSERT_OR_RETURN(this->max_size() >= other.size() && other.max_size() >= this->size(), ETL_ERROR(vector_full));
+
+      ivector<T>& smaller = other.size() > this->size() ? *this : other;
+      ivector<T>& larger = other.size() > this->size() ? other : *this;
+
+      typename ivector<T>::iterator smaller_itr = smaller.begin();
+      typename ivector<T>::iterator larger_itr = larger.begin();
+
+      while (smaller_itr < smaller.end())
+      {
+        ETL_OR_STD::swap(*smaller_itr, *larger_itr);
+        ++smaller_itr;
+        ++larger_itr;
+      }
+
+      typename ivector<T>::iterator erase_start = larger_itr;
+
+      while(larger_itr < larger.end())
+      {
+        smaller.push_back(etl::move(*larger_itr));
+        ++larger_itr;
+      }
+
+      larger.erase(erase_start, larger.end());
+    }
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
