@@ -23,11 +23,19 @@ SUITE(test_manchester)
   {
     CHECK_EQUAL(0x5555AAAA, (etl::manchester_encode<uint16_t>(0xFF00UL)));
     CHECK_EQUAL(0x6AAAAAA9, (etl::manchester_encode<uint16_t>(0x8001UL)));
+
+#if ETL_USING_CPP14
+    static_assert(0x5555AAAA == etl::manchester_encode<uint16_t>(0xFF00UL), "Compile time manchester encoding failed");
+#endif
   }
 
   TEST(encode32)
   {
     CHECK_EQUAL(0x6AAAAAA95555AAAA, (etl::manchester_encode<uint32_t>(0x8001FF00ULL)));
+
+#if ETL_USING_CPP14
+    static_assert(0x6AAAAAA95555AAAA == etl::manchester_encode<uint32_t>(0x8001FF00ULL), "Compile time manchester encoding failed");
+#endif
   }
 
   TEST(encode_span)
@@ -77,17 +85,29 @@ SUITE(test_manchester)
     CHECK_EQUAL(0xFF, (etl::manchester_decode<uint16_t>(0x5555UL)));
     CHECK_EQUAL(0x01, (etl::manchester_decode<uint16_t>(0xAAA9UL)));
     CHECK_EQUAL(0x80, (etl::manchester_decode<uint16_t>(0x6AAAUL)));
+
+#if ETL_USING_CPP14
+    static_assert(0x00 == etl::manchester_decode<uint16_t>(0xAAAAUL), "Compile time manchester decoding failed");
+#endif
   }
 
   TEST(decode32)
   {
     CHECK_EQUAL(0xFF00UL, (etl::manchester_decode<uint32_t>(0x5555AAAAUL)));
     CHECK_EQUAL(0x8001UL, (etl::manchester_decode<uint32_t>(0x6AAAAAA9UL)));
+
+#if ETL_USING_CPP14
+    static_assert(0xFF00UL == etl::manchester_decode<uint32_t>(0x5555AAAAUL), "Compile time manchester decoding failed");
+#endif
   }
 
   TEST(decode64)
   {
     CHECK_EQUAL(0x8001FF00ULL, (etl::manchester_decode<uint64_t>(0x6AAAAAA95555AAAAULL)));
+
+#if ETL_USING_CPP14
+    static_assert(0x8001FF00ULL == etl::manchester_decode<uint64_t>(0x6AAAAAA95555AAAAULL), "Compile time manchester decoding failed");
+#endif
   }
 
   TEST(decode_span)
@@ -118,21 +138,30 @@ SUITE(test_manchester)
   {
     CHECK_TRUE(etl::manchester_valid<uint16_t>(0xAAAAUL));
     CHECK_FALSE(etl::manchester_valid<uint16_t>(0xAAA8UL));
-    CHECK_TRUE(etl::manchester_valid<uint16_t>(0xAAAAUL));
+
+#if ETL_USING_CPP14
+    static_assert(etl::manchester_valid<uint16_t>(0xAAAAUL), "Compile time manchester validity check failed");
+#endif
   }
 
   TEST(valid32)
   {
     CHECK_TRUE(etl::manchester_valid<uint32_t>(0xAAAAAAAAUL));
     CHECK_FALSE(etl::manchester_valid<uint32_t>(0xAAAAAAA8UL));
-    CHECK_TRUE(etl::manchester_valid<uint32_t>(0xAAAAAAAAUL));
+
+#if ETL_USING_CPP14
+    static_assert(etl::manchester_valid<uint32_t>(0xAAAAAAAAUL), "Compile time manchester validity check failed");
+#endif
   }
 
   TEST(valid64)
   {
     CHECK_TRUE(etl::manchester_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL));
     CHECK_FALSE(etl::manchester_valid<uint64_t>(0xAAAAAAAAAAAAAAA8ULL));
-    CHECK_TRUE(etl::manchester_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL));
+
+#if ETL_USING_CPP14
+    static_assert(etl::manchester_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL), "Compile time manchester validity check failed");
+#endif
   }
 };
 
