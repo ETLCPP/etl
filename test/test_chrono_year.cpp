@@ -225,8 +225,8 @@ namespace
     TEST(test_year_minus_year)
     {
       etl::chrono::year y1(2056);
+      CHECK_TRUE(y1 - y1 == etl::chrono::years(0));
       etl::chrono::year y2(2);
-
       CHECK_TRUE(y1 - y2 == etl::chrono::years(2054));
       CHECK_TRUE(y2 - y1 == etl::chrono::years(-2054));
     }
