@@ -51,24 +51,78 @@ namespace etl
     /// Manchester encoding and decoding
     //***************************************************************************
 
+    template <typename T>
+    struct manchester_encoded
+    {
+        static_assert(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
+    };
+
+    template <>
+    struct manchester_encoded<uint8_t>
+    {
+        using type = uint16_t;
+    };
+    template <>
+    struct manchester_encoded<uint16_t>
+    {
+        using type = uint32_t;
+    };
+    template <>
+    struct manchester_encoded<uint32_t>
+    {
+        using type = uint64_t;
+    };
+
+    template <typename T>
+    struct manchester_decoded
+    {
+        static_assert(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
+    };
+
+    template <>
+    struct manchester_decoded<uint16_t>
+    {
+        using type = uint8_t;
+    };
+    template <>
+    struct manchester_decoded<uint32_t>
+    {
+        using type = uint16_t;
+    };
+    template <>
+    struct manchester_decoded<uint64_t>
+    {
+        using type = uint32_t;
+    };
+
+    template <typename TEncode>
+    ETL_CONSTEXPR14 void manchester_encode_in_place(TEncode in, typename manchester_encoded<TEncode>::type& out) ETL_DELETE;
+
+    template <typename TEncode>
+    ETL_NODISCARD ETL_CONSTEXPR14 typename manchester_encoded<TEncode>::type manchester_encode(TEncode in) ETL_DELETE;
+
 #if ETL_USING_8BIT_TYPES
     //*****************************************************************************
     /// Manchester encode 8 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput, typename TOutput = uint16_t>
-    ETL_CONSTEXPR14
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 8U) &&
-                                    etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 16U),
-                                TOutput>::type
-        manchester_encode(TInput in)
+    template <>
+    ETL_CONSTEXPR void manchester_encode_in_place<uint8_t>(uint8_t in, uint16_t& out)
     {
-        TOutput out = in;
+        out = in;
 
         out = (out | (out << 4U)) & 0x0F0FU;
         out = (out | (out << 2U)) & 0x3333U;
         out = (out | (out << 1U)) & 0x5555U;
-        return (out | (out << 1U)) ^ 0xAAAAU;
+        out = (out | (out << 1U)) ^ 0xAAAAU;
+    }
+
+    template <>
+    ETL_NODISCARD ETL_CONSTEXPR14 uint16_t manchester_encode<uint8_t>(uint8_t in)
+    {
+        uint16_t out {};
+        manchester_encode_in_place(in, out);
+        return out;
     }
 #endif
 
@@ -76,20 +130,24 @@ namespace etl
     /// Manchester encode 16 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput, typename TOutput = uint32_t>
-    ETL_CONSTEXPR14
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 16U) &&
-                                    etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 32U),
-                                TOutput>::type
-        manchester_encode(TInput in)
+    template <>
+    ETL_CONSTEXPR void manchester_encode_in_place(uint16_t in, uint32_t& out)
     {
-        TOutput out = in;
+        out = in;
 
         out = (out | (out << 8U)) & 0x00FF00FFUL;
         out = (out | (out << 4U)) & 0x0F0F0F0FUL;
         out = (out | (out << 2U)) & 0x33333333UL;
         out = (out | (out << 1U)) & 0x55555555UL;
-        return (out | (out << 1U)) ^ 0xAAAAAAAAUL;
+        out = (out | (out << 1U)) ^ 0xAAAAAAAAUL;
+    }
+
+    template <>
+    ETL_NODISCARD ETL_CONSTEXPR14 uint32_t manchester_encode(uint16_t in)
+    {
+        uint32_t out {};
+        manchester_encode_in_place(in, out);
+        return out;
     }
 
 #if ETL_USING_64BIT_TYPES
@@ -97,79 +155,77 @@ namespace etl
     /// Manchester encode 32 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput, typename TOutput = uint64_t>
-    ETL_CONSTEXPR14
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 32U) &&
-                                    etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 64U),
-                                TOutput>::type
-        manchester_encode(TInput in)
+    template <>
+    ETL_CONSTEXPR void manchester_encode_in_place(uint32_t in, uint64_t& out)
     {
-        TOutput out = in;
+        out = in;
 
         out = (out | (out << 16U)) & 0x0000FFFF0000FFFFULL;
         out = (out | (out << 8U)) & 0x00FF00FF00FF00FFULL;
         out = (out | (out << 4U)) & 0x0F0F0F0F0F0F0F0FULL;
         out = (out | (out << 2U)) & 0x3333333333333333ULL;
         out = (out | (out << 1U)) & 0x5555555555555555ULL;
-        return (out | (out << 1U)) ^ 0xAAAAAAAAAAAAAAAAULL;
+        out = (out | (out << 1U)) ^ 0xAAAAAAAAAAAAAAAAULL;
+    }
+
+    template <>
+    ETL_NODISCARD ETL_CONSTEXPR14 uint64_t manchester_encode(uint32_t in)
+    {
+        uint64_t out {};
+        manchester_encode_in_place(in, out);
+        return out;
     }
 #endif
 
-    template <typename T>
-    struct select_uint;
-
-    template <>
-    struct select_uint<uint8_t>
+    // What happens on systems that don't have uint8_t / where CHAR_BIT is e.g. 16?
+    template <typename TEncode = uint_least8_t>
+    void manchester_encode_span(etl::span<const uint_least8_t> input, etl::span<uint_least8_t> output)
     {
-        using type = std::uint16_t;
-    };
-    template <>
-    struct select_uint<uint16_t>
-    {
-        using type = std::uint32_t;
-    };
-    template <>
-    struct select_uint<uint32_t>
-    {
-        using type = std::uint64_t;
-    };
+        ETL_ASSERT(output.size() >= input.size() * 2, "");
+        ETL_ASSERT(input.size() % sizeof(TEncode) == 0, "");
 
-    template <typename TInput, typename TOutput = typename select_uint<TInput>::type, typename TEncode = TInput>
-    typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value &&
-                                etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value &&
-                                etl::is_integral<TEncode>::value && etl::is_unsigned<TEncode>::value &&
-                                (etl::integral_limits<TEncode>::bits <= 32) &&
-                                (2 * etl::integral_limits<TInput>::bits == etl::integral_limits<TOutput>::bits),
-                            void>::type
-    manchester_encode_span(etl::span<const TInput> input, etl::span<TOutput> output)
-    {
-        using TOut = typename select_uint<TEncode>::type;
+        while (!input.empty())
+        {
+            const TEncode& in = *reinterpret_cast<const TEncode*>(input.data());
+            typename etl::manchester_encoded<TEncode>::type& out = *reinterpret_cast<etl::manchester_encoded<TEncode>::type*>(output.data());
 
-        ETL_ASSERT(output.size() >= input.size(), "");
-        ETL_ASSERT((input.size() * sizeof(TInput)) % sizeof(TEncode) == 0, "");
+            etl::manchester_encode_in_place(in, out);
 
-        etl::span<const TEncode> in{reinterpret_cast<const TEncode *>(input.data()), (sizeof(TInput) * input.size()) / sizeof(TEncode)};
-        etl::span<TOut> out{reinterpret_cast<TOut *>(output.data()), (sizeof(TOutput) * output.size()) / sizeof(TOut)};
-
-        etl::transform(in.begin(), in.end(), out.begin(), etl::manchester_encode<TEncode>);
+            input.advance(sizeof(TEncode));
+            output.advance(sizeof(etl::manchester_encoded<TEncode>::type));
+        }
     }
+
+
+    template <typename TDecode>
+    ETL_CONSTEXPR void manchester_decode_in_place(TDecode in, typename manchester_decoded<TDecode>::type& out) ETL_DELETE;
+
+    template <typename TDecode>
+    ETL_NODISCARD ETL_CONSTEXPR14 typename manchester_decoded<TDecode>::type manchester_decode(TDecode in) ETL_DELETE;
+
+    template <typename TDecode>
+    ETL_NODISCARD ETL_CONSTEXPR bool manchester_valid(TDecode encoded) ETL_DELETE;
 
 #if ETL_USING_8BIT_TYPES
     //*****************************************************************************
     /// Manchester decode 16 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput, typename TOutput = uint8_t>
-    ETL_CONSTEXPR14
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 16U) &&
-                                    etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 8U),
-                                TOutput>::type
-        manchester_decode(TInput in)
+    template<>
+    ETL_CONSTEXPR void manchester_decode_in_place(uint16_t in, uint8_t& out)
     {
-        TInput out = (in ^ 0xAAAAU) & 0x5555U;
-        out = (out | (out >> 1)) & 0x3333U;
-        out = (out | (out >> 2)) & 0x0F0FU;
-        return static_cast<TOutput>(out | (out >> 4U));
+        in = (in ^ 0xAAAAU) & 0x5555U;
+        in = (in | (in >> 1)) & 0x3333U;
+        in = (in | (in >> 2)) & 0x0F0FU;
+        out = static_cast<uint8_t>(in | (in >> 4U));
+    }
+
+    template<>
+    ETL_NODISCARD ETL_NODISCARD ETL_CONSTEXPR14 uint8_t manchester_decode(uint16_t in)
+    {
+        uint8_t out {};
+        manchester_decode_in_place(in, out);
+        return out;
     }
 #endif
 
@@ -177,73 +233,105 @@ namespace etl
     /// Manchester valid 16 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput>
-    ETL_CONSTEXPR
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 16U), bool>::type
-        manchester_valid(TInput in)
+    template <>
+    ETL_NODISCARD ETL_CONSTEXPR bool manchester_valid(uint16_t encoded)
     {
-        return (((in ^ (in >> 1)) & 0x5555U) == 0x5555U);
+        return (((encoded ^ (encoded >> 1)) & 0x5555U) == 0x5555U);
     }
 
     //*****************************************************************************
     /// Manchester decode 32 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput, typename TOutput = uint16_t>
-    ETL_CONSTEXPR14
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 32U) &&
-                                    etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 16U),
-                                TOutput>::type
-        manchester_decode(TInput in)
+    template<>
+    ETL_CONSTEXPR void manchester_decode_in_place(uint32_t in, uint16_t& out)
     {
-        TInput out = (in ^ 0xAAAAAAAAUL) & 0x55555555UL;
-        out = (out | (out >> 1)) & 0x33333333UL;
-        out = (out | (out >> 2)) & 0x0F0F0F0FUL;
-        out = (out | (out >> 4)) & 0x00FF00FFUL;
-        return static_cast<TOutput>(out | (out >> 8U));
+        in = (in ^ 0xAAAAAAAAUL) & 0x55555555UL;
+        in = (in | (in >> 1)) & 0x33333333UL;
+        in = (in | (in >> 2)) & 0x0F0F0F0FUL;
+        in = (in | (in >> 4)) & 0x00FF00FFUL;
+        out = static_cast<uint16_t>(in | (in >> 8U));
+    }
+
+    template<>
+    ETL_NODISCARD ETL_CONSTEXPR14 uint16_t manchester_decode(uint32_t in)
+    {
+        uint16_t out {};
+        manchester_decode_in_place(in, out);
+        return out;
     }
 
     //*****************************************************************************
     /// Manchester valid 32 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput>
-    ETL_CONSTEXPR
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 32U), bool>::type
-        manchester_valid(TInput in)
+    template <>
+    ETL_NODISCARD ETL_CONSTEXPR bool manchester_valid(uint32_t encoded)
     {
-        return (((in ^ (in >> 1)) & 0x55555555U) == 0x55555555U);
+        return (((encoded ^ (encoded >> 1)) & 0x55555555U) == 0x55555555U);
     }
 
     //*****************************************************************************
     /// Manchester decode 64 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput, typename TOutput = uint32_t>
-    ETL_CONSTEXPR14
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 64U) &&
-                                    etl::is_integral<TOutput>::value && etl::is_unsigned<TOutput>::value && (etl::integral_limits<TOutput>::bits == 32U),
-                                TOutput>::type
-        manchester_decode(TInput in)
+    template<>
+    ETL_CONSTEXPR void manchester_decode_in_place(uint64_t in, uint32_t& out)
     {
-        TInput out = (in ^ 0xAAAAAAAAAAAAAAAAULL) & 0x5555555555555555ULL;
-        out = (out | (out >> 1)) & 0x3333333333333333ULL;
-        out = (out | (out >> 2)) & 0x0F0F0F0F0F0F0F0FULL;
-        out = (out | (out >> 4)) & 0x00FF00FF00FF00FFULL;
-        out = (out | (out >> 8)) & 0x0000FFFF0000FFFFULL;
-        return static_cast<TOutput>(out | (out >> 16U));
+        in = (in ^ 0xAAAAAAAAAAAAAAAAULL) & 0x5555555555555555ULL;
+        in = (in | (in >> 1)) & 0x3333333333333333ULL;
+        in = (in | (in >> 2)) & 0x0F0F0F0F0F0F0F0FULL;
+        in = (in | (in >> 4)) & 0x00FF00FF00FF00FFULL;
+        in = (in | (in >> 8)) & 0x0000FFFF0000FFFFULL;
+        out = static_cast<uint32_t>(in | (in >> 16U));
+    }
+
+    template<>
+    ETL_NODISCARD ETL_CONSTEXPR14 uint32_t manchester_decode(uint64_t in)
+    {
+        uint32_t out {};
+        manchester_decode_in_place(in, out);
+        return out;
     }
 
     //*****************************************************************************
     /// Manchester valid 64 bits
     ///\ingroup manchester
     //*****************************************************************************
-    template <typename TInput>
-    ETL_CONSTEXPR
-        typename etl::enable_if<etl::is_integral<TInput>::value && etl::is_unsigned<TInput>::value && (etl::integral_limits<TInput>::bits == 64U), bool>::type
-        manchester_valid(TInput in)
+    template <>
+    ETL_NODISCARD ETL_CONSTEXPR bool manchester_valid(uint64_t encoded)
     {
-        return (((in ^ (in >> 1)) & 0x5555555555555555U) == 0x5555555555555555U);
+        return (((encoded ^ (encoded >> 1)) & 0x5555555555555555U) == 0x5555555555555555U);
+    }
+
+    template <typename TDecode = manchester_encoded<uint_least8_t>::type>
+    void manchester_decode_span(etl::span<const uint_least8_t> input, etl::span<uint_least8_t> output)
+    {
+        ETL_ASSERT(input.size() >= output.size() * 2, "");
+        ETL_ASSERT(input.size() % sizeof(TDecode) == 0, "");
+
+        while (!input.empty())
+        {
+            const TDecode& in = *reinterpret_cast<const TDecode*>(input.data());
+            typename etl::manchester_decoded<TDecode>::type& out = *reinterpret_cast<etl::manchester_decoded<TDecode>::type*>(output.data());
+
+            etl::manchester_decode_in_place(in, out);
+
+            input.advance(sizeof(TDecode));
+            output.advance(sizeof(etl::manchester_decoded<TDecode>::type));
+        }
+    }
+
+    ETL_CONSTEXPR14 void manchester_decode_span_constexpr(etl::span<const uint_least8_t> input, etl::span<uint_least8_t> output)
+    {
+        ETL_ASSERT(input.size() >= output.size() * 2, "");
+        ETL_ASSERT(input.size() % sizeof(uint16_t) == 0, "");
+
+        for (size_t i = 0; i < output.size(); ++i)
+        {
+            const uint16_t encoded = (static_cast<uint16_t>(input[i]) << 8) | input[i + 1];
+            output[i] = etl::manchester_decode<uint16_t>(encoded);
+        }
     }
 
 } // namespace etl
