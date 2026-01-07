@@ -173,36 +173,14 @@ namespace etl
     static typename etl::enable_if<!is_supported_encode_input<TChunk>::value, void>::type
     encode_in_place(TChunk in, typename manchester_encoded<TChunk>::type& out) = delete;
 
-#if ETL_USING_8BIT_TYPES
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint8_t>::value, uint16_t>::type
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<is_supported_encode_input<TChunk>::value, typename manchester_encoded<TChunk>::type>::type
     encode(TChunk in)
     {
-      uint16_t out{};
+      typename manchester_encoded<TChunk>::type out = 0;
       encode_in_place(in, out);
       return out;
     }
-#endif
-
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, uint32_t>::type
-    encode(TChunk in)
-    {
-      uint32_t out{};
-      encode_in_place(in, out);
-      return out;
-    }
-
-#if ETL_USING_64BIT_TYPES
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, uint64_t>::type
-    encode(TChunk in)
-    {
-      uint64_t out{};
-      encode_in_place(in, out);
-      return out;
-    }
-#endif
 
     template <typename TChunk>
     static typename etl::enable_if<!is_supported_encode_input<TChunk>::value, typename manchester_encoded<TChunk>::type>::type
@@ -267,36 +245,14 @@ namespace etl
     static typename etl::enable_if<!is_supported_decode_input<TChunk>::value, void>::type
     decode_in_place(TChunk in, typename manchester_decoded<TChunk>::type& out) = delete;
 
-#if ETL_USING_8BIT_TYPES
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, uint8_t>::type
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<is_supported_decode_input<TChunk>::value, typename manchester_decoded<TChunk>::type>::type
     decode(TChunk in)
     {
-      uint8_t out{};
+      typename manchester_decoded<TChunk>::type out = 0;
       decode_in_place(in, out);
       return out;
     }
-#endif
-
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, uint16_t>::type
-    decode(TChunk in)
-    {
-      uint16_t out{};
-      decode_in_place(in, out);
-      return out;
-    }
-
-#if ETL_USING_64BIT_TYPES
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint64_t>::value, uint32_t>::type
-    decode(TChunk in)
-    {
-      uint32_t out{};
-      decode_in_place(in, out);
-      return out;
-    }
-#endif
 
     template <typename TChunk>
     static typename etl::enable_if<!is_supported_decode_input<TChunk>::value, typename manchester_decoded<TChunk>::type>::type
@@ -347,7 +303,7 @@ namespace etl
       return true;
     }
 
-    template <typename TChunk = manchester_encoded<uint_least8_t>::type>
+    template <typename TChunk>
     static typename etl::enable_if<!etl::is_same<TChunk, typename manchester_encoded<uint_least8_t>::type>::value, void>::type
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
@@ -374,8 +330,7 @@ namespace etl
     static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename manchester_encoded<uint_least8_t>::type>::value, void>::type
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      typedef typename manchester_encoded<uint_least8_t>::type TChunk;
-      typedef uint_least8_t                                    TChunkDecoded;
+      typedef uint_least8_t TChunkDecoded;
 
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
       ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
