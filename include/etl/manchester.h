@@ -111,7 +111,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    static ETL_CONSTEXPR14 void encode_in_place<uint8_t>(uint8_t in, uint16_t& out)
+    ETL_CONSTEXPR14 void encode_in_place<uint8_t>(uint8_t in, uint16_t& out)
     {
       out = in;
 
@@ -122,7 +122,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR14 uint16_t encode<uint8_t>(uint8_t in)
+    ETL_NODISCARD ETL_CONSTEXPR14 uint16_t encode<uint8_t>(uint8_t in)
     {
       uint16_t out{};
       encode_in_place(in, out);
@@ -135,7 +135,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    static ETL_CONSTEXPR14 void encode_in_place(uint16_t in, uint32_t& out)
+    ETL_CONSTEXPR14 void encode_in_place(uint16_t in, uint32_t& out)
     {
       out = in;
 
@@ -147,7 +147,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR14 uint32_t encode(uint16_t in)
+    ETL_NODISCARD ETL_CONSTEXPR14 uint32_t encode(uint16_t in)
     {
       uint32_t out{};
       encode_in_place(in, out);
@@ -160,7 +160,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    static ETL_CONSTEXPR14 void encode_in_place(uint32_t in, uint64_t& out)
+    ETL_CONSTEXPR14 void encode_in_place(uint32_t in, uint64_t& out)
     {
       out = in;
 
@@ -173,7 +173,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR14 uint64_t encode(uint32_t in)
+    ETL_NODISCARD ETL_CONSTEXPR14 uint64_t encode(uint32_t in)
     {
       uint64_t out{};
       encode_in_place(in, out);
@@ -215,7 +215,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    static ETL_CONSTEXPR14 void decode_in_place(uint16_t in, uint8_t& out)
+    ETL_CONSTEXPR14 void decode_in_place(uint16_t in, uint8_t& out)
     {
       in = (in ^ (0xAAAAU ^ static_cast<uint16_t>(TType::invert_mask))) & 0x5555U;
       in = (in | (in >> 1)) & 0x3333U;
@@ -224,7 +224,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR14 uint8_t decode(uint16_t in)
+    ETL_NODISCARD ETL_CONSTEXPR14 uint8_t decode(uint16_t in)
     {
       uint8_t out{};
       decode_in_place(in, out);
@@ -237,7 +237,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR bool valid(uint16_t encoded)
+    ETL_NODISCARD ETL_CONSTEXPR bool valid(uint16_t encoded)
     {
       return (((encoded ^ (encoded >> 1)) & 0x5555U) == 0x5555U);
     }
@@ -247,7 +247,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    static ETL_CONSTEXPR14 void decode_in_place(uint32_t in, uint16_t& out)
+    ETL_CONSTEXPR14 void decode_in_place(uint32_t in, uint16_t& out)
     {
       in = (in ^ (0xAAAAAAAAUL ^ static_cast<uint32_t>(TType::invert_mask))) & 0x55555555UL;
       in = (in | (in >> 1)) & 0x33333333UL;
@@ -257,7 +257,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR14 uint16_t decode(uint32_t in)
+    ETL_NODISCARD ETL_CONSTEXPR14 uint16_t decode(uint32_t in)
     {
       uint16_t out{};
       decode_in_place(in, out);
@@ -269,7 +269,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR bool valid(uint32_t encoded)
+    ETL_NODISCARD ETL_CONSTEXPR bool valid(uint32_t encoded)
     {
       return (((encoded ^ (encoded >> 1)) & 0x55555555U) == 0x55555555U);
     }
@@ -280,7 +280,7 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    static ETL_CONSTEXPR14 void decode_in_place(uint64_t in, uint32_t& out)
+    ETL_CONSTEXPR14 void decode_in_place(uint64_t in, uint32_t& out)
     {
       in = (in ^ (0xAAAAAAAAAAAAAAAAULL ^ TType::invert_mask)) & 0x5555555555555555ULL;
       in = (in | (in >> 1)) & 0x3333333333333333ULL;
@@ -291,7 +291,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR14 uint32_t decode(uint64_t in)
+    ETL_NODISCARD ETL_CONSTEXPR14 uint32_t decode(uint64_t in)
     {
       uint32_t out{};
       decode_in_place(in, out);
@@ -303,13 +303,13 @@ namespace etl
     ///\ingroup manchester
     //*****************************************************************************
     template <>
-    ETL_NODISCARD static ETL_CONSTEXPR bool valid(uint64_t encoded)
+    ETL_NODISCARD ETL_CONSTEXPR bool valid(uint64_t encoded)
     {
       return (((encoded ^ (encoded >> 1)) & 0x5555555555555555U) == 0x5555555555555555U);
     }
 #endif
 
-    static ETL_CONSTEXPR14 bool valid_span(etl::span<const uint_least8_t> encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 bool valid_span(etl::span<const uint_least8_t> encoded)
     {
       ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, "");
 
