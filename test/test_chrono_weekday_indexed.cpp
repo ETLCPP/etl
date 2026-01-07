@@ -58,9 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::weekday_indexed weekday_indexed;
-
-      CHECK_FALSE(weekday_indexed.ok());
+      Chrono::weekday_indexed weekday_indexed; // values to be uninitialized
     }
 
     //*************************************************************************

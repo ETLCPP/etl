@@ -73,9 +73,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::day day;
-
-      CHECK_FALSE(day.ok());
+      Chrono::day day; // value shall not be initialized
     }
 
     //*************************************************************************
