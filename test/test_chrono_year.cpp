@@ -58,7 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      etl::chrono::year year;
+      etl::chrono::year year; // value to be uninitialized
     }
 
     //*************************************************************************

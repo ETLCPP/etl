@@ -58,9 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::year_month_day ymd;
-
-      CHECK_FALSE(ymd.ok()); // Default-constructed year_month_day is not valid
+      Chrono::year_month_day ymd; // value shall not be initialized
     }
 
     //*************************************************************************

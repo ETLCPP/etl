@@ -58,9 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::month_day md;
-
-      CHECK_FALSE(md.ok()); // Default-constructed month_day is not valid
+      Chrono::month_day md; // value to be uninitialized
     }
 
     //*************************************************************************
