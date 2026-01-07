@@ -1412,6 +1412,24 @@ namespace
 
       decltype(d3) d3_3_copy(d3);
       decltype(d3) d3_4_copy(d4);
+
+      CHECK_EQUAL(d1.size(), d1_1_copy.size());
+      CHECK_EQUAL(d1.alignment(), d1_1_copy.alignment());
+
+      CHECK_EQUAL(d1.size(), d1_4_copy.size());
+      CHECK_EQUAL(d1.alignment(), d1_4_copy.alignment());
+
+      CHECK_EQUAL(d2.size(), d2_1_copy.size());
+      CHECK_EQUAL(d2.alignment(), d2_1_copy.alignment());
+
+      CHECK_EQUAL(d2.size(), d2_2_copy.size());
+      CHECK_EQUAL(d2.alignment(), d2_2_copy.alignment());
+
+      CHECK_EQUAL(d3.size(), d3_3_copy.size());
+      CHECK_EQUAL(d3.alignment(), d3_3_copy.alignment());
+
+      CHECK_EQUAL(d3.size(), d3_4_copy.size());
+      CHECK_EQUAL(d3.alignment(), d3_4_copy.alignment());
     }
 
     //*************************************************************************

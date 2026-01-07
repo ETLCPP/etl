@@ -339,8 +339,8 @@ namespace etl
         using target_t = member_target<TObject>;
         constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
 
-        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
-                                                                                  : &inplace_function_vtable::template destroy_stub<target_t>;
+        constexpr destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                            : &inplace_function_vtable::template destroy_stub<target_t>;
 
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_member<target_t>,
                                                     destroy_ptr,
@@ -358,8 +358,8 @@ namespace etl
         using target_t = const_member_target<TObject>;
         constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
 
-        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
-                                                                                  : &inplace_function_vtable::template destroy_stub<target_t>;
+        constexpr destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                            : &inplace_function_vtable::template destroy_stub<target_t>;
 
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_member<target_t>,
                                                     destroy_ptr,
@@ -376,8 +376,8 @@ namespace etl
       {
         constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
 
-        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
-                                                                                  : &inplace_function_vtable::template destroy_stub<TObject>;
+        constexpr destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                            : &inplace_function_vtable::template destroy_stub<TObject>;
         
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_functor<TObject>,
                                                     destroy_ptr,
@@ -394,8 +394,8 @@ namespace etl
       {
         constexpr bool destroy_src_on_move = !etl::is_trivially_destructible<TObject>::value;
         
-        destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
-                                                                                  : &inplace_function_vtable::template destroy_stub<TObject>;
+        constexpr destroy_type destroy_ptr = etl::is_trivially_destructible<TObject>::value ? nullptr
+                                                                                            : &inplace_function_vtable::template destroy_stub<TObject>;
 
         static const inplace_function_vtable vtable(&inplace_function_vtable::template stub_const_functor<TObject>,
                                                     destroy_ptr,
@@ -617,7 +617,7 @@ namespace etl
     template <typename TLambda,
               typename T = typename etl::decay<TLambda>::type,
               typename = etl::enable_if_t<etl::is_class<T>::value && !is_inplace_function<T>::value, void>>
-      inplace_function(const TLambda& lambda)
+    inplace_function(const TLambda& lambda)
     {
       set(lambda);
     }
@@ -1315,16 +1315,15 @@ namespace etl
   /// \param obj    The object.
   /// \return The constructed inplace_function.
   //*************************************************************************
-  template <typename TObject, typename TReturn, typename... TArgs>
+  template <typename TObject,
+            typename TReturn,
+            typename... TArgs,
+            typename TTarget = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>>
   ETL_NODISCARD
-  etl::inplace_function<TReturn(TArgs...),
-                               sizeof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>),
-                               alignof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>)>
+  etl::inplace_function<TReturn(TArgs...), sizeof(TTarget), alignof(TTarget)>
     make_inplace_function(TReturn (TObject::*method)(TArgs...), TObject& obj)
   {
-    using target_t = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template member_target<TObject>;
-
-    return etl::inplace_function_for<TReturn(TArgs...), target_t>(method, obj);
+    return etl::inplace_function_for<TReturn(TArgs...), TTarget>(method, obj);
   }
 
   //*************************************************************************
@@ -1334,16 +1333,15 @@ namespace etl
   /// \param obj    The object.
   /// \return The constructed inplace_function.
   //*************************************************************************
-  template <typename TObject, typename TReturn, typename... TArgs>
+  template <typename TObject, 
+            typename TReturn, 
+            typename... TArgs,
+            typename TTarget = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>>
   ETL_NODISCARD
-  etl::inplace_function<TReturn(TArgs...),
-                               sizeof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>),
-                               alignof(typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>)>
+  etl::inplace_function<TReturn(TArgs...), sizeof(TTarget), alignof(TTarget)>
     make_inplace_function(TReturn (TObject::*method)(TArgs...) const, const TObject& obj)
   {
-    using target_t = typename etl::private_inplace_function::inplace_function_vtable<TReturn, TArgs...>::template const_member_target<TObject>;
-
-    return etl::inplace_function_for<TReturn(TArgs...), target_t>(method, obj);
+    return etl::inplace_function_for<TReturn(TArgs...), TTarget>(method, obj);
   }
 
   //*************************************************************************
