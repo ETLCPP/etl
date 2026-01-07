@@ -1,7 +1,6 @@
 #ifndef ETL_MANCHESTER_INCLUDED
 #define ETL_MANCHESTER_INCLUDED
 
-
 ///\file
 
 /******************************************************************************
@@ -86,6 +85,34 @@ namespace etl
     typedef uint32_t type;
   };
 
+  template <typename TChunk>
+  struct is_supported_encode_input
+  {
+    static const bool value =
+#if ETL_USING_8BIT_TYPES
+      etl::is_same<TChunk, uint8_t>::value ||
+#endif
+      etl::is_same<TChunk, uint16_t>::value
+#if ETL_USING_64BIT_TYPES
+      || etl::is_same<TChunk, uint32_t>::value
+#endif
+      ;
+  };
+
+  template <typename TChunk>
+  struct is_supported_decode_input
+  {
+    static const bool value =
+#if ETL_USING_8BIT_TYPES
+      etl::is_same<TChunk, uint16_t>::value ||
+#endif
+      etl::is_same<TChunk, uint32_t>::value
+#if ETL_USING_64BIT_TYPES
+      || etl::is_same<TChunk, uint64_t>::value
+#endif
+      ;
+  };
+
   struct manchester_type_normal
   {
     static const uint64_t invert_mask = 0x0000000000000000;
@@ -99,19 +126,10 @@ namespace etl
   template <typename TType>
   struct manchester_base
   {
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 void encode_in_place(TChunk in, typename manchester_encoded<TChunk>::type& out) ETL_DELETE;
-
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename manchester_encoded<TChunk>::type encode(TChunk in) ETL_DELETE;
-
 #if ETL_USING_8BIT_TYPES
-    //*****************************************************************************
-    /// Manchester encode 8 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_CONSTEXPR14 void encode_in_place<uint8_t>(uint8_t in, uint16_t& out)
+    template <typename TChunk>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint8_t>::value, void>::type
+    encode_in_place(TChunk in, uint16_t& out)
     {
       out = in;
 
@@ -120,22 +138,11 @@ namespace etl
       out = (out | (out << 1U)) & 0x5555U;
       out = (out | (out << 1U)) ^ (0xAAAAU ^ static_cast<uint16_t>(TType::invert_mask));
     }
-
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR14 uint16_t encode<uint8_t>(uint8_t in)
-    {
-      uint16_t out{};
-      encode_in_place(in, out);
-      return out;
-    }
 #endif
 
-    //*****************************************************************************
-    /// Manchester encode 16 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_CONSTEXPR14 void encode_in_place(uint16_t in, uint32_t& out)
+    template <typename TChunk>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, void>::type
+    encode_in_place(TChunk in, uint32_t& out)
     {
       out = in;
 
@@ -146,21 +153,10 @@ namespace etl
       out = (out | (out << 1U)) ^ (0xAAAAAAAAUL ^ static_cast<uint32_t>(TType::invert_mask));
     }
 
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR14 uint32_t encode(uint16_t in)
-    {
-      uint32_t out{};
-      encode_in_place(in, out);
-      return out;
-    }
-
 #if ETL_USING_64BIT_TYPES
-    //*****************************************************************************
-    /// Manchester encode 32 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_CONSTEXPR14 void encode_in_place(uint32_t in, uint64_t& out)
+    template <typename TChunk>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, void>::type
+    encode_in_place(TChunk in, uint64_t& out)
     {
       out = in;
 
@@ -171,9 +167,36 @@ namespace etl
       out = (out | (out << 1U)) & 0x5555555555555555ULL;
       out = (out | (out << 1U)) ^ (0xAAAAAAAAAAAAAAAAULL ^ TType::invert_mask);
     }
+#endif
 
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR14 uint64_t encode(uint32_t in)
+    template <typename TChunk>
+    static typename etl::enable_if<!is_supported_encode_input<TChunk>::value, void>::type
+    encode_in_place(TChunk in, typename manchester_encoded<TChunk>::type& out) = delete;
+
+#if ETL_USING_8BIT_TYPES
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint8_t>::value, uint16_t>::type
+    encode(TChunk in)
+    {
+      uint16_t out{};
+      encode_in_place(in, out);
+      return out;
+    }
+#endif
+
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, uint32_t>::type
+    encode(TChunk in)
+    {
+      uint32_t out{};
+      encode_in_place(in, out);
+      return out;
+    }
+
+#if ETL_USING_64BIT_TYPES
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, uint64_t>::type
+    encode(TChunk in)
     {
       uint64_t out{};
       encode_in_place(in, out);
@@ -181,7 +204,10 @@ namespace etl
     }
 #endif
 
-    // What happens on systems that don't have uint8_t / where CHAR_BIT is e.g. 16?
+    template <typename TChunk>
+    static typename etl::enable_if<!is_supported_encode_input<TChunk>::value, typename manchester_encoded<TChunk>::type>::type
+    encode(TChunk in) = delete;
+
     template <typename TChunk = uint_least8_t>
     static void encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
@@ -200,54 +226,21 @@ namespace etl
       }
     }
 
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 void decode_in_place(TChunk in, typename manchester_decoded<TChunk>::type& out) ETL_DELETE;
-
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename manchester_decoded<TChunk>::type decode(TChunk in) ETL_DELETE;
-
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR bool valid(TChunk encoded) ETL_DELETE;
-
 #if ETL_USING_8BIT_TYPES
-    //*****************************************************************************
-    /// Manchester decode 16 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_CONSTEXPR14 void decode_in_place(uint16_t in, uint8_t& out)
+    template <typename TChunk>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, void>::type
+    decode_in_place(TChunk in, uint8_t& out)
     {
       in = (in ^ (0xAAAAU ^ static_cast<uint16_t>(TType::invert_mask))) & 0x5555U;
       in = (in | (in >> 1)) & 0x3333U;
       in = (in | (in >> 2)) & 0x0F0FU;
       out = static_cast<uint8_t>(in | (in >> 4U));
     }
-
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR14 uint8_t decode(uint16_t in)
-    {
-      uint8_t out{};
-      decode_in_place(in, out);
-      return out;
-    }
 #endif
 
-    //*****************************************************************************
-    /// Manchester valid 16 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR bool valid(uint16_t encoded)
-    {
-      return (((encoded ^ (encoded >> 1)) & 0x5555U) == 0x5555U);
-    }
-
-    //*****************************************************************************
-    /// Manchester decode 32 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_CONSTEXPR14 void decode_in_place(uint32_t in, uint16_t& out)
+    template <typename TChunk>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, void>::type
+    decode_in_place(TChunk in, uint16_t& out)
     {
       in = (in ^ (0xAAAAAAAAUL ^ static_cast<uint32_t>(TType::invert_mask))) & 0x55555555UL;
       in = (in | (in >> 1)) & 0x33333333UL;
@@ -256,31 +249,10 @@ namespace etl
       out = static_cast<uint16_t>(in | (in >> 8U));
     }
 
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR14 uint16_t decode(uint32_t in)
-    {
-      uint16_t out{};
-      decode_in_place(in, out);
-      return out;
-    }
-
-    //*****************************************************************************
-    /// Manchester valid 32 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR bool valid(uint32_t encoded)
-    {
-      return (((encoded ^ (encoded >> 1)) & 0x55555555U) == 0x55555555U);
-    }
-
 #if ETL_USING_64BIT_TYPES
-    //*****************************************************************************
-    /// Manchester decode 64 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_CONSTEXPR14 void decode_in_place(uint64_t in, uint32_t& out)
+    template <typename TChunk>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint64_t>::value, void>::type
+    decode_in_place(TChunk in, uint32_t& out)
     {
       in = (in ^ (0xAAAAAAAAAAAAAAAAULL ^ TType::invert_mask)) & 0x5555555555555555ULL;
       in = (in | (in >> 1)) & 0x3333333333333333ULL;
@@ -289,25 +261,75 @@ namespace etl
       in = (in | (in >> 8)) & 0x0000FFFF0000FFFFULL;
       out = static_cast<uint32_t>(in | (in >> 16U));
     }
+#endif
 
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR14 uint32_t decode(uint64_t in)
+    template <typename TChunk>
+    static typename etl::enable_if<!is_supported_decode_input<TChunk>::value, void>::type
+    decode_in_place(TChunk in, typename manchester_decoded<TChunk>::type& out) = delete;
+
+#if ETL_USING_8BIT_TYPES
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, uint8_t>::type
+    decode(TChunk in)
+    {
+      uint8_t out{};
+      decode_in_place(in, out);
+      return out;
+    }
+#endif
+
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, uint16_t>::type
+    decode(TChunk in)
+    {
+      uint16_t out{};
+      decode_in_place(in, out);
+      return out;
+    }
+
+#if ETL_USING_64BIT_TYPES
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint64_t>::value, uint32_t>::type
+    decode(TChunk in)
     {
       uint32_t out{};
       decode_in_place(in, out);
       return out;
     }
+#endif
 
-    //*****************************************************************************
-    /// Manchester valid 64 bits
-    ///\ingroup manchester
-    //*****************************************************************************
-    template <>
-    ETL_NODISCARD ETL_CONSTEXPR bool valid(uint64_t encoded)
+    template <typename TChunk>
+    static typename etl::enable_if<!is_supported_decode_input<TChunk>::value, typename manchester_decoded<TChunk>::type>::type
+    decode(TChunk in) = delete;
+
+#if ETL_USING_8BIT_TYPES
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, bool>::type
+    valid(TChunk encoded)
+    {
+      return (((encoded ^ (encoded >> 1)) & 0x5555U) == 0x5555U);
+    }
+#endif
+
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, bool>::type
+    valid(TChunk encoded)
+    {
+      return (((encoded ^ (encoded >> 1)) & 0x55555555U) == 0x55555555U);
+    }
+
+#if ETL_USING_64BIT_TYPES
+    template <typename TChunk>
+    ETL_NODISCARD static ETL_CONSTEXPR typename etl::enable_if<etl::is_same<TChunk, uint64_t>::value, bool>::type
+    valid(TChunk encoded)
     {
       return (((encoded ^ (encoded >> 1)) & 0x5555555555555555U) == 0x5555555555555555U);
     }
 #endif
+
+    template <typename TChunk>
+    static typename etl::enable_if<!is_supported_decode_input<TChunk>::value, bool>::type
+    valid(TChunk encoded) = delete;
 
     ETL_NODISCARD static ETL_CONSTEXPR14 bool valid_span(etl::span<const uint_least8_t> encoded)
     {
@@ -326,7 +348,8 @@ namespace etl
     }
 
     template <typename TChunk = manchester_encoded<uint_least8_t>::type>
-    static void decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    static typename etl::enable_if<!etl::is_same<TChunk, typename manchester_encoded<uint_least8_t>::type>::value, void>::type
+    decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
       typedef typename manchester_decoded<TChunk>::type TChunkDecoded;
 
@@ -347,11 +370,12 @@ namespace etl
       }
     }
 
-    template <>
-    static ETL_CONSTEXPR14 void decode_span<typename manchester_encoded<uint_least8_t>::type>(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    template <typename TChunk = typename manchester_encoded<uint_least8_t>::type>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename manchester_encoded<uint_least8_t>::type>::value, void>::type
+    decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
       typedef typename manchester_encoded<uint_least8_t>::type TChunk;
-      typedef uint_least8_t TChunkDecoded;
+      typedef uint_least8_t                                    TChunkDecoded;
 
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
       ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
