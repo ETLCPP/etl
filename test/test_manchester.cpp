@@ -192,10 +192,10 @@ SUITE(test_manchester)
   {
     etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAA, 0x6A};
 
-    alignas(uint8_t) etl::array<uint8_t, 4> output0;
-    alignas(uint8_t) etl::array<uint8_t, 4> output1;
-    alignas(uint16_t) etl::array<uint8_t, 4> output2;
-    alignas(uint32_t) etl::array<uint8_t, 4> output3;
+    etl::array<uint8_t, 4> output0;
+    etl::array<uint8_t, 4> output1;
+    etl::array<uint8_t, 4> output2;
+    etl::array<uint8_t, 4> output3;
 
     etl::manchester::decode_span(input, output0);
     etl::manchester::decode_span<uint16_t>(input, output1);
@@ -216,10 +216,10 @@ SUITE(test_manchester)
   {
     etl::array<const uint8_t, 8>  input{0x55, 0x55, 0xAA, 0xAA, 0x56, 0x55, 0X55, 0x95};
 
-    alignas(uint8_t) etl::array<uint8_t, 4> output0;
-    alignas(uint8_t) etl::array<uint8_t, 4> output1;
-    alignas(uint16_t) etl::array<uint8_t, 4> output2;
-    alignas(uint32_t) etl::array<uint8_t, 4> output3;
+    etl::array<uint8_t, 4> output0;
+    etl::array<uint8_t, 4> output1;
+    etl::array<uint8_t, 4> output2;
+    etl::array<uint8_t, 4> output3;
 
     etl::manchester_inverted::decode_span(input, output0);
     etl::manchester_inverted::decode_span<uint16_t>(input, output1);
@@ -314,17 +314,20 @@ SUITE(test_manchester)
   }
 };
 
-// #if ETL_USING_CPP14
-// constexpr etl::array<uint8_t, 4> manchester_encoded(etl::span<const uint_least8_t> input)
-// {
-//   alignas(uint8_t) etl::array<uint8_t, 4> output {0, 0, 0, 0};
-//   etl::manchester::decode_span(input, output);
+#if ETL_USING_CPP14
+constexpr etl::array<uint8_t, 4> manchester_decoded(etl::span<const uint_least8_t> input)
+{
+  etl::array<uint8_t, 4> output {0, 0, 0, 0};
+  etl::manchester::decode_span(input, output);
 
-//   return output;
-// }
+  return output;
+}
 
-// constexpr etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0XAA, 0xAA};
+constexpr etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAA, 0x6A};
 
-// constexpr etl::array<uint8_t, 4> bla = manchester_encoded(input);
-// static_assert(bla[0] == 0, "Compile time computation of many values failed");
-// #endif
+constexpr etl::array<uint8_t, 4> decoded = manchester_decoded(input);
+static_assert(decoded[0] == 0x00, "Compile time decoding on range failed");
+static_assert(decoded[1] == 0xFF, "Compile time decoding on range failed");
+static_assert(decoded[2] == 0x01, "Compile time decoding on range failed");
+static_assert(decoded[3] == 0x80, "Compile time decoding on range failed");
+#endif

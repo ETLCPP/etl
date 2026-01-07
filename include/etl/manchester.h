@@ -48,7 +48,7 @@ namespace etl
     ///\tparam TChunk The input type to check.
     //*************************************************************************
     template <typename TChunk>
-    struct is_supported_encode_input
+    struct is_encodable
     {
       static const bool value =
 #if ETL_USING_8BIT_TYPES
@@ -66,7 +66,7 @@ namespace etl
     ///\tparam TChunk The input type to check.
     //*************************************************************************
     template <typename TChunk>
-    struct is_supported_decode_input
+    struct is_decodable
     {
       static const bool value =
 #if ETL_USING_8BIT_TYPES
@@ -232,7 +232,7 @@ namespace etl
 #endif
 
     template <typename TChunk>
-    static typename etl::enable_if<!private_manchester::is_supported_encode_input<TChunk>::value, void>::type
+    static typename etl::enable_if<!private_manchester::is_encodable<TChunk>::value, void>::type
     encode_in_place(TChunk decoded, typename private_manchester::manchester_encoded<TChunk>::type& encoded) ETL_DELETE;
 
     //*************************************************************************
@@ -243,7 +243,7 @@ namespace etl
     template <typename TChunk>
     ETL_NODISCARD static ETL_CONSTEXPR14 typename private_manchester::manchester_encoded<TChunk>::type encode(TChunk decoded)
     {
-      ETL_STATIC_ASSERT(private_manchester::is_supported_encode_input<TChunk>::value, "TChunk must be a supported encode input type");
+      ETL_STATIC_ASSERT(private_manchester::is_encodable<TChunk>::value, "TChunk must be an encodable type");
 
       typename private_manchester::manchester_encoded<TChunk>::type encoded = 0;
       encode_in_place(decoded, encoded);
@@ -332,7 +332,7 @@ namespace etl
 #endif
 
     template <typename TChunk>
-    static typename etl::enable_if<!private_manchester::is_supported_decode_input<TChunk>::value, void>::type
+    static typename etl::enable_if<!private_manchester::is_decodable<TChunk>::value, void>::type
     decode_in_place(TChunk encoded, typename private_manchester::manchester_decoded<TChunk>::type& decoded) ETL_DELETE;
 
     //*************************************************************************
@@ -343,7 +343,7 @@ namespace etl
     template <typename TChunk>
     ETL_NODISCARD static ETL_CONSTEXPR14 typename private_manchester::manchester_decoded<TChunk>::type decode(TChunk encoded)
     {
-      ETL_STATIC_ASSERT(private_manchester::is_supported_decode_input<TChunk>::value, "TChunk must be a supported decode input type");
+      ETL_STATIC_ASSERT(private_manchester::is_decodable<TChunk>::value, "TChunk must be a decodable type");
 
       typename private_manchester::manchester_decoded<TChunk>::type decoded = 0;
       decode_in_place(encoded, decoded);
@@ -362,7 +362,7 @@ namespace etl
     template <typename TChunk>
     ETL_NODISCARD static ETL_CONSTEXPR14 bool valid(TChunk encoded)
     {
-      ETL_STATIC_ASSERT(private_manchester::is_supported_decode_input<TChunk>::value, "TChunk must be a supported decode input type");
+      ETL_STATIC_ASSERT(private_manchester::is_decodable<TChunk>::value, "TChunk must be a decodable type");
 
       const TChunk mask = static_cast<TChunk>(0x5555555555555555ULL);
       return (((encoded ^ (encoded >> 1)) & mask) == mask);
@@ -403,7 +403,7 @@ namespace etl
     static typename etl::enable_if<!etl::is_same<TChunk, typename private_manchester::manchester_encoded<uint_least8_t>::type>::value, void>::type
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      typedef typename private_manchester::manchester_decoded<TChunk>::type TChunkDecoded;
+      typedef typename private_manchester::manchester_decoded<TChunk>::type TDecoded;
 
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
       ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
@@ -414,11 +414,11 @@ namespace etl
       {
         TChunk encoded_value = 0;
         memcpy(&encoded_value, &source[source_index], sizeof(TChunk));
-        const TChunkDecoded decoded_value = decode(encoded_value);
-        memcpy(&destination[dest_index], &decoded_value, sizeof(TChunkDecoded));
+        const TDecoded decoded_value = decode(encoded_value);
+        memcpy(&destination[dest_index], &decoded_value, sizeof(TDecoded));
 
         source_index += sizeof(TChunk);
-        dest_index += sizeof(TChunkDecoded);
+        dest_index += sizeof(TDecoded);
       }
     }
 
@@ -432,7 +432,7 @@ namespace etl
     static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename private_manchester::manchester_encoded<uint_least8_t>::type>::value, void>::type
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      typedef uint_least8_t TChunkDecoded;
+      typedef uint_least8_t TDecoded;
 
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
       ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
@@ -445,7 +445,7 @@ namespace etl
         destination[dest_index] = decode<TChunk>(encoded_value);
 
         source_index += sizeof(TChunk);
-        dest_index += sizeof(TChunkDecoded);
+        dest_index += sizeof(TDecoded);
       }
     }
 
