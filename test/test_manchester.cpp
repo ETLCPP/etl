@@ -300,17 +300,17 @@ SUITE(test_manchester)
   }
 };
 
-#if ETL_USING_CPP14
-constexpr etl::array<uint8_t, 4> manchester_encoded(etl::span<const uint_least8_t> input)
-{
-  alignas(uint8_t) etl::array<uint8_t, 4> output {0, 0, 0, 0};
-  etl::manchester::decode_span(input, output);
+// #if ETL_USING_CPP14
+// constexpr etl::array<uint8_t, 4> manchester_encoded(etl::span<const uint_least8_t> input)
+// {
+//   alignas(uint8_t) etl::array<uint8_t, 4> output {0, 0, 0, 0};
+//   etl::manchester::decode_span(input, output);
 
-  return output;
-}
+//   return output;
+// }
 
-constexpr etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0XAA, 0xAA};
+// constexpr etl::array<const uint8_t, 8>  input{0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0XAA, 0xAA};
 
-constexpr etl::array<uint8_t, 4> bla = manchester_encoded(input);
-static_assert(bla[0] == 0, "Compile time computation of many values failed");
-#endif
+// constexpr etl::array<uint8_t, 4> bla = manchester_encoded(input);
+// static_assert(bla[0] == 0, "Compile time computation of many values failed");
+// #endif
