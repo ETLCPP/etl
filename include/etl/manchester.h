@@ -41,121 +41,122 @@ SOFTWARE.
 
 namespace etl
 {
-  //***************************************************************************
-  /// Type trait to determine if a type is supported as an encode input.
-  ///\tparam TChunk The input type to check.
-  //***************************************************************************
-  template <typename TChunk>
-  struct is_supported_encode_input
+  namespace private_manchester
   {
-    static const bool value =
+    //*************************************************************************
+    /// Type trait to determine if a type is supported as an encode input.
+    ///\tparam TChunk The input type to check.
+    //*************************************************************************
+    template <typename TChunk>
+    struct is_supported_encode_input
+    {
+      static const bool value =
 #if ETL_USING_8BIT_TYPES
-      etl::is_same<TChunk, uint8_t>::value ||
+        etl::is_same<TChunk, uint8_t>::value ||
 #endif
-      etl::is_same<TChunk, uint16_t>::value
+        etl::is_same<TChunk, uint16_t>::value
 #if ETL_USING_64BIT_TYPES
-      || etl::is_same<TChunk, uint32_t>::value
+        || etl::is_same<TChunk, uint32_t>::value
 #endif
-      ;
-  };
+        ;
+    };
 
-  //***************************************************************************
-  /// Type trait to determine if a type is supported as a decode input.
-  ///\tparam TChunk The input type to check.
-  //***************************************************************************
-  template <typename TChunk>
-  struct is_supported_decode_input
-  {
-    static const bool value =
+    //*************************************************************************
+    /// Type trait to determine if a type is supported as a decode input.
+    ///\tparam TChunk The input type to check.
+    //*************************************************************************
+    template <typename TChunk>
+    struct is_supported_decode_input
+    {
+      static const bool value =
 #if ETL_USING_8BIT_TYPES
-      etl::is_same<TChunk, uint16_t>::value ||
+        etl::is_same<TChunk, uint16_t>::value ||
 #endif
-      etl::is_same<TChunk, uint32_t>::value
+        etl::is_same<TChunk, uint32_t>::value
 #if ETL_USING_64BIT_TYPES
-      || etl::is_same<TChunk, uint64_t>::value
+        || etl::is_same<TChunk, uint64_t>::value
 #endif
-      ;
-  };
+        ;
+    };
 
-  //***************************************************************************
-  ///\ingroup manchester
-  /// Type trait to determine the encoded type for a given decoded type.
-  /// Encoding doubles the bit width: uint8_t->uint16_t, uint16_t->uint32_t, etc.
-  ///\tparam T The input type to encode.
-  //***************************************************************************
-  template <typename T>
-  struct manchester_encoded
-  {
-    ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
-  };
+    //*************************************************************************
+    /// Type trait to determine the encoded type for a given decoded type.
+    /// Encoding doubles the bit width: uint8_t->uint16_t, uint16_t->uint32_t, etc.
+    ///\tparam T The decoded type.
+    //*************************************************************************
+    template <typename T>
+    struct manchester_encoded
+    {
+      ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
+    };
 
-  template <>
-  struct manchester_encoded<uint8_t>
-  {
-    typedef uint16_t type;
-  };
-  template <>
-  struct manchester_encoded<uint16_t>
-  {
-    typedef uint32_t type;
-  };
-  template <>
-  struct manchester_encoded<uint32_t>
-  {
-    typedef uint64_t type;
-  };
+    template <>
+    struct manchester_encoded<uint8_t>
+    {
+      typedef uint16_t type;
+    };
+    template <>
+    struct manchester_encoded<uint16_t>
+    {
+      typedef uint32_t type;
+    };
+    template <>
+    struct manchester_encoded<uint32_t>
+    {
+      typedef uint64_t type;
+    };
 
-  //***************************************************************************
-  ///\ingroup manchester
-  /// Type trait to determine the decoded type for a given encoded type.
-  /// Decoding halves the bit width: uint16_t->uint8_t, uint32_t->uint16_t, etc.
-  ///\tparam T The encoded type to decode.
-  //***************************************************************************
-  template <typename T>
-  struct manchester_decoded
-  {
-    ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
-  };
+    //*************************************************************************
+    /// Type trait to determine the decoded type for a given encoded type.
+    /// Decoding halves the bit width: uint16_t->uint8_t, uint32_t->uint16_t, etc.
+    ///\tparam T The encoded type.
+    //*************************************************************************
+    template <typename T>
+    struct manchester_decoded
+    {
+      ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
+    };
 
-  template <>
-  struct manchester_decoded<uint16_t>
-  {
-    typedef uint8_t type;
-  };
-  template <>
-  struct manchester_decoded<uint32_t>
-  {
-    typedef uint16_t type;
-  };
-  template <>
-  struct manchester_decoded<uint64_t>
-  {
-    typedef uint32_t type;
-  };
+    template <>
+    struct manchester_decoded<uint16_t>
+    {
+      typedef uint8_t type;
+    };
+    template <>
+    struct manchester_decoded<uint32_t>
+    {
+      typedef uint16_t type;
+    };
+    template <>
+    struct manchester_decoded<uint64_t>
+    {
+      typedef uint32_t type;
+    };
 
-  //***************************************************************************
-  /// Normal Manchester encoding type (no inversion).
-  //***************************************************************************
-  struct manchester_type_normal
-  {
+    //*************************************************************************
+    /// Normal Manchester encoding type (no inversion).
+    //*************************************************************************
+    struct manchester_type_normal
+    {
 #if ETL_USING_64BIT_TYPES
-    static const uint64_t inversion_mask = 0x0000000000000000ULL;
+      static const uint64_t inversion_mask = 0x0000000000000000ULL;
 #else
-    static const uint32_t inversion_mask = 0x00000000UL;
+      static const uint32_t inversion_mask = 0x00000000UL;
 #endif
-  };
+    };
 
-  //***************************************************************************
-  /// Inverted Manchester encoding type.
-  //***************************************************************************
-  struct manchester_type_inverted
-  {
+    //*************************************************************************
+    /// Inverted Manchester encoding type.
+    //*************************************************************************
+    struct manchester_type_inverted
+    {
 #if ETL_USING_64BIT_TYPES
-    static const uint64_t inversion_mask = 0xFFFFFFFFFFFFFFFFULL;
+      static const uint64_t inversion_mask = 0xFFFFFFFFFFFFFFFFULL;
 #else
-    static const uint32_t inversion_mask = 0xFFFFFFFFUL;
+      static const uint32_t inversion_mask = 0xFFFFFFFFUL;
 #endif
-  };
+    };
+  }  // namespace private_manchester
 
   //***************************************************************************
   ///\ingroup manchester
@@ -165,8 +166,8 @@ namespace etl
   template <typename TManchesterType>
   struct manchester_base
   {
-    ETL_STATIC_ASSERT((etl::is_same<TManchesterType, manchester_type_normal>::value ||
-                       etl::is_same<TManchesterType, manchester_type_inverted>::value),
+    ETL_STATIC_ASSERT((etl::is_same<TManchesterType, private_manchester::manchester_type_normal>::value ||
+                       etl::is_same<TManchesterType, private_manchester::manchester_type_inverted>::value),
                       "TManchesterType must be manchester_type_normal or manchester_type_inverted");
 
     //*************************************************************************
@@ -231,8 +232,8 @@ namespace etl
 #endif
 
     template <typename TChunk>
-    static typename etl::enable_if<!is_supported_encode_input<TChunk>::value, void>::type
-    encode_in_place(TChunk decoded, typename manchester_encoded<TChunk>::type& encoded) ETL_DELETE;
+    static typename etl::enable_if<!private_manchester::is_supported_encode_input<TChunk>::value, void>::type
+    encode_in_place(TChunk decoded, typename private_manchester::manchester_encoded<TChunk>::type& encoded) ETL_DELETE;
 
     //*************************************************************************
     /// Encode a value and return the Manchester encoded result.
@@ -240,11 +241,11 @@ namespace etl
     ///\return The Manchester encoded value.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename manchester_encoded<TChunk>::type encode(TChunk decoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename private_manchester::manchester_encoded<TChunk>::type encode(TChunk decoded)
     {
-      ETL_STATIC_ASSERT(is_supported_encode_input<TChunk>::value, "TChunk must be a supported encode input type");
-      
-      typename manchester_encoded<TChunk>::type encoded = 0;
+      ETL_STATIC_ASSERT(private_manchester::is_supported_encode_input<TChunk>::value, "TChunk must be a supported encode input type");
+
+      typename private_manchester::manchester_encoded<TChunk>::type encoded = 0;
       encode_in_place(decoded, encoded);
       return encoded;
     }
@@ -263,13 +264,13 @@ namespace etl
 
       while (!source.empty())
       {
-        const TChunk&                                   decoded = *reinterpret_cast<const TChunk*>(source.data());
-        typename etl::manchester_encoded<TChunk>::type& encoded = *reinterpret_cast<typename etl::manchester_encoded<TChunk>::type*>(destination.data());
+        const TChunk&                                                       decoded = *reinterpret_cast<const TChunk*>(source.data());
+        typename etl::private_manchester::manchester_encoded<TChunk>::type& encoded = *reinterpret_cast<typename etl::private_manchester::manchester_encoded<TChunk>::type*>(destination.data());
 
         encode_in_place(decoded, encoded);
 
         source.advance(sizeof(TChunk));
-        destination.advance(sizeof(typename etl::manchester_encoded<TChunk>::type));
+        destination.advance(sizeof(typename etl::private_manchester::manchester_encoded<TChunk>::type));
       }
     }
 
@@ -331,8 +332,8 @@ namespace etl
 #endif
 
     template <typename TChunk>
-    static typename etl::enable_if<!is_supported_decode_input<TChunk>::value, void>::type
-    decode_in_place(TChunk encoded, typename manchester_decoded<TChunk>::type& decoded) ETL_DELETE;
+    static typename etl::enable_if<!private_manchester::is_supported_decode_input<TChunk>::value, void>::type
+    decode_in_place(TChunk encoded, typename private_manchester::manchester_decoded<TChunk>::type& decoded) ETL_DELETE;
 
     //*************************************************************************
     /// Decode a value and return the Manchester decoded result.
@@ -340,11 +341,11 @@ namespace etl
     ///\return The Manchester decoded value.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename manchester_decoded<TChunk>::type decode(TChunk encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 typename private_manchester::manchester_decoded<TChunk>::type decode(TChunk encoded)
     {
-      ETL_STATIC_ASSERT(is_supported_decode_input<TChunk>::value, "TChunk must be a supported decode input type");
-      
-      typename manchester_decoded<TChunk>::type decoded = 0;
+      ETL_STATIC_ASSERT(private_manchester::is_supported_decode_input<TChunk>::value, "TChunk must be a supported decode input type");
+
+      typename private_manchester::manchester_decoded<TChunk>::type decoded = 0;
       decode_in_place(encoded, decoded);
       return decoded;
     }
@@ -359,10 +360,10 @@ namespace etl
     ///\return True if the value is valid Manchester encoding.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR bool valid(TChunk encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 bool valid(TChunk encoded)
     {
-      ETL_STATIC_ASSERT(is_supported_decode_input<TChunk>::value, "TChunk must be a supported decode input type");
-      
+      ETL_STATIC_ASSERT(private_manchester::is_supported_decode_input<TChunk>::value, "TChunk must be a supported decode input type");
+
       const TChunk mask = static_cast<TChunk>(0x5555555555555555ULL);
       return (((encoded ^ (encoded >> 1)) & mask) == mask);
     }
@@ -399,10 +400,10 @@ namespace etl
     ///\tparam TChunk     The chunk type for decoding.
     //*************************************************************************
     template <typename TChunk>
-    static typename etl::enable_if<!etl::is_same<TChunk, typename manchester_encoded<uint_least8_t>::type>::value, void>::type
+    static typename etl::enable_if<!etl::is_same<TChunk, typename private_manchester::manchester_encoded<uint_least8_t>::type>::value, void>::type
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      typedef typename manchester_decoded<TChunk>::type TChunkDecoded;
+      typedef typename private_manchester::manchester_decoded<TChunk>::type TChunkDecoded;
 
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
       ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
@@ -427,8 +428,8 @@ namespace etl
     ///\param destination The destination buffer for decoded data.
     ///\tparam TChunk     The chunk type for decoding (default type).
     //*************************************************************************
-    template <typename TChunk = typename manchester_encoded<uint_least8_t>::type>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename manchester_encoded<uint_least8_t>::type>::value, void>::type
+    template <typename TChunk = typename private_manchester::manchester_encoded<uint_least8_t>::type>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename private_manchester::manchester_encoded<uint_least8_t>::type>::value, void>::type
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
       typedef uint_least8_t TChunkDecoded;
@@ -454,7 +455,7 @@ namespace etl
     ///\param destination The destination buffer for decoded data.
     ///\tparam TChunk     The chunk size for decoding (default: uint16_t).
     //*************************************************************************
-    template <typename TChunk = manchester_encoded<uint_least8_t>::type>
+    template <typename TChunk = private_manchester::manchester_encoded<uint_least8_t>::type>
     static void decode_span_fast(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
@@ -462,13 +463,13 @@ namespace etl
 
       while (!source.empty())
       {
-        const TChunk&                                   encoded = *reinterpret_cast<const TChunk*>(source.data());
-        typename etl::manchester_decoded<TChunk>::type& decoded = *reinterpret_cast<typename etl::manchester_decoded<TChunk>::type*>(destination.data());
+        const TChunk&                                                       encoded = *reinterpret_cast<const TChunk*>(source.data());
+        typename etl::private_manchester::manchester_decoded<TChunk>::type& decoded = *reinterpret_cast<typename etl::private_manchester::manchester_decoded<TChunk>::type*>(destination.data());
 
         decode_in_place(encoded, decoded);
 
         source.advance(sizeof(TChunk));
-        destination.advance(sizeof(typename etl::manchester_decoded<TChunk>::type));
+        destination.advance(sizeof(typename etl::private_manchester::manchester_decoded<TChunk>::type));
       }
     }
   };
@@ -477,13 +478,13 @@ namespace etl
   ///\ingroup manchester
   /// Manchester encoder using normal encoding (no inversion).
   //***************************************************************************
-  typedef manchester_base<manchester_type_normal>   manchester;
-  
+  typedef manchester_base<private_manchester::manchester_type_normal> manchester;
+
   //***************************************************************************
-  ///\ingroup manchester  
+  ///\ingroup manchester
   /// Manchester encoder using inverted encoding.
   //***************************************************************************
-  typedef manchester_base<manchester_type_inverted> manchester_inverted;
+  typedef manchester_base<private_manchester::manchester_type_inverted> manchester_inverted;
 
 }  // namespace etl
 
