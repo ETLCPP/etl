@@ -791,10 +791,20 @@ namespace
       etl::vector_ext<int> data_ext(size, buffer1, max_size);
       const etl::vector_ext<int> data2_ext(size, buffer2, max_size);
 
+      etl::vector<int*, max_size> pdata = {nullptr, nullptr, nullptr, nullptr};
+      const etl::vector<int*, max_size> pdata2 = {nullptr, nullptr, nullptr, nullptr};
+      etl::vector<const int*, max_size> pdata3 = {nullptr, nullptr, nullptr, nullptr};
+      const etl::vector<const int*, max_size> pdata4 = {nullptr, nullptr, nullptr, nullptr};
+
       etl::span span = data;
       etl::span cspan = data2;
       etl::span span_ext = data_ext;
       etl::span cspan_ext = data2_ext;
+
+      etl::span pspan = pdata;
+      etl::span pspan2 = pdata2;
+      etl::span pspan3 = pdata3;
+      etl::span pspan4 = pdata4;
 
       CHECK_EQUAL(etl::dynamic_extent, span.extent);
       CHECK_EQUAL(ETL_OR_STD17::size(data), span.size());
@@ -806,10 +816,24 @@ namespace
       CHECK_EQUAL(etl::dynamic_extent, cspan_ext.extent);
       CHECK_EQUAL(ETL_OR_STD17::size(data2_ext), cspan_ext.size());
 
+      CHECK_EQUAL(etl::dynamic_extent, pspan.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata), pspan.size());
+      CHECK_EQUAL(etl::dynamic_extent, pspan2.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata2), pspan2.size());
+      CHECK_EQUAL(etl::dynamic_extent, pspan3.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata3), pspan3.size());
+      CHECK_EQUAL(etl::dynamic_extent, pspan4.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata4), pspan4.size());
+
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
       CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cspan.front())>>));
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span_ext.front())>>));
       CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cspan_ext.front())>>));
+      
+      CHECK((std::is_same_v<int*, std::remove_reference_t<decltype(pspan.front())>>));
+      CHECK((std::is_same_v<int* const, std::remove_reference_t<decltype(pspan2.front())>>));
+      CHECK((std::is_same_v<const int*, std::remove_reference_t<decltype(pspan3.front())>>));
+      CHECK((std::is_same_v<const int* const, std::remove_reference_t<decltype(pspan4.front())>>));
     }
 
     //*************************************************************************
