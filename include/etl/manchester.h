@@ -224,7 +224,7 @@ namespace etl
     }
 
     template <>
-    ETL_NODISCARD static ETL_NODISCARD ETL_CONSTEXPR14 uint8_t decode(uint16_t in)
+    ETL_NODISCARD static ETL_CONSTEXPR14 uint8_t decode(uint16_t in)
     {
       uint8_t out{};
       decode_in_place(in, out);
@@ -309,14 +309,14 @@ namespace etl
     }
 #endif
 
-    static ETL_CONSTEXPR14 void valid_span(etl::span<const uint_least8_t> encoded)
+    static ETL_CONSTEXPR14 bool valid_span(etl::span<const uint_least8_t> encoded)
     {
       ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, "");
 
-      for (size_t i = 0; i < destination.size(); i += 2)
+      for (size_t i = 0; i < encoded.size(); i += 2)
       {
-        const uint16_t encoded = (static_cast<uint16_t>(source[i]) << 8) | source[i + 1];
-        if (!valid<uint16_t>(encoded))
+        const uint16_t chunk = static_cast<uint16_t>((encoded[i + 1] << 8) | encoded[i]);
+        if (!valid<uint16_t>(chunk))
         {
           return false;
         }

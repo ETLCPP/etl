@@ -298,6 +298,20 @@ SUITE(test_manchester)
     static_assert(etl::manchester_inverted::valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL), "Compile time manchester validity check failed");
 #endif
   }
+
+  TEST(valid_span)
+  {
+    constexpr etl::array<uint8_t, 8> encoded1{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAA, 0x6A};
+    constexpr etl::array<uint8_t, 8> encoded2{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAB, 0x6A};
+
+    CHECK_TRUE(etl::manchester::valid_span(encoded1));
+    CHECK_FALSE(etl::manchester::valid_span(encoded2));
+
+#if ETL_USING_CPP14
+    static_assert(etl::manchester::valid_span(encoded1), "Compile time manchester validity check failed");
+    static_assert(!etl::manchester::valid_span(encoded2), "Compile time manchester validity check failed");
+#endif
+  }
 };
 
 // #if ETL_USING_CPP14
