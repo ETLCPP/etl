@@ -170,6 +170,8 @@ namespace etl
                        etl::is_same<TManchesterType, private_manchester::manchester_type_inverted>::value),
                       "TManchesterType must be manchester_type_normal or manchester_type_inverted");
 
+    ETL_STATIC_ASSERT(CHAR_BIT == etl::numeric_limits<uint_least8_t>::digits, "Manchester requires uint_least8_t to have the same number of bits as CHAR (CHAR_BITS)");
+
     //*************************************************************************
     // Encoding functions
     //*************************************************************************
@@ -251,26 +253,62 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Encode a span of data.
+    /// Encode a span of data with the selected chunk size.
+    ///\param source      The source data to encode.
+    ///\param destination The destination buffer for encoded data.
+    ///\tparam TChunk     The chunk size for encoding (default: uint_least8_t).
+    //*************************************************************************
+    template <typename TChunk>
+    static typename etl::enable_if<!etl::is_same<TChunk, uint_least8_t>::value, void>::type
+    encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    {
+      typedef TChunk TDecoded;
+      typedef typename etl::private_manchester::manchester_encoded<TChunk>::type TEncoded;
+
+      ETL_ASSERT(destination.size() >= source.size() * 2, "Manchester encoding requires destination storage to be at least twice the size of the source storage");
+      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, "Manchester encoding requires the source storage size to be an integer multiple of the encoding chunk size");
+
+      size_t dest_index = 0;
+      size_t source_index = 0;
+      for (size_t i = 0; i < source.size() / sizeof(TDecoded); ++i)
+      {
+        TDecoded decoded_value = 0;
+        memcpy(&decoded_value, &source[source_index], sizeof(TDecoded));
+        const TEncoded encoded_value = encode(decoded_value);
+        memcpy(&destination[dest_index], &encoded_value, sizeof(TEncoded));
+
+        source_index += sizeof(TDecoded);
+        dest_index += sizeof(TEncoded);
+      }
+    }
+
+    //*************************************************************************
+    /// Encode a span of data with the minimum chunk size. This version is
+    /// constexpr so that it can be used to decode data at compile time.
     ///\param source      The source data to encode.
     ///\param destination The destination buffer for encoded data.
     ///\tparam TChunk     The chunk size for encoding (default: uint_least8_t).
     //*************************************************************************
     template <typename TChunk = uint_least8_t>
-    static void encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    static typename etl::enable_if<etl::is_same<TChunk, uint_least8_t>::value, void>::type
+    constexpr encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
+      typedef TChunk TDecoded;
+      typedef typename etl::private_manchester::manchester_encoded<TChunk>::type TEncoded;
+
       ETL_ASSERT(destination.size() >= source.size() * 2, "Manchester encoding requires destination storage to be at least twice the size of the source storage");
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester encoding requires the source storage size to be an integer multiple of the encoding chunk size");
+      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, "Manchester encoding requires the source storage size to be an integer multiple of the encoding chunk size");
 
-      while (!source.empty())
+      size_t dest_index = 0;
+      size_t source_index = 0;
+      for (size_t i = 0; i < source.size() / sizeof(TDecoded); ++i)
       {
-        const TChunk&                                                       decoded = *reinterpret_cast<const TChunk*>(source.data());
-        typename etl::private_manchester::manchester_encoded<TChunk>::type& encoded = *reinterpret_cast<typename etl::private_manchester::manchester_encoded<TChunk>::type*>(destination.data());
+        const TEncoded encoded_value = encode(source[source_index]);
+        destination[dest_index] = static_cast<uint_least8_t>(encoded_value);
+        destination[dest_index + 1] = static_cast<uint_least8_t>(encoded_value >> CHAR_BIT);
 
-        encode_in_place(decoded, encoded);
-
-        source.advance(sizeof(TChunk));
-        destination.advance(sizeof(typename etl::private_manchester::manchester_encoded<TChunk>::type));
+        source_index += sizeof(TDecoded);
+        dest_index += sizeof(TEncoded);
       }
     }
 
@@ -404,26 +442,28 @@ namespace etl
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
       typedef typename private_manchester::manchester_decoded<TChunk>::type TDecoded;
+      typedef TChunk TEncoded;
 
       ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
       ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
 
       size_t dest_index = 0;
       size_t source_index = 0;
-      for (size_t i = 0; i < source.size() / sizeof(TChunk); ++i)
+      for (size_t i = 0; i < source.size() / sizeof(TEncoded); ++i)
       {
         TChunk encoded_value = 0;
-        memcpy(&encoded_value, &source[source_index], sizeof(TChunk));
+        memcpy(&encoded_value, &source[source_index], sizeof(TEncoded));
         const TDecoded decoded_value = decode(encoded_value);
         memcpy(&destination[dest_index], &decoded_value, sizeof(TDecoded));
 
-        source_index += sizeof(TChunk);
+        source_index += sizeof(TEncoded);
         dest_index += sizeof(TDecoded);
       }
     }
 
     //*************************************************************************
-    /// Decode a span of data using default chunk type (optimized version).
+    /// Decode a span of data using the smalles chunk type. This version is
+    /// constexpr so that it can be used to decode data at compile time.
     ///\param source      The source encoded data to decode.
     ///\param destination The destination buffer for decoded data.
     ///\tparam TChunk     The chunk type for decoding (default type).
@@ -441,7 +481,7 @@ namespace etl
       size_t source_index = 0;
       for (size_t i = 0; i < source.size() / sizeof(TChunk); ++i)
       {
-        const TChunk encoded_value = static_cast<TChunk>((source[source_index + 1] << 8) | source[source_index]);
+        const TChunk encoded_value = static_cast<TChunk>((source[source_index + 1] << CHAR_BIT) | source[source_index]);
         destination[dest_index] = decode<TChunk>(encoded_value);
 
         source_index += sizeof(TChunk);
