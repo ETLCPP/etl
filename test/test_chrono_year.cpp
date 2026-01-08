@@ -58,7 +58,10 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      etl::chrono::year year; // value to be uninitialized
+      Chrono::year year{};
+
+      CHECK_TRUE(year.ok());
+      CHECK_TRUE(year == Chrono::year{0});
     }
 
     //*************************************************************************

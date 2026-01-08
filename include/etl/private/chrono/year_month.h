@@ -43,9 +43,7 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      year_month()
-      {
-      }
+      year_month() = default;
 
       //*************************************************************************
       /// Construct from month and day.
@@ -174,9 +172,8 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::months operator -(const etl::chrono::year_month& ym1,
                                                           const etl::chrono::year_month& ym2) ETL_NOEXCEPT
     {
-      return etl::chrono::months(
-        (ym1.year() - ym2.year()) + etl::chrono::months(
-          static_cast<unsigned>(ym1.month()) - static_cast<unsigned>(ym2.month())));
+      return etl::chrono::months((ym1.year() - ym2.year()) + etl::chrono::months(
+        static_cast<int>(static_cast<unsigned>(ym1.month())) - static_cast<int>(static_cast<unsigned>(ym2.month()))));
     }
 
     //*************************************************************************

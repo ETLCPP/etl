@@ -86,7 +86,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::month month; // value shall not be initialized
+      Chrono::month month{};
+
+      CHECK_FALSE(month.ok());
     }
 
     //*************************************************************************

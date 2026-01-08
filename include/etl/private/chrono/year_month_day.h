@@ -48,9 +48,7 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      year_month_day()
-      {
-      }
+      year_month_day() = default;
 
       //*************************************************************************
       /// Construct from month and day.
@@ -74,8 +72,8 @@ namespace etl
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_day(const etl::chrono::sys_days& sd) ETL_NOEXCEPT
         : y(0)
-        , m(0)
-        , d(0)
+        , m(0U)
+        , d(0U)
       {
         // Days since 1970-01-01
         int days_since_epoch = static_cast<int>(sd.time_since_epoch().count());
