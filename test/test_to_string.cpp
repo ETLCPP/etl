@@ -662,6 +662,6 @@ namespace
       CHECK_EQUAL(etl::string<20>(STR("-124.0000")).c_str(), result_i.c_str());
       CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
-  };
+  }
 }
 

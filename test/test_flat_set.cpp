@@ -1316,5 +1316,5 @@ namespace
       CHECK(data.contains(Key(N5)));
       CHECK(!data.contains(Key(NX)));
     }
-  };
+  }
 }

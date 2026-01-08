@@ -146,6 +146,6 @@ namespace
       CHECK_EQUAL(etl::crc1::odd_parity,  etl::crc1(data_odd.begin(),  data_odd.end()));
       CHECK_EQUAL(etl::crc1::even_parity, etl::crc1(data_even.begin(), data_even.end()));
     }
-  };
+  }
 }
 

@@ -765,5 +765,5 @@ namespace
         CHECK_EQUAL(expected[i], ms_int[i]);
       }
     }
-  };
+  }
 }

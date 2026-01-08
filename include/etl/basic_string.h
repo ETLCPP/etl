@@ -1015,7 +1015,7 @@ namespace etl
         ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
-        return to_iterator(position);;
+        return to_iterator(position);
       }
 
       // Fills the string to the end?
@@ -2601,7 +2601,7 @@ namespace etl
         etl::mem_copy(s, insert_length, &p_buffer[remove_index]);
 
         // Move tail left.
-        etl::mem_copy(&p_buffer[tail_index], tail_length, &p_buffer[remove_index + insert_length]);
+        etl::mem_move(&p_buffer[tail_index], tail_length, &p_buffer[remove_index + insert_length]);
       }
 
       current_size = remove_index + insert_length + tail_length;

@@ -181,6 +181,6 @@ namespace
       uint32_t hash3 = etl::checksum<uint32_t>(data3.rbegin(), data3.rend());
       CHECK_EQUAL(int(hash1), int(hash3));
     }
-  };
+  }
 }
 

@@ -110,5 +110,5 @@ namespace
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u16string, etl::strlen(ETL_VERSION_U16));
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u32string, etl::strlen(ETL_VERSION_U32));
     }
-  };
+  }
 }

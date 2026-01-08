@@ -754,5 +754,5 @@ namespace
       }
     }
 #endif
-  };
+  }
 }

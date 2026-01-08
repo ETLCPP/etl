@@ -310,5 +310,5 @@ namespace
       p = variant_pool2.create<Derived1>();
       CHECK_THROW(variant_pool1.destroy(p), etl::pool_object_not_in_pool);
     }
-  };
+  }
 }

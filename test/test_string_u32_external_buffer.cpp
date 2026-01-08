@@ -5868,5 +5868,5 @@ namespace
 #endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
-  };
+  }
 }

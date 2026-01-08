@@ -67,5 +67,5 @@ namespace
       CHECK_THROW(ETL_ASSERT(false, ETL_ERROR_GENERIC("Generic Assert Exception")), etl::exception);
       CHECK_NO_THROW(ETL_ASSERT(true, ETL_ERROR_GENERIC("Generic Assert Exception")));
     }
-  };
+  }
 }

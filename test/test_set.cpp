@@ -1468,5 +1468,5 @@ namespace
       CHECK(!data.contains(99));
       CHECK(!data.contains(Key(99)));
     }
-  };
+  }
 }

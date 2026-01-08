@@ -1520,7 +1520,7 @@ namespace
       CHECK_EQUAL(0x12, bev0);
       CHECK_EQUAL(0x34, bev1);
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

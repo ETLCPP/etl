@@ -415,9 +415,9 @@ namespace
 
       etl::generic_pool<largest::size, largest::alignment, 4> pool;
 
-      uint8_t*   p1 = nullptr;
-      uint32_t*  p2 = nullptr;
-      double*    p3 = nullptr;
+      uint8_t* p1 = nullptr;
+      uint32_t* p2 = nullptr;
+      double* p3 = nullptr;
       Test_Data* p4 = nullptr;
 
       (void)p1;
@@ -430,430 +430,430 @@ namespace
       CHECK_NO_THROW(p3 = pool.allocate<double>());
       CHECK_NO_THROW(p4 = pool.allocate<Test_Data>());
     }
-  };
 
-  //*************************************************************************
-  TEST(test_create_destroy)
-  {
-    etl::pool<D0, 4> pool0;
-    etl::pool<D1, 4> pool1;
-    etl::pool<D2, 4> pool2;
-    etl::pool<D3, 4> pool3;
-    etl::pool<D4, 4> pool4;
-
-    D0* p0 = pool0.create();
-    D1* p1 = pool1.create("1");
-    D2* p2 = pool2.create("1", "2");
-    D3* p3 = pool3.create("1", "2", "3");
-    D4* p4 = pool4.create("1", "2", "3", "4");
-
-    CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
-    CHECK_EQUAL(1U, pool0.size());
-
-    CHECK_EQUAL(pool1.max_size() - 1, pool1.available());
-    CHECK_EQUAL(1U, pool1.size());
-
-    CHECK_EQUAL(pool2.max_size() - 1, pool2.available());
-    CHECK_EQUAL(1U, pool2.size());
-
-    CHECK_EQUAL(pool3.max_size() - 1, pool3.available());
-    CHECK_EQUAL(1U, pool3.size());
-
-    CHECK_EQUAL(pool4.max_size() - 1, pool4.available());
-    CHECK_EQUAL(1U, pool4.size());
-
-    CHECK_EQUAL(D0(), *p0);
-    CHECK_EQUAL(D1("1"), *p1);
-    CHECK_EQUAL(D2("1", "2"), *p2);
-    CHECK_EQUAL(D3("1", "2", "3"), *p3);
-    CHECK_EQUAL(D4("1", "2", "3", "4"), *p4);
-
-    pool0.destroy<D0>(p0);
-    pool1.destroy<D1>(p1);
-    pool2.destroy<D2>(p2);
-    pool3.destroy<D3>(p3);
-    pool4.destroy<D4>(p4);
-
-    CHECK_EQUAL(pool0.max_size(), pool0.available());
-    CHECK_EQUAL(0U, pool0.size());
-
-    CHECK_EQUAL(pool1.max_size(), pool1.available());
-    CHECK_EQUAL(0U, pool1.size());
-
-    CHECK_EQUAL(pool2.max_size(), pool2.available());
-    CHECK_EQUAL(0U, pool2.size());
-
-    CHECK_EQUAL(pool3.max_size(), pool3.available());
-    CHECK_EQUAL(0U, pool3.size());
-
-    CHECK_EQUAL(pool4.max_size(), pool4.available());
-    CHECK_EQUAL(0U, pool4.size());
-  }
-
-  //*************************************************************************
-  TEST(test_allocate_release_non_class)
-  {
-    etl::pool<int, 4> pool;
-
-    int* i = pool.allocate();
-    pool.release(i);
-  } 
-
-  //*************************************************************************
-  TEST(test_issue_406_pool_of_c_array)
-  {
-    using elem_type = uint8_t[10];
-
-    etl::pool<elem_type, 3> memPool{};
-
-    CHECK_EQUAL(3, memPool.available());
-    CHECK_EQUAL(0, memPool.size());
-
-    elem_type* memory = memPool.allocate();
-
-    CHECK_EQUAL(2, memPool.available());
-    CHECK_EQUAL(1, memPool.size());
-
-    memPool.release(memory);
-
-    CHECK_EQUAL(3, memPool.available());
-    CHECK_EQUAL(0, memPool.size());
-  }
-
-  //*************************************************************************
-  TEST(test_iterators)
-  {
-    etl::pool<int, 4> pool0;
-
-    etl::ipool::iterator begin = pool0.begin();
-    etl::ipool::iterator end   = pool0.end();
-
-    CHECK(begin == end);
-    CHECK(!(begin != end));
-    CHECK_EQUAL(etl::distance(begin, end), 0);
-
-    int* a = pool0.allocate();
-    *a = 1;
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 1);
-
-    int* b = pool0.allocate();
-    *b = 2;
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 2);
-
-    // post increment
-    for (auto i = pool0.begin(); i != pool0.end(); i++)
+    //*************************************************************************
+    TEST(test_create_destroy)
     {
-      CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
+      etl::pool<D0, 4> pool0;
+      etl::pool<D1, 4> pool1;
+      etl::pool<D2, 4> pool2;
+      etl::pool<D3, 4> pool3;
+      etl::pool<D4, 4> pool4;
+
+      D0* p0 = pool0.create();
+      D1* p1 = pool1.create("1");
+      D2* p2 = pool2.create("1", "2");
+      D3* p3 = pool3.create("1", "2", "3");
+      D4* p4 = pool4.create("1", "2", "3", "4");
+
+      CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
+      CHECK_EQUAL(1U, pool0.size());
+
+      CHECK_EQUAL(pool1.max_size() - 1, pool1.available());
+      CHECK_EQUAL(1U, pool1.size());
+
+      CHECK_EQUAL(pool2.max_size() - 1, pool2.available());
+      CHECK_EQUAL(1U, pool2.size());
+
+      CHECK_EQUAL(pool3.max_size() - 1, pool3.available());
+      CHECK_EQUAL(1U, pool3.size());
+
+      CHECK_EQUAL(pool4.max_size() - 1, pool4.available());
+      CHECK_EQUAL(1U, pool4.size());
+
+      CHECK_EQUAL(D0(), *p0);
+      CHECK_EQUAL(D1("1"), *p1);
+      CHECK_EQUAL(D2("1", "2"), *p2);
+      CHECK_EQUAL(D3("1", "2", "3"), *p3);
+      CHECK_EQUAL(D4("1", "2", "3", "4"), *p4);
+
+      pool0.destroy<D0>(p0);
+      pool1.destroy<D1>(p1);
+      pool2.destroy<D2>(p2);
+      pool3.destroy<D3>(p3);
+      pool4.destroy<D4>(p4);
+
+      CHECK_EQUAL(pool0.max_size(), pool0.available());
+      CHECK_EQUAL(0U, pool0.size());
+
+      CHECK_EQUAL(pool1.max_size(), pool1.available());
+      CHECK_EQUAL(0U, pool1.size());
+
+      CHECK_EQUAL(pool2.max_size(), pool2.available());
+      CHECK_EQUAL(0U, pool2.size());
+
+      CHECK_EQUAL(pool3.max_size(), pool3.available());
+      CHECK_EQUAL(0U, pool3.size());
+
+      CHECK_EQUAL(pool4.max_size(), pool4.available());
+      CHECK_EQUAL(0U, pool4.size());
     }
 
-    // pre increment
-    for (auto i = pool0.begin(); i != pool0.end(); ++i)
+    //*************************************************************************
+    TEST(test_allocate_release_non_class)
     {
-      CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
+      etl::pool<int, 4> pool;
+
+      int* i = pool.allocate();
+      pool.release(i);
     }
 
-    int* c = pool0.allocate();
-    *c = 3;
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 3);
-
-    pool0.release(b);
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 2);
-
-    int* d = pool0.allocate();
-    *d = 4;
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 3);
-
-    b = pool0.allocate();
-    *b = 2;
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 4);
-
-    // post increment
-    for (auto i = pool0.begin(); i != pool0.end(); i++)
+    //*************************************************************************
+    TEST(test_issue_406_pool_of_c_array)
     {
-      CHECK(*reinterpret_cast<int*>(*i) >= 1 && *reinterpret_cast<int*>(*i) <= 4);
+      using elem_type = uint8_t[10];
+
+      etl::pool<elem_type, 3> memPool{};
+
+      CHECK_EQUAL(3, memPool.available());
+      CHECK_EQUAL(0, memPool.size());
+
+      elem_type* memory = memPool.allocate();
+
+      CHECK_EQUAL(2, memPool.available());
+      CHECK_EQUAL(1, memPool.size());
+
+      memPool.release(memory);
+
+      CHECK_EQUAL(3, memPool.available());
+      CHECK_EQUAL(0, memPool.size());
     }
 
-    // pre increment
-    for (auto i = pool0.begin(); i != pool0.end(); ++i)
+    //*************************************************************************
+    TEST(test_iterators)
     {
-      CHECK(*reinterpret_cast<int*>(*i) >= 1 && *reinterpret_cast<int*>(*i) <= 4);
-    }
+      etl::pool<int, 4> pool0;
 
-    pool0.release(b);
+      etl::ipool::iterator begin = pool0.begin();
+      etl::ipool::iterator end = pool0.end();
 
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 3);
+      CHECK(begin == end);
+      CHECK(!(begin != end));
+      CHECK_EQUAL(etl::distance(begin, end), 0);
 
-    pool0.release(a);
+      int* a = pool0.allocate();
+      *a = 1;
 
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 2);
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 1);
 
-    pool0.release(d);
+      int* b = pool0.allocate();
+      *b = 2;
 
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 1);
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 2);
 
-    auto& v = begin.get<etl::be_uint32_t>();
-    v = 1;
-
-    pool0.release(c);
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin == end);
-    CHECK(!(begin != end));
-    CHECK_EQUAL(etl::distance(begin, end), 0);
-  }
-
-  //*************************************************************************
-  TEST(test_const_iterators)
-  {
-    etl::pool<int, 4> pool0;
-
-    etl::ipool::const_iterator begin = pool0.begin();
-    etl::ipool::const_iterator end   = pool0.end();
-
-    CHECK(begin == end);
-    CHECK(!(begin != end));
-    CHECK_EQUAL(etl::distance(begin, end), 0);
-
-    int* a = pool0.allocate();
-    *a = 1;
-
-    begin = pool0.cbegin();
-    end   = pool0.cend();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 1);
-
-    int* b = pool0.allocate();
-    *b = 2;
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 2);
-
-    // post increment
-    for (auto i = pool0.begin(); i != pool0.end(); i++)
-    {
-      CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
-    }
-
-    // pre increment
-    for (auto i = pool0.begin(); i != pool0.end(); ++i)
-    {
-      CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
-    }
-
-    int* c = pool0.allocate();
-    *c = 3;
-
-    begin = pool0.cbegin();
-    end   = pool0.cend();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 3);
-
-    pool0.release(b);
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 2);
-
-    int* d = pool0.allocate();
-    *d = 4;
-
-    begin = pool0.cbegin();
-    end   = pool0.cend();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 3);
-
-    b = pool0.allocate();
-    *b = 2;
-
-    begin = pool0.cbegin();
-    end   = pool0.cend();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 4);
-
-    // post increment
-    for (auto i = pool0.begin(); i != pool0.end(); i++)
-    {
-      CHECK(*reinterpret_cast<int*>(*i) >= 1 && *reinterpret_cast<int*>(*i) <= 4);
-    }
-
-    // pre increment
-    for (auto i = pool0.cbegin(); i != pool0.cend(); ++i)
-    {
-      CHECK(*reinterpret_cast<const int*>(*i) >= 1 && *reinterpret_cast<const int*>(*i) <= 4);
-    }
-
-    pool0.release(b);
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 3);
-
-    pool0.release(a);
-
-    begin = pool0.cbegin();
-    end   = pool0.cend();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 2);
-
-    pool0.release(d);
-
-    begin = pool0.begin();
-    end   = pool0.end();
-    CHECK(begin != end);
-    CHECK(!(begin == end));
-    CHECK_EQUAL(etl::distance(begin, end), 1);
-
-    const auto& v = begin.get<const etl::be_uint32_t>();
-    CHECK(v != 0);
-
-    pool0.release(c);
-
-    begin = pool0.cbegin();
-    end   = pool0.cend();
-    CHECK(begin == end);
-    CHECK(!(begin != end));
-    CHECK_EQUAL(etl::distance(begin, end), 0);
-  }
-
-  //*************************************************************************
-  TEST(test_releaser_functor_with_unique_ptr)
-  {
-    etl::pool<S, 10> pool;  
-    auto pool_deleter = [&pool](S* ptr) { pool.release(ptr); };
-    using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
-
-    S::instance_count = 0;
-
-    CHECK_EQUAL(10, pool.available());
-
-    {
-      S* ps;
-
-      ps = pool.allocate();
-      ::new(ps) S(1, 2);
-      Unique us1(ps, pool_deleter);
-      CHECK_EQUAL(1, S::instance_count);
-      CHECK_EQUAL(1, us1->a);
-      CHECK_EQUAL(2, us1->b);
-      CHECK_EQUAL(9, pool.available());
-
+      // post increment
+      for (auto i = pool0.begin(); i != pool0.end(); i++)
       {
-        ps = pool.allocate();
-        ::new(ps) S(3, 4);
-        Unique us2(ps, pool_deleter);
-        CHECK_EQUAL(2, S::instance_count);
-        CHECK_EQUAL(3, us2->a);
-        CHECK_EQUAL(4, us2->b);
-        CHECK_EQUAL(8, pool.available());      
-        us2->~S();
+        CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
       }
 
-      ps = pool.allocate();
-      ::new(ps) S(5, 6);
-      Unique us3(ps, pool_deleter);
-      CHECK_EQUAL(2, S::instance_count);
-      CHECK_EQUAL(5, us3->a);
-      CHECK_EQUAL(6, us3->b);
-      CHECK_EQUAL(8, pool.available());
-      us1->~S();
-      us3->~S();
+      // pre increment
+      for (auto i = pool0.begin(); i != pool0.end(); ++i)
+      {
+        CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
+      }
+
+      int* c = pool0.allocate();
+      *c = 3;
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 3);
+
+      pool0.release(b);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 2);
+
+      int* d = pool0.allocate();
+      *d = 4;
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 3);
+
+      b = pool0.allocate();
+      *b = 2;
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 4);
+
+      // post increment
+      for (auto i = pool0.begin(); i != pool0.end(); i++)
+      {
+        CHECK(*reinterpret_cast<int*>(*i) >= 1 && *reinterpret_cast<int*>(*i) <= 4);
+      }
+
+      // pre increment
+      for (auto i = pool0.begin(); i != pool0.end(); ++i)
+      {
+        CHECK(*reinterpret_cast<int*>(*i) >= 1 && *reinterpret_cast<int*>(*i) <= 4);
+      }
+
+      pool0.release(b);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 3);
+
+      pool0.release(a);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 2);
+
+      pool0.release(d);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 1);
+
+      auto& v = begin.get<etl::be_uint32_t>();
+      v = 1;
+
+      pool0.release(c);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin == end);
+      CHECK(!(begin != end));
+      CHECK_EQUAL(etl::distance(begin, end), 0);
     }
 
-    CHECK_EQUAL(0, S::instance_count);
-    CHECK_EQUAL(10, pool.available());
-  }
-
-  //*************************************************************************
-  TEST(test_destroyer_functor_with_unique_ptr)
-  {
-    etl::pool<S, 10> pool;  
-    auto pool_deleter = [&pool](S* ptr) { pool.destroy(ptr); };
-    using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
-
-    S::instance_count = 0;
-
-    CHECK_EQUAL(10, pool.available());
-
+    //*************************************************************************
+    TEST(test_const_iterators)
     {
-      Unique us1(pool.create(1, 2), pool_deleter);
-      CHECK_EQUAL(1, S::instance_count);
-      CHECK_EQUAL(1, us1->a);
-      CHECK_EQUAL(2, us1->b);
-      CHECK_EQUAL(9, pool.available());
+      etl::pool<int, 4> pool0;
+
+      etl::ipool::const_iterator begin = pool0.begin();
+      etl::ipool::const_iterator end = pool0.end();
+
+      CHECK(begin == end);
+      CHECK(!(begin != end));
+      CHECK_EQUAL(etl::distance(begin, end), 0);
+
+      int* a = pool0.allocate();
+      *a = 1;
+
+      begin = pool0.cbegin();
+      end = pool0.cend();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 1);
+
+      int* b = pool0.allocate();
+      *b = 2;
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 2);
+
+      // post increment
+      for (auto i = pool0.begin(); i != pool0.end(); i++)
+      {
+        CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
+      }
+
+      // pre increment
+      for (auto i = pool0.begin(); i != pool0.end(); ++i)
+      {
+        CHECK(*reinterpret_cast<int*>(*i) == 1 || *reinterpret_cast<int*>(*i) == 2);
+      }
+
+      int* c = pool0.allocate();
+      *c = 3;
+
+      begin = pool0.cbegin();
+      end = pool0.cend();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 3);
+
+      pool0.release(b);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 2);
+
+      int* d = pool0.allocate();
+      *d = 4;
+
+      begin = pool0.cbegin();
+      end = pool0.cend();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 3);
+
+      b = pool0.allocate();
+      *b = 2;
+
+      begin = pool0.cbegin();
+      end = pool0.cend();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 4);
+
+      // post increment
+      for (auto i = pool0.begin(); i != pool0.end(); i++)
+      {
+        CHECK(*reinterpret_cast<int*>(*i) >= 1 && *reinterpret_cast<int*>(*i) <= 4);
+      }
+
+      // pre increment
+      for (auto i = pool0.cbegin(); i != pool0.cend(); ++i)
+      {
+        CHECK(*reinterpret_cast<const int*>(*i) >= 1 && *reinterpret_cast<const int*>(*i) <= 4);
+      }
+
+      pool0.release(b);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 3);
+
+      pool0.release(a);
+
+      begin = pool0.cbegin();
+      end = pool0.cend();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 2);
+
+      pool0.release(d);
+
+      begin = pool0.begin();
+      end = pool0.end();
+      CHECK(begin != end);
+      CHECK(!(begin == end));
+      CHECK_EQUAL(etl::distance(begin, end), 1);
+
+      const auto& v = begin.get<const etl::be_uint32_t>();
+      CHECK(v != 0);
+
+      pool0.release(c);
+
+      begin = pool0.cbegin();
+      end = pool0.cend();
+      CHECK(begin == end);
+      CHECK(!(begin != end));
+      CHECK_EQUAL(etl::distance(begin, end), 0);
+    }
+
+    //*************************************************************************
+    TEST(test_releaser_functor_with_unique_ptr)
+    {
+      etl::pool<S, 10> pool;
+      auto pool_deleter = [&pool](S* ptr) { pool.release(ptr); };
+      using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
+
+      S::instance_count = 0;
+
+      CHECK_EQUAL(10, pool.available());
 
       {
-        Unique us2(pool.create(3, 4), pool_deleter);
+        S* ps;
+
+        ps = pool.allocate();
+        ::new(ps) S(1, 2);
+        Unique us1(ps, pool_deleter);
+        CHECK_EQUAL(1, S::instance_count);
+        CHECK_EQUAL(1, us1->a);
+        CHECK_EQUAL(2, us1->b);
+        CHECK_EQUAL(9, pool.available());
+
+        {
+          ps = pool.allocate();
+          ::new(ps) S(3, 4);
+          Unique us2(ps, pool_deleter);
+          CHECK_EQUAL(2, S::instance_count);
+          CHECK_EQUAL(3, us2->a);
+          CHECK_EQUAL(4, us2->b);
+          CHECK_EQUAL(8, pool.available());
+          us2->~S();
+        }
+
+        ps = pool.allocate();
+        ::new(ps) S(5, 6);
+        Unique us3(ps, pool_deleter);
         CHECK_EQUAL(2, S::instance_count);
-        CHECK_EQUAL(3, us2->a);
-        CHECK_EQUAL(4, us2->b);
+        CHECK_EQUAL(5, us3->a);
+        CHECK_EQUAL(6, us3->b);
+        CHECK_EQUAL(8, pool.available());
+        us1->~S();
+        us3->~S();
+      }
+
+      CHECK_EQUAL(0, S::instance_count);
+      CHECK_EQUAL(10, pool.available());
+    }
+
+    //*************************************************************************
+    TEST(test_destroyer_functor_with_unique_ptr)
+    {
+      etl::pool<S, 10> pool;
+      auto pool_deleter = [&pool](S* ptr) { pool.destroy(ptr); };
+      using Unique = etl::unique_ptr<S, decltype(pool_deleter)>;
+
+      S::instance_count = 0;
+
+      CHECK_EQUAL(10, pool.available());
+
+      {
+        Unique us1(pool.create(1, 2), pool_deleter);
+        CHECK_EQUAL(1, S::instance_count);
+        CHECK_EQUAL(1, us1->a);
+        CHECK_EQUAL(2, us1->b);
+        CHECK_EQUAL(9, pool.available());
+
+        {
+          Unique us2(pool.create(3, 4), pool_deleter);
+          CHECK_EQUAL(2, S::instance_count);
+          CHECK_EQUAL(3, us2->a);
+          CHECK_EQUAL(4, us2->b);
+          CHECK_EQUAL(8, pool.available());
+        }
+
+        CHECK_EQUAL(1, S::instance_count);
+
+        Unique us3(pool.create(5, 6), pool_deleter);
+        CHECK_EQUAL(2, S::instance_count);
+        CHECK_EQUAL(5, us3->a);
+        CHECK_EQUAL(6, us3->b);
         CHECK_EQUAL(8, pool.available());
       }
 
-      CHECK_EQUAL(1, S::instance_count);
-
-      Unique us3(pool.create(5, 6), pool_deleter);
-      CHECK_EQUAL(2, S::instance_count);
-      CHECK_EQUAL(5, us3->a);
-      CHECK_EQUAL(6, us3->b);
-      CHECK_EQUAL(8, pool.available());
+      CHECK_EQUAL(0, S::instance_count);
+      CHECK_EQUAL(10, pool.available());
     }
-
-    CHECK_EQUAL(0, S::instance_count);
-    CHECK_EQUAL(10, pool.available());
   }
 }

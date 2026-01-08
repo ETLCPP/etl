@@ -536,6 +536,8 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      CHECK_THROW(data[data.size()], etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -549,6 +551,8 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      CHECK_THROW(data[data.size()], etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -586,6 +590,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       CHECK(data.front() == compare_data.front());
+
+      DataNDC emptyData;
+      CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -595,6 +602,9 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       CHECK(data.front() == compare_data.front());
+
+      const DataNDC emptyData;
+      CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -604,6 +614,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       CHECK(data.back() == compare_data.back());
+
+      DataNDC emptyData;
+      CHECK_THROW(emptyData.back(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -613,6 +626,9 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       CHECK(data.back() == compare_data.back());
+
+      const DataNDC emptyData;
+      CHECK_THROW(emptyData.back(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -757,6 +773,21 @@ namespace
        data.emplace_back(value1);
        auto& back = data.emplace_back(value2);
        CHECK_EQUAL(back, data.back());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_excess)
+    {
+      DataNDC data;
+
+      for (size_t i = 0UL; i < SIZE; ++i)
+      {
+        std::string value(" ");
+        value[0] = char('A' + i);
+        data.emplace_back(value);
+      }
+
+      CHECK_THROW(data.emplace_back("Z"), etl::vector_full);
     }
 
     //*************************************************************************
@@ -997,6 +1028,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const NDC INITIAL_VALUE("1");
+
+      DataNDC data;
+      DataNDC data2;
+      data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+      CHECK_THROW(data.insert(data2.cbegin(), INITIAL_VALUE), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_default_value)
     {
       const size_t INITIAL_SIZE = 5UL;
@@ -1049,6 +1092,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const std::string INITIAL_VALUE("1");
+
+      DataNDC data;
+      DataNDC data2;
+      data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+      CHECK_THROW(data.emplace(data2.begin(), INITIAL_VALUE), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
       const size_t INITIAL_SIZE     = SIZE;
@@ -1095,6 +1150,17 @@ namespace
 
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
+    {
+      const NDC INITIAL_VALUE("1");
+
+      DataNDC data;
+      DataNDC data2;
+
+      CHECK_THROW(data.insert(data2.end(), 1, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1152,6 +1218,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_range_outofbounds)
+    {
+      DataNDC data;
+      DataNDC data2;
+
+      CHECK_THROW(data.insert(data2.end(), insert_data.begin(), insert_data.end()), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
       const size_t INITIAL_SIZE = 5UL;
@@ -1196,6 +1271,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_outofbounds)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.erase(data.end()), etl::vector_out_of_bounds);
+      CHECK_THROW(data.erase(data.cend()), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
@@ -1212,6 +1296,15 @@ namespace
                                  compare_data.cbegin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_outofbounds)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+      DataNDC data2(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.erase(data2.begin(), data2.end()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1553,5 +1646,5 @@ namespace
 
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
     }
-  };
+  }
 }

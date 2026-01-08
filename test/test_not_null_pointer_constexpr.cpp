@@ -148,7 +148,7 @@ namespace
       CHECK_EQUAL(s.x, x1);
       CHECK_EQUAL(s.get(), x2);
     }
-  };
+  }
 }
 
 #endif

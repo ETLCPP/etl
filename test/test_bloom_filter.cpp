@@ -260,6 +260,6 @@ namespace
 
       CHECK(!any_exist);
     }
-  };
+  }
 }
 

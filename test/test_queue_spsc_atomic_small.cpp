@@ -474,7 +474,7 @@ namespace
       }
     }
 #endif
-  };
+  }
 }
 
 #endif

@@ -976,5 +976,5 @@ namespace
 
       CHECK(initial1 != different);
     }
-  };
+  }
 }

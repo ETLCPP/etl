@@ -1528,7 +1528,7 @@ namespace etl
 
       while (begin != end)
       {
-        if (!compare(*begin, *maximum))
+        if (compare(*maximum, *begin))
         {
           maximum = begin;
         }
@@ -1582,7 +1582,7 @@ namespace etl
           minimum = begin;
         }
 
-        if (compare(*maximum, *begin))
+        if (!compare(*begin, *maximum))
         {
           maximum = begin;
         }

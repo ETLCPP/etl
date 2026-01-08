@@ -126,5 +126,5 @@ namespace
       (void)std::unique(hashes.begin(), hashes.end());
     }
 #endif
-  };
+  }
 }

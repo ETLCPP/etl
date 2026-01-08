@@ -1490,7 +1490,7 @@ namespace etl
     key_compare key_comp() const
     {
       return kcompare;
-    };
+    }
 
     //*************************************************************************
     /// How to compare two value elements.
@@ -1498,7 +1498,7 @@ namespace etl
     value_compare value_comp() const
     {
       return vcompare;
-    };
+    }
 
     //*************************************************************************
     /// Check if the map contains the key.

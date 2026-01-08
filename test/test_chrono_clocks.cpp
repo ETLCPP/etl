@@ -171,5 +171,5 @@ namespace
 
       CHECK_EQUAL(sys_clock_count, scaled_steady_lock_count);
     }
-  };
+  }
 }

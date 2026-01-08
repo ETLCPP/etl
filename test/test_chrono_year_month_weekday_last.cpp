@@ -103,5 +103,5 @@ namespace
       CHECK_TRUE(ym1 != ym3);  // Different month
       CHECK_TRUE(ym1 != ym4);  // Different day
     }
-  };
+  }
 }

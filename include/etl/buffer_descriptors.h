@@ -149,7 +149,7 @@ namespace etl
       //*********************************
       void allocate()
       {
-        pdesc_item->in_use = true;;
+        pdesc_item->in_use = true;
       }
 
       /// The pointer to the buffer descriptor.

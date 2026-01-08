@@ -506,5 +506,5 @@ namespace
 
       CHECK(function_called);
     }
-  };
+  }
 }

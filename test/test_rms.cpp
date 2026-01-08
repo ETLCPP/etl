@@ -66,5 +66,5 @@ namespace
 
       CHECK_CLOSE(5.21, result, 0.05);
     }
-  };
+  }
 }
