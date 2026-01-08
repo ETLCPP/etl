@@ -376,15 +376,15 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
-
+        
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -400,7 +400,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -408,7 +408,7 @@ namespace
         b64.decode_final(encoded[i].data(), encoded[i].size());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -424,7 +424,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -449,7 +449,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -465,7 +465,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -490,7 +490,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -506,7 +506,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -514,7 +514,7 @@ namespace
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -530,7 +530,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -538,7 +538,7 @@ namespace
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -554,7 +554,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -579,7 +579,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -595,7 +595,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -620,7 +620,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -636,7 +636,7 @@ namespace
     {
       codec b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -654,7 +654,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -670,7 +670,7 @@ namespace
     {
       codec_larger_buffer b64(callback);
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i != input_data.size(); ++i)
       {
         decoded_output.clear();
         received_final_block = false;
@@ -688,7 +688,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -704,7 +704,7 @@ namespace
     {
       codec_full_buffer b64;
 
-      for (size_t i = 4; i < 256; ++i)
+      for (size_t i = 4; i < input_data.size(); ++i)
       {
         b64.restart();
 
@@ -726,7 +726,7 @@ namespace
         b64.flush();
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
         std::vector<unsigned char> actual(b64.begin(), b64.end());
 #include "etl/private/diagnostic_pop.h"
 
