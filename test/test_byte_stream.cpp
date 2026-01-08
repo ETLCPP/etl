@@ -1348,7 +1348,7 @@ namespace
       CHECK_FALSE(result.has_value());
       CHECK_TRUE(r.empty());
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

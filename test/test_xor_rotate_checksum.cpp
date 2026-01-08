@@ -153,6 +153,6 @@ namespace
       CHECK_EQUAL(hash1, hash2);
       CHECK_EQUAL(hash1, hash3);
     }
-  };
+  }
 }
 

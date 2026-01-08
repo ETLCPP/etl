@@ -259,7 +259,7 @@ namespace etl
     //*************************************************************************
     bool contains_node(const link_type& search_link) const
     {
-      return is_link_in_list(&search_link);;
+      return is_link_in_list(&search_link);
     }
 
     //*************************************************************************
@@ -268,7 +268,7 @@ namespace etl
     //*************************************************************************
     bool contains_node(const link_type* search_link) const
     {
-      return is_link_in_list(search_link);;
+      return is_link_in_list(search_link);
     }
 
   protected:

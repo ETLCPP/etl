@@ -533,10 +533,10 @@ namespace
     TEST(queue_threads)
     {
       push1.reserve(LENGTH / 2);
-      push2.reserve(LENGTH / 2);;
+      push2.reserve(LENGTH / 2);
 
-      pop1.reserve(LENGTH / 2);;
-      pop2.reserve(LENGTH / 2);;
+      pop1.reserve(LENGTH / 2);
+      pop2.reserve(LENGTH / 2);
 
       start = false;
 
@@ -575,7 +575,7 @@ namespace
       }
     }
 #endif
-  };
+  }
 }
 
 #endif

@@ -305,6 +305,6 @@ namespace
       uint32_t crc3 = etl::crc32_t4(data3.rbegin(), data3.rend());
       CHECK_EQUAL(crc1, crc3);
     }
-  };
+  }
 }
 

@@ -3052,7 +3052,7 @@ namespace
 
       CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

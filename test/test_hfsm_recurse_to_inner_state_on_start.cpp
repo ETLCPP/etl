@@ -256,5 +256,5 @@ namespace
 
       CHECK_EQUAL(StateId::State1_1_1, stateMachine.get_state_id());
     }
-  };
+  }
 }

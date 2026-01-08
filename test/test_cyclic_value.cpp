@@ -492,5 +492,5 @@ namespace
       CHECK(data1 == compare2);
       CHECK(data2 == compare1);
     }
-  };
+  }
 }

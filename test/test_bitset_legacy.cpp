@@ -1532,5 +1532,5 @@ namespace
 
       etl::bitset<0> shiftbits = bits << 1; // No exception.
     }
-  };
+  }
 }

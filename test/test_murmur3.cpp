@@ -135,6 +135,6 @@ namespace
       MurmurHash3_x86_32((uint8_t*)&data2[0], data2.size() * sizeof(uint32_t), 0, &compare2);
       CHECK_EQUAL(compare2, hash2);
     }
-  };
+  }
 }
 

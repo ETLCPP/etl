@@ -383,8 +383,10 @@ namespace
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
         
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -405,8 +407,10 @@ namespace
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -444,8 +448,10 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -483,8 +489,10 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -505,8 +513,10 @@ namespace
 
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -527,8 +537,10 @@ namespace
 
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -566,8 +578,10 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -605,8 +619,10 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -637,8 +653,10 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -669,8 +687,10 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_TRUE(received_final_block);
         CHECK_EQUAL(expected.size(), actual.size());
@@ -705,8 +725,10 @@ namespace
 
         b64.flush();
 
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(b64.begin(), b64.end());
+#include "etl/private/diagnostic_pop.h"
 
         CHECK_EQUAL(expected.size(), actual.size());
         CHECK_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
@@ -736,8 +758,10 @@ namespace
 
       constexpr auto output{ GetConstexprBase64(input) };
 
+#include "etl/private/diagnostic_null_dereference_push.h"
       std::vector<unsigned char> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       std::vector<unsigned char> actual(output.begin(), output.end());
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
       CHECK_TRUE(codec::safe_output_buffer_size(14) >= output.size());
@@ -786,6 +810,6 @@ namespace
       CHECK_TRUE(b64.error());
 #endif
     }
-  };
+  }
 }
 

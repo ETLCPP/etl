@@ -162,7 +162,7 @@ namespace
       CHECK(result.bd == false);
       CHECK(result.bs == true);
     }
-  };
+  }
 }
 
 #endif

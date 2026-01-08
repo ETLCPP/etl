@@ -328,5 +328,5 @@ namespace
 
       CHECK_EQUAL(stack.top(), data5);
     }
-  };
+  }
 }

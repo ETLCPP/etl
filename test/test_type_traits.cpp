@@ -70,7 +70,7 @@ namespace
   struct ToAny 
   {
     ToAny() = default;
-    template <typename T> ToAny(T){};
+    template <typename T> ToAny(T){}
     template <typename T> operator T() { return T(); }
   };
 
@@ -821,6 +821,7 @@ namespace
       struct A { };
       struct B : public A { };
       struct C { };
+      struct D : private A { };
 
       CHECK((std::is_base_of<A, A>::value) == (etl::is_base_of<A, A>::value));
       CHECK((std::is_base_of<A, B>::value) == (etl::is_base_of<A, B>::value));
@@ -831,6 +832,8 @@ namespace
       CHECK((std::is_base_of<C, A>::value) == (etl::is_base_of<C, A>::value));
       CHECK((std::is_base_of<C, B>::value) == (etl::is_base_of<C, B>::value));
       CHECK((std::is_base_of<C, C>::value) == (etl::is_base_of<C, C>::value));
+      CHECK((std::is_base_of<D, A>::value) == (etl::is_base_of<D, A>::value));
+      CHECK((std::is_base_of<A, D>::value) == (etl::is_base_of<A, D>::value));
 
       CHECK((std::is_base_of<char, char>::value) == (etl::is_base_of<char, char>::value));
       CHECK((std::is_base_of<char, int>::value)  == (etl::is_base_of<char, int>::value));
@@ -976,693 +979,693 @@ namespace
       CHECK((etl::is_same<const int*,       etl::types<const volatile int&>::const_pointer>::value));
       CHECK((etl::is_same<const int* const, etl::types<const volatile int&>::const_pointer_const>::value));
     }
-  };
 
-  //*************************************************************************
-  TEST(test_conditional_integral_constant)
-  {
-    int v1 = etl::conditional_integral_constant<true,  int, 1, 2>::value;
-    int v2 = etl::conditional_integral_constant<false, int, 1, 2>::value;
-
-    CHECK_EQUAL(1, v1);
-    CHECK_EQUAL(2, v2);
-  }
-
-  //*************************************************************************
-  TEST(test_size_of)
-  {
-#if ETL_USING_CPP17
-    CHECK_EQUAL(1, etl::size_of_v<void>);
-    CHECK_EQUAL(1, etl::size_of_v<char>);
-    CHECK_EQUAL(2, etl::size_of_v<short>);
-    CHECK_EQUAL(4, etl::size_of_v<int>);
-    CHECK_EQUAL(20, etl::size_of_v<TestData>);
-#else
-    CHECK_EQUAL(1, etl::size_of<void>::value);
-    CHECK_EQUAL(1, etl::size_of<char>::value);
-    CHECK_EQUAL(2, etl::size_of<short>::value);
-    CHECK_EQUAL(4, etl::size_of<int>::value);
-    CHECK_EQUAL(20, etl::size_of<TestData>::value);
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_convertible)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::is_convertible_v<char, int>));
-    CHECK((etl::is_convertible_v<int, char>));
-    CHECK((etl::is_convertible_v<unsigned char, int>));
-    CHECK((etl::is_convertible_v<int, unsigned char>));
-    CHECK((etl::is_convertible_v<double, int>));
-    CHECK((etl::is_convertible_v<int, double>));
-    CHECK((etl::is_convertible_v<int*, void*>));
-    CHECK(!(etl::is_convertible_v<int(*)(), void(*)()>));
-    CHECK(!(etl::is_convertible_v<int(*)(), int*>));
-    CHECK(!(etl::is_convertible_v<int*, int(*)()>));
-    CHECK(!(etl::is_convertible_v<void*, int*>));
-#else
-    CHECK((etl::is_convertible<char, int>::value));
-    CHECK((etl::is_convertible<int,  char>::value));
-    CHECK((etl::is_convertible<unsigned char, int>::value));
-    CHECK((etl::is_convertible<int, unsigned char>::value));
-    CHECK((etl::is_convertible<double, int>::value));
-    CHECK((etl::is_convertible<int, double>::value));
-    CHECK((etl::is_convertible<int*,  void*>::value));
-    CHECK(!(etl::is_convertible<int(*)(), void(*)()>::value));
-    CHECK(!(etl::is_convertible<int(*)(), int*>::value));
-    CHECK(!(etl::is_convertible<int*, int(*)()>::value));
-    CHECK(!(etl::is_convertible<void*, int*>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_add_lvalue_reference)
-  {
-#if ETL_USING_CPP17
-    CHECK(!std::is_lvalue_reference_v<etl::add_lvalue_reference<void>::type>);
-    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int>::type>);
-    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int*>::type>);
-    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int&>::type>);
-    CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int&&>::type>);
-#else
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_add_rvalue_reference)
-  {
-#if ETL_USING_CPP17
-    CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<void>::type>);
-    CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int>::type>);
-    CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int*>::type>);
-    CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<int&>::type>);
-    CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int&&>::type>);
-#else
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_lvalue_reference)
-  {
-#if ETL_USING_CPP17
-    CHECK_EQUAL(std::is_lvalue_reference_v<void>,  etl::is_lvalue_reference_v<void>);
-    CHECK_EQUAL(std::is_lvalue_reference_v<int>,   etl::is_lvalue_reference_v<int>);
-    CHECK_EQUAL(std::is_lvalue_reference_v<int*>,  etl::is_lvalue_reference_v<int*>);
-    CHECK_EQUAL(std::is_lvalue_reference_v<int&>,  etl::is_lvalue_reference_v<int&>);
-    CHECK_EQUAL(std::is_lvalue_reference_v<int&&>, etl::is_lvalue_reference_v<int&&>);
-#else
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_rvalue_reference)
-  {
-#if ETL_USING_CPP17
-    CHECK_EQUAL(std::is_rvalue_reference_v<void>,  etl::is_rvalue_reference_v<void>);
-    CHECK_EQUAL(std::is_rvalue_reference_v<int>,   etl::is_rvalue_reference_v<int>);
-    CHECK_EQUAL(std::is_rvalue_reference_v<int*>,  etl::is_rvalue_reference_v<int*>);
-    CHECK_EQUAL(std::is_rvalue_reference_v<int&>,  etl::is_rvalue_reference_v<int&>);
-    CHECK_EQUAL(std::is_rvalue_reference_v<int&&>, etl::is_rvalue_reference_v<int&&>);
-#else
-    CHECK_EQUAL(std::is_rvalue_reference<void>::value,  etl::is_rvalue_reference<void>::value);
-    CHECK_EQUAL(std::is_rvalue_reference<int>::value,   etl::is_rvalue_reference<int>::value);
-    CHECK_EQUAL(std::is_rvalue_reference<int*>::value,  etl::is_rvalue_reference<int*>::value);
-    CHECK_EQUAL(std::is_rvalue_reference<int&>::value,  etl::is_rvalue_reference<int&>::value);
-    CHECK_EQUAL(std::is_rvalue_reference<int&&>::value, etl::is_rvalue_reference<int&&>::value);
-#endif
-  }
-
-  //*************************************************************************
-#if ETL_USING_CPP17
-  #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum_v<type>, etl::is_enum_v<type>)
-#else
-  #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum<type>::value, etl::is_enum<type>::value)
-#endif
-
-  TEST(test_is_enum) 
-  {
-    CHECK_EQUAL_FOR_TYPE(void);
-    CHECK_EQUAL_FOR_TYPE(void*);
-    CHECK_EQUAL_FOR_TYPE(int);
-    CHECK_EQUAL_FOR_TYPE(int*);
-    CHECK_EQUAL_FOR_TYPE(ToAny);
-    CHECK_EQUAL_FOR_TYPE(NotDefaultConstructable);
-    CHECK_EQUAL_FOR_TYPE(Enum);
-    CHECK_EQUAL_FOR_TYPE(Enum&);
-    CHECK_EQUAL_FOR_TYPE(Enum&&);
-    CHECK_EQUAL_FOR_TYPE(Enum*);
-    CHECK_EQUAL_FOR_TYPE(const Enum);
-    CHECK_EQUAL_FOR_TYPE(volatile Enum);
-    CHECK_EQUAL_FOR_TYPE(const volatile Enum);
-    CHECK_EQUAL_FOR_TYPE(EnumClass);
-    CHECK_EQUAL_FOR_TYPE(EnumClass&);
-    CHECK_EQUAL_FOR_TYPE(EnumClass&&);
-    CHECK_EQUAL_FOR_TYPE(EnumClass*);
-    CHECK_EQUAL_FOR_TYPE(const EnumClass);
-    CHECK_EQUAL_FOR_TYPE(volatile EnumClass);
-    CHECK_EQUAL_FOR_TYPE(const volatile EnumClass);
-
-  }
-  #undef CHECK_EQUAL_FOR_TYPE
-
-  //*************************************************************************
-  TEST(test_integral_constants)
-  {
-#if ETL_USING_CPP17
-    CHECK_EQUAL(1, (etl::integral_constant_v<int, 1>));
-    CHECK((std::is_same_v<int, etl::integral_constant<int, 1>::value_type>));
-
-    CHECK_EQUAL(false, etl::bool_constant_v<false>);
-    CHECK_EQUAL(true,  etl::bool_constant_v<true>);
-    CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
-
-    CHECK_EQUAL(true,  etl::negation_v<etl::bool_constant<false>>);
-    CHECK_EQUAL(false, etl::negation_v<etl::bool_constant<true>>);
-    CHECK((std::is_same_v<bool, etl::bool_constant<false>::value_type>));
-#else
-    CHECK_EQUAL(1, (etl::integral_constant<int, 1>::value));
-    CHECK((std::is_same<int, etl::integral_constant<int, 1>::value_type>::value));
-
-    CHECK_EQUAL(false, (etl::bool_constant<false>::value));
-    CHECK_EQUAL(true,  (etl::bool_constant<true>::value));
-    CHECK((std::is_same<bool, etl::bool_constant<true>::value_type>::value));
-
-    CHECK_EQUAL(true,  etl::negation<etl::bool_constant<false>>::value);
-    CHECK_EQUAL(false, etl::negation<etl::bool_constant<true>>::value);
-    CHECK((std::is_same<bool, etl::bool_constant<true>::value_type>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_are_all_same)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::are_all_same_v<int, int, int, int, int>  == true));
-    CHECK((etl::are_all_same_v<int, int, int, char, int> == false));
-#else
-    CHECK((etl::are_all_same<int, int, int, int, int>::value  == true));
-    CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_conjunction)
-  {
-#if ETL_USING_CPP17
-    CHECK_TRUE((etl::conjunction_v<etl::true_type, etl::true_type, etl::true_type>));
-    CHECK_FALSE((etl::conjunction_v<etl::true_type, etl::false_type, etl::true_type>));
-#else
-    CHECK_TRUE((etl::conjunction<etl::true_type, etl::true_type, etl::true_type>::value));
-    CHECK_FALSE((etl::conjunction<etl::true_type, etl::false_type, etl::true_type>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_disjunction)
-  {
-#if ETL_USING_CPP17
-    CHECK_TRUE((etl::disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
-    CHECK_FALSE((etl::disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
-#else
-    CHECK_TRUE((etl::disjunction<etl::false_type, etl::true_type, etl::false_type>::value));
-    CHECK_FALSE((etl::disjunction<etl::false_type, etl::false_type, etl::false_type>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_exclusive_disjunction)
-  {
-#if ETL_USING_CPP17
-    CHECK_TRUE((etl::exclusive_disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
-    CHECK_FALSE((etl::exclusive_disjunction_v<etl::true_type, etl::false_type, etl::true_type>));
-    CHECK_FALSE((etl::exclusive_disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
-#else
-    CHECK_TRUE((etl::exclusive_disjunction<etl::false_type, etl::true_type, etl::false_type>::value));
-    CHECK_FALSE((etl::exclusive_disjunction<etl::true_type, etl::false_type, etl::true_type>::value));
-    CHECK_FALSE((etl::exclusive_disjunction<etl::false_type, etl::false_type, etl::false_type>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_assignable)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::is_assignable_v<Copyable, Copyable>) == (std::is_assignable_v<Copyable, Copyable>));
-    CHECK((etl::is_assignable_v<Moveable, Moveable>) == (std::is_assignable_v<Moveable, Moveable>));
-    CHECK((etl::is_assignable_v<MoveableCopyable, MoveableCopyable>) == (std::is_assignable_v<MoveableCopyable, MoveableCopyable>));
-#else
-    CHECK((etl::is_assignable<Copyable, Copyable>::value) == (std::is_assignable<Copyable, Copyable>::value));
-    CHECK((etl::is_assignable<Moveable, Moveable>::value) == (std::is_assignable<Moveable, Moveable>::value));
-    CHECK((etl::is_assignable<MoveableCopyable, MoveableCopyable>::value) == (std::is_assignable<MoveableCopyable, MoveableCopyable>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_lvalue_assignable)
-  {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
-#if ETL_USING_CPP17
-    CHECK((etl::is_lvalue_assignable_v<Copyable, Copyable>));
-    CHECK(!(etl::is_lvalue_assignable_v<Moveable, Moveable>));
-    CHECK((etl::is_lvalue_assignable_v<MoveableCopyable, MoveableCopyable>));
-#else
-    CHECK((etl::is_lvalue_assignable<Copyable, Copyable>::value)); 
-    CHECK(!(etl::is_lvalue_assignable<Moveable, Moveable>::value));
-    CHECK((etl::is_lvalue_assignable<MoveableCopyable, MoveableCopyable>::value));
-#endif
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_constructible)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::is_constructible_v<Copyable>) == (std::is_constructible_v<Copyable>));
-    CHECK((etl::is_constructible_v<Moveable>) == (std::is_constructible_v<Moveable>));
-    CHECK((etl::is_constructible_v<MoveableCopyable>) == (std::is_constructible_v<MoveableCopyable>));
-    CHECK((etl::is_constructible_v<NotDefaultConstructible>) == (std::is_constructible_v<NotDefaultConstructible>));
-#else
-    CHECK((etl::is_constructible<Copyable>::value) == (std::is_constructible<Copyable>::value));
-    CHECK((etl::is_constructible<Moveable>::value) == (std::is_constructible<Moveable>::value));
-    CHECK((etl::is_constructible<MoveableCopyable>::value) == (std::is_constructible<MoveableCopyable>::value));
-    CHECK((etl::is_constructible<NotDefaultConstructible>::value) == (std::is_constructible<NotDefaultConstructible>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_default_constructible)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::is_default_constructible_v<Copyable>) == (std::is_default_constructible_v<Copyable>));
-    CHECK((etl::is_default_constructible_v<Moveable>) == (std::is_default_constructible_v<Moveable>));
-    CHECK((etl::is_default_constructible_v<MoveableCopyable>) == (std::is_default_constructible_v<MoveableCopyable>));
-    CHECK((etl::is_default_constructible_v<NotDefaultConstructible>) == (std::is_default_constructible_v<NotDefaultConstructible>));
-#else
-    CHECK((etl::is_default_constructible<Copyable>::value) == (std::is_default_constructible<Copyable>::value));
-    CHECK((etl::is_default_constructible<Moveable>::value) == (std::is_default_constructible<Moveable>::value));
-    CHECK((etl::is_default_constructible<MoveableCopyable>::value) == (std::is_default_constructible<MoveableCopyable>::value));
-    CHECK((etl::is_default_constructible<NotDefaultConstructible>::value) == (std::is_default_constructible<NotDefaultConstructible>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_copy_constructible)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::is_copy_constructible_v<Copyable>) == (std::is_copy_constructible_v<Copyable>));
-    CHECK((etl::is_copy_constructible_v<Moveable>) == (std::is_copy_constructible_v<Moveable>));
-    CHECK((etl::is_copy_constructible_v<MoveableCopyable>) == (std::is_copy_constructible_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_copy_constructible<Copyable>::value) == (std::is_copy_constructible<Copyable>::value));
-    CHECK((etl::is_copy_constructible<Moveable>::value) == (std::is_copy_constructible<Moveable>::value));
-    CHECK((etl::is_copy_constructible<MoveableCopyable>::value) == (std::is_copy_constructible<MoveableCopyable>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_move_constructible)
-  {
-#if ETL_USING_CPP17
-    CHECK((etl::is_move_constructible_v<Copyable>) == (std::is_move_constructible_v<Copyable>));
-    CHECK((etl::is_move_constructible_v<Moveable>) == (std::is_move_constructible_v<Moveable>));
-    CHECK((etl::is_move_constructible_v<MoveableCopyable>) == (std::is_move_constructible_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_move_constructible<Copyable>::value) == (std::is_move_constructible<Copyable>::value));
-    CHECK((etl::is_move_constructible<Moveable>::value) == (std::is_move_constructible<Moveable>::value));
-    CHECK((etl::is_move_constructible<MoveableCopyable>::value) == (std::is_move_constructible<MoveableCopyable>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_trivially_constructible)
-  {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
-#if ETL_USING_CPP17
-    CHECK((etl::is_trivially_constructible_v<Copyable>) == (std::is_trivially_constructible_v<Copyable>));
-    CHECK((etl::is_trivially_constructible_v<Moveable>) == (std::is_trivially_constructible_v<Moveable>));
-    CHECK((etl::is_trivially_constructible_v<MoveableCopyable>) == (std::is_trivially_constructible_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_trivially_constructible<Copyable>::value) == (std::is_trivially_constructible<Copyable>::value));
-    CHECK((etl::is_trivially_constructible<Moveable>::value) == (std::is_trivially_constructible<Moveable>::value));
-    CHECK((etl::is_trivially_constructible<MoveableCopyable>::value) == (std::is_trivially_constructible<MoveableCopyable>::value));
-#endif
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_trivially_copy_constructible)
-  {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
-#if ETL_USING_CPP17
-    CHECK((etl::is_trivially_copy_constructible_v<Copyable>) == (std::is_trivially_copy_constructible_v<Copyable>));
-    CHECK((etl::is_trivially_copy_constructible_v<Moveable>) == (std::is_trivially_copy_constructible_v<Moveable>));
-    CHECK((etl::is_trivially_copy_constructible_v<MoveableCopyable>) == (std::is_trivially_copy_constructible_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_trivially_copy_constructible<Copyable>::value) == (std::is_trivially_copy_constructible<Copyable>::value));
-    CHECK((etl::is_trivially_copy_constructible<Moveable>::value) == (std::is_trivially_copy_constructible<Moveable>::value));
-    CHECK((etl::is_trivially_copy_constructible<MoveableCopyable>::value) == (std::is_trivially_copy_constructible<MoveableCopyable>::value));
-#endif
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_trivially_destructible)
-  {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
-#if ETL_USING_CPP17
-    CHECK((etl::is_trivially_destructible_v<Copyable>) == (std::is_trivially_destructible_v<Copyable>));
-    CHECK((etl::is_trivially_destructible_v<Moveable>) == (std::is_trivially_destructible_v<Moveable>));
-    CHECK((etl::is_trivially_destructible_v<MoveableCopyable>) == (std::is_trivially_destructible_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_trivially_destructible<Copyable>::value) == (std::is_trivially_destructible<Copyable>::value));
-    CHECK((etl::is_trivially_destructible<Moveable>::value) == (std::is_trivially_destructible<Moveable>::value));
-    CHECK((etl::is_trivially_destructible<MoveableCopyable>::value) == (std::is_trivially_destructible<MoveableCopyable>::value));
-#endif
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_trivially_copy_assignable)
-  {
-#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
-#if ETL_USING_CPP17
-    CHECK((etl::is_trivially_copy_assignable_v<Copyable>) == (std::is_trivially_copy_assignable_v<Copyable>));
-    CHECK((etl::is_trivially_copy_assignable_v<Moveable>) == (std::is_trivially_copy_assignable_v<Moveable>));
-    CHECK((etl::is_trivially_copy_assignable_v<MoveableCopyable>) == (std::is_trivially_copy_assignable_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_trivially_copy_assignable<Copyable>::value) == (std::is_trivially_copy_assignable<Copyable>::value));
-    CHECK((etl::is_trivially_copy_assignable<Moveable>::value) == (std::is_trivially_copy_assignable<Moveable>::value));
-    CHECK((etl::is_trivially_copy_assignable<MoveableCopyable>::value) == (std::is_trivially_copy_assignable<MoveableCopyable>::value));
-#endif
-#endif
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_trivially_copyable)
-  {
-#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
-#if ETL_USING_CPP17
-    CHECK((etl::is_trivially_copyable_v<Copyable>) == (std::is_trivially_copyable_v<Copyable>));
-    CHECK((etl::is_trivially_copyable_v<Moveable>) == (std::is_trivially_copyable_v<Moveable>));
-    CHECK((etl::is_trivially_copyable_v<MoveableCopyable>) == (std::is_trivially_copyable_v<MoveableCopyable>));
-#else
-    CHECK((etl::is_trivially_copyable<Copyable>::value) == (std::is_trivially_copyable<Copyable>::value));
-    CHECK((etl::is_trivially_copyable<Moveable>::value) == (std::is_trivially_copyable<Moveable>::value));
-    CHECK((etl::is_trivially_copyable<MoveableCopyable>::value) == (std::is_trivially_copyable<MoveableCopyable>::value));
-#endif
-#endif
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_base_of_any)
-  {
-    struct Base {};
-    struct D1 : Base {};
-    struct D2 : Base {};
-    struct D3 : Base {};
-    struct D4 {};
-
-#if ETL_USING_CPP17
-    CHECK_TRUE(bool(etl::is_base_of_any_v<Base, D1, D2, D3, D4>));
-    CHECK_FALSE(bool(etl::is_base_of_any_v<Base, D4>));
-#else
-    CHECK_TRUE(bool(etl::is_base_of_any<Base, D1, D2, D3, D4>::value));
-    CHECK_FALSE(bool(etl::is_base_of_any<Base, D4>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_is_base_of_all)
-  {
-    struct Base {};
-    struct D1 : Base {};
-    struct D2 : Base {};
-    struct D3 : Base {};
-    struct D4 {};
-
-#if ETL_USING_CPP17
-    CHECK_TRUE(bool(etl::is_base_of_all_v<Base, D1, D2, D3>));
-    CHECK_FALSE(bool(etl::is_base_of_all_v<Base, D1, D2, D3, D4>));
-#else
-    CHECK_TRUE(bool(etl::is_base_of_all<Base, D1, D2, D3>::value));
-    CHECK_FALSE(bool(etl::is_base_of_all<Base, D1, D2, D3, D4>::value));
-#endif
-  }
-
-  //*************************************************************************
-  TEST(test_nth_base)
-  {
-    struct D0 { };
-    struct D1 : D0 { using base_type = D0; };
-    struct D2 : D1 { using base_type = D1; };
-    struct D3 : D2 { using base_type = D2; };
-    struct D4 : D3 { using base_type = D3; };
-
-    CHECK_TRUE((std::is_same<D4, etl::nth_base_t<0, D4>>::value));
-    CHECK_TRUE((std::is_same<D3, etl::nth_base_t<1, D4>>::value));
-    CHECK_TRUE((std::is_same<D2, etl::nth_base_t<2, D4>>::value));
-    CHECK_TRUE((std::is_same<D1, etl::nth_base_t<3, D4>>::value));
-    CHECK_TRUE((std::is_same<D0, etl::nth_base_t<4, D4>>::value));
-  }
-
-  //*************************************************************************
-  TEST(test_type_identity) 
-  {
-    CHECK_CLOSE(type_identity_test_add(1.5f, 2), 3.5f, 0.01f);
-  }
-
-  //*************************************************************************
-#if ETL_USING_BUILTIN_UNDERLYING_TYPE
-  TEST(test_underlying_type)
-  {
-    enum enum0_t : char
+    //*************************************************************************
+    TEST(test_conditional_integral_constant)
     {
-    };
+      int v1 = etl::conditional_integral_constant<true,  int, 1, 2>::value;
+      int v2 = etl::conditional_integral_constant<false, int, 1, 2>::value;
 
-    enum enum1_t : uint32_t
+      CHECK_EQUAL(1, v1);
+      CHECK_EQUAL(2, v2);
+    }
+
+    //*************************************************************************
+    TEST(test_size_of)
     {
-    };
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(1, etl::size_of_v<void>);
+      CHECK_EQUAL(1, etl::size_of_v<char>);
+      CHECK_EQUAL(2, etl::size_of_v<short>);
+      CHECK_EQUAL(4, etl::size_of_v<int>);
+      CHECK_EQUAL(20, etl::size_of_v<TestData>);
+  #else
+      CHECK_EQUAL(1, etl::size_of<void>::value);
+      CHECK_EQUAL(1, etl::size_of<char>::value);
+      CHECK_EQUAL(2, etl::size_of<short>::value);
+      CHECK_EQUAL(4, etl::size_of<int>::value);
+      CHECK_EQUAL(20, etl::size_of<TestData>::value);
+  #endif
+    }
 
-    enum class enum2_t : short
+    //*************************************************************************
+    TEST(test_is_convertible)
     {
-    };
+  #if ETL_USING_CPP17
+      CHECK((etl::is_convertible_v<char, int>));
+      CHECK((etl::is_convertible_v<int, char>));
+      CHECK((etl::is_convertible_v<unsigned char, int>));
+      CHECK((etl::is_convertible_v<int, unsigned char>));
+      CHECK((etl::is_convertible_v<double, int>));
+      CHECK((etl::is_convertible_v<int, double>));
+      CHECK((etl::is_convertible_v<int*, void*>));
+      CHECK(!(etl::is_convertible_v<int(*)(), void(*)()>));
+      CHECK(!(etl::is_convertible_v<int(*)(), int*>));
+      CHECK(!(etl::is_convertible_v<int*, int(*)()>));
+      CHECK(!(etl::is_convertible_v<void*, int*>));
+  #else
+      CHECK((etl::is_convertible<char, int>::value));
+      CHECK((etl::is_convertible<int,  char>::value));
+      CHECK((etl::is_convertible<unsigned char, int>::value));
+      CHECK((etl::is_convertible<int, unsigned char>::value));
+      CHECK((etl::is_convertible<double, int>::value));
+      CHECK((etl::is_convertible<int, double>::value));
+      CHECK((etl::is_convertible<int*,  void*>::value));
+      CHECK(!(etl::is_convertible<int(*)(), void(*)()>::value));
+      CHECK(!(etl::is_convertible<int(*)(), int*>::value));
+      CHECK(!(etl::is_convertible<int*, int(*)()>::value));
+      CHECK(!(etl::is_convertible<void*, int*>::value));
+  #endif
+    }
 
-    enum class enum3_t : size_t
+    //*************************************************************************
+    TEST(test_add_lvalue_reference)
     {
-    };
+  #if ETL_USING_CPP17
+      CHECK(!std::is_lvalue_reference_v<etl::add_lvalue_reference<void>::type>);
+      CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int>::type>);
+      CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int*>::type>);
+      CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int&>::type>);
+      CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int&&>::type>);
+  #else
+  #endif
+    }
 
-    using enum4_t = enum1_t;
-    using enum5_t = std::add_const<enum2_t>::type;
+    //*************************************************************************
+    TEST(test_add_rvalue_reference)
+    {
+  #if ETL_USING_CPP17
+      CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<void>::type>);
+      CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int>::type>);
+      CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int*>::type>);
+      CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<int&>::type>);
+      CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int&&>::type>);
+  #else
+  #endif
+    }
 
-    CHECK_TRUE((std::is_same<etl::underlying_type<enum0_t>::type, char>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type<enum1_t>::type, uint32_t>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type<enum2_t>::type, short>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type<enum3_t>::type, size_t>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type<enum4_t>::type, uint32_t>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type<enum5_t>::type, short>::value));
-#if ETL_USING_CPP11
-    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum0_t>, char>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum1_t>, uint32_t>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum2_t>, short>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum3_t>, size_t>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum4_t>, uint32_t>::value));
-    CHECK_TRUE((std::is_same<etl::underlying_type_t<enum5_t>, short>::value));
-#endif
-  }
-#endif
+    //*************************************************************************
+    TEST(test_is_lvalue_reference)
+    {
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(std::is_lvalue_reference_v<void>,  etl::is_lvalue_reference_v<void>);
+      CHECK_EQUAL(std::is_lvalue_reference_v<int>,   etl::is_lvalue_reference_v<int>);
+      CHECK_EQUAL(std::is_lvalue_reference_v<int*>,  etl::is_lvalue_reference_v<int*>);
+      CHECK_EQUAL(std::is_lvalue_reference_v<int&>,  etl::is_lvalue_reference_v<int&>);
+      CHECK_EQUAL(std::is_lvalue_reference_v<int&&>, etl::is_lvalue_reference_v<int&&>);
+  #else
+  #endif
+    }
 
-  //*************************************************************************
-  TEST(test_has_duplicates)
-  {
-#if ETL_USING_CPP17
-    CHECK_FALSE((etl::has_duplicates_v<char>));
-    CHECK_FALSE((etl::has_duplicates_v<char, int, double>));
-    CHECK_TRUE((etl::has_duplicates_v<char, int, char>));
-#else
-    CHECK_FALSE((etl::has_duplicates<char>::value));
-    CHECK_FALSE((etl::has_duplicates<char, int, double>::value));
-    CHECK_TRUE((etl::has_duplicates<char, int, char>::value));
-#endif
-  }
+    //*************************************************************************
+    TEST(test_is_rvalue_reference)
+    {
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(std::is_rvalue_reference_v<void>,  etl::is_rvalue_reference_v<void>);
+      CHECK_EQUAL(std::is_rvalue_reference_v<int>,   etl::is_rvalue_reference_v<int>);
+      CHECK_EQUAL(std::is_rvalue_reference_v<int*>,  etl::is_rvalue_reference_v<int*>);
+      CHECK_EQUAL(std::is_rvalue_reference_v<int&>,  etl::is_rvalue_reference_v<int&>);
+      CHECK_EQUAL(std::is_rvalue_reference_v<int&&>, etl::is_rvalue_reference_v<int&&>);
+  #else
+      CHECK_EQUAL(std::is_rvalue_reference<void>::value,  etl::is_rvalue_reference<void>::value);
+      CHECK_EQUAL(std::is_rvalue_reference<int>::value,   etl::is_rvalue_reference<int>::value);
+      CHECK_EQUAL(std::is_rvalue_reference<int*>::value,  etl::is_rvalue_reference<int*>::value);
+      CHECK_EQUAL(std::is_rvalue_reference<int&>::value,  etl::is_rvalue_reference<int&>::value);
+      CHECK_EQUAL(std::is_rvalue_reference<int&&>::value, etl::is_rvalue_reference<int&&>::value);
+  #endif
+    }
 
-  //*************************************************************************
-  TEST(test_has_duplicates_of)
-  {
-#if ETL_USING_CPP17
-    CHECK_FALSE((etl::has_duplicates_of_v<char>));
-    CHECK_TRUE((etl::has_duplicates_of_v<char, char, int, char>)); // char is duplicated.
-    CHECK_FALSE((etl::has_duplicates_of_v<int, char, int, char>)); // int is not duplicated.
-#else
-    CHECK_FALSE((etl::has_duplicates_of<char>::value));
-    CHECK_TRUE((etl::has_duplicates_of<char, char, int, char>::value)); // char is duplicated.
-    CHECK_FALSE((etl::has_duplicates_of<int, char, int, char>::value)); // int is not duplicated.
-#endif
-  }
+    //*************************************************************************
+  #if ETL_USING_CPP17
+    #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum_v<type>, etl::is_enum_v<type>)
+  #else
+    #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum<type>::value, etl::is_enum<type>::value)
+  #endif
 
-  //*************************************************************************
-  TEST(test_count_of)
-  {
-#if ETL_USING_CPP17
-    CHECK_EQUAL(0, (etl::count_of_v<char>));
-    CHECK_EQUAL(0, (etl::count_of_v<char, int>));
-    CHECK_EQUAL(1, (etl::count_of_v<char, char>));
-    CHECK_EQUAL(1, (etl::count_of_v<char, int, char>));
-    CHECK_EQUAL(2, (etl::count_of_v<char, int, char, double, char>));
-#else
-    CHECK_EQUAL(0, (etl::count_of<char>::value));
-    CHECK_EQUAL(0, (etl::count_of<char, int>::value));
-    CHECK_EQUAL(1, (etl::count_of<char, char>::value));
-    CHECK_EQUAL(1, (etl::count_of<char, int, char>::value));
-    CHECK_EQUAL(2, (etl::count_of<char, int, char, double, char>::value));
-#endif
-  }
+    TEST(test_is_enum) 
+    {
+      CHECK_EQUAL_FOR_TYPE(void);
+      CHECK_EQUAL_FOR_TYPE(void*);
+      CHECK_EQUAL_FOR_TYPE(int);
+      CHECK_EQUAL_FOR_TYPE(int*);
+      CHECK_EQUAL_FOR_TYPE(ToAny);
+      CHECK_EQUAL_FOR_TYPE(NotDefaultConstructable);
+      CHECK_EQUAL_FOR_TYPE(Enum);
+      CHECK_EQUAL_FOR_TYPE(Enum&);
+      CHECK_EQUAL_FOR_TYPE(Enum&&);
+      CHECK_EQUAL_FOR_TYPE(Enum*);
+      CHECK_EQUAL_FOR_TYPE(const Enum);
+      CHECK_EQUAL_FOR_TYPE(volatile Enum);
+      CHECK_EQUAL_FOR_TYPE(const volatile Enum);
+      CHECK_EQUAL_FOR_TYPE(EnumClass);
+      CHECK_EQUAL_FOR_TYPE(EnumClass&);
+      CHECK_EQUAL_FOR_TYPE(EnumClass&&);
+      CHECK_EQUAL_FOR_TYPE(EnumClass*);
+      CHECK_EQUAL_FOR_TYPE(const EnumClass);
+      CHECK_EQUAL_FOR_TYPE(volatile EnumClass);
+      CHECK_EQUAL_FOR_TYPE(const volatile EnumClass);
 
-  //*************************************************************************
-  TEST(test_is_specialization)
-  {
-#if ETL_USING_CPP17
-    CHECK_TRUE((etl::is_specialization_v<specialized<int>, specialized>));
-    CHECK_FALSE((etl::is_specialization_v<other_specialized<int>, specialized>));
-#else
-    CHECK_TRUE((etl::is_specialization<specialized<int>, specialized>::value));
-    CHECK_FALSE((etl::is_specialization<other_specialized<int>, specialized>::value));
-#endif
-  }
+    }
+    #undef CHECK_EQUAL_FOR_TYPE
 
-#if ETL_USING_CPP11
-  //*************************************************************************
-  TEST(test_is_constant_evaluated)
-  {
-    constexpr bool c0 = etl::is_constant_evaluated();
-#if !ETL_USING_CPP23 && defined(ETL_COMPILER_MICROSOFT)
-    // Not supported on MSVC via __has_builtin, see determine_builtin_support.h
-    CHECK_FALSE(c0);
-#else
-    CHECK_TRUE(c0);
-#endif
+    //*************************************************************************
+    TEST(test_integral_constants)
+    {
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(1, (etl::integral_constant_v<int, 1>));
+      CHECK((std::is_same_v<int, etl::integral_constant<int, 1>::value_type>));
 
-    volatile int i = 1;
-    const bool c1 = (((i == 1) && etl::is_constant_evaluated()) ? true : false);
-    CHECK_FALSE(c1);
-  }
-#endif
+      CHECK_EQUAL(false, etl::bool_constant_v<false>);
+      CHECK_EQUAL(true,  etl::bool_constant_v<true>);
+      CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
 
-  //*************************************************************************
-  // Basic cv for member function pointers
-  TEST(test_is_member_function_pointer)
-  {
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::f)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fc)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fv)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fcv)>::value));
+      CHECK_EQUAL(true,  etl::negation_v<etl::bool_constant<false>>);
+      CHECK_EQUAL(false, etl::negation_v<etl::bool_constant<true>>);
+      CHECK((std::is_same_v<bool, etl::bool_constant<false>::value_type>));
+  #else
+      CHECK_EQUAL(1, (etl::integral_constant<int, 1>::value));
+      CHECK((std::is_same<int, etl::integral_constant<int, 1>::value_type>::value));
 
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fl)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flc)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flv)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flcv)>::value));
+      CHECK_EQUAL(false, (etl::bool_constant<false>::value));
+      CHECK_EQUAL(true,  (etl::bool_constant<true>::value));
+      CHECK((std::is_same<bool, etl::bool_constant<true>::value_type>::value));
 
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fr)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frc)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frv)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frcv)>::value));
+      CHECK_EQUAL(true,  etl::negation<etl::bool_constant<false>>::value);
+      CHECK_EQUAL(false, etl::negation<etl::bool_constant<true>>::value);
+      CHECK((std::is_same<bool, etl::bool_constant<true>::value_type>::value));
+  #endif
+    }
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fn)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnc)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnv)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fncv)>::value));
+    //*************************************************************************
+    TEST(test_are_all_same)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::are_all_same_v<int, int, int, int, int>  == true));
+      CHECK((etl::are_all_same_v<int, int, int, char, int> == false));
+  #else
+      CHECK((etl::are_all_same<int, int, int, int, int>::value  == true));
+      CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
+  #endif
+    }
 
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnl)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlc)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlv)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlcv)>::value));
+    //*************************************************************************
+    TEST(test_conjunction)
+    {
+  #if ETL_USING_CPP17
+      CHECK_TRUE((etl::conjunction_v<etl::true_type, etl::true_type, etl::true_type>));
+      CHECK_FALSE((etl::conjunction_v<etl::true_type, etl::false_type, etl::true_type>));
+  #else
+      CHECK_TRUE((etl::conjunction<etl::true_type, etl::true_type, etl::true_type>::value));
+      CHECK_FALSE((etl::conjunction<etl::true_type, etl::false_type, etl::true_type>::value));
+  #endif
+    }
 
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnr)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrc)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrv)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrcv)>::value));
-#endif
+    //*************************************************************************
+    TEST(test_disjunction)
+    {
+  #if ETL_USING_CPP17
+      CHECK_TRUE((etl::disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
+      CHECK_FALSE((etl::disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
+  #else
+      CHECK_TRUE((etl::disjunction<etl::false_type, etl::true_type, etl::false_type>::value));
+      CHECK_FALSE((etl::disjunction<etl::false_type, etl::false_type, etl::false_type>::value));
+  #endif
+    }
 
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fvar)>::value));
-    CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fvarc)>::value));
-  }
+    //*************************************************************************
+    TEST(test_exclusive_disjunction)
+    {
+  #if ETL_USING_CPP17
+      CHECK_TRUE((etl::exclusive_disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
+      CHECK_FALSE((etl::exclusive_disjunction_v<etl::true_type, etl::false_type, etl::true_type>));
+      CHECK_FALSE((etl::exclusive_disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
+  #else
+      CHECK_TRUE((etl::exclusive_disjunction<etl::false_type, etl::true_type, etl::false_type>::value));
+      CHECK_FALSE((etl::exclusive_disjunction<etl::true_type, etl::false_type, etl::true_type>::value));
+      CHECK_FALSE((etl::exclusive_disjunction<etl::false_type, etl::false_type, etl::false_type>::value));
+  #endif
+    }
 
-  //*************************************************************************
-  // Negative tests for member function pointer trait
-  TEST(test_is_member_function_pointer_negative)
-  {
-    (void)f(0);
+    //*************************************************************************
+    TEST(test_is_assignable)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_assignable_v<Copyable, Copyable>) == (std::is_assignable_v<Copyable, Copyable>));
+      CHECK((etl::is_assignable_v<Moveable, Moveable>) == (std::is_assignable_v<Moveable, Moveable>));
+      CHECK((etl::is_assignable_v<MoveableCopyable, MoveableCopyable>) == (std::is_assignable_v<MoveableCopyable, MoveableCopyable>));
+  #else
+      CHECK((etl::is_assignable<Copyable, Copyable>::value) == (std::is_assignable<Copyable, Copyable>::value));
+      CHECK((etl::is_assignable<Moveable, Moveable>::value) == (std::is_assignable<Moveable, Moveable>::value));
+      CHECK((etl::is_assignable<MoveableCopyable, MoveableCopyable>::value) == (std::is_assignable<MoveableCopyable, MoveableCopyable>::value));
+  #endif
+    }
 
-    // Free function pointer
-    CHECK_FALSE((etl::is_member_function_pointer<decltype(&f)>::value));
+    //*************************************************************************
+    TEST(test_is_lvalue_assignable)
+    {
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+  #if ETL_USING_CPP17
+      CHECK((etl::is_lvalue_assignable_v<Copyable, Copyable>));
+      CHECK(!(etl::is_lvalue_assignable_v<Moveable, Moveable>));
+      CHECK((etl::is_lvalue_assignable_v<MoveableCopyable, MoveableCopyable>));
+  #else
+      CHECK((etl::is_lvalue_assignable<Copyable, Copyable>::value)); 
+      CHECK(!(etl::is_lvalue_assignable<Moveable, Moveable>::value));
+      CHECK((etl::is_lvalue_assignable<MoveableCopyable, MoveableCopyable>::value));
+  #endif
+  #endif
+    }
 
-    // Member object pointer
-    CHECK_FALSE((etl::is_member_function_pointer<int MF::*>::value));
+    //*************************************************************************
+    TEST(test_is_constructible)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_constructible_v<Copyable>) == (std::is_constructible_v<Copyable>));
+      CHECK((etl::is_constructible_v<Moveable>) == (std::is_constructible_v<Moveable>));
+      CHECK((etl::is_constructible_v<MoveableCopyable>) == (std::is_constructible_v<MoveableCopyable>));
+      CHECK((etl::is_constructible_v<NotDefaultConstructible>) == (std::is_constructible_v<NotDefaultConstructible>));
+  #else
+      CHECK((etl::is_constructible<Copyable>::value) == (std::is_constructible<Copyable>::value));
+      CHECK((etl::is_constructible<Moveable>::value) == (std::is_constructible<Moveable>::value));
+      CHECK((etl::is_constructible<MoveableCopyable>::value) == (std::is_constructible<MoveableCopyable>::value));
+      CHECK((etl::is_constructible<NotDefaultConstructible>::value) == (std::is_constructible<NotDefaultConstructible>::value));
+  #endif
+    }
 
-    // Plain function type (not pointer)
-    CHECK_FALSE((etl::is_member_function_pointer<int(int)>::value));
+    //*************************************************************************
+    TEST(test_is_default_constructible)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_default_constructible_v<Copyable>) == (std::is_default_constructible_v<Copyable>));
+      CHECK((etl::is_default_constructible_v<Moveable>) == (std::is_default_constructible_v<Moveable>));
+      CHECK((etl::is_default_constructible_v<MoveableCopyable>) == (std::is_default_constructible_v<MoveableCopyable>));
+      CHECK((etl::is_default_constructible_v<NotDefaultConstructible>) == (std::is_default_constructible_v<NotDefaultConstructible>));
+  #else
+      CHECK((etl::is_default_constructible<Copyable>::value) == (std::is_default_constructible<Copyable>::value));
+      CHECK((etl::is_default_constructible<Moveable>::value) == (std::is_default_constructible<Moveable>::value));
+      CHECK((etl::is_default_constructible<MoveableCopyable>::value) == (std::is_default_constructible<MoveableCopyable>::value));
+      CHECK((etl::is_default_constructible<NotDefaultConstructible>::value) == (std::is_default_constructible<NotDefaultConstructible>::value));
+  #endif
+    }
 
-    // Non-function type
-    CHECK_FALSE((etl::is_member_function_pointer<int>::value));
-  }
+    //*************************************************************************
+    TEST(test_is_copy_constructible)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_copy_constructible_v<Copyable>) == (std::is_copy_constructible_v<Copyable>));
+      CHECK((etl::is_copy_constructible_v<Moveable>) == (std::is_copy_constructible_v<Moveable>));
+      CHECK((etl::is_copy_constructible_v<MoveableCopyable>) == (std::is_copy_constructible_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_copy_constructible<Copyable>::value) == (std::is_copy_constructible<Copyable>::value));
+      CHECK((etl::is_copy_constructible<Moveable>::value) == (std::is_copy_constructible<Moveable>::value));
+      CHECK((etl::is_copy_constructible<MoveableCopyable>::value) == (std::is_copy_constructible<MoveableCopyable>::value));
+  #endif
+    }
 
-  //*************************************************************************
-  // Member object pointer trait
-  TEST(test_is_member_object_pointer)
-  {
-    CHECK_TRUE((etl::is_member_object_pointer<int MO::*>::value));
+    //*************************************************************************
+    TEST(test_is_move_constructible)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_move_constructible_v<Copyable>) == (std::is_move_constructible_v<Copyable>));
+      CHECK((etl::is_move_constructible_v<Moveable>) == (std::is_move_constructible_v<Moveable>));
+      CHECK((etl::is_move_constructible_v<MoveableCopyable>) == (std::is_move_constructible_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_move_constructible<Copyable>::value) == (std::is_move_constructible<Copyable>::value));
+      CHECK((etl::is_move_constructible<Moveable>::value) == (std::is_move_constructible<Moveable>::value));
+      CHECK((etl::is_move_constructible<MoveableCopyable>::value) == (std::is_move_constructible<MoveableCopyable>::value));
+  #endif
+    }
 
-    // Not a member object pointer
-    CHECK_FALSE((etl::is_member_object_pointer<int (MF::*)(int)>::value));
-    CHECK_FALSE((etl::is_member_object_pointer<int*>::value));
-  }
+    //*************************************************************************
+    TEST(test_is_trivially_constructible)
+    {
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_constructible_v<Copyable>) == (std::is_trivially_constructible_v<Copyable>));
+      CHECK((etl::is_trivially_constructible_v<Moveable>) == (std::is_trivially_constructible_v<Moveable>));
+      CHECK((etl::is_trivially_constructible_v<MoveableCopyable>) == (std::is_trivially_constructible_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_trivially_constructible<Copyable>::value) == (std::is_trivially_constructible<Copyable>::value));
+      CHECK((etl::is_trivially_constructible<Moveable>::value) == (std::is_trivially_constructible<Moveable>::value));
+      CHECK((etl::is_trivially_constructible<MoveableCopyable>::value) == (std::is_trivially_constructible<MoveableCopyable>::value));
+  #endif
+  #endif
+    }
 
-  //*************************************************************************
-  // Member pointer (either member object or member function pointer)
-  TEST(test_is_member_pointer_any)
-  {
-    CHECK_TRUE((etl::is_member_pointer<int MF::*>::value));
-    CHECK_TRUE((etl::is_member_pointer<int (MF::*)(int)>::value));
+    //*************************************************************************
+    TEST(test_is_trivially_copy_constructible)
+    {
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_copy_constructible_v<Copyable>) == (std::is_trivially_copy_constructible_v<Copyable>));
+      CHECK((etl::is_trivially_copy_constructible_v<Moveable>) == (std::is_trivially_copy_constructible_v<Moveable>));
+      CHECK((etl::is_trivially_copy_constructible_v<MoveableCopyable>) == (std::is_trivially_copy_constructible_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_trivially_copy_constructible<Copyable>::value) == (std::is_trivially_copy_constructible<Copyable>::value));
+      CHECK((etl::is_trivially_copy_constructible<Moveable>::value) == (std::is_trivially_copy_constructible<Moveable>::value));
+      CHECK((etl::is_trivially_copy_constructible<MoveableCopyable>::value) == (std::is_trivially_copy_constructible<MoveableCopyable>::value));
+  #endif
+  #endif
+    }
 
-    // Not member pointers
-    CHECK_FALSE((etl::is_member_pointer<int*>::value));
-    CHECK_FALSE((etl::is_member_pointer<decltype(f)>::value));
-  }
+    //*************************************************************************
+    TEST(test_is_trivially_destructible)
+    {
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_destructible_v<Copyable>) == (std::is_trivially_destructible_v<Copyable>));
+      CHECK((etl::is_trivially_destructible_v<Moveable>) == (std::is_trivially_destructible_v<Moveable>));
+      CHECK((etl::is_trivially_destructible_v<MoveableCopyable>) == (std::is_trivially_destructible_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_trivially_destructible<Copyable>::value) == (std::is_trivially_destructible<Copyable>::value));
+      CHECK((etl::is_trivially_destructible<Moveable>::value) == (std::is_trivially_destructible<Moveable>::value));
+      CHECK((etl::is_trivially_destructible<MoveableCopyable>::value) == (std::is_trivially_destructible<MoveableCopyable>::value));
+  #endif
+  #endif
+    }
 
-  //*************************************************************************
-  // Function type detection
-  TEST(test_is_function)
-  {
-    (void)f(0);
-    (void)fvar();
-    (void)fvar2(0); 
-    (void)ft<int, int, double>(0, 0.0);
+    //*************************************************************************
+    TEST(test_is_trivially_copy_assignable)
+    {
+  #if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_copy_assignable_v<Copyable>) == (std::is_trivially_copy_assignable_v<Copyable>));
+      CHECK((etl::is_trivially_copy_assignable_v<Moveable>) == (std::is_trivially_copy_assignable_v<Moveable>));
+      CHECK((etl::is_trivially_copy_assignable_v<MoveableCopyable>) == (std::is_trivially_copy_assignable_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_trivially_copy_assignable<Copyable>::value) == (std::is_trivially_copy_assignable<Copyable>::value));
+      CHECK((etl::is_trivially_copy_assignable<Moveable>::value) == (std::is_trivially_copy_assignable<Moveable>::value));
+      CHECK((etl::is_trivially_copy_assignable<MoveableCopyable>::value) == (std::is_trivially_copy_assignable<MoveableCopyable>::value));
+  #endif
+  #endif
+  #endif
+    }
 
-    CHECK_TRUE((etl::is_function<decltype(f)>::value));
-    CHECK_TRUE((etl::is_function<decltype(fvar)>::value));
-    CHECK_TRUE((etl::is_function<decltype(fvar2)>::value));
-    CHECK_TRUE((etl::is_function<decltype(ft<int, int, double>)>::value));
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+  #if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_copyable_v<Copyable>) == (std::is_trivially_copyable_v<Copyable>));
+      CHECK((etl::is_trivially_copyable_v<Moveable>) == (std::is_trivially_copyable_v<Moveable>));
+      CHECK((etl::is_trivially_copyable_v<MoveableCopyable>) == (std::is_trivially_copyable_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_trivially_copyable<Copyable>::value) == (std::is_trivially_copyable<Copyable>::value));
+      CHECK((etl::is_trivially_copyable<Moveable>::value) == (std::is_trivially_copyable<Moveable>::value));
+      CHECK((etl::is_trivially_copyable<MoveableCopyable>::value) == (std::is_trivially_copyable<MoveableCopyable>::value));
+  #endif
+  #endif
+  #endif
+    }
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
-    (void)fn(0);
-    (void)fnvar();
-    (void)fnvar2(0);
-    (void)fnt<int, int, double>(0, 0.0);
+    //*************************************************************************
+    TEST(test_is_base_of_any)
+    {
+      struct Base {};
+      struct D1 : Base {};
+      struct D2 : Base {};
+      struct D3 : Base {};
+      struct D4 {};
 
-    CHECK_TRUE((etl::is_function<decltype(fn)>::value));
-    CHECK_TRUE((etl::is_function<decltype(fnvar)>::value));
-    CHECK_TRUE((etl::is_function<decltype(fnvar2)>::value));
-    CHECK_TRUE((etl::is_function<decltype(fnt<int, int, double>)>::value));
-#endif
+  #if ETL_USING_CPP17
+      CHECK_TRUE(bool(etl::is_base_of_any_v<Base, D1, D2, D3, D4>));
+      CHECK_FALSE(bool(etl::is_base_of_any_v<Base, D4>));
+  #else
+      CHECK_TRUE(bool(etl::is_base_of_any<Base, D1, D2, D3, D4>::value));
+      CHECK_FALSE(bool(etl::is_base_of_any<Base, D4>::value));
+  #endif
+    }
 
-    CHECK_FALSE((etl::is_function<int>::value));
-    CHECK_FALSE((etl::is_function<int*>::value));
-    CHECK_FALSE((etl::is_function<int MF::*>::value));
-    CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
+    //*************************************************************************
+    TEST(test_is_base_of_all)
+    {
+      struct Base {};
+      struct D1 : Base {};
+      struct D2 : Base {};
+      struct D3 : Base {};
+      struct D4 {};
+
+  #if ETL_USING_CPP17
+      CHECK_TRUE(bool(etl::is_base_of_all_v<Base, D1, D2, D3>));
+      CHECK_FALSE(bool(etl::is_base_of_all_v<Base, D1, D2, D3, D4>));
+  #else
+      CHECK_TRUE(bool(etl::is_base_of_all<Base, D1, D2, D3>::value));
+      CHECK_FALSE(bool(etl::is_base_of_all<Base, D1, D2, D3, D4>::value));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_nth_base)
+    {
+      struct D0 { };
+      struct D1 : D0 { using base_type = D0; };
+      struct D2 : D1 { using base_type = D1; };
+      struct D3 : D2 { using base_type = D2; };
+      struct D4 : D3 { using base_type = D3; };
+
+      CHECK_TRUE((std::is_same<D4, etl::nth_base_t<0, D4>>::value));
+      CHECK_TRUE((std::is_same<D3, etl::nth_base_t<1, D4>>::value));
+      CHECK_TRUE((std::is_same<D2, etl::nth_base_t<2, D4>>::value));
+      CHECK_TRUE((std::is_same<D1, etl::nth_base_t<3, D4>>::value));
+      CHECK_TRUE((std::is_same<D0, etl::nth_base_t<4, D4>>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_type_identity) 
+    {
+      CHECK_CLOSE(type_identity_test_add(1.5f, 2), 3.5f, 0.01f);
+    }
+
+    //*************************************************************************
+  #if ETL_USING_BUILTIN_UNDERLYING_TYPE
+    TEST(test_underlying_type)
+    {
+      enum enum0_t : char
+      {
+      };
+
+      enum enum1_t : uint32_t
+      {
+      };
+
+      enum class enum2_t : short
+      {
+      };
+
+      enum class enum3_t : size_t
+      {
+      };
+
+      using enum4_t = enum1_t;
+      using enum5_t = std::add_const<enum2_t>::type;
+
+      CHECK_TRUE((std::is_same<etl::underlying_type<enum0_t>::type, char>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type<enum1_t>::type, uint32_t>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type<enum2_t>::type, short>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type<enum3_t>::type, size_t>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type<enum4_t>::type, uint32_t>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type<enum5_t>::type, short>::value));
+  #if ETL_USING_CPP11
+      CHECK_TRUE((std::is_same<etl::underlying_type_t<enum0_t>, char>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type_t<enum1_t>, uint32_t>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type_t<enum2_t>, short>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type_t<enum3_t>, size_t>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type_t<enum4_t>, uint32_t>::value));
+      CHECK_TRUE((std::is_same<etl::underlying_type_t<enum5_t>, short>::value));
+  #endif
+    }
+  #endif
+
+    //*************************************************************************
+    TEST(test_has_duplicates)
+    {
+  #if ETL_USING_CPP17
+      CHECK_FALSE((etl::has_duplicates_v<char>));
+      CHECK_FALSE((etl::has_duplicates_v<char, int, double>));
+      CHECK_TRUE((etl::has_duplicates_v<char, int, char>));
+  #else
+      CHECK_FALSE((etl::has_duplicates<char>::value));
+      CHECK_FALSE((etl::has_duplicates<char, int, double>::value));
+      CHECK_TRUE((etl::has_duplicates<char, int, char>::value));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_has_duplicates_of)
+    {
+  #if ETL_USING_CPP17
+      CHECK_FALSE((etl::has_duplicates_of_v<char>));
+      CHECK_TRUE((etl::has_duplicates_of_v<char, char, int, char>)); // char is duplicated.
+      CHECK_FALSE((etl::has_duplicates_of_v<int, char, int, char>)); // int is not duplicated.
+  #else
+      CHECK_FALSE((etl::has_duplicates_of<char>::value));
+      CHECK_TRUE((etl::has_duplicates_of<char, char, int, char>::value)); // char is duplicated.
+      CHECK_FALSE((etl::has_duplicates_of<int, char, int, char>::value)); // int is not duplicated.
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_count_of)
+    {
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(0, (etl::count_of_v<char>));
+      CHECK_EQUAL(0, (etl::count_of_v<char, int>));
+      CHECK_EQUAL(1, (etl::count_of_v<char, char>));
+      CHECK_EQUAL(1, (etl::count_of_v<char, int, char>));
+      CHECK_EQUAL(2, (etl::count_of_v<char, int, char, double, char>));
+  #else
+      CHECK_EQUAL(0, (etl::count_of<char>::value));
+      CHECK_EQUAL(0, (etl::count_of<char, int>::value));
+      CHECK_EQUAL(1, (etl::count_of<char, char>::value));
+      CHECK_EQUAL(1, (etl::count_of<char, int, char>::value));
+      CHECK_EQUAL(2, (etl::count_of<char, int, char, double, char>::value));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_specialization)
+    {
+  #if ETL_USING_CPP17
+      CHECK_TRUE((etl::is_specialization_v<specialized<int>, specialized>));
+      CHECK_FALSE((etl::is_specialization_v<other_specialized<int>, specialized>));
+  #else
+      CHECK_TRUE((etl::is_specialization<specialized<int>, specialized>::value));
+      CHECK_FALSE((etl::is_specialization<other_specialized<int>, specialized>::value));
+  #endif
+    }
+
+  #if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_constant_evaluated)
+    {
+      constexpr bool c0 = etl::is_constant_evaluated();
+  #if !ETL_USING_CPP23 && defined(ETL_COMPILER_MICROSOFT)
+      // Not supported on MSVC via __has_builtin, see determine_builtin_support.h
+      CHECK_FALSE(c0);
+  #else
+      CHECK_TRUE(c0);
+  #endif
+
+      volatile int i = 1;
+      const bool c1 = (((i == 1) && etl::is_constant_evaluated()) ? true : false);
+      CHECK_FALSE(c1);
+    }
+  #endif
+
+    //*************************************************************************
+    // Basic cv for member function pointers
+    TEST(test_is_member_function_pointer)
+    {
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::f)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fc)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fv)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fcv)>::value));
+
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fl)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flc)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flv)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::flcv)>::value));
+
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fr)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frc)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frv)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::frcv)>::value));
+
+  #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fn)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnc)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnv)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fncv)>::value));
+
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnl)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlc)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlv)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnlcv)>::value));
+
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnr)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrc)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrv)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fnrcv)>::value));
+  #endif
+
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fvar)>::value));
+      CHECK_TRUE((etl::is_member_function_pointer<decltype(&MF::fvarc)>::value));
+    }
+
+    //*************************************************************************
+    // Negative tests for member function pointer trait
+    TEST(test_is_member_function_pointer_negative)
+    {
+      (void)f(0);
+
+      // Free function pointer
+      CHECK_FALSE((etl::is_member_function_pointer<decltype(&f)>::value));
+
+      // Member object pointer
+      CHECK_FALSE((etl::is_member_function_pointer<int MF::*>::value));
+
+      // Plain function type (not pointer)
+      CHECK_FALSE((etl::is_member_function_pointer<int(int)>::value));
+
+      // Non-function type
+      CHECK_FALSE((etl::is_member_function_pointer<int>::value));
+    }
+
+    //*************************************************************************
+    // Member object pointer trait
+    TEST(test_is_member_object_pointer)
+    {
+      CHECK_TRUE((etl::is_member_object_pointer<int MO::*>::value));
+
+      // Not a member object pointer
+      CHECK_FALSE((etl::is_member_object_pointer<int (MF::*)(int)>::value));
+      CHECK_FALSE((etl::is_member_object_pointer<int*>::value));
+    }
+
+    //*************************************************************************
+    // Member pointer (either member object or member function pointer)
+    TEST(test_is_member_pointer_any)
+    {
+      CHECK_TRUE((etl::is_member_pointer<int MF::*>::value));
+      CHECK_TRUE((etl::is_member_pointer<int (MF::*)(int)>::value));
+
+      // Not member pointers
+      CHECK_FALSE((etl::is_member_pointer<int*>::value));
+      CHECK_FALSE((etl::is_member_pointer<decltype(f)>::value));
+    }
+
+    //*************************************************************************
+    // Function type detection
+    TEST(test_is_function)
+    {
+      (void)f(0);
+      (void)fvar();
+      (void)fvar2(0); 
+      (void)ft<int, int, double>(0, 0.0);
+
+      CHECK_TRUE((etl::is_function<decltype(f)>::value));
+      CHECK_TRUE((etl::is_function<decltype(fvar)>::value));
+      CHECK_TRUE((etl::is_function<decltype(fvar2)>::value));
+      CHECK_TRUE((etl::is_function<decltype(ft<int, int, double>)>::value));
+
+  #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+      (void)fn(0);
+      (void)fnvar();
+      (void)fnvar2(0);
+      (void)fnt<int, int, double>(0, 0.0);
+
+      CHECK_TRUE((etl::is_function<decltype(fn)>::value));
+      CHECK_TRUE((etl::is_function<decltype(fnvar)>::value));
+      CHECK_TRUE((etl::is_function<decltype(fnvar2)>::value));
+      CHECK_TRUE((etl::is_function<decltype(fnt<int, int, double>)>::value));
+  #endif
+
+      CHECK_FALSE((etl::is_function<int>::value));
+      CHECK_FALSE((etl::is_function<int*>::value));
+      CHECK_FALSE((etl::is_function<int MF::*>::value));
+      CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
+    }
   }
 }

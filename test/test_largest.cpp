@@ -251,5 +251,5 @@ namespace
       CHECK(bool(etl::is_same<etl::larger_type_t<uint32_t>, uint64_t>::value));
       CHECK(bool(etl::is_same<etl::larger_type_t<uint64_t>, uint64_t>::value));
     }
-  };
+  }
 }

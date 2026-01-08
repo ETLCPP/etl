@@ -837,5 +837,5 @@ namespace
       CHECK_EQUAL(compare_data.count(N3), data.count(N3));
       CHECK_EQUAL(compare_data.count(N4), data.count(N4));
     }
-  };
+  }
 }

@@ -2199,5 +2199,5 @@ namespace
       CHECK_EQUAL(9, *data[9]);
     }
 #endif
-  };
+  }
 }

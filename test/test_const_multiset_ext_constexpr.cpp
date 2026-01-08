@@ -950,7 +950,7 @@ namespace
 
       static constexpr bool compareAB1 = compare(Key('A'), Key('B'));
       static constexpr bool compareAB2 = compare(Key('A'), Key{ 'B' });
-      static constexpr bool compareAB3 = compare(Key{ 'A' }, Key('B'));;
+      static constexpr bool compareAB3 = compare(Key{ 'A' }, Key('B'));
 
     #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -995,7 +995,7 @@ namespace
 
       static constexpr bool compareAB1 = compare(Key('A'), Key('B'));
       static constexpr bool compareAB2 = compare(Key('A'), 'B');
-      static constexpr bool compareAB3 = compare('A', Key('B'));;
+      static constexpr bool compareAB3 = compare('A', Key('B'));
 
     #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -1423,7 +1423,7 @@ namespace
       CHECK_TRUE(greater_than_equal11);
 #endif
     }
-  };
+  }
 }
 
 #endif

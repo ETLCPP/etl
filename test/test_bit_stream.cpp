@@ -1072,7 +1072,7 @@ namespace
       CHECK(bit_stream.get(rd));
       CHECK_CLOSE(f, rd, 0.1f);
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

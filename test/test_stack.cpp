@@ -561,5 +561,5 @@ namespace
       stack.pop_into(i);
       CHECK_EQUAL(4, i);
     }
-  };
+  }
 }

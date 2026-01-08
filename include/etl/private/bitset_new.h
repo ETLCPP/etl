@@ -1231,7 +1231,7 @@ namespace etl
     void reset_position(pointer pbuffer, 
                         size_t  position) ETL_NOEXCEPT
     {
-      const size_t       index = position >> etl::log2<Bits_Per_Element>::value;;
+      const size_t       index = position >> etl::log2<Bits_Per_Element>::value;
       const element_type bit = element_type(1) << (position & (Bits_Per_Element - 1));
 
       pbuffer[index] &= ~bit;
@@ -1454,7 +1454,7 @@ namespace etl
     void flip_position(pointer pbuffer, 
                        size_t  position) ETL_NOEXCEPT
     {
-      const size_t       index = position >> etl::log2<Bits_Per_Element>::value;;
+      const size_t       index = position >> etl::log2<Bits_Per_Element>::value;
       const element_type bit   = element_type(1) << (position & (Bits_Per_Element - 1));
 
       pbuffer[index] ^= bit;

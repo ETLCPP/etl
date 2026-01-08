@@ -316,6 +316,6 @@ namespace
       uint16_t crc3 = etl::crc16_usb_t4(data3.rbegin(), data3.rend());
       CHECK_EQUAL(crc1, crc3);
     }
-  };
+  }
 }
 

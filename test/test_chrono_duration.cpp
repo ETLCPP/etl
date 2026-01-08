@@ -1138,5 +1138,5 @@ namespace
 #endif
     }
 #endif
-  };
+  }
 }

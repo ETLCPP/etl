@@ -175,8 +175,8 @@ namespace
     TEST(test_and_equal)
     {
       CompassDirection value = CompassDirection::North;
-      value &= 0xAAAAAAAAUL;
-      CompassDirection expected = CompassDirection(CompassDirection::North & 0xAAAAAAAAUL);
+      value &= static_cast<CompassDirection::value_type>(0xAAAAAAAAUL);
+      CompassDirection expected = CompassDirection(CompassDirection::North & static_cast<CompassDirection::value_type>(0xAAAAAAAAUL));
 
       CHECK_EQUAL(expected, value);
     }
@@ -185,8 +185,8 @@ namespace
     TEST(test_or_equal)
     {
       CompassDirection value = CompassDirection::North;
-      value |= 0xAAAAAAAAUL;
-      CompassDirection expected = CompassDirection(CompassDirection::North | 0xAAAAAAAAUL);
+      value |= static_cast<CompassDirection::value_type>(0xAAAAAAAAUL);
+      CompassDirection expected = CompassDirection(CompassDirection::North | static_cast<CompassDirection::value_type>(0xAAAAAAAAUL));
 
       CHECK_EQUAL(expected, value);
     }
@@ -195,8 +195,8 @@ namespace
     TEST(test_xor_equal)
     {
       CompassDirection value = CompassDirection::North;
-      value ^= 0xAAAAAAAAUL;
-      CompassDirection expected = CompassDirection(CompassDirection::North ^ 0xAAAAAAAAUL);
+      value ^= static_cast<CompassDirection::value_type>(0xAAAAAAAAUL);
+      CompassDirection expected = CompassDirection(CompassDirection::North ^ static_cast<CompassDirection::value_type>(0xAAAAAAAAUL));
 
       CHECK_EQUAL(expected, value);
     }
@@ -220,5 +220,5 @@ namespace
 
       CHECK_EQUAL(expected, value);
     }
-  };
+  }
 }

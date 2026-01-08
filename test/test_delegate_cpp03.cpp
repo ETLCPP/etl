@@ -773,7 +773,7 @@ namespace
       Object object;
 
       auto d1 = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int>(object);
-      auto d2 = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int_const>(object);;
+      auto d2 = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int_const>(object);
 
       CHECK(d1 != d2);
     }
@@ -920,5 +920,5 @@ namespace
       CHECK(*itr != d2);
       CHECK(*itr == d3);
     }
-  };
+  }
 }

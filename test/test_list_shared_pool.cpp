@@ -2224,5 +2224,5 @@ namespace
 
       CHECK_THROW(data0.merge(data1), etl::list_unsorted);
     }
-  };
+  }
 }

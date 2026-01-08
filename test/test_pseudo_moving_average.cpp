@@ -344,5 +344,5 @@ namespace
 
       CHECK_CLOSE(2.82, cma.value(), 0.01);
     }
-  };
+  }
 }

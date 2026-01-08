@@ -317,6 +317,6 @@ namespace
         CHECK_TRUE(std::is_copy_assignable<custom_hasher>::value);
         CHECK_TRUE(std::is_move_assignable<custom_hasher>::value);
     }
-  };
+  }
 }
 

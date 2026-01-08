@@ -1165,7 +1165,7 @@ namespace etl
 
         link_type* before      = &this->start;
         link_type* before_next = get_next(before);
-        link_type* terminal    = &this->terminator;;
+        link_type* terminal    = &this->terminator;
 
         while ((before->etl_next != terminal) && (other_begin != other_terminal))
         {

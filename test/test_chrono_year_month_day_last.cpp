@@ -195,5 +195,5 @@ namespace
 
       CHECK_EQUAL(11016, sd.time_since_epoch().count());
     }
-  };
+  }
 }

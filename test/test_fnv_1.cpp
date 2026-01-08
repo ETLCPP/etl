@@ -351,6 +351,6 @@ namespace
       uint64_t hash3 = etl::fnv_1a_64(data3.rbegin(), data3.rend());
       CHECK_EQUAL(int(hash1), int(hash3));
     }
-  };
+  }
 }
 

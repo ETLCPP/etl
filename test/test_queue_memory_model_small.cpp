@@ -550,5 +550,5 @@ namespace
       CHECK_EQUAL(4, queue.front());
       queue.pop();
     }
-  };
+  }
 }
