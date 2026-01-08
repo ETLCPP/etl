@@ -1114,28 +1114,6 @@ namespace etl
   {
     return operator >=(lhs, rhs);
   }
-
-  //*********************************************************************
-  /// Overloaded swap for etl::ivector<T*> 
-  ///\param lhs The first vector to swap with.
-  ///\param rhs The second vector to swap with.
-  //*********************************************************************
-  template<typename T>
-  void swap(ivector<T*>& lhs, ivector<T*>& rhs)
-  {
-    lhs.swap(rhs);
-  }
-
-  //*********************************************************************
-  /// Overloaded swap for etl::ivector<const T*> 
-  ///\param lhs The first vector to swap with.
-  ///\param rhs The second vector to swap with.
-  //*********************************************************************
-  template<typename T>
-  void swap(ivector<const T*>& lhs, ivector<const T*>& rhs)
-  {
-    lhs.swap(rhs);
-  }
 }
 
 #endif
