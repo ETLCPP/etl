@@ -58,7 +58,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::month_day md; // value to be uninitialized
+      Chrono::month_day md{};
+
+      CHECK_FALSE(md.ok());
     }
 
     //*************************************************************************

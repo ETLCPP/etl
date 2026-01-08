@@ -58,7 +58,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::year_month_weekday ymwd; // value shall be uninitialized
+      Chrono::year_month_weekday ymwd{};
+
+      CHECK_FALSE(ymwd.ok());
     }
 
     //*************************************************************************

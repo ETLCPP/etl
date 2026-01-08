@@ -60,7 +60,10 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::weekday weekday; // value to be uninitialized
+      Chrono::weekday weekday{};
+
+      CHECK_TRUE(weekday.ok());
+      CHECK_TRUE(weekday == Chrono::Sunday);
     }
 
     //*************************************************************************
