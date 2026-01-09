@@ -963,25 +963,13 @@ namespace etl
       ivector<T>& smaller = other.size() > this->size() ? *this : other;
       ivector<T>& larger = other.size() > this->size() ? other : *this;
 
-      typename ivector<T>::iterator smaller_itr = smaller.begin();
-      typename ivector<T>::iterator larger_itr = larger.begin();
+      ETL_OR_STD::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
-      while(smaller_itr < smaller.end())
-      {
-        ETL_OR_STD::swap(*smaller_itr, *larger_itr);
-        ++smaller_itr;
-        ++larger_itr;
-      }
+      typename ivector<T>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
 
-      typename ivector<T>::iterator erase_start = larger_itr;
+      etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
 
-      while(larger_itr < larger.end())
-      {
-        smaller.push_back(etl::move(*larger_itr));
-        ++larger_itr;
-      }
-
-      larger.erase(erase_start, larger.end());
+      larger.erase(larger_itr, larger.end());
     }
 
     //*************************************************************************
