@@ -767,5 +767,5 @@ namespace
       bool isEqual = std::equal(filldata.begin(), filldata.end(), view.begin());
       CHECK(isEqual);
     }
-  };
+  }
 }

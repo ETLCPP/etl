@@ -158,7 +158,7 @@ namespace
       static constexpr int result = c5();
       CHECK_EQUAL(23, result);
     }
-  };
+  }
 }
 
 #endif

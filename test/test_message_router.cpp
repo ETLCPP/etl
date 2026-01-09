@@ -733,5 +733,5 @@ namespace
 
       CHECK_FALSE(router.unknown_message_received);
     }
-  };
+  }
 }

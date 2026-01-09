@@ -1305,5 +1305,5 @@ namespace
     }
 
 #include "etl/private/diagnostic_pop.h"
-  };
+  }
 }

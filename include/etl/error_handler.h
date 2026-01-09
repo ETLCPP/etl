@@ -305,9 +305,9 @@ namespace etl
   #define ETL_ASSERT_OR_RETURN(b, e) static_cast<void>(sizeof(b))             // Does nothing.
   #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) static_cast<void>(sizeof(b))    // Does nothing.
   
-  #define ETL_ASSERT_FAIL(e) static_cast<void>(sizeof(b))                     // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN(e) static_cast<void>(sizeof(b))          // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) static_cast<void>(sizeof(b)) // Does nothing.
+  #define ETL_ASSERT_FAIL(e) ETL_DO_NOTHING                                   // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN(e) ETL_DO_NOTHING                        // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) ETL_DO_NOTHING               // Does nothing.
 #elif defined(ETL_USE_ASSERT_FUNCTION)
   #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}} while(false)                                 // If the condition fails, calls the assert function
   #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}} while(false)               // If the condition fails, calls the assert function and return
@@ -397,15 +397,23 @@ namespace etl
 
 //*************************************
 #if defined(ETL_VERBOSE_ERRORS)
-  #define ETL_ERROR(e) (e(__FILE__, __LINE__))                                // Make an exception with the file name and line number.
-  #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v)))             // Make an exception with the file name, line number and value.
-  #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text)             // Use the verbose text.
-  #define ETL_ERROR_GENERIC(text) (etl::exception((text),__FILE__, __LINE__)) // Make a generic exception with a message, file name and line number.
+  // include everything, file name, line number, verbose text
+  #define ETL_ERROR(e) (e(__FILE__, __LINE__))
+  #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v)))
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text)
+  #define ETL_ERROR_GENERIC(text) (etl::exception((text), __FILE__, __LINE__))
+#elif defined(ETL_MINIMAL_ERRORS)
+  // include nothing, no file name, no line number, no text
+  #define ETL_ERROR(e) (e("", -1))
+  #define ETL_ERROR_WITH_VALUE(e, v) (e("", -1, (v)))
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) ("")
+  #define ETL_ERROR_GENERIC(text) (etl::exception("", "", -1))
 #else
-  #define ETL_ERROR(e) (e("", __LINE__))                                      // Make an exception with the line number.
-  #define ETL_ERROR_WITH_VALUE(e, v) (e("", __LINE__, (v)))                   // Make an exception with the file name, line number and value.
-  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)               // Use the terse text.
-  #define ETL_ERROR_GENERIC(text) (etl::exception((text),"", __LINE__))       // Make a generic exception with a message and line number.
+  // include only terse text, no file name, no line number
+  #define ETL_ERROR(e) (e("", -1))
+  #define ETL_ERROR_WITH_VALUE(e, v) (e("", -1, (v)))
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)
+  #define ETL_ERROR_GENERIC(text) (etl::exception((text),"", -1))
 #endif
 
 #endif

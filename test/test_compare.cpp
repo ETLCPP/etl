@@ -191,5 +191,5 @@ namespace
       CHECK_EQUAL(CompareInt::Greater, cmp_test_greater);
       CHECK_EQUAL(CompareInt::Equal,   cmp_test_equal);
     }
-  };
+  }
 }

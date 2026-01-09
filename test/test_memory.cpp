@@ -1447,7 +1447,7 @@ namespace
     class Base
     {
     public:
-      virtual ~Base() {};
+      virtual ~Base() {}
       virtual void function() = 0;
     };
 
@@ -1699,5 +1699,5 @@ namespace
       CHECK_EQUAL(&i, etl::to_address(pi));
       CHECK_EQUAL(plist_item, etl::to_address(itr));
     }
-  };
+  }
 }

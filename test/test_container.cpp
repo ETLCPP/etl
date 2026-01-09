@@ -145,7 +145,7 @@ namespace
       size_t compiletime_size = sizeof(etl::array_size(data));
       CHECK_EQUAL(SIZE, compiletime_size);
     }
-  };
+  }
 }
 
 #endif

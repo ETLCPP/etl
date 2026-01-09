@@ -2366,9 +2366,13 @@ namespace etl
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_move a non trivially copyable type");
 
 #if ETL_USING_BUILTIN_MEMMOVE
+#include "etl/private/diagnostic_array_bounds_push.h"
+#include "etl/private/diagnostic_stringop_overread_push.h"
     __builtin_memmove(reinterpret_cast<void*>(db),
                       reinterpret_cast<const void*>(sb),
                       sizeof(T) * n);
+#include "etl/private/diagnostic_pop.h"
+#include "etl/private/diagnostic_pop.h"
 #else
     ::memmove(reinterpret_cast<void*>(db),
               reinterpret_cast<const void*>(sb),

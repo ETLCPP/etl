@@ -414,7 +414,7 @@ namespace etl
     const T quotient  = numerator / denominator;
 
     // Work with magnitudes in unsigned form (avoids abs() overflow)
-    typedef typename std::make_unsigned<T>::type utype;
+    typedef typename etl::make_unsigned<T>::type utype;
     utype abs_remainder   = remainder < 0 ? utype(0) - utype(remainder) : utype(remainder);
     utype abs_denominator = denominator < 0 ? utype(0) - utype(denominator)       : utype(denominator);
 
@@ -519,16 +519,18 @@ namespace etl
                           T>::type
     divide_round_half_down(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T quotient            = numerator / denominator;
-    const T remainder           = numerator % denominator;
-    const T abs_denominator     = etl::absolute(denominator);
-    const T abs_remainderainder = etl::absolute(remainder);
+    const T quotient  = numerator / denominator;
+    const T remainder = numerator % denominator;
+
+    typedef typename etl::make_unsigned<T>::type utype;
+    const utype abs_denominator = etl::absolute_unsigned(denominator);
+    const utype abs_remainder   = etl::absolute_unsigned(remainder);
 
     // Direction: +1 if result should be more positive, -1 if more negative
-    const T direction = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
+    const T direction = private_rounded_integral_division::are_same_sign(numerator, denominator) ? 1 : -1;
 
     // Only round away from zero if remainder is strictly greater than half the divisor
-    return abs_remainderainder > (abs_denominator / 2) ? quotient + direction : quotient;
+    return abs_remainder > (abs_denominator / 2U) ? quotient + direction : quotient;
   }
 
   //***************************************************************************
@@ -615,22 +617,36 @@ namespace etl
   {
     const T quotient            = numerator / denominator;
     const T remainder           = numerator % denominator;
-    const T abs_denominator     = etl::absolute(denominator);
-    const T abs_remainderainder = etl::absolute(remainder);
     const T direction           = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
 
-    if ((abs_remainderainder * 2) < abs_denominator)
+    // Work with magnitudes in unsigned form (avoids abs() overflow for T::min()).
+    typedef typename std::make_unsigned<T>::type utype;
+    const utype abs_denominator = (denominator < 0) ? (utype(0) - utype(denominator)) : utype(denominator);
+    const utype abs_remainder   = (remainder   < 0) ? (utype(0) - utype(remainder))   : utype(remainder);
+    const utype half_denominator = abs_denominator / 2U;
+
+    // Compare without `* 2` to avoid unsigned overflow.
+    if ((abs_denominator & 1U) == 0U)
     {
-      return quotient;
-    }
-    else if ((abs_remainderainder * 2) > abs_denominator)
-    {
-      return quotient + direction;
+      // Even denominator: can be exactly half.
+      if (abs_remainder < half_denominator)
+      {
+        return quotient;
+      }
+      else if (abs_remainder > half_denominator)
+      {
+        return quotient + direction;
+      }
+      else
+      {
+        // Exactly halfway, round to even
+        return (quotient & 1) == 0 ? quotient : quotient + direction;
+      }
     }
     else
     {
-      // Exactly halfway, round to even
-      return (quotient & 1) == 0 ? quotient : quotient + direction;
+      // Odd denominator: no exact half case.
+      return (abs_remainder <= half_denominator) ? quotient : (quotient + direction);
     }
   }
 
@@ -730,17 +746,26 @@ namespace etl
                           T>::type
     divide_round_half_odd(T numerator, T denominator) ETL_NOEXCEPT
   {
-    const T quotient            = numerator / denominator;
-    const T remainder           = numerator % denominator;
-    const T abs_denominator     = etl::absolute(denominator);
-    const T abs_remainderainder = etl::absolute(remainder);
-    const T direction           = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
+    const T quotient  = numerator / denominator;
+    const T remainder = numerator % denominator;
 
-    if ((abs_remainderainder * 2) < abs_denominator)
+    typedef typename etl::make_unsigned<T>::type utype;
+    const utype abs_denominator = etl::absolute_unsigned(denominator);
+    const utype abs_remainder   = etl::absolute_unsigned(remainder);
+    const utype half            = abs_denominator / 2U;
+    const T direction           = private_rounded_integral_division::are_same_sign(numerator, denominator) ? 1 : -1;
+
+    // Odd divisor => no exact-half case; 'half' is floor(abs_denominator/2).
+    if ((abs_denominator & 1U) != 0U)
+    {
+      return (abs_remainder > half) ? quotient + direction : quotient;
+    }
+
+    if (abs_remainder < half)
     {
       return quotient;
     }
-    else if ((abs_remainderainder * 2) > abs_denominator)
+    else if (abs_remainder > half)
     {
       return quotient + direction;
     }

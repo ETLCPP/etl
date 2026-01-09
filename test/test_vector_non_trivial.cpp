@@ -1488,5 +1488,5 @@ namespace
       CHECK_THROW(etl_data.swap(etl_data2), etl::vector_full);
       CHECK_THROW(etl_data2.swap(etl_data), etl::vector_full);
     }
-  };
+  }
 }

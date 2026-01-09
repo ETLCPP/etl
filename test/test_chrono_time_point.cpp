@@ -358,5 +358,5 @@ namespace
 
       CHECK_EQUAL(expected, actual);
     }
-  };
+  }
 }

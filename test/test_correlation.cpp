@@ -280,5 +280,5 @@ namespace
       covariance_result = correlation3.get_covariance();
       CHECK_CLOSE(9.17, covariance_result, 0.1);
     }
-  };
+  }
 }

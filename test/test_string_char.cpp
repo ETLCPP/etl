@@ -1556,7 +1556,9 @@ namespace
 
       Text text2;
 
+#include "etl/private/diagnostic_stringop_overflow_push.h"
       CHECK_THROW(text.insert(text2.cbegin(), insert_text.cbegin(), insert_text.cend()), etl::string_out_of_bounds);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -5486,5 +5488,5 @@ namespace
       CHECK(text1 == sstream_view);
     }
 #endif
-  };
+  }
 }

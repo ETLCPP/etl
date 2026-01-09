@@ -1614,7 +1614,7 @@ namespace
 
       CHECK(text == expected);
     }
-  };
+  }
 }
 
 #endif

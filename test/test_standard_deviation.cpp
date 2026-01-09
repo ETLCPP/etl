@@ -160,5 +160,5 @@ namespace
       variance_result = standard_deviation.get_variance();
       CHECK_CLOSE(9.17, variance_result, 0.1);
     }
-  };
+  }
 }

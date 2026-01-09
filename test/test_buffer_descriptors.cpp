@@ -403,5 +403,5 @@ namespace
       t2.join();
     }
 #endif
-  };
+  }
 }

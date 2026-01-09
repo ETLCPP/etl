@@ -292,6 +292,11 @@ namespace etl
         return lhs.lookup_itr < rhs.lookup_itr;
       }
 
+      friend bool operator <= (const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.lookup_itr <= rhs.lookup_itr;
+      }
+
     private:
 
       iterator(indirect_iterator itr_)
@@ -422,6 +427,11 @@ namespace etl
       friend bool operator < (const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.lookup_itr < rhs.lookup_itr;
+      }
+
+      friend bool operator <= (const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.lookup_itr <= rhs.lookup_itr;
       }
 
     private:
@@ -757,7 +767,7 @@ namespace etl
     //*********************************************************************
     void push_back(const_reference value)
     {
-      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(value);
       lookup.push_back(p);
@@ -771,7 +781,7 @@ namespace etl
     //*********************************************************************
     void push_back(rvalue_reference value)
     {
-      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(etl::move(value));
       lookup.push_back(p);
@@ -787,6 +797,8 @@ namespace etl
     template <typename ... Args>
     reference emplace_back(Args && ... args)
     {
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
       T* p = storage.create<T>(etl::forward<Args>(args)...);
       lookup.push_back(p);
       return back();
@@ -799,7 +811,9 @@ namespace etl
     //*********************************************************************
     reference emplace_back()
     {
-      T* p = storage.create<T>(T());
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
+      T* p = storage.create<T>();
       lookup.push_back(p);
       return back();
     }
@@ -812,7 +826,9 @@ namespace etl
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
-      T* p = storage.create<T>(T(value1));
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
+      T* p = storage.create<T>(value1);
       lookup.push_back(p);
       return back();
     }
@@ -825,7 +841,9 @@ namespace etl
     template <typename T1, typename T2>
     reference emplace_back(const T1& value1, const T2& value2)
     {
-      T* p = storage.create<T>(T(value1, value2));
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
+      T* p = storage.create<T>(value1, value2);
       lookup.push_back(p);
       return back();
     }
@@ -838,7 +856,9 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
-      T* p = storage.create<T>(T(value1, value2, value3));
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
+      T* p = storage.create<T>(value1, value2, value3);
       lookup.push_back(p);
       return back();
     }
@@ -851,7 +871,9 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      T* p = storage.create<T>(T(value1, value2, value3, value4));
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
+
+      T* p = storage.create<T>(value1, value2, value3, value4);
       lookup.push_back(p);
       return back();
     }
@@ -862,7 +884,7 @@ namespace etl
     //*************************************************************************
     void pop_back()
     {
-      ETL_ASSERT(!empty(), ETL_ERROR(vector_empty));
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(vector_empty));
 
       reference object = back();
       storage.destroy<T>(etl::addressof(object));
@@ -878,8 +900,9 @@ namespace etl
     iterator insert(const_iterator position, const_reference value)
     {
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(value));
+      T* p = storage.create<T>(value);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -895,8 +918,9 @@ namespace etl
     iterator insert(const_iterator position, rvalue_reference value)
     {
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(etl::move(value)));
+      T* p = storage.create<T>(etl::move(value));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -908,68 +932,74 @@ namespace etl
     //*************************************************************************
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
-    iterator emplace(iterator position, Args && ... args)
+    iterator emplace(const_iterator position, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(etl::forward<Args>(args)...));
+      T* p = storage.create<T>(etl::forward<Args>(args)...);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 #else
-    iterator emplace(iterator position)
+    iterator emplace(const_iterator position)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T());
+      T* p = storage.create<T>();
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1>
-    iterator emplace(iterator position, const T1& value1)
+    iterator emplace(const_iterator position, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(value1));
+      T* p = storage.create<T>(value1);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1, typename T2>
-    iterator emplace(iterator position, const T1& value1, const T2& value2)
+    iterator emplace(const_iterator position, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(value1, value2));
+      T* p = storage.create<T>(value1, value2);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1, typename T2, typename T3>
-    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3)
+    iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(value1, value2, value3));
+      T* p = storage.create<T>(value1, value2, value3);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
     template <typename T1, typename T2, typename T3, typename T4>
-    iterator emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(T(value1, value2, value3, value4));
+      T* p = storage.create<T>(value1, value2, value3, value4);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 #endif
 
@@ -983,6 +1013,7 @@ namespace etl
     iterator insert(const_iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
 
@@ -1012,6 +1043,7 @@ namespace etl
       size_t count = size_t(etl::distance(first, last));
 
       ETL_ASSERT((size() + count) <= capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       // Make space for the new lookup pointers.
       typename etl::ivector<T*>::iterator lookup_itr = to_iterator(position).lookup_itr;
@@ -1034,6 +1066,8 @@ namespace etl
     //*********************************************************************
     iterator erase(iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(vector_out_of_bounds));
+
       storage.destroy<T>(etl::addressof(*i_element));
 
       return iterator(lookup.erase(i_element.lookup_itr));
@@ -1046,6 +1080,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator i_element)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= i_element && i_element < cend(), ETL_ERROR(vector_out_of_bounds));
+
       storage.destroy<T>(etl::addressof(*i_element));
 
       return iterator(lookup.erase(i_element.lookup_itr));
@@ -1061,6 +1097,8 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
+      ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(vector_out_of_bounds));
+
       iterator element = to_iterator(first);
 
       while (element != last)

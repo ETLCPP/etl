@@ -1148,7 +1148,7 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
 
       Data::iterator it = data.find("3");
-      CHECK(3 == it->second);
+      CHECK(data.end() != it && 3 == it->second);
 
       it = data.find("A");
       CHECK(data.end() == it);
@@ -1165,7 +1165,7 @@ namespace
       EMap data(initial_data.begin(), initial_data.end());
 
       EMap::iterator it = data.find(Key("3"));
-      CHECK(3 == it->second);
+      CHECK(data.end() != it && 3 == it->second);
 
       it = data.find(Key("A"));
       CHECK(data.end() == it);
@@ -1180,7 +1180,7 @@ namespace
       const Data data(initial_data.begin(), initial_data.end());
 
       Data::const_iterator it = data.find("3");
-      CHECK(3 == it->second);
+      CHECK(data.end() != it && 3 == it->second);
 
       it = data.find("A");
       CHECK(data.end() == it);
@@ -1197,7 +1197,7 @@ namespace
       const EMap data(initial_data.begin(), initial_data.end());
 
       EMap::const_iterator it = data.find(Key("3"));
-      CHECK(3 == it->second);
+      CHECK(data.end() != it && 3 == it->second);
 
       it = data.find(Key("A"));
       CHECK(data.end() == it);
@@ -1634,5 +1634,5 @@ namespace
       CHECK(!data.contains(std::string("99")));
       CHECK(!data.contains(Key("99")));
     }
-  };
+  }
 }

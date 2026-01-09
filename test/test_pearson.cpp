@@ -174,6 +174,6 @@ namespace
       hash_t hash3 = etl::pearson<HASH_SIZE>(data3.rbegin(), data3.rend());
       CHECK(hash1 == hash3);
     }
-  };
+  }
 }
 

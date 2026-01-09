@@ -1007,5 +1007,5 @@ namespace
       CHECK_TRUE(bus1.accepts(MESSAGE6));
       CHECK_FALSE(bus1.accepts(MESSAGE7));
     }
-  };
+  }
 }

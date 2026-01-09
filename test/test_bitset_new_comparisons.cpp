@@ -235,5 +235,5 @@ namespace
       CHECK(data2 != data3); // bitset     (M) != bitset_ext (S)
       CHECK(data3 != data2); // bitset_ext (S) != bitset     (M)
     }
-  };
+  }
 }

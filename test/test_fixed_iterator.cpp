@@ -228,5 +228,5 @@ namespace
       CHECK(fi1 == fi2);
       CHECK(fi1 != fi3);
     }
-  };
+  }
 }

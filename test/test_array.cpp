@@ -920,5 +920,5 @@ namespace
 #endif
     }
 #endif
-  };
+  }
 }

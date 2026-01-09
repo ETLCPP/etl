@@ -523,5 +523,5 @@ namespace
       CHECK_EQUAL(iop1.read(), *itr4);
       CHECK_EQUAL(iop2.read(), *itr3);
     }
-  };
+  }
 }

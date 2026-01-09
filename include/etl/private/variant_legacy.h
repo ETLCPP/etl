@@ -285,7 +285,7 @@ namespace etl
 
       private:
 
-        void read(no_type8&) {};
+        void read(no_type8&) {}
       };
 
       //*************************************************************************
@@ -311,8 +311,8 @@ namespace etl
 
       private:
 
-        void read(no_type7&) {};
-        void read(no_type8&) {};
+        void read(no_type7&) {}
+        void read(no_type8&) {}
       };
 
       //*************************************************************************
@@ -337,9 +337,9 @@ namespace etl
 
       private:
 
-        void read(no_type6&) {};
-        void read(no_type7&) {};
-        void read(no_type8&) {};
+        void read(no_type6&) {}
+        void read(no_type7&) {}
+        void read(no_type8&) {}
       };
 
       //*************************************************************************
@@ -363,10 +363,10 @@ namespace etl
 
       private:
 
-        void read(no_type5&) {};
-        void read(no_type6&) {};
-        void read(no_type7&) {};
-        void read(no_type8&) {};
+        void read(no_type5&) {}
+        void read(no_type6&) {}
+        void read(no_type7&) {}
+        void read(no_type8&) {}
       };
 
       //*************************************************************************
@@ -389,11 +389,11 @@ namespace etl
 
       private:
 
-        void read(no_type4&) {};
-        void read(no_type5&) {};
-        void read(no_type6&) {};
-        void read(no_type7&) {};
-        void read(no_type8&) {};
+        void read(no_type4&) {}
+        void read(no_type5&) {}
+        void read(no_type6&) {}
+        void read(no_type7&) {}
+        void read(no_type8&) {}
       };
 
       //*************************************************************************
@@ -415,12 +415,12 @@ namespace etl
 
       private:
 
-        void read(no_type3&) {};
-        void read(no_type4&) {};
-        void read(no_type5&) {};
-        void read(no_type6&) {};
-        void read(no_type7&) {};
-        void read(no_type8&) {};
+        void read(no_type3&) {}
+        void read(no_type4&) {}
+        void read(no_type5&) {}
+        void read(no_type6&) {}
+        void read(no_type7&) {}
+        void read(no_type8&) {}
       };
 
       //*************************************************************************
@@ -441,13 +441,13 @@ namespace etl
 
       private:
 
-        void read(no_type2&) {};
-        void read(no_type3&) {};
-        void read(no_type4&) {};
-        void read(no_type5&) {};
-        void read(no_type6&) {};
-        void read(no_type7&) {};
-        void read(no_type8&) {};
+        void read(no_type2&) {}
+        void read(no_type3&) {}
+        void read(no_type4&) {}
+        void read(no_type5&) {}
+        void read(no_type6&) {}
+        void read(no_type7&) {}
+        void read(no_type8&) {}
       };
 
       //***************************************************************************

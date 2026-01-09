@@ -1632,5 +1632,5 @@ namespace
 
       CHECK(textview.end() == itr);
     }
-  };
+  }
 }

@@ -1264,5 +1264,5 @@ namespace
       CHECK_EQUAL(0U, threadLock.lock_count);
     }
 #endif
-  };
+  }
 }

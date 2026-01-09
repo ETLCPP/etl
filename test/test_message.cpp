@@ -129,4 +129,4 @@ SUITE(test_message)
     CHECK_FALSE((std::is_same<MessageBase,   Message1::base_type>::value));
     CHECK_FALSE((std::is_same<etl::imessage, Message2::base_type>::value));
   }
-};
+}

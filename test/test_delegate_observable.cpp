@@ -274,7 +274,7 @@ namespace
       CHECK_EQUAL(3, global_value);
       CHECK_EQUAL(4, member_value);
     }
-  };
+  }
 }
 
 #endif

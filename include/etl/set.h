@@ -1355,7 +1355,7 @@ namespace etl
     key_compare key_comp() const
     {
       return compare;
-    };
+    }
 
     //*************************************************************************
     /// How to compare two value elements.
@@ -1363,7 +1363,7 @@ namespace etl
     value_compare value_comp() const
     {
       return compare;
-    };
+    }
 
     //*************************************************************************
     /// Check if the set contains the key.

@@ -101,5 +101,5 @@ namespace
       CHECK_EQUAL(std::numeric_limits<long long>::is_signed,          (bool)etl::integral_limits<long long>::is_signed);
       CHECK_EQUAL(std::numeric_limits<unsigned long long>::is_signed, (bool)etl::integral_limits<unsigned long long>::is_signed);
     }
-  };
+  }
 }

@@ -329,5 +329,5 @@ namespace
       CHECK(!member2_called);
       CHECK(unhandled_called);
     }
-  };
+  }
 }

@@ -464,8 +464,8 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_fetch_and)
     {
-      std::atomic<int> compare(0xFFFFFFFFUL);
-      etl::atomic<int> test(0xFFFFFFFFUL);
+      std::atomic<int> compare(int(0xFFFFFFFFUL));
+      etl::atomic<int> test(int(0xFFFFFFFFUL));
 
       CHECK_EQUAL(compare.fetch_and(0x55AA55AAUL), test.fetch_and(0x55AA55AAUL));
     }
@@ -766,5 +766,5 @@ namespace
       CHECK_EQUAL(0, atomic_value.load());
     }
 #endif
-  };
+  }
 }

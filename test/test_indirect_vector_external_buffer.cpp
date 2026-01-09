@@ -646,6 +646,8 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      CHECK_THROW(data[data.size()], etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -662,6 +664,8 @@ namespace
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
+
+      CHECK_THROW(data[data.size()], etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -708,6 +712,12 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.front() == compare_data.front());
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(lookup2, pool2);
+      CHECK_THROW(data2.front(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -720,6 +730,12 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.front() == compare_data.front());
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      const DataNDC data2(lookup2, pool2);
+      CHECK_THROW(data2.front(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -732,6 +748,12 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.back() == compare_data.back());
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(lookup2, pool2);
+      CHECK_THROW(data2.back(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -744,6 +766,12 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.back() == compare_data.back());
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      const DataNDC data2(lookup2, pool2);
+      CHECK_THROW(data2.back(), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -873,6 +901,24 @@ namespace
                                  compare_data.begin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_excess)
+    {
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(lookup, pool);
+
+      for (size_t i = 0UL; i < SIZE; ++i)
+      {
+        std::string value(" ");
+        value[0] = char('A' + i);
+        data.emplace_back(value);
+      }
+
+      CHECK_THROW(data.emplace_back("Z"), etl::vector_full);
     }
 
     //*************************************************************************
@@ -1029,6 +1075,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+      const NDC INITIAL_VALUE("1");
+
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(lookup, pool);
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(lookup2, pool2);
+
+      data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+      CHECK_THROW(data.insert(data2.cbegin(), INITIAL_VALUE), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)
     {
       LookupNDC lookup;
@@ -1056,6 +1122,25 @@ namespace
 
         CHECK(is_equal);
       }
+    }
+
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value_outofbounds)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+      const std::string INITIAL_VALUE("1");
+
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(lookup, pool);
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(lookup2, pool2);
+
+      data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+      CHECK_THROW(data.emplace(data2.begin(), INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1111,6 +1196,24 @@ namespace
 
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
+    {
+      const NDC INITIAL_VALUE("1");
+
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(lookup, pool);
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(lookup2, pool2);
+
+      CHECK_THROW(data.insert(data2.end(), 1, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1174,6 +1277,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_range_outofbounds)
+    {
+      const NDC INITIAL_VALUE("1");
+
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(lookup, pool);
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(lookup2, pool2);
+
+      CHECK_THROW(data.insert(data2.end(), insert_data.begin(), insert_data.end()), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
       LookupNDC lookup;
@@ -1224,6 +1345,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_outofbounds)
+    {
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+
+      CHECK_THROW(data.erase(data.end()), etl::vector_out_of_bounds);
+      CHECK_THROW(data.erase(data.cend()), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       LookupNDC lookup;
@@ -1243,6 +1376,22 @@ namespace
                                  compare_data.cbegin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_outofbounds)
+    {
+      LookupNDC lookup;
+      PoolNDC   pool;
+
+      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+
+      LookupNDC lookup2;
+      PoolNDC   pool2;
+
+      DataNDC data2(initial_data.begin(), initial_data.end(), lookup2, pool2);
+
+      CHECK_THROW(data.erase(data2.begin(), data2.end()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1700,5 +1849,5 @@ namespace
 
       CHECK(is_equal);
     }
-  };
+  }
 }

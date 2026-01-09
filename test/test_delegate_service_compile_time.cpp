@@ -159,7 +159,7 @@ namespace
       CHECK(!member_called);
       CHECK(unhandled_called);
     }
-  };
+  }
 }
 
 #endif

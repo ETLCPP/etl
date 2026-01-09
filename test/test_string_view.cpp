@@ -1155,5 +1155,5 @@ namespace
       CHECK_TRUE(u32view == u32sstream_view);
     }
 #endif
-  };
+  }
 }
