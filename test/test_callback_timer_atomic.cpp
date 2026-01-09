@@ -951,7 +951,7 @@ namespace
       //CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), min(compare2.size(), free_tick_list1.size()));
     }
 #endif
-  };
+  }
 }
 
 #endif

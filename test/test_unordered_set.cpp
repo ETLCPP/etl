@@ -1068,5 +1068,5 @@ namespace
       CHECK_TRUE(data.contains("FF"));
       CHECK_FALSE(data.contains(not_inserted));
     }
-  };
+  }
 }

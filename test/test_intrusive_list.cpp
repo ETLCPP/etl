@@ -1610,5 +1610,5 @@ namespace
 
       CHECK_FALSE(data0.contains(compare_node2));
     }
-  };
+  }
 }

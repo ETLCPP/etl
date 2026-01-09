@@ -106,5 +106,5 @@ namespace
       CHECK_EQUAL(2, Test1::get_instance_count());
       CHECK_EQUAL(2, Test2::get_instance_count());
     }
-  };
+  }
 }

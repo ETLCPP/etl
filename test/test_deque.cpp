@@ -2263,7 +2263,7 @@ namespace
 
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

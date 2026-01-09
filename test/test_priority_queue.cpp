@@ -650,5 +650,5 @@ namespace
         priority_queue2.pop();
       }
     }
-  };
+  }
 }

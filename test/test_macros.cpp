@@ -57,5 +57,5 @@ namespace
       CHECK_ARRAY_EQUAL(u"ABCDEF",  ETL_U16_STRING(ABCDEF),  etl::strlen(u"ABCDEF"));
       CHECK_ARRAY_EQUAL(U"ABCDEF",  ETL_U32_STRING(ABCDEF),  etl::strlen(U"ABCDEF"));
     }
-  };
+  }
 }

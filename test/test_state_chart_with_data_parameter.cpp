@@ -495,5 +495,5 @@ namespace
       motorControl.process_event(EventId::ABORT, 5);
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
     }
-  };
+  }
 }

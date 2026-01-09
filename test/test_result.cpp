@@ -370,5 +370,5 @@ namespace
       CHECK(output.v != input.v);
       CHECK(output2.v == input.v);
     }
-  };
+  }
 }

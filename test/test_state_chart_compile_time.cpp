@@ -608,5 +608,5 @@ namespace
       motorControlStateChart.process_event(EventId::ABORT);
       CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
     }
-  };
+  }
 }

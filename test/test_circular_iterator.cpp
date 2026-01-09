@@ -28,7 +28,9 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 #include <list>
+#include "etl/private/diagnostic_null_dereference_push.h"
 #include <forward_list>
+#include "etl/private/diagnostic_pop.h"
 #include <array>
 
 #include "etl/iterator.h"
@@ -699,5 +701,5 @@ namespace
       CHECK(ci1 != ci3);
       CHECK(ci3 != ci1);
     }
-  };
+  }
 }

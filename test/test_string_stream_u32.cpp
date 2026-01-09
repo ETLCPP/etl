@@ -286,6 +286,6 @@ namespace
 
       CHECK_EQUAL(String(STR("Hello")), istr);
     }
-  };
+  }
 }
 

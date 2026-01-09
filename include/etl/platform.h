@@ -84,6 +84,12 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Do a validity check for error settings, only one is allowed.
+#if defined(ETL_VERBOSE_ERRORS) && defined(ETL_MINIMAL_ERRORS)
+  #error "ETL_VERBOSE_ERRORS and ETL_MINIMAL_ERRORS are mutually exclusive"
+#endif
+
+//*************************************
 // Helper macros, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
 // With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
@@ -291,6 +297,17 @@ SOFTWARE.
   #define ETL_HAS_VIRTUAL_MESSAGES 0
 #else
   #define ETL_HAS_VIRTUAL_MESSAGES 1
+#endif
+
+//*************************************
+// Indicate if etl::exception is to be derived from std::exception.
+#if defined(ETL_USE_STD_EXCEPTION)
+#if ETL_NOT_USING_STL
+  #error "Requested std base for etl::exception, but STL is not used"
+#endif
+  #define ETL_USING_STD_EXCEPTION 1
+#else
+  #define ETL_USING_STD_EXCEPTION 0
 #endif
 
 //*************************************
@@ -631,6 +648,7 @@ namespace etl
     static ETL_CONSTANT bool using_legacy_bitset              = (ETL_USING_LEGACY_BITSET == 1);
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
     static ETL_CONSTANT bool using_libc_wchar_h               = (ETL_USING_LIBC_WCHAR_H == 1);
+    static ETL_CONSTANT bool using_std_exception              = (ETL_USING_STD_EXCEPTION == 1);
     
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);

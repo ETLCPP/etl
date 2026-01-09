@@ -5787,5 +5787,5 @@ namespace
       CHECK(text1 == sstream_view);
     }
 #endif
-  };
+  }
 }

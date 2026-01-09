@@ -487,5 +487,5 @@ namespace
       obj.Push(packet1);
       obj.Push(packet2);
     }
-  };
+  }
 }

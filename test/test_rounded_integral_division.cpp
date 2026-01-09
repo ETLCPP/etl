@@ -624,7 +624,7 @@ namespace
       CHECK_EQUAL(std::numeric_limits<int32_t>::max(), etl::divide_round_half_down(std::numeric_limits<int32_t>::max(), int32_t(1)));
       CHECK_EQUAL(int32_t(0),                          etl::divide_round_half_down(int32_t(1),                          std::numeric_limits<int32_t>::max()));
       CHECK_EQUAL(std::numeric_limits<int32_t>::min(), etl::divide_round_half_down(std::numeric_limits<int32_t>::min(), int32_t(1)));
-      CHECK_EQUAL(int32_t(-1),                         etl::divide_round_half_down(int32_t(1),                          std::numeric_limits<int32_t>::min()));
+      CHECK_EQUAL(int32_t(0),                          etl::divide_round_half_down(int32_t(1),                          std::numeric_limits<int32_t>::min()));
     }
 
     //*************************************************************************
@@ -732,7 +732,8 @@ namespace
       CHECK_EQUAL(std::numeric_limits<int32_t>::max(), etl::divide_round_half_even(std::numeric_limits<int32_t>::max(), int32_t(1)));
       CHECK_EQUAL(int32_t(0),                          etl::divide_round_half_even(int32_t(1),                          std::numeric_limits<int32_t>::max()));
       CHECK_EQUAL(std::numeric_limits<int32_t>::min(), etl::divide_round_half_even(std::numeric_limits<int32_t>::min(), int32_t(1)));
-      CHECK_EQUAL(int32_t(-1),                         etl::divide_round_half_even(int32_t(1),                          std::numeric_limits<int32_t>::min()));
+      CHECK_EQUAL(int32_t(0),                          etl::divide_round_half_even(int32_t(1),                          std::numeric_limits<int32_t>::min()));
+      CHECK_EQUAL(int32_t(1),                          etl::divide_round_half_even(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::min()));
     }
 
     //*************************************************************************
@@ -840,7 +841,7 @@ namespace
       CHECK_EQUAL(std::numeric_limits<int32_t>::max(), etl::divide_round_half_odd(std::numeric_limits<int32_t>::max(), int32_t(1)));
       CHECK_EQUAL(int32_t(0),                          etl::divide_round_half_odd(int32_t(1),                          std::numeric_limits<int32_t>::max()));
       CHECK_EQUAL(std::numeric_limits<int32_t>::min(), etl::divide_round_half_odd(std::numeric_limits<int32_t>::min(), int32_t(1)));
-      CHECK_EQUAL(int32_t(-1),                         etl::divide_round_half_odd(int32_t(1),                          std::numeric_limits<int32_t>::min()));
+      CHECK_EQUAL(int32_t(0),                          etl::divide_round_half_odd(int32_t(1),                          std::numeric_limits<int32_t>::min()));
     }
 
     //*************************************************************************
@@ -891,5 +892,5 @@ namespace
       CHECK_EQUAL(std::numeric_limits<uint32_t>::max(), etl::divide_round_half_odd(std::numeric_limits<uint32_t>::max(), uint32_t(1)));
       CHECK_EQUAL(uint32_t(0U),                         etl::divide_round_half_odd(uint32_t(1),                          std::numeric_limits<uint32_t>::max()));
     }
-  };
+  }
 }

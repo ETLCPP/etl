@@ -632,6 +632,6 @@ namespace
       CHECK(etl::wstring<20>(STR("-124.0000")) == result_i);
       CHECK(result_d == result_i);
     }
-  };
+  }
 }
 

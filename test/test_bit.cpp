@@ -1563,7 +1563,7 @@ namespace
       CHECK_EQUAL(test_bit_width(uint64_t(0xAU)), sizeof(temp));
     }
 #endif
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

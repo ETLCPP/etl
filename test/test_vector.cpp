@@ -1734,5 +1734,5 @@ namespace
       CHECK(etl_data2.size() == swap_other_data.size());
       CHECK(etl_data2.max_size() == other_size);
     }
-  };
+  }
 }

@@ -456,7 +456,7 @@ namespace
       }
     }
 #endif
-  };
+  }
 }
 
 #endif

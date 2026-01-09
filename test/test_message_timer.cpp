@@ -819,5 +819,5 @@ namespace
       CHECK(router1.message2.size() < 65U);
     }
 #endif
-  };
+  }
 }
