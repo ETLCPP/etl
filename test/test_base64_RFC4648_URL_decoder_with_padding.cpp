@@ -653,7 +653,6 @@ namespace
         b64.flush();
         CHECK_TRUE(received_final_block);
 
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
 #include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<unsigned char> expected(input_data.begin(), input_data.begin() + i);
         std::vector<unsigned char> actual(decoded_output);
