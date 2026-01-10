@@ -217,6 +217,7 @@ target_sources(tests PRIVATE
 		imemory_block_allocator.h.t.cpp
 		indirect_vector.h.t.cpp
 		initializer_list.h.t.cpp
+		inplace_function.h.t.cpp
 		instance_count.h.t.cpp
 		integral_limits.h.t.cpp
 		intrusive_forward_list.h.t.cpp
@@ -225,6 +226,7 @@ target_sources(tests PRIVATE
 		intrusive_queue.h.t.cpp
 		intrusive_stack.h.t.cpp
 		invert.h.t.cpp
+		invoke.h.t.cpp
 		io_port.h.t.cpp
 		ipool.h.t.cpp
 		ireference_counted_message_pool.h.t.cpp
