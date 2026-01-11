@@ -10,6 +10,8 @@ Issues:
 #1242 Add begin() and end() to etl::optional
 
 Pull requests:
+#1204 Add etl::format
+#1213 Added concepts.h and tests
 #1232 Exception std based option
 #1235 Bugfixes for compile errors in optimized tests
 #1237 remove extra ;
@@ -46,7 +48,6 @@ Pull Requests:
 #1226 Add missing include to optional
 #1229 variant_legacy.h: Rename template parameters
 #1231 Issue 1212 span constructor
-#1256 ivector swap
 
 ===============================================================================
 20.44.1
