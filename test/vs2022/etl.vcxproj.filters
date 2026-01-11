@@ -1534,7 +1534,10 @@
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\invoke.h">
-      <Filter>UnitTest++\Header Files</Filter>
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\inplace_function.h">
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3759,6 +3762,12 @@
       <Filter>Tests\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\test_invoke.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_is_invocable.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
   </ItemGroup>

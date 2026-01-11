@@ -201,6 +201,7 @@ add_executable(etl_tests
 	test_index_of_type.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
+	test_inplace_function.cpp
 	test_instance_count.cpp
 	test_integral_limits.cpp
 	test_intrusive_forward_list.cpp
@@ -209,9 +210,10 @@ add_executable(etl_tests
 	test_intrusive_queue.cpp
 	test_intrusive_stack.cpp
 	test_invert.cpp
-	test_io_port.cpp
-	test_iterator.cpp
 	test_invoke.cpp
+	test_io_port.cpp
+	test_is_invocable.cpp
+	test_iterator.cpp
 	test_jenkins.cpp
 	test_largest.cpp
 	test_limiter.cpp
