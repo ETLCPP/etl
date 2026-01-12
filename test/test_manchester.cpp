@@ -294,40 +294,40 @@ SUITE(test_manchester)
 
   TEST(valid16)
   {
-    CHECK_TRUE(etl::manchester::valid<uint16_t>(0xAAAAUL));
-    CHECK_TRUE(etl::manchester_inverted::valid<uint16_t>(0xAAAAUL));
-    CHECK_FALSE(etl::manchester::valid<uint16_t>(0xAAA8UL));
-    CHECK_FALSE(etl::manchester_inverted::valid<uint16_t>(0xAAA8UL));
+    CHECK_TRUE(etl::manchester::is_valid<uint16_t>(0xAAAAUL));
+    CHECK_TRUE(etl::manchester_inverted::is_valid<uint16_t>(0xAAAAUL));
+    CHECK_FALSE(etl::manchester::is_valid<uint16_t>(0xAAA8UL));
+    CHECK_FALSE(etl::manchester_inverted::is_valid<uint16_t>(0xAAA8UL));
 
 #if ETL_USING_CPP14
-    static_assert(etl::manchester::valid<uint16_t>(0xAAAAUL), "Compile time manchester validity check failed");
-    static_assert(etl::manchester_inverted::valid<uint16_t>(0xAAAAUL), "Compile time manchester validity check failed");
+    static_assert(etl::manchester::is_valid<uint16_t>(0xAAAAUL), "Compile time manchester validity check failed");
+    static_assert(etl::manchester_inverted::is_valid<uint16_t>(0xAAAAUL), "Compile time manchester validity check failed");
 #endif
   }
 
   TEST(valid32)
   {
-    CHECK_TRUE(etl::manchester::valid<uint32_t>(0xAAAAAAAAUL));
-    CHECK_TRUE(etl::manchester_inverted::valid<uint32_t>(0xAAAAAAAAUL));
-    CHECK_FALSE(etl::manchester::valid<uint32_t>(0xAAAAAAA8UL));
-    CHECK_FALSE(etl::manchester_inverted::valid<uint32_t>(0xAAAAAAA8UL));
+    CHECK_TRUE(etl::manchester::is_valid<uint32_t>(0xAAAAAAAAUL));
+    CHECK_TRUE(etl::manchester_inverted::is_valid<uint32_t>(0xAAAAAAAAUL));
+    CHECK_FALSE(etl::manchester::is_valid<uint32_t>(0xAAAAAAA8UL));
+    CHECK_FALSE(etl::manchester_inverted::is_valid<uint32_t>(0xAAAAAAA8UL));
 
 #if ETL_USING_CPP14
-    static_assert(etl::manchester::valid<uint32_t>(0xAAAAAAAAUL), "Compile time manchester validity check failed");
-    static_assert(etl::manchester_inverted::valid<uint32_t>(0xAAAAAAAAUL), "Compile time manchester validity check failed");
+    static_assert(etl::manchester::is_valid<uint32_t>(0xAAAAAAAAUL), "Compile time manchester validity check failed");
+    static_assert(etl::manchester_inverted::is_valid<uint32_t>(0xAAAAAAAAUL), "Compile time manchester validity check failed");
 #endif
   }
 
   TEST(valid64)
   {
-    CHECK_TRUE(etl::manchester::valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL));
-    CHECK_TRUE(etl::manchester_inverted::valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL));
-    CHECK_FALSE(etl::manchester::valid<uint64_t>(0xAAAAAAAAAAAAAAA8ULL));
-    CHECK_FALSE(etl::manchester_inverted::valid<uint64_t>(0xAAAAAAAAAAAAAAA8ULL));
+    CHECK_TRUE(etl::manchester::is_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL));
+    CHECK_TRUE(etl::manchester_inverted::is_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL));
+    CHECK_FALSE(etl::manchester::is_valid<uint64_t>(0xAAAAAAAAAAAAAAA8ULL));
+    CHECK_FALSE(etl::manchester_inverted::is_valid<uint64_t>(0xAAAAAAAAAAAAAAA8ULL));
 
 #if ETL_USING_CPP14
-    static_assert(etl::manchester::valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL), "Compile time manchester validity check failed");
-    static_assert(etl::manchester_inverted::valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL), "Compile time manchester validity check failed");
+    static_assert(etl::manchester::is_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL), "Compile time manchester validity check failed");
+    static_assert(etl::manchester_inverted::is_valid<uint64_t>(0xAAAAAAAAAAAAAAAAULL), "Compile time manchester validity check failed");
 #endif
   }
 
@@ -336,12 +336,12 @@ SUITE(test_manchester)
     constexpr etl::array<uint8_t, 8> encoded1{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAA, 0x6A};
     constexpr etl::array<uint8_t, 8> encoded2{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAB, 0x6A};
 
-    CHECK_TRUE(etl::manchester::valid_span(encoded1));
-    CHECK_FALSE(etl::manchester::valid_span(encoded2));
+    CHECK_TRUE(etl::manchester::is_valid_span(encoded1));
+    CHECK_FALSE(etl::manchester::is_valid_span(encoded2));
 
 #if ETL_USING_CPP14
-    static_assert(etl::manchester::valid_span(encoded1), "Compile time manchester validity check failed");
-    static_assert(!etl::manchester::valid_span(encoded2), "Compile time manchester validity check failed");
+    static_assert(etl::manchester::is_valid_span(encoded1), "Compile time manchester validity check failed");
+    static_assert(!etl::manchester::is_valid_span(encoded2), "Compile time manchester validity check failed");
 #endif
   }
 };

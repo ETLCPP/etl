@@ -398,7 +398,7 @@ namespace etl
     ///\return True if the value is valid Manchester encoding.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 bool valid(TChunk encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 bool is_valid(TChunk encoded)
     {
       ETL_STATIC_ASSERT(private_manchester::is_decodable<TChunk>::value, "TChunk must be a decodable type");
 
@@ -411,14 +411,14 @@ namespace etl
     ///\param encoded The span of encoded data to validate.
     ///\return True if all data is valid Manchester encoding.
     //*************************************************************************
-    ETL_NODISCARD static ETL_CONSTEXPR14 bool valid_span(etl::span<const uint_least8_t> encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 bool is_valid_span(etl::span<const uint_least8_t> encoded)
     {
       ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, "");
 
       for (size_t i = 0; i < encoded.size(); i += 2)
       {
         const uint16_t chunk = static_cast<uint16_t>((encoded[i + 1] << 8) | encoded[i]);
-        if (!valid<uint16_t>(chunk))
+        if (!is_valid<uint16_t>(chunk))
         {
           return false;
         }
