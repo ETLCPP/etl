@@ -71,7 +71,7 @@ namespace
       CHECK_TRUE(ymd.ok()); // Valid year_month_day
       CHECK_EQUAL(2000,                      (int)ymd.year());
       CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ymd.month());
-      CHECK_EQUAL(Chrono::day(1),            ymd.day());
+      CHECK_EQUAL((unsigned)Chrono::day(1),  (unsigned)ymd.day());
     }
 
     //*************************************************************************

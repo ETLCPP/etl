@@ -3949,6 +3949,9 @@
     <None Include="..\..\.github\workflows\gcc-c++23.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
+    <None Include="..\..\.git\config">
+      <Filter>Resource Files\Git</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">

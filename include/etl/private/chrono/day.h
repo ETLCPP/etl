@@ -164,7 +164,7 @@ namespace etl
       //***********************************************************************
       /// Conversion operator to unsigned int
       //***********************************************************************
-      ETL_CONSTEXPR14 operator unsigned() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 explicit operator unsigned() const ETL_NOEXCEPT
       {
         return static_cast<unsigned>(value);
       }

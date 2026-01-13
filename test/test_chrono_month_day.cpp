@@ -69,8 +69,8 @@ namespace
       Chrono::month_day md{Chrono::January, Chrono::day{15}};
 
       CHECK_TRUE(md.ok()); // Valid month_day
-      CHECK_EQUAL(Chrono::January, md.month());
-      CHECK_EQUAL(Chrono::day{15}, md.day());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)md.month());
+      CHECK_EQUAL((unsigned)Chrono::day{15}, (unsigned)md.day());
     }
 
     //*************************************************************************
@@ -204,11 +204,11 @@ namespace
       CHECK_TRUE(md_min.ok());
       CHECK_TRUE(md_max.ok());
 
-      CHECK_EQUAL(Chrono::January, md_min.month());
-      CHECK_EQUAL(Chrono::day{1}, md_min.day());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)md_min.month());
+      CHECK_EQUAL((unsigned)Chrono::day{1}, (unsigned)md_min.day());
 
-      CHECK_EQUAL(Chrono::December, md_max.month());
-      CHECK_EQUAL(Chrono::day{31}, md_max.day());
+      CHECK_EQUAL((unsigned)Chrono::December, (unsigned)md_max.month());
+      CHECK_EQUAL((unsigned)Chrono::day{31}, (unsigned)md_max.day());
     }
   }
 }

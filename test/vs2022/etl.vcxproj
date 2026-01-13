@@ -11479,6 +11479,7 @@
     <None Include="..\..\.github\workflows\platformio-update.yml" />
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.gitmodules" />
+    <None Include="..\..\.git\config" />
     <None Include="..\..\appveyor.yml" />
     <None Include="..\..\arduino\library-arduino.json" />
     <None Include="..\..\arduino\library-arduino.properties" />

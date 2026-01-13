@@ -61,8 +61,8 @@ namespace
       Chrono::month_weekday_last mwdl{ Chrono::January, Chrono::weekday_last(Chrono::Friday)};
 
       CHECK_TRUE(mwdl.ok()); // Valid month_weekday_last
-      CHECK_EQUAL(Chrono::January, mwdl.month());
-      CHECK_EQUAL(Chrono::Friday.c_encoding(), mwdl.weekday_last().weekday().c_encoding());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)mwdl.month());
+      CHECK_EQUAL((unsigned)Chrono::Friday.c_encoding(), (unsigned)mwdl.weekday_last().weekday().c_encoding());
     }
 
     //*************************************************************************

@@ -61,7 +61,7 @@ namespace
       Chrono::month_weekday mwd{ Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2) };
 
       CHECK_TRUE(mwd.ok()); // Valid month_weekday
-      CHECK_EQUAL(Chrono::January, mwd.month());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)mwd.month());
       CHECK_EQUAL(Chrono::Friday.c_encoding(), mwd.weekday_indexed().weekday().c_encoding());
       CHECK_EQUAL(2, mwd.weekday_indexed().index());
     }

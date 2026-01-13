@@ -87,8 +87,8 @@ namespace
         etl::chrono::year this_year = ++year;
 
         CHECK_TRUE(year.ok());
-        CHECK_EQUAL(count, year);
-        CHECK_EQUAL(this_year, year);
+        CHECK_EQUAL(count, static_cast<int>(year));
+        CHECK_EQUAL((int)this_year, (int)year);
       }
     }
 
