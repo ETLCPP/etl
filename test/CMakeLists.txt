@@ -86,6 +86,7 @@ add_executable(etl_tests
 	test_closure.cpp
 	test_closure_constexpr.cpp
 	test_compare.cpp
+	test_concepts.cpp
 	test_constant.cpp
 	test_const_map.cpp
 	test_const_map_constexpr.cpp
@@ -183,6 +184,7 @@ add_executable(etl_tests
 	test_flat_multiset.cpp
 	test_flat_set.cpp
 	test_fnv_1.cpp
+	test_format.cpp
 	test_format_spec.cpp
 	test_forward_list.cpp
 	test_forward_list_shared_pool.cpp
@@ -199,6 +201,7 @@ add_executable(etl_tests
 	test_index_of_type.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
+	test_inplace_function.cpp
 	test_instance_count.cpp
 	test_integral_limits.cpp
 	test_intrusive_forward_list.cpp
@@ -207,7 +210,9 @@ add_executable(etl_tests
 	test_intrusive_queue.cpp
 	test_intrusive_stack.cpp
 	test_invert.cpp
+	test_invoke.cpp
 	test_io_port.cpp
+	test_is_invocable.cpp
 	test_iterator.cpp
 	test_jenkins.cpp
 	test_largest.cpp
@@ -258,6 +263,7 @@ add_executable(etl_tests
 	test_poly_span_fixed_extent.cpp
 	test_pool.cpp
 	test_pool_external_buffer.cpp
+	test_print.cpp
 	test_priority_queue.cpp
 	test_pseudo_moving_average.cpp
 	test_quantize.cpp
@@ -460,12 +466,14 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+			-pedantic-errors
 			-Wall
 			-Wextra
 			-Werror
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wextra-semi
 			-g
 			)
 endif ()
@@ -475,12 +483,16 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+			-pedantic-errors
 			-Wall
 			-Wextra
 			-Werror
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wextra-semi
+			-Wextra-semi-stmt
+			-Wc++11-extra-semi
 			-g
 			)
 endif ()

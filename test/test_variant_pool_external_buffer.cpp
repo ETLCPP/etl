@@ -325,5 +325,5 @@ namespace
       delete[] buffer1;
       delete[] buffer2;
     }
-  };
+  }
 }

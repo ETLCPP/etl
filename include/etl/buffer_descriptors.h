@@ -99,7 +99,9 @@ namespace etl
       pointer data() const
       {
         assert(pdesc_item != ETL_NULLPTR);
+#include "private/diagnostic_null_dereference_push.h"
         return pdesc_item->pbuffer;
+#include "private/diagnostic_pop.h"
       }
 
       //*********************************
@@ -147,7 +149,7 @@ namespace etl
       //*********************************
       void allocate()
       {
-        pdesc_item->in_use = true;;
+        pdesc_item->in_use = true;
       }
 
       /// The pointer to the buffer descriptor.

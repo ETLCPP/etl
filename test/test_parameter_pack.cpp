@@ -87,5 +87,5 @@ namespace
       // Static assert
       //CHECK((std::is_same_v<long, etl::parameter_pack_t<3U, char, short, int>>));
     }
-  };
+  }
 }

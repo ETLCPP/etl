@@ -740,6 +740,6 @@ namespace
       CHECK_THROW((b64.encode(input_data.data(), 10)), etl::base64_overflow);
       CHECK_TRUE(b64.overflow());
     }
-  };
+  }
 }
 

@@ -130,5 +130,5 @@ namespace
       CHECK_TRUE(etl::is_exactly_equal(i1, i1));
       CHECK_FALSE(etl::is_exactly_equal(i1, i2));
     }
-  };
+  }
 }

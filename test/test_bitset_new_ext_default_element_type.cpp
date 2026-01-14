@@ -2459,5 +2459,5 @@ namespace
 
       CHECK_EQUAL(32, ETL_OR_STD17::size(b));
     }
-  };
+  }
 }

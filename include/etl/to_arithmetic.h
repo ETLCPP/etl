@@ -844,7 +844,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str, const etl::radix::value_type radix)
   {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), radix);;
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), radix);
   }
 
   //***************************************************************************
@@ -856,7 +856,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str)
   {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), etl::radix::decimal);;
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), etl::radix::decimal);
   }
 
   //***************************************************************************
@@ -868,7 +868,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str, const typename etl::private_basic_format_spec::base_spec& spec)
   {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), spec);;
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), spec);
   }
 
   //***************************************************************************

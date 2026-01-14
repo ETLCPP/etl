@@ -52,6 +52,8 @@ namespace
     Compare_Data different_data;
     Compare_Data insert_data;
     Compare_Data blank_data;
+    Compare_Data swap_data;
+    Compare_Data swap_other_data;
 
     //*************************************************************************
     struct SetupFixture
@@ -63,6 +65,8 @@ namespace
         int n_less[]    = { 0, 1, 2, 3, 3, 5, 6, 7, 8, 9 };
         int n_greater[] = { 0, 1, 2, 4, 4, 5, 6, 7, 8, 9 };
         int n_blank[]   = { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 };
+        int n_swap[]    = { 0, 1, 2, 3, 4, 5 };
+        int n_swap_other[] = { 6, 7, 8, 9 };
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -71,6 +75,8 @@ namespace
         shorter_data.assign(std::begin(n_greater), std::end(n_greater) - 1);
         different_data.assign(initial_data.rbegin(), initial_data.rend());
         blank_data.assign(std::begin(n_blank), std::end(n_blank));
+        swap_data.assign(std::begin(n_swap), std::end(n_swap));
+        swap_other_data.assign(std::begin(n_swap_other), std::end(n_swap_other));
       }
     };
 
@@ -1620,5 +1626,113 @@ namespace
 
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
     }
-  };
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_same_capacity)
+    {
+      Data etl_data(swap_data.begin(), swap_data.end());
+      Data etl_data2(swap_other_data.begin(), swap_other_data.end());
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == SIZE);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_data.size());
+      CHECK(etl_data2.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_other_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_different_capacity)
+    {
+      const size_t other_size = 6;
+      Data etl_data(swap_data.begin(), swap_data.end());
+      etl::vector<int, other_size> etl_data2(swap_other_data.begin(), swap_other_data.end());
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_other_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+    }
+
+    //*************************************************************************
+    TEST(test_swap_insufficient_capacity)
+    {
+      etl::vector<int, 4> etl_data(4);
+      etl::vector<int, 6> etl_data2(6);
+
+      CHECK_THROW(etl_data.swap(etl_data2), etl::vector_full);
+      CHECK_THROW(etl_data2.swap(etl_data), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_etl_swap_different_capacity)
+    {
+      const size_t other_size = 6;
+      Data etl_data(swap_data.begin(), swap_data.end());
+      etl::vector<int, other_size> etl_data2(swap_other_data.begin(), swap_other_data.end());
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+
+      etl::swap(etl_data, etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_other_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+
+      etl::swap(etl_data, etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+    }
+  }
 }

@@ -1,12 +1,40 @@
 ﻿===============================================================================
+20.45.0
+
+Issues:
+#1184 Request: Adding a method to check whether a etl::callback_timer_atomic is currently running
+#1189 Request: make useage of osMutexRobust in etl::mutex optional
+#1207 Monadic Operations for etl::expected
+#1240 Add redundant semicolon checks to CMakeLists.txt and fix issues
+#1241 Add -pedantic-errors to unit test CMakeLists.txt and fix issues
+#1242 Add begin() and end() to etl::optional
+
+Pull requests:
+#1204 Add etl::format
+#1213 Added concepts.h and tests
+#1232 Exception std based option
+#1235 Bugfixes for compile errors in optimized tests
+#1237 remove extra ;
+#1238 Various cleanup
+#1239 Indirect vector checks
+#1244 Fix no check macros
+#1245 Fix discrepancy with STL in max_element and minmax_element 
+#1246 Implement .begin() and .end() for etl::optional 
+#1251 Add etl::inplace_function
+#1252 Add ThreadX mutex support
+#1254 Make code base with tests compile under gcc-14
+#1255 Fix syntax errors in base64 test
+#1256 ivector swap
+
+===============================================================================
 20.44.2
 
 Updates:
 Replaced locally defined logical_not_t with etl::negation
 
 Fixes:
-#1228 unused parameter 'secure'
 #1224 Passing a const in optional::value_or() not compiling
+#1228 unused parameter 'secure'
 
 Pull Requests:
 #1210 Fixed span reinterpret_as should return fixed span

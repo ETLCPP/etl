@@ -947,6 +947,31 @@ namespace etl
       return first_;
     }
 
+    //*********************************************************************
+    /// Swap contents with another vector.  Performs operation on each individual element.
+    ///\param other The other vector to swap with.
+    //*********************************************************************
+    void swap(ivector<T>& other)
+    {
+      if (this == &other)
+      {
+        return;
+      }
+
+      ETL_ASSERT_OR_RETURN(this->max_size() >= other.size() && other.max_size() >= this->size(), ETL_ERROR(vector_full));
+
+      ivector<T>& smaller = other.size() > this->size() ? *this : other;
+      ivector<T>& larger = other.size() > this->size() ? other : *this;
+
+      ETL_OR_STD::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
+
+      typename ivector<T>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
+
+      etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
+
+      larger.erase(larger_itr, larger.end());
+    }
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -1862,6 +1887,17 @@ namespace etl
     v.erase(itr, v.end());
 
     return d;
+  }
+
+  //*********************************************************************
+  /// Overloaded swap for etl::ivector<T> 
+  ///\param lhs The first vector to swap with.
+  ///\param rhs The second vector to swap with.
+  //*********************************************************************
+  template<typename T>
+  void swap(ivector<T>& lhs, ivector<T>& rhs)
+  {
+    lhs.swap(rhs);
   }
 }
 

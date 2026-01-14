@@ -1419,5 +1419,5 @@ namespace
       CHECK_EQUAL(ItemNDC("F"), *itr++);
     }
 #endif
-  };
+  }
 }

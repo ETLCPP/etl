@@ -712,5 +712,5 @@ namespace
       }
     }
 #endif
-  };
+  }
 }

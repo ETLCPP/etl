@@ -84,7 +84,7 @@ namespace private_variant
         case 2: { visitor(etl::get<2>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -102,7 +102,7 @@ namespace private_variant
         case 3: { visitor(etl::get<3>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -121,7 +121,7 @@ namespace private_variant
         case 4: { visitor(etl::get<4>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -141,7 +141,7 @@ namespace private_variant
         case 5: { visitor(etl::get<5>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -162,7 +162,7 @@ namespace private_variant
         case 6: { visitor(etl::get<6>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -184,7 +184,7 @@ namespace private_variant
         case 7: { visitor(etl::get<7>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 #if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
   //***************************************************************************
@@ -207,7 +207,7 @@ namespace private_variant
         case 8: { visitor(etl::get<8>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -231,7 +231,7 @@ namespace private_variant
         case 9: { visitor(etl::get<9>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -256,7 +256,7 @@ namespace private_variant
         case 10: { visitor(etl::get<10>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -282,7 +282,7 @@ namespace private_variant
         case 11: { visitor(etl::get<11>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -309,7 +309,7 @@ namespace private_variant
         case 12: { visitor(etl::get<12>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -337,7 +337,7 @@ namespace private_variant
         case 13: { visitor(etl::get<13>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -366,7 +366,7 @@ namespace private_variant
         case 14: { visitor(etl::get<14>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -396,7 +396,7 @@ namespace private_variant
         case 15: { visitor(etl::get<15>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 #if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
   //***************************************************************************
@@ -427,7 +427,7 @@ namespace private_variant
         case 16: { visitor(etl::get<16>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -459,7 +459,7 @@ namespace private_variant
         case 17: { visitor(etl::get<17>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -492,7 +492,7 @@ namespace private_variant
         case 18: { visitor(etl::get<18>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -526,7 +526,7 @@ namespace private_variant
         case 19: { visitor(etl::get<19>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -561,7 +561,7 @@ namespace private_variant
         case 20: { visitor(etl::get<20>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -597,7 +597,7 @@ namespace private_variant
         case 21: { visitor(etl::get<21>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -634,7 +634,7 @@ namespace private_variant
         case 22: { visitor(etl::get<22>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -672,7 +672,7 @@ namespace private_variant
         case 23: { visitor(etl::get<23>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 #if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
   //***************************************************************************
@@ -711,7 +711,7 @@ namespace private_variant
         case 24: { visitor(etl::get<24>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -751,7 +751,7 @@ namespace private_variant
         case 25: { visitor(etl::get<25>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -792,7 +792,7 @@ namespace private_variant
         case 26: { visitor(etl::get<26>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -834,7 +834,7 @@ namespace private_variant
         case 27: { visitor(etl::get<27>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -877,7 +877,7 @@ namespace private_variant
         case 28: { visitor(etl::get<28>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -921,7 +921,7 @@ namespace private_variant
         case 29: { visitor(etl::get<29>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -966,7 +966,7 @@ namespace private_variant
         case 30: { visitor(etl::get<30>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -1012,7 +1012,7 @@ namespace private_variant
         case 31: { visitor(etl::get<31>(the_variant)); break; }
         default: break;
       }
-    };
+    }
   };
 #endif
 #endif

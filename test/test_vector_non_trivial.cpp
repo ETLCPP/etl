@@ -62,6 +62,8 @@ namespace
     CompareDataNDC shorter_data;
     CompareDataNDC different_data;
     CompareDataNDC insert_data;
+    CompareDataNDC swap_data;
+    CompareDataNDC swap_other_data;
 
     //*************************************************************************
     struct SetupFixture
@@ -72,6 +74,8 @@ namespace
         NDC n_insert[]  = { NDC("11"), NDC("12"), NDC("13") };
         NDC n_less[]    = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("3"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
         NDC n_greater[] = { NDC("0"), NDC("1"), NDC("2"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+        NDC n_swap[]    = { NDC("0"), NDC("1"), NDC("2"), NDC("4"), NDC("4"), NDC("5") };
+        NDC n_swap_other[] = { NDC("6"), NDC("7"), NDC("8"), NDC("9") };
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -79,6 +83,8 @@ namespace
         greater_data.assign(std::begin(n_greater), std::end(n_greater));
         shorter_data.assign(std::begin(n_greater), std::end(n_greater) - 1);
         different_data.assign(initial_data.rbegin(), initial_data.rend());
+        swap_data.assign(std::begin(n_swap), std::end(n_swap));
+        swap_other_data.assign(std::begin(n_swap_other), std::end(n_swap_other));
       }
     };
 
@@ -1407,5 +1413,80 @@ namespace
       const DataNDC initial2(initial_data.begin(), initial_data.end());
       CHECK((initial >= initial2) == (initial_data >= initial_data));
     }
-  };
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_same_capacity)
+    {
+      DataNDC etl_data(swap_data.begin(), swap_data.end());
+      DataNDC etl_data2(swap_other_data.begin(), swap_other_data.end());
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == SIZE);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_data.size());
+      CHECK(etl_data2.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_other_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_swap_different_capacity)
+    {
+      const size_t other_size = 6;
+      DataNDC etl_data(swap_data.begin(), swap_data.end());
+      etl::vector<NDC, other_size> etl_data2(swap_other_data.begin(), swap_other_data.end());
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_other_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+
+      etl_data.swap(etl_data2);
+
+      CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
+      CHECK(etl_data.size() == swap_data.size());
+      CHECK(etl_data.max_size() == SIZE);
+      CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
+      CHECK(etl_data2.size() == swap_other_data.size());
+      CHECK(etl_data2.max_size() == other_size);
+    }
+
+    //*************************************************************************
+    TEST(test_swap_insufficient_capacity)
+    {
+      etl::vector<DC, 4> etl_data(4);
+      etl::vector<DC, 6> etl_data2(6);
+
+      CHECK_THROW(etl_data.swap(etl_data2), etl::vector_full);
+      CHECK_THROW(etl_data2.swap(etl_data), etl::vector_full);
+    }
+  }
 }

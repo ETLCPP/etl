@@ -35,10 +35,26 @@ set_target_properties(tests PROPERTIES
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS ON
         )
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 target_compile_options(tests
 	    PRIVATE
 		-fsyntax-only
+		-pedantic-errors
+		-Werror
+		-Wextra-semi
 		)
+endif ()
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+target_compile_options(tests
+	    PRIVATE
+		-fsyntax-only
+		-pedantic-errors
+		-Werror
+		-Wextra-semi
+		-Wextra-semi-stmt
+		-Wc++11-extra-semi
+		)
+endif ()
 
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
@@ -98,6 +114,7 @@ target_sources(tests PRIVATE
 		char_traits.h.t.cpp
 		checksum.h.t.cpp
 		chrono.h.t.cpp
+		concepts.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		closure.h.t.cpp
@@ -182,6 +199,7 @@ target_sources(tests PRIVATE
 		flat_multiset.h.t.cpp
 		flat_set.h.t.cpp
 		fnv_1.h.t.cpp
+		format.h.t.cpp
 		format_spec.h.t.cpp
 		forward_list.h.t.cpp
 		frame_check_sequence.h.t.cpp
@@ -199,6 +217,7 @@ target_sources(tests PRIVATE
 		imemory_block_allocator.h.t.cpp
 		indirect_vector.h.t.cpp
 		initializer_list.h.t.cpp
+		inplace_function.h.t.cpp
 		instance_count.h.t.cpp
 		integral_limits.h.t.cpp
 		intrusive_forward_list.h.t.cpp
@@ -207,6 +226,7 @@ target_sources(tests PRIVATE
 		intrusive_queue.h.t.cpp
 		intrusive_stack.h.t.cpp
 		invert.h.t.cpp
+		invoke.h.t.cpp
 		io_port.h.t.cpp
 		ipool.h.t.cpp
 		ireference_counted_message_pool.h.t.cpp

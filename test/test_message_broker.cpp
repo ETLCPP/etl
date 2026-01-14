@@ -558,5 +558,5 @@ namespace
       CHECK_TRUE(broker.accepts(MESSAGE5));
       CHECK_TRUE(broker.accepts(MESSAGE6));
     }
-  };
+  }
 }

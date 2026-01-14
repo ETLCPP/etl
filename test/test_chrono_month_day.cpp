@@ -210,6 +210,5 @@ namespace
       CHECK_EQUAL(Chrono::December, md_max.month());
       CHECK_EQUAL(Chrono::day{31}, md_max.day());
     }
-
-  };
+  }
 }

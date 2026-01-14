@@ -133,5 +133,5 @@ namespace
       bool isEqual = std::equal(output2.begin(), output2.end(), result2b.begin(), Compare());
       CHECK(isEqual);
     }
-  };
+  }
 }
