@@ -1258,7 +1258,7 @@ namespace etl
   span(const etl::array<T, Size>&)
     -> span<const T, Size>;
 
-  //forward declare etl::ivector
+  // Forward declaration of etl::ivector
   template <typename T>
   class ivector;
 

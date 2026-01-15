@@ -784,37 +784,47 @@ namespace
     {
       const size_t max_size = 10;
       const size_t size = 4;
+
       int buffer1[max_size];
       int buffer2[max_size];
-      etl::vector<int, max_size> data = { 1, 2, 3, 4 };
-      const etl::vector<int, max_size> data2 = { 1, 2, 3, 4 };
-      etl::vector_ext<int> data_ext(size, buffer1, max_size);
-      const etl::vector_ext<int> data2_ext(size, buffer2, max_size);
+      int * buffer3[max_size];
+      int * buffer4[max_size];
+      const int * buffer5[max_size];
+      const int * buffer6[max_size];
 
-      etl::vector<int*, max_size> pdata = {nullptr, nullptr, nullptr, nullptr};
-      const etl::vector<int*, max_size> pdata2 = {nullptr, nullptr, nullptr, nullptr};
-      etl::vector<const int*, max_size> pdata3 = {nullptr, nullptr, nullptr, nullptr};
-      const etl::vector<const int*, max_size> pdata4 = {nullptr, nullptr, nullptr, nullptr};
+      etl::vector<int, max_size> data(size, 0);
+      const etl::vector<int, max_size> data2(size, 0);
+      etl::vector_ext<int> data_ext(size, 0, buffer1, max_size);
+      const etl::vector_ext<int> data2_ext(size, 0, buffer2, max_size);
 
       etl::span span = data;
-      etl::span cspan = data2;
+      etl::span span2 = data2;
       etl::span span_ext = data_ext;
-      etl::span cspan_ext = data2_ext;
+      etl::span span2_ext = data2_ext;
+
+      CHECK_EQUAL(etl::dynamic_extent, span.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), span.size());
+      CHECK_EQUAL(etl::dynamic_extent, span2.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data2), span2.size());
+      CHECK_EQUAL(etl::dynamic_extent, span_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data_ext), span_ext.size());
+      CHECK_EQUAL(etl::dynamic_extent, span2_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data2_ext), span2_ext.size());
+
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
+      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(span2.front())>>));
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span_ext.front())>>));
+      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(span2_ext.front())>>));
+
+      etl::vector<int*, max_size> pdata(size, nullptr);
+      const etl::vector<int*, max_size> pdata2(size, nullptr);
+      etl::vector<const int*, max_size> pdata3(size, nullptr);
+      const etl::vector<const int*, max_size> pdata4(size, nullptr);
 
       etl::span pspan = pdata;
       etl::span pspan2 = pdata2;
       etl::span pspan3 = pdata3;
       etl::span pspan4 = pdata4;
-
-      CHECK_EQUAL(etl::dynamic_extent, span.extent);
-      CHECK_EQUAL(ETL_OR_STD17::size(data), span.size());
-      CHECK_EQUAL(etl::dynamic_extent, cspan.extent);
-      CHECK_EQUAL(ETL_OR_STD17::size(data2), cspan.size());
-
-      CHECK_EQUAL(etl::dynamic_extent, span_ext.extent);
-      CHECK_EQUAL(ETL_OR_STD17::size(data_ext), span_ext.size());
-      CHECK_EQUAL(etl::dynamic_extent, cspan_ext.extent);
-      CHECK_EQUAL(ETL_OR_STD17::size(data2_ext), cspan_ext.size());
 
       CHECK_EQUAL(etl::dynamic_extent, pspan.extent);
       CHECK_EQUAL(ETL_OR_STD17::size(pdata), pspan.size());
@@ -825,15 +835,34 @@ namespace
       CHECK_EQUAL(etl::dynamic_extent, pspan4.extent);
       CHECK_EQUAL(ETL_OR_STD17::size(pdata4), pspan4.size());
 
-      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
-      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cspan.front())>>));
-      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span_ext.front())>>));
-      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(cspan_ext.front())>>));
-      
       CHECK((std::is_same_v<int*, std::remove_reference_t<decltype(pspan.front())>>));
       CHECK((std::is_same_v<int* const, std::remove_reference_t<decltype(pspan2.front())>>));
       CHECK((std::is_same_v<const int*, std::remove_reference_t<decltype(pspan3.front())>>));
       CHECK((std::is_same_v<const int* const, std::remove_reference_t<decltype(pspan4.front())>>));
+
+      etl::vector_ext<int*> pdata_ext(size, buffer3, max_size);
+      const etl::vector_ext<int*> pdata2_ext(size, buffer4, max_size);
+      etl::vector_ext<const int*> pdata3_ext(size, buffer5, max_size);
+      const etl::vector_ext<const int*> pdata4_ext(size, buffer6, max_size);
+
+      etl::span pspan_ext = pdata_ext;
+      etl::span pspan2_ext = pdata2_ext;
+      etl::span pspan3_ext = pdata3_ext;
+      etl::span pspan4_ext = pdata4_ext;
+
+      CHECK_EQUAL(etl::dynamic_extent, pspan_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata_ext), pspan_ext.size());
+      CHECK_EQUAL(etl::dynamic_extent, pspan2_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata2_ext), pspan2_ext.size());
+      CHECK_EQUAL(etl::dynamic_extent, pspan3_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata3_ext), pspan3_ext.size());
+      CHECK_EQUAL(etl::dynamic_extent, pspan4_ext.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(pdata4_ext), pspan4_ext.size());
+
+      CHECK((std::is_same_v<int*, std::remove_reference_t<decltype(pspan_ext.front())>>));
+      CHECK((std::is_same_v<int* const, std::remove_reference_t<decltype(pspan2_ext.front())>>));
+      CHECK((std::is_same_v<const int*, std::remove_reference_t<decltype(pspan3_ext.front())>>));
+      CHECK((std::is_same_v<const int* const, std::remove_reference_t<decltype(pspan4_ext.front())>>));
     }
 
     //*************************************************************************
