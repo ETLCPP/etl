@@ -840,10 +840,10 @@ namespace
       CHECK((std::is_same_v<const int*, std::remove_reference_t<decltype(pspan3.front())>>));
       CHECK((std::is_same_v<const int* const, std::remove_reference_t<decltype(pspan4.front())>>));
 
-      etl::vector_ext<int*> pdata_ext(size, buffer3, max_size);
-      const etl::vector_ext<int*> pdata2_ext(size, buffer4, max_size);
-      etl::vector_ext<const int*> pdata3_ext(size, buffer5, max_size);
-      const etl::vector_ext<const int*> pdata4_ext(size, buffer6, max_size);
+      etl::vector_ext<int*> pdata_ext(size, nullptr, buffer3, max_size);
+      const etl::vector_ext<int*> pdata2_ext(size, nullptr, buffer4, max_size);
+      etl::vector_ext<const int*> pdata3_ext(size, nullptr, buffer5, max_size);
+      const etl::vector_ext<const int*> pdata4_ext(size, nullptr, buffer6, max_size);
 
       etl::span pspan_ext = pdata_ext;
       etl::span pspan2_ext = pdata2_ext;
