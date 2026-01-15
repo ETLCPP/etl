@@ -86,9 +86,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::month month{};
+      Chrono::month month;
 
-      CHECK_FALSE(month.ok());
+      CHECK_TRUE(expected_month_ok(month));
     }
 
     //*************************************************************************

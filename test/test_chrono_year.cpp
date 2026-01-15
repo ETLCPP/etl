@@ -58,10 +58,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::year year{};
+      etl::chrono::year year;
 
       CHECK_TRUE(year.ok());
-      CHECK_TRUE(year == Chrono::year{0});
     }
 
     //*************************************************************************

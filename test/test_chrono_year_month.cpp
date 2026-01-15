@@ -58,9 +58,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::year_month ym{};
+      Chrono::year_month ym;
 
-      CHECK_FALSE(ym.ok());
+      CHECK_FALSE(ym.ok()); // Default-constructed year_month is not valid
     }
 
     //*************************************************************************
@@ -215,5 +215,5 @@ namespace
       CHECK_TRUE((dys + ym == Chrono::year_month(ym.year() + dys, ym.month())));
       CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
     }
-  };
+  }
 }

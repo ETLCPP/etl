@@ -46,7 +46,12 @@ namespace etl
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      year_month_weekday() = default;
+      ETL_CONSTEXPR year_month_weekday()
+        : y()
+        , m()
+        , wdi()
+      {
+      }
 
       //*************************************************************************
       /// Construct from month, day, and weekday_indexed.

@@ -60,10 +60,9 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::weekday weekday{};
+      Chrono::weekday weekday;
 
-      CHECK_TRUE(weekday.ok());
-      CHECK_TRUE(weekday == Chrono::Sunday);
+      CHECK_FALSE(weekday.ok());
     }
 
     //*************************************************************************

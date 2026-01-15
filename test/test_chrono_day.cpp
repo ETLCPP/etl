@@ -73,7 +73,7 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      Chrono::day day{};
+      Chrono::day day;
 
       CHECK_FALSE(day.ok());
     }

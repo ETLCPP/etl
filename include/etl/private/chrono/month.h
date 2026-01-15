@@ -59,7 +59,10 @@ namespace etl
       //***********************************************************************
       /// Default constructor
       //***********************************************************************
-      month() = default;
+      ETL_CONSTEXPR month() ETL_NOEXCEPT
+        : value(0)
+      {
+      }
 
       //***********************************************************************
       /// Construct from unsigned
@@ -234,7 +237,7 @@ namespace etl
     //***********************************************************************
     inline ETL_CONSTEXPR14 etl::chrono::month operator +(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
     {
-      unsigned int value = static_cast<unsigned>(m);
+      unsigned int value = static_cast<unsigned int>(m);
 
       value = value % 12U;
 
