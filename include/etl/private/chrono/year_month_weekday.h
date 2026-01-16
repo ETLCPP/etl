@@ -69,6 +69,9 @@ namespace etl
       /// Construct from sys_days.
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_weekday(const etl::chrono::sys_days& sd) ETL_NOEXCEPT
+        : y(0)
+        , m(0U)
+        , wdi(etl::chrono::weekday(0), 0U)
       {
         // Extract year, month, and day
         year_month_day ymd = year_month_day{sd};
@@ -84,7 +87,7 @@ namespace etl
         // We walk backward from the given day in steps of 7 days
         unsigned index = 1;
         
-        for (int offset = static_cast<int>(dy) - 7; offset > 0; offset -= 7) 
+        for (int offset = static_cast<int>(static_cast<unsigned>(dy)) - 7; offset > 0; offset -= 7)
         {
           ++index;
         }
@@ -98,6 +101,9 @@ namespace etl
       /// Construct from local_days.
       //*************************************************************************
       ETL_CONSTEXPR14 year_month_weekday(const etl::chrono::local_days& ld) ETL_NOEXCEPT
+        : y(0)
+        , m(0U)
+        , wdi(etl::chrono::weekday(0), 0U)
       {
         year_month_weekday ymwd(sys_days(ld.time_since_epoch()));
 
@@ -506,7 +512,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month_weekday& ymwd) const
     {
-      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ymwd.year()));
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<int>(ymwd.year()));
       etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ymwd.month()));
       unsigned int  wd = ymwd.weekday().c_encoding();
 
@@ -530,7 +536,7 @@ namespace etl
   {
     size_t operator()(const etl::chrono::year_month_weekday_last& ymwdl) const
     {
-      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<unsigned>(ymwdl.year()));
+      etl::chrono::year::rep  y = static_cast<etl::chrono::year::rep>(static_cast<int>(ymwdl.year()));
       etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(ymwdl.month()));
       unsigned int  wd = ymwdl.weekday().c_encoding();
 

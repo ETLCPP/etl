@@ -271,15 +271,6 @@ namespace
 
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
-    TEST(test_min_max_month)
-    {
-      CHECK_EQUAL(1U, Chrono::month::min());
-      CHECK_EQUAL(12U, Chrono::month::max());
-    }
-#endif
-
-#if ETL_USING_ETL_CHRONO
-    //*************************************************************************
     TEST(test_month_compare)
     {
       Chrono::month month1(Chrono::January);

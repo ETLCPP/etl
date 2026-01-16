@@ -151,7 +151,7 @@ namespace
       Chrono::year_month_day ymd{Chrono::sys_days(etl::chrono::days(10997))};
       Chrono::year_month_day expected{Chrono::year(2000), Chrono::February, Chrono::day(10)};
 
-      CHECK_EQUAL((unsigned)expected.year(),  (unsigned)ymd.year());
+      CHECK_EQUAL((int)expected.year(),  (int)ymd.year());
       CHECK_EQUAL((unsigned)expected.month(), (unsigned)ymd.month());
       CHECK_EQUAL((unsigned)expected.day(),   (unsigned)ymd.day());
     }
