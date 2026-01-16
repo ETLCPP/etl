@@ -186,7 +186,7 @@ namespace etl
   {
     while (first1 != last1)
     {
-      iter_swap(first1, first2);
+      etl::iter_swap(first1, first2);
       ++first1;
       ++first2;
     }
