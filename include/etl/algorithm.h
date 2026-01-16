@@ -338,7 +338,9 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR20 TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
+#include "etl/private/diagnostic_array_bounds_push.h"
     return std::move_backward(sb, se, de);
+#include "etl/private/diagnostic_pop.h"
   }
 #elif ETL_USING_CPP11
   // For C++11
