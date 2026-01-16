@@ -559,7 +559,7 @@ namespace etl
     //*********************************
     /// Assign from lvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
     tuple& operator =(pair<U1, U2>& p)
     {
@@ -572,7 +572,7 @@ namespace etl
     //*********************************
     /// Assign from const lvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
     tuple& operator =(const pair<U1, U2>& p)
     {
@@ -585,7 +585,7 @@ namespace etl
     //*********************************
     /// Assign from rvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
     tuple& operator =(pair<U1, U2>&& p)
     {
@@ -598,7 +598,7 @@ namespace etl
     //*********************************
     /// Assign from const rvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
       tuple& operator =(const pair<U1, U2>&& p)
     {
