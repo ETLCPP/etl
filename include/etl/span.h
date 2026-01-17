@@ -1291,7 +1291,7 @@ namespace etl
   span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))> 
     as_bytes(span<T, Size> s) ETL_NOEXCEPT
   {
-    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
+    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<const byte*>(s.data()), s.size_bytes());
   }
 
   //*************************************************************************
