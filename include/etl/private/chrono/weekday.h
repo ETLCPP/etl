@@ -363,26 +363,6 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Copy constructor
-      //***********************************************************************
-      ETL_CONSTEXPR14 weekday_indexed(const etl::chrono::weekday_indexed& other) ETL_NOEXCEPT
-        : wd(other.wd)
-        , i(other.i)
-      {
-      }
-
-      //***********************************************************************
-      /// Assignment operator
-      //***********************************************************************
-      ETL_CONSTEXPR14 etl::chrono::weekday_indexed& operator =(const etl::chrono::weekday_indexed& rhs) ETL_NOEXCEPT
-      {
-        wd = rhs.wd;
-        i  = rhs.i;
-
-        return *this;
-      }
-
-      //***********************************************************************
       /// Get weekday
       //***********************************************************************
       ETL_NODISCARD
