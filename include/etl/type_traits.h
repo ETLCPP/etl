@@ -1215,7 +1215,7 @@ typedef integral_constant<bool, true>  true_type;
   /// is_pod
   ///\ingroup type_traits
   template <typename T>
-  struct is_pod : std::integral_constant<bool, std::is_standard_layout<T>::value && std::is_trivial<T>::value> {};
+  struct is_pod : std::integral_constant<bool, std::is_standard_layout<T>::value && std::is_trivially_default_constructible<T>::value && std::is_trivially_copyable<T>::value> {};
 
 #if ETL_USING_CPP17
   template <typename T>
