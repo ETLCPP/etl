@@ -1219,7 +1219,7 @@ typedef integral_constant<bool, true>  true_type;
 
 #if ETL_USING_CPP17
   template <typename T>
-  inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
+  inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivially_default_constructible_v<T> && std::is_trivially_copyable_v<T>;
 #endif
 
 #if defined(ETL_COMPILER_GCC)
