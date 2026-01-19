@@ -49,16 +49,22 @@ namespace etl
   }
 
   //*************************************************************************
-  /// A type identifier.
-  /// Provides a way to identify types at runtime without using RTTI.
+  /// \brief A type identifier.
+  /// \description Provides a way to identify types at runtime without using RTTI.
+  /// a lightweight, RTTI-free mechanism for uniquely identifying C++ types at runtime.
+  /// It is designed for environments where standard RTTI is unavailable, undesirable,
+  /// or too costly, such as embedded systems or performance-constrained platforms.
+  /// The implementation guarantees uniqueness per type within a program image while 
+  /// remaining constexpr friendly and requiring no dynamic allocation.
+  /// \ingroup types
   //*************************************************************************
   class type_id 
   {
   public:
 
     //*************************************************************************
-    /// Get the type id for the specified type.
-    /// \return A type_id instance.
+    /// Get the type id for the specified type
+    /// \return A type_id instance with the type id of T.
     //*************************************************************************
     template <typename T>
     static ETL_CONSTEXPR type_id get() ETL_NOEXCEPT 
@@ -69,8 +75,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// The invalid type id.
-    /// \return A type_id instance representing an invalid type id.
+    /// The invalid type id
+    /// \return A type_id instance representing an invalid type id
     //*************************************************************************
     static ETL_CONSTEXPR type_id invalid_id() ETL_NOEXCEPT
     {
@@ -78,8 +84,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Default constructor.
-    /// Sets the value of the type id to Invalid_Type_Id
+    /// Default constructor
+    /// Sets the value of the type id to invalid.
     //*************************************************************************
     ETL_CONSTEXPR type_id() ETL_NOEXCEPT
       : id(ETL_NULLPTR)
@@ -88,6 +94,7 @@ namespace etl
 
     //*************************************************************************
     /// Copy constructor
+    /// \param other The other type_id to copy
     //*************************************************************************
     type_id(const type_id& other) ETL_NOEXCEPT
       : id(other.id)
@@ -137,8 +144,9 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Conversion operator to intptr_t
-    /// Explicit for C++11 and above
+    /// Conversion operator to intptr_t.
+    /// Explicit for C++11 and above.
+    /// \return The type_id as an intptr_t.
     //*************************************************************************
     ETL_EXPLICIT operator intptr_t() const ETL_NOEXCEPT 
     {
@@ -146,17 +154,18 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Conversion operator to uintptr_t
-    /// Explicit for C++11 and above
-    ///    //*************************************************************************
+    /// Conversion operator to uintptr_t.
+    /// Explicit for C++11 and above.
+    /// \return The type_id as a uintptr_t.
+    //*************************************************************************
     ETL_EXPLICIT operator uintptr_t() const ETL_NOEXCEPT 
     {
       return reinterpret_cast<uintptr_t>(id);
     }
 
     //*************************************************************************
-    /// Conversion operator to bool
-    /// Explicit for C++11 and above
+    /// Conversion operator to bool.
+    /// Explicit for C++11 and above.
     /// \return <b>false</b> if the type_id is equal to <code>etl::type_id::Invalid_Type_Id</code>
     //*************************************************************************
     ETL_EXPLICIT ETL_CONSTEXPR operator bool() const ETL_NOEXCEPT 
@@ -166,7 +175,7 @@ namespace etl
 
   private:
 
-    // Private construct from a void*
+    // Construct from a void*
     ETL_CONSTEXPR type_id(void* id_) ETL_NOEXCEPT
       : id(id_)
     {
