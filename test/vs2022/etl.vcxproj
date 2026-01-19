@@ -11510,6 +11510,9 @@
     <None Include="..\..\scripts\update_release.py" />
     <None Include="..\..\scripts\update_version.bat" />
     <None Include="..\..\scripts\update_version.py" />
+    <None Include="..\..\sphinx\conf.py" />
+    <None Include="..\..\sphinx\generate_groups.py" />
+    <None Include="..\..\sphinx\index.rst" />
     <None Include="..\list_test_files.bat" />
     <None Include="..\list_test_files.ps1" />
     <None Include="..\list_test_files.sh" />
