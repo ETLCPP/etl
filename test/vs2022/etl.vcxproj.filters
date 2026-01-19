@@ -3770,6 +3770,9 @@
     <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_type_id.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

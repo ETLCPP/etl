@@ -11406,6 +11406,7 @@
     <ClCompile Include="..\test_to_wstring.cpp" />
     <ClCompile Include="..\test_tuple.cpp" />
     <ClCompile Include="..\test_type_def.cpp" />
+    <ClCompile Include="..\test_type_id.cpp" />
     <ClCompile Include="..\test_type_list.cpp" />
     <ClCompile Include="..\test_type_lookup.cpp" />
     <ClCompile Include="..\test_type_select.cpp" />
