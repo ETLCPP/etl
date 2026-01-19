@@ -79,6 +79,17 @@ namespace etl
       return *t;
     }
 
+#if ETL_USING_CPP11
+    // implementation without etl::invoke, which would add a circular dependency
+    template <typename... TArgs>
+    ETL_CONSTEXPR20 auto operator()(TArgs&&... args) const
+      noexcept(noexcept(etl::declval<T&>()(etl::declval<TArgs>()...)))
+      -> decltype(etl::declval<T&>()(etl::declval<TArgs>()...))
+    {
+      return get()(etl::forward<TArgs>(args)...);
+    }
+#endif
+
   private:
 
     T* t;
@@ -646,7 +657,41 @@ namespace etl
     return private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...>(member_function);
   }
 #endif
+
+#if ETL_USING_CPP14
+  struct identity
+  {
+    template<class T>
+    constexpr T&& operator()(T&& t) const noexcept
+    {
+      return etl::forward<T>(t);
+    }
+  };
+#endif
+
+#if ETL_USING_CPP17
+namespace ranges
+{
+  struct equal_to
+  {
+    template <typename T, typename U>
+    constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) == static_cast<U&&>(u))
+    {
+      return static_cast<T&&>(t) == static_cast<U&&>(u);
+    }
+  };
+
+  struct less
+  {
+    template <typename T, typename U>
+    constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) < static_cast<U&&>(u))
+    {
+      return static_cast<T&&>(t) < static_cast<U&&>(u);
+    }
+  };
+}
+#endif
+
 }
 
 #endif
-

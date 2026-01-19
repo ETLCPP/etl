@@ -30,7 +30,6 @@ SOFTWARE.
 
 #include "../platform.h"
 #include "../utility.h"
-#include "../array.h"
 #include "../largest.h"
 #include "../exception.h"
 #include "../type_traits.h"
@@ -39,6 +38,7 @@ SOFTWARE.
 #include "../alignment.h"
 #include "../error_handler.h"
 #include "../null_type.h"
+#include "../parameter_type.h"
 #include "../placement_new.h"
 #include "../monostate.h"
 

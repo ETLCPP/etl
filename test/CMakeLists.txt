@@ -206,6 +206,7 @@ add_executable(etl_tests
 	test_intrusive_queue.cpp
 	test_intrusive_stack.cpp
 	test_invert.cpp
+	test_invoke.cpp
 	test_io_port.cpp
 	test_iterator.cpp
 	test_jenkins.cpp
@@ -274,6 +275,7 @@ add_executable(etl_tests
 	test_queue_spsc_locked.cpp
 	test_queue_spsc_locked_small.cpp
 	test_random.cpp
+	test_ranges.cpp
 	test_ratio.cpp
 	test_reference_flat_map.cpp
 	test_reference_flat_multimap.cpp

@@ -2504,5 +2504,11926 @@ namespace
       CHECK_EQUAL(0, result5);
       CHECK_EQUAL(10, result6);
     }
+
+#if ETL_USING_CPP17
+
+    //*************************************************************************
+    TEST(ranges_for_each_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each(vec.begin(), vec.end(), fun);
+
+      CHECK_EQUAL(15, sum);
+      CHECK(result.in == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each(vec, fun);
+
+      CHECK_EQUAL(15, sum);
+      CHECK(result.in == vec.end()); // range overload returns end
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_empty)
+    {
+      std::vector<int> vec_empty{};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result_it = etl::ranges::for_each(vec_empty.begin(), vec_empty.end(), fun);
+      CHECK_EQUAL(0, sum);
+      (void)result_it;
+
+      sum = 0;
+      auto result_r = etl::ranges::for_each(vec_empty, fun);
+      CHECK_EQUAL(0, sum);
+      (void)result_r;
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_mutate)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{2, 4, 6, 8, 10};
+      auto doubler = [](int& v) { v *= 2; };
+
+      etl::ranges::for_each(vec.begin(), vec.end(), doubler);
+      bool is_same = std::equal(vec.begin(), vec.end(), expected.begin());
+      CHECK(is_same);
+
+      vec = {1, 2, 3, 4, 5};
+      etl::ranges::for_each(vec, doubler);
+      is_same = std::equal(vec.begin(), vec.end(), expected.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_with_projection)
+    {
+      struct Item
+      {
+        int value;
+      };
+
+      std::vector<Item> vec{{1}, {2}, {3}, {4}, {5}};
+      int sum = 0;
+      auto fun = [&sum](int v) { sum += v; };
+      auto proj = [](const Item& item) -> int { return item.value; };
+
+      auto result = etl::ranges::for_each(vec.begin(), vec.end(), fun, proj);
+      CHECK_EQUAL(15, sum);
+      (void)result;
+
+      sum = 0;
+      auto result_r = etl::ranges::for_each(vec, fun, proj);
+      CHECK_EQUAL(15, sum);
+      (void)result_r;
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_with_lambda_projection)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](int v) { sum += v; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      etl::ranges::for_each(vec.begin(), vec.end(), fun, proj);
+      CHECK_EQUAL(150, sum);
+
+      sum = 0;
+      etl::ranges::for_each(vec, fun, proj);
+      CHECK_EQUAL(150, sum);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_returns_fun)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      struct Counter
+      {
+        int count = 0;
+        void operator()(const int&) { ++count; }
+      };
+
+      auto result_it = etl::ranges::for_each(vec.begin(), vec.end(), Counter{});
+      CHECK_EQUAL(5, result_it.fun.count);
+
+      auto result_r = etl::ranges::for_each(vec, Counter{});
+      CHECK_EQUAL(5, result_r.fun.count);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_single_element)
+    {
+      std::vector<int> vec{42};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      etl::ranges::for_each(vec.begin(), vec.end(), fun);
+      CHECK_EQUAL(42, sum);
+
+      sum = 0;
+      etl::ranges::for_each(vec, fun);
+      CHECK_EQUAL(42, sum);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_array)
+    {
+      std::array<int, 5> arr{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      etl::ranges::for_each(arr.begin(), arr.end(), fun);
+      CHECK_EQUAL(15, sum);
+
+      sum = 0;
+      etl::ranges::for_each(arr, fun);
+      CHECK_EQUAL(15, sum);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_basic)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each_n(vec.begin(), 3, fun);
+
+      CHECK_EQUAL(6, sum); // 1+2+3
+      CHECK(result.in == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_all_elements)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each_n(vec.begin(), 5, fun);
+
+      CHECK_EQUAL(15, sum);
+      CHECK(result.in == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_zero_count)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each_n(vec.begin(), 0, fun);
+
+      CHECK_EQUAL(0, sum);
+      CHECK(result.in == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_single_element)
+    {
+      std::vector<int> vec{42};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each_n(vec.begin(), 1, fun);
+
+      CHECK_EQUAL(42, sum);
+      CHECK(result.in == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_mutate)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{2, 4, 6, 4, 5};
+      auto doubler = [](int& v) { v *= 2; };
+
+      etl::ranges::for_each_n(vec.begin(), 3, doubler);
+
+      bool is_same = std::equal(vec.begin(), vec.end(), expected.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_with_projection)
+    {
+      struct Item
+      {
+        int value;
+      };
+
+      std::vector<Item> vec{{1}, {2}, {3}, {4}, {5}};
+      int sum = 0;
+      auto fun = [&sum](int v) { sum += v; };
+      auto proj = [](const Item& item) -> int { return item.value; };
+
+      auto result = etl::ranges::for_each_n(vec.begin(), 3, fun, proj);
+
+      CHECK_EQUAL(6, sum); // 1+2+3
+      CHECK(result.in == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_with_lambda_projection)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](int v) { sum += v; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      etl::ranges::for_each_n(vec.begin(), 4, fun, proj);
+
+      CHECK_EQUAL(100, sum); // (1+2+3+4)*10
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_returns_fun)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      struct Counter
+      {
+        int count = 0;
+        void operator()(const int&) { ++count; }
+      };
+
+      auto result = etl::ranges::for_each_n(vec.begin(), 3, Counter{});
+      CHECK_EQUAL(3, result.fun.count);
+      CHECK(result.in == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_for_each_n_array)
+    {
+      std::array<int, 5> arr{1, 2, 3, 4, 5};
+      int sum = 0;
+      auto fun = [&sum](const int& v) { sum += v; };
+
+      auto result = etl::ranges::for_each_n(arr.begin(), 4, fun);
+
+      CHECK_EQUAL(10, sum); // 1+2+3+4
+      CHECK(result.in == arr.begin() + 4);
+    }
+
+    //*************************************************************************
+    TEST(ranges_all_of)
+    {
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> vec_big1{11, 22, 33};
+      std::vector<int> vec_big2{1, 22, 3};
+      std::vector<int> vec_empty{};
+      auto is_small = [](const int& v) -> bool { return v < 10; };
+
+      CHECK(etl::ranges::all_of(vec.begin(), vec.end(), is_small));
+      CHECK(etl::ranges::all_of(vec, is_small));
+
+      CHECK(etl::ranges::all_of(vec_empty.begin(), vec_empty.end(), is_small));
+      CHECK(etl::ranges::all_of(vec_empty, is_small));
+
+      CHECK_FALSE(etl::ranges::all_of(vec_big1.begin(), vec_big1.end(), is_small));
+      CHECK_FALSE(etl::ranges::all_of(vec_big1, is_small));
+
+      CHECK_FALSE(etl::ranges::all_of(vec_big2.begin(), vec_big2.end(), is_small));
+      CHECK_FALSE(etl::ranges::all_of(vec_big2, is_small));
+
+      auto proj = [](const int& v){ return v * 10; };
+
+      CHECK_FALSE(etl::ranges::all_of(vec.begin(), vec.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::all_of(vec, is_small, proj));
+
+      CHECK(etl::ranges::all_of(vec_empty.begin(), vec_empty.end(), is_small, proj));
+      CHECK(etl::ranges::all_of(vec_empty, is_small, proj));
+
+      CHECK_FALSE(etl::ranges::all_of(vec_big1.begin(), vec_big1.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::all_of(vec_big1, is_small, proj));
+
+      CHECK_FALSE(etl::ranges::all_of(vec_big2.begin(), vec_big2.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::all_of(vec_big2, is_small, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_any_of)
+    {
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> vec_big1{11, 22, 33};
+      std::vector<int> vec_big2{0, 22, 3};
+      std::vector<int> vec_empty{};
+      auto is_small = [](const int& v) -> bool { return v < 10; };
+
+      CHECK(etl::ranges::any_of(vec.begin(), vec.end(), is_small));
+      CHECK(etl::ranges::any_of(vec, is_small));
+
+      CHECK_FALSE(etl::ranges::any_of(vec_empty.begin(), vec_empty.end(), is_small));
+      CHECK_FALSE(etl::ranges::any_of(vec_empty, is_small));
+
+      CHECK_FALSE(etl::ranges::any_of(vec_big1.begin(), vec_big1.end(), is_small));
+      CHECK_FALSE(etl::ranges::any_of(vec_big1, is_small));
+
+      CHECK(etl::ranges::any_of(vec_big2.begin(), vec_big2.end(), is_small));
+      CHECK(etl::ranges::any_of(vec_big2, is_small));
+
+      auto proj = [](const int& v){ return v * 10; };
+
+      CHECK_FALSE(etl::ranges::any_of(vec.begin(), vec.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::any_of(vec, is_small, proj));
+
+      CHECK_FALSE(etl::ranges::any_of(vec_empty.begin(), vec_empty.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::any_of(vec_empty, is_small, proj));
+
+      CHECK_FALSE(etl::ranges::any_of(vec_big1.begin(), vec_big1.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::any_of(vec_big1, is_small, proj));
+
+      CHECK(etl::ranges::any_of(vec_big2.begin(), vec_big2.end(), is_small, proj));
+      CHECK(etl::ranges::any_of(vec_big2, is_small, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_none_of)
+    {
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> vec_big1{11, 22, 33};
+      std::vector<int> vec_big2{0, 22, 3};
+      std::vector<int> vec_empty{};
+      auto is_small = [](const int& v) -> bool { return v < 10; };
+
+      CHECK_FALSE(etl::ranges::none_of(vec.begin(), vec.end(), is_small));
+      CHECK_FALSE(etl::ranges::none_of(vec, is_small));
+
+      CHECK(etl::ranges::none_of(vec_empty.begin(), vec_empty.end(), is_small));
+      CHECK(etl::ranges::none_of(vec_empty, is_small));
+
+      CHECK(etl::ranges::none_of(vec_big1.begin(), vec_big1.end(), is_small));
+      CHECK(etl::ranges::none_of(vec_big1, is_small));
+
+      CHECK_FALSE(etl::ranges::none_of(vec_big2.begin(), vec_big2.end(), is_small));
+      CHECK_FALSE(etl::ranges::none_of(vec_big2, is_small));
+
+      auto proj = [](const int& v){ return v * 10; };
+
+      CHECK(etl::ranges::none_of(vec.begin(), vec.end(), is_small, proj));
+      CHECK(etl::ranges::none_of(vec, is_small, proj));
+
+      CHECK(etl::ranges::none_of(vec_empty.begin(), vec_empty.end(), is_small, proj));
+      CHECK(etl::ranges::none_of(vec_empty, is_small, proj));
+
+      CHECK(etl::ranges::none_of(vec_big1.begin(), vec_big1.end(), is_small, proj));
+      CHECK(etl::ranges::none_of(vec_big1, is_small, proj));
+
+      CHECK_FALSE(etl::ranges::none_of(vec_big2.begin(), vec_big2.end(), is_small, proj));
+      CHECK_FALSE(etl::ranges::none_of(vec_big2, is_small, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_find)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 1, 6};
+        auto it = etl::ranges::find(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), 1);
+        CHECK_EQUAL(vec[2], *it);
+        CHECK_EQUAL(&vec[2], &(*it));
+        *it = 3;
+
+        it = etl::ranges::find(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), 1);
+        CHECK_EQUAL(vec[4], *it);
+        CHECK_EQUAL(&vec[4], &(*it));
+
+        it = etl::ranges::find(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), 9);
+
+        CHECK(vec.end() == it);
+
+        it = etl::ranges::find(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), 12, proj);
+        CHECK_EQUAL(vec[5], *it);
+        CHECK_EQUAL(&vec[5], &(*it));
+      }
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 1, 6};
+        auto it = etl::ranges::find(vec, 1);
+        CHECK_EQUAL(vec[2], *it);
+        CHECK_EQUAL(&vec[2], &(*it));
+
+        it = etl::ranges::find(vec, 16, proj);
+        CHECK_EQUAL(vec[3], *it);
+        CHECK_EQUAL(&vec[3], &(*it));
+      }
+
+    }
+
+    //*************************************************************************
+    TEST(ranges_find_if)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto pred = [](const int& v) { return v == 1; };
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 1, 6};
+        auto it = etl::ranges::find_if(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), pred);
+        CHECK_EQUAL(vec[2], *it);
+        CHECK_EQUAL(&vec[2], &(*it));
+        *it = 3;
+
+        it = etl::ranges::find_if(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), pred);
+        CHECK_EQUAL(vec[4], *it);
+        CHECK_EQUAL(&vec[4], &(*it));
+
+        it = etl::ranges::find_if(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), [](const int& v) { return v == 9; });
+
+        CHECK(vec.end() == it);
+
+        it = etl::ranges::find_if(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), [](const int& v) { return v == 12; }, proj);
+        CHECK_EQUAL(vec[5], *it);
+        CHECK_EQUAL(&vec[5], &(*it));
+      }
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 1, 6};
+        auto it = etl::ranges::find_if(vec, pred);
+        CHECK_EQUAL(vec[2], *it);
+        CHECK_EQUAL(&vec[2], &(*it));
+
+        it = etl::ranges::find_if(vec, [](const int& v) { return v == 16; }, proj);
+        CHECK_EQUAL(vec[3], *it);
+        CHECK_EQUAL(&vec[3], &(*it));
+      }
+
+    }
+
+    //*************************************************************************
+    TEST(ranges_find_if_not)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto pred = [](const int& v) { return v != 1; };
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 1, 6};
+        auto it = etl::ranges::find_if_not(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), pred);
+        CHECK_EQUAL(vec[2], *it);
+        CHECK_EQUAL(&vec[2], &(*it));
+        *it = 3;
+
+        it = etl::ranges::find_if_not(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), pred);
+        CHECK_EQUAL(vec[4], *it);
+        CHECK_EQUAL(&vec[4], &(*it));
+
+        it = etl::ranges::find_if_not(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), [](const int& v) { return v != 9; });
+
+        CHECK(vec.end() == it);
+
+        it = etl::ranges::find_if_not(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), [](const int& v) { return v != 12; }, proj);
+        CHECK_EQUAL(vec[5], *it);
+        CHECK_EQUAL(&vec[5], &(*it));
+      }
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 1, 6};
+        auto it = etl::ranges::find_if_not(vec, pred);
+        CHECK_EQUAL(vec[2], *it);
+        CHECK_EQUAL(&vec[2], &(*it));
+
+        it = etl::ranges::find_if_not(vec, [](const int& v) { return v != 16; }, proj);
+        CHECK_EQUAL(vec[3], *it);
+        CHECK_EQUAL(&vec[3], &(*it));
+      }
+
+    }
+
+    //*************************************************************************
+    TEST(ranges_find_end)
+    {
+      auto proj1 = [](const int& v) { return v * 2; };
+      auto proj2 = [](const int& v) { return v * 3; };
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 2, 6, 12, 3};
+        std::vector<int> vec2{8, 2};
+        auto s = etl::ranges::find_end(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(vec2), ETL_OR_STD::end(vec2), pred);
+        CHECK_EQUAL(s.size(), 2);
+        CHECK_EQUAL(s[0], 8);
+        CHECK_EQUAL(s[1], 2);
+        vec[3] = 3;
+
+        s = etl::ranges::find_end(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(vec2), ETL_OR_STD::end(vec2), pred);
+        CHECK(s.empty());
+
+        vec[3] = 8;
+
+        s = etl::ranges::find_end(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(vec2), ETL_OR_STD::end(vec2), [](const int& v0, const int& v1) { return v0 == v1; });
+        CHECK_EQUAL(s.size(), 2);
+        CHECK_EQUAL(s[0], 8);
+        CHECK_EQUAL(s[1], 2);
+
+        s = etl::ranges::find_end(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(vec2), ETL_OR_STD::end(vec2), [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK_EQUAL(s.size(), 2);
+        CHECK_EQUAL(s[0], 12);
+        CHECK_EQUAL(s[1], 3);
+      }
+
+      {
+        std::vector<int> vec{7, 2, 1, 8, 2, 6, 12, 3};
+        std::vector<int> vec2{8, 2};
+        std::vector<int> vec3{99, 2};
+        auto s = etl::ranges::find_end(vec, vec2, pred);
+        CHECK_EQUAL(s.size(), 2);
+        CHECK_EQUAL(s[0], 8);
+        CHECK_EQUAL(s[1], 2);
+
+        s = etl::ranges::find_end(vec, vec2, [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK_EQUAL(s.size(), 2);
+        CHECK_EQUAL(s[0], 12);
+        CHECK_EQUAL(s[1], 3);
+
+        s = etl::ranges::find_end(vec, vec3, [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK(s.empty());
+      }
+
+    }
+
+    //*************************************************************************
+    TEST(ranges_find_first_of_iterator)
+    {
+      auto proj1 = [](const int& v) { return v * 2; };
+      auto proj2 = [](const int& v) { return v * 3; };
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      // Found with predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{5, 8};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), pred);
+        CHECK_EQUAL(8, *it);
+      }
+
+      // Not found with predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{99, 100};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), pred);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // Found with default predicate (no predicate argument)
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{6, 12};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets));
+        CHECK_EQUAL(6, *it);
+      }
+
+      // Found with lambda predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{12, 3};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), [](const int& v0, const int& v1) { return v0 == v1; });
+        CHECK_EQUAL(12, *it);
+      }
+
+      // Found with projections: proj1 doubles, proj2 triples, so 6*2==4*3
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{4};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK_EQUAL(6, *it);
+      }
+
+      // Empty haystack
+      {
+        std::vector<int> vec{};
+        std::vector<int> targets{1, 2};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), pred);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // Empty targets
+      {
+        std::vector<int> vec{7, 2, 1, 8};
+        std::vector<int> targets{};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), pred);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // First element matches
+      {
+        std::vector<int> vec{7, 2, 1, 8};
+        std::vector<int> targets{7};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), pred);
+        CHECK_EQUAL(7, *it);
+        CHECK(it == ETL_OR_STD::begin(vec));
+      }
+
+      // Last element matches
+      {
+        std::vector<int> vec{7, 2, 1, 8};
+        std::vector<int> targets{8};
+        auto it = etl::ranges::find_first_of(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(targets), ETL_OR_STD::end(targets), pred);
+        CHECK_EQUAL(8, *it);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_find_first_of_range)
+    {
+      auto proj1 = [](const int& v) { return v * 2; };
+      auto proj2 = [](const int& v) { return v * 3; };
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      // Found with predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{5, 8};
+        auto it = etl::ranges::find_first_of(vec, targets, pred);
+        CHECK_EQUAL(8, *it);
+      }
+
+      // Not found with predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{99, 100};
+        auto it = etl::ranges::find_first_of(vec, targets, pred);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // Found with default predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{6, 12};
+        auto it = etl::ranges::find_first_of(vec, targets);
+        CHECK_EQUAL(6, *it);
+      }
+
+      // Found with lambda predicate
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{12, 3};
+        auto it = etl::ranges::find_first_of(vec, targets, [](const int& v0, const int& v1) { return v0 == v1; });
+        CHECK_EQUAL(12, *it);
+      }
+
+      // Found with projections: proj1 doubles, proj2 triples, so 6*2==4*3
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{4};
+        auto it = etl::ranges::find_first_of(vec, targets, [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK_EQUAL(6, *it);
+      }
+
+      // Not found with projections
+      {
+        std::vector<int> vec{7, 2, 1, 8, 5, 6, 12, 3};
+        std::vector<int> targets{99};
+        auto it = etl::ranges::find_first_of(vec, targets, [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // Empty haystack
+      {
+        std::vector<int> vec{};
+        std::vector<int> targets{1, 2};
+        auto it = etl::ranges::find_first_of(vec, targets, pred);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // Empty targets
+      {
+        std::vector<int> vec{7, 2, 1, 8};
+        std::vector<int> targets{};
+        auto it = etl::ranges::find_first_of(vec, targets, pred);
+        CHECK(it == ETL_OR_STD::end(vec));
+      }
+
+      // First element matches
+      {
+        std::vector<int> vec{7, 2, 1, 8};
+        std::vector<int> targets{7};
+        auto it = etl::ranges::find_first_of(vec, targets, pred);
+        CHECK_EQUAL(7, *it);
+        CHECK(it == ETL_OR_STD::begin(vec));
+      }
+
+      // Last element matches
+      {
+        std::vector<int> vec{7, 2, 1, 8};
+        std::vector<int> targets{8};
+        auto it = etl::ranges::find_first_of(vec, targets, pred);
+        CHECK_EQUAL(8, *it);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_search_iterator)
+    {
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      // Search with predicate - found
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{3, 4, 5};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(3, s[0]);
+        CHECK_EQUAL(4, s[1]);
+        CHECK_EQUAL(5, s[2]);
+      }
+
+      // Search with predicate - not found
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{3, 5, 4};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == ETL_OR_STD::end(vec));
+      }
+
+      // Search with default predicate (no predicate argument)
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{6, 7, 8};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle));
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(6, s[0]);
+        CHECK_EQUAL(7, s[1]);
+        CHECK_EQUAL(8, s[2]);
+      }
+
+      // Search with lambda predicate
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{4, 5};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), [](const int& v0, const int& v1) { return v0 == v1; });
+        CHECK_EQUAL(2, s.size());
+        CHECK_EQUAL(4, s[0]);
+        CHECK_EQUAL(5, s[1]);
+      }
+
+      // Search with projections
+      {
+        std::vector<int> vec{2, 4, 6, 8, 10, 12, 14, 16};
+        std::vector<int> needle{3, 4};
+        auto proj1 = [](const int& v) { return v / 2; };
+        auto proj2 = [](const int& v) { return v; };
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK_EQUAL(2, s.size());
+        CHECK_EQUAL(6, s[0]);
+        CHECK_EQUAL(8, s[1]);
+      }
+
+      // Search at beginning
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5};
+        std::vector<int> needle{1, 2};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK_EQUAL(2, s.size());
+        CHECK_EQUAL(1, s[0]);
+        CHECK_EQUAL(2, s[1]);
+      }
+
+      // Search at end
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5};
+        std::vector<int> needle{4, 5};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK_EQUAL(2, s.size());
+        CHECK_EQUAL(4, s[0]);
+        CHECK_EQUAL(5, s[1]);
+      }
+
+      // Search with empty needle
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5};
+        std::vector<int> needle{};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == ETL_OR_STD::begin(vec));
+      }
+
+      // Search with single element needle - found
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5};
+        std::vector<int> needle{3};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK_EQUAL(1, s.size());
+        CHECK_EQUAL(3, s[0]);
+      }
+
+      // Search with needle same size as haystack - found
+      {
+        std::vector<int> vec{1, 2, 3};
+        std::vector<int> needle{1, 2, 3};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(1, s[0]);
+        CHECK_EQUAL(2, s[1]);
+        CHECK_EQUAL(3, s[2]);
+      }
+
+      // Search with needle larger than haystack - not found
+      {
+        std::vector<int> vec{1, 2};
+        std::vector<int> needle{1, 2, 3};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == ETL_OR_STD::end(vec));
+      }
+
+      // Search finds first occurrence
+      {
+        std::vector<int> vec{1, 2, 3, 1, 2, 3};
+        std::vector<int> needle{1, 2, 3};
+        auto s = etl::ranges::search(ETL_OR_STD::begin(vec), ETL_OR_STD::end(vec), ETL_OR_STD::begin(needle), ETL_OR_STD::end(needle), pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK(s.begin() == vec.begin());
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_search_range)
+    {
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      // Search with predicate - found
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{3, 4, 5};
+        auto s = etl::ranges::search(vec, needle, pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(3, s[0]);
+        CHECK_EQUAL(4, s[1]);
+        CHECK_EQUAL(5, s[2]);
+      }
+
+      // Search with predicate - not found
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{3, 5, 4};
+        auto s = etl::ranges::search(vec, needle, pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == ETL_OR_STD::end(vec));
+      }
+
+      // Search with default predicate
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<int> needle{5, 6, 7};
+        auto s = etl::ranges::search(vec, needle);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(5, s[0]);
+        CHECK_EQUAL(6, s[1]);
+        CHECK_EQUAL(7, s[2]);
+      }
+
+      // Search with projections
+      {
+        std::vector<int> vec{2, 4, 6, 8, 10, 12, 14, 16};
+        std::vector<int> needle{3, 4};
+        auto proj1 = [](const int& v) { return v / 2; };
+        auto proj2 = [](const int& v) { return v; };
+        auto s = etl::ranges::search(vec, needle, [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK_EQUAL(2, s.size());
+        CHECK_EQUAL(6, s[0]);
+        CHECK_EQUAL(8, s[1]);
+      }
+
+      // Search with empty needle
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5};
+        std::vector<int> needle{};
+        auto s = etl::ranges::search(vec, needle, pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == ETL_OR_STD::begin(vec));
+      }
+
+      // Search finds first occurrence
+      {
+        std::vector<int> vec{1, 2, 3, 1, 2, 3};
+        std::vector<int> needle{1, 2, 3};
+        auto s = etl::ranges::search(vec, needle, pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK(s.begin() == vec.begin());
+      }
+
+      // Search not found with projections
+      {
+        std::vector<int> vec{2, 4, 6, 8, 10};
+        std::vector<int> needle{99, 100};
+        auto proj1 = [](const int& v) { return v / 2; };
+        auto proj2 = [](const int& v) { return v; };
+        auto s = etl::ranges::search(vec, needle, [](const int& v0, const int& v1) { return v0 == v1; }, proj1, proj2);
+        CHECK(s.empty());
+        CHECK(s.begin() == ETL_OR_STD::end(vec));
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_search_n_iterator)
+    {
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      // Search_n with predicate - found
+      {
+        std::vector<int> vec{1, 2, 3, 3, 3, 4, 5};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 3, 3, pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(3, s[0]);
+        CHECK_EQUAL(3, s[1]);
+        CHECK_EQUAL(3, s[2]);
+        CHECK(s.begin() == vec.begin() + 2);
+      }
+
+      // Search_n with predicate - not found
+      {
+        std::vector<int> vec{1, 2, 3, 3, 4, 5};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 3, 3, pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == vec.end());
+      }
+
+      // Search_n with default predicate (no predicate argument)
+      {
+        std::vector<int> vec{1, 2, 2, 2, 3, 4};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 3, 2);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(2, s[0]);
+        CHECK_EQUAL(2, s[1]);
+        CHECK_EQUAL(2, s[2]);
+      }
+
+      // Search_n with lambda predicate
+      {
+        std::vector<int> vec{1, 2, 3, 3, 3, 4};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 2, 3, [](const int& v0, const int& v1) { return v0 == v1; });
+        CHECK_EQUAL(2, s.size());
+        CHECK_EQUAL(3, s[0]);
+        CHECK_EQUAL(3, s[1]);
+      }
+
+      // Search_n with projection
+      {
+        std::vector<int> vec{2, 4, 6, 6, 6, 8};
+        auto proj = [](const int& v) { return v / 2; };
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 3, 3, [](const int& v0, const int& v1) { return v0 == v1; }, proj);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(6, s[0]);
+        CHECK_EQUAL(6, s[1]);
+        CHECK_EQUAL(6, s[2]);
+      }
+
+      // Search_n at beginning
+      {
+        std::vector<int> vec{5, 5, 5, 1, 2, 3};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 3, 5, pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK(s.begin() == vec.begin());
+        CHECK_EQUAL(5, s[0]);
+        CHECK_EQUAL(5, s[1]);
+        CHECK_EQUAL(5, s[2]);
+      }
+
+      // Search_n at end
+      {
+        std::vector<int> vec{1, 2, 3, 5, 5, 5};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 3, 5, pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(5, s[0]);
+        CHECK_EQUAL(5, s[1]);
+        CHECK_EQUAL(5, s[2]);
+      }
+
+      // Search_n with count 0
+      {
+        std::vector<int> vec{1, 2, 3};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 0, 1, pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == vec.begin());
+      }
+
+      // Search_n with count 1 - found
+      {
+        std::vector<int> vec{1, 2, 3, 4, 5};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 1, 3, pred);
+        CHECK_EQUAL(1, s.size());
+        CHECK_EQUAL(3, s[0]);
+      }
+
+      // Search_n with empty range
+      {
+        std::vector<int> vec{};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 1, 3, pred);
+        CHECK(s.empty());
+      }
+
+      // Search_n entire range matches
+      {
+        std::vector<int> vec{7, 7, 7, 7};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 4, 7, pred);
+        CHECK_EQUAL(4, s.size());
+        CHECK(s.begin() == vec.begin());
+      }
+
+      // Search_n count larger than range
+      {
+        std::vector<int> vec{3, 3};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 5, 3, pred);
+        CHECK(s.empty());
+      }
+
+      // Search_n finds first occurrence
+      {
+        std::vector<int> vec{1, 2, 2, 1, 2, 2, 3};
+        auto s = etl::ranges::search_n(vec.begin(), vec.end(), 2, 2, pred);
+        CHECK_EQUAL(2, s.size());
+        CHECK(s.begin() == vec.begin() + 1);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_search_n_range)
+    {
+      auto pred = [](const int& v0, const int& v1) { return v0 == v1; };
+
+      // Search_n with predicate - found
+      {
+        std::vector<int> vec{1, 2, 3, 3, 3, 4, 5};
+        auto s = etl::ranges::search_n(vec, 3, 3, pred);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(3, s[0]);
+        CHECK_EQUAL(3, s[1]);
+        CHECK_EQUAL(3, s[2]);
+        CHECK(s.begin() == vec.begin() + 2);
+      }
+
+      // Search_n with predicate - not found
+      {
+        std::vector<int> vec{1, 2, 3, 3, 4, 5};
+        auto s = etl::ranges::search_n(vec, 3, 3, pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == vec.end());
+      }
+
+      // Search_n with default predicate
+      {
+        std::vector<int> vec{1, 4, 4, 4, 5, 6};
+        auto s = etl::ranges::search_n(vec, 3, 4);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(4, s[0]);
+        CHECK_EQUAL(4, s[1]);
+        CHECK_EQUAL(4, s[2]);
+      }
+
+      // Search_n with projection
+      {
+        std::vector<int> vec{2, 4, 6, 6, 6, 8};
+        auto proj = [](const int& v) { return v / 2; };
+        auto s = etl::ranges::search_n(vec, 3, 3, [](const int& v0, const int& v1) { return v0 == v1; }, proj);
+        CHECK_EQUAL(3, s.size());
+        CHECK_EQUAL(6, s[0]);
+        CHECK_EQUAL(6, s[1]);
+        CHECK_EQUAL(6, s[2]);
+      }
+
+      // Search_n with count 0
+      {
+        std::vector<int> vec{1, 2, 3};
+        auto s = etl::ranges::search_n(vec, 0, 1, pred);
+        CHECK(s.empty());
+        CHECK(s.begin() == vec.begin());
+      }
+
+      // Search_n with empty range
+      {
+        std::vector<int> vec{};
+        auto s = etl::ranges::search_n(vec, 1, 3, pred);
+        CHECK(s.empty());
+      }
+
+      // Search_n finds first occurrence
+      {
+        std::vector<int> vec{1, 2, 2, 1, 2, 2, 3};
+        auto s = etl::ranges::search_n(vec, 2, 2, pred);
+        CHECK_EQUAL(2, s.size());
+        CHECK(s.begin() == vec.begin() + 1);
+      }
+
+      // Search_n entire range matches
+      {
+        std::vector<int> vec{7, 7, 7, 7};
+        auto s = etl::ranges::search_n(vec, 4, 7, pred);
+        CHECK_EQUAL(4, s.size());
+        CHECK(s.begin() == vec.begin());
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_found)
+    {
+      // Adjacent duplicates exist
+      std::vector<int> vec{1, 2, 3, 3, 4, 5};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK_EQUAL(3, *it);
+      CHECK(it == vec.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_not_found)
+    {
+      // No adjacent duplicates
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_empty)
+    {
+      // Empty range
+      std::vector<int> vec{};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_single_element)
+    {
+      // Single element - no adjacent pair possible
+      std::vector<int> vec{42};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_first_pair)
+    {
+      // Adjacent duplicates at the very beginning
+      std::vector<int> vec{5, 5, 1, 2, 3};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK_EQUAL(5, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_last_pair)
+    {
+      // Adjacent duplicates at the very end
+      std::vector<int> vec{1, 2, 3, 7, 7};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK_EQUAL(7, *it);
+      CHECK(it == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_multiple_pairs)
+    {
+      // Multiple adjacent duplicate pairs - should find the first one
+      std::vector<int> vec{1, 2, 2, 3, 3, 4};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK_EQUAL(2, *it);
+      CHECK(it == vec.begin() + 1);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_all_same)
+    {
+      // All elements are the same
+      std::vector<int> vec{9, 9, 9, 9};
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end());
+      CHECK_EQUAL(9, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_custom_predicate)
+    {
+      // Custom predicate: find adjacent pair where second is greater
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      auto pred = [](const int& a, const int& b) { return a < b; };
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end(), pred);
+      CHECK_EQUAL(1, *it);
+      CHECK(it == vec.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_custom_predicate_not_found)
+    {
+      // Custom predicate not satisfied by any adjacent pair
+      std::vector<int> vec{5, 4, 3, 2, 1};
+      auto pred = [](const int& a, const int& b) { return a < b; };
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end(), pred);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_with_projection)
+    {
+      // Projection: compare absolute values for adjacency
+      std::vector<int> vec{1, -2, 3, -3, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end(), etl::ranges::equal_to{}, proj);
+      CHECK_EQUAL(3, *it);
+      CHECK(it == vec.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_with_projection_not_found)
+    {
+      // Projection: no adjacent pair matches after projection
+      std::vector<int> vec{1, -2, 3, -4, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end(), etl::ranges::equal_to{}, proj);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_iterator_predicate_and_projection)
+    {
+      // Predicate: equality after projection (mod 10)
+      // {11, 25, 32, 43, 53} -> mod 10 -> {1, 5, 2, 3, 3}, so 43 and 53 match
+      std::vector<int> vec{11, 25, 32, 43, 53};
+      auto proj = [](const int& v) { return v % 10; };
+      auto pred = [](const int& a, const int& b) { return a == b; };
+      auto it = etl::ranges::adjacent_find(vec.begin(), vec.end(), pred, proj);
+      CHECK_EQUAL(43, *it);
+      CHECK(it == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_found)
+    {
+      // Adjacent duplicates exist - range overload
+      std::vector<int> vec{1, 2, 3, 3, 4, 5};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK_EQUAL(3, *it);
+      CHECK(it == vec.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_not_found)
+    {
+      // No adjacent duplicates - range overload
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_empty)
+    {
+      // Empty range - range overload
+      std::vector<int> vec{};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_single_element)
+    {
+      // Single element - range overload
+      std::vector<int> vec{42};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_first_pair)
+    {
+      // Adjacent duplicates at beginning - range overload
+      std::vector<int> vec{5, 5, 1, 2, 3};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK_EQUAL(5, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_last_pair)
+    {
+      // Adjacent duplicates at end - range overload
+      std::vector<int> vec{1, 2, 3, 7, 7};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK_EQUAL(7, *it);
+      CHECK(it == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_multiple_pairs)
+    {
+      // Multiple adjacent pairs - range overload, finds first
+      std::vector<int> vec{1, 2, 2, 3, 3, 4};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK_EQUAL(2, *it);
+      CHECK(it == vec.begin() + 1);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_all_same)
+    {
+      // All same - range overload
+      std::vector<int> vec{9, 9, 9, 9};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK_EQUAL(9, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_custom_predicate)
+    {
+      // Custom predicate with range overload
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      auto pred = [](const int& a, const int& b) { return a < b; };
+      auto it = etl::ranges::adjacent_find(vec, pred);
+      CHECK_EQUAL(1, *it);
+      CHECK(it == vec.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_custom_predicate_not_found)
+    {
+      // Custom predicate not satisfied - range overload
+      std::vector<int> vec{5, 4, 3, 2, 1};
+      auto pred = [](const int& a, const int& b) { return a < b; };
+      auto it = etl::ranges::adjacent_find(vec, pred);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_with_projection)
+    {
+      // Projection with range overload
+      std::vector<int> vec{1, -2, 3, -3, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::adjacent_find(vec, etl::ranges::equal_to{}, proj);
+      CHECK_EQUAL(3, *it);
+      CHECK(it == vec.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_with_projection_not_found)
+    {
+      // Projection with range overload - not found
+      std::vector<int> vec{1, -2, 3, -4, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::adjacent_find(vec, etl::ranges::equal_to{}, proj);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_range_predicate_and_projection)
+    {
+      // Predicate and projection with range overload
+      // {11, 25, 32, 43, 53} -> mod 10 -> {1, 5, 2, 3, 3}, so 43 and 53 match
+      std::vector<int> vec{11, 25, 32, 43, 53};
+      auto proj = [](const int& v) { return v % 10; };
+      auto pred = [](const int& a, const int& b) { return a == b; };
+      auto it = etl::ranges::adjacent_find(vec, pred, proj);
+      CHECK_EQUAL(43, *it);
+      CHECK(it == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_two_elements_equal)
+    {
+      // Exactly two elements that are equal
+      std::vector<int> vec{3, 3};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK_EQUAL(3, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_adjacent_find_two_elements_not_equal)
+    {
+      // Exactly two elements that are not equal
+      std::vector<int> vec{3, 4};
+      auto it = etl::ranges::adjacent_find(vec);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_iterator_basic)
+    {
+      std::vector<int> vec{1, 2, 3, 1, 4, 1, 5};
+
+      auto result = etl::ranges::count(vec.begin(), vec.end(), 1);
+      CHECK_EQUAL(3, result);
+
+      result = etl::ranges::count(vec.begin(), vec.end(), 4);
+      CHECK_EQUAL(1, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_range_basic)
+    {
+      std::vector<int> vec{1, 2, 3, 1, 4, 1, 5};
+
+      auto result = etl::ranges::count(vec, 1);
+      CHECK_EQUAL(3, result);
+
+      result = etl::ranges::count(vec, 4);
+      CHECK_EQUAL(1, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_not_found)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 99);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count(vec, 99);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 1);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count(vec, 1);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_all_match)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 7);
+      CHECK_EQUAL(4, result_it);
+
+      auto result_r = etl::ranges::count(vec, 7);
+      CHECK_EQUAL(4, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_single_element_match)
+    {
+      std::vector<int> vec{42};
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 42);
+      CHECK_EQUAL(1, result_it);
+
+      auto result_r = etl::ranges::count(vec, 42);
+      CHECK_EQUAL(1, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_single_element_no_match)
+    {
+      std::vector<int> vec{42};
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 99);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count(vec, 99);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_with_projection)
+    {
+      std::vector<int> vec{1, -2, 3, -2, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 2, proj);
+      CHECK_EQUAL(2, result_it);
+
+      auto result_r = etl::ranges::count(vec, 2, proj);
+      CHECK_EQUAL(2, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_with_projection_no_match)
+    {
+      std::vector<int> vec{1, -2, 3, -4, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 99, proj);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count(vec, 99, proj);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_with_member_projection)
+    {
+      struct Item
+      {
+        int id;
+        int category;
+      };
+
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 10}, {4, 10}, {5, 30}};
+
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 10, &Item::category);
+      CHECK_EQUAL(3, result_it);
+
+      auto result_r = etl::ranges::count(vec, 20, &Item::category);
+      CHECK_EQUAL(1, result_r);
+
+      auto result_none = etl::ranges::count(vec, 99, &Item::category);
+      CHECK_EQUAL(0, result_none);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_with_lambda_projection)
+    {
+      std::vector<int> vec{10, 21, 30, 41, 50};
+      auto proj = [](const int& v) { return v % 10; };
+
+      // Count elements whose last digit is 0
+      auto result_it = etl::ranges::count(vec.begin(), vec.end(), 0, proj);
+      CHECK_EQUAL(3, result_it);
+
+      auto result_r = etl::ranges::count(vec, 1, proj);
+      CHECK_EQUAL(2, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_array)
+    {
+      int arr[] = {1, 2, 1, 3, 1, 4};
+
+      auto result = etl::ranges::count(arr, 1);
+      CHECK_EQUAL(3, result);
+
+      result = etl::ranges::count(arr, 3);
+      CHECK_EQUAL(1, result);
+
+      result = etl::ranges::count(arr, 99);
+      CHECK_EQUAL(0, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_iterator_basic)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result = etl::ranges::count_if(vec.begin(), vec.end(), is_even);
+      CHECK_EQUAL(4, result);
+
+      auto is_greater_than_5 = [](int v) { return v > 5; };
+      result = etl::ranges::count_if(vec.begin(), vec.end(), is_greater_than_5);
+      CHECK_EQUAL(3, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_range_basic)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result = etl::ranges::count_if(vec, is_even);
+      CHECK_EQUAL(4, result);
+
+      auto is_greater_than_5 = [](int v) { return v > 5; };
+      result = etl::ranges::count_if(vec, is_greater_than_5);
+      CHECK_EQUAL(3, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_not_found)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto is_negative = [](int v) { return v < 0; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_negative);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_negative);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_empty)
+    {
+      std::vector<int> vec{};
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_even);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_even);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_all_match)
+    {
+      std::vector<int> vec{2, 4, 6, 8};
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_even);
+      CHECK_EQUAL(4, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_even);
+      CHECK_EQUAL(4, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_single_element_match)
+    {
+      std::vector<int> vec{42};
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_even);
+      CHECK_EQUAL(1, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_even);
+      CHECK_EQUAL(1, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_single_element_no_match)
+    {
+      std::vector<int> vec{41};
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_even);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_even);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_with_projection)
+    {
+      std::vector<int> vec{1, -2, 3, -4, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+      auto is_even = [](int v) { return v % 2 == 0; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_even, proj);
+      CHECK_EQUAL(2, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_even, proj);
+      CHECK_EQUAL(2, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_with_projection_no_match)
+    {
+      std::vector<int> vec{1, -2, 3, -4, 5};
+      auto proj = [](const int& v) { return v < 0 ? -v : v; };
+      auto greater_than_10 = [](int v) { return v > 10; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), greater_than_10, proj);
+      CHECK_EQUAL(0, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, greater_than_10, proj);
+      CHECK_EQUAL(0, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_with_member_projection)
+    {
+      struct Item
+      {
+        int id;
+        int category;
+      };
+
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 10}, {4, 10}, {5, 30}};
+      auto is_ten = [](int v) { return v == 10; };
+
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_ten, &Item::category);
+      CHECK_EQUAL(3, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_ten, &Item::category);
+      CHECK_EQUAL(3, result_r);
+
+      auto is_greater_than_15 = [](int v) { return v > 15; };
+      auto result_gt = etl::ranges::count_if(vec, is_greater_than_15, &Item::category);
+      CHECK_EQUAL(2, result_gt);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_with_lambda_projection)
+    {
+      std::vector<int> vec{10, 21, 30, 41, 50};
+      auto proj = [](const int& v) { return v % 10; };
+      auto is_zero = [](int v) { return v == 0; };
+
+      // Count elements whose last digit is 0
+      auto result_it = etl::ranges::count_if(vec.begin(), vec.end(), is_zero, proj);
+      CHECK_EQUAL(3, result_it);
+
+      auto result_r = etl::ranges::count_if(vec, is_zero, proj);
+      CHECK_EQUAL(3, result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_count_if_array)
+    {
+      int arr[] = {1, 2, 3, 4, 5, 6};
+      auto is_odd = [](int v) { return v % 2 != 0; };
+
+      auto result = etl::ranges::count_if(arr, is_odd);
+      CHECK_EQUAL(3, result);
+
+      auto is_greater_than_4 = [](int v) { return v > 4; };
+      result = etl::ranges::count_if(arr, is_greater_than_4);
+      CHECK_EQUAL(2, result);
+
+      auto is_negative = [](int v) { return v < 0; };
+      result = etl::ranges::count_if(arr, is_negative);
+      CHECK_EQUAL(0, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_iterator_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 9, 4, 5};
+
+      auto result = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+      CHECK(result.in1 == v1.begin() + 2);
+      CHECK(result.in2 == v2.begin() + 2);
+      CHECK_EQUAL(3, *result.in1);
+      CHECK_EQUAL(9, *result.in2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_range_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 9, 4, 5};
+
+      auto result = etl::ranges::mismatch(v1, v2);
+
+      CHECK(result.in1 == v1.begin() + 2);
+      CHECK(result.in2 == v2.begin() + 2);
+      CHECK_EQUAL(3, *result.in1);
+      CHECK_EQUAL(9, *result.in2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_all_equal)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end());
+      CHECK(result_it.in1 == v1.end());
+      CHECK(result_it.in2 == v2.end());
+
+      auto result_r = etl::ranges::mismatch(v1, v2);
+      CHECK(result_r.in1 == v1.end());
+      CHECK(result_r.in2 == v2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_first_element_differs)
+    {
+      std::vector<int> v1{9, 2, 3};
+      std::vector<int> v2{1, 2, 3};
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end());
+      CHECK(result_it.in1 == v1.begin());
+      CHECK(result_it.in2 == v2.begin());
+
+      auto result_r = etl::ranges::mismatch(v1, v2);
+      CHECK(result_r.in1 == v1.begin());
+      CHECK(result_r.in2 == v2.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_different_lengths)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3};
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end());
+      CHECK(result_it.in1 == v1.begin() + 3);
+      CHECK(result_it.in2 == v2.end());
+
+      auto result_r = etl::ranges::mismatch(v1, v2);
+      CHECK(result_r.in1 == v1.begin() + 3);
+      CHECK(result_r.in2 == v2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_empty_ranges)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end());
+      CHECK(result_it.in1 == v1.end());
+      CHECK(result_it.in2 == v2.end());
+
+      auto result_r = etl::ranges::mismatch(v1, v2);
+      CHECK(result_r.in1 == v1.end());
+      CHECK(result_r.in2 == v2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_first_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{1, 2, 3};
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end());
+      CHECK(result_it.in1 == v1.end());
+      CHECK(result_it.in2 == v2.begin());
+
+      auto result_r = etl::ranges::mismatch(v1, v2);
+      CHECK(result_r.in1 == v1.end());
+      CHECK(result_r.in2 == v2.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_with_predicate)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{2, 4, 6, 9, 10};
+      auto pred = [](int a, int b) { return b == a * 2; };
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end(), pred);
+      CHECK(result_it.in1 == v1.begin() + 3);
+      CHECK(result_it.in2 == v2.begin() + 3);
+      CHECK_EQUAL(4, *result_it.in1);
+      CHECK_EQUAL(9, *result_it.in2);
+
+      auto result_r = etl::ranges::mismatch(v1, v2, pred);
+      CHECK(result_r.in1 == v1.begin() + 3);
+      CHECK(result_r.in2 == v2.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_with_projection)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}};
+      std::vector<Item> v2{{9, 10}, {8, 20}, {7, 99}};
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                              etl::ranges::equal_to{}, &Item::value, &Item::value);
+      CHECK(result_it.in1 == v1.begin() + 2);
+      CHECK(result_it.in2 == v2.begin() + 2);
+
+      auto result_r = etl::ranges::mismatch(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value);
+      CHECK(result_r.in1 == v1.begin() + 2);
+      CHECK(result_r.in2 == v2.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_with_lambda_projection)
+    {
+      std::vector<int> v1{-1, -2, -3};
+      std::vector<int> v2{1, 2, 9};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+
+      auto result_it = etl::ranges::mismatch(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                              etl::ranges::equal_to{}, abs_proj, etl::identity{});
+      CHECK(result_it.in1 == v1.begin() + 2);
+      CHECK(result_it.in2 == v2.begin() + 2);
+
+      auto result_r = etl::ranges::mismatch(v1, v2, etl::ranges::equal_to{}, abs_proj, etl::identity{});
+      CHECK(result_r.in1 == v1.begin() + 2);
+      CHECK(result_r.in2 == v2.begin() + 2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_array)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {1, 2, 3, 9, 5};
+
+      auto result = etl::ranges::mismatch(a1, a2);
+      CHECK_EQUAL(4, *result.in1);
+      CHECK_EQUAL(9, *result.in2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_single_element_match)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{42};
+
+      auto result = etl::ranges::mismatch(v1, v2);
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_mismatch_single_element_no_match)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{99};
+
+      auto result = etl::ranges::mismatch(v1, v2);
+      CHECK(result.in1 == v1.begin());
+      CHECK(result.in2 == v2.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_iterator_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      bool result = etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end());
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      bool result = etl::ranges::equal(v1, v2);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_not_equal)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 9, 4, 5};
+
+      CHECK(!etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::equal(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_different_lengths)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::equal(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_empty_ranges)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      CHECK(etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::equal(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_first_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::equal(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_with_predicate)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{2, 4, 6, 8, 10};
+      auto pred = [](int a, int b) { return b == a * 2; };
+
+      CHECK(etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(etl::ranges::equal(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_with_predicate_not_equal)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{2, 4, 6, 9, 10};
+      auto pred = [](int a, int b) { return b == a * 2; };
+
+      CHECK(!etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(!etl::ranges::equal(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_with_projection)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}};
+      std::vector<Item> v2{{9, 10}, {8, 20}, {7, 30}};
+
+      CHECK(etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(etl::ranges::equal(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_with_projection_not_equal)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}};
+      std::vector<Item> v2{{9, 10}, {8, 20}, {7, 99}};
+
+      CHECK(!etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                 etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(!etl::ranges::equal(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_with_lambda_projection)
+    {
+      std::vector<int> v1{-1, -2, -3};
+      std::vector<int> v2{1, 2, 3};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+
+      CHECK(etl::ranges::equal(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+      CHECK(etl::ranges::equal(v1, v2, etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_array)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {1, 2, 3, 4, 5};
+
+      CHECK(etl::ranges::equal(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_array_not_equal)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {1, 2, 3, 9, 5};
+
+      CHECK(!etl::ranges::equal(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_single_element_match)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{42};
+
+      CHECK(etl::ranges::equal(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_single_element_no_match)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{99};
+
+      CHECK(!etl::ranges::equal(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_iterator_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{3, 1, 5, 2, 4};
+
+      CHECK(etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_range_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{3, 1, 5, 2, 4};
+
+      CHECK(etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_not_permutation)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 4};
+
+      CHECK(!etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_different_lengths)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_empty_ranges)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      CHECK(etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_first_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_duplicates)
+    {
+      std::vector<int> v1{1, 2, 2, 3, 3, 3};
+      std::vector<int> v2{3, 2, 3, 1, 3, 2};
+
+      CHECK(etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_duplicates_mismatch)
+    {
+      std::vector<int> v1{1, 2, 2, 3, 3, 3};
+      std::vector<int> v2{3, 2, 3, 1, 2, 2};
+
+      CHECK(!etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_single_element_match)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{42};
+
+      CHECK(etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_single_element_no_match)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{99};
+
+      CHECK(!etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_predicate)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{5, 3, 1, 4, 2};
+      auto pred = [](int a, int b) { return a == b; };
+
+      CHECK(etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(etl::ranges::is_permutation(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_predicate_not_permutation)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 4};
+      auto pred = [](int a, int b) { return a == b; };
+
+      CHECK(!etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(!etl::ranges::is_permutation(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_projection)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}};
+      std::vector<Item> v2{{9, 30}, {8, 10}, {7, 20}};
+
+      CHECK(etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                         etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(etl::ranges::is_permutation(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_projection_not_permutation)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}};
+      std::vector<Item> v2{{9, 10}, {8, 20}, {7, 99}};
+
+      CHECK(!etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                          etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(!etl::ranges::is_permutation(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_with_lambda_projection)
+    {
+      std::vector<int> v1{-1, -2, -3};
+      std::vector<int> v2{3, 1, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+
+      CHECK(etl::ranges::is_permutation(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                         etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+      CHECK(etl::ranges::is_permutation(v1, v2, etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_array)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {5, 4, 3, 2, 1};
+
+      CHECK(etl::ranges::is_permutation(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_array_not_permutation)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {1, 2, 3, 9, 5};
+
+      CHECK(!etl::ranges::is_permutation(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_permutation_identical)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      CHECK(etl::ranges::is_permutation(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_iterator_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_range_basic)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_not_prefix)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 9, 3};
+
+      CHECK(!etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_prefix_longer_than_range)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      CHECK(!etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_equal_ranges)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_empty_prefix)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{};
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_both_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_empty_range_nonempty_prefix)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_single_element_match)
+    {
+      std::vector<int> v1{42, 1, 2};
+      std::vector<int> v2{42};
+
+      CHECK(etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_single_element_no_match)
+    {
+      std::vector<int> v1{42, 1, 2};
+      std::vector<int> v2{99};
+
+      CHECK(!etl::ranges::starts_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_with_predicate)
+    {
+      std::vector<int> v1{2, 4, 6, 8, 10};
+      std::vector<int> v2{1, 2, 3};
+      auto pred = [](int a, int b) { return a == b * 2; };
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(etl::ranges::starts_with(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_with_predicate_no_match)
+    {
+      std::vector<int> v1{2, 4, 7, 8, 10};
+      std::vector<int> v2{1, 2, 3};
+      auto pred = [](int a, int b) { return a == b * 2; };
+
+      CHECK(!etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(!etl::ranges::starts_with(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_with_projection)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}, {4, 40}};
+      std::vector<Item> v2{{9, 10}, {8, 20}};
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                      etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(etl::ranges::starts_with(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_with_projection_no_match)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}, {4, 40}};
+      std::vector<Item> v2{{9, 10}, {8, 99}};
+
+      CHECK(!etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                       etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(!etl::ranges::starts_with(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_with_lambda_projection)
+    {
+      std::vector<int> v1{-1, -2, -3, -4, -5};
+      std::vector<int> v2{1, 2, 3};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+
+      CHECK(etl::ranges::starts_with(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                      etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+      CHECK(etl::ranges::starts_with(v1, v2, etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_array)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {1, 2, 3};
+
+      CHECK(etl::ranges::starts_with(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_starts_with_array_not_prefix)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {1, 9, 3};
+
+      CHECK(!etl::ranges::starts_with(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_match)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{3, 4, 5};
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_no_match)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{3, 4, 6};
+
+      CHECK(!etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_suffix_longer_than_range)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      CHECK(!etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_equal_ranges)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{1, 2, 3, 4, 5};
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_empty_suffix)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{};
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_both_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_empty_range_nonempty_suffix)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_single_element_match)
+    {
+      std::vector<int> v1{1, 2, 42};
+      std::vector<int> v2{42};
+
+      CHECK(etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_single_element_no_match)
+    {
+      std::vector<int> v1{1, 2, 42};
+      std::vector<int> v2{99};
+
+      CHECK(!etl::ranges::ends_with(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_with_predicate)
+    {
+      std::vector<int> v1{2, 4, 6, 8, 10};
+      std::vector<int> v2{4, 5};
+      auto pred = [](int a, int b) { return a == b * 2; };
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(etl::ranges::ends_with(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_with_predicate_no_match)
+    {
+      std::vector<int> v1{2, 4, 7, 8, 10};
+      std::vector<int> v2{4, 6};
+      auto pred = [](int a, int b) { return a == b * 2; };
+
+      CHECK(!etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end(), pred));
+      CHECK(!etl::ranges::ends_with(v1, v2, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_with_projection)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}, {4, 40}};
+      std::vector<Item> v2{{9, 30}, {8, 40}};
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                    etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(etl::ranges::ends_with(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_with_projection_no_match)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}, {4, 40}};
+      std::vector<Item> v2{{9, 30}, {8, 99}};
+
+      CHECK(!etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                     etl::ranges::equal_to{}, &Item::value, &Item::value));
+      CHECK(!etl::ranges::ends_with(v1, v2, etl::ranges::equal_to{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_with_lambda_projection)
+    {
+      std::vector<int> v1{-1, -2, -3, -4, -5};
+      std::vector<int> v2{4, 5};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+
+      CHECK(etl::ranges::ends_with(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                    etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+      CHECK(etl::ranges::ends_with(v1, v2, etl::ranges::equal_to{}, abs_proj, etl::identity{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_array)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {3, 4, 5};
+
+      CHECK(etl::ranges::ends_with(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_ends_with_array_not_suffix)
+    {
+      int a1[] = {1, 2, 3, 4, 5};
+      int a2[] = {3, 9, 5};
+
+      CHECK(!etl::ranges::ends_with(a1, a2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_iterator_less)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{1, 2, 4};
+
+      CHECK(etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::lexicographical_compare(v2.begin(), v2.end(), v1.begin(), v1.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_range_less)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{1, 2, 4};
+
+      CHECK(etl::ranges::lexicographical_compare(v1, v2));
+      CHECK(!etl::ranges::lexicographical_compare(v2, v1));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_equal_ranges)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(!etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::lexicographical_compare(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_first_shorter)
+    {
+      std::vector<int> v1{1, 2};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::lexicographical_compare(v1, v2));
+      CHECK(!etl::ranges::lexicographical_compare(v2, v1));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_second_shorter)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{1, 2};
+
+      CHECK(!etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::lexicographical_compare(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_both_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      CHECK(!etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::lexicographical_compare(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_first_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{1, 2, 3};
+
+      CHECK(etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(etl::ranges::lexicographical_compare(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_second_empty)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{};
+
+      CHECK(!etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end()));
+      CHECK(!etl::ranges::lexicographical_compare(v1, v2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_with_comparator)
+    {
+      std::vector<int> v1{3, 2, 1};
+      std::vector<int> v2{3, 2, 0};
+      auto comp = [](int a, int b) { return a > b; };
+
+      CHECK(etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end(), comp));
+      CHECK(etl::ranges::lexicographical_compare(v1, v2, comp));
+      CHECK(!etl::ranges::lexicographical_compare(v2, v1, comp));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_with_projection)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 30}};
+      std::vector<Item> v2{{9, 10}, {8, 20}, {7, 40}};
+
+      CHECK(etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                                  etl::ranges::less{}, &Item::value, &Item::value));
+      CHECK(etl::ranges::lexicographical_compare(v1, v2, etl::ranges::less{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_with_projection_not_less)
+    {
+      struct Item
+      {
+        int id;
+        int value;
+      };
+
+      std::vector<Item> v1{{1, 10}, {2, 20}, {3, 40}};
+      std::vector<Item> v2{{9, 10}, {8, 20}, {7, 30}};
+
+      CHECK(!etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                                   etl::ranges::less{}, &Item::value, &Item::value));
+      CHECK(!etl::ranges::lexicographical_compare(v1, v2, etl::ranges::less{}, &Item::value, &Item::value));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_with_lambda_projection)
+    {
+      std::vector<int> v1{-1, -2, -3};
+      std::vector<int> v2{1, 2, 4};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+
+      CHECK(etl::ranges::lexicographical_compare(v1.begin(), v1.end(), v2.begin(), v2.end(),
+                                                  etl::ranges::less{}, abs_proj, etl::identity{}));
+      CHECK(etl::ranges::lexicographical_compare(v1, v2, etl::ranges::less{}, abs_proj, etl::identity{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_array)
+    {
+      int a1[] = {1, 2, 3};
+      int a2[] = {1, 2, 4};
+
+      CHECK(etl::ranges::lexicographical_compare(a1, a2));
+      CHECK(!etl::ranges::lexicographical_compare(a2, a1));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lexicographical_compare_single_element)
+    {
+      std::vector<int> v1{1};
+      std::vector<int> v2{2};
+
+      CHECK(etl::ranges::lexicographical_compare(v1, v2));
+      CHECK(!etl::ranges::lexicographical_compare(v2, v1));
+      CHECK(!etl::ranges::lexicographical_compare(v1, v1));
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_sum_iterators)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left(v.begin(), v.end(), 0, std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_sum_range)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left(v, 0, std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_empty_range)
+    {
+      std::vector<int> v{};
+      auto result = etl::ranges::fold_left(v.begin(), v.end(), 42, std::plus<int>{});
+      CHECK_EQUAL(42, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_product)
+    {
+      std::vector<int> v{1, 2, 3, 4};
+      auto result = etl::ranges::fold_left(v, 1, std::multiplies<int>{});
+      CHECK_EQUAL(24, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_string_concat)
+    {
+      std::vector<std::string> v{"a", "b", "c"};
+      auto result = etl::ranges::fold_left(v, std::string{}, std::plus<std::string>{});
+      CHECK_EQUAL(std::string("abc"), result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_different_init_type)
+    {
+      std::vector<int> v{1, 2, 3};
+      auto result = etl::ranges::fold_left(v, 0.5, [](double acc, int x) { return acc + x; });
+      CHECK_CLOSE(6.5, result, 0.001);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_array)
+    {
+      int a[] = {10, 20, 30};
+      auto result = etl::ranges::fold_left(a, 0, std::plus<int>{});
+      CHECK_EQUAL(60, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_with_iter_sum)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left_with_iter(v.begin(), v.end(), 0, std::plus<int>{});
+      CHECK_EQUAL(15, result.value);
+      CHECK(result.in == v.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_with_iter_range)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left_with_iter(v, 0, std::plus<int>{});
+      CHECK_EQUAL(15, result.value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_with_iter_empty)
+    {
+      std::vector<int> v{};
+      auto result = etl::ranges::fold_left_with_iter(v.begin(), v.end(), 99, std::plus<int>{});
+      CHECK_EQUAL(99, result.value);
+      CHECK(result.in == v.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_first_sum)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left_first(v.begin(), v.end(), std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_first_range)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left_first(v, std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_first_single_element)
+    {
+      std::vector<int> v{42};
+      auto result = etl::ranges::fold_left_first(v, std::plus<int>{});
+      CHECK_EQUAL(42, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_first_with_iter_sum)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left_first_with_iter(v.begin(), v.end(), std::plus<int>{});
+      CHECK_EQUAL(15, result.value);
+      CHECK(result.in == v.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_first_with_iter_range)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left_first_with_iter(v, std::plus<int>{});
+      CHECK_EQUAL(15, result.value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_left_lambda)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_left(v, 0, [](int acc, int x) { return acc + x * x; });
+      CHECK_EQUAL(55, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_sum_iterators)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_right(v.begin(), v.end(), 0, std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_sum_range)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_right(v, 0, std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_empty_range)
+    {
+      std::vector<int> v{};
+      auto result = etl::ranges::fold_right(v.begin(), v.end(), 42, std::plus<int>{});
+      CHECK_EQUAL(42, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_product)
+    {
+      std::vector<int> v{1, 2, 3, 4};
+      auto result = etl::ranges::fold_right(v, 1, std::multiplies<int>{});
+      CHECK_EQUAL(24, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_string_concat)
+    {
+      std::vector<std::string> v{"a", "b", "c"};
+      auto result = etl::ranges::fold_right(v, std::string{}, std::plus<std::string>{});
+      CHECK_EQUAL(std::string("abc"), result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_different_init_type)
+    {
+      std::vector<int> v{1, 2, 3};
+      auto result = etl::ranges::fold_right(v, 0.5, [](int x, double acc) { return acc + x; });
+      CHECK_CLOSE(6.5, result, 0.001);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_array)
+    {
+      int a[] = {10, 20, 30};
+      auto result = etl::ranges::fold_right(a, 0, std::plus<int>{});
+      CHECK_EQUAL(60, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_subtraction_order)
+    {
+      // fold_right({1,2,3}, 0, minus) = 1 - (2 - (3 - 0)) = 1 - (2 - 3) = 1 - (-1) = 2
+      std::vector<int> v{1, 2, 3};
+      auto result = etl::ranges::fold_right(v, 0, std::minus<int>{});
+      CHECK_EQUAL(2, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_lambda)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_right(v, 0, [](int x, int acc) { return acc + x * x; });
+      CHECK_EQUAL(55, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_last_sum)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_right_last(v.begin(), v.end(), std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_last_range)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+      auto result = etl::ranges::fold_right_last(v, std::plus<int>{});
+      CHECK_EQUAL(15, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_last_single_element)
+    {
+      std::vector<int> v{42};
+      auto result = etl::ranges::fold_right_last(v, std::plus<int>{});
+      CHECK_EQUAL(42, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fold_right_last_subtraction_order)
+    {
+      // fold_right_last({1,2,3,4}, minus) = 1 - (2 - (3 - 4)) = 1 - (2 - (-1)) = 1 - 3 = -2
+      std::vector<int> v{1, 2, 3, 4};
+      auto result = etl::ranges::fold_right_last(v, std::minus<int>{});
+      CHECK_EQUAL(-2, result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_iterator)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::copy(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::copy(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::copy(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_empty_range)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::copy(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_single_element)
+    {
+      std::vector<int> src{42};
+      std::vector<int> dst(1);
+
+      auto result = etl::ranges::copy(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(42, dst[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_array)
+    {
+      int src[] = {10, 20, 30};
+      int dst[3] = {};
+
+      auto result = etl::ranges::copy(src, dst);
+      (void)result;
+
+      CHECK_EQUAL(10, dst[0]);
+      CHECK_EQUAL(20, dst[1]);
+      CHECK_EQUAL(30, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_to_different_container)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::array<int, 3> dst{};
+
+      auto result = etl::ranges::copy(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_iterator)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5, 6};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::copy_if(src.begin(), src.end(), dst.begin(), [](int x) { return x % 2 == 0; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin() + 3);
+      CHECK_EQUAL(2, dst[0]);
+      CHECK_EQUAL(4, dst[1]);
+      CHECK_EQUAL(6, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5, 6};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::copy_if(src, dst.begin(), [](int x) { return x % 2 == 0; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin() + 3);
+      CHECK_EQUAL(2, dst[0]);
+      CHECK_EQUAL(4, dst[1]);
+      CHECK_EQUAL(6, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_none_match)
+    {
+      std::vector<int> src{1, 3, 5};
+      std::vector<int> dst(3, 0);
+
+      auto result = etl::ranges::copy_if(src.begin(), src.end(), dst.begin(), [](int x) { return x % 2 == 0; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(0, dst[0]);
+      CHECK_EQUAL(0, dst[1]);
+      CHECK_EQUAL(0, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_all_match)
+    {
+      std::vector<int> src{2, 4, 6};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::copy_if(src, dst.begin(), [](int x) { return x % 2 == 0; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(2, dst[0]);
+      CHECK_EQUAL(4, dst[1]);
+      CHECK_EQUAL(6, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::copy_if(src.begin(), src.end(), dst.begin(), [](int) { return true; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_with_projection)
+    {
+      struct Item { int value; };
+      std::vector<Item> src{{1}, {2}, {3}, {4}, {5}, {6}};
+      std::vector<Item> dst(3);
+
+      auto result = etl::ranges::copy_if(src.begin(), src.end(), dst.begin(),
+                                         [](int v) { return v % 2 == 0; },
+                                         &Item::value);
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin() + 3);
+      CHECK_EQUAL(2, dst[0].value);
+      CHECK_EQUAL(4, dst[1].value);
+      CHECK_EQUAL(6, dst[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_if_range_with_projection)
+    {
+      struct Item { int value; };
+      std::vector<Item> src{{1}, {2}, {3}, {4}, {5}, {6}};
+      std::vector<Item> dst(3);
+
+      auto result = etl::ranges::copy_if(src, dst.begin(),
+                                         [](int v) { return v % 2 == 0; },
+                                         &Item::value);
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin() + 3);
+      CHECK_EQUAL(2, dst[0].value);
+      CHECK_EQUAL(4, dst[1].value);
+      CHECK_EQUAL(6, dst[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_n_basic)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::copy_n(src.begin(), 3, dst.begin());
+
+      CHECK(result.in == src.begin() + 3);
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_n_zero)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::vector<int> dst(3, 0);
+
+      auto result = etl::ranges::copy_n(src.begin(), 0, dst.begin());
+
+      CHECK(result.in == src.begin());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(0, dst[0]);
+      CHECK_EQUAL(0, dst[1]);
+      CHECK_EQUAL(0, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_n_all_elements)
+    {
+      std::vector<int> src{10, 20, 30, 40, 50};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::copy_n(src.begin(), 5, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(10, dst[0]);
+      CHECK_EQUAL(20, dst[1]);
+      CHECK_EQUAL(30, dst[2]);
+      CHECK_EQUAL(40, dst[3]);
+      CHECK_EQUAL(50, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_n_single_element)
+    {
+      std::vector<int> src{42, 99};
+      std::vector<int> dst(1);
+
+      auto result = etl::ranges::copy_n(src.begin(), 1, dst.begin());
+
+      CHECK(result.in == src.begin() + 1);
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(42, dst[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_n_to_different_container)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::array<int, 3> dst{};
+
+      auto result = etl::ranges::copy_n(src.begin(), 3, dst.begin());
+
+      CHECK(result.in == src.begin() + 3);
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_iterator)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::copy_backward(src.begin(), src.end(), dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::copy_backward(src, dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::copy_backward(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_empty_range)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::copy_backward(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_single_element)
+    {
+      std::vector<int> src{42};
+      std::vector<int> dst(1);
+
+      auto result = etl::ranges::copy_backward(src.begin(), src.end(), dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(42, dst[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_to_different_container)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::array<int, 3> dst{};
+
+      auto result = etl::ranges::copy_backward(src, dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_copy_backward_overlapping)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5, 0, 0};
+
+      auto result = etl::ranges::copy_backward(v.begin(), v.begin() + 5, v.end());
+
+      CHECK(result.in == v.begin() + 5);
+      CHECK(result.out == v.begin() + 2);
+      CHECK_EQUAL(1, v[0]);
+      CHECK_EQUAL(2, v[1]);
+      CHECK_EQUAL(1, v[2]);
+      CHECK_EQUAL(2, v[3]);
+      CHECK_EQUAL(3, v[4]);
+      CHECK_EQUAL(4, v[5]);
+      CHECK_EQUAL(5, v[6]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_iterator)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::move(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::move(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::move(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_empty_range)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::move(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_single_element)
+    {
+      std::vector<int> src{42};
+      std::vector<int> dst(1);
+
+      auto result = etl::ranges::move(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(42, dst[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_unique_ptr)
+    {
+      std::vector<std::unique_ptr<int>> src;
+      src.push_back(std::make_unique<int>(10));
+      src.push_back(std::make_unique<int>(20));
+      src.push_back(std::make_unique<int>(30));
+
+      std::vector<std::unique_ptr<int>> dst(3);
+
+      auto result = etl::ranges::move(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(10, *dst[0]);
+      CHECK_EQUAL(20, *dst[1]);
+      CHECK_EQUAL(30, *dst[2]);
+      CHECK(src[0] == nullptr);
+      CHECK(src[1] == nullptr);
+      CHECK(src[2] == nullptr);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_to_different_container)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::array<int, 3> dst{};
+
+      auto result = etl::ranges::move(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_iterator)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::move_backward(src.begin(), src.end(), dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::move_backward(src, dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+      CHECK_EQUAL(4, dst[3]);
+      CHECK_EQUAL(5, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::move_backward(src.begin(), src.end(), dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_empty_range)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::move_backward(src, dst.begin());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_single_element)
+    {
+      std::vector<int> src{42};
+      std::vector<int> dst(1);
+
+      auto result = etl::ranges::move_backward(src.begin(), src.end(), dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(42, dst[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_unique_ptr)
+    {
+      std::vector<std::unique_ptr<int>> src;
+      src.push_back(std::make_unique<int>(10));
+      src.push_back(std::make_unique<int>(20));
+      src.push_back(std::make_unique<int>(30));
+
+      std::vector<std::unique_ptr<int>> dst(3);
+
+      auto result = etl::ranges::move_backward(src.begin(), src.end(), dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(10, *dst[0]);
+      CHECK_EQUAL(20, *dst[1]);
+      CHECK_EQUAL(30, *dst[2]);
+      CHECK(src[0] == nullptr);
+      CHECK(src[1] == nullptr);
+      CHECK(src[2] == nullptr);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_to_different_container)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::array<int, 3> dst{};
+
+      auto result = etl::ranges::move_backward(src, dst.end());
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+      CHECK_EQUAL(1, dst[0]);
+      CHECK_EQUAL(2, dst[1]);
+      CHECK_EQUAL(3, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_move_backward_overlapping)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5, 0, 0};
+
+      auto result = etl::ranges::move_backward(v.begin(), v.begin() + 5, v.end());
+
+      CHECK(result.in == v.begin() + 5);
+      CHECK(result.out == v.begin() + 2);
+      CHECK_EQUAL(1, v[0]);
+      CHECK_EQUAL(2, v[1]);
+      CHECK_EQUAL(1, v[2]);
+      CHECK_EQUAL(2, v[3]);
+      CHECK_EQUAL(3, v[4]);
+      CHECK_EQUAL(4, v[5]);
+      CHECK_EQUAL(5, v[6]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_iterator)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::swap_ranges(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.end());
+      CHECK_EQUAL(6, v1[0]);
+      CHECK_EQUAL(7, v1[1]);
+      CHECK_EQUAL(8, v1[2]);
+      CHECK_EQUAL(9, v1[3]);
+      CHECK_EQUAL(10, v1[4]);
+      CHECK_EQUAL(1, v2[0]);
+      CHECK_EQUAL(2, v2[1]);
+      CHECK_EQUAL(3, v2[2]);
+      CHECK_EQUAL(4, v2[3]);
+      CHECK_EQUAL(5, v2[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_range)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::swap_ranges(v1, v2);
+
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.end());
+      CHECK_EQUAL(6, v1[0]);
+      CHECK_EQUAL(7, v1[1]);
+      CHECK_EQUAL(8, v1[2]);
+      CHECK_EQUAL(9, v1[3]);
+      CHECK_EQUAL(10, v1[4]);
+      CHECK_EQUAL(1, v2[0]);
+      CHECK_EQUAL(2, v2[1]);
+      CHECK_EQUAL(3, v2[2]);
+      CHECK_EQUAL(4, v2[3]);
+      CHECK_EQUAL(5, v2[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_empty)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      auto result = etl::ranges::swap_ranges(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_empty_range)
+    {
+      std::vector<int> v1{};
+      std::vector<int> v2{};
+
+      auto result = etl::ranges::swap_ranges(v1, v2);
+
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_different_lengths_first_shorter)
+    {
+      std::vector<int> v1{1, 2, 3};
+      std::vector<int> v2{6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::swap_ranges(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.begin() + 3);
+      CHECK_EQUAL(6, v1[0]);
+      CHECK_EQUAL(7, v1[1]);
+      CHECK_EQUAL(8, v1[2]);
+      CHECK_EQUAL(1, v2[0]);
+      CHECK_EQUAL(2, v2[1]);
+      CHECK_EQUAL(3, v2[2]);
+      CHECK_EQUAL(9, v2[3]);
+      CHECK_EQUAL(10, v2[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_different_lengths_second_shorter)
+    {
+      std::vector<int> v1{1, 2, 3, 4, 5};
+      std::vector<int> v2{6, 7, 8};
+
+      auto result = etl::ranges::swap_ranges(v1, v2);
+
+      CHECK(result.in1 == v1.begin() + 3);
+      CHECK(result.in2 == v2.end());
+      CHECK_EQUAL(6, v1[0]);
+      CHECK_EQUAL(7, v1[1]);
+      CHECK_EQUAL(8, v1[2]);
+      CHECK_EQUAL(4, v1[3]);
+      CHECK_EQUAL(5, v1[4]);
+      CHECK_EQUAL(1, v2[0]);
+      CHECK_EQUAL(2, v2[1]);
+      CHECK_EQUAL(3, v2[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_single_element)
+    {
+      std::vector<int> v1{42};
+      std::vector<int> v2{99};
+
+      auto result = etl::ranges::swap_ranges(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+      CHECK(result.in1 == v1.end());
+      CHECK(result.in2 == v2.end());
+      CHECK_EQUAL(99, v1[0]);
+      CHECK_EQUAL(42, v2[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_swap_ranges_array)
+    {
+      int a1[] = {10, 20, 30};
+      int a2[] = {40, 50, 60};
+
+      auto result = etl::ranges::swap_ranges(a1, a2);
+      (void)result;
+
+      CHECK_EQUAL(40, a1[0]);
+      CHECK_EQUAL(50, a1[1]);
+      CHECK_EQUAL(60, a1[2]);
+      CHECK_EQUAL(10, a2[0]);
+      CHECK_EQUAL(20, a2[1]);
+      CHECK_EQUAL(30, a2[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_iterator)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::transform(src.begin(), src.end(), dst.begin(), [](int x) { return x * 2; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(2, dst[0]);
+      CHECK_EQUAL(4, dst[1]);
+      CHECK_EQUAL(6, dst[2]);
+      CHECK_EQUAL(8, dst[3]);
+      CHECK_EQUAL(10, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::transform(src, dst.begin(), [](int x) { return x * 2; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(2, dst[0]);
+      CHECK_EQUAL(4, dst[1]);
+      CHECK_EQUAL(6, dst[2]);
+      CHECK_EQUAL(8, dst[3]);
+      CHECK_EQUAL(10, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::transform(src.begin(), src.end(), dst.begin(), [](int x) { return x; });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_with_projection)
+    {
+      struct Item { int value; };
+      std::vector<Item> src{{1}, {2}, {3}};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::transform(src.begin(), src.end(), dst.begin(),
+                                           [](int v) { return v * 10; },
+                                           &Item::value);
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(10, dst[0]);
+      CHECK_EQUAL(20, dst[1]);
+      CHECK_EQUAL(30, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_range_with_projection)
+    {
+      struct Item { int value; };
+      std::vector<Item> src{{1}, {2}, {3}};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::transform(src, dst.begin(),
+                                           [](int v) { return v * 10; },
+                                           &Item::value);
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(10, dst[0]);
+      CHECK_EQUAL(20, dst[1]);
+      CHECK_EQUAL(30, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_binary_iterator)
+    {
+      std::vector<int> src1{1, 2, 3, 4, 5};
+      std::vector<int> src2{10, 20, 30, 40, 50};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::transform(src1.begin(), src1.end(),
+                                           src2.begin(), src2.end(),
+                                           dst.begin(),
+                                           [](int a, int b) { return a + b; });
+
+      CHECK(result.in1 == src1.end());
+      CHECK(result.in2 == src2.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(11, dst[0]);
+      CHECK_EQUAL(22, dst[1]);
+      CHECK_EQUAL(33, dst[2]);
+      CHECK_EQUAL(44, dst[3]);
+      CHECK_EQUAL(55, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_binary_range)
+    {
+      std::vector<int> src1{1, 2, 3, 4, 5};
+      std::vector<int> src2{10, 20, 30, 40, 50};
+      std::vector<int> dst(5);
+
+      auto result = etl::ranges::transform(src1, src2, dst.begin(),
+                                           [](int a, int b) { return a + b; });
+
+      CHECK(result.in1 == src1.end());
+      CHECK(result.in2 == src2.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(11, dst[0]);
+      CHECK_EQUAL(22, dst[1]);
+      CHECK_EQUAL(33, dst[2]);
+      CHECK_EQUAL(44, dst[3]);
+      CHECK_EQUAL(55, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_binary_different_lengths)
+    {
+      std::vector<int> src1{1, 2, 3, 4, 5};
+      std::vector<int> src2{10, 20, 30};
+      std::vector<int> dst(5, 0);
+
+      auto result = etl::ranges::transform(src1.begin(), src1.end(),
+                                           src2.begin(), src2.end(),
+                                           dst.begin(),
+                                           [](int a, int b) { return a + b; });
+
+      CHECK(result.in1 == src1.begin() + 3);
+      CHECK(result.in2 == src2.end());
+      CHECK(result.out == dst.begin() + 3);
+      CHECK_EQUAL(11, dst[0]);
+      CHECK_EQUAL(22, dst[1]);
+      CHECK_EQUAL(33, dst[2]);
+      CHECK_EQUAL(0, dst[3]);
+      CHECK_EQUAL(0, dst[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_binary_empty)
+    {
+      std::vector<int> src1{};
+      std::vector<int> src2{};
+      std::vector<int> dst{};
+
+      auto result = etl::ranges::transform(src1.begin(), src1.end(),
+                                           src2.begin(), src2.end(),
+                                           dst.begin(),
+                                           [](int a, int b) { return a + b; });
+
+      CHECK(result.in1 == src1.end());
+      CHECK(result.in2 == src2.end());
+      CHECK(result.out == dst.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_binary_with_projections)
+    {
+      struct Item { int value; };
+      std::vector<Item> src1{{1}, {2}, {3}};
+      std::vector<Item> src2{{10}, {20}, {30}};
+      std::vector<int> dst(3);
+
+      auto result = etl::ranges::transform(src1.begin(), src1.end(),
+                                           src2.begin(), src2.end(),
+                                           dst.begin(),
+                                           [](int a, int b) { return a + b; },
+                                           &Item::value,
+                                           &Item::value);
+
+      CHECK(result.in1 == src1.end());
+      CHECK(result.in2 == src2.end());
+      CHECK(result.out == dst.end());
+      CHECK_EQUAL(11, dst[0]);
+      CHECK_EQUAL(22, dst[1]);
+      CHECK_EQUAL(33, dst[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_to_different_type)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::vector<std::string> dst(3);
+
+      auto result = etl::ranges::transform(src, dst.begin(),
+                                           [](int x) { return std::to_string(x); });
+
+      CHECK(result.in == src.end());
+      CHECK(result.out == dst.end());
+      CHECK(dst[0] == "1");
+      CHECK(dst[1] == "2");
+      CHECK(dst[2] == "3");
+    }
+
+    //*************************************************************************
+    TEST(ranges_transform_unary_in_place)
+    {
+      std::vector<int> v{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::transform(v, v.begin(), [](int x) { return x * x; });
+
+      CHECK(result.in == v.end());
+      CHECK(result.out == v.end());
+      CHECK_EQUAL(1, v[0]);
+      CHECK_EQUAL(4, v[1]);
+      CHECK_EQUAL(9, v[2]);
+      CHECK_EQUAL(16, v[3]);
+      CHECK_EQUAL(25, v[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      auto it = etl::ranges::replace(vec.begin(), vec.end(), 2, 9);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(9, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(9, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+      CHECK_EQUAL(9, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_range)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      auto it = etl::ranges::replace(vec, 2, 9);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(9, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(9, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+      CHECK_EQUAL(9, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_no_match)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::replace(vec.begin(), vec.end(), 9, 0);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_empty)
+    {
+      std::vector<int> vec;
+      auto it = etl::ranges::replace(vec.begin(), vec.end(), 1, 2);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::replace(vec.begin(), vec.end(), 6, 9, proj);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(9, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::replace(vec, 6, 9, proj);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(9, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_if_iterator)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5, 6};
+      auto it = etl::ranges::replace_if(vec.begin(), vec.end(), is_even, 0);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(0, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(0, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+      CHECK_EQUAL(0, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_if_range)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5, 6};
+      auto it = etl::ranges::replace_if(vec, is_even, 0);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(0, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(0, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+      CHECK_EQUAL(0, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_if_no_match)
+    {
+      auto is_negative = [](int v) { return v < 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::replace_if(vec.begin(), vec.end(), is_negative, 0);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_if_empty)
+    {
+      auto always_true = [](int) { return true; };
+      std::vector<int> vec;
+      auto it = etl::ranges::replace_if(vec.begin(), vec.end(), always_true, 0);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_if_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto is_greater_than_6 = [](int v) { return v > 6; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::replace_if(vec.begin(), vec.end(), is_greater_than_6, 0, proj);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(0, vec[3]);
+      CHECK_EQUAL(0, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_if_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto is_greater_than_6 = [](int v) { return v > 6; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::replace_if(vec, is_greater_than_6, 0, proj);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(0, vec[3]);
+      CHECK_EQUAL(0, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      std::vector<int> out(6);
+      auto [in_it, out_it] = etl::ranges::replace_copy(vec.begin(), vec.end(), out.begin(), 2, 9);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(9, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(9, out[3]);
+      CHECK_EQUAL(5, out[4]);
+      CHECK_EQUAL(9, out[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_range)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      std::vector<int> out(6);
+      auto [in_it, out_it] = etl::ranges::replace_copy(vec, out.begin(), 2, 9);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(9, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(9, out[3]);
+      CHECK_EQUAL(5, out[4]);
+      CHECK_EQUAL(9, out[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_no_match)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5);
+      auto [in_it, out_it] = etl::ranges::replace_copy(vec.begin(), vec.end(), out.begin(), 9, 0);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_empty)
+    {
+      std::vector<int> vec;
+      std::vector<int> out;
+      auto [in_it, out_it] = etl::ranges::replace_copy(vec.begin(), vec.end(), out.begin(), 1, 2);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5);
+      auto [in_it, out_it] = etl::ranges::replace_copy(vec.begin(), vec.end(), out.begin(), 6, 9, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(9, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5);
+      auto [in_it, out_it] = etl::ranges::replace_copy(vec, out.begin(), 6, 9, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(9, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_if_iterator)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5, 6};
+      std::vector<int> out(6);
+      auto [in_it, out_it] = etl::ranges::replace_copy_if(vec.begin(), vec.end(), out.begin(), is_even, 0);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(0, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(0, out[3]);
+      CHECK_EQUAL(5, out[4]);
+      CHECK_EQUAL(0, out[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_if_range)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5, 6};
+      std::vector<int> out(6);
+      auto [in_it, out_it] = etl::ranges::replace_copy_if(vec, out.begin(), is_even, 0);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(0, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(0, out[3]);
+      CHECK_EQUAL(5, out[4]);
+      CHECK_EQUAL(0, out[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_if_no_match)
+    {
+      auto is_negative = [](int v) { return v < 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5);
+      auto [in_it, out_it] = etl::ranges::replace_copy_if(vec.begin(), vec.end(), out.begin(), is_negative, 0);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_if_empty)
+    {
+      auto always_true = [](int) { return true; };
+      std::vector<int> vec;
+      std::vector<int> out;
+      auto [in_it, out_it] = etl::ranges::replace_copy_if(vec.begin(), vec.end(), out.begin(), always_true, 0);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_if_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto is_greater_than_6 = [](int v) { return v > 6; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5);
+      auto [in_it, out_it] = etl::ranges::replace_copy_if(vec.begin(), vec.end(), out.begin(), is_greater_than_6, 0, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(0, out[3]);
+      CHECK_EQUAL(0, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_replace_copy_if_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto is_greater_than_6 = [](int v) { return v > 6; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5);
+      auto [in_it, out_it] = etl::ranges::replace_copy_if(vec, out.begin(), is_greater_than_6, 0, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(0, out[3]);
+      CHECK_EQUAL(0, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      auto result = etl::ranges::remove(vec.begin(), vec.end(), 2);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_range)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      auto result = etl::ranges::remove(vec, 2);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_no_match)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::remove(vec.begin(), vec.end(), 9);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_empty)
+    {
+      std::vector<int> vec;
+      auto result = etl::ranges::remove(vec.begin(), vec.end(), 1);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_all_same)
+    {
+      std::vector<int> vec{2, 2, 2, 2};
+      auto result = etl::ranges::remove(vec, 2);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::remove(vec.begin(), vec.end(), 6, proj);
+      CHECK(result.begin() == vec.begin() + 4);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(4, vec[2]);
+      CHECK_EQUAL(5, vec[3]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::remove(vec, 6, proj);
+      CHECK(result.begin() == vec.begin() + 4);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(4, vec[2]);
+      CHECK_EQUAL(5, vec[3]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_iterator)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5, 6};
+      auto result = etl::ranges::remove_if(vec.begin(), vec.end(), is_even);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_range)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5, 6};
+      auto result = etl::ranges::remove_if(vec, is_even);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_no_match)
+    {
+      auto is_negative = [](int v) { return v < 0; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::remove_if(vec.begin(), vec.end(), is_negative);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_empty)
+    {
+      auto is_even = [](int v) { return v % 2 == 0; };
+      std::vector<int> vec;
+      auto result = etl::ranges::remove_if(vec.begin(), vec.end(), is_even);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_all_match)
+    {
+      auto always_true = [](int) { return true; };
+      std::vector<int> vec{1, 2, 3, 4};
+      auto result = etl::ranges::remove_if(vec, always_true);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto is_greater_than_6 = [](int v) { return v > 6; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::remove_if(vec.begin(), vec.end(), is_greater_than_6, proj);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_if_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      auto is_greater_than_6 = [](int v) { return v > 6; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::remove_if(vec, is_greater_than_6, proj);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec.begin(), vec.end(), out.begin(), 2);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(3, out[1]);
+      CHECK_EQUAL(5, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_range)
+    {
+      std::vector<int> vec{1, 2, 3, 2, 5, 2};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec, out.begin(), 2);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(3, out[1]);
+      CHECK_EQUAL(5, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_no_match)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec.begin(), vec.end(), out.begin(), 9);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 5);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_empty)
+    {
+      std::vector<int> vec;
+      std::vector<int> out;
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec.begin(), vec.end(), out.begin(), 1);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_all_same)
+    {
+      std::vector<int> vec{2, 2, 2, 2};
+      std::vector<int> out(4, 0);
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec, out.begin(), 2);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_with_projection)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec.begin(), vec.end(), out.begin(), 6, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 4);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(4, out[2]);
+      CHECK_EQUAL(5, out[3]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_remove_copy_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v * 2; };
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::remove_copy(vec, out.begin(), 6, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 4);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(4, out[2]);
+      CHECK_EQUAL(5, out[3]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::fill(vec.begin(), vec.end(), 7);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(7, vec[0]);
+      CHECK_EQUAL(7, vec[1]);
+      CHECK_EQUAL(7, vec[2]);
+      CHECK_EQUAL(7, vec[3]);
+      CHECK_EQUAL(7, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::fill(vec, 7);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(7, vec[0]);
+      CHECK_EQUAL(7, vec[1]);
+      CHECK_EQUAL(7, vec[2]);
+      CHECK_EQUAL(7, vec[3]);
+      CHECK_EQUAL(7, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_empty)
+    {
+      std::vector<int> vec;
+      auto it = etl::ranges::fill(vec.begin(), vec.end(), 7);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_empty_range)
+    {
+      std::vector<int> vec;
+      auto it = etl::ranges::fill(vec, 7);
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_partial)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::fill(vec.begin(), vec.begin() + 3, 9);
+      CHECK(it == vec.begin() + 3);
+      CHECK_EQUAL(9, vec[0]);
+      CHECK_EQUAL(9, vec[1]);
+      CHECK_EQUAL(9, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_n_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::fill_n(vec.begin(), 3, 7);
+      CHECK(it == vec.begin() + 3);
+      CHECK_EQUAL(7, vec[0]);
+      CHECK_EQUAL(7, vec[1]);
+      CHECK_EQUAL(7, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_n_zero)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::fill_n(vec.begin(), 0, 7);
+      CHECK(it == vec.begin());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_fill_n_all)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto it = etl::ranges::fill_n(vec.begin(), 5, 0);
+      CHECK(it == vec.end());
+      CHECK_EQUAL(0, vec[0]);
+      CHECK_EQUAL(0, vec[1]);
+      CHECK_EQUAL(0, vec[2]);
+      CHECK_EQUAL(0, vec[3]);
+      CHECK_EQUAL(0, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int counter = 10;
+      auto it = etl::ranges::generate(vec.begin(), vec.end(), [&counter]() { return counter++; });
+      CHECK(it == vec.end());
+      CHECK_EQUAL(10, vec[0]);
+      CHECK_EQUAL(11, vec[1]);
+      CHECK_EQUAL(12, vec[2]);
+      CHECK_EQUAL(13, vec[3]);
+      CHECK_EQUAL(14, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int counter = 10;
+      auto it = etl::ranges::generate(vec, [&counter]() { return counter++; });
+      CHECK(it == vec.end());
+      CHECK_EQUAL(10, vec[0]);
+      CHECK_EQUAL(11, vec[1]);
+      CHECK_EQUAL(12, vec[2]);
+      CHECK_EQUAL(13, vec[3]);
+      CHECK_EQUAL(14, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_empty)
+    {
+      std::vector<int> vec;
+      int counter = 10;
+      auto it = etl::ranges::generate(vec.begin(), vec.end(), [&counter]() { return counter++; });
+      CHECK(it == vec.end());
+      CHECK_EQUAL(10, counter);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_empty_range)
+    {
+      std::vector<int> vec;
+      int counter = 10;
+      auto it = etl::ranges::generate(vec, [&counter]() { return counter++; });
+      CHECK(it == vec.end());
+      CHECK_EQUAL(10, counter);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_partial)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int counter = 10;
+      auto it = etl::ranges::generate(vec.begin(), vec.begin() + 3, [&counter]() { return counter++; });
+      CHECK(it == vec.begin() + 3);
+      CHECK_EQUAL(10, vec[0]);
+      CHECK_EQUAL(11, vec[1]);
+      CHECK_EQUAL(12, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_n_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int counter = 10;
+      auto it = etl::ranges::generate_n(vec.begin(), 3, [&counter]() { return counter++; });
+      CHECK(it == vec.begin() + 3);
+      CHECK_EQUAL(10, vec[0]);
+      CHECK_EQUAL(11, vec[1]);
+      CHECK_EQUAL(12, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_n_zero)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int counter = 10;
+      auto it = etl::ranges::generate_n(vec.begin(), 0, [&counter]() { return counter++; });
+      CHECK(it == vec.begin());
+      CHECK_EQUAL(10, counter);
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_generate_n_all)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      int counter = 0;
+      auto it = etl::ranges::generate_n(vec.begin(), 5, [&counter]() { return counter++; });
+      CHECK(it == vec.end());
+      CHECK_EQUAL(0, vec[0]);
+      CHECK_EQUAL(1, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(3, vec[3]);
+      CHECK_EQUAL(4, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_iterator)
+    {
+      std::vector<int> vec(5, 0);
+      auto result = etl::ranges::iota(vec.begin(), vec.end(), 1);
+      CHECK(result.out == vec.end());
+      CHECK_EQUAL(6, result.value);
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_range)
+    {
+      std::vector<int> vec(5, 0);
+      auto result = etl::ranges::iota(vec, 1);
+      CHECK(result.out == vec.end());
+      CHECK_EQUAL(6, result.value);
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_empty)
+    {
+      std::vector<int> vec;
+      auto result = etl::ranges::iota(vec.begin(), vec.end(), 10);
+      CHECK(result.out == vec.end());
+      CHECK_EQUAL(10, result.value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_empty_range)
+    {
+      std::vector<int> vec;
+      auto result = etl::ranges::iota(vec, 10);
+      CHECK(result.out == vec.end());
+      CHECK_EQUAL(10, result.value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_partial)
+    {
+      std::vector<int> vec{0, 0, 0, 0, 0};
+      auto result = etl::ranges::iota(vec.begin(), vec.begin() + 3, 5);
+      CHECK(result.out == vec.begin() + 3);
+      CHECK_EQUAL(8, result.value);
+      CHECK_EQUAL(5, vec[0]);
+      CHECK_EQUAL(6, vec[1]);
+      CHECK_EQUAL(7, vec[2]);
+      CHECK_EQUAL(0, vec[3]);
+      CHECK_EQUAL(0, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_negative_start)
+    {
+      std::vector<int> vec(5, 0);
+      auto result = etl::ranges::iota(vec, -2);
+      CHECK(result.out == vec.end());
+      CHECK_EQUAL(3, result.value);
+      CHECK_EQUAL(-2, vec[0]);
+      CHECK_EQUAL(-1, vec[1]);
+      CHECK_EQUAL(0, vec[2]);
+      CHECK_EQUAL(1, vec[3]);
+      CHECK_EQUAL(2, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_single_element)
+    {
+      std::vector<int> vec(1, 0);
+      auto result = etl::ranges::iota(vec, 42);
+      CHECK(result.out == vec.end());
+      CHECK_EQUAL(43, result.value);
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_iota_array)
+    {
+      int arr[5] = {};
+      auto result = etl::ranges::iota(arr, 10);
+      CHECK_EQUAL(15, result.value);
+      CHECK_EQUAL(10, arr[0]);
+      CHECK_EQUAL(11, arr[1]);
+      CHECK_EQUAL(12, arr[2]);
+      CHECK_EQUAL(13, arr[3]);
+      CHECK_EQUAL(14, arr[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_iterator)
+    {
+      std::vector<int> vec{1, 1, 2, 2, 2, 3, 3, 4, 5, 5};
+      auto result = etl::ranges::unique(vec.begin(), vec.end());
+      CHECK(result.begin() == vec.begin() + 5);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_range)
+    {
+      std::vector<int> vec{1, 1, 2, 2, 2, 3, 3, 4, 5, 5};
+      auto result = etl::ranges::unique(vec);
+      CHECK(result.begin() == vec.begin() + 5);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_no_duplicates)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::unique(vec.begin(), vec.end());
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_all_same)
+    {
+      std::vector<int> vec{2, 2, 2, 2};
+      auto result = etl::ranges::unique(vec);
+      CHECK(result.begin() == vec.begin() + 1);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(2, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_empty)
+    {
+      std::vector<int> vec;
+      auto result = etl::ranges::unique(vec.begin(), vec.end());
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_single_element)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::unique(vec);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_with_predicate)
+    {
+      auto pred = [](int a, int b) { return (a / 10) == (b / 10); };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      auto result = etl::ranges::unique(vec.begin(), vec.end(), pred);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(11, vec[0]);
+      CHECK_EQUAL(21, vec[1]);
+      CHECK_EQUAL(31, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_with_predicate_range)
+    {
+      auto pred = [](int a, int b) { return (a / 10) == (b / 10); };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      auto result = etl::ranges::unique(vec, pred);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(11, vec[0]);
+      CHECK_EQUAL(21, vec[1]);
+      CHECK_EQUAL(31, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_with_projection)
+    {
+      auto proj = [](const int& v) { return v / 10; };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      auto result = etl::ranges::unique(vec.begin(), vec.end(), etl::ranges::equal_to{}, proj);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(11, vec[0]);
+      CHECK_EQUAL(21, vec[1]);
+      CHECK_EQUAL(31, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v / 10; };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      auto result = etl::ranges::unique(vec, etl::ranges::equal_to{}, proj);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(11, vec[0]);
+      CHECK_EQUAL(21, vec[1]);
+      CHECK_EQUAL(31, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_consecutive_pairs)
+    {
+      std::vector<int> vec{1, 1, 2, 2, 1, 1};
+      auto result = etl::ranges::unique(vec);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(1, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_iterator)
+    {
+      std::vector<int> vec{1, 1, 2, 2, 2, 3, 3, 4, 5, 5};
+      std::vector<int> out(10, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec.begin(), vec.end(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 5);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_range)
+    {
+      std::vector<int> vec{1, 1, 2, 2, 2, 3, 3, 4, 5, 5};
+      std::vector<int> out(10, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 5);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_no_duplicates)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec.begin(), vec.end(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 5);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_empty)
+    {
+      std::vector<int> vec;
+      std::vector<int> out;
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec.begin(), vec.end(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_all_same)
+    {
+      std::vector<int> vec{2, 2, 2, 2};
+      std::vector<int> out(4, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 1);
+      CHECK_EQUAL(2, out[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_single_element)
+    {
+      std::vector<int> vec{42};
+      std::vector<int> out(1, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 1);
+      CHECK_EQUAL(42, out[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_with_predicate)
+    {
+      auto pred = [](int a, int b) { return (a / 10) == (b / 10); };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec.begin(), vec.end(), out.begin(), pred);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(11, out[0]);
+      CHECK_EQUAL(21, out[1]);
+      CHECK_EQUAL(31, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_with_predicate_range)
+    {
+      auto pred = [](int a, int b) { return (a / 10) == (b / 10); };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec, out.begin(), pred);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(11, out[0]);
+      CHECK_EQUAL(21, out[1]);
+      CHECK_EQUAL(31, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_with_projection)
+    {
+      auto proj = [](const int& v) { return v / 10; };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec.begin(), vec.end(), out.begin(), etl::ranges::equal_to{}, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(11, out[0]);
+      CHECK_EQUAL(21, out[1]);
+      CHECK_EQUAL(31, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_with_projection_range)
+    {
+      auto proj = [](const int& v) { return v / 10; };
+      std::vector<int> vec{11, 15, 21, 25, 29, 31};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec, out.begin(), etl::ranges::equal_to{}, proj);
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(11, out[0]);
+      CHECK_EQUAL(21, out[1]);
+      CHECK_EQUAL(31, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_unique_copy_consecutive_pairs)
+    {
+      std::vector<int> vec{1, 1, 2, 2, 1, 1};
+      std::vector<int> out(6, 0);
+      auto [in_it, out_it] = etl::ranges::unique_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin() + 3);
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(1, out[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::reverse(vec.begin(), vec.end());
+      CHECK(result == vec.end());
+      CHECK_EQUAL(5, vec[0]);
+      CHECK_EQUAL(4, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(2, vec[3]);
+      CHECK_EQUAL(1, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::reverse(vec);
+      CHECK(result == vec.end());
+      CHECK_EQUAL(5, vec[0]);
+      CHECK_EQUAL(4, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(2, vec[3]);
+      CHECK_EQUAL(1, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_even_count)
+    {
+      std::vector<int> vec{1, 2, 3, 4};
+      etl::ranges::reverse(vec);
+      CHECK_EQUAL(4, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(1, vec[3]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_single_element)
+    {
+      std::vector<int> vec{42};
+      etl::ranges::reverse(vec);
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_empty)
+    {
+      std::vector<int> vec{};
+      auto result = etl::ranges::reverse(vec);
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_copy_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::reverse_copy(vec.begin(), vec.end(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(5, out[0]);
+      CHECK_EQUAL(4, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(2, out[3]);
+      CHECK_EQUAL(1, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_copy_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::reverse_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(5, out[0]);
+      CHECK_EQUAL(4, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(2, out[3]);
+      CHECK_EQUAL(1, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_copy_empty)
+    {
+      std::vector<int> vec{};
+      std::vector<int> out{};
+      auto [in_it, out_it] = etl::ranges::reverse_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_reverse_copy_single_element)
+    {
+      std::vector<int> vec{42};
+      std::vector<int> out(1, 0);
+      auto [in_it, out_it] = etl::ranges::reverse_copy(vec, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(42, out[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::rotate(vec.begin(), vec.begin() + 2, vec.end());
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(3, vec[0]);
+      CHECK_EQUAL(4, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+      CHECK_EQUAL(1, vec[3]);
+      CHECK_EQUAL(2, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::rotate(vec, vec.begin() + 2);
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(3, vec[0]);
+      CHECK_EQUAL(4, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+      CHECK_EQUAL(1, vec[3]);
+      CHECK_EQUAL(2, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_middle_at_begin)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::rotate(vec, vec.begin());
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_middle_at_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::rotate(vec, vec.end());
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_single_element)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::rotate(vec, vec.begin());
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_by_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::rotate(vec, vec.begin() + 1);
+      CHECK(result.begin() == vec.begin() + 4);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(2, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(4, vec[2]);
+      CHECK_EQUAL(5, vec[3]);
+      CHECK_EQUAL(1, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_by_last_minus_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::rotate(vec, vec.begin() + 4);
+      CHECK(result.begin() == vec.begin() + 1);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(5, vec[0]);
+      CHECK_EQUAL(1, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(3, vec[3]);
+      CHECK_EQUAL(4, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec.begin(), vec.begin() + 2, vec.end(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(3, out[0]);
+      CHECK_EQUAL(4, out[1]);
+      CHECK_EQUAL(5, out[2]);
+      CHECK_EQUAL(1, out[3]);
+      CHECK_EQUAL(2, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.begin() + 2, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(3, out[0]);
+      CHECK_EQUAL(4, out[1]);
+      CHECK_EQUAL(5, out[2]);
+      CHECK_EQUAL(1, out[3]);
+      CHECK_EQUAL(2, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_middle_at_begin)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.begin(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_middle_at_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.end(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(1, out[0]);
+      CHECK_EQUAL(2, out[1]);
+      CHECK_EQUAL(3, out[2]);
+      CHECK_EQUAL(4, out[3]);
+      CHECK_EQUAL(5, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_single_element)
+    {
+      std::vector<int> vec{42};
+      std::vector<int> out(1, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.begin(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(42, out[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_empty)
+    {
+      std::vector<int> vec{};
+      std::vector<int> out{};
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.begin(), out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_by_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.begin() + 1, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(2, out[0]);
+      CHECK_EQUAL(3, out[1]);
+      CHECK_EQUAL(4, out[2]);
+      CHECK_EQUAL(5, out[3]);
+      CHECK_EQUAL(1, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_rotate_copy_by_last_minus_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> out(5, 0);
+      auto [in_it, out_it] = etl::ranges::rotate_copy(vec, vec.begin() + 4, out.begin());
+      CHECK(in_it == vec.end());
+      CHECK(out_it == out.end());
+      CHECK_EQUAL(5, out[0]);
+      CHECK_EQUAL(1, out[1]);
+      CHECK_EQUAL(2, out[2]);
+      CHECK_EQUAL(3, out[3]);
+      CHECK_EQUAL(4, out[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec.begin(), vec.end(), 2);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin() + 3);
+      CHECK_EQUAL(3, vec[0]);
+      CHECK_EQUAL(4, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, 2);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin() + 3);
+      CHECK_EQUAL(3, vec[0]);
+      CHECK_EQUAL(4, vec[1]);
+      CHECK_EQUAL(5, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_by_zero)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, 0);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_by_negative)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, -1);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_by_size)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, 5);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_by_more_than_size)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, 10);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_by_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, 1);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin() + 4);
+      CHECK_EQUAL(2, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(4, vec[2]);
+      CHECK_EQUAL(5, vec[3]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_by_last_minus_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_left(vec, 4);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin() + 1);
+      CHECK_EQUAL(5, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_empty)
+    {
+      std::vector<int> vec{};
+      auto result = etl::ranges::shift_left(vec, 1);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_single_element)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::shift_left(vec, 1);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_left_single_element_by_zero)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::shift_left(vec, 0);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec.begin(), vec.end(), 2);
+      CHECK(result.begin() == vec.begin() + 2);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[2]);
+      CHECK_EQUAL(2, vec[3]);
+      CHECK_EQUAL(3, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, 2);
+      CHECK(result.begin() == vec.begin() + 2);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[2]);
+      CHECK_EQUAL(2, vec[3]);
+      CHECK_EQUAL(3, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_by_zero)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, 0);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_by_negative)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, -1);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(4, vec[3]);
+      CHECK_EQUAL(5, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_by_size)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, 5);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_by_more_than_size)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, 10);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_by_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, 1);
+      CHECK(result.begin() == vec.begin() + 1);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(3, vec[3]);
+      CHECK_EQUAL(4, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_by_last_minus_one)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto result = etl::ranges::shift_right(vec, 4);
+      CHECK(result.begin() == vec.begin() + 4);
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(1, vec[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_empty)
+    {
+      std::vector<int> vec{};
+      auto result = etl::ranges::shift_right(vec, 1);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_single_element)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::shift_right(vec, 1);
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shift_right_single_element_by_zero)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::shift_right(vec, 0);
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> original = vec;
+      std::mt19937 gen(42);
+      auto result = etl::ranges::shuffle(vec.begin(), vec.end(), gen);
+
+      CHECK(result == vec.end());
+      // All original elements must still be present (permutation check)
+      std::vector<int> sorted_vec = vec;
+      std::sort(sorted_vec.begin(), sorted_vec.end());
+      CHECK(sorted_vec == original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> original = vec;
+      std::mt19937 gen(42);
+      auto result = etl::ranges::shuffle(vec, gen);
+
+      CHECK(result == vec.end());
+      // All original elements must still be present (permutation check)
+      std::vector<int> sorted_vec = vec;
+      std::sort(sorted_vec.begin(), sorted_vec.end());
+      CHECK(sorted_vec == original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_empty)
+    {
+      std::vector<int> vec{};
+      std::mt19937 gen(42);
+      auto result = etl::ranges::shuffle(vec.begin(), vec.end(), gen);
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_single_element)
+    {
+      std::vector<int> vec{42};
+      std::mt19937 gen(42);
+      auto result = etl::ranges::shuffle(vec, gen);
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_two_elements)
+    {
+      std::vector<int> vec{1, 2};
+      std::vector<int> original = vec;
+      std::mt19937 gen(42);
+      auto result = etl::ranges::shuffle(vec, gen);
+
+      CHECK(result == vec.end());
+      std::vector<int> sorted_vec = vec;
+      std::sort(sorted_vec.begin(), sorted_vec.end());
+      CHECK(sorted_vec == original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_deterministic)
+    {
+      // Same seed should produce the same permutation
+      std::vector<int> vec1{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> vec2{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::mt19937 gen1(123);
+      std::mt19937 gen2(123);
+
+      etl::ranges::shuffle(vec1, gen1);
+      etl::ranges::shuffle(vec2, gen2);
+
+      CHECK(vec1 == vec2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_shuffle_large)
+    {
+      std::vector<int> vec(100);
+      std::iota(vec.begin(), vec.end(), 0);
+      std::vector<int> original = vec;
+      std::mt19937 gen(99);
+
+      etl::ranges::shuffle(vec, gen);
+
+      // All original elements must still be present
+      std::vector<int> sorted_vec = vec;
+      std::sort(sorted_vec.begin(), sorted_vec.end());
+      CHECK(sorted_vec == original);
+
+      // It's extremely unlikely a shuffle of 100 elements leaves them in order
+      CHECK(vec != original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_iterator_sentinel)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> dest(5);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src.begin(), src.end(), dest.begin(), 5, gen);
+
+      // result should point past the last written element
+      CHECK(result == dest.begin() + 5);
+
+      // All sampled elements must come from the source
+      for (auto& v : dest)
+      {
+        CHECK(std::find(src.begin(), src.end(), v) != src.end());
+      }
+
+      // No duplicates in the sample
+      std::sort(dest.begin(), dest.end());
+      CHECK(std::unique(dest.begin(), dest.end()) == dest.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_range)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> dest(5);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src, dest.begin(), 5, gen);
+
+      CHECK(result == dest.begin() + 5);
+
+      for (auto& v : dest)
+      {
+        CHECK(std::find(src.begin(), src.end(), v) != src.end());
+      }
+
+      std::sort(dest.begin(), dest.end());
+      CHECK(std::unique(dest.begin(), dest.end()) == dest.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_n_greater_than_population)
+    {
+      std::vector<int> src{1, 2, 3};
+      std::vector<int> dest(5, 0);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src.begin(), src.end(), dest.begin(), 5, gen);
+
+      // Only 3 elements available, so only 3 should be copied
+      CHECK(result == dest.begin() + 3);
+      CHECK_EQUAL(1, dest[0]);
+      CHECK_EQUAL(2, dest[1]);
+      CHECK_EQUAL(3, dest[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_n_equal_to_population)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dest(5, 0);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src, dest.begin(), 5, gen);
+
+      CHECK(result == dest.begin() + 5);
+
+      // All elements should be copied
+      std::vector<int> sorted_dest = dest;
+      std::sort(sorted_dest.begin(), sorted_dest.end());
+      CHECK(sorted_dest == src);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_empty_source)
+    {
+      std::vector<int> src{};
+      std::vector<int> dest(5, 0);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src.begin(), src.end(), dest.begin(), 5, gen);
+
+      CHECK(result == dest.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_zero_count)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> dest(5, 0);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src, dest.begin(), 0, gen);
+
+      CHECK(result == dest.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_single_element_source)
+    {
+      std::vector<int> src{42};
+      std::vector<int> dest(1, 0);
+      std::mt19937 gen(42);
+
+      auto result = etl::ranges::sample(src, dest.begin(), 1, gen);
+
+      CHECK(result == dest.begin() + 1);
+      CHECK_EQUAL(42, dest[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_deterministic)
+    {
+      // Same seed should produce the same sample
+      std::vector<int> src{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> dest1(5);
+      std::vector<int> dest2(5);
+      std::mt19937 gen1(123);
+      std::mt19937 gen2(123);
+
+      etl::ranges::sample(src, dest1.begin(), 5, gen1);
+      etl::ranges::sample(src, dest2.begin(), 5, gen2);
+
+      CHECK(dest1 == dest2);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_preserves_relative_order)
+    {
+      // Selection sampling preserves relative order of elements
+      std::vector<int> src{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> dest(5);
+      std::mt19937 gen(42);
+
+      etl::ranges::sample(src, dest.begin(), 5, gen);
+
+      // The sampled elements should be in ascending order (since source is)
+      for (size_t i = 1; i < dest.size(); ++i)
+      {
+        CHECK(dest[i - 1] < dest[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_sample_large)
+    {
+      std::vector<int> src(100);
+      std::iota(src.begin(), src.end(), 0);
+      std::vector<int> dest(20);
+      std::mt19937 gen(99);
+
+      auto result = etl::ranges::sample(src, dest.begin(), 20, gen);
+
+      CHECK(result == dest.begin() + 20);
+
+      // All sampled elements must be from the source
+      for (auto& v : dest)
+      {
+        CHECK(v >= 0);
+        CHECK(v < 100);
+      }
+
+      // No duplicates
+      std::sort(dest.begin(), dest.end());
+      CHECK(std::unique(dest.begin(), dest.end()) == dest.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      // All elements before the partition point should satisfy the predicate
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK(*it < 10);
+      }
+
+      // All elements from the partition point onward should not satisfy the predicate
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK(*it >= 10);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_range)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec, pred);
+
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK(*it < 10);
+      }
+
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK(*it >= 10);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_already_partitioned)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+
+      // Verify the range is correctly partitioned
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_all_true)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      // Partition point should be at the end (all elements satisfy predicate)
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_all_false)
+    {
+      std::vector<int> vec{10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      // Partition point should be at the beginning (no elements satisfy predicate)
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_empty)
+    {
+      std::vector<int> vec{};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_single_true)
+    {
+      std::vector<int> vec{1};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_single_false)
+    {
+      std::vector<int> vec{20};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_with_projection)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      // With projection: values become 10,200,30,100,20,300
+      // pred(proj(v)) < 100: true for 1,3,2 (proj gives 10,30,20), false for 20,10,30 (proj gives 200,100,300)
+      auto result = etl::ranges::partition(vec.begin(), vec.end(), pred, proj);
+
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK((*it * 10) < 100);
+      }
+
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK((*it * 10) >= 100);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_with_projection_range)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      auto result = etl::ranges::partition(vec, pred, proj);
+
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK((*it * 10) < 100);
+      }
+
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK((*it * 10) >= 100);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_preserves_elements)
+    {
+      std::vector<int> vec{5, 1, 4, 2, 3};
+      std::vector<int> sorted_original{1, 2, 3, 4, 5};
+      auto pred = [](const int& v) { return v <= 3; };
+
+      etl::ranges::partition(vec, pred);
+
+      // All original elements should still be present
+      std::vector<int> sorted_result(vec.begin(), vec.end());
+      std::sort(sorted_result.begin(), sorted_result.end());
+      CHECK(sorted_result == sorted_original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_range)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_not_partitioned)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK_FALSE(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+      CHECK_FALSE(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_all_true)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+      CHECK(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_all_false)
+    {
+      std::vector<int> vec{10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+      CHECK(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_empty)
+    {
+      std::vector<int> vec{};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+      CHECK(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_single_true)
+    {
+      std::vector<int> vec{1};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+      CHECK(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_single_false)
+    {
+      std::vector<int> vec{20};
+      auto pred = [](const int& v) { return v < 10; };
+
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred));
+      CHECK(etl::ranges::is_partitioned(vec, pred));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_with_projection)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      // With projection: values become 10,20,30,100,200,300
+      // pred(proj(v)) < 100: true for 10,20,30, false for 100,200,300
+      CHECK(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred, proj));
+      CHECK(etl::ranges::is_partitioned(vec, pred, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_partitioned_with_projection_not_partitioned)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      // With projection: values become 10,200,30,100,20,300
+      // pred(proj(v)) < 100: true,false,true,false,true,false => not partitioned
+      CHECK_FALSE(etl::ranges::is_partitioned(vec.begin(), vec.end(), pred, proj));
+      CHECK_FALSE(etl::ranges::is_partitioned(vec, pred, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_iterator_sentinel)
+    {
+      std::vector<int> src{1, 20, 3, 10, 2, 30};
+      std::vector<int> out_true(6, 0);
+      std::vector<int> out_false(6, 0);
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+
+      std::vector<int> expected_true{1, 3, 2};
+      std::vector<int> expected_false{20, 10, 30};
+
+      CHECK_EQUAL(3, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(3, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(expected_true.begin(), expected_true.end(), out_true.begin()));
+      CHECK(std::equal(expected_false.begin(), expected_false.end(), out_false.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_range)
+    {
+      std::vector<int> src{1, 20, 3, 10, 2, 30};
+      std::vector<int> out_true(6, 0);
+      std::vector<int> out_false(6, 0);
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src, out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+
+      std::vector<int> expected_true{1, 3, 2};
+      std::vector<int> expected_false{20, 10, 30};
+
+      CHECK_EQUAL(3, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(3, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(expected_true.begin(), expected_true.end(), out_true.begin()));
+      CHECK(std::equal(expected_false.begin(), expected_false.end(), out_false.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_all_true)
+    {
+      std::vector<int> src{1, 2, 3, 4, 5};
+      std::vector<int> out_true(5, 0);
+      std::vector<int> out_false(5, 0);
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+      CHECK_EQUAL(5, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(0, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(src.begin(), src.end(), out_true.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_all_false)
+    {
+      std::vector<int> src{10, 20, 30};
+      std::vector<int> out_true(3, 0);
+      std::vector<int> out_false(3, 0);
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+      CHECK_EQUAL(0, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(3, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(src.begin(), src.end(), out_false.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_empty)
+    {
+      std::vector<int> src{};
+      std::vector<int> out_true{};
+      std::vector<int> out_false{};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+      CHECK(result.out1 == out_true.begin());
+      CHECK(result.out2 == out_false.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_single_true)
+    {
+      std::vector<int> src{5};
+      std::vector<int> out_true(1, 0);
+      std::vector<int> out_false(1, 0);
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+      CHECK_EQUAL(1, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(0, std::distance(out_false.begin(), result.out2));
+      CHECK_EQUAL(5, out_true[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_single_false)
+    {
+      std::vector<int> src{20};
+      std::vector<int> out_true(1, 0);
+      std::vector<int> out_false(1, 0);
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred);
+
+      CHECK(result.in == src.end());
+      CHECK_EQUAL(0, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(1, std::distance(out_false.begin(), result.out2));
+      CHECK_EQUAL(20, out_false[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_with_projection)
+    {
+      std::vector<int> src{1, 20, 3, 10, 2, 30};
+      std::vector<int> out_true(6, 0);
+      std::vector<int> out_false(6, 0);
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      // With projection: values become 10,200,30,100,20,300
+      // pred(proj(v)) < 100: true for 1,3,2 (proj gives 10,30,20), false for 20,10,30 (proj gives 200,100,300)
+      auto result = etl::ranges::partition_copy(src.begin(), src.end(), out_true.begin(), out_false.begin(), pred, proj);
+
+      CHECK(result.in == src.end());
+
+      std::vector<int> expected_true{1, 3, 2};
+      std::vector<int> expected_false{20, 10, 30};
+
+      CHECK_EQUAL(3, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(3, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(expected_true.begin(), expected_true.end(), out_true.begin()));
+      CHECK(std::equal(expected_false.begin(), expected_false.end(), out_false.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_with_projection_range)
+    {
+      std::vector<int> src{1, 20, 3, 10, 2, 30};
+      std::vector<int> out_true(6, 0);
+      std::vector<int> out_false(6, 0);
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      auto result = etl::ranges::partition_copy(src, out_true.begin(), out_false.begin(), pred, proj);
+
+      CHECK(result.in == src.end());
+
+      std::vector<int> expected_true{1, 3, 2};
+      std::vector<int> expected_false{20, 10, 30};
+
+      CHECK_EQUAL(3, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(3, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(expected_true.begin(), expected_true.end(), out_true.begin()));
+      CHECK(std::equal(expected_false.begin(), expected_false.end(), out_false.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_preserves_order)
+    {
+      std::vector<int> src{2, 8, 1, 7, 3, 6, 4, 5};
+      std::vector<int> out_true(8, 0);
+      std::vector<int> out_false(8, 0);
+      auto pred = [](const int& v) { return v <= 4; };
+
+      auto result = etl::ranges::partition_copy(src, out_true.begin(), out_false.begin(), pred);
+
+      // partition_copy is a stable operation - relative order is preserved
+      std::vector<int> expected_true{2, 1, 3, 4};
+      std::vector<int> expected_false{8, 7, 6, 5};
+
+      CHECK_EQUAL(4, std::distance(out_true.begin(), result.out1));
+      CHECK_EQUAL(4, std::distance(out_false.begin(), result.out2));
+
+      CHECK(std::equal(expected_true.begin(), expected_true.end(), out_true.begin()));
+      CHECK(std::equal(expected_false.begin(), expected_false.end(), out_false.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_copy_matches_std)
+    {
+      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      int std_true[8] = {};
+      int std_false[8] = {};
+      int etl_true[8] = {};
+      int etl_false[8] = {};
+      auto pred = [](const int& v) { return v > 4; };
+
+      std::partition_copy(std::begin(data1), std::end(data1), std::begin(std_true), std::begin(std_false), pred);
+      auto result = etl::ranges::partition_copy(std::begin(data1), std::end(data1), std::begin(etl_true), std::begin(etl_false), pred);
+
+      CHECK(result.in == std::end(data1));
+
+      bool are_equal;
+      are_equal = std::equal(std::begin(std_true), std::end(std_true), std::begin(etl_true));
+      CHECK(are_equal);
+
+      are_equal = std::equal(std::begin(std_false), std::end(std_false), std::begin(etl_false));
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 2, 4, 6, 8};
+      auto pred = [](const int& v) { return v % 2 != 0; };
+
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred);
+      auto expected = std::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_range)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 2, 4, 6, 8};
+      auto pred = [](const int& v) { return v % 2 != 0; };
+
+      auto result = etl::ranges::partition_point(vec, pred);
+      auto expected = std::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_all_true)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+      auto pred = [](const int& v) { return v % 2 != 0; };
+
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_all_false)
+    {
+      std::vector<int> vec{2, 4, 6, 8};
+      auto pred = [](const int& v) { return v % 2 != 0; };
+
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_empty)
+    {
+      std::vector<int> vec{};
+      auto pred = [](const int& v) { return v % 2 != 0; };
+
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_single_true)
+    {
+      std::vector<int> vec{1};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_single_false)
+    {
+      std::vector<int> vec{20};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred);
+
+      CHECK(result == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_with_projection)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      // With projection: values become 10, 20, 30, 100, 200, 300
+      // pred(proj(v)) < 100 is true for first 3 elements
+      auto result = etl::ranges::partition_point(vec.begin(), vec.end(), pred, proj);
+
+      CHECK(result == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_with_projection_range)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      auto result = etl::ranges::partition_point(vec, pred, proj);
+
+      CHECK(result == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partition_point_matches_std)
+    {
+      int data1[] = { 10, 8, 6, 4, 3, 2, 1 };
+
+      auto pred = [](const int& v) { return v > 4; };
+
+      int* std_result = std::partition_point(std::begin(data1), std::end(data1), pred);
+      auto etl_result = etl::ranges::partition_point(std::begin(data1), std::end(data1), pred);
+
+      CHECK(std_result == etl_result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_iterator_sentinel)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      // All elements before the partition point should satisfy the predicate
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK(*it < 10);
+      }
+
+      // All elements from the partition point onward should not satisfy the predicate
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK(*it >= 10);
+      }
+
+      // Verify stability: relative order of elements should be preserved
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(20, vec[3]);
+      CHECK_EQUAL(10, vec[4]);
+      CHECK_EQUAL(30, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_range)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec, pred);
+
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK(*it < 10);
+      }
+
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK(*it >= 10);
+      }
+
+      // Verify stability
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(20, vec[3]);
+      CHECK_EQUAL(10, vec[4]);
+      CHECK_EQUAL(30, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_already_partitioned)
+    {
+      std::vector<int> vec{1, 2, 3, 10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin() + 3);
+      CHECK(result.end() == vec.end());
+
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(2, vec[1]);
+      CHECK_EQUAL(3, vec[2]);
+      CHECK_EQUAL(10, vec[3]);
+      CHECK_EQUAL(20, vec[4]);
+      CHECK_EQUAL(30, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_all_true)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_all_false)
+    {
+      std::vector<int> vec{10, 20, 30};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_empty)
+    {
+      std::vector<int> vec{};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_single_true)
+    {
+      std::vector<int> vec{1};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.end());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_single_false)
+    {
+      std::vector<int> vec{20};
+      auto pred = [](const int& v) { return v < 10; };
+
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred);
+
+      CHECK(result.begin() == vec.begin());
+      CHECK(result.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_with_projection)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      // With projection: values become 10,200,30,100,20,300
+      // pred(proj(v)) < 100: true for 1,3,2 (proj gives 10,30,20), false for 20,10,30 (proj gives 200,100,300)
+      auto result = etl::ranges::stable_partition(vec.begin(), vec.end(), pred, proj);
+
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK((*it * 10) < 100);
+      }
+
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK((*it * 10) >= 100);
+      }
+
+      // Verify stability
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(20, vec[3]);
+      CHECK_EQUAL(10, vec[4]);
+      CHECK_EQUAL(30, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_with_projection_range)
+    {
+      std::vector<int> vec{1, 20, 3, 10, 2, 30};
+      auto pred = [](const int& v) { return v < 100; };
+      auto proj = [](const int& v) { return v * 10; };
+
+      auto result = etl::ranges::stable_partition(vec, pred, proj);
+
+      for (auto it = vec.begin(); it != result.begin(); ++it)
+      {
+        CHECK((*it * 10) < 100);
+      }
+
+      for (auto it = result.begin(); it != result.end(); ++it)
+      {
+        CHECK((*it * 10) >= 100);
+      }
+
+      // Verify stability
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+      CHECK_EQUAL(2, vec[2]);
+      CHECK_EQUAL(20, vec[3]);
+      CHECK_EQUAL(10, vec[4]);
+      CHECK_EQUAL(30, vec[5]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_preserves_elements)
+    {
+      std::vector<int> vec{5, 1, 4, 2, 3};
+      std::vector<int> sorted_original{1, 2, 3, 4, 5};
+      auto pred = [](const int& v) { return v <= 3; };
+
+      etl::ranges::stable_partition(vec, pred);
+
+      // All original elements should still be present
+      std::vector<int> sorted_result(vec.begin(), vec.end());
+      std::sort(sorted_result.begin(), sorted_result.end());
+      CHECK(sorted_result == sorted_original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_partition_matches_std)
+    {
+      std::vector<int> data_std{1, 20, 3, 10, 2, 30, 5, 15, 7};
+      std::vector<int> data_etl = data_std;
+      auto pred = [](const int& v) { return v < 10; };
+
+      std::stable_partition(data_std.begin(), data_std.end(), pred);
+      etl::ranges::stable_partition(data_etl.begin(), data_etl.end(), pred);
+
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_iterator)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::sort(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_range)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::sort(vec);
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::sort(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_with_comparator_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::sort(vec, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {2, 20}};
+
+      etl::ranges::sort(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(30, vec[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {2, 20}};
+
+      etl::ranges::sort(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(30, vec[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::sort(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec.empty());
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::sort(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_already_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      etl::ranges::sort(vec);
+
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_duplicates)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+      std::vector<int> expected{1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9};
+
+      etl::ranges::sort(vec);
+
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::sort(data_std.begin(), data_std.end());
+      etl::ranges::sort(data_etl);
+
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_iterator)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::stable_sort(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_range)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::stable_sort(vec);
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::stable_sort(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_with_comparator_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::stable_sort(vec, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {2, 20}};
+
+      etl::ranges::stable_sort(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(30, vec[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {2, 20}};
+
+      etl::ranges::stable_sort(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(30, vec[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::stable_sort(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec.empty());
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::stable_sort(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_already_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      etl::ranges::stable_sort(vec);
+
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_duplicates)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+      std::vector<int> expected{1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9};
+
+      etl::ranges::stable_sort(vec);
+
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_stability)
+    {
+      // Verify stability: elements with equal keys preserve their relative order
+      struct Item { int key; int order; };
+      std::vector<Item> vec{{2, 0}, {1, 1}, {2, 2}, {1, 3}, {3, 4}, {2, 5}};
+
+      etl::ranges::stable_sort(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      // key==1 items should keep original relative order
+      CHECK_EQUAL(1, vec[0].key); CHECK_EQUAL(1, vec[0].order);
+      CHECK_EQUAL(1, vec[1].key); CHECK_EQUAL(3, vec[1].order);
+      // key==2 items should keep original relative order
+      CHECK_EQUAL(2, vec[2].key); CHECK_EQUAL(0, vec[2].order);
+      CHECK_EQUAL(2, vec[3].key); CHECK_EQUAL(2, vec[3].order);
+      CHECK_EQUAL(2, vec[4].key); CHECK_EQUAL(5, vec[4].order);
+      // key==3 items
+      CHECK_EQUAL(3, vec[5].key); CHECK_EQUAL(4, vec[5].order);
+    }
+
+    //*************************************************************************
+    TEST(ranges_stable_sort_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::stable_sort(data_std.begin(), data_std.end());
+      etl::ranges::stable_sort(data_etl);
+
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_iterator)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected_prefix{1, 2, 3};
+
+      auto result = etl::ranges::partial_sort(vec.begin(), vec.begin() + 3, vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(std::equal(expected_prefix.begin(), expected_prefix.end(), vec.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_range)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected_prefix{1, 2, 3};
+
+      auto result = etl::ranges::partial_sort(vec, vec.begin() + 3);
+
+      CHECK(result == vec.end());
+      CHECK(std::equal(expected_prefix.begin(), expected_prefix.end(), vec.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected_prefix{5, 4, 3};
+
+      auto result = etl::ranges::partial_sort(vec.begin(), vec.begin() + 3, vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::equal(expected_prefix.begin(), expected_prefix.end(), vec.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_with_comparator_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      std::vector<int> expected_prefix{5, 4, 3};
+
+      auto result = etl::ranges::partial_sort(vec, vec.begin() + 3, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::equal(expected_prefix.begin(), expected_prefix.end(), vec.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+
+      etl::ranges::partial_sort(vec.begin(), vec.begin() + 3, vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(30, vec[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+
+      etl::ranges::partial_sort(vec, vec.begin() + 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(30, vec[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::partial_sort(vec.begin(), vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec.empty());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::partial_sort(vec, vec.begin() + 1);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_middle_equals_last)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::partial_sort(vec.begin(), vec.end(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_middle_equals_first)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      std::vector<int> original = vec;
+
+      auto result = etl::ranges::partial_sort(vec.begin(), vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec == original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::partial_sort(data_std.begin(), data_std.begin() + 4, data_std.end());
+      etl::ranges::partial_sort(data_etl.begin(), data_etl.begin() + 4, data_etl.end());
+
+      // The first 4 elements should be the same smallest values in sorted order
+      bool prefix_equal = std::equal(data_std.begin(), data_std.begin() + 4, data_etl.begin());
+      CHECK(prefix_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_iterator)
+    {
+      std::vector<int> input{5, 3, 1, 4, 2};
+      std::vector<int> output(3, 0);
+      std::vector<int> expected{1, 2, 3};
+
+      auto result = etl::ranges::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_range)
+    {
+      std::vector<int> input{5, 3, 1, 4, 2};
+      std::vector<int> output(3, 0);
+      std::vector<int> expected{1, 2, 3};
+
+      auto result = etl::ranges::partial_sort_copy(input, output);
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_with_comparator_iterator)
+    {
+      std::vector<int> input{1, 2, 3, 4, 5};
+      std::vector<int> output(3, 0);
+      std::vector<int> expected{5, 4, 3};
+
+      auto result = etl::ranges::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end(), etl::greater<int>{});
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_with_comparator_range)
+    {
+      std::vector<int> input{1, 2, 3, 4, 5};
+      std::vector<int> output(3, 0);
+      std::vector<int> expected{5, 4, 3};
+
+      auto result = etl::ranges::partial_sort_copy(input, output, etl::greater<int>{});
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> input{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+      std::vector<Item> output(3, Item{0, 0});
+
+      etl::ranges::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end(),
+                                     etl::ranges::less{}, [](const Item& item) { return item.key; }, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, output[0].key);
+      CHECK_EQUAL(2, output[1].key);
+      CHECK_EQUAL(3, output[2].key);
+      CHECK_EQUAL(10, output[0].value);
+      CHECK_EQUAL(20, output[1].value);
+      CHECK_EQUAL(30, output[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> input{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+      std::vector<Item> output(3, Item{0, 0});
+
+      etl::ranges::partial_sort_copy(input, output,
+                                     etl::ranges::less{}, [](const Item& item) { return item.key; }, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, output[0].key);
+      CHECK_EQUAL(2, output[1].key);
+      CHECK_EQUAL(3, output[2].key);
+      CHECK_EQUAL(10, output[0].value);
+      CHECK_EQUAL(20, output[1].value);
+      CHECK_EQUAL(30, output[2].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_empty_input)
+    {
+      std::vector<int> input{};
+      std::vector<int> output(3, 0);
+      std::vector<int> expected{0, 0, 0};
+
+      auto result = etl::ranges::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.begin());
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_empty_output)
+    {
+      std::vector<int> input{5, 3, 1, 4, 2};
+      std::vector<int> output{};
+
+      auto result = etl::ranges::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_output_larger_than_input)
+    {
+      std::vector<int> input{3, 1, 2};
+      std::vector<int> output(5, 0);
+      std::vector<int> expected{1, 2, 3, 0, 0};
+
+      auto result = etl::ranges::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.begin() + 3);
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_output_same_size_as_input)
+    {
+      std::vector<int> input{5, 3, 1, 4, 2};
+      std::vector<int> output(5, 0);
+      std::vector<int> expected{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::partial_sort_copy(input, output);
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+      CHECK(output == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_single_element)
+    {
+      std::vector<int> input{42};
+      std::vector<int> output(1, 0);
+
+      auto result = etl::ranges::partial_sort_copy(input, output);
+
+      CHECK(result.in == input.end());
+      CHECK(result.out == output.end());
+      CHECK_EQUAL(42, output[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_does_not_modify_input)
+    {
+      std::vector<int> input{5, 3, 1, 4, 2};
+      std::vector<int> original = input;
+      std::vector<int> output(3, 0);
+
+      etl::ranges::partial_sort_copy(input, output);
+
+      CHECK(input == original);
+    }
+
+    //*************************************************************************
+    TEST(ranges_partial_sort_copy_matches_std)
+    {
+      std::vector<int> data{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> output_std(4, 0);
+      std::vector<int> output_etl(4, 0);
+
+      std::partial_sort_copy(data.begin(), data.end(), output_std.begin(), output_std.end());
+      etl::ranges::partial_sort_copy(data.begin(), data.end(), output_etl.begin(), output_etl.end());
+
+      CHECK(output_std == output_etl);
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_iterator)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      auto result = etl::ranges::nth_element(vec.begin(), vec.begin() + 2, vec.end());
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(3, vec[2]);
+
+      // All elements before nth should be <= vec[2]
+      for (int i = 0; i < 2; ++i)
+      {
+        CHECK(vec[i] <= vec[2]);
+      }
+
+      // All elements after nth should be >= vec[2]
+      for (int i = 3; i < 5; ++i)
+      {
+        CHECK(vec[i] >= vec[2]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_range)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      auto result = etl::ranges::nth_element(vec, vec.begin() + 2);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(3, vec[2]);
+
+      for (int i = 0; i < 2; ++i)
+      {
+        CHECK(vec[i] <= vec[2]);
+      }
+
+      for (int i = 3; i < 5; ++i)
+      {
+        CHECK(vec[i] >= vec[2]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::nth_element(vec.begin(), vec.begin() + 2, vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(3, vec[2]);
+
+      for (int i = 0; i < 2; ++i)
+      {
+        CHECK(vec[i] >= vec[2]);
+      }
+
+      for (int i = 3; i < 5; ++i)
+      {
+        CHECK(vec[i] <= vec[2]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_with_comparator_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::nth_element(vec, vec.begin() + 2, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(3, vec[2]);
+
+      for (int i = 0; i < 2; ++i)
+      {
+        CHECK(vec[i] >= vec[2]);
+      }
+
+      for (int i = 3; i < 5; ++i)
+      {
+        CHECK(vec[i] <= vec[2]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+
+      etl::ranges::nth_element(vec.begin(), vec.begin() + 2, vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(30, vec[2].value);
+
+      for (int i = 0; i < 2; ++i)
+      {
+        CHECK(vec[i].key <= vec[2].key);
+      }
+
+      for (int i = 3; i < 5; ++i)
+      {
+        CHECK(vec[i].key >= vec[2].key);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+
+      etl::ranges::nth_element(vec, vec.begin() + 2, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(30, vec[2].value);
+
+      for (int i = 0; i < 2; ++i)
+      {
+        CHECK(vec[i].key <= vec[2].key);
+      }
+
+      for (int i = 3; i < 5; ++i)
+      {
+        CHECK(vec[i].key >= vec[2].key);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::nth_element(vec.begin(), vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(vec.empty());
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::nth_element(vec, vec.begin());
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_first_position)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      etl::ranges::nth_element(vec.begin(), vec.begin(), vec.end());
+
+      CHECK_EQUAL(1, vec[0]);
+
+      for (size_t i = 1; i < vec.size(); ++i)
+      {
+        CHECK(vec[i] >= vec[0]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_last_position)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      etl::ranges::nth_element(vec.begin(), vec.begin() + 4, vec.end());
+
+      CHECK_EQUAL(5, vec[4]);
+
+      for (int i = 0; i < 4; ++i)
+      {
+        CHECK(vec[i] <= vec[4]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_nth_element_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::nth_element(data_std.begin(), data_std.begin() + 4, data_std.end());
+      etl::ranges::nth_element(data_etl.begin(), data_etl.begin() + 4, data_etl.end());
+
+      // The element at position 4 should be the same
+      CHECK_EQUAL(data_std[4], data_etl[4]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_iterator_sentinel_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::is_sorted_until(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_range_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result = etl::ranges::is_sorted_until(vec);
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_iterator_sentinel_not_sorted)
+    {
+      std::vector<int> vec{1, 2, 5, 4, 3};
+
+      auto result = etl::ranges::is_sorted_until(vec.begin(), vec.end());
+
+      CHECK(result == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_range_not_sorted)
+    {
+      std::vector<int> vec{1, 2, 5, 4, 3};
+
+      auto result = etl::ranges::is_sorted_until(vec);
+
+      CHECK(result == vec.begin() + 3);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::is_sorted_until(vec.begin(), vec.end());
+      CHECK(result == vec.end());
+
+      result = etl::ranges::is_sorted_until(vec);
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_single)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::is_sorted_until(vec.begin(), vec.end());
+      CHECK(result == vec.end());
+
+      result = etl::ranges::is_sorted_until(vec);
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_with_comparator)
+    {
+      std::vector<int> vec{5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::is_sorted_until(vec.begin(), vec.end(), etl::greater<int>{});
+      CHECK(result == vec.end());
+
+      result = etl::ranges::is_sorted_until(vec, etl::greater<int>{});
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_until_with_projection)
+    {
+      std::vector<int> vec{-1, -2, -3, -4, -5};
+      auto proj = [](const int& v) { return -v; };
+
+      // After projection, values become 1,2,3,4,5 which is sorted
+      auto result = etl::ranges::is_sorted_until(vec.begin(), vec.end(), etl::ranges::less{}, proj);
+      CHECK(result == vec.end());
+
+      result = etl::ranges::is_sorted_until(vec, etl::ranges::less{}, proj);
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_iterator_sentinel_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_range_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      CHECK(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_iterator_sentinel_not_sorted)
+    {
+      std::vector<int> vec{1, 3, 2, 4, 5};
+
+      CHECK_FALSE(etl::ranges::is_sorted(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_range_not_sorted)
+    {
+      std::vector<int> vec{1, 3, 2, 4, 5};
+
+      CHECK_FALSE(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_empty)
+    {
+      std::vector<int> vec{};
+
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end()));
+      CHECK(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_single)
+    {
+      std::vector<int> vec{42};
+
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end()));
+      CHECK(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_with_comparator)
+    {
+      std::vector<int> vec{5, 4, 3, 2, 1};
+
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end(), etl::greater<int>{}));
+      CHECK(etl::ranges::is_sorted(vec, etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_with_comparator_not_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      CHECK_FALSE(etl::ranges::is_sorted(vec.begin(), vec.end(), etl::greater<int>{}));
+      CHECK_FALSE(etl::ranges::is_sorted(vec, etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_with_projection)
+    {
+      std::vector<int> vec{-1, -2, -3, -4, -5};
+      auto proj = [](const int& v) { return -v; };
+
+      // After projection, values become 1,2,3,4,5 which is sorted
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end(), etl::ranges::less{}, proj));
+      CHECK(etl::ranges::is_sorted(vec, etl::ranges::less{}, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_with_projection_not_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+      auto proj = [](const int& v) { return -v; };
+
+      // After projection, values become -1,-2,-3,-4,-5 which is not sorted ascending
+      CHECK_FALSE(etl::ranges::is_sorted(vec.begin(), vec.end(), etl::ranges::less{}, proj));
+      CHECK_FALSE(etl::ranges::is_sorted(vec, etl::ranges::less{}, proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_equal_elements)
+    {
+      std::vector<int> vec{3, 3, 3, 3, 3};
+
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end()));
+      CHECK(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_two_elements_sorted)
+    {
+      std::vector<int> vec{1, 2};
+
+      CHECK(etl::ranges::is_sorted(vec.begin(), vec.end()));
+      CHECK(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_sorted_two_elements_not_sorted)
+    {
+      std::vector<int> vec{2, 1};
+
+      CHECK_FALSE(etl::ranges::is_sorted(vec.begin(), vec.end()));
+      CHECK_FALSE(etl::ranges::is_sorted(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::lower_bound(vec.begin(), vec.end(), 5);
+      CHECK_EQUAL(5, *result);
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::lower_bound(vec, 5);
+      CHECK_EQUAL(5, *result);
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_value_not_present)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+
+      auto result_it = etl::ranges::lower_bound(vec.begin(), vec.end(), 4);
+      CHECK_EQUAL(5, *result_it);
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result_it));
+
+      auto result_r = etl::ranges::lower_bound(vec, 4);
+      CHECK_EQUAL(5, *result_r);
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result_r));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_value_at_beginning)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::lower_bound(vec.begin(), vec.end(), 1);
+      CHECK(result_it == vec.begin());
+
+      auto result_r = etl::ranges::lower_bound(vec, 1);
+      CHECK(result_r == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_value_past_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::lower_bound(vec.begin(), vec.end(), 10);
+      CHECK(result_it == vec.end());
+
+      auto result_r = etl::ranges::lower_bound(vec, 10);
+      CHECK(result_r == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result_it = etl::ranges::lower_bound(vec.begin(), vec.end(), 5);
+      CHECK(result_it == vec.end());
+
+      auto result_r = etl::ranges::lower_bound(vec, 5);
+      CHECK(result_r == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_with_comparator_iterator)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::lower_bound(vec.begin(), vec.end(), 5, etl::greater<int>{});
+      CHECK_EQUAL(5, *result);
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_with_comparator_range)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::lower_bound(vec, 5, etl::greater<int>{});
+      CHECK_EQUAL(5, *result);
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+
+      auto result = etl::ranges::lower_bound(vec.begin(), vec.end(), 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK_EQUAL(3, result->key);
+      CHECK_EQUAL(30, result->value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+
+      auto result = etl::ranges::lower_bound(vec, 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK_EQUAL(3, result->key);
+      CHECK_EQUAL(30, result->value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_duplicates)
+    {
+      std::vector<int> vec{1, 2, 2, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::lower_bound(vec.begin(), vec.end(), 2);
+      CHECK_EQUAL(2, *result_it);
+      CHECK_EQUAL(1, etl::distance(vec.begin(), result_it));
+
+      auto result_r = etl::ranges::lower_bound(vec, 2);
+      CHECK_EQUAL(2, *result_r);
+      CHECK_EQUAL(1, etl::distance(vec.begin(), result_r));
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_single_element)
+    {
+      std::vector<int> vec{5};
+
+      auto result_found = etl::ranges::lower_bound(vec, 5);
+      CHECK(result_found == vec.begin());
+
+      auto result_less = etl::ranges::lower_bound(vec, 3);
+      CHECK(result_less == vec.begin());
+
+      auto result_greater = etl::ranges::lower_bound(vec, 10);
+      CHECK(result_greater == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_lower_bound_matches_std)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9, 11, 13, 15};
+
+      for (int val = 0; val <= 16; ++val)
+      {
+        auto std_result = std::lower_bound(vec.begin(), vec.end(), val);
+        auto etl_result = etl::ranges::lower_bound(vec.begin(), vec.end(), val);
+        CHECK(std_result == etl_result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::upper_bound(vec.begin(), vec.end(), 5);
+      CHECK_EQUAL(6, *result);
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_range)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+      auto result = etl::ranges::upper_bound(vec, 5);
+      CHECK_EQUAL(6, *result);
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_value_not_present)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+
+      auto result_it = etl::ranges::upper_bound(vec.begin(), vec.end(), 4);
+      CHECK_EQUAL(5, *result_it);
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result_it));
+
+      auto result_r = etl::ranges::upper_bound(vec, 4);
+      CHECK_EQUAL(5, *result_r);
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result_r));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_value_at_beginning)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::upper_bound(vec.begin(), vec.end(), 1);
+      CHECK_EQUAL(2, *result_it);
+      CHECK_EQUAL(1, etl::distance(vec.begin(), result_it));
+
+      auto result_r = etl::ranges::upper_bound(vec, 1);
+      CHECK_EQUAL(2, *result_r);
+      CHECK_EQUAL(1, etl::distance(vec.begin(), result_r));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_value_past_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::upper_bound(vec.begin(), vec.end(), 10);
+      CHECK(result_it == vec.end());
+
+      auto result_r = etl::ranges::upper_bound(vec, 10);
+      CHECK(result_r == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result_it = etl::ranges::upper_bound(vec.begin(), vec.end(), 5);
+      CHECK(result_it == vec.end());
+
+      auto result_r = etl::ranges::upper_bound(vec, 5);
+      CHECK(result_r == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_with_comparator_iterator)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::upper_bound(vec.begin(), vec.end(), 5, etl::greater<int>{});
+      CHECK_EQUAL(4, *result);
+      CHECK_EQUAL(6, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_with_comparator_range)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::upper_bound(vec, 5, etl::greater<int>{});
+      CHECK_EQUAL(4, *result);
+      CHECK_EQUAL(6, etl::distance(vec.begin(), result));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+
+      auto result = etl::ranges::upper_bound(vec.begin(), vec.end(), 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK_EQUAL(4, result->key);
+      CHECK_EQUAL(40, result->value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+
+      auto result = etl::ranges::upper_bound(vec, 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK_EQUAL(4, result->key);
+      CHECK_EQUAL(40, result->value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_duplicates)
+    {
+      std::vector<int> vec{1, 2, 2, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::upper_bound(vec.begin(), vec.end(), 2);
+      CHECK_EQUAL(3, *result_it);
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result_it));
+
+      auto result_r = etl::ranges::upper_bound(vec, 2);
+      CHECK_EQUAL(3, *result_r);
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result_r));
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_single_element)
+    {
+      std::vector<int> vec{5};
+
+      auto result_found = etl::ranges::upper_bound(vec, 5);
+      CHECK(result_found == vec.end());
+
+      auto result_less = etl::ranges::upper_bound(vec, 3);
+      CHECK(result_less == vec.begin());
+
+      auto result_greater = etl::ranges::upper_bound(vec, 10);
+      CHECK(result_greater == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_upper_bound_matches_std)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9, 11, 13, 15};
+
+      for (int val = 0; val <= 16; ++val)
+      {
+        auto std_result = std::upper_bound(vec.begin(), vec.end(), val);
+        auto etl_result = etl::ranges::upper_bound(vec.begin(), vec.end(), val);
+        CHECK(std_result == etl_result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_iterator)
+    {
+      std::vector<int> vec{1, 2, 3, 3, 3, 4, 5, 6, 7, 8};
+
+      auto result = etl::ranges::equal_range(vec.begin(), vec.end(), 3);
+      CHECK_EQUAL(3, *result.begin());
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result.begin()));
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_range)
+    {
+      std::vector<int> vec{1, 2, 3, 3, 3, 4, 5, 6, 7, 8};
+
+      auto result = etl::ranges::equal_range(vec, 3);
+      CHECK_EQUAL(3, *result.begin());
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result.begin()));
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_value_not_present)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+
+      auto result_it = etl::ranges::equal_range(vec.begin(), vec.end(), 4);
+      CHECK(result_it.begin() == result_it.end());
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result_it.begin()));
+
+      auto result_r = etl::ranges::equal_range(vec, 4);
+      CHECK(result_r.begin() == result_r.end());
+      CHECK_EQUAL(2, etl::distance(vec.begin(), result_r.begin()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_value_at_beginning)
+    {
+      std::vector<int> vec{1, 1, 1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::equal_range(vec.begin(), vec.end(), 1);
+      CHECK(result_it.begin() == vec.begin());
+      CHECK_EQUAL(3, etl::distance(result_it.begin(), result_it.end()));
+
+      auto result_r = etl::ranges::equal_range(vec, 1);
+      CHECK(result_r.begin() == vec.begin());
+      CHECK_EQUAL(3, etl::distance(result_r.begin(), result_r.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_value_at_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 5, 5};
+
+      auto result_it = etl::ranges::equal_range(vec.begin(), vec.end(), 5);
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result_it.begin()));
+      CHECK(result_it.end() == vec.end());
+      CHECK_EQUAL(3, etl::distance(result_it.begin(), result_it.end()));
+
+      auto result_r = etl::ranges::equal_range(vec, 5);
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result_r.begin()));
+      CHECK(result_r.end() == vec.end());
+      CHECK_EQUAL(3, etl::distance(result_r.begin(), result_r.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_value_past_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::equal_range(vec.begin(), vec.end(), 10);
+      CHECK(result_it.begin() == vec.end());
+      CHECK(result_it.end() == vec.end());
+
+      auto result_r = etl::ranges::equal_range(vec, 10);
+      CHECK(result_r.begin() == vec.end());
+      CHECK(result_r.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result_it = etl::ranges::equal_range(vec.begin(), vec.end(), 5);
+      CHECK(result_it.begin() == vec.end());
+      CHECK(result_it.end() == vec.end());
+
+      auto result_r = etl::ranges::equal_range(vec, 5);
+      CHECK(result_r.begin() == vec.end());
+      CHECK(result_r.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_with_comparator_iterator)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 5, 5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::equal_range(vec.begin(), vec.end(), 5, etl::greater<int>{});
+      CHECK_EQUAL(5, *result.begin());
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result.begin()));
+      CHECK_EQUAL(8, etl::distance(vec.begin(), result.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_with_comparator_range)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 5, 5, 4, 3, 2, 1};
+
+      auto result = etl::ranges::equal_range(vec, 5, etl::greater<int>{});
+      CHECK_EQUAL(5, *result.begin());
+      CHECK_EQUAL(5, etl::distance(vec.begin(), result.begin()));
+      CHECK_EQUAL(8, etl::distance(vec.begin(), result.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {3, 31}, {3, 32}, {4, 40}, {5, 50}};
+
+      auto result = etl::ranges::equal_range(vec.begin(), vec.end(), 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK_EQUAL(3, result.begin()->key);
+      CHECK_EQUAL(30, result.begin()->value);
+      CHECK_EQUAL(3, etl::distance(result.begin(), result.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {3, 31}, {3, 32}, {4, 40}, {5, 50}};
+
+      auto result = etl::ranges::equal_range(vec, 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK_EQUAL(3, result.begin()->key);
+      CHECK_EQUAL(30, result.begin()->value);
+      CHECK_EQUAL(3, etl::distance(result.begin(), result.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_duplicates)
+    {
+      std::vector<int> vec{1, 2, 2, 2, 3, 4, 5};
+
+      auto result_it = etl::ranges::equal_range(vec.begin(), vec.end(), 2);
+      CHECK_EQUAL(1, etl::distance(vec.begin(), result_it.begin()));
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result_it.end()));
+      CHECK_EQUAL(3, etl::distance(result_it.begin(), result_it.end()));
+
+      auto result_r = etl::ranges::equal_range(vec, 2);
+      CHECK_EQUAL(1, etl::distance(vec.begin(), result_r.begin()));
+      CHECK_EQUAL(4, etl::distance(vec.begin(), result_r.end()));
+      CHECK_EQUAL(3, etl::distance(result_r.begin(), result_r.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_single_element)
+    {
+      std::vector<int> vec{5};
+
+      auto result_found = etl::ranges::equal_range(vec, 5);
+      CHECK(result_found.begin() == vec.begin());
+      CHECK(result_found.end() == vec.end());
+
+      auto result_less = etl::ranges::equal_range(vec, 3);
+      CHECK(result_less.begin() == vec.begin());
+      CHECK(result_less.end() == vec.begin());
+
+      auto result_greater = etl::ranges::equal_range(vec, 10);
+      CHECK(result_greater.begin() == vec.end());
+      CHECK(result_greater.end() == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_equal_range_matches_std)
+    {
+      std::vector<int> vec{1, 2, 2, 3, 3, 3, 5, 5, 7, 9, 11, 13, 15};
+
+      for (int val = 0; val <= 16; ++val)
+      {
+        auto std_result = std::equal_range(vec.begin(), vec.end(), val);
+        auto etl_result = etl::ranges::equal_range(vec.begin(), vec.end(), val);
+        CHECK(std_result.first == etl_result.begin());
+        CHECK(std_result.second == etl_result.end());
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_iterator_found)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+      bool result = etl::ranges::binary_search(vec.begin(), vec.end(), 5);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_range_found)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+      bool result = etl::ranges::binary_search(vec, 5);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_not_found)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+
+      bool result_it = etl::ranges::binary_search(vec.begin(), vec.end(), 4);
+      CHECK(!result_it);
+
+      bool result_r = etl::ranges::binary_search(vec, 4);
+      CHECK(!result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_value_at_beginning)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      bool result_it = etl::ranges::binary_search(vec.begin(), vec.end(), 1);
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::binary_search(vec, 1);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_value_at_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      bool result_it = etl::ranges::binary_search(vec.begin(), vec.end(), 5);
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::binary_search(vec, 5);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_value_past_end)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5};
+
+      bool result_it = etl::ranges::binary_search(vec.begin(), vec.end(), 10);
+      CHECK(!result_it);
+
+      bool result_r = etl::ranges::binary_search(vec, 10);
+      CHECK(!result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_empty)
+    {
+      std::vector<int> vec{};
+
+      bool result_it = etl::ranges::binary_search(vec.begin(), vec.end(), 5);
+      CHECK(!result_it);
+
+      bool result_r = etl::ranges::binary_search(vec, 5);
+      CHECK(!result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_with_comparator_iterator)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+      bool result = etl::ranges::binary_search(vec.begin(), vec.end(), 5, etl::greater<int>{});
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_with_comparator_range)
+    {
+      std::vector<int> vec{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+      bool result = etl::ranges::binary_search(vec, 5, etl::greater<int>{});
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+
+      bool result = etl::ranges::binary_search(vec.begin(), vec.end(), 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK(result);
+
+      bool result_not_found = etl::ranges::binary_search(vec.begin(), vec.end(), 6, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK(!result_not_found);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+
+      bool result = etl::ranges::binary_search(vec, 3, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK(result);
+
+      bool result_not_found = etl::ranges::binary_search(vec, 6, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      CHECK(!result_not_found);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_duplicates)
+    {
+      std::vector<int> vec{1, 2, 2, 2, 3, 4, 5};
+
+      bool result_it = etl::ranges::binary_search(vec.begin(), vec.end(), 2);
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::binary_search(vec, 2);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_single_element)
+    {
+      std::vector<int> vec{5};
+
+      bool result_found = etl::ranges::binary_search(vec, 5);
+      CHECK(result_found);
+
+      bool result_less = etl::ranges::binary_search(vec, 3);
+      CHECK(!result_less);
+
+      bool result_greater = etl::ranges::binary_search(vec, 10);
+      CHECK(!result_greater);
+    }
+
+    //*************************************************************************
+    TEST(ranges_binary_search_matches_std)
+    {
+      std::vector<int> vec{1, 2, 2, 3, 3, 3, 5, 5, 7, 9, 11, 13, 15};
+
+      for (int val = 0; val <= 16; ++val)
+      {
+        bool std_result = std::binary_search(vec.begin(), vec.end(), val);
+        bool etl_result = etl::ranges::binary_search(vec.begin(), vec.end(), val);
+        CHECK_EQUAL(std_result, etl_result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_iterator_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> vec2{2, 4, 6};
+
+      bool result = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_range_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      std::vector<int> vec2{2, 4, 6};
+
+      bool result = etl::ranges::includes(vec1, vec2);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_not_included)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 6};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(!result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(!result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_empty_second_range)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_empty_first_range)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{1, 2, 3};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(!result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(!result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_both_empty)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_identical_ranges)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{1, 2, 3, 4, 5};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_with_duplicates)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 4, 5};
+      std::vector<int> vec2{2, 3, 3};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_with_duplicates_not_enough)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{2, 3, 3};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+      CHECK(!result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2);
+      CHECK(!result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_with_custom_comparator)
+    {
+      std::vector<int> vec1{10, 8, 6, 4, 2};
+      std::vector<int> vec2{8, 4, 2};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), etl::greater<int>{});
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2, etl::greater<int>{});
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec1{{1, 10}, {2, 20}, {3, 30}, {4, 40}, {5, 50}};
+      std::vector<Item> vec2{{2, 99}, {4, 99}};
+
+      bool result_it = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                              etl::ranges::less{},
+                                              [](const Item& item) { return item.key; },
+                                              [](const Item& item) { return item.key; });
+      CHECK(result_it);
+
+      bool result_r = etl::ranges::includes(vec1, vec2,
+                                             etl::ranges::less{},
+                                             [](const Item& item) { return item.key; },
+                                             [](const Item& item) { return item.key; });
+      CHECK(result_r);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_single_element_included)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{3};
+
+      bool result = etl::ranges::includes(vec1, vec2);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_single_element_not_included)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{6};
+
+      bool result = etl::ranges::includes(vec1, vec2);
+      CHECK(!result);
+    }
+
+    //*************************************************************************
+    TEST(ranges_includes_matches_std)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9, 11, 13, 15};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 15},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9, 11, 13, 15},
+        {3, 3, 3, 3},
+        {0},
+        {16},
+      };
+
+      for (const auto& vec2 : test_cases)
+      {
+        bool std_result = std::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+        bool etl_result = etl::ranges::includes(vec1.begin(), vec1.end(), vec2.begin(), vec2.end());
+        CHECK_EQUAL(std_result, etl_result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_iterator_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 6, 7, 8};
+      std::vector<int> result(10);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+      CHECK(in1 == vec1.end());
+      CHECK(in2 == vec2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_range_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 6, 7, 8};
+      std::vector<int> result(10);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_empty_first)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{1, 2, 3};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_empty_second)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_both_empty)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{};
+      std::vector<int> result{};
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      CHECK(out == result.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_identical_ranges)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{1, 2, 3, 4, 5};
+      std::vector<int> result(5);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_disjoint_ranges)
+    {
+      std::vector<int> vec1{1, 3, 5};
+      std::vector<int> vec2{2, 4, 6};
+      std::vector<int> result(6);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_with_duplicates)
+    {
+      std::vector<int> vec1{1, 2, 2, 3};
+      std::vector<int> vec2{2, 2, 2, 4};
+      std::vector<int> result(7);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> std_result(7);
+      auto std_out = std::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+      std_result.erase(std_out, std_result.end());
+
+      CHECK_EQUAL(std_result.size(), result.size());
+      for (size_t i = 0; i < std_result.size(); ++i)
+      {
+        CHECK_EQUAL(std_result[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_with_custom_comparator)
+    {
+      std::vector<int> vec1{7, 5, 3, 1};
+      std::vector<int> vec2{6, 4, 3, 2};
+      std::vector<int> result(8);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                     result.begin(), etl::greater<int>{});
+      result.erase(out, result.end());
+
+      std::vector<int> expected{7, 6, 5, 4, 3, 2, 1};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec1{{1, 10}, {3, 30}, {5, 50}};
+      std::vector<Item> vec2{{2, 20}, {3, 99}, {4, 40}};
+      std::vector<Item> result(5);
+
+      auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                     result.begin(), etl::ranges::less{},
+                                                     [](const Item& item) { return item.key; },
+                                                     [](const Item& item) { return item.key; });
+      result.erase(out, result.end());
+
+      // Should contain keys: 1, 2, 3, 4, 5
+      CHECK_EQUAL(5u, result.size());
+      CHECK_EQUAL(1, result[0].key);
+      CHECK_EQUAL(2, result[1].key);
+      CHECK_EQUAL(3, result[2].key);
+      CHECK_EQUAL(30, result[2].value); // From first range when equal
+      CHECK_EQUAL(4, result[3].key);
+      CHECK_EQUAL(5, result[4].key);
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_union_matches_std)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 9},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9},
+        {3, 3, 3, 3},
+        {0},
+        {10},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+      };
+
+      for (const auto& vec2 : test_cases)
+      {
+        std::vector<int> std_result(vec1.size() + vec2.size());
+        auto std_out = std::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+        std_result.erase(std_out, std_result.end());
+
+        std::vector<int> etl_result(vec1.size() + vec2.size());
+        auto [in1, in2, out] = etl::ranges::set_union(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), etl_result.begin());
+        etl_result.erase(out, etl_result.end());
+
+        CHECK_EQUAL(std_result.size(), etl_result.size());
+        for (size_t i = 0; i < std_result.size(); ++i)
+        {
+          CHECK_EQUAL(std_result[i], etl_result[i]);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_iterator_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 5, 7, 8};
+      std::vector<int> result(5);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{2, 5, 7};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+      CHECK(in1 == vec1.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_range_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 5, 7, 8};
+      std::vector<int> result(5);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{2, 5, 7};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_empty_first)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{1, 2, 3};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      CHECK_EQUAL(0u, result.size());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_empty_second)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      CHECK_EQUAL(0u, result.size());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_both_empty)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{};
+      std::vector<int> result{};
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      CHECK(out == result.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_identical_ranges)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{1, 2, 3, 4, 5};
+      std::vector<int> result(5);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_disjoint_ranges)
+    {
+      std::vector<int> vec1{1, 3, 5};
+      std::vector<int> vec2{2, 4, 6};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      CHECK_EQUAL(0u, result.size());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_with_duplicates)
+    {
+      std::vector<int> vec1{1, 2, 2, 3};
+      std::vector<int> vec2{2, 2, 2, 4};
+      std::vector<int> result(4);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> std_result(4);
+      auto std_out = std::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+      std_result.erase(std_out, std_result.end());
+
+      CHECK_EQUAL(std_result.size(), result.size());
+      for (size_t i = 0; i < std_result.size(); ++i)
+      {
+        CHECK_EQUAL(std_result[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_with_custom_comparator)
+    {
+      std::vector<int> vec1{7, 5, 3, 1};
+      std::vector<int> vec2{6, 5, 3, 2};
+      std::vector<int> result(4);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                     result.begin(), etl::greater<int>{});
+      result.erase(out, result.end());
+
+      std::vector<int> expected{5, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec1{{1, 10}, {3, 30}, {5, 50}};
+      std::vector<Item> vec2{{2, 20}, {3, 99}, {4, 40}};
+      std::vector<Item> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                     result.begin(), etl::ranges::less{},
+                                                     [](const Item& item) { return item.key; },
+                                                     [](const Item& item) { return item.key; });
+      result.erase(out, result.end());
+
+      // Should contain only key 3 (from first range)
+      CHECK_EQUAL(1u, result.size());
+      CHECK_EQUAL(3, result[0].key);
+      CHECK_EQUAL(30, result[0].value); // From first range when equal
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_intersection_matches_std)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 9},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9},
+        {3, 3, 3, 3},
+        {0},
+        {10},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+      };
+
+      for (const auto& vec2 : test_cases)
+      {
+        std::vector<int> std_result(vec1.size() + vec2.size());
+        auto std_out = std::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+        std_result.erase(std_out, std_result.end());
+
+        std::vector<int> etl_result(vec1.size() + vec2.size());
+        auto [in1, in2, out] = etl::ranges::set_intersection(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), etl_result.begin());
+        etl_result.erase(out, etl_result.end());
+
+        CHECK_EQUAL(std_result.size(), etl_result.size());
+        for (size_t i = 0; i < std_result.size(); ++i)
+        {
+          CHECK_EQUAL(std_result[i], etl_result[i]);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_iterator_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 5, 7, 8};
+      std::vector<int> result(5);
+
+      auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+      CHECK(in == vec1.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_range_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 5, 7, 8};
+      std::vector<int> result(5);
+
+      auto [in, out] = etl::ranges::set_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_empty_first)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{1, 2, 3};
+      std::vector<int> result(3);
+
+      auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      CHECK_EQUAL(0u, result.size());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_empty_second)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{};
+      std::vector<int> result(3);
+
+      auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_both_empty)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{};
+      std::vector<int> result{};
+
+      auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      CHECK(out == result.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_identical_ranges)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{1, 2, 3, 4, 5};
+      std::vector<int> result(5);
+
+      auto [in, out] = etl::ranges::set_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      CHECK_EQUAL(0u, result.size());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_disjoint_ranges)
+    {
+      std::vector<int> vec1{1, 3, 5};
+      std::vector<int> vec2{2, 4, 6};
+      std::vector<int> result(3);
+
+      auto [in, out] = etl::ranges::set_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 3, 5};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_with_duplicates)
+    {
+      std::vector<int> vec1{1, 2, 2, 3};
+      std::vector<int> vec2{2, 2, 2, 4};
+      std::vector<int> result(4);
+
+      auto [in, out] = etl::ranges::set_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> std_result(4);
+      auto std_out = std::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+      std_result.erase(std_out, std_result.end());
+
+      CHECK_EQUAL(std_result.size(), result.size());
+      for (size_t i = 0; i < std_result.size(); ++i)
+      {
+        CHECK_EQUAL(std_result[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_with_custom_comparator)
+    {
+      std::vector<int> vec1{7, 5, 3, 1};
+      std::vector<int> vec2{6, 5, 3, 2};
+      std::vector<int> result(4);
+
+      auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                    result.begin(), etl::greater<int>{});
+      result.erase(out, result.end());
+
+      std::vector<int> expected{7, 1};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec1{{1, 10}, {3, 30}, {5, 50}};
+      std::vector<Item> vec2{{2, 20}, {3, 99}, {4, 40}};
+      std::vector<Item> result(3);
+
+      auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                    result.begin(), etl::ranges::less{},
+                                                    [](const Item& item) { return item.key; },
+                                                    [](const Item& item) { return item.key; });
+      result.erase(out, result.end());
+
+      // Should contain keys: 1, 5 (elements in vec1 not in vec2)
+      CHECK_EQUAL(2u, result.size());
+      CHECK_EQUAL(1, result[0].key);
+      CHECK_EQUAL(10, result[0].value);
+      CHECK_EQUAL(5, result[1].key);
+      CHECK_EQUAL(50, result[1].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_difference_matches_std)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 9},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9},
+        {3, 3, 3, 3},
+        {0},
+        {10},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+      };
+
+      for (const auto& vec2 : test_cases)
+      {
+        std::vector<int> std_result(vec1.size() + vec2.size());
+        auto std_out = std::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+        std_result.erase(std_out, std_result.end());
+
+        std::vector<int> etl_result(vec1.size() + vec2.size());
+        auto [in, out] = etl::ranges::set_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), etl_result.begin());
+        etl_result.erase(out, etl_result.end());
+
+        CHECK_EQUAL(std_result.size(), etl_result.size());
+        for (size_t i = 0; i < std_result.size(); ++i)
+        {
+          CHECK_EQUAL(std_result[i], etl_result[i]);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_iterator_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 5, 7, 8};
+      std::vector<int> result(10);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 3, 4, 8};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+      CHECK(in1 == vec1.end());
+      CHECK(in2 == vec2.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_range_basic)
+    {
+      std::vector<int> vec1{1, 2, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 5, 7, 8};
+      std::vector<int> result(10);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 3, 4, 8};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_empty_first)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{1, 2, 3};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_empty_second)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_both_empty)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{};
+      std::vector<int> result{};
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      CHECK(out == result.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_identical_ranges)
+    {
+      std::vector<int> vec1{1, 2, 3, 4, 5};
+      std::vector<int> vec2{1, 2, 3, 4, 5};
+      std::vector<int> result(5);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      CHECK_EQUAL(0u, result.size());
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_disjoint_ranges)
+    {
+      std::vector<int> vec1{1, 3, 5};
+      std::vector<int> vec2{2, 4, 6};
+      std::vector<int> result(6);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_with_duplicates)
+    {
+      std::vector<int> vec1{1, 2, 2, 3};
+      std::vector<int> vec2{2, 2, 2, 4};
+      std::vector<int> result(8);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1, vec2, result.begin());
+      result.erase(out, result.end());
+
+      std::vector<int> std_result(8);
+      auto std_out = std::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+      std_result.erase(std_out, std_result.end());
+
+      CHECK_EQUAL(std_result.size(), result.size());
+      for (size_t i = 0; i < std_result.size(); ++i)
+      {
+        CHECK_EQUAL(std_result[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_with_custom_comparator)
+    {
+      std::vector<int> vec1{7, 5, 3, 1};
+      std::vector<int> vec2{6, 5, 3, 2};
+      std::vector<int> result(8);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                                     result.begin(), etl::greater<int>{});
+      result.erase(out, result.end());
+
+      std::vector<int> expected{7, 6, 2, 1};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec1{{1, 10}, {3, 30}, {5, 50}};
+      std::vector<Item> vec2{{2, 20}, {3, 99}, {4, 40}};
+      std::vector<Item> result(6);
+
+      auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                                     result.begin(), etl::ranges::less{},
+                                                                     [](const Item& item) { return item.key; },
+                                                                     [](const Item& item) { return item.key; });
+      result.erase(out, result.end());
+
+      // Should contain keys: 1, 2, 4, 5 (elements in either but not both)
+      CHECK_EQUAL(4u, result.size());
+      CHECK_EQUAL(1, result[0].key);
+      CHECK_EQUAL(10, result[0].value);
+      CHECK_EQUAL(2, result[1].key);
+      CHECK_EQUAL(20, result[1].value);
+      CHECK_EQUAL(4, result[2].key);
+      CHECK_EQUAL(40, result[2].value);
+      CHECK_EQUAL(5, result[3].key);
+      CHECK_EQUAL(50, result[3].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_set_symmetric_difference_matches_std)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 9},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9},
+        {3, 3, 3, 3},
+        {0},
+        {10},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+      };
+
+      for (const auto& vec2 : test_cases)
+      {
+        std::vector<int> std_result(vec1.size() + vec2.size());
+        auto std_out = std::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+        std_result.erase(std_out, std_result.end());
+
+        std::vector<int> etl_result(vec1.size() + vec2.size());
+        auto [in1, in2, out] = etl::ranges::set_symmetric_difference(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), etl_result.begin());
+        etl_result.erase(out, etl_result.end());
+
+        CHECK_EQUAL(std_result.size(), etl_result.size());
+        for (size_t i = 0; i < std_result.size(); ++i)
+        {
+          CHECK_EQUAL(std_result[i], etl_result[i]);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_iterator_basic)
+    {
+      std::vector<int> vec1{1, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 6, 8};
+      std::vector<int> result(8);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+      CHECK(in1 == vec1.end());
+      CHECK(in2 == vec2.end());
+      CHECK(out == result.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_range_basic)
+    {
+      std::vector<int> vec1{1, 3, 5, 7};
+      std::vector<int> vec2{2, 4, 6, 8};
+      std::vector<int> result(8);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1, vec2, result.begin());
+      (void)in1; (void)in2;
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      CHECK_EQUAL(expected.size(), size_t(out - result.begin()));
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_empty_first)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{1, 2, 3};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), size_t(out - result.begin()));
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_empty_second)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{};
+      std::vector<int> result(3);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      std::vector<int> expected{1, 2, 3};
+      CHECK_EQUAL(expected.size(), size_t(out - result.begin()));
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_both_empty)
+    {
+      std::vector<int> vec1{};
+      std::vector<int> vec2{};
+      std::vector<int> result{};
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), result.begin());
+
+      CHECK(out == result.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_identical_ranges)
+    {
+      std::vector<int> vec1{1, 2, 3};
+      std::vector<int> vec2{1, 2, 3};
+      std::vector<int> result(6);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1, vec2, result.begin());
+      (void)in1; (void)in2;
+      result.erase(out, result.end());
+
+      std::vector<int> expected{1, 1, 2, 2, 3, 3};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_with_duplicates)
+    {
+      std::vector<int> vec1{1, 2, 2, 3};
+      std::vector<int> vec2{2, 2, 2, 4};
+      std::vector<int> result(8);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1, vec2, result.begin());
+      (void)in1; (void)in2;
+      result.erase(out, result.end());
+
+      std::vector<int> std_result(8);
+      auto std_out = std::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+      std_result.erase(std_out, std_result.end());
+
+      CHECK_EQUAL(std_result.size(), result.size());
+      for (size_t i = 0; i < std_result.size(); ++i)
+      {
+        CHECK_EQUAL(std_result[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_with_custom_comparator)
+    {
+      std::vector<int> vec1{7, 5, 3, 1};
+      std::vector<int> vec2{6, 4, 2};
+      std::vector<int> result(7);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                 result.begin(), etl::greater<int>{});
+      result.erase(out, result.end());
+
+      std::vector<int> expected{7, 6, 5, 4, 3, 2, 1};
+      CHECK_EQUAL(expected.size(), result.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec1{{1, 10}, {3, 30}, {5, 50}};
+      std::vector<Item> vec2{{2, 20}, {3, 99}, {4, 40}};
+      std::vector<Item> result(6);
+
+      auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                                                 result.begin(), etl::ranges::less{},
+                                                 [](const Item& item) { return item.key; },
+                                                 [](const Item& item) { return item.key; });
+      result.erase(out, result.end());
+
+      // Merge keeps all elements: 1, 2, 3(from vec1), 3(from vec2), 4, 5
+      CHECK_EQUAL(6u, result.size());
+      CHECK_EQUAL(1, result[0].key);
+      CHECK_EQUAL(10, result[0].value);
+      CHECK_EQUAL(2, result[1].key);
+      CHECK_EQUAL(20, result[1].value);
+      CHECK_EQUAL(3, result[2].key);
+      CHECK_EQUAL(30, result[2].value);  // From first range (stable)
+      CHECK_EQUAL(3, result[3].key);
+      CHECK_EQUAL(99, result[3].value);  // From second range
+      CHECK_EQUAL(4, result[4].key);
+      CHECK_EQUAL(40, result[4].value);
+      CHECK_EQUAL(5, result[5].key);
+      CHECK_EQUAL(50, result[5].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_merge_matches_std)
+    {
+      std::vector<int> vec1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 9},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9},
+        {3, 3, 3, 3},
+        {0},
+        {10},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+      };
+
+      for (const auto& vec2 : test_cases)
+      {
+        std::vector<int> std_result(vec1.size() + vec2.size());
+        auto std_out = std::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std_result.begin());
+        std_result.erase(std_out, std_result.end());
+
+        std::vector<int> etl_result(vec1.size() + vec2.size());
+        auto [in1, in2, out] = etl::ranges::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), etl_result.begin());
+        etl_result.erase(out, etl_result.end());
+
+        CHECK_EQUAL(std_result.size(), etl_result.size());
+        for (size_t i = 0; i < std_result.size(); ++i)
+        {
+          CHECK_EQUAL(std_result[i], etl_result[i]);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_iterator_basic)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 2, 4, 6, 8};
+      auto middle = vec.begin() + 4;
+
+      auto result = etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      CHECK_EQUAL(expected.size(), vec.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_range_basic)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 2, 4, 6, 8};
+      auto middle = vec.begin() + 4;
+
+      auto result = etl::ranges::inplace_merge(vec, middle);
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      CHECK_EQUAL(expected.size(), vec.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_empty_first_half)
+    {
+      std::vector<int> vec{1, 2, 3};
+      auto middle = vec.begin(); // empty first half
+
+      auto result = etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      std::vector<int> expected{1, 2, 3};
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_empty_second_half)
+    {
+      std::vector<int> vec{1, 2, 3};
+      auto middle = vec.end(); // empty second half
+
+      auto result = etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      std::vector<int> expected{1, 2, 3};
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_single_elements)
+    {
+      std::vector<int> vec{5, 2};
+      auto middle = vec.begin() + 1;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      CHECK_EQUAL(2, vec[0]);
+      CHECK_EQUAL(5, vec[1]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_already_sorted)
+    {
+      std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8};
+      auto middle = vec.begin() + 4;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8};
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_with_duplicates)
+    {
+      std::vector<int> vec{1, 2, 2, 3, 2, 2, 2, 4};
+      auto middle = vec.begin() + 4;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      std::vector<int> expected{1, 2, 2, 2, 2, 2, 3, 4};
+      CHECK_EQUAL(expected.size(), vec.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_with_custom_comparator)
+    {
+      std::vector<int> vec{7, 5, 3, 1, 8, 6, 4, 2};
+      auto middle = vec.begin() + 4;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end(), etl::greater<int>{});
+
+      std::vector<int> expected{8, 7, 6, 5, 4, 3, 2, 1};
+      CHECK_EQUAL(expected.size(), vec.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_with_projection)
+    {
+      struct Item { int key; int value; };
+
+      std::vector<Item> vec{{1, 10}, {3, 30}, {5, 50}, {2, 20}, {4, 40}};
+      auto middle = vec.begin() + 3;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end(), etl::ranges::less{},
+                                  [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(10, vec[0].value);
+      CHECK_EQUAL(2, vec[1].key);
+      CHECK_EQUAL(20, vec[1].value);
+      CHECK_EQUAL(3, vec[2].key);
+      CHECK_EQUAL(30, vec[2].value);
+      CHECK_EQUAL(4, vec[3].key);
+      CHECK_EQUAL(40, vec[3].value);
+      CHECK_EQUAL(5, vec[4].key);
+      CHECK_EQUAL(50, vec[4].value);
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_matches_std)
+    {
+      std::vector<int> base1{1, 2, 2, 3, 3, 3, 5, 5, 7, 9};
+      std::vector<std::vector<int>> test_cases = {
+        {1, 3, 5},
+        {2, 2, 3},
+        {1, 2, 3, 4},
+        {1, 9},
+        {},
+        {1, 2, 2, 3, 3, 3, 5, 5, 7, 9},
+        {3, 3, 3, 3},
+        {0},
+        {10},
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+      };
+
+      for (const auto& second : test_cases)
+      {
+        // Build a combined vector with two sorted halves
+        std::vector<int> std_vec;
+        std_vec.insert(std_vec.end(), base1.begin(), base1.end());
+        std_vec.insert(std_vec.end(), second.begin(), second.end());
+
+        std::vector<int> etl_vec = std_vec;
+
+        auto std_middle = std_vec.begin() + static_cast<std::ptrdiff_t>(base1.size());
+        auto etl_middle = etl_vec.begin() + static_cast<std::ptrdiff_t>(base1.size());
+
+        std::inplace_merge(std_vec.begin(), std_middle, std_vec.end());
+        etl::ranges::inplace_merge(etl_vec.begin(), etl_middle, etl_vec.end());
+
+        CHECK_EQUAL(std_vec.size(), etl_vec.size());
+        for (size_t i = 0; i < std_vec.size(); ++i)
+        {
+          CHECK_EQUAL(std_vec[i], etl_vec[i]);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_single_element_halves)
+    {
+      std::vector<int> vec{3, 1};
+      auto middle = vec.begin() + 1;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      CHECK_EQUAL(1, vec[0]);
+      CHECK_EQUAL(3, vec[1]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_inplace_merge_unequal_halves)
+    {
+      std::vector<int> vec{1, 5, 9, 2, 3, 4, 6, 7, 8, 10};
+      auto middle = vec.begin() + 3;
+
+      etl::ranges::inplace_merge(vec.begin(), middle, vec.end());
+
+      std::vector<int> expected{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      CHECK_EQUAL(expected.size(), vec.size());
+      for (size_t i = 0; i < expected.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], vec[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_iterator)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      auto result = etl::ranges::make_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_range)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      auto result = etl::ranges::make_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_with_comparator_iterator)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      auto result = etl::ranges::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_with_comparator_range)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+
+      auto result = etl::ranges::make_heap(vec, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+
+      etl::ranges::make_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      // Verify max-heap property on keys
+      for (size_t i = 0; i < vec.size(); ++i)
+      {
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+
+        if (left < vec.size())
+        {
+          CHECK(vec[i].key >= vec[left].key);
+        }
+        if (right < vec.size())
+        {
+          CHECK(vec[i].key >= vec[right].key);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {1, 10}, {5, 50}, {2, 20}, {4, 40}};
+
+      etl::ranges::make_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      // Verify max-heap property on keys
+      for (size_t i = 0; i < vec.size(); ++i)
+      {
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+
+        if (left < vec.size())
+        {
+          CHECK(vec[i].key >= vec[left].key);
+        }
+        if (right < vec.size())
+        {
+          CHECK(vec[i].key >= vec[right].key);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::make_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::make_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_already_heap)
+    {
+      std::vector<int> vec{5, 4, 3, 2, 1};
+
+      etl::ranges::make_heap(vec);
+
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_duplicates)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+
+      etl::ranges::make_heap(vec);
+
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_make_heap_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::make_heap(data_std.begin(), data_std.end());
+      etl::ranges::make_heap(data_etl);
+
+      CHECK(std::is_heap(data_etl.begin(), data_etl.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_iterator)
+    {
+      std::vector<int> vec{5, 3, 1};
+      std::make_heap(vec.begin(), vec.end());
+      vec.push_back(10);
+
+      auto result = etl::ranges::push_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_range)
+    {
+      std::vector<int> vec{5, 3, 1};
+      std::make_heap(vec.begin(), vec.end());
+      vec.push_back(4);
+
+      auto result = etl::ranges::push_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 3, 5};
+      std::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+      vec.push_back(0);
+
+      auto result = etl::ranges::push_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_with_comparator_range)
+    {
+      std::vector<int> vec{1, 3, 5};
+      std::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+      vec.push_back(2);
+
+      auto result = etl::ranges::push_heap(vec, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::is_heap(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{5, 50}, {3, 30}, {1, 10}};
+      // Make it a heap by key first
+      etl::ranges::make_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+      vec.push_back({10, 100});
+
+      etl::ranges::push_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      // Verify max-heap property on keys
+      for (size_t i = 0; i < vec.size(); ++i)
+      {
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+
+        if (left < vec.size())
+        {
+          CHECK(vec[i].key >= vec[left].key);
+        }
+        if (right < vec.size())
+        {
+          CHECK(vec[i].key >= vec[right].key);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{5, 50}, {3, 30}, {1, 10}};
+      etl::ranges::make_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+      vec.push_back({4, 40});
+
+      etl::ranges::push_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      // Verify max-heap property on keys
+      for (size_t i = 0; i < vec.size(); ++i)
+      {
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+
+        if (left < vec.size())
+        {
+          CHECK(vec[i].key >= vec[left].key);
+        }
+        if (right < vec.size())
+        {
+          CHECK(vec[i].key >= vec[right].key);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::push_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::push_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_multiple_pushes)
+    {
+      std::vector<int> vec;
+      int values[] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+
+      for (int v : values)
+      {
+        vec.push_back(v);
+        etl::ranges::push_heap(vec);
+      }
+
+      CHECK(std::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_push_heap_matches_std)
+    {
+      std::vector<int> data_std;
+      std::vector<int> data_etl;
+      int values[] = {9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+
+      for (int v : values)
+      {
+        data_std.push_back(v);
+        std::push_heap(data_std.begin(), data_std.end());
+
+        data_etl.push_back(v);
+        etl::ranges::push_heap(data_etl);
+      }
+
+      CHECK(std::is_heap(data_etl.begin(), data_etl.end()));
+
+      for (size_t i = 0; i < data_std.size(); ++i)
+      {
+        CHECK_EQUAL(data_std[i], data_etl[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_iterator)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3};
+      std::make_heap(vec.begin(), vec.end());
+
+      auto result = etl::ranges::pop_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(9, vec.back());
+      CHECK(std::is_heap(vec.begin(), vec.end() - 1));
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_range)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3};
+      std::make_heap(vec.begin(), vec.end());
+
+      auto result = etl::ranges::pop_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(9, vec.back());
+      CHECK(std::is_heap(vec.begin(), vec.end() - 1));
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+      std::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      auto result = etl::ranges::pop_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(1, vec.back());
+      CHECK(std::is_heap(vec.begin(), vec.end() - 1, etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_with_comparator_range)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+      std::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      auto result = etl::ranges::pop_heap(vec, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(1, vec.back());
+      CHECK(std::is_heap(vec.begin(), vec.end() - 1, etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+      etl::ranges::make_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      etl::ranges::pop_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(9, vec.back().key);
+
+      // Verify max-heap property on keys for remaining elements
+      for (size_t i = 0; i < vec.size() - 1; ++i)
+      {
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+
+        if (left < vec.size() - 1)
+        {
+          CHECK(vec[i].key >= vec[left].key);
+        }
+        if (right < vec.size() - 1)
+        {
+          CHECK(vec[i].key >= vec[right].key);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+      etl::ranges::make_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      etl::ranges::pop_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK_EQUAL(9, vec.back().key);
+
+      // Verify max-heap property on keys for remaining elements
+      for (size_t i = 0; i < vec.size() - 1; ++i)
+      {
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+
+        if (left < vec.size() - 1)
+        {
+          CHECK(vec[i].key >= vec[left].key);
+        }
+        if (right < vec.size() - 1)
+        {
+          CHECK(vec[i].key >= vec[right].key);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::pop_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::pop_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_multiple_pops)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+      std::make_heap(vec.begin(), vec.end());
+
+      std::vector<int> sorted;
+      auto end = vec.end();
+
+      while (end != vec.begin())
+      {
+        etl::ranges::pop_heap(vec.begin(), end);
+        --end;
+        sorted.push_back(*end);
+      }
+
+      // Should produce descending order
+      for (size_t i = 1; i < sorted.size(); ++i)
+      {
+        CHECK(sorted[i - 1] >= sorted[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_pop_heap_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::make_heap(data_std.begin(), data_std.end());
+      std::make_heap(data_etl.begin(), data_etl.end());
+
+      std::pop_heap(data_std.begin(), data_std.end());
+      etl::ranges::pop_heap(data_etl);
+
+      for (size_t i = 0; i < data_std.size(); ++i)
+      {
+        CHECK_EQUAL(data_std[i], data_etl[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_iterator)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3};
+      std::make_heap(vec.begin(), vec.end());
+
+      auto result = etl::ranges::sort_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+      CHECK(std::is_sorted(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_range)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3};
+      std::make_heap(vec.begin(), vec.end());
+
+      auto result = etl::ranges::sort_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK(std::is_sorted(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+      std::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      auto result = etl::ranges::sort_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::is_sorted(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_with_comparator_range)
+    {
+      std::vector<int> vec{1, 3, 5, 7, 9};
+      std::make_heap(vec.begin(), vec.end(), etl::greater<int>{});
+
+      auto result = etl::ranges::sort_heap(vec, etl::greater<int>{});
+
+      CHECK(result == vec.end());
+      CHECK(std::is_sorted(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+      etl::ranges::make_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      etl::ranges::sort_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      for (size_t i = 1; i < vec.size(); ++i)
+      {
+        CHECK(vec[i - 1].key <= vec[i].key);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+      etl::ranges::make_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      etl::ranges::sort_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      for (size_t i = 1; i < vec.size(); ++i)
+      {
+        CHECK(vec[i - 1].key <= vec[i].key);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::sort_heap(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::sort_heap(vec);
+
+      CHECK(result == vec.end());
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_sort_heap_matches_std)
+    {
+      std::vector<int> data_std{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      std::vector<int> data_etl = data_std;
+
+      std::make_heap(data_std.begin(), data_std.end());
+      std::make_heap(data_etl.begin(), data_etl.end());
+
+      std::sort_heap(data_std.begin(), data_std.end());
+      etl::ranges::sort_heap(data_etl);
+
+      for (size_t i = 0; i < data_std.size(); ++i)
+      {
+        CHECK_EQUAL(data_std[i], data_etl[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_iterator)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3, 2, 6};
+
+      auto result = etl::ranges::is_heap_until(vec.begin(), vec.end());
+      auto expected = std::is_heap_until(vec.begin(), vec.end());
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_range)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3, 2, 6};
+
+      auto result = etl::ranges::is_heap_until(vec);
+      auto expected = std::is_heap_until(vec.begin(), vec.end());
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_not_heap)
+    {
+      std::vector<int> vec{1, 5, 3, 7, 2};
+
+      auto result = etl::ranges::is_heap_until(vec.begin(), vec.end());
+      auto expected = std::is_heap_until(vec.begin(), vec.end());
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 3, 2, 5, 7, 4, 6};
+
+      auto result = etl::ranges::is_heap_until(vec.begin(), vec.end(), etl::greater<int>{});
+      auto expected = std::is_heap_until(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_with_comparator_range)
+    {
+      std::vector<int> vec{1, 3, 2, 5, 7, 4, 6};
+
+      auto result = etl::ranges::is_heap_until(vec, etl::greater<int>{});
+      auto expected = std::is_heap_until(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+
+      auto result = etl::ranges::is_heap_until(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+
+      auto result = etl::ranges::is_heap_until(vec, etl::ranges::less{}, [](const Item& item) { return item.key; });
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::is_heap_until(vec.begin(), vec.end());
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::is_heap_until(vec);
+
+      CHECK(result == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_until_matches_std)
+    {
+      std::vector<int> vec{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+
+      auto result_etl = etl::ranges::is_heap_until(vec);
+      auto result_std = std::is_heap_until(vec.begin(), vec.end());
+
+      CHECK(result_etl == result_std);
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_iterator)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3, 2, 6};
+
+      CHECK(etl::ranges::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_range)
+    {
+      std::vector<int> vec{9, 5, 7, 1, 3, 2, 6};
+
+      CHECK(etl::ranges::is_heap(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_not_heap_iterator)
+    {
+      std::vector<int> vec{1, 5, 3, 7, 2};
+
+      CHECK(!etl::ranges::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_not_heap_range)
+    {
+      std::vector<int> vec{1, 5, 3, 7, 2};
+
+      CHECK(!etl::ranges::is_heap(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_with_comparator_iterator)
+    {
+      std::vector<int> vec{1, 3, 2, 5, 7, 4, 6};
+
+      CHECK(etl::ranges::is_heap(vec.begin(), vec.end(), etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_with_comparator_range)
+    {
+      std::vector<int> vec{1, 3, 2, 5, 7, 4, 6};
+
+      CHECK(etl::ranges::is_heap(vec, etl::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+
+      CHECK(etl::ranges::is_heap(vec.begin(), vec.end(), etl::ranges::less{}, [](const Item& item) { return item.key; }));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{9, 90}, {5, 50}, {7, 70}, {1, 10}, {3, 30}};
+
+      CHECK(etl::ranges::is_heap(vec, etl::ranges::less{}, [](const Item& item) { return item.key; }));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_empty)
+    {
+      std::vector<int> vec{};
+
+      CHECK(etl::ranges::is_heap(vec.begin(), vec.end()));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_single_element)
+    {
+      std::vector<int> vec{42};
+
+      CHECK(etl::ranges::is_heap(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_after_make_heap)
+    {
+      std::vector<int> vec{5, 3, 1, 4, 2};
+      etl::ranges::make_heap(vec);
+
+      CHECK(etl::ranges::is_heap(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_is_heap_matches_std)
+    {
+      std::vector<int> data1{9, 3, 7, 1, 5, 8, 2, 6, 4, 10};
+      CHECK_EQUAL(std::is_heap(data1.begin(), data1.end()), etl::ranges::is_heap(data1));
+
+      std::vector<int> data2{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+      CHECK_EQUAL(std::is_heap(data2.begin(), data2.end()), etl::ranges::is_heap(data2));
+
+      std::vector<int> data3{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+      CHECK_EQUAL(std::is_heap(data3.begin(), data3.end()), etl::ranges::is_heap(data3));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_two_values)
+    {
+      CHECK_EQUAL(3, etl::ranges::min(3, 5));
+      CHECK_EQUAL(3, etl::ranges::min(5, 3));
+      CHECK_EQUAL(7, etl::ranges::min(7, 7));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_two_values_with_comparator)
+    {
+      CHECK_EQUAL(5, etl::ranges::min(3, 5, std::greater<int>{}));
+      CHECK_EQUAL(5, etl::ranges::min(5, 3, std::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_two_values_with_projection)
+    {
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      CHECK_EQUAL(3, etl::ranges::min(3, -5, etl::ranges::less{}, abs_proj));
+      CHECK_EQUAL(3, etl::ranges::min(-5, 3, etl::ranges::less{}, abs_proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_initializer_list)
+    {
+      CHECK_EQUAL(1, etl::ranges::min({3, 1, 4, 1, 5, 9, 2, 6}));
+      CHECK_EQUAL(42, etl::ranges::min({42}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_initializer_list_with_comparator)
+    {
+      CHECK_EQUAL(9, etl::ranges::min({3, 1, 4, 1, 5, 9, 2, 6}, std::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_initializer_list_with_projection)
+    {
+      auto negate = [](int v) { return -v; };
+      CHECK_EQUAL(9, etl::ranges::min({3, 1, 4, 5, 9, 2, 6}, etl::ranges::less{}, negate));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_range)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      CHECK_EQUAL(1, etl::ranges::min(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_range_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      CHECK_EQUAL(9, etl::ranges::min(vec, std::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_range_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      CHECK_EQUAL(-1, etl::ranges::min(vec, etl::ranges::less{}, abs_proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_single_element_range)
+    {
+      std::vector<int> vec{42};
+      CHECK_EQUAL(42, etl::ranges::min(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_all_equal)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+      CHECK_EQUAL(7, etl::ranges::min(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_negative_values)
+    {
+      std::vector<int> vec{-3, -1, -4, -1, -5};
+      CHECK_EQUAL(-5, etl::ranges::min(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_matches_std)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+      CHECK_EQUAL(*std::min_element(vec.begin(), vec.end()), etl::ranges::min(vec));
+
+      std::vector<int> vec2{-10, -20, -5, -15};
+      CHECK_EQUAL(*std::min_element(vec2.begin(), vec2.end()), etl::ranges::min(vec2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_iterator_sentinel)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::min_element(vec.begin(), vec.end());
+      CHECK_EQUAL(1, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_iterator_sentinel_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::min_element(vec.begin(), vec.end(), std::greater<int>{});
+      CHECK_EQUAL(9, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_iterator_sentinel_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::min_element(vec.begin(), vec.end(), etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-1, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_range)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::min_element(vec);
+      CHECK_EQUAL(1, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_range_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::min_element(vec, std::greater<int>{});
+      CHECK_EQUAL(9, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_range_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::min_element(vec, etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-1, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_single_element)
+    {
+      std::vector<int> vec{42};
+      auto it = etl::ranges::min_element(vec);
+      CHECK_EQUAL(42, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_empty_range)
+    {
+      std::vector<int> vec{};
+      auto it = etl::ranges::min_element(vec.begin(), vec.end());
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_all_equal)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+      auto it = etl::ranges::min_element(vec);
+      CHECK_EQUAL(7, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_min_element_matches_std)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+      CHECK(std::min_element(vec.begin(), vec.end()) == etl::ranges::min_element(vec.begin(), vec.end()));
+
+      std::vector<int> vec2{-10, -20, -5, -15};
+      CHECK(std::min_element(vec2.begin(), vec2.end()) == etl::ranges::min_element(vec2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_two_values)
+    {
+      CHECK_EQUAL(5, etl::ranges::max(3, 5));
+      CHECK_EQUAL(5, etl::ranges::max(5, 3));
+      CHECK_EQUAL(7, etl::ranges::max(7, 7));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_two_values_with_comparator)
+    {
+      CHECK_EQUAL(3, etl::ranges::max(3, 5, std::greater<int>{}));
+      CHECK_EQUAL(3, etl::ranges::max(5, 3, std::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_two_values_with_projection)
+    {
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      CHECK_EQUAL(-5, etl::ranges::max(3, -5, etl::ranges::less{}, abs_proj));
+      CHECK_EQUAL(-5, etl::ranges::max(-5, 3, etl::ranges::less{}, abs_proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_initializer_list)
+    {
+      CHECK_EQUAL(9, etl::ranges::max({3, 1, 4, 1, 5, 9, 2, 6}));
+      CHECK_EQUAL(42, etl::ranges::max({42}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_initializer_list_with_comparator)
+    {
+      CHECK_EQUAL(1, etl::ranges::max({3, 1, 4, 1, 5, 9, 2, 6}, std::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_initializer_list_with_projection)
+    {
+      auto negate = [](int v) { return -v; };
+      CHECK_EQUAL(1, etl::ranges::max({3, 1, 4, 5, 9, 2, 6}, etl::ranges::less{}, negate));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_range)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      CHECK_EQUAL(9, etl::ranges::max(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_range_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      CHECK_EQUAL(1, etl::ranges::max(vec, std::greater<int>{}));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_range_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      CHECK_EQUAL(-5, etl::ranges::max(vec, etl::ranges::less{}, abs_proj));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_single_element_range)
+    {
+      std::vector<int> vec{42};
+      CHECK_EQUAL(42, etl::ranges::max(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_all_equal)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+      CHECK_EQUAL(7, etl::ranges::max(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_negative_values)
+    {
+      std::vector<int> vec{-3, -1, -4, -1, -5};
+      CHECK_EQUAL(-1, etl::ranges::max(vec));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_matches_std)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+      CHECK_EQUAL(*std::max_element(vec.begin(), vec.end()), etl::ranges::max(vec));
+
+      std::vector<int> vec2{-10, -20, -5, -15};
+      CHECK_EQUAL(*std::max_element(vec2.begin(), vec2.end()), etl::ranges::max(vec2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_iterator_sentinel)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::max_element(vec.begin(), vec.end());
+      CHECK_EQUAL(9, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_iterator_sentinel_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::max_element(vec.begin(), vec.end(), std::greater<int>{});
+      CHECK_EQUAL(1, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_iterator_sentinel_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::max_element(vec.begin(), vec.end(), etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-5, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_range)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::max_element(vec);
+      CHECK_EQUAL(9, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_range_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto it = etl::ranges::max_element(vec, std::greater<int>{});
+      CHECK_EQUAL(1, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_range_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto it = etl::ranges::max_element(vec, etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-5, *it);
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_single_element)
+    {
+      std::vector<int> vec{42};
+      auto it = etl::ranges::max_element(vec);
+      CHECK_EQUAL(42, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_empty_range)
+    {
+      std::vector<int> vec{};
+      auto it = etl::ranges::max_element(vec.begin(), vec.end());
+      CHECK(it == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_all_equal)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+      auto it = etl::ranges::max_element(vec);
+      CHECK_EQUAL(7, *it);
+      CHECK(it == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_max_element_matches_std)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+      CHECK(std::max_element(vec.begin(), vec.end()) == etl::ranges::max_element(vec.begin(), vec.end()));
+
+      std::vector<int> vec2{-10, -20, -5, -15};
+      CHECK(std::max_element(vec2.begin(), vec2.end()) == etl::ranges::max_element(vec2));
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_two_values)
+    {
+      int a = 3, b = 5;
+      auto result = etl::ranges::minmax(a, b);
+      CHECK_EQUAL(3, result.min);
+      CHECK_EQUAL(5, result.max);
+
+      int c = 5, d = 3;
+      auto result2 = etl::ranges::minmax(c, d);
+      CHECK_EQUAL(3, result2.min);
+      CHECK_EQUAL(5, result2.max);
+
+      int e = 7, f = 7;
+      auto result3 = etl::ranges::minmax(e, f);
+      CHECK_EQUAL(7, result3.min);
+      CHECK_EQUAL(7, result3.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_two_values_with_comparator)
+    {
+      int a = 3, b = 5;
+      auto result = etl::ranges::minmax(a, b, std::greater<int>{});
+      CHECK_EQUAL(5, result.min);
+      CHECK_EQUAL(3, result.max);
+
+      int c = 5, d = 3;
+      auto result2 = etl::ranges::minmax(c, d, std::greater<int>{});
+      CHECK_EQUAL(5, result2.min);
+      CHECK_EQUAL(3, result2.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_two_values_with_projection)
+    {
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      int a = 3, b = -5;
+      auto result = etl::ranges::minmax(a, b, etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(3, result.min);
+      CHECK_EQUAL(-5, result.max);
+
+      int c = -5, d = 3;
+      auto result2 = etl::ranges::minmax(c, d, etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(3, result2.min);
+      CHECK_EQUAL(-5, result2.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_initializer_list)
+    {
+      auto result = etl::ranges::minmax({3, 1, 4, 1, 5, 9, 2, 6});
+      CHECK_EQUAL(1, result.min);
+      CHECK_EQUAL(9, result.max);
+
+      auto result2 = etl::ranges::minmax({42});
+      CHECK_EQUAL(42, result2.min);
+      CHECK_EQUAL(42, result2.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_initializer_list_with_comparator)
+    {
+      auto result = etl::ranges::minmax({3, 1, 4, 1, 5, 9, 2, 6}, std::greater<int>{});
+      CHECK_EQUAL(9, result.min);
+      CHECK_EQUAL(1, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_initializer_list_with_projection)
+    {
+      auto negate = [](int v) { return -v; };
+      auto result = etl::ranges::minmax({3, 1, 4, 5, 9, 2, 6}, etl::ranges::less{}, negate);
+      CHECK_EQUAL(9, result.min);
+      CHECK_EQUAL(1, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_range)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto result = etl::ranges::minmax(vec);
+      CHECK_EQUAL(1, result.min);
+      CHECK_EQUAL(9, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_range_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto result = etl::ranges::minmax(vec, std::greater<int>{});
+      CHECK_EQUAL(9, result.min);
+      CHECK_EQUAL(1, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_range_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto result = etl::ranges::minmax(vec, etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-1, result.min);
+      CHECK_EQUAL(-5, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_single_element_range)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::minmax(vec);
+      CHECK_EQUAL(42, result.min);
+      CHECK_EQUAL(42, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_all_equal)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+      auto result = etl::ranges::minmax(vec);
+      CHECK_EQUAL(7, result.min);
+      CHECK_EQUAL(7, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_negative_values)
+    {
+      std::vector<int> vec{-3, -1, -4, -1, -5};
+      auto result = etl::ranges::minmax(vec);
+      CHECK_EQUAL(-5, result.min);
+      CHECK_EQUAL(-1, result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_iterator_sentinel)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto result = etl::ranges::minmax_element(vec.begin(), vec.end());
+      CHECK_EQUAL(1, *result.min);
+      CHECK_EQUAL(9, *result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_iterator_sentinel_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto result = etl::ranges::minmax_element(vec.begin(), vec.end(), std::greater<int>{});
+      CHECK_EQUAL(9, *result.min);
+      CHECK_EQUAL(1, *result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_iterator_sentinel_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto result = etl::ranges::minmax_element(vec.begin(), vec.end(), etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-1, *result.min);
+      CHECK_EQUAL(-5, *result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_range)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto result = etl::ranges::minmax_element(vec);
+      CHECK_EQUAL(1, *result.min);
+      CHECK_EQUAL(9, *result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_range_with_comparator)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
+      auto result = etl::ranges::minmax_element(vec, std::greater<int>{});
+      CHECK_EQUAL(9, *result.min);
+      CHECK_EQUAL(1, *result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_range_with_projection)
+    {
+      std::vector<int> vec{3, -1, 4, -5, 2};
+      auto abs_proj = [](int v) { return v < 0 ? -v : v; };
+      auto result = etl::ranges::minmax_element(vec, etl::ranges::less{}, abs_proj);
+      CHECK_EQUAL(-1, *result.min);
+      CHECK_EQUAL(-5, *result.max);
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_single_element)
+    {
+      std::vector<int> vec{42};
+      auto result = etl::ranges::minmax_element(vec);
+      CHECK_EQUAL(42, *result.min);
+      CHECK_EQUAL(42, *result.max);
+      CHECK(result.min == vec.begin());
+      CHECK(result.max == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_empty_range)
+    {
+      std::vector<int> vec{};
+      auto result = etl::ranges::minmax_element(vec.begin(), vec.end());
+      CHECK(result.min == vec.end());
+      CHECK(result.max == vec.end());
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_all_equal)
+    {
+      std::vector<int> vec{7, 7, 7, 7};
+      auto result = etl::ranges::minmax_element(vec);
+      CHECK_EQUAL(7, *result.min);
+      CHECK_EQUAL(7, *result.max);
+      CHECK(result.min == vec.begin());
+    }
+
+    //*************************************************************************
+    TEST(ranges_minmax_element_matches_std)
+    {
+      std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+      auto std_result = std::minmax_element(vec.begin(), vec.end());
+      auto etl_result = etl::ranges::minmax_element(vec.begin(), vec.end());
+      CHECK(std_result.first == etl_result.min);
+      CHECK(std_result.second == etl_result.max);
+
+      std::vector<int> vec2{-10, -20, -5, -15};
+      auto std_result2 = std::minmax_element(vec2.begin(), vec2.end());
+      auto etl_result2 = etl::ranges::minmax_element(vec2);
+      CHECK(std_result2.first == etl_result2.min);
+      CHECK(std_result2.second == etl_result2.max);
+    }
+
+    //*************************************************************************
+    // ranges::clamp
+    //*************************************************************************
+    TEST(ranges_clamp_value_in_range)
+    {
+      CHECK_EQUAL(5, etl::ranges::clamp(5, 0, 10));
+    }
+
+    TEST(ranges_clamp_value_below_low)
+    {
+      CHECK_EQUAL(0, etl::ranges::clamp(-5, 0, 10));
+    }
+
+    TEST(ranges_clamp_value_above_high)
+    {
+      CHECK_EQUAL(10, etl::ranges::clamp(15, 0, 10));
+    }
+
+    TEST(ranges_clamp_value_equal_to_low)
+    {
+      CHECK_EQUAL(0, etl::ranges::clamp(0, 0, 10));
+    }
+
+    TEST(ranges_clamp_value_equal_to_high)
+    {
+      CHECK_EQUAL(10, etl::ranges::clamp(10, 0, 10));
+    }
+
+    TEST(ranges_clamp_with_comparator)
+    {
+      // Using greater: clamp(5, 10, 0, greater) means low=10, high=0 in reverse order
+      CHECK_EQUAL(5, etl::ranges::clamp(5, 10, 0, std::greater<int>{}));
+      CHECK_EQUAL(10, etl::ranges::clamp(15, 10, 0, std::greater<int>{}));
+      CHECK_EQUAL(0, etl::ranges::clamp(-5, 10, 0, std::greater<int>{}));
+    }
+
+    TEST(ranges_clamp_with_projection)
+    {
+      auto abs_proj = [](int x) { return x < 0 ? -x : x; };
+
+      // Clamp by absolute value: value=-3, low=2, high=8
+      // proj(-3)=3, proj(2)=2, proj(8)=8 => 3 is in [2,8] => returns -3
+      CHECK_EQUAL(-3, etl::ranges::clamp(-3, 2, 8, etl::ranges::less{}, abs_proj));
+
+      // proj(1)=1, proj(2)=2 => 1 < 2 => returns low=2
+      CHECK_EQUAL(2, etl::ranges::clamp(1, 2, 8, etl::ranges::less{}, abs_proj));
+
+      // proj(-10)=10, proj(8)=8 => 10 > 8 => returns high=8
+      CHECK_EQUAL(8, etl::ranges::clamp(-10, 2, 8, etl::ranges::less{}, abs_proj));
+    }
+
+    TEST(ranges_clamp_returns_reference)
+    {
+      const int value = 5;
+      const int low   = 0;
+      const int high  = 10;
+      const int& result = etl::ranges::clamp(value, low, high);
+      CHECK_EQUAL(&value, &result);
+
+      const int below = -5;
+      const int& result_low = etl::ranges::clamp(below, low, high);
+      CHECK_EQUAL(&low, &result_low);
+
+      const int above = 15;
+      const int& result_high = etl::ranges::clamp(above, low, high);
+      CHECK_EQUAL(&high, &result_high);
+    }
+
+    TEST(ranges_clamp_constexpr)
+    {
+      constexpr int result1 = etl::ranges::clamp(5, 0, 10);
+      constexpr int result2 = etl::ranges::clamp(-5, 0, 10);
+      constexpr int result3 = etl::ranges::clamp(15, 0, 10);
+
+      CHECK_EQUAL(5,  result1);
+      CHECK_EQUAL(0,  result2);
+      CHECK_EQUAL(10, result3);
+    }
+
+    TEST(ranges_clamp_matches_std)
+    {
+      for (int v = -20; v <= 20; ++v)
+      {
+        CHECK_EQUAL(std::clamp(v, 0, 10), etl::ranges::clamp(v, 0, 10));
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_iterator)
+    {
+      std::vector<int> vec{3, 2, 1};
+      std::vector<int> expected{3, 1, 2};
+
+      auto result = etl::ranges::prev_permutation(vec.begin(), vec.end());
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_range)
+    {
+      std::vector<int> vec{3, 2, 1};
+      std::vector<int> expected{3, 1, 2};
+
+      auto result = etl::ranges::prev_permutation(vec);
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_first_permutation)
+    {
+      // {1, 2, 3} is the first (smallest) permutation; prev should wrap to last and return found=false
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> expected{3, 2, 1};
+
+      auto result = etl::ranges::prev_permutation(vec.begin(), vec.end());
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == false);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::prev_permutation(vec.begin(), vec.end());
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == false);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::prev_permutation(vec);
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == false);
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_with_comparator_iterator)
+    {
+      // With greater<>, prev_permutation acts like next_permutation with less<>
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> expected{1, 3, 2};
+
+      auto result = etl::ranges::prev_permutation(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_with_comparator_range)
+    {
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> expected{1, 3, 2};
+
+      auto result = etl::ranges::prev_permutation(vec, etl::greater<int>{});
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {2, 20}, {1, 10}};
+
+      auto result = etl::ranges::prev_permutation(vec.begin(), vec.end(), etl::ranges::less{},
+                                                   [](const Item& item) { return item.key; });
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK_EQUAL(3, vec[0].key);
+      CHECK_EQUAL(1, vec[1].key);
+      CHECK_EQUAL(2, vec[2].key);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{3, 30}, {2, 20}, {1, 10}};
+
+      auto result = etl::ranges::prev_permutation(vec, etl::ranges::less{},
+                                                   [](const Item& item) { return item.key; });
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK_EQUAL(3, vec[0].key);
+      CHECK_EQUAL(1, vec[1].key);
+      CHECK_EQUAL(2, vec[2].key);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_full_cycle)
+    {
+      // Starting from last permutation {3,2,1}, calling prev_permutation repeatedly
+      // should visit all 6 permutations and wrap around.
+      std::vector<int> vec{3, 2, 1};
+      int count = 0;
+      bool found = true;
+
+      do
+      {
+        ++count;
+        auto result = etl::ranges::prev_permutation(vec);
+        found = result.found;
+      } while (found);
+
+      // 3! = 6 permutations
+      CHECK_EQUAL(6, count);
+      // Should wrap back to {3, 2, 1}
+      std::vector<int> expected{3, 2, 1};
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_matches_std)
+    {
+      std::vector<int> data_std{3, 2, 1};
+      std::vector<int> data_etl = data_std;
+
+      bool std_result = std::prev_permutation(data_std.begin(), data_std.end());
+      auto etl_result = etl::ranges::prev_permutation(data_etl);
+
+      CHECK_EQUAL(std_result, etl_result.found);
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_matches_std_all_permutations)
+    {
+      std::vector<int> data_std{4, 3, 2, 1};
+      std::vector<int> data_etl = data_std;
+
+      bool complete = false;
+      while (!complete)
+      {
+        bool std_result = std::prev_permutation(data_std.begin(), data_std.end());
+        auto etl_result = etl::ranges::prev_permutation(data_etl);
+
+        CHECK_EQUAL(std_result, etl_result.found);
+        bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+        CHECK(are_equal);
+
+        complete = !std_result;
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_duplicates)
+    {
+      std::vector<int> data_std{2, 2, 1};
+      std::vector<int> data_etl = data_std;
+
+      bool std_result = std::prev_permutation(data_std.begin(), data_std.end());
+      auto etl_result = etl::ranges::prev_permutation(data_etl);
+
+      CHECK_EQUAL(std_result, etl_result.found);
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_prev_permutation_two_elements)
+    {
+      std::vector<int> vec{2, 1};
+      std::vector<int> expected{1, 2};
+
+      auto result = etl::ranges::prev_permutation(vec);
+
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_iterator)
+    {
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> expected{1, 3, 2};
+
+      auto result = etl::ranges::next_permutation(vec.begin(), vec.end());
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_range)
+    {
+      std::vector<int> vec{1, 2, 3};
+      std::vector<int> expected{1, 3, 2};
+
+      auto result = etl::ranges::next_permutation(vec);
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_last_permutation)
+    {
+      // {3, 2, 1} is the last permutation; next should wrap to first and return found=false
+      std::vector<int> vec{3, 2, 1};
+      std::vector<int> expected{1, 2, 3};
+
+      auto result = etl::ranges::next_permutation(vec.begin(), vec.end());
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == false);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_empty)
+    {
+      std::vector<int> vec{};
+
+      auto result = etl::ranges::next_permutation(vec.begin(), vec.end());
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == false);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_single_element)
+    {
+      std::vector<int> vec{42};
+
+      auto result = etl::ranges::next_permutation(vec);
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == false);
+      CHECK_EQUAL(42, vec[0]);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_with_comparator_iterator)
+    {
+      // With greater<>, next_permutation acts like prev_permutation with less<>
+      std::vector<int> vec{3, 2, 1};
+      std::vector<int> expected{3, 1, 2};
+
+      auto result = etl::ranges::next_permutation(vec.begin(), vec.end(), etl::greater<int>{});
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_with_comparator_range)
+    {
+      std::vector<int> vec{3, 2, 1};
+      std::vector<int> expected{3, 1, 2};
+
+      auto result = etl::ranges::next_permutation(vec, etl::greater<int>{});
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_with_projection_iterator)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}};
+
+      auto result = etl::ranges::next_permutation(vec.begin(), vec.end(), etl::ranges::less{},
+                                                   [](const Item& item) { return item.key; });
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(3, vec[1].key);
+      CHECK_EQUAL(2, vec[2].key);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_with_projection_range)
+    {
+      struct Item { int key; int value; };
+      std::vector<Item> vec{{1, 10}, {2, 20}, {3, 30}};
+
+      auto result = etl::ranges::next_permutation(vec, etl::ranges::less{},
+                                                   [](const Item& item) { return item.key; });
+
+      CHECK(result.in == vec.end());
+      CHECK(result.found == true);
+      CHECK_EQUAL(1, vec[0].key);
+      CHECK_EQUAL(3, vec[1].key);
+      CHECK_EQUAL(2, vec[2].key);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_full_cycle)
+    {
+      // Starting from first permutation {1,2,3}, calling next_permutation repeatedly
+      // should visit all 6 permutations and wrap around.
+      std::vector<int> vec{1, 2, 3};
+      int count = 0;
+      bool found = true;
+
+      do
+      {
+        ++count;
+        auto result = etl::ranges::next_permutation(vec);
+        found = result.found;
+      } while (found);
+
+      // 3! = 6 permutations
+      CHECK_EQUAL(6, count);
+      // Should wrap back to {1, 2, 3}
+      std::vector<int> expected{1, 2, 3};
+      CHECK(vec == expected);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_matches_std)
+    {
+      std::vector<int> data_std{1, 2, 3};
+      std::vector<int> data_etl = data_std;
+
+      bool std_result = std::next_permutation(data_std.begin(), data_std.end());
+      auto etl_result = etl::ranges::next_permutation(data_etl);
+
+      CHECK_EQUAL(std_result, etl_result.found);
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_matches_std_all_permutations)
+    {
+      std::vector<int> data_std{1, 2, 3, 4};
+      std::vector<int> data_etl = data_std;
+
+      bool complete = false;
+      while (!complete)
+      {
+        bool std_result = std::next_permutation(data_std.begin(), data_std.end());
+        auto etl_result = etl::ranges::next_permutation(data_etl);
+
+        CHECK_EQUAL(std_result, etl_result.found);
+        bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+        CHECK(are_equal);
+
+        complete = !std_result;
+      }
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_duplicates)
+    {
+      std::vector<int> data_std{1, 2, 2};
+      std::vector<int> data_etl = data_std;
+
+      bool std_result = std::next_permutation(data_std.begin(), data_std.end());
+      auto etl_result = etl::ranges::next_permutation(data_etl);
+
+      CHECK_EQUAL(std_result, etl_result.found);
+      bool are_equal = std::equal(data_std.begin(), data_std.end(), data_etl.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST(ranges_next_permutation_two_elements)
+    {
+      std::vector<int> vec{1, 2};
+      std::vector<int> expected{2, 1};
+
+      auto result = etl::ranges::next_permutation(vec);
+
+      CHECK(result.found == true);
+      CHECK(vec == expected);
+    }
+#endif
   }
 }
+
+
