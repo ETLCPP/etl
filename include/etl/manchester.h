@@ -159,6 +159,30 @@ namespace etl
   }  // namespace private_manchester
 
   //***************************************************************************
+  /// Exception for Manchester.
+  //***************************************************************************
+  class manchester_exception : public etl::exception
+  {
+  public:
+    manchester_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Invalid size exception for Manchester
+  //***************************************************************************
+  class manchester_invalid_size : public etl::manchester_exception
+  {
+  public:
+    manchester_invalid_size(string_type file_name_, numeric_type line_number_)
+      : etl::manchester_exception("manchester:size", file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   ///\ingroup manchester
   /// Base template class for Manchester encoding and decoding.
   ///\tparam TType The Manchester encoding type (normal or inverted).
@@ -262,11 +286,11 @@ namespace etl
     static typename etl::enable_if<!etl::is_same<TChunk, uint_least8_t>::value, void>::type
     encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      typedef TChunk TDecoded;
+      typedef TChunk                                                             TDecoded;
       typedef typename etl::private_manchester::manchester_encoded<TChunk>::type TEncoded;
 
-      ETL_ASSERT(destination.size() >= source.size() * 2, "Manchester encoding requires destination storage to be at least twice the size of the source storage");
-      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, "Manchester encoding requires the source storage size to be an integer multiple of the encoding chunk size");
+      ETL_ASSERT(destination.size() >= source.size() * 2, ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
 
       size_t dest_index = 0;
       size_t source_index = 0;
@@ -290,14 +314,13 @@ namespace etl
     ///\tparam TChunk     The chunk size for encoding (default: uint_least8_t).
     //*************************************************************************
     template <typename TChunk = uint_least8_t>
-    static typename etl::enable_if<etl::is_same<TChunk, uint_least8_t>::value, void>::type
-    constexpr encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    static typename etl::enable_if<etl::is_same<TChunk, uint_least8_t>::value, void>::type constexpr encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      typedef TChunk TDecoded;
+      typedef TChunk                                                             TDecoded;
       typedef typename etl::private_manchester::manchester_encoded<TChunk>::type TEncoded;
 
-      ETL_ASSERT(destination.size() >= source.size() * 2, "Manchester encoding requires destination storage to be at least twice the size of the source storage");
-      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, "Manchester encoding requires the source storage size to be an integer multiple of the encoding chunk size");
+      ETL_ASSERT(destination.size() >= source.size() * 2, ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
 
       size_t dest_index = 0;
       size_t source_index = 0;
@@ -379,7 +402,9 @@ namespace etl
     ///\return The Manchester decoded value.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename private_manchester::manchester_decoded<TChunk>::type decode(TChunk encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14
+      typename private_manchester::manchester_decoded<TChunk>::type
+      decode(TChunk encoded)
     {
       ETL_STATIC_ASSERT(private_manchester::is_decodable<TChunk>::value, "TChunk must be a decodable type");
 
@@ -398,10 +423,10 @@ namespace etl
     ///\return True if the value is valid Manchester encoding.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 bool is_valid(TChunk encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14
+      typename etl::enable_if<private_manchester::is_decodable<TChunk>::value, bool>::type
+      is_valid(TChunk encoded)
     {
-      ETL_STATIC_ASSERT(private_manchester::is_decodable<TChunk>::value, "TChunk must be a decodable type");
-
       const TChunk mask = static_cast<TChunk>(0x5555555555555555ULL);
       return (((encoded ^ (encoded >> 1)) & mask) == mask);
     }
@@ -411,9 +436,9 @@ namespace etl
     ///\param encoded The span of encoded data to validate.
     ///\return True if all data is valid Manchester encoding.
     //*************************************************************************
-    ETL_NODISCARD static ETL_CONSTEXPR14 bool is_valid_span(etl::span<const uint_least8_t> encoded)
+    ETL_NODISCARD static ETL_CONSTEXPR14 bool is_valid(etl::span<const uint_least8_t> encoded)
     {
-      ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, "");
+      ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, ETL_ERROR(manchester_invalid_size));
 
       for (size_t i = 0; i < encoded.size(); i += 2)
       {
@@ -442,10 +467,10 @@ namespace etl
     decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
       typedef typename private_manchester::manchester_decoded<TChunk>::type TDecoded;
-      typedef TChunk TEncoded;
+      typedef TChunk                                                        TEncoded;
 
-      ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
+      ETL_ASSERT(destination.size() * 2 >= source.size(), ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
 
       size_t dest_index = 0;
       size_t source_index = 0;
@@ -474,8 +499,8 @@ namespace etl
     {
       typedef uint_least8_t TDecoded;
 
-      ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
+      ETL_ASSERT(destination.size() * 2 >= source.size(), ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
 
       size_t dest_index = 0;
       size_t source_index = 0;
@@ -498,8 +523,8 @@ namespace etl
     template <typename TChunk = private_manchester::manchester_encoded<uint_least8_t>::type>
     static void decode_span_fast(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
     {
-      ETL_ASSERT(destination.size() * 2 >= source.size(), "Manchester decoding requires destination storage to be no less than half the source storage");
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, "Manchester decoding requires the source storage size to be an integer multiple of the decoding chunk size");
+      ETL_ASSERT(destination.size() * 2 >= source.size(), ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
 
       while (!source.empty())
       {
