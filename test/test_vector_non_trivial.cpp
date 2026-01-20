@@ -964,8 +964,9 @@ namespace
 
       DataNDC data;
       data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-      DataNDC data2;
-      CHECK_THROW(data.insert(data2.cbegin(), INITIAL_VALUE), etl::vector_out_of_bounds);
+      DataNDC::iterator it = data.begin();
+      --it;
+      CHECK_THROW(data.insert(it, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1002,19 +1003,34 @@ namespace
       const std::string INITIAL_VALUE("1");
 
       DataNDC data;
-      DataNDC data2;
       data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-      CHECK_THROW(data.emplace(data2.cbegin(), INITIAL_VALUE), etl::vector_out_of_bounds);
+      DataNDC::const_iterator it = data.cend();
+      ++it;
+      CHECK_THROW(data.emplace(it, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
-    TEST(test_emplace_out_of_range)
+    TEST(test_emplace_out_of_range_past_end)
     {
       DataNDC data;
-      DataNDC data2;
+      DataNDC::iterator it = data.end();
+      ++it;
+
       const std::string INITIAL_VALUE("1");
 
-      CHECK_THROW(data.emplace(data2.end(), INITIAL_VALUE);, etl::vector_out_of_bounds);
+      CHECK_THROW(data.emplace(it, INITIAL_VALUE), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_out_of_range_before_begin)
+    {
+      DataNDC data;
+      DataNDC::iterator it = data.begin();
+      --it;
+
+      const std::string INITIAL_VALUE("1");
+
+      CHECK_THROW(data.emplace(it, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1072,10 +1088,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
     {
       DataNDC data;
-      DataNDC data2;
+      DataNDC::const_iterator it = data.cend();
+      ++it;
       const NDC INITIAL_VALUE("1");
 
-      CHECK_THROW(data.insert(data2.end(), 1, INITIAL_VALUE);, etl::vector_out_of_bounds);
+      CHECK_THROW(data.insert(it, 1, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1163,7 +1180,7 @@ namespace
       DataNDC data;
       DataNDC data2;
 
-      CHECK_THROW(data.insert(data2.end(), insert_data.cbegin(), insert_data.cend());, etl::vector_out_of_bounds);
+      CHECK_THROW(data.insert(data2.end(), insert_data.cbegin(), insert_data.cend()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1190,7 +1207,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.erase(data.end());, etl::vector_out_of_bounds);
+      CHECK_THROW(data.erase(data.end()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -1218,7 +1235,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC data2(initial_data.begin(), initial_data.end());
 
-      CHECK_THROW(data.erase(data2.begin(), data2.end());, etl::vector_out_of_bounds);
+      CHECK_THROW(data.erase(data2.begin(), data2.end()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
