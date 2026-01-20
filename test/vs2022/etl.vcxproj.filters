@@ -1539,6 +1539,9 @@
     <ClInclude Include="..\..\include\etl\inplace_function.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\print.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3769,6 +3772,9 @@
     </ClCompile>
     <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_print.cpp">
+      <Filter>Tests\Strings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

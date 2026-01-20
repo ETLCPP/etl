@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.0)
-project(etl_syntax_check)
+project(etl_syntax_check C CXX)
 
 add_definitions(-DETL_DEBUG)
 
