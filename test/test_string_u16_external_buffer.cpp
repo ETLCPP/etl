@@ -135,6 +135,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_array)
+    {
+      value_t buffer[SIZE + 1];
+      Text text(buffer);
+
+      CHECK_EQUAL(text.size(), size_t(0));
+      CHECK(text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_EQUAL(SIZE, text.max_size());
+      CHECK(text.begin() == text.end());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_and_size)
     {
       size_t length = etl::strlen(p_text);

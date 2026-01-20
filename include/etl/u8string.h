@@ -306,6 +306,17 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Constructor, from array buffer.
+    ///\param buffer The array buffer.
+    //*************************************************************************
+    template <size_t Size>
+    u8string_ext(value_type (&buffer)[Size])
+      : iu8string(buffer, Size - 1U)
+    {
+      this->initialise();
+    }
+
+    //*************************************************************************
     /// Copy constructor.
     ///\param other The other u8string_ext.
     //*************************************************************************

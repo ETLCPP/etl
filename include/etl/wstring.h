@@ -286,6 +286,17 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Constructor, from array buffer.
+    ///\param buffer The array buffer.
+    //*************************************************************************
+    template <size_t Size>
+    wstring_ext(value_type (&buffer)[Size])
+      : iwstring(buffer, Size - 1U)
+    {
+      this->initialise();
+    }
+
+    //*************************************************************************
     /// Copy constructor.
     ///\param other The other wstring_ext.
     //*************************************************************************
