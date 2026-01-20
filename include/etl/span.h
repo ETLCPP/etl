@@ -1258,6 +1258,18 @@ namespace etl
   span(const etl::array<T, Size>&)
     -> span<const T, Size>;
 
+  // Forward declaration of etl::ivector
+  template <typename T>
+  class ivector;
+
+  template<typename T>
+  span(etl::ivector<T>&)
+    -> span<T>;
+  
+  template<typename T>
+  span(const etl::ivector<T>&)
+    -> span<const T>;
+
 #if ETL_USING_STL && ETL_USING_CPP11
   template <typename T, size_t Size>
   span(std::array<T, Size>&)
@@ -1291,7 +1303,7 @@ namespace etl
   span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))> 
     as_bytes(span<T, Size> s) ETL_NOEXCEPT
   {
-    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
+    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<const byte*>(s.data()), s.size_bytes());
   }
 
   //*************************************************************************

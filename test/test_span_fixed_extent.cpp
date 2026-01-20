@@ -1163,12 +1163,13 @@ namespace
     TEST(test_convert_span_any_to_span_byte)
     {
       float data[2]{3.141592f, 2.71828f};
+      const float const_data[2]{3.141592f, 2.71828f};
 
 #if ETL_USING_CPP17
-      auto const const_bytes    = etl::as_bytes(etl::span{ data });
+      auto const const_bytes    = etl::as_bytes(etl::span{ const_data });
       auto const writable_bytes = etl::as_writable_bytes(etl::span{ data });
 #else
-      auto const const_bytes    = etl::as_bytes(etl::span<float, 2>(data));
+      auto const const_bytes    = etl::as_bytes(etl::span<const float, 2>(const_data));
       auto const writable_bytes = etl::as_writable_bytes(etl::span<float, 2>(data));
 #endif
 
