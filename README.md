@@ -1,5 +1,4 @@
-Embedded Template Library (ETL)
--------------------------
+# ![alt text](https://github.com/ETLCPP/etl/blob/master/images/etl64.png?raw=true) Embedded Template Library (ETL)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
 [![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)
