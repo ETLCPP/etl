@@ -57,6 +57,7 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 #include "utility.h"
+#include "type_list.h"
 
 namespace etl
 {
@@ -336,6 +337,19 @@ namespace etl
     virtual ~observer() = default;
 
     virtual void notification() = 0;
+  };
+
+  //*****************************************************************
+  /// The observer class for N types.
+  /// Configured from a type list.
+  ///\ingroup observer
+  //*****************************************************************
+  template <typename... TTypes>
+  class observer<etl::type_list<TTypes...>> : public observer<TTypes...>
+  {
+  public:
+
+    using observer<TTypes...>::notification;
   };
 
 #else
