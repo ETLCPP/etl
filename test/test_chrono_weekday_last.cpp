@@ -59,7 +59,6 @@ namespace
     //*************************************************************************
     TEST(test_constructor_in_range)
     {
-      for (unsigned i = 1U; i < 5U; ++i)
       {
         Chrono::weekday_last weekday_last_monday(Chrono::Monday);
         Chrono::weekday_last weekday_last_tuesday(Chrono::Tuesday);

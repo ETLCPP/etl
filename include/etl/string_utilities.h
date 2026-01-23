@@ -782,9 +782,9 @@ namespace etl
     etl::optional<string_view_t> token;
 
     size_t count = 0;
-    while ((count != output.max_size()) &&
-           (count != max_n_tokens) &&
-           (token = etl::get_token(input, delimiters, token, ignore_empty_tokens)))
+    while ((token = etl::get_token(input, delimiters, token, ignore_empty_tokens)) &&
+           (count != output.max_size()) &&
+           (count != max_n_tokens))
     {
       output.push_back(token.value());
       ++count;

@@ -756,5 +756,67 @@ namespace
       CHECK_EQUAL(etl::get<2>(tp), s);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_assign_from_lvalue_pair)
+    {
+      ETL_OR_STD::pair<int, Data> p(1, Data("2"));
+
+      etl::tuple<int, Data> tp(0, Data(""));
+
+      tp = p;
+
+      int  i = etl::get<0>(tp);
+      Data d = etl::get<1>(tp);
+
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(std::string("2"), d.value);
+    }
+
+    //*************************************************************************
+    TEST(test_assign_from_const_lvalue_pair)
+    {
+      const ETL_OR_STD::pair<int, Data> p(1, Data("2"));
+
+      etl::tuple<int, Data> tp(0, Data(""));
+
+      tp = p;
+
+      int  i = etl::get<0>(tp);
+      Data d = etl::get<1>(tp);
+
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(std::string("2"), d.value);
+    }
+
+    //*************************************************************************
+    TEST(test_assign_from_rvalue_pair)
+    {
+      etl::tuple<int, Data> tp(0, Data(""));
+
+      tp = ETL_OR_STD::pair<int, Data>(1, Data("2"));
+
+      int  i = etl::get<0>(tp);
+      Data d = etl::get<1>(tp);
+
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(std::string("2"), d.value);
+    }
+
+    //*************************************************************************
+    TEST(test_assign_from_const_rvalue_pair)
+    {
+      const ETL_OR_STD::pair<int, Data> p(1, Data("2"));
+
+      etl::tuple<int, Data> tp(0, Data(""));
+
+      tp = static_cast<const ETL_OR_STD::pair<int, Data>&&>(p);
+
+      int  i = etl::get<0>(tp);
+      Data d = etl::get<1>(tp);
+
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(std::string("2"), d.value);
+    }
   }
 }
