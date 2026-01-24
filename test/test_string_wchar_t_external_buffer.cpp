@@ -138,6 +138,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_from_array)
+    {
+      value_t buffer[SIZE + 1];
+      Text text(buffer);
+
+      CHECK_EQUAL(text.size(), size_t(0));
+      CHECK(text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_EQUAL(SIZE, text.max_size());
+      CHECK(text.begin() == text.end());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_and_size)
     {
       size_t length = etl::strlen(p_text);
@@ -189,6 +203,114 @@ namespace
       CHECK(text.begin() != text.end());
       CHECK_FALSE(text.is_truncated());
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_array_buffer_text_same_buffer)
+    {
+      // Test using the same buffer for source and storage, with size deduced from array
+      Text text(array_text, array_text);
+
+      CHECK_EQUAL(text.size(), etl::strlen(array_text));
+      CHECK(!text.empty());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.max_size());
+      CHECK(text.begin() != text.end());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_istring_with_array_buffer)
+    {
+      value_t buffer[SIZE + 1];
+      TextBuffer source_buffer{0};
+      Text source(initial_text.c_str(), source_buffer.data(), source_buffer.size());
+
+      Text text(source, buffer);
+
+      CHECK_EQUAL(text.size(), initial_text.size());
+      CHECK(!text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_EQUAL(SIZE, text.max_size());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_text_count_with_array_buffer)
+    {
+      value_t buffer[SIZE + 1];
+
+      Text text(initial_text.c_str(), 5U, buffer);
+
+      CHECK_EQUAL(5U, text.size());
+      CHECK(!text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_size_value_with_array_buffer)
+    {
+      const size_t  INITIAL_SIZE = 5UL;
+      const value_t INITIAL_VALUE = STR('A');
+      value_t       buffer[SIZE + 1];
+
+      TextSTD compare_text(INITIAL_SIZE, INITIAL_VALUE);
+      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer);
+
+      CHECK_EQUAL(INITIAL_SIZE, text.size());
+      CHECK(!text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_FALSE(text.is_truncated());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_string_view_with_array_buffer)
+    {
+      value_t buffer[SIZE + 1];
+      View view(initial_text.c_str());
+
+      Text text(view, buffer);
+
+      CHECK_EQUAL(view.size(), text.size());
+      CHECK(!text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_FALSE(text.is_truncated());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_iterator_range_with_array_buffer)
+    {
+      value_t buffer[SIZE + 1];
+      TextSTD compare_text(initial_text.begin(), initial_text.end());
+
+      Text text(initial_text.begin(), initial_text.end(), buffer);
+
+      CHECK_EQUAL(initial_text.size(), text.size());
+      CHECK(!text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_FALSE(text.is_truncated());
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+    }
+
+#if ETL_HAS_INITIALIZER_LIST
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constructor_initializer_list_with_array_buffer)
+    {
+      value_t buffer[SIZE + 1];
+
+      Text text({ STR('H'), STR('e'), STR('l'), STR('l'), STR('o') }, buffer);
+
+      CHECK_EQUAL(5U, text.size());
+      CHECK(!text.empty());
+      CHECK_EQUAL(SIZE, text.capacity());
+      CHECK_FALSE(text.is_truncated());
+    }
+#endif
 
     //*************************************************************************
     TEST(test_iterator_comparison_empty)
