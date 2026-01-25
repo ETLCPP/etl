@@ -462,6 +462,45 @@ namespace
 
       test_variant_t variant_etl;
 
+      CHECK_TRUE((std::is_same<test_variant_t::type_list, etl::type_list<DefaultConstructible, int, std::string>>::value));
+
+      CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<std::string>(variant_etl));
+      CHECK_EQUAL(1, etl::get<0U>(variant_etl).value);
+
+      CHECK_TRUE(etl::holds_alternative<0U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<1U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<2U>(variant_etl));
+
+      CHECK_TRUE(etl::holds_alternative(0U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(1U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(2U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(99U, variant_etl));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_default_variant_from_type_list)
+    {
+      struct DefaultConstructible
+      {
+        DefaultConstructible()
+          : value(1)
+        {
+        }
+
+        int value = 0;
+      };
+
+      using variant_types  = etl::type_list<DefaultConstructible, int, std::string>;
+      using test_variant_t = etl::variant<variant_types>;
+
+      CHECK_NO_THROW(test_variant_t variant_etl);
+
+      test_variant_t variant_etl;
+
+      CHECK_TRUE((std::is_same<test_variant_t::type_list, variant_types>::value));
+
       CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
       CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
       CHECK_FALSE(etl::holds_alternative<std::string>(variant_etl));
