@@ -1228,7 +1228,7 @@ namespace etl
 
     using base_type  = etl::variant<TTypes...>;
     using type_list  = typename base_type::type_list;
-    using base_type::base_type; // inherit all ctors
+    using base_type::base_type; // Inherit all ctors
   };
 
   //***************************************************************************
