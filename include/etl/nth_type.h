@@ -58,14 +58,16 @@ namespace etl
   {
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::nth_type index 'Index' out of bounds");
 
-    using type = typename private_nth_type::nth_type_helper<Index, TTypes...>::type;
+    using type      = typename private_nth_type::nth_type_helper<Index, TTypes...>::type;
+    using type_list = etl::type_list<TTypes...>;
   };
 
   //***********************************
   template <size_t Index, typename... TTypes>
-  struct nth_type<Index, etl::type_list<TTypes...>> : public nth_type<Index, TTypes...>
+  struct nth_type<Index, etl::type_list<TTypes...>>
   {
-    using typename nth_type<Index, TTypes...>::type;
+    using type      = typename nth_type<Index, TTypes...>::type;
+    using type_list = typename nth_type<Index, TTypes...>::type_list;
   };
 
   //***********************************

@@ -309,6 +309,7 @@ namespace etl
 
     using observer<T1>::notification;
     using observer<TRest...>::notification;
+    using type_list = etl::type_list<T1, TRest...>;
   };
 
   //*****************************************************************
@@ -323,6 +324,8 @@ namespace etl
     virtual ~observer() = default;
 
     virtual void notification(T1) = 0;
+
+    using type_list = etl::type_list<T1>;
   };
 
   //*****************************************************************
@@ -337,6 +340,8 @@ namespace etl
     virtual ~observer() = default;
 
     virtual void notification() = 0;
+
+    using type_list = etl::type_list<>;
   };
 
   //*****************************************************************
@@ -350,6 +355,7 @@ namespace etl
   public:
 
     using observer<TTypes...>::notification;
+    using type_list = etl::type_list<TTypes...>;
   };
 
 #else
