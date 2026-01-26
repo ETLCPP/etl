@@ -59,6 +59,7 @@ SOFTWARE.
 #include "largest.h"
 #include "alignment.h"
 #include "utility.h"
+#include "type_list.h"
 
 #include <stdint.h>
 
@@ -84,6 +85,8 @@ namespace etl
     static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
 
   public:
+
+    using message_types = etl::type_list<TMessageTypes...>;
 
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
@@ -380,6 +383,18 @@ namespace etl
     bool valid;
   };
 
+  //***************************************************************************
+  // The definition for all message types.
+  //***************************************************************************
+  template <typename... TMessageTypes>
+  class message_packet<etl::type_list<TMessageTypes...>> : public etl::message_packet<TMessageTypes...>
+  {
+  public:
+
+    using base_type = etl::message_packet<TMessageTypes...>;
+    using base_type::base_type; // Inherit all ctors
+  };
+
 #else
 
   //***************************************************************************
@@ -392,6 +407,10 @@ namespace etl
   class message_packet
   {
   public:
+
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>;
+#endif
 
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
@@ -717,6 +736,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -1039,6 +1062,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -1358,6 +1385,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -1673,6 +1704,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -1982,6 +2017,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -2288,6 +2327,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -2591,6 +2634,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -2890,6 +2937,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -3183,6 +3234,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -3473,6 +3528,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5, T6>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -3760,6 +3819,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4, T5>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -4043,6 +4106,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3, T4>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -4320,6 +4387,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2, T3>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -4594,6 +4665,10 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1, T2>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -4865,6 +4940,14 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT(!etl::is_type_list<T1>::value,
+                      "T1 must not be an etl::type_list. "
+                      "Use etl::message_packet<etl::type_list<...>> only with the C++17 variadic overload.");
+
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<T1>;
+#endif
+
     //********************************************
   #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -5122,6 +5205,63 @@ namespace etl
   #endif
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 0 message types.
+  //***************************************************************************
+  template <>
+  class message_packet<void, void, void, void, void, void, void, void,
+                       void, void, void, void, void, void, void, void>
+  {
+  public:
+
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<>;
+#endif
+
+    message_packet() 
+      : valid(false) 
+    {
+    }
+
+    static ETL_CONSTEXPR bool accepts(etl::message_id_t) 
+    { 
+      return false; 
+    }
+
+    static ETL_CONSTEXPR bool accepts(const etl::imessage&) 
+    { 
+      return false; 
+    }
+
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts() 
+    { 
+      ETL_UNUSED(Id); 
+      return false; 
+    }
+
+    template <typename TMessage>
+    static ETL_CONSTEXPR typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type accepts()
+    {
+      return false;
+    }
+
+    bool is_valid() const 
+    { 
+      return valid; 
+    }
+
+    enum
+    {
+      SIZE = 0U,
+      ALIGNMENT = 1U
+    };
+
+  private:
+
     bool valid;
   };
 #endif
