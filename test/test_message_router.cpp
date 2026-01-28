@@ -137,9 +137,12 @@ namespace
   // Router that handles messages 1, 2, 3, 4 and 5 and returns nothing.
   // Created from a type list.
   //***************************************************************************
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   using Router1Messages = etl::type_list<Message1, Message2, Message3, Message4, Message5>;
-
   class Router1 : public etl::message_router_from_type_list_t<Router1, Router1Messages>
+#else
+  class Router1 : public etl::message_router<Router1, Message1, Message2, Message3, Message4, Message5>
+#endif
   {
   public:
 
@@ -350,12 +353,12 @@ namespace
       Router1 r1;
       Router2 r2;
 
-      p_router = &r1;
-
       Message1 message1(r2);
       Message2 message2(r2);
       Message3 message3(r2);
       Message4 message4(r2);
+
+      p_router = &r1;
 
       CHECK(!r1.is_null_router());
       CHECK(r1.is_producer());

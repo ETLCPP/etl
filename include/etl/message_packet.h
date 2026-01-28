@@ -389,7 +389,6 @@ namespace etl
   template <>
   class message_packet<>
   {
-
   private:
 
     //template <typename T>
@@ -413,30 +412,30 @@ namespace etl
 #include "private/diagnostic_pop.h"
 
     //**********************************************
-    message_packet(const message_packet& other)
+    message_packet(const message_packet& /*other*/)
     {
     }
 
 #if ETL_USING_CPP11
     //**********************************************
-    message_packet(message_packet&& other)
+    message_packet(message_packet&& /*other*/)
     {
     }
 #endif
 
     //**********************************************
-    void copy(const message_packet& other)
+    void copy(const message_packet& /*other*/)
     {
     }
 
     //**********************************************
-    void copy(message_packet&& other)
+    void copy(message_packet&& /*other*/)
     {
     }
 
     //**********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    message_packet& operator =(const message_packet& rhs)
+    message_packet& operator =(const message_packet& /*rhs*/)
     {
       return *this;
     }
@@ -444,7 +443,7 @@ namespace etl
 
     //**********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    message_packet& operator =(message_packet&& rhs)
+    message_packet& operator =(message_packet&& /*rhs*/)
     {
       return *this;
     }
@@ -462,13 +461,13 @@ namespace etl
     }
 
     //**********************************************
-    static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
+    static ETL_CONSTEXPR bool accepts(etl::message_id_t /*id*/)
     {
       return false;
     }
 
     //**********************************************
-    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& /*msg*/)
     {
       return false;
     }
@@ -486,7 +485,7 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      false;
+      return false;
     }
 
     enum
@@ -515,7 +514,7 @@ namespace etl
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
-  template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
+  template <typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
             typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
             typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
@@ -5353,7 +5352,7 @@ namespace etl
     template <etl::message_id_t Id>
     static ETL_CONSTEXPR bool accepts()
     {
-      ETL_UNUSED(Id);
+      //ETL_UNUSED(Id);
       return false;
     }
 
