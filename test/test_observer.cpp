@@ -78,8 +78,8 @@ namespace
   // The Notification2 is passed by reference.
   // The Notification3 is passed by const reference.
   //*****************************************************************************
-  using NotificationList         = etl::type_list<Notification1, Notification2&, const Notification3&>;
-  using ObserverTypeFromTypeList = etl::observer<NotificationList>;
+  using NotificationList     = etl::type_list<Notification1, Notification2&, const Notification3&>;
+  using ObserverFromTypeList = etl::observer_from_type_list_t<NotificationList>;
 #endif
 
   //*****************************************************************************
@@ -131,7 +131,7 @@ public:
 //*****************************************************************************
 // The concrete observable 3 class.
 //*****************************************************************************
-class Observable3 : public etl::observable<ObserverTypeFromTypeList, 2>
+class Observable3 : public etl::observable<ObserverFromTypeList, 2>
 {
 public:
 
@@ -270,7 +270,7 @@ public:
 // If any one of the overloads is missing or a parameter declaration is incorrect
 // then the class will be 'abstract' and will not compile.
 //*****************************************************************************
-class Observer3 : public ObserverTypeFromTypeList
+class Observer3 : public ObserverFromTypeList
 {
 public:
 
