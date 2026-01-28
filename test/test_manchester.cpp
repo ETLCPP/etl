@@ -230,12 +230,14 @@ TEST(decode_uint64_t_inverted)
 #endif
 }
 
+#if ETL_USING_CPP14
 constexpr etl::array<uint8_t, 4> manchester_decoded(etl::span<const uint_least8_t> encoded)
 {
   etl::array<uint8_t, 4> decoded{0, 0, 0, 0};
   etl::manchester::decode(encoded, decoded);
   return decoded;
 }
+#endif
 
 TEST(decode_span)
 {
