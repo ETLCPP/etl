@@ -418,18 +418,28 @@ namespace etl
     message_router()
       : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
     {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived, TMessageTypes...>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived, TMessageTypes...>");
     }
 
     //**********************************************
     message_router(etl::imessage_router& successor_)
       : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
     {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived, TMessageTypes...>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived, TMessageTypes...>");
     }
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
     {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived, TMessageTypes...>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived, TMessageTypes...>");
+
       ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
@@ -437,6 +447,10 @@ namespace etl
     message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
       : imessage_router(id_, successor_)
     {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived, TMessageTypes...>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived, TMessageTypes...>");
+
       ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
@@ -548,6 +562,106 @@ namespace etl
           return false;
         }
       }
+    }
+  };
+
+  //***************************************************************************
+  // The definition for all message types.
+  //***************************************************************************
+  template <typename TDerived>
+  class message_router<TDerived> : public imessage_router
+  {
+  public:
+
+    using message_packet = etl::message_packet<>;
+    using message_types  = etl::type_list<>;
+
+    //**********************************************
+    message_router()
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
+    {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived>");
+    }
+
+    //**********************************************
+    message_router(etl::imessage_router& successor_)
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
+    {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived>");
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived>");
+
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      // CRTP validation: Derived must inherit from this exact specialization.
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::message_router<TDerived>, TDerived>::value),
+                        "Mismatch in derived type: TDerived does not inherit from etl::message_router<TDerived>");
+
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    using etl::imessage_router::receive;
+
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
+    {
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
+    }
+
+    template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
+    void receive(const TMessage& msg)
+    {
+#include "etl/private/diagnostic_array_bounds_push.h"
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
+#include "etl/private/diagnostic_pop.h"
+    }
+
+    //**********************************************
+    using imessage_router::accepts;
+
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
     }
   };
 
