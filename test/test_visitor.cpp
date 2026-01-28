@@ -746,6 +746,19 @@ namespace
       CHECK_FALSE(etl::is_visitor<NotVisitor>::value);
 #endif
     }
+
+#if !defined(ETL_VISITOR_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_visitable_from_type_list)
+    {
+      using Visitable1 = etl::visitable<DrawVisitorType, LogVisitorType>;
+
+      using TypeList   = etl::type_list<DrawVisitorType, LogVisitorType>;
+      using Visitable2 = etl::visitable_from_type_list_t<TypeList>;
+
+      CHECK_TRUE((std::is_same<Visitable1, Visitable2>::value));
+    }
+#endif
   }
 }
 

@@ -84,22 +84,19 @@ namespace etl
     virtual void accept(T1&) = 0;
   };
 
-  //*****************************************************************
-  /// The visitable class for an etl::type_list.
-  /// Expands the type_list into the existing variadic visitable.
-  ///\ingroup visitor
-  //*****************************************************************
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::visitable<TTypes...>
+  template <typename TList>
+  struct visitable_from_type_list;
+
   template <typename... TTypes>
-  class visitable<etl::type_list<TTypes...>> : public visitable<TTypes...>
+  struct visitable_from_type_list<etl::type_list<TTypes...>>
   {
-    ETL_STATIC_ASSERT(sizeof...(TTypes) != 0, "etl::type_list must not be empty");
-
-  public:
-
-    using type_list = etl::type_list<TTypes...>;
-
-    using visitable<TTypes...>::accept;
+    using type = etl::visitable<TTypes...>;
   };
+
+  template <typename TTypeList>
+  using visitable_from_type_list_t = typename visitable_from_type_list<TTypeList>::type;
 
 #else
 
