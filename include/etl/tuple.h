@@ -132,7 +132,7 @@ namespace etl
     using value_type          = void;                        ///< The type contained by this tuple.
     using this_type           = tuple<>;                     ///< The type of this tuple.
     using base_type           = void;                        ///< The type of the base tuple.
-    using type_list           = etl::type_list<>;                      ///< The type list for this tuple.
+    using type_list           = etl::type_list<>;            ///< The type list for this tuple.
     using index_sequence_type = etl::make_index_sequence<0>; ///< The index_sequence type for this tuple.
 
     //*********************************
@@ -1276,6 +1276,20 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::tuple<TTypes...>
+  template <typename TList>
+  struct tuple_from_type_list;
+
+  template <typename... TTypes>
+  struct tuple_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::tuple<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using tuple_from_type_list_t = typename tuple_from_type_list<TTypeList>::type;
 }
 
 namespace std

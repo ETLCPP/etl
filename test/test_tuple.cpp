@@ -105,6 +105,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_tuple_from_type_list)
+    {
+      using TypeList        = etl::type_list<int, double, int, Data>;
+      using TupleFromTypeList = etl::tuple_from_type_list_t<TypeList>;
+      using Tuple             = etl::tuple<int, double, int, Data>;
+
+      CHECK_TRUE((std::is_same<Tuple,    TupleFromTypeList>::value));
+      CHECK_TRUE((std::is_same<TypeList, TupleFromTypeList::type_list>::value));
+    }
+
+    //*************************************************************************
     TEST(test_tuple_type_list)
     {
       using Tuple = etl::tuple<int, double, int, Data>;
