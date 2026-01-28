@@ -68,12 +68,24 @@ namespace
   // The Notification2 is passed by reference.
   // The Notification3 is passed by const reference.
   //*****************************************************************************
-  typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
+  using ObserverType = etl::observer<Notification1, Notification2&, const Notification3&>;
+
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+  //*****************************************************************************
+  // The observer base type.
+  // Declare what notifications you want to observe and how they are passed to 'notification'.
+  // The Notification1 is passed by value.
+  // The Notification2 is passed by reference.
+  // The Notification3 is passed by const reference.
+  //*****************************************************************************
+  using NotificationList     = etl::type_list<Notification1, Notification2&, const Notification3&>;
+  using ObserverFromTypeList = etl::observer_from_type_list_t<NotificationList>;
+#endif
 
   //*****************************************************************************
   // The observer base type that does not take a notification type.
   //*****************************************************************************
-  typedef etl::observer<void, int> ObserverVoidIntType;
+  using ObserverVoidIntType = etl::observer<void, int>;
 }
 
 //*****************************************************************************
@@ -114,6 +126,29 @@ public:
     notify_observers(data3);
 	}
 };
+
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+//*****************************************************************************
+// The concrete observable 3 class.
+//*****************************************************************************
+class Observable3 : public etl::observable<ObserverFromTypeList, 2>
+{
+public:
+
+  Notification1 data1;
+  Notification2 data2;
+  Notification1& data3 = data1;
+
+  //*********************************
+  // Notify all of the observers.
+  //*********************************
+  void send_notifications()
+  {
+    notify_observers(data3);
+    notify_observers(data2);
+  }
+};
+#endif
 
 //*****************************************************************************
 // The concrete observable 3 class.
@@ -228,6 +263,53 @@ public:
   int data2_count;
   int data3_count;
 };
+
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+//*****************************************************************************
+// The third observer type.
+// If any one of the overloads is missing or a parameter declaration is incorrect
+// then the class will be 'abstract' and will not compile.
+//*****************************************************************************
+class Observer3 : public ObserverFromTypeList
+{
+public:
+
+  Observer3()
+    : data1_count(0)
+    , data2_count(0)
+    , data3_count(0)
+  {
+  }
+
+  //*******************************************
+  // Notification1 is passed by value.
+  //*******************************************
+  void notification(Notification1 /*data1*/)
+  {
+    ++data1_count;
+  }
+
+  //*******************************************
+  // Notification2 is passed by reference.
+  //*******************************************
+  void notification(Notification2& /*data2*/)
+  {
+    ++data2_count;
+  }
+
+  //*******************************************
+  // Notification3 is passed by const reference.
+  //*******************************************
+  void notification(const Notification3& /*data3*/)
+  {
+    ++data3_count;
+  }
+
+  int data1_count;
+  int data2_count;
+  int data3_count;
+};
+#endif
 
 //*****************************************************************************
 // The third observer type.
@@ -398,6 +480,27 @@ namespace
       CHECK_EQUAL(3, observer1.data1_count);
       CHECK_EQUAL(3, observer2.data1_count);
     }
+
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_observer_created_from_a_type_list)
+    {
+      // The observable objects.
+      Observable3 observable3;
+
+      // The observer objects.
+      Observer3 observer3;
+
+      observable3.add_observer(observer3);
+
+      // Send the notifications.
+      observable3.send_notifications(); // Updates data1 & data2.
+
+      CHECK_EQUAL(1, observer3.data1_count);
+      CHECK_EQUAL(1, observer3.data2_count);
+      CHECK_EQUAL(0, observer3.data3_count);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_8_notifications)
