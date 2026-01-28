@@ -552,15 +552,18 @@ namespace etl
   };
 
   //***************************************************************************
-  // The definition for all message types defined by a type_list.
-  //***************************************************************************
-  template <typename TDerived, typename... TMessageTypes>
-  class message_router<TDerived, etl::type_list<TMessageTypes...>> : public message_router<TDerived, TMessageTypes...>
-  {
-    public:
+  /// Helper to turn etl::type_list<TTypes...> into etl::tuple<TTypes...>
+  template <typename TDerived, typename TList>
+  struct message_router_from_type_list;
 
-    using message_router<TDerived, TMessageTypes...>::message_router;
+  template <typename TDerived, typename... TMessageTypes>
+  struct message_router_from_type_list<TDerived, etl::type_list<TMessageTypes...>>
+  {
+    using type = etl::message_router<TDerived, TMessageTypes...>;
   };
+
+  template <typename TDerived, typename TTypeList>
+  using message_router_from_type_list_t = typename message_router_from_type_list<TDerived, TTypeList>::type;
 
   #else
 //*************************************************************************************************
