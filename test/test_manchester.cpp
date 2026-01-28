@@ -379,4 +379,3 @@ TEST(valid_span_on_invalid_source)
   CHECK_THROW({ std::ignore = etl::manchester::is_valid(invalid_source); }, etl::manchester_invalid_size);
 }
 }
-;
