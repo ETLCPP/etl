@@ -85,23 +85,23 @@ namespace etl
     ///\tparam T The decoded type.
     //*************************************************************************
     template <typename T>
-    struct manchester_encoded
+    struct encoded
     {
       ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
     };
 
     template <>
-    struct manchester_encoded<uint8_t>
+    struct encoded<uint8_t>
     {
       typedef uint16_t type;
     };
     template <>
-    struct manchester_encoded<uint16_t>
+    struct encoded<uint16_t>
     {
       typedef uint32_t type;
     };
     template <>
-    struct manchester_encoded<uint32_t>
+    struct encoded<uint32_t>
     {
       typedef uint64_t type;
     };
@@ -112,23 +112,23 @@ namespace etl
     ///\tparam T The encoded type.
     //*************************************************************************
     template <typename T>
-    struct manchester_decoded
+    struct decoded
     {
       ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
     };
 
     template <>
-    struct manchester_decoded<uint16_t>
+    struct decoded<uint16_t>
     {
       typedef uint8_t type;
     };
     template <>
-    struct manchester_decoded<uint32_t>
+    struct decoded<uint32_t>
     {
       typedef uint16_t type;
     };
     template <>
-    struct manchester_decoded<uint64_t>
+    struct decoded<uint64_t>
     {
       typedef uint32_t type;
     };
@@ -202,51 +202,60 @@ namespace etl
 
 #if ETL_USING_8BIT_TYPES
     //*************************************************************************
-    /// Encode a uint8_t value in place to a uint16_t.
+    /// Encode a 8-bit unsigned value and return 16-bit result.
     ///\param decoded The value to encode.
-    ///\param encoded The encoded value.
+    ///\return The Manchester encoded value.
     //*************************************************************************
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint8_t>::value, void>::type
-    encode_in_place(TChunk decoded, uint16_t& encoded)
+    template <typename TDecoded>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TDecoded, uint8_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
+    encode(TDecoded decoded)
     {
-      encoded = decoded;
+      typedef typename private_manchester::encoded<TDecoded>::type TEncoded;
+
+      TEncoded encoded = decoded;
 
       encoded = (encoded | (encoded << 4U)) & 0x0F0FU;
       encoded = (encoded | (encoded << 2U)) & 0x3333U;
       encoded = (encoded | (encoded << 1U)) & 0x5555U;
-      encoded = (encoded | (encoded << 1U)) ^ (0xAAAAU ^ static_cast<uint16_t>(TManchesterType::inversion_mask));
+      encoded = (encoded | (encoded << 1U)) ^ (0xAAAAU ^ static_cast<TEncoded>(TManchesterType::inversion_mask));
+      return encoded;
     }
 #endif
 
     //*************************************************************************
-    /// Encode a uint16_t value in place to a uint32_t.
+    /// Encode a 16-bit unsigned value and return the 32-bit result.
     ///\param decoded The value to encode.
-    ///\param encoded The encoded value.
+    ///\return The Manchester encoded value.
     //*************************************************************************
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, void>::type
-    encode_in_place(TChunk decoded, uint32_t& encoded)
+    template <typename TDecoded>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TDecoded, uint16_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
+    encode(TDecoded decoded)
     {
-      encoded = decoded;
+      typedef typename private_manchester::encoded<TDecoded>::type TEncoded;
+
+      TEncoded encoded = decoded;
 
       encoded = (encoded | (encoded << 8U)) & 0x00FF00FFUL;
       encoded = (encoded | (encoded << 4U)) & 0x0F0F0F0FUL;
       encoded = (encoded | (encoded << 2U)) & 0x33333333UL;
       encoded = (encoded | (encoded << 1U)) & 0x55555555UL;
-      encoded = (encoded | (encoded << 1U)) ^ (0xAAAAAAAAUL ^ static_cast<uint32_t>(TManchesterType::inversion_mask));
+      encoded = (encoded | (encoded << 1U)) ^ (0xAAAAAAAAUL ^ static_cast<TEncoded>(TManchesterType::inversion_mask));
+      return encoded;
     }
 
+#if ETL_USING_64BIT_TYPES
     //*************************************************************************
-    /// Encode a uint32_t value in place to a uint64_t.
+    /// Encode a 32-bit unsigned value and return the 64-bit result.
     ///\param decoded The value to encode.
-    ///\param encoded The encoded value.
+    ///\return The Manchester encoded value.
     //*************************************************************************
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, void>::type
-    encode_in_place(TChunk decoded, uint64_t& encoded)
+    template <typename TDecoded>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TDecoded, uint32_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
+    encode(TDecoded decoded)
     {
-      encoded = decoded;
+      typedef typename private_manchester::encoded<TDecoded>::type TEncoded;
+
+      TEncoded encoded = decoded;
 
       encoded = (encoded | (encoded << 16U)) & 0x0000FFFF0000FFFFULL;
       encoded = (encoded | (encoded << 8U)) & 0x00FF00FF00FF00FFULL;
@@ -254,27 +263,9 @@ namespace etl
       encoded = (encoded | (encoded << 2U)) & 0x3333333333333333ULL;
       encoded = (encoded | (encoded << 1U)) & 0x5555555555555555ULL;
       encoded = (encoded | (encoded << 1U)) ^ (0xAAAAAAAAAAAAAAAAULL ^ TManchesterType::inversion_mask);
-    }
-#endif
-
-    template <typename TChunk>
-    static typename etl::enable_if<!private_manchester::is_encodable<TChunk>::value, void>::type
-    encode_in_place(TChunk decoded, typename private_manchester::manchester_encoded<TChunk>::type& encoded) ETL_DELETE;
-
-    //*************************************************************************
-    /// Encode a value and return the Manchester encoded result.
-    ///\param decoded The value to encode.
-    ///\return The Manchester encoded value.
-    //*************************************************************************
-    template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14 typename private_manchester::manchester_encoded<TChunk>::type encode(TChunk decoded)
-    {
-      ETL_STATIC_ASSERT(private_manchester::is_encodable<TChunk>::value, "TChunk must be an encodable type");
-
-      typename private_manchester::manchester_encoded<TChunk>::type encoded = 0;
-      encode_in_place(decoded, encoded);
       return encoded;
     }
+#endif
 
     //*************************************************************************
     /// Encode a span of data with the selected chunk size.
@@ -284,22 +275,22 @@ namespace etl
     //*************************************************************************
     template <typename TChunk>
     static typename etl::enable_if<!etl::is_same<TChunk, uint_least8_t>::value, void>::type
-    encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    encode(etl::span<const uint_least8_t> decoded, etl::span<uint_least8_t> encoded)
     {
-      typedef TChunk                                                             TDecoded;
-      typedef typename etl::private_manchester::manchester_encoded<TChunk>::type TEncoded;
+      typedef TChunk                                                  TDecoded;
+      typedef typename etl::private_manchester::encoded<TChunk>::type TEncoded;
 
-      ETL_ASSERT(destination.size() >= source.size() * 2, ETL_ERROR(manchester_invalid_size));
-      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(encoded.size() >= decoded.size() * 2, ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(decoded.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
 
       size_t dest_index = 0;
       size_t source_index = 0;
-      for (size_t i = 0; i < source.size() / sizeof(TDecoded); ++i)
+      for (size_t i = 0; i < decoded.size() / sizeof(TDecoded); ++i)
       {
         TDecoded decoded_value = 0;
-        memcpy(&decoded_value, &source[source_index], sizeof(TDecoded));
+        memcpy(&decoded_value, &decoded[source_index], sizeof(TDecoded));
         const TEncoded encoded_value = encode(decoded_value);
-        memcpy(&destination[dest_index], &encoded_value, sizeof(TEncoded));
+        memcpy(&encoded[dest_index], &encoded_value, sizeof(TEncoded));
 
         source_index += sizeof(TDecoded);
         dest_index += sizeof(TEncoded);
@@ -314,21 +305,21 @@ namespace etl
     ///\tparam TChunk     The chunk size for encoding (default: uint_least8_t).
     //*************************************************************************
     template <typename TChunk = uint_least8_t>
-    static typename etl::enable_if<etl::is_same<TChunk, uint_least8_t>::value, void>::type constexpr encode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint_least8_t>::value, void>::type encode(etl::span<const uint_least8_t> decoded, etl::span<uint_least8_t> encoded)
     {
-      typedef TChunk                                                             TDecoded;
-      typedef typename etl::private_manchester::manchester_encoded<TChunk>::type TEncoded;
+      typedef TChunk                                                  TDecoded;
+      typedef typename etl::private_manchester::encoded<TChunk>::type TEncoded;
 
-      ETL_ASSERT(destination.size() >= source.size() * 2, ETL_ERROR(manchester_invalid_size));
-      ETL_ASSERT(source.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(encoded.size() >= decoded.size() * 2, ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(decoded.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
 
       size_t dest_index = 0;
       size_t source_index = 0;
-      for (size_t i = 0; i < source.size() / sizeof(TDecoded); ++i)
+      for (size_t i = 0; i < decoded.size() / sizeof(TDecoded); ++i)
       {
-        const TEncoded encoded_value = encode(source[source_index]);
-        destination[dest_index] = static_cast<uint_least8_t>(encoded_value);
-        destination[dest_index + 1] = static_cast<uint_least8_t>(encoded_value >> CHAR_BIT);
+        const TEncoded encoded_value = encode(decoded[source_index]);
+        encoded[dest_index] = static_cast<uint_least8_t>(encoded_value);
+        encoded[dest_index + 1] = static_cast<uint_least8_t>(encoded_value >> CHAR_BIT);
 
         source_index += sizeof(TDecoded);
         dest_index += sizeof(TEncoded);
@@ -340,77 +331,119 @@ namespace etl
     //*************************************************************************
 
 #if ETL_USING_8BIT_TYPES
-#if ETL_USING_8BIT_TYPES
     //*************************************************************************
-    /// Decode a uint16_t value in place to a uint8_t.
+    /// Decode a 16-bit value and return the 8-bit result.
     ///\param encoded The value to decode.
-    ///\param decoded The decoded value.
+    ///\return The Manchester decoded value.
     //*************************************************************************
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint16_t>::value, void>::type
-    decode_in_place(TChunk encoded, uint8_t& decoded)
+    template <typename TEncoded>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TEncoded, uint16_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
+    decode(TEncoded encoded)
     {
-      encoded = (encoded ^ (0xAAAAU ^ static_cast<uint16_t>(TManchesterType::inversion_mask))) & 0x5555U;
+      typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
+
+      encoded = (encoded ^ (0xAAAAU ^ static_cast<TEncoded>(TManchesterType::inversion_mask))) & 0x5555U;
       encoded = (encoded | (encoded >> 1)) & 0x3333U;
       encoded = (encoded | (encoded >> 2)) & 0x0F0FU;
-      decoded = static_cast<uint8_t>(encoded | (encoded >> 4U));
+      return static_cast<TDecoded>(encoded | (encoded >> 4U));
     }
 #endif
 
     //*************************************************************************
-    /// Decode a uint32_t value in place to a uint16_t.
+    /// Decode a 32-bit value and return the 16-bit result.
     ///\param encoded The value to decode.
-    ///\param decoded The decoded value.
+    ///\return The Manchester decoded value.
     //*************************************************************************
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint32_t>::value, void>::type
-    decode_in_place(TChunk encoded, uint16_t& decoded)
+    template <typename TEncoded>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TEncoded, uint32_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
+    decode(TEncoded encoded)
     {
-      encoded = (encoded ^ (0xAAAAAAAAUL ^ static_cast<uint32_t>(TManchesterType::inversion_mask))) & 0x55555555UL;
+      typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
+
+      encoded = (encoded ^ (0xAAAAAAAAUL ^ static_cast<TEncoded>(TManchesterType::inversion_mask))) & 0x55555555UL;
       encoded = (encoded | (encoded >> 1)) & 0x33333333UL;
       encoded = (encoded | (encoded >> 2)) & 0x0F0F0F0FUL;
       encoded = (encoded | (encoded >> 4)) & 0x00FF00FFUL;
-      decoded = static_cast<uint16_t>(encoded | (encoded >> 8U));
+      return static_cast<TDecoded>(encoded | (encoded >> 8U));
     }
 
 #if ETL_USING_64BIT_TYPES
     //*************************************************************************
-    /// Decode a uint64_t value in place to a uint32_t.
+    /// Decode a 64-bit value and return the 32-bit result.
     ///\param encoded The value to decode.
-    ///\param decoded The decoded value.
+    ///\return The Manchester decoded value.
     //*************************************************************************
-    template <typename TChunk>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, uint64_t>::value, void>::type
-    decode_in_place(TChunk encoded, uint32_t& decoded)
+    template <typename TEncoded>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TEncoded, uint64_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
+    decode(TEncoded encoded)
     {
+      typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
+
       encoded = (encoded ^ (0xAAAAAAAAAAAAAAAAULL ^ TManchesterType::inversion_mask)) & 0x5555555555555555ULL;
       encoded = (encoded | (encoded >> 1)) & 0x3333333333333333ULL;
       encoded = (encoded | (encoded >> 2)) & 0x0F0F0F0F0F0F0F0FULL;
       encoded = (encoded | (encoded >> 4)) & 0x00FF00FF00FF00FFULL;
       encoded = (encoded | (encoded >> 8)) & 0x0000FFFF0000FFFFULL;
-      decoded = static_cast<uint32_t>(encoded | (encoded >> 16U));
+      return static_cast<TDecoded>(encoded | (encoded >> 16U));
     }
 #endif
 
-    template <typename TChunk>
-    static typename etl::enable_if<!private_manchester::is_decodable<TChunk>::value, void>::type
-    decode_in_place(TChunk encoded, typename private_manchester::manchester_decoded<TChunk>::type& decoded) ETL_DELETE;
-
     //*************************************************************************
-    /// Decode a value and return the Manchester decoded result.
-    ///\param encoded The value to decode.
-    ///\return The Manchester decoded value.
+    /// Decode a span of data using specified chunk type.
+    ///\param source      The source encoded data to decode.
+    ///\param destination The destination buffer for decoded data.
+    ///\tparam TChunk     The chunk type for decoding.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14
-      typename private_manchester::manchester_decoded<TChunk>::type
-      decode(TChunk encoded)
+    static typename etl::enable_if<!etl::is_same<TChunk, typename private_manchester::encoded<uint_least8_t>::type>::value, void>::type
+    decode(etl::span<const uint_least8_t> encoded, etl::span<uint_least8_t> decoded)
     {
-      ETL_STATIC_ASSERT(private_manchester::is_decodable<TChunk>::value, "TChunk must be a decodable type");
+      typedef typename private_manchester::decoded<TChunk>::type TDecoded;
+      typedef TChunk                                             TEncoded;
 
-      typename private_manchester::manchester_decoded<TChunk>::type decoded = 0;
-      decode_in_place(encoded, decoded);
-      return decoded;
+      ETL_ASSERT(decoded.size() * 2 >= encoded.size(), ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(encoded.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
+
+      size_t dest_index = 0;
+      size_t source_index = 0;
+      for (size_t i = 0; i < encoded.size() / sizeof(TEncoded); ++i)
+      {
+        TChunk encoded_value = 0;
+        memcpy(&encoded_value, &encoded[source_index], sizeof(TEncoded));
+        const TDecoded decoded_value = decode(encoded_value);
+        memcpy(&decoded[dest_index], &decoded_value, sizeof(TDecoded));
+
+        source_index += sizeof(TEncoded);
+        dest_index += sizeof(TDecoded);
+      }
+    }
+
+    //*************************************************************************
+    /// Decode a span of data using the smallest chunk type. This version is
+    /// constexpr so that it can be used to decode data at compile time.
+    ///\param source      The source encoded data to decode.
+    ///\param destination The destination buffer for decoded data.
+    ///\tparam TChunk     The chunk type for decoding (default type).
+    //*************************************************************************
+    template <typename TChunk = typename private_manchester::encoded<uint_least8_t>::type>
+    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename private_manchester::encoded<uint_least8_t>::type>::value, void>::type
+    decode(etl::span<const uint_least8_t> encoded, etl::span<uint_least8_t> decoded)
+    {
+      typedef uint_least8_t TDecoded;
+
+      ETL_ASSERT(decoded.size() * 2 >= encoded.size(), ETL_ERROR(manchester_invalid_size));
+      ETL_ASSERT(encoded.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
+
+      size_t dest_index = 0;
+      size_t source_index = 0;
+      for (size_t i = 0; i < encoded.size() / sizeof(TChunk); ++i)
+      {
+        const TChunk encoded_value = static_cast<TChunk>((encoded[source_index + 1] << CHAR_BIT) | encoded[source_index]);
+        decoded[dest_index] = decode<TChunk>(encoded_value);
+
+        source_index += sizeof(TChunk);
+        dest_index += sizeof(TDecoded);
+      }
     }
 
     //*************************************************************************
@@ -450,92 +483,6 @@ namespace etl
       }
 
       return true;
-    }
-
-    //*************************************************************************
-    // Span decoding functions
-    //*************************************************************************
-
-    //*************************************************************************
-    /// Decode a span of data using specified chunk type.
-    ///\param source      The source encoded data to decode.
-    ///\param destination The destination buffer for decoded data.
-    ///\tparam TChunk     The chunk type for decoding.
-    //*************************************************************************
-    template <typename TChunk>
-    static typename etl::enable_if<!etl::is_same<TChunk, typename private_manchester::manchester_encoded<uint_least8_t>::type>::value, void>::type
-    decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
-    {
-      typedef typename private_manchester::manchester_decoded<TChunk>::type TDecoded;
-      typedef TChunk                                                        TEncoded;
-
-      ETL_ASSERT(destination.size() * 2 >= source.size(), ETL_ERROR(manchester_invalid_size));
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
-
-      size_t dest_index = 0;
-      size_t source_index = 0;
-      for (size_t i = 0; i < source.size() / sizeof(TEncoded); ++i)
-      {
-        TChunk encoded_value = 0;
-        memcpy(&encoded_value, &source[source_index], sizeof(TEncoded));
-        const TDecoded decoded_value = decode(encoded_value);
-        memcpy(&destination[dest_index], &decoded_value, sizeof(TDecoded));
-
-        source_index += sizeof(TEncoded);
-        dest_index += sizeof(TDecoded);
-      }
-    }
-
-    //*************************************************************************
-    /// Decode a span of data using the smalles chunk type. This version is
-    /// constexpr so that it can be used to decode data at compile time.
-    ///\param source      The source encoded data to decode.
-    ///\param destination The destination buffer for decoded data.
-    ///\tparam TChunk     The chunk type for decoding (default type).
-    //*************************************************************************
-    template <typename TChunk = typename private_manchester::manchester_encoded<uint_least8_t>::type>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TChunk, typename private_manchester::manchester_encoded<uint_least8_t>::type>::value, void>::type
-    decode_span(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
-    {
-      typedef uint_least8_t TDecoded;
-
-      ETL_ASSERT(destination.size() * 2 >= source.size(), ETL_ERROR(manchester_invalid_size));
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
-
-      size_t dest_index = 0;
-      size_t source_index = 0;
-      for (size_t i = 0; i < source.size() / sizeof(TChunk); ++i)
-      {
-        const TChunk encoded_value = static_cast<TChunk>((source[source_index + 1] << CHAR_BIT) | source[source_index]);
-        destination[dest_index] = decode<TChunk>(encoded_value);
-
-        source_index += sizeof(TChunk);
-        dest_index += sizeof(TDecoded);
-      }
-    }
-
-    //*************************************************************************
-    /// Fast decode a span of data using pointer arithmetic.
-    ///\param source      The source encoded data to decode.
-    ///\param destination The destination buffer for decoded data.
-    ///\tparam TChunk     The chunk size for decoding (default: uint16_t).
-    //*************************************************************************
-    template <typename TChunk = private_manchester::manchester_encoded<uint_least8_t>::type>
-    static void decode_span_fast(etl::span<const uint_least8_t> source, etl::span<uint_least8_t> destination)
-    {
-      ETL_ASSERT(destination.size() * 2 >= source.size(), ETL_ERROR(manchester_invalid_size));
-      ETL_ASSERT(source.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
-
-      while (!source.empty())
-      {
-        const TChunk&                                                       encoded = *reinterpret_cast<const TChunk*>(source.data());
-        typename etl::private_manchester::manchester_decoded<TChunk>::type& decoded = *reinterpret_cast<typename etl::private_manchester::manchester_decoded<TChunk>::type*>(destination.data());
-
-        decode_in_place(encoded, decoded);
-
-        source.advance(sizeof(TChunk));
-        destination.advance(sizeof(typename etl::private_manchester::manchester_decoded<TChunk>::type));
-      }
     }
   };
 

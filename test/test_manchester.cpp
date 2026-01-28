@@ -70,7 +70,7 @@ TEST(encode_uint32_t_inverted)
 constexpr etl::array<uint8_t, 8> manchester_encoded(etl::span<const uint_least8_t> decoded)
 {
   etl::array<uint8_t, 8> encoded{0, 0, 0, 0, 0, 0, 0, 0};
-  etl::manchester::encode_span(decoded, encoded);
+  etl::manchester::encode(decoded, encoded);
   return encoded;
 }
 
@@ -83,10 +83,10 @@ TEST(encode_span)
   etl::array<uint8_t, 8> encoded2;
   etl::array<uint8_t, 8> encoded3;
 
-  etl::manchester::encode_span(decoded, encoded0);
-  etl::manchester::encode_span<uint8_t>(decoded, encoded1);
-  etl::manchester::encode_span<uint16_t>(decoded, encoded2);
-  etl::manchester::encode_span<uint32_t>(decoded, encoded3);
+  etl::manchester::encode(decoded, encoded0);
+  etl::manchester::encode<uint8_t>(decoded, encoded1);
+  etl::manchester::encode<uint16_t>(decoded, encoded2);
+  etl::manchester::encode<uint32_t>(decoded, encoded3);
 
   CHECK_EQUAL(0xAA, encoded0[0]);
   CHECK_EQUAL(0xAA, encoded0[1]);
@@ -122,10 +122,10 @@ TEST(encode_span_inverted)
   etl::array<uint8_t, 8> encoded2;
   etl::array<uint8_t, 8> encoded3;
 
-  etl::manchester_inverted::encode_span(decoded, encoded0);
-  etl::manchester_inverted::encode_span<uint8_t>(decoded, encoded1);
-  etl::manchester_inverted::encode_span<uint16_t>(decoded, encoded2);
-  etl::manchester_inverted::encode_span<uint32_t>(decoded, encoded3);
+  etl::manchester_inverted::encode(decoded, encoded0);
+  etl::manchester_inverted::encode<uint8_t>(decoded, encoded1);
+  etl::manchester_inverted::encode<uint16_t>(decoded, encoded2);
+  etl::manchester_inverted::encode<uint32_t>(decoded, encoded3);
 
   CHECK_EQUAL(0x55, encoded0[0]);
   CHECK_EQUAL(0x55, encoded0[1]);
@@ -146,10 +146,10 @@ TEST(encode_span_invalid_source)
   etl::array<const uint8_t, 3> invalid_source{0x00, 0xFF, 0x01};
   etl::array<uint8_t, 8>       valid_destination;
 
-  CHECK_THROW({ etl::manchester::encode_span<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::encode_span<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::encode_span<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::encode_span<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::encode<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::encode<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::encode<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::encode<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
 }
 
 TEST(encode_span_invalid_destination)
@@ -157,12 +157,12 @@ TEST(encode_span_invalid_destination)
   etl::array<const uint8_t, 4> valid_source{0x00, 0xFF, 0x01, 0x80};
   etl::array<uint8_t, 7>       invalid_destination;
 
-  CHECK_THROW({ etl::manchester::encode_span<uint8_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::encode_span<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::encode_span<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::encode_span<uint8_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::encode_span<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::encode_span<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::encode<uint8_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::encode<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::encode<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::encode<uint8_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::encode<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::encode<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
 }
 
 TEST(decode_uint16_t)
@@ -230,7 +230,7 @@ TEST(decode_uint64_t_inverted)
 constexpr etl::array<uint8_t, 4> manchester_decoded(etl::span<const uint_least8_t> encoded)
 {
   etl::array<uint8_t, 4> decoded{0, 0, 0, 0};
-  etl::manchester::decode_span(encoded, decoded);
+  etl::manchester::decode(encoded, decoded);
   return decoded;
 }
 
@@ -243,10 +243,10 @@ TEST(decode_span)
   etl::array<uint8_t, 4> decoded2;
   etl::array<uint8_t, 4> decoded3;
 
-  etl::manchester::decode_span(encoded, decoded0);
-  etl::manchester::decode_span<uint16_t>(encoded, decoded1);
-  etl::manchester::decode_span<uint32_t>(encoded, decoded2);
-  etl::manchester::decode_span<uint64_t>(encoded, decoded3);
+  etl::manchester::decode(encoded, decoded0);
+  etl::manchester::decode<uint16_t>(encoded, decoded1);
+  etl::manchester::decode<uint32_t>(encoded, decoded2);
+  etl::manchester::decode<uint64_t>(encoded, decoded3);
 
   CHECK_EQUAL(0x00, decoded0[0]);
   CHECK_EQUAL(0xFF, decoded0[1]);
@@ -274,10 +274,10 @@ TEST(decode_span_inverted)
   etl::array<uint8_t, 4> decoded2;
   etl::array<uint8_t, 4> decoded3;
 
-  etl::manchester_inverted::decode_span(encoded, decoded0);
-  etl::manchester_inverted::decode_span<uint16_t>(encoded, decoded1);
-  etl::manchester_inverted::decode_span<uint32_t>(encoded, decoded2);
-  etl::manchester_inverted::decode_span<uint64_t>(encoded, decoded3);
+  etl::manchester_inverted::decode(encoded, decoded0);
+  etl::manchester_inverted::decode<uint16_t>(encoded, decoded1);
+  etl::manchester_inverted::decode<uint32_t>(encoded, decoded2);
+  etl::manchester_inverted::decode<uint64_t>(encoded, decoded3);
 
   CHECK_EQUAL(0x00, decoded0[0]);
   CHECK_EQUAL(0xFF, decoded0[1]);
@@ -294,12 +294,12 @@ TEST(decode_span_invalid_source)
   etl::array<const uint8_t, 7> invalid_source{0x55, 0x55, 0xAA, 0xAA, 0x56, 0x55, 0X55};
   etl::array<uint8_t, 4>       valid_destination;
 
-  CHECK_THROW({ etl::manchester::decode_span<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::decode_span<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::decode_span<uint64_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::decode_span<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::decode_span<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::decode_span<uint64_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::decode<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::decode<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::decode<uint64_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::decode<uint16_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::decode<uint32_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::decode<uint64_t>(invalid_source, valid_destination); }, etl::manchester_invalid_size);
 }
 
 TEST(decode_span_invalid_destination)
@@ -307,36 +307,12 @@ TEST(decode_span_invalid_destination)
   etl::array<const uint8_t, 8> valid_source{0x55, 0x55, 0xAA, 0xAA, 0x56, 0x55, 0X55, 0x95};
   etl::array<uint8_t, 3>       invalid_destination;
 
-  CHECK_THROW({ etl::manchester::decode_span<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::decode_span<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester::decode_span<uint64_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::decode_span<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::decode_span<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-  CHECK_THROW({ etl::manchester_inverted::decode_span<uint64_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
-}
-
-TEST(decode_span_fast)
-{
-  etl::array<const uint8_t, 8> encoded{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAA, 0x6A};
-
-  etl::array<uint8_t, 4> decoded0;
-  etl::array<uint8_t, 4> decoded1;
-  etl::array<uint8_t, 4> decoded2;
-  etl::array<uint8_t, 4> decoded3;
-
-  etl::manchester::decode_span_fast(encoded, decoded0);
-  etl::manchester::decode_span_fast<uint16_t>(encoded, decoded1);
-  etl::manchester::decode_span_fast<uint32_t>(encoded, decoded2);
-  etl::manchester::decode_span_fast<uint64_t>(encoded, decoded3);
-
-  CHECK_EQUAL(0x00, decoded0[0]);
-  CHECK_EQUAL(0xFF, decoded0[1]);
-  CHECK_EQUAL(0x01, decoded0[2]);
-  CHECK_EQUAL(0x80, decoded0[3]);
-
-  CHECK_TRUE(decoded0 == decoded1);
-  CHECK_TRUE(decoded0 == decoded2);
-  CHECK_TRUE(decoded0 == decoded3);
+  CHECK_THROW({ etl::manchester::decode<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::decode<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester::decode<uint64_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::decode<uint16_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::decode<uint32_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
+  CHECK_THROW({ etl::manchester_inverted::decode<uint64_t>(valid_source, invalid_destination); }, etl::manchester_invalid_size);
 }
 
 TEST(valid16)
