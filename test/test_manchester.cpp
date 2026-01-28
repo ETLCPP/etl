@@ -4,6 +4,7 @@
 #include <etl/algorithm.h>
 #include <etl/array.h>
 #include <etl/span.h>
+#include <utility>
 
 SUITE(test_manchester){
   TEST(encode_uint8_t){
@@ -67,12 +68,14 @@ TEST(encode_uint32_t_inverted)
 #endif
 }
 
+#if ETL_USING_CPP14
 constexpr etl::array<uint8_t, 8> manchester_encoded(etl::span<const uint_least8_t> decoded)
 {
   etl::array<uint8_t, 8> encoded{0, 0, 0, 0, 0, 0, 0, 0};
   etl::manchester::encode(decoded, encoded);
   return encoded;
 }
+#endif
 
 TEST(encode_span)
 {
@@ -371,7 +374,7 @@ TEST(valid_span)
 TEST(valid_span_on_invalid_source)
 {
   constexpr etl::array<uint8_t, 7> invalid_source{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0XAA};
-  CHECK_THROW({ etl::manchester::is_valid(invalid_source); }, etl::manchester_invalid_size);
+  CHECK_THROW({ std::ignore = etl::manchester::is_valid(invalid_source); }, etl::manchester_invalid_size);
 }
 }
 ;
