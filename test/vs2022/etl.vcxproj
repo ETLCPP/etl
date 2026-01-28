@@ -10357,11 +10357,9 @@
     <ClCompile Include="..\test_math_functions.cpp" />
     <ClCompile Include="..\test_message.cpp" />
     <ClCompile Include="..\test_message_broker.cpp" />
-    <ClCompile Include="..\test_message_router_with_type_list.cpp" />
     <ClCompile Include="..\test_not_null_pointer.cpp" />
     <ClCompile Include="..\test_not_null_pointer_constexpr.cpp" />
     <ClCompile Include="..\test_not_null_unique_pointer.cpp" />
-    <ClCompile Include="..\test_observer_with_type_list.cpp" />
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp" />
     <ClCompile Include="..\test_poly_span_fixed_extent.cpp" />
     <ClCompile Include="..\test_pseudo_moving_average.cpp" />
@@ -11435,7 +11433,6 @@
     <ClCompile Include="..\test_vector_pointer_external_buffer.cpp" />
     <ClCompile Include="..\test_visitor.cpp" />
     <ClCompile Include="..\test_string_stream_wchar_t.cpp" />
-    <ClCompile Include="..\test_visitor_with_type_list.cpp" />
     <ClCompile Include="..\test_xor_checksum.cpp" />
     <ClCompile Include="..\test_xor_rotate_checksum.cpp" />
     <ClCompile Include="..\unittest++\AssertException.cpp" />
