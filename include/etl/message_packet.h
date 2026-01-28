@@ -384,16 +384,18 @@ namespace etl
   };
 
   //***************************************************************************
-  // The definition for all message types.
-  //***************************************************************************
-  template <typename... TMessageTypes>
-  class message_packet<etl::type_list<TMessageTypes...>> : public etl::message_packet<TMessageTypes...>
-  {
-  public:
+  /// Helper to turn etl::type_list<TTypes...> into etl::message_packet<TTypes...>
+  template <typename TList>
+  struct message_packet_from_type_list;
 
-    using base_type = etl::message_packet<TMessageTypes...>;
-    using base_type::base_type; // Inherit all ctors
+  template <typename... TTypes>
+  struct message_packet_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::message_packet<TTypes...>;
   };
+
+  template <typename TTypeList>
+  using message_packet_from_type_list_t = typename message_packet_from_type_list<TTypeList>::type;
 
 #else
 
@@ -4940,9 +4942,8 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT(!etl::is_type_list<T1>::value,
-                      "T1 must not be an etl::type_list. "
-                      "Use etl::message_packet<etl::type_list<...>> only with the C++17 variadic overload.");
+    //ETL_STATIC_ASSERT(!etl::is_type_list<T1>::value,
+    //                  "message_packet does not accept an etl::type_list before C++17, or when ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION is defined");
 
 #if ETL_USING_CPP11
     using message_types = etl::type_list<T1>;
@@ -5205,63 +5206,6 @@ namespace etl
   #endif
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    bool valid;
-  };
-
-  //***************************************************************************
-  // Specialisation for 0 message types.
-  //***************************************************************************
-  template <>
-  class message_packet<void, void, void, void, void, void, void, void,
-                       void, void, void, void, void, void, void, void>
-  {
-  public:
-
-#if ETL_USING_CPP11
-    using message_types = etl::type_list<>;
-#endif
-
-    message_packet() 
-      : valid(false) 
-    {
-    }
-
-    static ETL_CONSTEXPR bool accepts(etl::message_id_t) 
-    { 
-      return false; 
-    }
-
-    static ETL_CONSTEXPR bool accepts(const etl::imessage&) 
-    { 
-      return false; 
-    }
-
-    template <etl::message_id_t Id>
-    static ETL_CONSTEXPR bool accepts() 
-    { 
-      ETL_UNUSED(Id); 
-      return false; 
-    }
-
-    template <typename TMessage>
-    static ETL_CONSTEXPR typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type accepts()
-    {
-      return false;
-    }
-
-    bool is_valid() const 
-    { 
-      return valid; 
-    }
-
-    enum
-    {
-      SIZE = 0U,
-      ALIGNMENT = 1U
-    };
-
-  private:
-
     bool valid;
   };
 #endif

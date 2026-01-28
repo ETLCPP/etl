@@ -29,7 +29,6 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/platform.h"
-
 #include "etl/message_packet.h"
 
 #include <string>
@@ -202,6 +201,11 @@ namespace
 
   using Packet = etl::message_packet<Message1, Message2, Message3>;
 
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
+  using MessageTypes           = etl::type_list<Message1, Message2, Message3>;
+  using PacketFromMessageTypes = etl::message_packet_from_type_list_t<MessageTypes>;
+#endif
+
   struct Object
   {
     void Push(const etl::message_packet<Message1, Message2>& p)
@@ -224,11 +228,20 @@ namespace
 
       Packet packet1(message1);
       Packet packet2(message2);
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
+      PacketFromMessageTypes packet3(message3);
+#else
       Packet packet3(message3);
+#endif
 
       // Should cause a static assert.
       //Packet packet4(message4);
       //Packet packet4((Message4()));
+
+      CHECK_TRUE((std::is_same<etl::type_list<Message1, Message2, Message3>, typename Packet::message_types>::value));
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
+      CHECK_TRUE((std::is_same<etl::type_list<Message1, Message2, Message3>, typename PacketFromMessageTypes::message_types>::value));
+#endif
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
