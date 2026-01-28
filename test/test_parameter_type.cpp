@@ -86,5 +86,5 @@ namespace
       b = !etl::is_reference<etl::parameter_type<Object2>::type>::value;
       CHECK(b);
     }
-  };
+  }
 }

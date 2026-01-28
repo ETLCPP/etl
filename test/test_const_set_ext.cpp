@@ -1095,7 +1095,7 @@ namespace
           
       static const bool compareAB1 = compare( Key{ 'A' },  Key{ 'B' });
       static const bool compareAB2 = compare( Key{ 'A' }, Key{ 'B' });
-      static const bool compareAB3 = compare(Key{ 'A' },  Key{ 'B' });;
+      static const bool compareAB3 = compare(Key{ 'A' },  Key{ 'B' });
 
 #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -1140,7 +1140,7 @@ namespace
 
       static const bool compareAB1 = compare( 'A',  'B');
       static const bool compareAB2 = compare( 'A', 'B');
-      static const bool compareAB3 = compare('A',  'B');;
+      static const bool compareAB3 = compare('A',  'B');
 
 #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -1568,5 +1568,5 @@ namespace
       CHECK_TRUE(greater_than_equal11);
 #endif
     }
-  };
+  }
 }

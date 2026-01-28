@@ -1,5 +1,4 @@
-Embedded Template Library (ETL)
--------------------------
+# ![alt text](https://github.com/ETLCPP/etl/blob/master/images/etl64.png?raw=true) Embedded Template Library (ETL)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
 [![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)
@@ -10,7 +9,6 @@ Embedded Template Library (ETL)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
-[![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)

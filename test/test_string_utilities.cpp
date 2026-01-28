@@ -1863,5 +1863,5 @@ namespace
       CHECK_TRUE(result.truncated);
       CHECK_FALSE(result.terminated);
     }
-  };
+  }
 }

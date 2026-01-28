@@ -814,7 +814,7 @@ namespace
       CHECK_EQUAL(bit_stream.empty(), false);
       CHECK_EQUAL(bit_stream.full(), true);
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

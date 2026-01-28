@@ -291,6 +291,6 @@ namespace
       uint8_t crc3 = etl::crc8_nrsc5(data3.rbegin(), data3.rend());
       CHECK_EQUAL(int(crc1), int(crc3));
     }
-  };
+  }
 }
 

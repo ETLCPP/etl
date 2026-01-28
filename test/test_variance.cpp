@@ -142,5 +142,5 @@ namespace
       variance_result = variance1.get_variance();
       CHECK_CLOSE(9.17, variance_result, 0.1);
     }
-  };
+  }
 }

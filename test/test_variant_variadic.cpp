@@ -2138,7 +2138,7 @@ namespace
       CHECK_TRUE(variant1.is_supported_type<std::string>());
       CHECK_FALSE(variant1.is_supported_type<double>());
     }
-  };
+  }
 }
 
 #include "etl/private/diagnostic_pop.h"

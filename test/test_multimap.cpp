@@ -1691,5 +1691,5 @@ namespace
       CHECK(!data.contains(std::string("99")));
       CHECK(!data.contains(Key("99")));
     }
-  };
+  }
 }

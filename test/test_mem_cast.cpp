@@ -340,5 +340,5 @@ namespace
       CHECK_EQUAL(2, memCastTypes.ref<Data>().a[1]);
       CHECK_EQUAL(3, memCastTypes.ref<Data>().a[2]);
     }
-  };
+  }
 }

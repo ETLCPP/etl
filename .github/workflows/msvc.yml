@@ -3,7 +3,7 @@ on:
   push:
     branches: [ master, development, pull-request/* ]
   pull_request:
-    branches: [ master, pull-request/* ]
+    branches: [ master, development, pull-request/* ]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=17 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         

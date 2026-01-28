@@ -587,5 +587,5 @@ namespace
       CHECK_EQUAL(uint16_t(0),     absolute5);
       CHECK_EQUAL(uint16_t(65535), absolute6);
     }
-  };
+  }
 }

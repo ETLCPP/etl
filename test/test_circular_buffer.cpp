@@ -997,7 +997,7 @@ namespace
       using CB = etl::circular_buffer<int, SIZE>;
 
       std::vector<int> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CB data(input.begin(), input.end());;
+      CB data(input.begin(), input.end());
 
       char buffer[sizeof(CB)];
 
@@ -1034,7 +1034,7 @@ namespace
       using ICB = etl::icircular_buffer<int>;
 
       std::vector<int> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      CB data(input.begin(), input.end());;
+      CB data(input.begin(), input.end());
 
       char buffer[sizeof(CB)];
 
@@ -1063,6 +1063,5 @@ namespace
 
       CHECK(!is_equal);
     }
-
-  };
+  }
 }

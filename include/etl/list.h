@@ -1839,7 +1839,7 @@ namespace etl
           {
             ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
             p_node_pool->release_all();
-            ETL_RESET_DEBUG_COUNT;;
+            ETL_RESET_DEBUG_COUNT;
           }
           else
           {

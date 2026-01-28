@@ -62,5 +62,5 @@ namespace
       uc3 = uc1; // compile error
     }
 #endif
-  };
+  }
 }

@@ -436,5 +436,5 @@ namespace
       CHECK(bl1 != bl4);
       CHECK(!(bl1 == bl4));
     }
-  };
+  }
 }

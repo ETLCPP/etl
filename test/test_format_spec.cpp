@@ -118,6 +118,6 @@ namespace
       CHECK_EQUAL(true,  upper_case);
     }
 #endif
-  };
+  }
 }
 

@@ -336,5 +336,5 @@ namespace
       CHECK_EQUAL(-3, value_minus.get());
     }
 #endif
-  };
+  }
 }

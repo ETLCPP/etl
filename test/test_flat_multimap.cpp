@@ -1364,5 +1364,5 @@ namespace
       CHECK(data.contains(Key(1)));
       CHECK(!data.contains(Key(99)));
     }
-  };
+  }
 }

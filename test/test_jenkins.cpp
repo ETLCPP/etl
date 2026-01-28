@@ -164,6 +164,6 @@ namespace
 
       CHECK_THROW(j32.add(0), etl::hash_finalized);
     }
-  };
+  }
 }
 

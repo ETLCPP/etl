@@ -352,5 +352,5 @@ namespace
       CHECK_EQUAL(11U, static_cast<unsigned>(Chrono::November));
       CHECK_EQUAL(12U, static_cast<unsigned>(Chrono::December));
     }
-  };
+  }
 }

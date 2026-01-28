@@ -1843,5 +1843,5 @@ namespace
       CHECK_EQUAL(10, round_zero);
     }
 #endif
-  };
+  }
 }

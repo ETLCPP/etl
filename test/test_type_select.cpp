@@ -182,5 +182,5 @@ namespace
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select_t<15>>::value));
     }
 #endif
-  };
+  }
 }

@@ -1034,5 +1034,89 @@ namespace
       CHECK_EQUAL(1, (*opt3)[0]);
       CHECK_EQUAL(20, (*opt3)[1]);
     }
-  };
+
+    //*************************************************************************
+    TEST(test_begin_end_with_value)
+    {
+      etl::optional<int> opt = 4;
+
+      CHECK(opt.begin() != opt.end());
+      CHECK_EQUAL(4, *opt.begin());
+      CHECK_EQUAL(1, std::distance(opt.begin(), opt.end()));
+    }
+
+    TEST(test_begin_end_empty)
+    {
+      etl::optional<int> opt;
+
+      CHECK(opt.begin() == ETL_NULLPTR);
+      CHECK(opt.begin() == opt.end());
+    }
+
+    TEST(test_const_begin_end_with_value)
+    {
+      const etl::optional<int> opt = 4;
+
+      CHECK(opt.begin() != opt.end());
+      CHECK_EQUAL(4, *opt.begin());
+      CHECK_EQUAL(1, std::distance(opt.begin(), opt.end()));
+    }
+
+    TEST(test_const_begin_end_empty)
+    {
+      const etl::optional<int> opt;
+
+      CHECK(opt.begin() == ETL_NULLPTR);
+      CHECK(opt.begin() == opt.end());
+    }
+
+    TEST(range_based_for_loop_with_value)
+    {
+      etl::optional<int> opt = 4;
+
+      int sum = 0;
+      for (int value : opt)
+      {
+        sum += value;
+      }
+
+      CHECK_EQUAL(4, sum);
+    }
+
+    TEST(range_based_for_loop_empty)
+    {
+      etl::optional<int> opt;
+
+      int sum = 0;
+      for (int value : opt)
+      {
+        sum += value;
+      }
+
+      CHECK_EQUAL(0, sum);
+    }
+
+    TEST(test_range_based_for_loop_non_trivial)
+    {
+      etl::optional<Data> opt = Data("TEST");
+      int count= 0;
+
+      for (const Data& value : opt)
+      {
+        CHECK_EQUAL(Data("TEST"), value);
+        count++;
+      }
+
+      CHECK_EQUAL(1, count);
+    }
+
+    TEST(test_begin_end_modify_value)
+    {
+      etl::optional<int> opt = 4;
+
+      *opt.begin() = 42;
+
+      CHECK_EQUAL(42, *opt);
+    }
+  }
 }

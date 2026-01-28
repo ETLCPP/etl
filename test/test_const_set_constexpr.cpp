@@ -33,9 +33,9 @@ SOFTWARE.
 #include <utility>
 #include <iterator>
 
-#if ETL_USING_CPP14
-
 #include "etl/const_set.h"
+
+#if ETL_USING_CPP14
 
 namespace
 {
@@ -85,11 +85,13 @@ namespace
     return (lhs.k == rhs.k);
   }
 
+#if ETL_NOT_USING_CPP20
   // Equality operator for Key != Key
   constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
   {
     return !(lhs.k == rhs.k);
   }
+#endif
 
   #define TEST_GREATER_THAN
   #ifdef TEST_GREATER_THAN
@@ -1012,7 +1014,7 @@ namespace
           
       static constexpr bool compareAB1 = compare( Key{ 'A' }, Key{ 'B' });
       static constexpr bool compareAB2 = compare( Key{ 'A' }, Key{ 'B' });
-      static constexpr bool compareAB3 = compare( Key{ 'A' }, Key{ 'B' });;
+      static constexpr bool compareAB3 = compare( Key{ 'A' }, Key{ 'B' });
 
 #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -1433,7 +1435,7 @@ namespace
       CHECK_TRUE(greater_than_equal11);
 #endif
     }
-  };
+  }
 }
 
 #endif

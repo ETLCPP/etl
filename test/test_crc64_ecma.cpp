@@ -316,6 +316,6 @@ namespace
       uint64_t crc3 = etl::crc64_ecma_t4(data3.rbegin(), data3.rend());
       CHECK_EQUAL(crc1, crc3);
     }
-  };
+  }
 }
 
