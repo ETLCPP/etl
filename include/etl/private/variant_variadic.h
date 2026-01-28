@@ -253,7 +253,7 @@ namespace etl
   template <size_t Index, typename... TTypes>
   struct variant_alternative<Index, etl::variant<TTypes...>>
   {
-    using type = etl::nth_type_t<Index, typename etl::variant<TTypes...>::type_list>;
+    using type = etl::nth_type_t<Index, TTypes...>;
   };
 
   template <size_t Index, typename T>
@@ -1219,25 +1219,12 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Delcare a variant using an etl::type_list.
-  //***************************************************************************
-  template <typename... TTypes>
-  class variant<etl::type_list<TTypes...>> : public etl::variant<TTypes...>
-  {
-  public:
-
-    using base_type  = etl::variant<TTypes...>;
-    using type_list  = typename base_type::type_list;
-    using base_type::base_type; // Inherit all ctors
-  };
-
-  //***************************************************************************
   /// Checks if the variant v holds the alternative T.
   //***************************************************************************
 	template <typename T, typename... TTypes>
 	ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT
 	{  
-    constexpr size_t Index = etl::type_list_index_of_type<typename etl::variant<TTypes...>::type_list, T>::value;
+    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
 
     return (Index == variant_npos) ? false : (v.index() == Index);
 	}
@@ -1268,7 +1255,7 @@ namespace etl
     get(etl::variant<TTypes...>& v)
   {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
-    static_assert(Index < etl::type_list_size<typename etl::variant<TTypes...>::type_list>::value, "Index out of range");
+    static_assert(Index < etl::type_list_size<etl::type_list<TTypes...>>::value, "Index out of range");
 #endif
 
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
@@ -1441,7 +1428,7 @@ namespace etl
 
   template <typename... TTypes>
   struct variant_size<etl::variant<TTypes...>>
-    : etl::integral_constant<size_t, etl::type_list_size<typename etl::variant<TTypes...>::type_list>::value>
+    : etl::integral_constant<size_t, etl::type_list_size<etl::type_list<TTypes...>>::value>
   {
   };
 
@@ -1867,5 +1854,19 @@ namespace etl
     }
   }
 #endif
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::variant<TTypes...>
+  template <typename TList>
+  struct variant_from_type_list;
+
+  template <typename... TTypes>
+  struct variant_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::variant<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using variant_from_type_list_t = typename variant_from_type_list<TTypeList>::type;
 }
 #endif
