@@ -863,5 +863,39 @@ namespace
       CHECK_TRUE(E::B == (etl::nontype_t<E, E::B>::value));
     }
 #endif
+
+    //*********************************
+    TEST(test_make_index_sequence_for_pack_matches_expected)
+    {
+      struct T1 {};
+      struct T2 {};
+      struct T3 {};
+
+      using seq12     = etl::make_index_sequence_for<T1, T2>;
+      using seq123    = etl::make_index_sequence_for<T1, T2, T3>;
+      using expect12  = etl::index_sequence<0U, 1U>;
+      using expect123 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<seq12,  expect12>::value));
+      CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_for_type_list_matches_expected)
+    {
+      struct T1 {};
+      struct T2 {};
+      struct T3 {};
+
+      using list12    = etl::type_list<T1, T2>;
+      using list123   = etl::type_list<T1, T2, T3>;
+      using seq12     = etl::make_index_sequence_for<list12>;
+      using seq123    = etl::make_index_sequence_for<list123>;
+      using expect12  = etl::index_sequence<0U, 1U>;
+      using expect123 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<seq12,  expect12>::value));
+      CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
   }
 }
