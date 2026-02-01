@@ -254,6 +254,13 @@ namespace etl
     {
     }
 
+    // Additional type to list of basic types as defined for std::basic_format_arg:
+    // Mapping unsigned long to unsigned long long int
+    basic_format_arg(const unsigned long v)
+    : data(static_cast<unsigned long long int>(v))
+    {
+    }
+
     basic_format_arg(const char* v)
     : data(v)
     {

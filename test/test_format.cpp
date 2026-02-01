@@ -337,6 +337,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_format_size_t)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<size_t>(0LL)));
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<size_t>(1LL)));
+      CHECK_EQUAL("12345678", test_format(s, "{}", static_cast<size_t>(12345678LL)));
+      CHECK_EQUAL("4123456780", test_format(s, "{}", static_cast<size_t>(4123456780LL)));
+#if ETL_PLATFORM_64BIT
+      static_assert(sizeof(size_t) == 8, "size_t is expected to be 64 bit on 64 bit platforms");
+      CHECK_EQUAL("18446744073709551615", test_format(s, "{}", static_cast<size_t>(18446744073709551615ULL)));
+      CHECK_EQUAL("1311768467463790320", test_format(s, "{}", static_cast<size_t>(0x123456789ABCDEF0ULL)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_long)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned long>(0LL)));
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned long>(1LL)));
+      CHECK_EQUAL("12345678", test_format(s, "{}", static_cast<unsigned long>(12345678LL)));
+      CHECK_EQUAL("4123456780", test_format(s, "{}", static_cast<unsigned long>(4123456780LL)));
+#if ETL_PLATFORM_64BIT
+      static_assert(sizeof(unsigned long) == 8, "size_t is expected to be 64 bit on 64 bit platforms");
+      CHECK_EQUAL("18446744073709551615", test_format(s, "{}", static_cast<unsigned long>(18446744073709551615ULL)));
+      CHECK_EQUAL("1311768467463790320", test_format(s, "{}", static_cast<unsigned long>(0x123456789ABCDEF0ULL)));
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_format_limit)
     {
       etl::string<10> s;
