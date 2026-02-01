@@ -39,7 +39,7 @@ namespace
     {
     }
 
-    SuccessorBase(SuccessorBase& successors...)
+    SuccessorBase(SuccessorBase& successors, ...)
       : successor(successors)
     {
     }
@@ -55,7 +55,7 @@ namespace
     {
     }
 
-    SuccessorSameBase1(SuccessorBase& successors...)
+    SuccessorSameBase1(SuccessorBase& successors, ...)
       : SuccessorBase(successors)
       , value(0)
     {
