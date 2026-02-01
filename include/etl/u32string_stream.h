@@ -36,7 +36,6 @@ SOFTWARE.
 #include "platform.h"
 #include "u32string.h"
 #include "u32format_spec.h"
-#include "to_u32string.h"
 #include "string_view.h"
 #include "basic_string_stream.h"
 
