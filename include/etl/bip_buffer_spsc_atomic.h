@@ -281,6 +281,9 @@ namespace etl
         else
         {
           ETL_ASSERT_OR_RETURN((windex == 0) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
+
+          // Correct wrapping point
+          last.store(write_index, etl::memory_order_release);
         }
         
         // Always update write index

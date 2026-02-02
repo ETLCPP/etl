@@ -559,9 +559,9 @@ namespace etl
     //*********************************
     /// Assign from lvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-    tuple& operator =(pair<U1, U2>& p)
+    tuple& operator =(ETL_OR_STD::pair<U1, U2>& p)
     {
       get_value()            = p.first;
       get_base().get_value() = p.second;
@@ -572,9 +572,9 @@ namespace etl
     //*********************************
     /// Assign from const lvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-    tuple& operator =(const pair<U1, U2>& p)
+    tuple& operator =(const ETL_OR_STD::pair<U1, U2>& p)
     {
       get_value()            = p.first;
       get_base().get_value() = p.second;
@@ -585,9 +585,9 @@ namespace etl
     //*********************************
     /// Assign from rvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-    tuple& operator =(pair<U1, U2>&& p)
+    tuple& operator =(ETL_OR_STD::pair<U1, U2>&& p)
     {
       get_value()            = etl::forward<U1>(p.first);
       get_base().get_value() = etl::forward<U2>(p.second);
@@ -598,12 +598,12 @@ namespace etl
     //*********************************
     /// Assign from const rvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-      tuple& operator =(const pair<U1, U2>&& p)
+    tuple& operator =(const ETL_OR_STD::pair<U1, U2>&& p)
     {
-      get_value()            = etl::forward<U1>(p.first);
-      get_base().get_value() = etl::forward<U2>(p.second);
+      get_value()            = p.first;
+      get_base().get_value() = p.second;
 
       return *this;
     }
