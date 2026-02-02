@@ -367,7 +367,7 @@ namespace etl
     //***************************************************************************
     // Default constructor
     //***************************************************************************
-    typed_storage() ETL_NOEXCEPT
+    ETL_CONSTEXPR typed_storage() ETL_NOEXCEPT
       : valid(false)
     {
     }
@@ -567,7 +567,7 @@ namespace etl
    //*******************************
     union union_type
     {
-      union_type() ETL_NOEXCEPT
+      ETL_CONSTEXPR union_type() ETL_NOEXCEPT
         : dummy()
       {
       }
