@@ -1116,6 +1116,48 @@ namespace
     }
 
     //*************************************************************************
+    //before the issue fix, 
+    //the return value was false when output vector max size equaled the number of tokens
+    //it should be true
+    TEST(test_issue_1270_output_vector_max_size_equals_num_tokens)
+    {
+      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      etl::vector<StringView, 6> views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true);
+
+      CHECK_TRUE(all_views_found);
+      CHECK_EQUAL(6, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
+      CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
+    }
+
+    //*************************************************************************
+    //before the issue fix, 
+    //the return value was false when max number of tokens equaled the number of tokens
+    //it should be true
+    TEST(test_issue_1270_max_tokens_equals_num_tokens)
+    {
+      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      VectorOfViews7 views;
+
+      bool all_views_found = etl::get_token_list(text, views, STR(","), true, 6);
+
+      CHECK_TRUE(all_views_found);
+      CHECK_EQUAL(6, views.size());
+      CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
+      CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
+      CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
+      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
+      CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
+    }
+
+    //*************************************************************************
     TEST(test_get_token_list_to_vector_of_string_view_all_but_1_tokens_captured_ignore_empty_tokens)
     {
       String text(STR(",,,The,cat,sat,,on,the,mat"));

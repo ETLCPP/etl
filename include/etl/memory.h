@@ -382,9 +382,13 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  TOutputIterator  uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+  TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
+#include "etl/private/diagnostic_array_bounds_push.h"
+#include "etl/private/diagnostic_stringop_overflow_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
+#include "etl/private/diagnostic_pop.h"
+#include "etl/private/diagnostic_pop.h"
   }
 
   //*****************************************************************************
@@ -398,7 +402,9 @@ namespace etl
   {
     count += int32_t(etl::distance(i_begin, i_end));
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
+#include "etl/private/diagnostic_pop.h"
   }
 #else
   //*****************************************************************************
