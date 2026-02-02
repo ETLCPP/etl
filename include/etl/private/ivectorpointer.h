@@ -483,7 +483,7 @@ namespace etl
       ivector<T*>& smaller = other.size() > this->size() ? *this : other;
       ivector<T*>& larger = other.size() > this->size() ? other : *this;
 
-      ETL_OR_STD::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
+      etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
       typename ivector<T*>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
 
@@ -931,7 +931,7 @@ namespace etl
       ivector<const T*>& smaller = other.size() > this->size() ? *this : other;
       ivector<const T*>& larger = other.size() > this->size() ? other : *this;
 
-      ETL_OR_STD::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
+      etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
       typename ivector<const T*>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
 
