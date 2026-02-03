@@ -245,6 +245,21 @@ namespace etl
     {
     }
 
+    basic_format_arg(const short v)
+    : data(static_cast<int>(v))
+    {
+    }
+
+    basic_format_arg(const unsigned short v)
+    : data(static_cast<unsigned int>(v))
+    {
+    }
+
+    basic_format_arg(const long int v)
+    : data(static_cast<long long int>(v))
+    {
+    }
+
     basic_format_arg(const unsigned int v)
     : data(v)
     {
@@ -274,6 +289,16 @@ namespace etl
 
     basic_format_arg(char v)
     : data(v)
+    {
+    }
+
+    basic_format_arg(const signed char v)
+    : data(static_cast<char>(v))
+    {
+    }
+
+    basic_format_arg(const unsigned char v)
+    : data(static_cast<char>(v))
     {
     }
 
