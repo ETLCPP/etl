@@ -143,7 +143,7 @@ namespace
       value_t buffer[SIZE + 1];
       Text text(buffer);
 
-      CHECK_EQUAL(text.size(), size_t(0));
+      CHECK_EQUAL(0U, text.size());
       CHECK(text.empty());
       CHECK_EQUAL(SIZE, text.capacity());
       CHECK_EQUAL(SIZE, text.max_size());
@@ -210,7 +210,7 @@ namespace
       // Test using the same buffer for source and storage, with size deduced from array
       Text text(array_text, array_text);
 
-      CHECK_EQUAL(text.size(), etl::strlen(array_text));
+      CHECK_EQUAL(etl::strlen(array_text), text.size());
       CHECK(!text.empty());
       CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.capacity());
       CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.max_size());
@@ -227,7 +227,7 @@ namespace
 
       Text text(source, buffer);
 
-      CHECK_EQUAL(text.size(), initial_text.size());
+      CHECK_EQUAL(initial_text.size(), text.size());
       CHECK(!text.empty());
       CHECK_EQUAL(SIZE, text.capacity());
       CHECK_EQUAL(SIZE, text.max_size());
