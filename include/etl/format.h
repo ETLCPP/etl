@@ -123,7 +123,13 @@ namespace etl
   template<class... Args>
   using format_string = basic_format_string<type_identity_t<Args>...>;
 
-  // supported types to format
+  // Supported types to format
+  //
+  // This is the limited number of types as defined in std::basic_format_arg
+  // https://en.cppreference.com/w/cpp/utility/format/basic_format_arg.html
+  //
+  // Further types to be supported are added via converting constructors in
+  // etl::basic_format_arg
   using supported_format_types = etl::variant<
     etl::monostate,
     bool,
