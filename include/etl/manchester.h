@@ -35,6 +35,7 @@ SOFTWARE.
 #include "endianness.h"
 #include "span.h"
 #include "static_assert.h"
+#include <cstring>
 
 ///\defgroup manchester manchester
 /// Manchester encoding and decoding
@@ -91,21 +92,27 @@ namespace etl
       ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
     };
 
+#if ETL_USING_8BIT_TYPES
     template <>
     struct encoded<uint8_t>
     {
       typedef uint16_t type;
     };
+#endif
+
     template <>
     struct encoded<uint16_t>
     {
       typedef uint32_t type;
     };
+
+#if ETL_USING_64BIT_TYPES
     template <>
     struct encoded<uint32_t>
     {
       typedef uint64_t type;
     };
+#endif
 
     //*************************************************************************
     /// Type trait to determine the decoded type for a given encoded type.
@@ -491,9 +498,18 @@ namespace etl
     {
       ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, ETL_ERROR(manchester_invalid_size));
 
-      for (size_t i = 0; i < encoded.size(); i += 2)
+      for (size_t i = 0; i < encoded.size(); i += sizeof(uint16_t))
       {
-        const uint16_t chunk = static_cast<uint16_t>((encoded[i + 1] << 8) | encoded[i]);
+        uint16_t chunk{};
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          chunk = static_cast<uint16_t>((encoded[i + 1] << 8) | encoded[i]);
+        }
+        else
+        {
+          chunk = static_cast<uint16_t>((encoded[i] << 8) | encoded[i + 1]);
+        }
+
         if (!is_valid<uint16_t>(chunk))
         {
           return false;
