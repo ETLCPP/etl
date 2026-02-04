@@ -1,6 +1,3 @@
-#ifndef ETL_MANCHESTER_INCLUDED
-#define ETL_MANCHESTER_INCLUDED
-
 ///\file
 
 /******************************************************************************
@@ -10,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 John Wellbelove
+Copyright(c) 2026 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -31,9 +28,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <etl/platform.h>
-#include <etl/span.h>
-#include <etl/static_assert.h>
+#ifndef ETL_MANCHESTER_INCLUDED
+#define ETL_MANCHESTER_INCLUDED
+
+#include "platform.h"
+#include "endianness.h"
+#include "span.h"
+#include "static_assert.h"
 
 ///\defgroup manchester manchester
 /// Manchester encoding and decoding
@@ -318,8 +319,16 @@ namespace etl
       for (size_t i = 0; i < decoded.size() / sizeof(TDecoded); ++i)
       {
         const TEncoded encoded_value = encode(decoded[source_index]);
-        encoded[dest_index] = static_cast<uint_least8_t>(encoded_value);
-        encoded[dest_index + 1] = static_cast<uint_least8_t>(encoded_value >> CHAR_BIT);
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          encoded[dest_index] = static_cast<uint_least8_t>(encoded_value);
+          encoded[dest_index + 1] = static_cast<uint_least8_t>(encoded_value >> CHAR_BIT);
+        }
+        else
+        {
+          encoded[dest_index] = static_cast<uint_least8_t>(encoded_value >> CHAR_BIT);
+          encoded[dest_index + 1] = static_cast<uint_least8_t>(encoded_value);
+        }
 
         source_index += sizeof(TDecoded);
         dest_index += sizeof(TEncoded);
@@ -438,7 +447,16 @@ namespace etl
       size_t source_index = 0;
       for (size_t i = 0; i < encoded.size() / sizeof(TChunk); ++i)
       {
-        const TChunk encoded_value = static_cast<TChunk>((encoded[source_index + 1] << CHAR_BIT) | encoded[source_index]);
+        TChunk encoded_value{};
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          encoded_value = static_cast<TChunk>((encoded[source_index + 1] << CHAR_BIT) | encoded[source_index]);
+        }
+        else
+        {
+          encoded_value = static_cast<TChunk>((encoded[source_index] << CHAR_BIT) | encoded[source_index + 1]);
+        }
+
         decoded[dest_index] = decode<TChunk>(encoded_value);
 
         source_index += sizeof(TChunk);
