@@ -73,24 +73,6 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Copy constructor
-      //***********************************************************************
-      ETL_CONSTEXPR14 month(const etl::chrono::month& other) ETL_NOEXCEPT
-        : value(other.value)
-      {
-      }
-
-      //***********************************************************************
-      /// Assignment operator
-      //***********************************************************************
-      ETL_CONSTEXPR14 etl::chrono::month& operator =(const etl::chrono::month& rhs) ETL_NOEXCEPT
-      {
-        value = rhs.value;
-
-        return *this;
-      }
-
-      //***********************************************************************
       /// Pre-increment operator
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::month& operator ++() ETL_NOEXCEPT
@@ -105,9 +87,9 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::month operator ++(int) ETL_NOEXCEPT
       {
-        const etl::chrono::month temp = *this;
+        etl::chrono::month temp = *this;
         
-        *this += etl::chrono::months(1);
+        ++*this;
 
         return temp;
       }
@@ -129,7 +111,7 @@ namespace etl
       {
         etl::chrono::month temp = *this;
 
-        *this -= etl::chrono::months(1);
+        --*this;
 
         return temp;
       }
@@ -155,7 +137,7 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Returns <b>true</b> if the month is within the valid 1 to 31 range
+      /// Returns <b>true</b> if the month is within the valid 1 to 12 range
       //***********************************************************************
       ETL_NODISCARD
       ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
@@ -179,29 +161,11 @@ namespace etl
       }
 
       //***********************************************************************
-      /// The minimum month value for which ok() will return <b>true</b>
-      //***********************************************************************
-      ETL_NODISCARD
-      static ETL_CONSTEXPR14 etl::chrono::month min() ETL_NOEXCEPT
-      {
-        return etl::chrono::month(1);
-      }
-
-      //***********************************************************************
-      /// The maximum month value for which ok() will return <b>true</b>
-      //***********************************************************************
-      ETL_NODISCARD
-      static ETL_CONSTEXPR14 etl::chrono::month max() ETL_NOEXCEPT
-      {
-        return etl::chrono::month(12);
-      }
-
-      //***********************************************************************
       /// Conversion operator to unsigned int
       //***********************************************************************
-      ETL_CONSTEXPR14 operator unsigned() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 /*explicit*/ operator unsigned() const ETL_NOEXCEPT
       {
-        return static_cast<unsigned>(value);
+        return value;
       }
 
     private:
@@ -331,10 +295,8 @@ namespace etl
         etl::chrono::months ms(difference);
 
         // Check for validity.
-        if (m1 == (m2 + ms))
-        {
-          return ms;
-        }
+        assert(m1 == (m2 + ms));
+        return ms;
       }
 
       return etl::chrono::months();
