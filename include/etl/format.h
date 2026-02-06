@@ -123,7 +123,13 @@ namespace etl
   template<class... Args>
   using format_string = basic_format_string<type_identity_t<Args>...>;
 
-  // supported types to format
+  // Supported types to format
+  //
+  // This is the limited number of types as defined in std::basic_format_arg
+  // https://en.cppreference.com/w/cpp/utility/format/basic_format_arg.html
+  //
+  // Further types to be supported are added via converting constructors in
+  // etl::basic_format_arg
   using supported_format_types = etl::variant<
     etl::monostate,
     bool,
@@ -239,6 +245,21 @@ namespace etl
     {
     }
 
+    basic_format_arg(const short v)
+    : data(static_cast<int>(v))
+    {
+    }
+
+    basic_format_arg(const unsigned short v)
+    : data(static_cast<unsigned int>(v))
+    {
+    }
+
+    basic_format_arg(const long int v)
+    : data(static_cast<long long int>(v))
+    {
+    }
+
     basic_format_arg(const unsigned int v)
     : data(v)
     {
@@ -254,6 +275,13 @@ namespace etl
     {
     }
 
+    // Additional type to list of basic types as defined for std::basic_format_arg:
+    // Mapping unsigned long to unsigned long long int
+    basic_format_arg(const unsigned long v)
+    : data(static_cast<unsigned long long int>(v))
+    {
+    }
+
     basic_format_arg(const char* v)
     : data(v)
     {
@@ -261,6 +289,16 @@ namespace etl
 
     basic_format_arg(char v)
     : data(v)
+    {
+    }
+
+    basic_format_arg(const signed char v)
+    : data(static_cast<char>(v))
+    {
+    }
+
+    basic_format_arg(const unsigned char v)
+    : data(static_cast<char>(v))
     {
     }
 
