@@ -35,6 +35,10 @@ SOFTWARE.
 
 #include "platform.h"
 #include "to_string.h"
+#include "to_u8string.h"
+#include "to_u16string.h"
+#include "to_u32string.h"
+#include "to_wstring.h"
 
 namespace etl
 {

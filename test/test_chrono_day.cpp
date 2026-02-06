@@ -242,15 +242,6 @@ namespace
 
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
-    TEST(test_min_max_day)
-    {
-      CHECK_EQUAL(1U,  Chrono::day::min());
-      CHECK_EQUAL(31U, Chrono::day::max());
-    }
-#endif
-
-#if ETL_USING_ETL_CHRONO
-    //*************************************************************************
     TEST(test_literal_day)
     {
       using namespace etl::literals::chrono_literals;

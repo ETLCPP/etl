@@ -284,6 +284,11 @@ namespace etl
     {
     }
 
+    basic_format_arg(const etl::ibasic_string<char>& v)
+    : data(etl::string_view(v.data(), v.size()))
+    {
+    }
+
     basic_format_arg(const basic_format_arg& other): data(other.data)
     {
     }
