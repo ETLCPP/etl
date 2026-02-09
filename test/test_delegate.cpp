@@ -634,16 +634,55 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_lambda_int_create)
+    TEST_FIXTURE(SetupFixture, test_construct_from_rvalue_non_capturing_lambda)
     {
-      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+      etl::delegate<int(int, int)> d([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j; });
 
-      etl::delegate<void(int, int)> d(lambda);
-
-      d(VALUE1, VALUE2);
+      int result = d(VALUE1, VALUE2);
 
       CHECK(function_called == FunctionCalled::Lambda_Called);
       CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE2);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assign_from_rvalue_non_capturing_lambda)
+    {
+      etl::delegate<int(int, int)> d;
+
+      d = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 2; };
+
+      int result = d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE2 + 2);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_create_from_rvalue_non_capturing_lambda)
+    {
+      auto d = etl::delegate<int(int, int)>::create([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 5; });
+
+      int result = d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE2 + 5);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_from_rvalue_non_capturing_lambda_returning_int)
+    {
+      etl::delegate<int(int, int)> d;
+
+      d.set([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 6; });
+
+      int result = d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+      CHECK_EQUAL(result, VALUE1 + VALUE2 + 6);
     }
 
 #if ETL_USING_CPP17

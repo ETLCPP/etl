@@ -155,9 +155,22 @@ namespace etl
 
     //*************************************************************************
     // Delete construction from rvalue reference lambda or functor.
+    // Excludes non-capturing lambdas convertible to a function pointer.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TArgs...)>, TLambda>::value, void>>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TArgs...)>, TLambda>::value && !etl::is_convertible<TLambda, TReturn(*)(TArgs...)>::value, void>>
     ETL_CONSTEXPR14 delegate(TLambda&& instance) = delete;
+
+    //*************************************************************************
+    // Construct from non-capturing rvalue lambda convertible to function pointer.
+    // Converts to a function pointer to avoid storing a dangling pointer
+    // to a destroyed temporary.
+    //*************************************************************************
+    template <typename TLambda, etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_reference<TLambda>::value && etl::is_convertible<TLambda, TReturn(*)(TArgs...)>::value, int> = 0>
+    delegate(TLambda&& instance) ETL_NOEXCEPT
+    {
+      TReturn(*fp)(TArgs...) = static_cast<TReturn(*)(TArgs...)>(instance);
+      assign(reinterpret_cast<void*>(fp), function_ptr_stub);
+    }
 
     //*************************************************************************
     /// Create from function (Compile time).
@@ -187,6 +200,19 @@ namespace etl
     static ETL_CONSTEXPR14 delegate create(const TLambda& instance) ETL_NOEXCEPT
     {
       return delegate((void*)(&instance), const_lambda_stub<TLambda>);
+    }
+
+    //*************************************************************************
+    // Create from non-capturing rvalue lambda convertible to function pointer.
+    // Converts to a function pointer to avoid storing a dangling pointer
+    // to a destroyed temporary.
+    //*************************************************************************
+    template <typename TLambda, etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_reference<TLambda>::value && etl::is_convertible<TLambda, TReturn(*)(TArgs...)>::value, int> = 0>
+    ETL_NODISCARD
+    static delegate create(TLambda&& instance) ETL_NOEXCEPT
+    {
+      TReturn(*fp)(TArgs...) = static_cast<TReturn(*)(TArgs...)>(instance);
+      return delegate(reinterpret_cast<void*>(fp), function_ptr_stub);
     }
 
     //*************************************************************************
@@ -303,6 +329,18 @@ namespace etl
     ETL_CONSTEXPR14 void set(const TLambda& instance) ETL_NOEXCEPT
     {
       assign((void*)(&instance), const_lambda_stub<TLambda>);
+    }
+
+    //*************************************************************************
+    // Set from non-capturing rvalue lambda convertible to function pointer.
+    // Converts to a function pointer to avoid storing a dangling pointer
+    // to a destroyed temporary.
+    //*************************************************************************
+    template <typename TLambda, etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_reference<TLambda>::value && etl::is_convertible<TLambda, TReturn(*)(TArgs...)>::value, int> = 0>
+    void set(TLambda&& instance) ETL_NOEXCEPT
+    {
+      TReturn(*fp)(TArgs...) = static_cast<TReturn(*)(TArgs...)>(instance);
+      assign(reinterpret_cast<void*>(fp), function_ptr_stub);
     }
 
     //*************************************************************************
@@ -495,6 +533,19 @@ namespace etl
     }
 
     //*************************************************************************
+    // Create from non-capturing rvalue lambda convertible to function pointer.
+    // Converts to a function pointer to avoid storing a dangling pointer
+    // to a destroyed temporary.
+    //*************************************************************************
+    template <typename TLambda, etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_reference<TLambda>::value && etl::is_convertible<TLambda, TReturn(*)(TArgs...)>::value, int> = 0>
+    delegate& operator =(TLambda&& instance) ETL_NOEXCEPT
+    {
+      TReturn(*fp)(TArgs...) = static_cast<TReturn(*)(TArgs...)>(instance);
+      assign(reinterpret_cast<void*>(fp), function_ptr_stub);
+      return *this;
+    }
+
+    //*************************************************************************
     /// Checks equality.
     //*************************************************************************
     ETL_NODISCARD
@@ -677,6 +728,16 @@ namespace etl
     static ETL_CONSTEXPR14 TReturn function_stub(void*, TArgs... args)
     {
       return (Method)(etl::forward<TArgs>(args)...);
+    }
+
+    //*************************************************************************
+    /// Stub call for a runtime function pointer stored in the object field.
+    //*************************************************************************
+    static TReturn function_ptr_stub(void* object, TArgs... args)
+    {
+      ETL_STATIC_ASSERT(sizeof(void*) >= sizeof(TReturn(*)(TArgs...)), "etl::delegate: function pointer too large to store in object field");
+      TReturn(*fp)(TArgs...) = reinterpret_cast<TReturn(*)(TArgs...)>(object);
+      return fp(etl::forward<TArgs>(args)...);
     }
 
     //*************************************************************************
