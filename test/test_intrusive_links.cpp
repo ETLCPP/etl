@@ -1623,19 +1623,47 @@ namespace
       etl::link_right(b, a);
       etl::link_left(b, d);
       etl::link_right(a, c);
-      etl::link_left(a, e);
+      etl::link_left(a, e);   
+
+      //      r    //
+      //     /     //
+      //    b      //
+      //   / \     //
+      //  d   a    //
+      //     / \   //
+      //    e   c  //
 
       etl::link_rotate_left(b, a);
 
+      //        r  //
+      //       /   //
+      //      a    //
+      //     / \   //
+      //    b   c  //
+      //   / \     //
+      //  d   e    //
+
+      CHECK(r.etl_left   == &a);
+
       CHECK(a.etl_parent == &r);
-      CHECK(b.etl_parent == &a);
-      CHECK(e.etl_parent == &b);
-      CHECK(d.etl_parent == &b);
-      CHECK(c.etl_parent == &a);
       CHECK(a.etl_left   == &b);
       CHECK(a.etl_right  == &c);
+
+      CHECK(b.etl_parent == &a);
       CHECK(b.etl_left   == &d);
       CHECK(b.etl_right  == &e);
+
+      CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left   == nullptr);
+      CHECK(d.etl_right  == nullptr);
+
+      CHECK(c.etl_parent == &a);
+      CHECK(c.etl_left   == nullptr);
+      CHECK(c.etl_right  == nullptr);
+
+      CHECK(e.etl_parent == &b);
+      CHECK(e.etl_left   == nullptr);
+      CHECK(e.etl_right  == nullptr);
     }
 
     //*************************************************************************
@@ -1656,16 +1684,41 @@ namespace
       etl::link_left(b, d);
       etl::link_right(a, c);
 
+      //      r    //
+      //     /     //
+      //    b      //
+      //   / \     //
+      //  d   a    //
+      //       \   //
+      //        c  //
+
       etl::link_rotate_left(b, a);
 
+      //        r  //
+      //       /   //
+      //      a    //
+      //     / \   //
+      //    b   c  //
+      //   /       //
+      //  d        //
+
+      CHECK(r.etl_left   == &a);
+
       CHECK(a.etl_parent == &r);
-      CHECK(b.etl_parent == &a);
-      CHECK(d.etl_parent == &b);
-      CHECK(c.etl_parent == &a);
       CHECK(a.etl_left   == &b);
       CHECK(a.etl_right  == &c);
+
+      CHECK(b.etl_parent == &a);
       CHECK(b.etl_left   == &d);
       CHECK(b.etl_right  == nullptr);
+
+      CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left   == nullptr);
+      CHECK(d.etl_right  == nullptr);
+
+      CHECK(c.etl_parent == &a);
+      CHECK(c.etl_left   == nullptr);
+      CHECK(c.etl_right  == nullptr);
     }
 
     //*************************************************************************
@@ -1684,21 +1737,49 @@ namespace
       e.clear();
       etl::link_left(r, a);
       etl::link_left(a, b);
-      etl::link_left(b, d);
       etl::link_right(a, c);
+      etl::link_left(b, d);
       etl::link_right(b, e);
+
+      //        r    //
+      //       /     //
+      //      a      //
+      //     / \     //
+      //    b   c    //
+      //   / \       //
+      //  d   e      //
 
       etl::link_rotate_right(a, b);
 
+      //        r    //
+      //       /     //
+      //      b      //
+      //     / \     //
+      //    d   a    //
+      //       / \   //
+      //      e   c  //
+
+      CHECK(r.etl_left   == &b);
+
       CHECK(b.etl_parent == &r);
-      CHECK(d.etl_parent == &b);
-      CHECK(a.etl_parent == &b);
-      CHECK(e.etl_parent == &a);
-      CHECK(c.etl_parent == &a);
       CHECK(b.etl_left   == &d);
       CHECK(b.etl_right  == &a);
+
+      CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left   == nullptr);
+      CHECK(d.etl_right  == nullptr);
+
+      CHECK(a.etl_parent == &b);
       CHECK(a.etl_left   == &e);
       CHECK(a.etl_right  == &c);
+
+      CHECK(c.etl_parent == &a);
+      CHECK(c.etl_left   == nullptr);
+      CHECK(c.etl_right  == nullptr);
+
+      CHECK(e.etl_parent == &a);
+      CHECK(e.etl_left   == nullptr);
+      CHECK(e.etl_right  == nullptr);
     }
 
     //*************************************************************************
@@ -1719,16 +1800,41 @@ namespace
       etl::link_left(b, d);
       etl::link_right(a, c);
 
+      //        r   //
+      //       /    //
+      //      a     //
+      //     / \    //
+      //    b   c   //
+      //   /        //
+      //  d         //
+
       etl::link_rotate_right(a, b);
 
+      //        r    //
+      //       /     //
+      //      b      //
+      //     / \     //
+      //    d   a    //
+      //         \   //
+      //          c  //
+
+      CHECK(r.etl_left   == &b);
+      
       CHECK(b.etl_parent == &r);
-      CHECK(d.etl_parent == &b);
-      CHECK(a.etl_parent == &b);
-      CHECK(c.etl_parent == &a);
       CHECK(b.etl_left   == &d);
       CHECK(b.etl_right  == &a);
+      
+      CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left   == nullptr);
+      CHECK(d.etl_right  == nullptr);
+
+      CHECK(a.etl_parent == &b);
       CHECK(a.etl_left   == nullptr);
       CHECK(a.etl_right  == &c);
+
+      CHECK(c.etl_parent == &a);
+      CHECK(c.etl_left   == nullptr);
+      CHECK(c.etl_right  == nullptr);
     }
   }
 }
