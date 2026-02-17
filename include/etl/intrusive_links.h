@@ -944,7 +944,7 @@ namespace etl
   {
     TLink* current = &first;
     ((current->etl_next = &links, static_cast<TLink&>(links).etl_previous = current, current = &links), ...);
- 
+
     return current;
   }
 
@@ -1397,7 +1397,7 @@ namespace etl
       }
     }
   }
-   
+
   template <typename TLink>
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink* parent, TLink* leaf)
