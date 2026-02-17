@@ -554,7 +554,7 @@ namespace
       CHECK(data1.FLink0::etl_next == &data2);
       CHECK(data2.FLink0::etl_next == nullptr);
       CHECK(data3.FLink0::etl_next == nullptr);
-      
+
       etl::link_clear_range(*start);
       CHECK(data0.FLink0::etl_next == &data3);
       CHECK(data1.FLink0::etl_next == nullptr);
@@ -882,11 +882,11 @@ namespace
       BData data2(2);
       BData data3(3);
 
-      // Use reference interface    
+      // Use reference interface
       data0.BLink0::set_next(data1);
       data1.BLink0::set_next(data2);
       data2.BLink0::set_next(data3);
-      
+
       data1.BLink0::set_previous(data0);
       data2.BLink0::set_previous(data1);
       data3.BLink0::set_previous(data2);
@@ -1623,7 +1623,7 @@ namespace
       etl::link_right(b, a);
       etl::link_left(b, d);
       etl::link_right(a, c);
-      etl::link_left(a, e);   
+      etl::link_left(a, e);
 
       //      r    //
       //     /     //
@@ -1819,11 +1819,11 @@ namespace
       //          c  //
 
       CHECK(r.etl_left   == &b);
-      
+
       CHECK(b.etl_parent == &r);
       CHECK(b.etl_left   == &d);
       CHECK(b.etl_right  == &a);
-      
+
       CHECK(d.etl_parent == &b);
       CHECK(d.etl_left   == nullptr);
       CHECK(d.etl_right  == nullptr);
