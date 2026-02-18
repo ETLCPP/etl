@@ -192,6 +192,10 @@ namespace etl
   {
   public:
 
+    using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
+    using message_types        = etl::type_list<>;                                                    ///> The message types.
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
+
     //********************************************
     null_message_router()
       : imessage_router(imessage_router::NULL_MESSAGE_ROUTER)
@@ -269,6 +273,10 @@ namespace etl
   class message_producer : public imessage_router
   {
   public:
+
+    using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
+    using message_types        = etl::type_list<>;                                                    ///> The message types.
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 
     //********************************************
     message_producer()
@@ -411,9 +419,9 @@ namespace etl
   {
   public:
 
-    using message_packet       = etl::message_packet<TMessageTypes...>;
-    using message_types        = etl::type_list<TMessageTypes...>;
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
+    using message_packet       = etl::message_packet<TMessageTypes...>;                               ///< The message packet type.
+    using message_types        = etl::type_list<TMessageTypes...>;                                    ///< The message types.
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 
     //**********************************************
     /// Default constructor. The message router id will be MESSAGE_ROUTER.
@@ -731,9 +739,9 @@ namespace etl
   {
   public:
 
-    using message_packet       = etl::message_packet<>;
-    using message_types        = etl::type_list<>;
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
+    using message_packet = etl::message_packet<>;                                                     ///< The message packet type.
+    using message_types = etl::type_list<>;                                                           ///> The message types.
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 
     //**********************************************
     /// Default constructor. The message router id will be MESSAGE_ROUTER.
