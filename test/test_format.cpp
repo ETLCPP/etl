@@ -87,6 +87,62 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_format_short)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<short>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<short>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<short>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<short>(1), static_cast<short>(2)));
+      CHECK_EQUAL("-123", test_format(s, "{}", static_cast<short>(-123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<short>(0)));
+      CHECK_EQUAL("-1", test_format(s, "{}", static_cast<short>(-1)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_short)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned short>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<unsigned short>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<unsigned short>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<unsigned short>(1), static_cast<unsigned short>(2)));
+      CHECK_EQUAL("60123", test_format(s, "{}", static_cast<unsigned short>(60123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned short>(0)));
+      CHECK_EQUAL("65500", test_format(s, "{}", static_cast<unsigned short>(65500)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_long_int)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<long int>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<long int>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<long int>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<long int>(1), static_cast<long int>(2)));
+      CHECK_EQUAL("-123", test_format(s, "{}", static_cast<long int>(-123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<long int>(0)));
+      CHECK_EQUAL("-1", test_format(s, "{}", static_cast<long int>(-1)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_long_int)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned long int>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<unsigned long int>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<unsigned long int>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<unsigned long int>(1), static_cast<unsigned long int>(2)));
+      CHECK_EQUAL("60123", test_format(s, "{}", static_cast<unsigned long int>(60123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned long int>(0)));
+      CHECK_EQUAL("65500", test_format(s, "{}", static_cast<unsigned long int>(65500)));
+    }
+
+    //*************************************************************************
     TEST(test_format_unsigned_int)
     {
       etl::string<100> s;
@@ -131,8 +187,10 @@ namespace
     {
       etl::string<100> s;
 
-      CHECK_EQUAL("34", test_format(s, "{}", static_cast<uint8_t>(34)));
-      CHECK_EQUAL("-14", test_format(s, "{}", static_cast<int8_t>(-14)));
+      // mapped to unsigned char
+      //CHECK_EQUAL("34", test_format(s, "{}", static_cast<uint8_t>(34)));
+      // mapped to signed char
+      //CHECK_EQUAL("-14", test_format(s, "{}", static_cast<int8_t>(-14)));
       CHECK_EQUAL("6534", test_format(s, "{}", static_cast<uint16_t>(6534)));
       CHECK_EQUAL("-9414", test_format(s, "{}", static_cast<int16_t>(-9414)));
       CHECK_EQUAL("236534", test_format(s, "{}", static_cast<uint32_t>(236534)));
@@ -396,6 +454,82 @@ namespace
         CHECK_EQUAL("0x1abcdef0", test_format(s, "{:p}", p));
         CHECK_EQUAL("0X1ABCDEF0", test_format(s, "{:P}", p));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_format_size_t)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<size_t>(0LL)));
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<size_t>(1LL)));
+      CHECK_EQUAL("12345678", test_format(s, "{}", static_cast<size_t>(12345678LL)));
+      CHECK_EQUAL("4123456780", test_format(s, "{}", static_cast<size_t>(4123456780LL)));
+#if ETL_PLATFORM_64BIT
+      static_assert(sizeof(size_t) == 8, "size_t is expected to be 64 bit on 64 bit platforms");
+      CHECK_EQUAL("18446744073709551615", test_format(s, "{}", static_cast<size_t>(18446744073709551615ULL)));
+      CHECK_EQUAL("1311768467463790320", test_format(s, "{}", static_cast<size_t>(0x123456789ABCDEF0ULL)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_long)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned long>(0LL)));
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned long>(1LL)));
+      CHECK_EQUAL("12345678", test_format(s, "{}", static_cast<unsigned long>(12345678LL)));
+      CHECK_EQUAL("4123456780", test_format(s, "{}", static_cast<unsigned long>(4123456780LL)));
+#if ETL_PLATFORM_64BIT
+      static_assert(sizeof(unsigned long) == 8, "size_t is expected to be 64 bit on 64 bit platforms");
+      CHECK_EQUAL("18446744073709551615", test_format(s, "{}", static_cast<unsigned long>(18446744073709551615ULL)));
+      CHECK_EQUAL("1311768467463790320", test_format(s, "{}", static_cast<unsigned long>(0x123456789ABCDEF0ULL)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_format_signed_char)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("a s b", test_format(s, "a {} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a s b", test_format(s, "a {:c} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a 's' b", test_format(s, "a {:?} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a \t b", test_format(s, "a {} b", static_cast<signed char>('\t')));
+      CHECK_EQUAL("a '\\t' b", test_format(s, "a {:?} b", static_cast<signed char>('\t')));
+      CHECK_EQUAL("a '\\n' b", test_format(s, "a {:?} b", static_cast<signed char>('\n')));
+      CHECK_EQUAL("a '\\r' b", test_format(s, "a {:?} b", static_cast<signed char>('\r')));
+      CHECK_EQUAL("a '\\\"' b", test_format(s, "a {:?} b", static_cast<signed char>('"')));
+      CHECK_EQUAL("a '\\'' b", test_format(s, "a {:?} b", static_cast<signed char>('\'')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<signed char>('\\')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<signed char>('\\')));
+      CHECK_EQUAL("a 97 b", test_format(s, "a {:d} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:X} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:x} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a 0x61 b", test_format(s, "a {:#x} b", static_cast<signed char>('a')));
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_char)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("a s b", test_format(s, "a {} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a s b", test_format(s, "a {:c} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a 's' b", test_format(s, "a {:?} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a \t b", test_format(s, "a {} b", static_cast<unsigned char>('\t')));
+      CHECK_EQUAL("a '\\t' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\t')));
+      CHECK_EQUAL("a '\\n' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\n')));
+      CHECK_EQUAL("a '\\r' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\r')));
+      CHECK_EQUAL("a '\\\"' b", test_format(s, "a {:?} b", static_cast<unsigned char>('"')));
+      CHECK_EQUAL("a '\\'' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\'')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\\')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\\')));
+      CHECK_EQUAL("a 97 b", test_format(s, "a {:d} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:X} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:x} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 0x61 b", test_format(s, "a {:#x} b", static_cast<unsigned char>('a')));
     }
 
     //*************************************************************************
