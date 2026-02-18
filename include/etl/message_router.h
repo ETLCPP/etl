@@ -65,6 +65,7 @@ SOFTWARE.
 #include "successor.h"
 #include "type_traits.h"
 #include "type_list.h"
+#include "array.h"
 #include <stdint.h>
 
 namespace etl
@@ -202,7 +203,7 @@ namespace etl
       : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor_)
     {
     }
-    
+
     //********************************************
     using etl::imessage_router::receive;
 
@@ -399,9 +400,9 @@ namespace etl
   }
 
 //*************************************************************************************************
-// For C++17 and above.
+// For C++11 and above.
 //*************************************************************************************************
-#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // The definition for all message types.
   //***************************************************************************
@@ -410,7 +411,9 @@ namespace etl
   {
   public:
 
-    typedef etl::message_packet<TMessageTypes...> message_packet;
+    using message_packet       = etl::message_packet<TMessageTypes...>;
+    using message_types        = etl::type_list<TMessageTypes...>;
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id>;
 
     //**********************************************
     message_router()
@@ -443,30 +446,11 @@ namespace etl
 
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-      const bool was_handled = (receive_message_type<TMessageTypes>(msg) || ...);
+      size_t index = get_dispatch_index_from_message_id(msg.get_message_id());
 
-      if (!was_handled)
+      if (index < N)
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-#include "etl/private/diagnostic_array_bounds_push.h"
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-#include "etl/private/diagnostic_pop.h"
-        }
-      }
-    }
-
-    template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
-    void receive(const TMessage& msg)
-    {
-#include "etl/private/diagnostic_array_bounds_push.h"
-      if constexpr (etl::is_one_of<TMessage, TMessageTypes...>::value)
-      {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        dispatch(msg, index);
       }
       else
       {
@@ -476,8 +460,35 @@ namespace etl
         }
         else
         {
+#include "etl/private/diagnostic_array_bounds_push.h"
           static_cast<TDerived*>(this)->on_receive_unknown(msg);
+#include "etl/private/diagnostic_pop.h"
         }
+      }
+    }
+
+    //**********************************************
+    // This will be called for messages where TMessage is in the message type list.
+    template <typename TMessage, typename etl::enable_if<etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
+    void receive(const TMessage& msg)
+    {
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    //**********************************************
+    // This will be called for messages where TMessage is a message type, but not in the message type list.
+    template <typename TMessage, typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value &&
+                                                         !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
+    void receive(const TMessage& msg)
+    {
+#include "etl/private/diagnostic_array_bounds_push.h"
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
+      else
+      {
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
 #include "etl/private/diagnostic_pop.h"
     }
@@ -487,7 +498,21 @@ namespace etl
 
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return (accepts_type<TMessageTypes>(id) || ...);
+      if (get_dispatch_index_from_message_id(id) != N)
+      {
+        return true;
+      }
+      else
+      {
+        if (has_successor())
+        {
+          return get_successor().accepts(id);
+        }
+        else
+        {
+          return false;
+        }
+      }
     }
 
     //********************************************
@@ -510,44 +535,96 @@ namespace etl
 
   private:
 
-    //********************************************
+    static constexpr size_t N = sizeof...(TMessageTypes);
+
+    using handler_ptr              = void(*)(TDerived&, const etl::imessage&);
+    using message_dispatch_table_t = etl::array<handler_ptr, N>;
+    using message_id_table_t       = etl::array<etl::message_id_t, N>;
+
+    //***************************************************************************
+    // Call for a single message type
     template <typename TMessage>
-    bool receive_message_type(const etl::imessage& msg)
+    static void call_on_receive(TDerived& derived, const imessage& msg)
     {
-      if (TMessage::ID == msg.get_message_id())
-      {
-#include "etl/private/diagnostic_array_bounds_push.h"
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
-#include "etl/private/diagnostic_pop.h"
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      derived.on_receive(static_cast<const TMessage&>(msg));
     }
 
-    //********************************************
-    template <typename TMessage>
-    bool accepts_type(etl::message_id_t id) const
+    template <size_t Index>
+    static constexpr handler_ptr get_message_handler()
     {
-      if (TMessage::ID == id)
+      return &call_on_receive<etl::type_list_type_at_index_t<sorted_message_types, Index>>;
+    }
+
+    template <size_t... Indices>
+    static constexpr message_dispatch_table_t make_message_dispatch_table(etl::index_sequence<Indices...>)
+    {
+      return message_dispatch_table_t{ { get_message_handler<Indices>()... } };
+    }
+
+    template <size_t Index>
+    static constexpr etl::message_id_t get_message_id_from_index()
+    {
+      return etl::type_list_type_at_index_t<sorted_message_types, Index>::ID;
+    }
+
+    template <size_t... Indices>
+    static constexpr message_id_table_t make_message_id_table(etl::index_sequence<Indices...>)
+    {
+      return message_id_table_t{ { get_message_id_from_index<Indices>()... } };
+    }
+
+    //***************************************************************************
+    // Binary search
+    static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
+    {
+      size_t left  = 0;
+      size_t right = N;
+
+      while (left < right)
       {
-        return true;
-      }
-      else
-      {
-        if (has_successor())
+        size_t mid = (left + right) / 2;
+
+        if (message_id_table[mid] == id)
         {
-          return get_successor().accepts(id);
+          return mid;
+        }
+        else if (message_id_table[mid] < id)
+        {
+          left = mid + 1;
         }
         else
         {
-          return false;
+          right = mid;
         }
       }
+
+      return N; // not found
     }
+
+    //***************************************************************************
+    void dispatch(const etl::imessage& msg, size_t index)
+    {
+      message_dispatch_table[index](static_cast<TDerived&>(*this), msg);
+    }
+
+    // The dispatch table is generated at compile time. The dispatch table contains pointers to the on_receive handlers for each message type.
+    static ETL_INLINE_VAR constexpr message_dispatch_table_t message_dispatch_table =
+      etl::message_router<TDerived, TMessageTypes...>::make_message_dispatch_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::N>{});
+
+    // The message id table is generated at compile time. The message id table contains the corresponding message ids for each message type.
+    static ETL_INLINE_VAR constexpr message_id_table_t message_id_table =
+      etl::message_router<TDerived, TMessageTypes...>::make_message_id_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::N>{});
   };
+
+#if ETL_USING_CPP11 && !ETL_USING_CPP17
+  template <typename TDerived, typename... TMessageTypes>
+  constexpr const typename etl::message_router<TDerived, TMessageTypes...>::message_dispatch_table_t
+    etl::message_router<TDerived, TMessageTypes...>::message_dispatch_table;
+
+  template <typename TDerived, typename... TMessageTypes>
+  constexpr const typename etl::message_router<TDerived, TMessageTypes...>::message_id_table_t
+    etl::message_router<TDerived, TMessageTypes...>::message_id_table;
+#endif
 
   //***************************************************************************
   // The definition for 0 message types.
@@ -597,6 +674,7 @@ namespace etl
       }
     }
 
+    //**********************************************
     template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
@@ -658,15 +736,15 @@ namespace etl
 
 #else
 //*************************************************************************************************
-// For C++14 and below.
+// For C++03/98.
 //*************************************************************************************************
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
   template <typename TDerived,
-            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class message_router  : public imessage_router
   {
@@ -778,8 +856,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID:
           return true;
         default:
         {
@@ -817,10 +895,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 15 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14, typename T15>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void>
    : public imessage_router
@@ -933,8 +1011,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID:
           return true;
         default:
         {
@@ -972,10 +1050,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 14 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void>
    : public imessage_router
@@ -1087,8 +1165,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID:
           return true;
         default:
         {
@@ -1126,10 +1204,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 13 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void>
    : public imessage_router
@@ -1240,8 +1318,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID:
           return true;
         default:
         {
@@ -1279,9 +1357,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 12 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11, typename T12>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void>
    : public imessage_router
@@ -1391,8 +1469,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID: case T11::ID: case T12::ID:
           return true;
         default:
         {
@@ -1430,9 +1508,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 11 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void>
    : public imessage_router
@@ -1541,8 +1619,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID: case T11::ID:
           return true;
         default:
         {
@@ -1580,9 +1658,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 10 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void>
    : public imessage_router
@@ -1690,8 +1768,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID: case T10::ID:
           return true;
         default:
         {
@@ -1729,9 +1807,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 9 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1838,8 +1916,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T9::ID:
           return true;
         default:
         {
@@ -1877,8 +1955,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 8 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6, typename T7, typename T8>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -1984,8 +2062,8 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+
           return true;
         default:
         {
@@ -2023,8 +2101,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 7 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6, typename T7>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2129,7 +2207,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID:
           return true;
         default:
         {
@@ -2167,8 +2245,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 6 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2272,7 +2350,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID:
           return true;
         default:
         {
@@ -2310,8 +2388,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 5 message types.
   //***************************************************************************
-  template <typename TDerived, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TDerived,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5>
   class message_router<TDerived, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2414,7 +2492,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID:
           return true;
         default:
         {
@@ -2452,7 +2530,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 4 message types.
   //***************************************************************************
-  template <typename TDerived, 
+  template <typename TDerived,
             typename T1, typename T2, typename T3, typename T4>
   class message_router<TDerived, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2554,7 +2632,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
+        case T1::ID: case T2::ID: case T3::ID: case T4::ID:
           return true;
         default:
         {
@@ -2592,7 +2670,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 3 message types.
   //***************************************************************************
-  template <typename TDerived, 
+  template <typename TDerived,
             typename T1, typename T2, typename T3>
   class message_router<TDerived, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2693,7 +2771,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: 
+        case T1::ID: case T2::ID: case T3::ID:
           return true;
         default:
         {
@@ -2731,7 +2809,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 2 message types.
   //***************************************************************************
-  template <typename TDerived, 
+  template <typename TDerived,
             typename T1, typename T2>
   class message_router<TDerived, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2831,7 +2909,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: 
+        case T1::ID: case T2::ID:
           return true;
         default:
         {
@@ -2869,7 +2947,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 1 message type.
   //***************************************************************************
-  template <typename TDerived, 
+  template <typename TDerived,
             typename T1>
   class message_router<TDerived, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
    : public imessage_router
@@ -2968,7 +3046,7 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: 
+        case T1::ID:
           return true;
         default:
         {
