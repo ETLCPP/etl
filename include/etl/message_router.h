@@ -416,17 +416,23 @@ namespace etl
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
 
     //**********************************************
+    /// Default constructor. The message router id will be MESSAGE_ROUTER.
+    //**********************************************
     message_router()
       : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
     {
     }
 
     //**********************************************
+    /// Constructor with successor. The message router id will be MESSAGE_ROUTER.
+    //**********************************************
     message_router(etl::imessage_router& successor_)
       : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
     {
     }
 
+    //**********************************************
+    /// Constructor with message router id.
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -435,6 +441,8 @@ namespace etl
     }
 
     //**********************************************
+    /// Constructor with message router id and successor.
+    //**********************************************
     message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
       : imessage_router(id_, successor_)
     {
@@ -442,18 +450,44 @@ namespace etl
     }
 
     //**********************************************
+    /// Allow visibility of base class receive() methods.
+    //**********************************************
     using etl::imessage_router::receive;
 
+    //**********************************************
+    /// This will be called for all messages passed as an etl::imessage.
+    /// It will dispatch the message to the correct handler based on the message id,
+    /// or pass it to a successor if there is no handler for the message id.
+    /// \param msg The message.
+    //***********************************************
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-      size_t index = get_dispatch_index_from_message_id(msg.get_message_id());
+      etl::message_id_t id = msg.get_message_id();
+      size_t index = Number_Of_Messages;
 
-      if (index < N)
+      // The IDs are sorted, so an ID less than the first is not handled by this router.
+      if (id >= Message_Id_Start)
+      {
+        if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
+        {
+          // The IDs are contiguous, so we can calculate the index directly.
+          index = static_cast<size_t>(id) - Message_Id_Start;
+        }
+        else
+        {
+          // The IDs are not contiguous, so we need to do a binary search.
+          index = get_dispatch_index_from_message_id(id);
+        }
+      }
+
+      // If the index is less than Number_Of_Messages, then we have a handler for this message type, so dispatch it.
+      if (index < Number_Of_Messages)
       {
         dispatch(msg, index);
       }
       else
       {
+        // We don't have a handler for this message type, so pass it to a successor if there is one, or call on_receive_unknown() if there isn't.
         if (has_successor())
         {
           get_successor().receive(msg);
@@ -468,7 +502,11 @@ namespace etl
     }
 
     //**********************************************
-    // This will be called for messages where TMessage is in the message type list.
+    /// This will be called for messages where TMessage is in the message type list.
+    /// \tparam TMessage The message type.
+    /// \param msg The message.
+    /// Enabled if TMessage is in the message type list.
+    //**********************************************
     template <typename TMessage, typename etl::enable_if<etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
@@ -476,7 +514,11 @@ namespace etl
     }
 
     //**********************************************
-    // This will be called for messages where TMessage is a message type, but not in the message type list.
+    /// This will be called for messages where TMessage is a message type, but not in the message type list.
+    /// \tparam TMessage The message type.
+    /// \param msg The message.
+    /// Enabled if TMessage is a message type, but not in the message type list.
+    //**********************************************
     template <typename TMessage, typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value &&
                                                          !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
@@ -494,11 +536,16 @@ namespace etl
     }
 
     //**********************************************
+    /// Allow visibility of base class accepts() methods.
+    //**********************************************
     using imessage_router::accepts;
 
+    //**********************************************
+    /// This will return true if the message id is in the message type list, or if a successor accepts the message id.
+    //***********************************************
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      if (get_dispatch_index_from_message_id(id) != N)
+      if (get_dispatch_index_from_message_id(id) != Number_Of_Messages)
       {
         return true;
       }
@@ -535,50 +582,94 @@ namespace etl
 
   private:
 
-    static constexpr size_t N = sizeof...(TMessageTypes);
+    static constexpr size_t Number_Of_Messages = sizeof...(TMessageTypes);
+    static constexpr size_t Message_Id_Start = etl::type_list_type_at_index_t<sorted_message_types, 0>::ID;
 
-    using handler_ptr              = void(*)(TDerived&, const etl::imessage&);
-    using message_dispatch_table_t = etl::array<handler_ptr, N>;
-    using message_id_table_t       = etl::array<etl::message_id_t, N>;
+    //**********************************************
+    // Checks that the message ids are contiguous.
+    //**********************************************
+    template <size_t Index, bool Last = (Index + 1U >= Number_Of_Messages)>
+    struct contiguous_impl;
 
-    //***************************************************************************
+    template <size_t Index>
+    struct contiguous_impl<Index, true> : etl::true_type
+    {
+    };
+
+    template <size_t Index>
+    struct contiguous_impl<Index, false>
+      : etl::bool_constant<(etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U ==
+                            etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) &&
+                            contiguous_impl<Index + 1U>::value>
+    {
+    };
+
+    // The message ids are contiguous if there are 0 or 1 message types, or if each message id is one greater than the previous message id.
+    static constexpr bool Message_Ids_Are_Contiguous = (Number_Of_Messages <= 1U) ? true : contiguous_impl<0U>::value;
+
+    using handler_ptr = void (*)(TDerived&, const etl::imessage&);  ///< Pointer to a handler function that takes a reference to the derived class and a reference to the message.
+    using message_dispatch_table_t = etl::array<handler_ptr, Number_Of_Messages>;    ///< The dispatch table type. An array of handler pointers, one for each message type.
+    using message_id_table_t = etl::array<etl::message_id_t, Number_Of_Messages>;    ///< The message id table type. An array of message ids, one for each message type.
+
+    //**********************************************
     // Call for a single message type
+    //**********************************************
     template <typename TMessage>
     static void call_on_receive(TDerived& derived, const imessage& msg)
     {
       derived.on_receive(static_cast<const TMessage&>(msg));
     }
 
+    //**********************************************
+    // Get the handler for a single message type at the index in the sorted type_list.
+    // This will be called for each message type to generate the dispatch table.
+    //**********************************************
     template <size_t Index>
     static constexpr handler_ptr get_message_handler()
     {
       return &call_on_receive<etl::type_list_type_at_index_t<sorted_message_types, Index>>;
     }
 
+    //**********************************************
+    // Generate the dispatch table at compile time.
+    // This will create an array of handler pointers, one for each message type.
+    //**********************************************
     template <size_t... Indices>
     static constexpr message_dispatch_table_t make_message_dispatch_table(etl::index_sequence<Indices...>)
     {
       return message_dispatch_table_t{ { get_message_handler<Indices>()... } };
     }
 
+    //**********************************************
+    // Get the message id for a single message type at an index in the sorted type_list.
+    // This will be called for each message type to generate the message id table.
+    //**********************************************
     template <size_t Index>
     static constexpr etl::message_id_t get_message_id_from_index()
     {
       return etl::type_list_type_at_index_t<sorted_message_types, Index>::ID;
     }
 
+    //**********************************************
+    // Generate the message id table at compile time.
+    // This will create an array of message ids, one for each message type.
+    //**********************************************
     template <size_t... Indices>
     static constexpr message_id_table_t make_message_id_table(etl::index_sequence<Indices...>)
     {
       return message_id_table_t{ { get_message_id_from_index<Indices>()... } };
     }
 
-    //***************************************************************************
-    // Binary search
+    //**********************************************
+    // Get the dispatch index for a message id.
+    // This will be used at runtime to find the handler for a message id.
+    // This is a binary search of the message id table, which is sorted by message id.
+    // This will return Number_Of_Messages if the message id is not found, which indicates that the message should be passed to the successor.
+    //**********************************************
     static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
     {
       size_t left  = 0;
-      size_t right = N;
+      size_t right = Number_Of_Messages;
 
       while (left < right)
       {
@@ -598,22 +689,28 @@ namespace etl
         }
       }
 
-      return N; // not found
+      return Number_Of_Messages; // not found
     }
 
-    //***************************************************************************
+    //**********************************************
+    // Dispatch the message to the appropriate handler based on the index in the dispatch table.
+    //**********************************************
     void dispatch(const etl::imessage& msg, size_t index)
     {
       message_dispatch_table[index](static_cast<TDerived&>(*this), msg);
     }
 
+    //**********************************************
     // The dispatch table is generated at compile time. The dispatch table contains pointers to the on_receive handlers for each message type.
+    //**********************************************
     static ETL_INLINE_VAR constexpr message_dispatch_table_t message_dispatch_table =
-      etl::message_router<TDerived, TMessageTypes...>::make_message_dispatch_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::N>{});
+      etl::message_router<TDerived, TMessageTypes...>::make_message_dispatch_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::Number_Of_Messages>{});
 
+    //**********************************************
     // The message id table is generated at compile time. The message id table contains the corresponding message ids for each message type.
+    //**********************************************
     static ETL_INLINE_VAR constexpr message_id_table_t message_id_table =
-      etl::message_router<TDerived, TMessageTypes...>::make_message_id_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::N>{});
+      etl::message_router<TDerived, TMessageTypes...>::make_message_id_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::Number_Of_Messages>{});
   };
 
 #if ETL_USING_CPP11 && !ETL_USING_CPP17
@@ -627,16 +724,19 @@ namespace etl
 #endif
 
   //***************************************************************************
-  // The definition for 0 message types.
+  // The definition of a message_router for zero message types.
   //***************************************************************************
   template <typename TDerived>
   class message_router<TDerived> : public imessage_router
   {
   public:
 
-    using message_packet = etl::message_packet<>;
-    using message_types  = etl::type_list<>;
+    using message_packet       = etl::message_packet<>;
+    using message_types        = etl::type_list<>;
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
 
+    //**********************************************
+    /// Default constructor. The message router id will be MESSAGE_ROUTER.
     //**********************************************
     message_router()
       : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
@@ -644,11 +744,15 @@ namespace etl
     }
 
     //**********************************************
+    /// Constructor with successor. The message router id will be MESSAGE_ROUTER.
+    //**********************************************
     message_router(etl::imessage_router& successor_)
       : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
     {
     }
 
+    //**********************************************
+    /// Constructor with message router id.
     //**********************************************
     message_router(etl::message_router_id_t id_)
       : imessage_router(id_)
@@ -657,6 +761,8 @@ namespace etl
     }
 
     //**********************************************
+    /// Constructor with message router id and successor.
+    //**********************************************
     message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
       : imessage_router(id_, successor_)
     {
@@ -664,19 +770,15 @@ namespace etl
     }
 
     //**********************************************
+    /// Allow visibility of base class receive() methods.
     using etl::imessage_router::receive;
 
-    void receive(const etl::imessage& msg) ETL_OVERRIDE
-    {
-      if (has_successor())
-      {
-        get_successor().receive(msg);
-      }
-    }
-
     //**********************************************
-    template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
-    void receive(const TMessage& msg)
+    /// This will be called for all messages passed as an etl::imessage.
+    /// Since there are no message types, this will just pass the message to a successor if there is one, or call on_receive_unknown() if there isn't.
+    /// \param msg The message.
+    //***********************************************
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
 #include "etl/private/diagnostic_array_bounds_push.h"
       if (has_successor())
@@ -687,8 +789,13 @@ namespace etl
     }
 
     //**********************************************
+    /// Allow visibility of base class accepts() methods.
+    //**********************************************
     using imessage_router::accepts;
 
+    //**********************************************
+    /// This will return true if a successor accepts the message id.
+    //***********************************************
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
       if (has_successor())
@@ -722,6 +829,7 @@ namespace etl
 
   //***************************************************************************
   /// Helper to turn etl::type_list<TTypes...> into etl::message_router<TTypes...>
+  //***************************************************************************
   template <typename TDerived, typename TList>
   struct message_router_from_type_list;
 
