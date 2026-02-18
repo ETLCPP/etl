@@ -263,6 +263,20 @@ namespace etl
   template <typename T>
   inline constexpr bool is_user_message_base_v = is_user_message_base<T>::value;
 #endif
+
+  //**********************************************
+  template <typename TMsg1, typename TMsg2>
+  struct compare_message_id
+    : etl::bool_constant<TMsg1::ID < TMsg2::ID>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TMsg1, typename TMsg2>
+  inline constexpr bool compare_message_id_v = compare_message_id<TMsg1, TMsg2>::value;
+  {
+  };
+#endif
 }
 
 #endif
