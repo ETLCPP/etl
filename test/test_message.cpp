@@ -136,8 +136,8 @@ SUITE(test_message)
     struct Message1 : public etl::message<1> {};
     struct Message2 : public etl::message<2> {};
 
-    CHECK_TRUE((etl::compare_message_id<Message1, Message2>::value));
-    CHECK_FALSE((etl::compare_message_id<Message2, Message1>::value));
+    CHECK_TRUE((etl::compare_message_id_less<Message1, Message2>::value));
+    CHECK_FALSE((etl::compare_message_id_less<Message2, Message1>::value));
 
 #if ETL_USING_CPP17
     CHECK_TRUE(etl::compare_message_id_v<Message1, Message2>);

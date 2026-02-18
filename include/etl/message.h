@@ -266,14 +266,14 @@ namespace etl
 
   //**********************************************
   template <typename TMsg1, typename TMsg2>
-  struct compare_message_id
+  struct compare_message_id_less
     : etl::bool_constant<TMsg1::ID < TMsg2::ID>
   {
   };
 
 #if ETL_USING_CPP17
   template <typename TMsg1, typename TMsg2>
-  inline constexpr bool compare_message_id_v = compare_message_id<TMsg1, TMsg2>::value;
+  inline constexpr bool compare_message_id_v = compare_message_id_less<TMsg1, TMsg2>::value;
   {
   };
 #endif

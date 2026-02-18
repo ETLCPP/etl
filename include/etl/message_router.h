@@ -413,7 +413,7 @@ namespace etl
 
     using message_packet       = etl::message_packet<TMessageTypes...>;
     using message_types        = etl::type_list<TMessageTypes...>;
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id>;
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
 
     //**********************************************
     message_router()
