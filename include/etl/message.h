@@ -265,17 +265,22 @@ namespace etl
 #endif
 
   //**********************************************
+  /// Compare the message ID of two messages.
+  /// \tparam TMsg1 The first message type.
+  /// \tparam TMsg2 The second message type.
+  /// value is true if TMsg1::ID < TMsg2::ID.
+  //**********************************************
   template <typename TMsg1, typename TMsg2>
   struct compare_message_id_less
     : etl::bool_constant<TMsg1::ID < TMsg2::ID>
   {
+    ETL_STATIC_ASSERT(etl::is_message<TMsg1>::value, "TMsg1 is not a message");
+    ETL_STATIC_ASSERT(etl::is_message<TMsg2>::value, "TMsg2 is not a message");
   };
 
 #if ETL_USING_CPP17
   template <typename TMsg1, typename TMsg2>
   inline constexpr bool compare_message_id_v = compare_message_id_less<TMsg1, TMsg2>::value;
-  {
-  };
 #endif
 }
 
