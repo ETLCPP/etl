@@ -1136,7 +1136,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator ==(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return etl::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin());
   }
@@ -1148,7 +1148,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator !=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs == rhs);
   }
