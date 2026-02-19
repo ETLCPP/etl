@@ -38,6 +38,24 @@ namespace
   SUITE(test_type_list)
   {
     //*************************************************************************
+    TEST(test_is_type_list)
+    {
+      using t0 = etl::type_list<>;
+      using t1 = etl::type_list<char, int, uint32_t>;
+      using t2 = int;
+
+      CHECK_TRUE((etl::is_type_list<t0>::value));
+      CHECK_TRUE((etl::is_type_list<t1>::value));
+      CHECK_FALSE((etl::is_type_list<t2>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::is_type_list_v<t0>));
+      CHECK_TRUE((etl::is_type_list_v<t1>));
+      CHECK_FALSE((etl::is_type_list_v<t2>));
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_type_list_select)
     {
       typedef etl::type_list<char, int, uint32_t> t1;

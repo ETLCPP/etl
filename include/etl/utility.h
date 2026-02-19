@@ -565,8 +565,31 @@ namespace etl
   template <size_t Count>
   using make_index_sequence = typename private_integer_sequence::make_index_sequence<Count, etl::integer_sequence<size_t>>::type;
 
+  //***********************************
+  // Helper to support both parameter packs and etl::type_list<T...>
+  // Forward declare etl::type_list to allow use without including type_list.h
   template <typename... TTypes>
-  using make_index_sequence_for = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
+  struct type_list;
+
+  namespace private_make_index_sequence_for
+  {
+    // Generic pack form
+    template <typename... TTypes>
+    struct impl
+    {
+      using type = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
+    };
+
+    // etl::type_list form
+    template <typename... TTypes>
+    struct impl<etl::type_list<TTypes...>> : impl<TTypes...>
+    {
+    };
+  }
+
+  // Accepts either a parameter pack of types or a single etl::type_list<T...>
+  template <typename... TTypes>
+  using make_index_sequence_for = typename private_make_index_sequence_for::impl<TTypes...>::type;
 
   //***********************************
   template <size_t... Indices>

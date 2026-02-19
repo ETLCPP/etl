@@ -944,7 +944,7 @@ namespace etl
   {
     TLink* current = &first;
     ((current->etl_next = &links, static_cast<TLink&>(links).etl_previous = current, current = &links), ...);
- 
+
     return current;
   }
 
@@ -1303,16 +1303,30 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_left(TLink& parent, TLink& leaf)
   {
-     parent.etl_right = leaf.etl_left;
+    TLink* grandparent = parent.etl_parent;
 
-     if (parent.etl_right != ETL_NULLPTR)
-     {
-       parent.etl_right->etl_parent = &parent;
-     }
+    parent.etl_right = leaf.etl_left;
 
-     leaf.etl_parent   = parent.etl_parent;
-     parent.etl_parent = &leaf;
-     leaf.etl_left     = &parent;
+    if (parent.etl_right != ETL_NULLPTR)
+    {
+      parent.etl_right->etl_parent = &parent;
+    }
+
+    leaf.etl_parent   = grandparent;
+    parent.etl_parent = &leaf;
+    leaf.etl_left     = &parent;
+
+    if (grandparent != ETL_NULLPTR)
+    {
+      if (grandparent->etl_left == &parent)
+      {
+        grandparent->etl_left = &leaf;
+      }
+      else if (grandparent->etl_right == &parent)
+      {
+        grandparent->etl_right = &leaf;
+      }
+    }
   }
 
   //***********************************
@@ -1358,19 +1372,32 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink& parent, TLink& leaf)
   {
-     parent.etl_left = leaf.etl_right;
+    TLink* grandparent = parent.etl_parent;
 
-     if (parent.etl_left != ETL_NULLPTR)
-     {
-       parent.etl_left->etl_parent = &parent;
-     }
+    parent.etl_left = leaf.etl_right;
 
-     leaf.etl_parent   = parent.etl_parent;
-     parent.etl_parent = &leaf;
-     leaf.etl_right    = &parent;
+    if (parent.etl_left != ETL_NULLPTR)
+    {
+      parent.etl_left->etl_parent = &parent;
+    }
+
+    leaf.etl_parent   = grandparent;
+    parent.etl_parent = &leaf;
+    leaf.etl_right    = &parent;
+
+    if (grandparent != ETL_NULLPTR)
+    {
+      if (grandparent->etl_left == &parent)
+      {
+        grandparent->etl_left = &leaf;
+      }
+      else if (grandparent->etl_right == &parent)
+      {
+        grandparent->etl_right = &leaf;
+      }
+    }
   }
 
- 
   template <typename TLink>
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink* parent, TLink* leaf)
