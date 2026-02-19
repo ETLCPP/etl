@@ -368,46 +368,46 @@ namespace etl
   using type_list_cat_t = typename type_list_cat<TypeLists...>::type;
 
   //***************************************************************************
-  /// Prepend a type to a type_list.
+  /// Add a type to the beginning of a type_list.
   //***************************************************************************
   template <typename T, typename... TTypes>
-  struct type_list_prepend;
+  struct type_list_push_front;
 
   template <typename T, typename... TTypes>
-  struct type_list_prepend<etl::type_list<TTypes...>, T>
+  struct type_list_push_front<etl::type_list<TTypes...>, T>
   {
     using type = type_list<T, TTypes...>;
   };
 
   template <typename T>
-  struct type_list_prepend<T>
+  struct type_list_push_front<T>
   {
     using type = etl::type_list<T>;
   };
 
   template <typename TypeList, typename T>
-  using type_list_prepend_t = typename type_list_prepend<TypeList, T>::type;
+  using type_list_prepend_t = typename type_list_push_front<TypeList, T>::type;
 
   //***************************************************************************
-  /// Append a type to a type_list.
+  /// Add a type to the end of a type_list.
   //***************************************************************************
   template <typename T, typename... TTypes>
-  struct type_list_append;
+  struct type_list_push_back;
 
   template <typename T, typename... TTypes>
-  struct type_list_append<etl::type_list<TTypes...>, T>
+  struct type_list_push_back<etl::type_list<TTypes...>, T>
   {
     using type = type_list<TTypes..., T>;
   };
 
   template <typename T>
-  struct type_list_append<T>
+  struct type_list_push_back<T>
   {
     using type = etl::type_list<T>;
   };
 
   template <typename TypeList, typename T>
-  using type_list_append_t = typename type_list_append<TypeList, T>::type;
+  using type_list_append_t = typename type_list_push_back<TypeList, T>::type;
 
   //***************************************************************************
   /// Insert a type at an index in a type_list.
