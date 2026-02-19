@@ -822,10 +822,10 @@ namespace etl
     struct type_list_insert_sorted_impl<etl::type_list<Head, Tail...>, T, TCompare>
     {
       using type = typename insert_sorted_impl<TCompare<T, Head>::value,
-        Head,
-        T,
-        TCompare,
-        Tail...>::type;
+                                               Head,
+                                               T,
+                                               TCompare,
+                                               Tail...>::type;
     };
 
     //*********************************
