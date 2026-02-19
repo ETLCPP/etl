@@ -140,8 +140,8 @@ SUITE(test_message)
     CHECK_FALSE((etl::compare_message_id_less<Message2, Message1>::value));
 
 #if ETL_USING_CPP17
-    CHECK_TRUE(etl::compare_message_id_v<Message1, Message2>);
-    CHECK_FALSE(etl::compare_message_id_v<Message2, Message1>);
+    CHECK_TRUE((etl::compare_message_id_v<Message1, Message2>));
+    CHECK_FALSE((etl::compare_message_id_v<Message2, Message1>));
 #endif
   }
 }
