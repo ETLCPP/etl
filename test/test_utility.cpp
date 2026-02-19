@@ -865,6 +865,21 @@ namespace
 #endif
 
     //*********************************
+    TEST(test_make_index_sequence_matches_expected)
+    {
+      using seq0    = etl::make_index_sequence<0U>;
+      using seq1    = etl::make_index_sequence<1U>;
+      using seq4    = etl::make_index_sequence<4U>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<0U>;
+      using expect4 = etl::index_sequence<0U, 1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<seq0, expect0>::value));
+      CHECK_TRUE((std::is_same<seq1, expect1>::value));
+      CHECK_TRUE((std::is_same<seq4, expect4>::value));
+    }
+
+    //*********************************
     TEST(test_make_index_sequence_for_pack_matches_expected)
     {
       struct T1 {};
@@ -896,6 +911,21 @@ namespace
 
       CHECK_TRUE((std::is_same<seq12,  expect12>::value));
       CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_with_offset_matches_expected)
+    {
+      using seq0    = etl::make_index_sequence_with_offset<5U, 0U>;
+      using seq2    = etl::make_index_sequence_with_offset<3U, 2U>;
+      using seq4    = etl::make_index_sequence_with_offset<7U, 4U>;
+      using expect0 = etl::index_sequence<>;
+      using expect2 = etl::index_sequence<3U, 4U>;
+      using expect4 = etl::index_sequence<7U, 8U, 9U, 10U>;
+
+      CHECK_TRUE((std::is_same<seq0, expect0>::value));
+      CHECK_TRUE((std::is_same<seq2, expect2>::value));
+      CHECK_TRUE((std::is_same<seq4, expect4>::value));
     }
   }
 }
