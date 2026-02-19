@@ -714,17 +714,17 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_type_list_is_unique_for_non_empty_list)
+    TEST(test_type_list_is_empty)
     {
-      using list1 = etl::type_list<A, B, C>;
-      using list2 = etl::type_list<A, B, C, A>;
+      using list1 = etl::type_list<>;
+      using list2 = etl::type_list<A>;
 
-      CHECK_TRUE((etl::type_list_is_unique<list1>::value));
-      CHECK_FALSE((etl::type_list_is_unique<list2>::value));
+      CHECK_TRUE((etl::type_list_is_empty<list1>::value));
+      CHECK_FALSE((etl::type_list_is_empty<list2>::value));
 
 #if ETL_USING_CPP17
-      CHECK_TRUE((etl::type_list_is_unique_v<list1>));
-      CHECK_FALSE((etl::type_list_is_unique_v<list2>));
+      CHECK_TRUE((etl::type_list_is_empty_v<list1>));
+      CHECK_FALSE((etl::type_list_is_empty_v<list2>));
 #endif
     }
   }

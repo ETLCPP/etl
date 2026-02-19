@@ -624,6 +624,29 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// Check if the type_list is empty.
+  //***************************************************************************
+  template <typename T>
+  struct type_list_is_empty;
+
+  template <>
+  struct type_list_is_empty<etl::type_list<>>
+    : etl::true_type
+  {
+  };
+
+  template <typename... TTypes>
+  struct type_list_is_empty<etl::type_list<TTypes...>>
+    : etl::false_type
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename... TTypes>
+  inline constexpr bool type_list_is_empty_v = type_list_is_empty<TTypes...>::value;
+#endif
+
+  //***************************************************************************
   /// Checks that all types in a type_list satisfy a unary predicate.
   /// Predicate must be: template <typename T> struct Pred : etl::bool_constant<...> {};
   //***************************************************************************
