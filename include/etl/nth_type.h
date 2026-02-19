@@ -72,13 +72,6 @@ namespace etl
 
   //***********************************
   template <size_t Index, typename... TTypes>
-  struct nth_type<Index, etl::type_list<TTypes...>> : public nth_type<Index, TTypes...>
-  {
-    using typename nth_type<Index, TTypes...>::type;
-  };
-
-  //***********************************
-  template <size_t Index, typename... TTypes>
   using nth_type_t = typename nth_type<Index, TTypes...>::type;
 }
 #endif
