@@ -386,7 +386,7 @@ namespace etl
   };
 
   template <typename TypeList, typename T>
-  using type_list_prepend_t = typename type_list_push_front<TypeList, T>::type;
+  using type_list_push_front_t = typename type_list_push_front<TypeList, T>::type;
 
   //***************************************************************************
   /// Add a type to the end of a type_list.
@@ -407,7 +407,7 @@ namespace etl
   };
 
   template <typename TypeList, typename T>
-  using type_list_append_t = typename type_list_push_back<TypeList, T>::type;
+  using type_list_push_back_t = typename type_list_push_back<TypeList, T>::type;
 
   //***************************************************************************
   /// Insert a type at an index in a type_list.
@@ -492,7 +492,7 @@ namespace etl
 
       using type = typename etl::conditional<TPredicate<Head>::value,
                                              rest,
-                                             etl::type_list_prepend_t<rest, Head>>::type;
+                                             etl::type_list_push_front_t<rest, Head>>::type;
     };
   }
 
@@ -582,7 +582,7 @@ namespace etl
 
       using next_result = etl::conditional_t<etl::type_list_contains<TResult, Head>::value,
                                              TResult,
-                                             etl::type_list_append_t<TResult, Head>>;
+                                             etl::type_list_push_back_t<TResult, Head>>;
 
     public:
 
@@ -771,7 +771,7 @@ namespace etl
 
     //*********************************
     // Ensure that the list is sorted.
-    // Recursively the head to the next to ensure that the list is sorted.
+    // Recursively compare the head to the next element to ensure that the list is sorted.
     template <typename Head, typename Next, typename... Tail, template <typename, typename> class TCompare>
     struct type_list_is_sorted_impl<etl::type_list<Head, Next, Tail...>, TCompare>
       : etl::bool_constant<!TCompare<Next, Head>::value &&
@@ -841,7 +841,7 @@ namespace etl
     template <typename Head, typename T, template <typename, typename> class TCompare, typename... Tail>
     struct insert_sorted_impl<false, Head, T, TCompare, Tail...>
     {
-      using type = etl::type_list_prepend_t<typename type_list_insert_sorted_impl<etl::type_list<Tail...>, T, TCompare>::type, Head>;
+      using type = etl::type_list_push_front_t<typename type_list_insert_sorted_impl<etl::type_list<Tail...>, T, TCompare>::type, Head>;
     };
   }
 

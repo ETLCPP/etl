@@ -58,7 +58,7 @@ namespace
 
   // Convenience comparator for types that expose a constexpr integral ID (ascending)
   template <typename T1, typename T2>
-  struct by_ascencding_id : etl::bool_constant<(T1::id < T2::id)>
+  struct by_ascending_id : etl::bool_constant<(T1::id < T2::id)>
   {
   };
 
@@ -311,7 +311,7 @@ namespace
     TEST(test_type_list_sort_empty_list)
     {
       using list     = etl::type_list<>;
-      using result   = etl::type_list_sort_t<list, by_ascencding_id>;
+      using result   = etl::type_list_sort_t<list, by_ascending_id>;
       using expected = etl::type_list<>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -322,7 +322,7 @@ namespace
     TEST(test_type_list_sort_single_list)
     {
       using list     = etl::type_list<A>;
-      using result   = etl::type_list_sort_t<list, by_ascencding_id>;
+      using result   = etl::type_list_sort_t<list, by_ascending_id>;
       using expected = etl::type_list<A>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -333,7 +333,7 @@ namespace
     TEST(test_type_list_sort_multiple_list)
     {
       using list     = etl::type_list<B, C, A>;
-      using result   = etl::type_list_sort_t<list, by_ascencding_id>;
+      using result   = etl::type_list_sort_t<list, by_ascending_id>;
       using expected = etl::type_list<A, B, C>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -341,32 +341,86 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_type_list_prepend_to_empty_list)
-    {
-      using list     = etl::type_list<>;
-      using result   = etl::type_list_prepend_t<list, A>;
-      using expected = etl::type_list<A>;
-
-      CHECK((etl::is_same<result, expected>::value));
-      CHECK_EQUAL(1U, etl::type_list_size<result>::value);
-    }
-
-    //*************************************************************************
-    TEST(test_type_list_prepend_to_non_empty_list)
-    {
-      using list     = etl::type_list<B, C>;
-      using result   = etl::type_list_prepend_t<list, A>;
-      using expected = etl::type_list<A, B, C>;
-
-      CHECK((etl::is_same<result, expected>::value));
-      CHECK_EQUAL(3U, etl::type_list_size<result>::value);
-    }
-
-    //*************************************************************************
-    TEST(test_type_list_append_to_empty_list)
+    TEST(test_type_list_is_sorted_for_empty_list)
     {
       using list = etl::type_list<>;
-      using result   = etl::type_list_append_t<list, A>;
+
+      CHECK((etl::type_list_is_sorted<list, by_ascending_id>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_is_sorted_for_single_list)
+    {
+      using list = etl::type_list<A>;
+
+      CHECK((etl::type_list_is_sorted<list, by_ascending_id>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_is_sorted_for_sorted_list)
+    {
+      using list = etl::type_list<A, B, C>;
+
+      CHECK((etl::type_list_is_sorted<list, by_ascending_id>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_is_sorted_for_unsorted_list)
+    {
+      using list = etl::type_list<B, C, A>;
+
+      CHECK((!etl::type_list_is_sorted<list, by_ascending_id>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_insert_sorted_into_empty_list)
+    {
+      using list     = etl::type_list<>;
+      using result   = etl::type_list_insert_sorted_t<list, B, by_ascending_id>;
+      using expected = etl::type_list<B>;
+
+      CHECK((etl::is_same<result, expected>::value));
+      CHECK_EQUAL(1U, etl::type_list_size<result>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_insert_sorted_before_head)
+    {
+      using list     = etl::type_list<B, C>;
+      using result   = etl::type_list_insert_sorted_t<list, A, by_ascending_id>;
+      using expected = etl::type_list<A, B, C>;
+
+      CHECK((etl::is_same<result, expected>::value));
+      CHECK_EQUAL(3U, etl::type_list_size<result>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_insert_sorted_in_middle)
+    {
+      using list     = etl::type_list<A, C>;
+      using result   = etl::type_list_insert_sorted_t<list, B, by_ascending_id>;
+      using expected = etl::type_list<A, B, C>;
+
+      CHECK((etl::is_same<result, expected>::value));
+      CHECK_EQUAL(3U, etl::type_list_size<result>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_insert_sorted_at_end)
+    {
+      using list     = etl::type_list<A, B>;
+      using result   = etl::type_list_insert_sorted_t<list, C, by_ascending_id>;
+      using expected = etl::type_list<A, B, C>;
+
+      CHECK((etl::is_same<result, expected>::value));
+      CHECK_EQUAL(3U, etl::type_list_size<result>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_push_front_to_empty_list)
+    {
+      using list     = etl::type_list<>;
+      using result   = etl::type_list_push_front_t<list, A>;
       using expected = etl::type_list<A>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -374,10 +428,32 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_type_list_append_to_non_empty_list)
+    TEST(test_type_list_push_front_to_non_empty_list)
+    {
+      using list     = etl::type_list<B, C>;
+      using result   = etl::type_list_push_front_t<list, A>;
+      using expected = etl::type_list<A, B, C>;
+
+      CHECK((etl::is_same<result, expected>::value));
+      CHECK_EQUAL(3U, etl::type_list_size<result>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_push_back_to_empty_list)
+    {
+      using list = etl::type_list<>;
+      using result   = etl::type_list_push_back_t<list, A>;
+      using expected = etl::type_list<A>;
+
+      CHECK((etl::is_same<result, expected>::value));
+      CHECK_EQUAL(1U, etl::type_list_size<result>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_push_back_to_non_empty_list)
     {
       using list     = etl::type_list<A, B>;
-      using result   = etl::type_list_append_t<list, C>;
+      using result   = etl::type_list_push_back_t<list, C>;
       using expected = etl::type_list<A, B, C>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -710,6 +786,21 @@ namespace
 
 #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_is_unique_v<list1>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_is_unique_for_non_empty_list)
+    {
+      using list1 = etl::type_list<A, B, C>;
+      using list2 = etl::type_list<A, B, A>;
+
+      CHECK_TRUE((etl::type_list_is_unique<list1>::value));
+      CHECK_FALSE((etl::type_list_is_unique<list2>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_list_is_unique_v<list1>));
+      CHECK_FALSE((etl::type_list_is_unique_v<list2>));
 #endif
     }
 
