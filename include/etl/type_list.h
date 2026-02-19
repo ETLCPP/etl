@@ -607,6 +607,23 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// Checks that all of the types in a type_list are unique.
+  //***************************************************************************
+  template <typename TTypeList>
+  struct type_list_is_unique
+    // Create a unique version of the type list, and check if it is the same as the original list.
+    // If they are the same, then all types in the original list are unique.
+    : etl::bool_constant<std::is_same<TTypeList, typename type_list_unique<TTypeList>::type>::value>
+  {
+    ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList>
+  inline constexpr bool type_list_is_unique_v = etl::type_list_is_unique<TTypeList>::value;
+#endif
+
+  //***************************************************************************
   /// Checks that all types in a type_list satisfy a unary predicate.
   /// Predicate must be: template <typename T> struct Pred : etl::bool_constant<...> {};
   //***************************************************************************

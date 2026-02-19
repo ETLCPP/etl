@@ -700,6 +700,33 @@ namespace
       CHECK_TRUE((etl::type_list_none_of_v<list2, is_type_c>));
 #endif
     }
+
+    //*************************************************************************
+    TEST(test_type_list_is_unique_for_empty_list)
+    {
+      using list1 = etl::type_list<>;
+
+      CHECK_TRUE((etl::type_list_is_unique<list1>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_list_is_unique_v<list1>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_is_unique_for_non_empty_list)
+    {
+      using list1 = etl::type_list<A, B, C>;
+      using list2 = etl::type_list<A, B, C, A>;
+
+      CHECK_TRUE((etl::type_list_is_unique<list1>::value));
+      CHECK_FALSE((etl::type_list_is_unique<list2>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_list_is_unique_v<list1>));
+      CHECK_FALSE((etl::type_list_is_unique_v<list2>));
+#endif
+    }
   }
 #endif
 }
