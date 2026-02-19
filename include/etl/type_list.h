@@ -183,7 +183,7 @@ namespace etl
   template <typename TTypeList, typename T>
   struct type_list_index_of_type
     : public etl::integral_constant<size_t, etl::is_same<typename TTypeList::head, T>::value ? 0 :
-                                            (type_list_index_of_type<typename TTypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos : 
+                                            (type_list_index_of_type<typename TTypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos :
                                                                                                                                   type_list_index_of_type<typename TTypeList::tail, T>::value + 1)>
   {
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value),    "TTypeList must be an etl::type_list");
@@ -607,6 +607,78 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// Checks that all types in a type_list satisfy a unary predicate.
+  /// Predicate must be: template <typename T> struct Pred : etl::bool_constant<...> {};
+  //***************************************************************************
+  template <typename TTypeList, template <typename> class TPredicate>
+  struct type_list_all_of;
+
+  template <template <typename> class TPredicate, typename... TTypes>
+  struct type_list_all_of<etl::type_list<TTypes...>, TPredicate>
+    : etl::conjunction<TPredicate<TTypes>...>
+  {
+  };
+
+  template <template <typename> class TPredicate>
+  struct type_list_all_of<etl::type_list<>, TPredicate>
+    : etl::bool_constant<false>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList, template <typename> class TPredicate>
+  inline constexpr bool type_list_all_of_v = type_list_all_of<TTypeList, TPredicate>::value;
+#endif
+
+  //***************************************************************************
+  /// Checks that any type in a type_list satisfies a unary predicate.
+  /// Predicate must be: template <typename T> struct Pred : etl::bool_constant<...> {};
+  //***************************************************************************
+  template <typename TTypeList, template <typename> class TPredicate>
+  struct type_list_any_of;
+
+  template <template <typename> class TPredicate, typename... TTypes>
+  struct type_list_any_of<etl::type_list<TTypes...>, TPredicate>
+    : etl::disjunction<TPredicate<TTypes>...>
+  {
+  };
+
+  template <template <typename> class TPredicate>
+  struct type_list_any_of<etl::type_list<>, TPredicate>
+    : etl::bool_constant<false>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList, template <typename> class TPredicate>
+  inline constexpr bool type_list_any_of_v = type_list_any_of<TTypeList, TPredicate>::value;
+#endif
+
+  //***************************************************************************
+  /// Checks that no types in a type_list satisfy a unary predicate.
+  /// Predicate must be: template <typename T> struct Pred : etl::bool_constant<...> {};
+  //***************************************************************************
+  template <typename TTypeList, template <typename> class TPredicate>
+  struct type_list_none_of;
+
+  template <template <typename> class TPredicate, typename... TTypes>
+  struct type_list_none_of<etl::type_list<TTypes...>, TPredicate>
+    : etl::negation<etl::disjunction<TPredicate<TTypes>...>>
+  {
+  };
+
+  template <template <typename> class TPredicate>
+  struct type_list_none_of<etl::type_list<>, TPredicate>
+    : etl::bool_constant<true>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TTypeList, template <typename> class TPredicate>
+  inline constexpr bool type_list_none_of_v = type_list_none_of<TTypeList, TPredicate>::value;
+#endif
+
+  //***************************************************************************
   /// Checks that two type lists are convertible.
   /// Static asserts if the type lists are not the same length.
   //***************************************************************************
@@ -616,15 +688,15 @@ namespace etl
 
   // Specialization: both lists empty, convertible
   template <>
-  struct type_lists_are_convertible<etl::type_list<>, etl::type_list<>> 
+  struct type_lists_are_convertible<etl::type_list<>, etl::type_list<>>
     : public etl::true_type
   {
   };
 
   // Recursive case: check head types, then recurse
   template <typename TFromHead, typename... TFromTail, typename TToHead, typename... TToTail>
-  struct type_lists_are_convertible<etl::type_list<TFromHead, TFromTail...>, etl::type_list<TToHead, TToTail...>> 
-    : public etl::bool_constant<etl::is_convertible<TFromHead, TToHead>::value && 
+  struct type_lists_are_convertible<etl::type_list<TFromHead, TFromTail...>, etl::type_list<TToHead, TToTail...>>
+    : public etl::bool_constant<etl::is_convertible<TFromHead, TToHead>::value &&
                                 etl::type_lists_are_convertible<etl::type_list<TFromTail...>, etl::type_list<TToTail...>>::value>
   {
     static_assert(sizeof...(TFromTail) == sizeof...(TToTail), "Type lists are not the same length");
@@ -686,7 +758,7 @@ namespace etl
 
   //*****************************************************************************
   namespace private_type_list
-  {   
+  {
     //*********************************
     template <bool InsertBefore, typename Head, typename T, template <typename, typename> class TCompare, typename... Tail>
     struct insert_sorted_impl;

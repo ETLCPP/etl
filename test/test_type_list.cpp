@@ -36,18 +36,29 @@ namespace
 {
 #if ETL_USING_CPP11
 
+
   struct A { static constexpr int id = 0; };
   struct B { static constexpr int id = 1; };
   struct C { static constexpr int id = 2; };
+
+  template <typename T>
+  struct is_type_a : etl::bool_constant<std::is_same<T, A>::value>
+  {
+  };
 
   template <typename T>
   struct is_type_b : etl::bool_constant<std::is_same<T, B>::value>
   {
   };
 
+  template <typename T>
+  struct is_type_c : etl::bool_constant<std::is_same<T, C>::value>
+  {
+  };
+
   // Convenience comparator for types that expose a constexpr integral ID (ascending)
   template <typename T1, typename T2>
-  struct by_asencding_id : etl::bool_constant<(T1::id < T2::id)>
+  struct by_ascencding_id : etl::bool_constant<(T1::id < T2::id)>
   {
   };
 
@@ -300,7 +311,7 @@ namespace
     TEST(test_type_list_sort_empty_list)
     {
       using list     = etl::type_list<>;
-      using result   = etl::type_list_sort_t<list, by_asencding_id>;
+      using result   = etl::type_list_sort_t<list, by_ascencding_id>;
       using expected = etl::type_list<>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -311,7 +322,7 @@ namespace
     TEST(test_type_list_sort_single_list)
     {
       using list     = etl::type_list<A>;
-      using result   = etl::type_list_sort_t<list, by_asencding_id>;
+      using result   = etl::type_list_sort_t<list, by_ascencding_id>;
       using expected = etl::type_list<A>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -322,7 +333,7 @@ namespace
     TEST(test_type_list_sort_multiple_list)
     {
       using list     = etl::type_list<B, C, A>;
-      using result   = etl::type_list_sort_t<list, by_asencding_id>;
+      using result   = etl::type_list_sort_t<list, by_ascencding_id>;
       using expected = etl::type_list<A, B, C>;
 
       CHECK((etl::is_same<result, expected>::value));
@@ -398,7 +409,7 @@ namespace
       CHECK((etl::is_same<result1, expected1>::value));
       CHECK((etl::is_same<result2, expected2>::value));
       CHECK((etl::is_same<result3, expected3>::value));
-      
+
       CHECK_EQUAL(3U, etl::type_list_size<result1>::value);
       CHECK_EQUAL(3U, etl::type_list_size<result2>::value);
       CHECK_EQUAL(3U, etl::type_list_size<result3>::value);
@@ -490,7 +501,7 @@ namespace
     TEST(test_type_list_pop_front_empty_list)
     {
       // Uncomment to generate static_assert error.
-      
+
       //using list     = etl::type_list<>;
       //using result1  = etl::type_list_pop_front_t<list>;
     }
@@ -565,6 +576,129 @@ namespace
       CHECK((etl::is_same<result1, expected1>::value));
 
       CHECK_EQUAL(3U, etl::type_list_size<result1>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_all_of_for_empty_list)
+    {
+      using list1 = etl::type_list<>;
+
+      CHECK_FALSE((etl::type_list_all_of<list1, is_type_a>::value));
+      CHECK_FALSE((etl::type_list_all_of<list1, is_type_b>::value));
+      CHECK_FALSE((etl::type_list_all_of<list1, is_type_c>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_a>));
+      CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_b>));
+      CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_c>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_all_of_for_non_empty_list)
+    {
+      using list1 = etl::type_list<A, B, C>;
+      using list2 = etl::type_list<B, B, B>;
+
+      CHECK_FALSE((etl::type_list_all_of<list1, is_type_a>::value));
+      CHECK_FALSE((etl::type_list_all_of<list1, is_type_b>::value));
+      CHECK_FALSE((etl::type_list_all_of<list1, is_type_c>::value));
+
+      CHECK_FALSE((etl::type_list_all_of<list2, is_type_a>::value));
+      CHECK_TRUE((etl::type_list_all_of<list2, is_type_b>::value));
+      CHECK_FALSE((etl::type_list_all_of<list2, is_type_c>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_a>));
+      CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_b>));
+      CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_c>));
+
+      CHECK_FALSE((etl::type_list_all_of_v<list2, is_type_a>));
+      CHECK_TRUE((etl::type_list_all_of_v<list2, is_type_b>));
+      CHECK_FALSE((etl::type_list_all_of_v<list2, is_type_c>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_any_of_for_empty_list)
+    {
+      using list1 = etl::type_list<>;
+
+      CHECK_FALSE((etl::type_list_any_of<list1, is_type_a>::value));
+      CHECK_FALSE((etl::type_list_any_of<list1, is_type_b>::value));
+      CHECK_FALSE((etl::type_list_any_of<list1, is_type_c>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::type_list_any_of_v<list1, is_type_a>));
+      CHECK_FALSE((etl::type_list_any_of_v<list1, is_type_b>));
+      CHECK_FALSE((etl::type_list_any_of_v<list1, is_type_c>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_any_of_for_non_empty_list)
+    {
+      using list1 = etl::type_list<A, B, C>;
+      using list2 = etl::type_list<B, B, B>;
+
+      CHECK_TRUE((etl::type_list_any_of<list1, is_type_a>::value));
+      CHECK_TRUE((etl::type_list_any_of<list1, is_type_b>::value));
+      CHECK_TRUE((etl::type_list_any_of<list1, is_type_c>::value));
+
+      CHECK_FALSE((etl::type_list_any_of<list2, is_type_a>::value));
+      CHECK_TRUE((etl::type_list_any_of<list2, is_type_b>::value));
+      CHECK_FALSE((etl::type_list_any_of<list2, is_type_c>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_list_any_of_v<list1, is_type_a>));
+      CHECK_TRUE((etl::type_list_any_of_v<list1, is_type_b>));
+      CHECK_TRUE((etl::type_list_any_of_v<list1, is_type_c>));
+
+      CHECK_FALSE((etl::type_list_any_of_v<list2, is_type_a>));
+      CHECK_TRUE((etl::type_list_any_of_v<list2, is_type_b>));
+      CHECK_FALSE((etl::type_list_any_of_v<list2, is_type_c>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_none_of_for_empty_list)
+    {
+      using list1 = etl::type_list<>;
+
+      CHECK_TRUE((etl::type_list_none_of<list1, is_type_a>::value));
+      CHECK_TRUE((etl::type_list_none_of<list1, is_type_b>::value));
+      CHECK_TRUE((etl::type_list_none_of<list1, is_type_c>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_list_none_of_v<list1, is_type_a>));
+      CHECK_TRUE((etl::type_list_none_of_v<list1, is_type_b>));
+      CHECK_TRUE((etl::type_list_none_of_v<list1, is_type_c>));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_type_list_none_of_for_non_empty_list)
+    {
+      using list1 = etl::type_list<A, B, C>;
+      using list2 = etl::type_list<B, B, B>;
+
+      CHECK_FALSE((etl::type_list_none_of<list1, is_type_a>::value));
+      CHECK_FALSE((etl::type_list_none_of<list1, is_type_b>::value));
+      CHECK_FALSE((etl::type_list_none_of<list1, is_type_c>::value));
+
+      CHECK_TRUE((etl::type_list_none_of<list2, is_type_a>::value));
+      CHECK_FALSE((etl::type_list_none_of<list2, is_type_b>::value));
+      CHECK_TRUE((etl::type_list_none_of<list2, is_type_c>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::type_list_none_of_v<list1, is_type_a>));
+      CHECK_FALSE((etl::type_list_none_of_v<list1, is_type_b>));
+      CHECK_FALSE((etl::type_list_none_of_v<list1, is_type_c>));
+
+      CHECK_TRUE((etl::type_list_none_of_v<list2, is_type_a>));
+      CHECK_FALSE((etl::type_list_none_of_v<list2, is_type_b>));
+      CHECK_TRUE((etl::type_list_none_of_v<list2, is_type_c>));
+#endif
     }
   }
 #endif
