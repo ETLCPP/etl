@@ -661,7 +661,7 @@ namespace etl
 
   template <template <typename> class TPredicate>
   struct type_list_all_of<etl::type_list<>, TPredicate>
-    : etl::bool_constant<false>
+    : etl::bool_constant<true>
   {
   };
 
