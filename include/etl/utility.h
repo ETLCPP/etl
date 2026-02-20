@@ -532,13 +532,13 @@ namespace etl
   class integer_sequence
   {
   public:
-  
+
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral types only");
 
     typedef T value_type;
-  
-    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT 
-    { 
+
+    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT
+    {
       return sizeof...(Integers);
     }
   };
@@ -577,7 +577,7 @@ namespace etl
   using make_index_sequence = typename private_integer_sequence::make_index_sequence<Count, etl::integer_sequence<size_t>>::type;
 
   //***********************************
-  ///  Make an integer sequence with an offset.
+  /// Make an integer sequence with an offset.
   //***********************************
   template <size_t Offset, size_t Count>
   using make_index_sequence_with_offset = typename private_integer_sequence::offset_index_sequence<Offset, etl::make_index_sequence<Count>>::type;
@@ -604,16 +604,69 @@ namespace etl
     };
   }
 
-  // Accepts either a parameter pack of types or a single etl::type_list<T...>
+  //***********************************
+  /// Make an index sequence for a parameter pack of types or an etl::type_list<T...>.
+  /// Accepts either a parameter pack of types or a single etl::type_list<T...>
+  //***********************************
   template <typename... TTypes>
   using make_index_sequence_for = typename private_make_index_sequence_for::impl<TTypes...>::type;
 
   //***********************************
+  /// An index sequence.
+  //***********************************
   template <size_t... Indices>
   using index_sequence = etl::integer_sequence<size_t, Indices...>;
 
+  //************************************
+  /// Alias for make_index_sequence_for.
+  //************************************
   template <typename... TTypes>
   using index_sequence_for = typename etl::make_index_sequence_for<TTypes...>;
+
+  //************************************
+  /// Pushes an index to the front of an index_sequence.
+  //************************************
+  template <typename TIndexSequence, size_t Index>
+  struct index_sequence_push_front;
+
+  template <size_t... Indices, size_t Index>
+  struct index_sequence_push_front<etl::index_sequence<Indices...>, Index>
+  {
+    using type = etl::index_sequence<Indices..., Index>;
+  };
+
+  template <typename TIndexSequence, size_t Index>
+  using index_sequence_push_front_t = typename index_sequence_push_front<TIndexSequence, Index>::type;
+
+  //************************************
+  /// Pushes an index to the back of an index_sequence.
+  //************************************
+  template <typename TIndexSequence, size_t Index>
+  struct index_sequence_push_back;
+
+  template <size_t... Indices, size_t Index>
+  struct index_sequence_push_back<etl::index_sequence<Indices...>, Index>
+  {
+    using type = etl::index_sequence<Indices..., Index>;
+  };
+
+  template <typename TIndexSequence, size_t Index>
+  using index_sequence_push_back_t = typename index_sequence_push_back<TIndexSequence, Index>::type;
+
+  //************************************
+  /// Concatenates two index_sequences.
+  //************************************
+  template <typename TIndexSequence1, typename TIndexSequence2>
+  struct index_sequence_cat;
+
+  template <size_t... Indices1, size_t... Indices2>
+  struct index_sequence_cat<etl::index_sequence<Indices1...>, etl::index_sequence<Indices2...>>
+  {
+    using type = etl::index_sequence<Indices1..., Indices2...>;
+  };
+
+  template <typename TIndexSequence1, typename TIndexSequence2>
+  using index_sequence_cat_t = typename index_sequence_cat<TIndexSequence1, TIndexSequence2>::type;
 #endif
 
   //***************************************************************************
@@ -651,9 +704,9 @@ namespace etl
   //***************************************************************************
   /// in_place disambiguation tags.
   //***************************************************************************
-  
+
   //*************************
-  struct in_place_t 
+  struct in_place_t
   {
     explicit ETL_CONSTEXPR in_place_t() {}
   };
@@ -661,9 +714,9 @@ namespace etl
 #if ETL_USING_CPP17
   inline constexpr in_place_t in_place{};
 #endif
-  
+
   //*************************
-  template <typename T> struct in_place_type_t 
+  template <typename T> struct in_place_type_t
   {
     explicit ETL_CONSTEXPR in_place_type_t() {}
   };
@@ -674,7 +727,7 @@ namespace etl
 #endif
 
   //*************************
-  template <size_t Index> struct in_place_index_t 
+  template <size_t Index> struct in_place_index_t
   {
     explicit ETL_CONSTEXPR in_place_index_t() {}
   };
@@ -767,7 +820,7 @@ namespace etl
   // Creates a static member 'call' that calls the specified functor.
   //*****************************************************************************
   template <auto& Instance>
-  struct functor_as_static 
+  struct functor_as_static
   {
     template <typename... TArgs>
     static constexpr auto call(TArgs&&... args)
@@ -781,7 +834,7 @@ namespace etl
   // Creates a static member 'call' that calls the specified member function.
   //*****************************************************************************
   template <auto Method, auto& Instance>
-  struct member_function_as_static 
+  struct member_function_as_static
   {
     template <typename... TArgs>
     static constexpr auto call(TArgs&&... args)

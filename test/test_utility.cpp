@@ -927,5 +927,48 @@ namespace
       CHECK_TRUE((std::is_same<seq2, expect2>::value));
       CHECK_TRUE((std::is_same<seq4, expect4>::value));
     }
+
+    //*********************************
+    TEST(test_index_sequence_push_front_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_push_front_t<seq0, 5U>;
+      using result1 = etl::index_sequence_push_front_t<seq1, 0U>;
+      using expect0 = etl::index_sequence<5U>;
+      using expect1 = etl::index_sequence<1U, 2U, 0U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_push_back_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_push_back_t<seq0, 5U>;
+      using result1 = etl::index_sequence_push_back_t<seq1, 3U>;
+      using expect0 = etl::index_sequence<5U>;
+      using expect1 = etl::index_sequence<1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_cat_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<0U, 1U>;
+      using seq2    = etl::index_sequence<2U, 3U>;
+      using result0 = etl::index_sequence_cat_t<seq0, seq1>;
+      using result1 = etl::index_sequence_cat_t<seq1, seq2>;
+      using expect0 = etl::index_sequence<0U, 1U>;
+      using expect1 = etl::index_sequence<0U, 1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
   }
 }

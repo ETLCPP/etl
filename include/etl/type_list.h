@@ -210,15 +210,6 @@ namespace etl
   //***************************************************************************
   namespace private_type_list
   {
-    template <typename TIndexSequence, size_t Index>
-    struct index_sequence_push_back;
-
-    template <size_t... Indices, size_t Index>
-    struct index_sequence_push_back<etl::index_sequence<Indices...>, Index>
-    {
-      using type = etl::index_sequence<Indices..., Index>;
-    };
-
     template <typename TTypeList, typename T, size_t Index, typename TResult>
     struct type_list_indices_of_type_impl;
 
@@ -230,7 +221,7 @@ namespace etl
 
       // If Head is the same as T then append a new index to the result, otherwise no change.
       using next_result = etl::conditional_t<etl::is_same<Head, T>::value,
-                                             typename index_sequence_push_back<TResult, Index>::type,
+                                             etl::index_sequence_push_back_t<TResult, Index>,
                                              TResult>;
 
     public:
@@ -379,7 +370,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Declares a new type_list by selecting types from a given type_list, according to an index sequence.
+  /// Declares a new type_list by selecting types from a given type_list, according to a list if indices.
   //***************************************************************************
   template <typename TTypeList, size_t... Indices>
   struct type_list_select
@@ -440,12 +431,6 @@ namespace etl
     using type = type_list<T, TTypes...>;
   };
 
-  template <typename T>
-  struct type_list_push_front<T>
-  {
-    using type = etl::type_list<T>;
-  };
-
   template <typename TypeList, typename T>
   using type_list_push_front_t = typename type_list_push_front<TypeList, T>::type;
 
@@ -459,12 +444,6 @@ namespace etl
   struct type_list_push_back<etl::type_list<TTypes...>, T>
   {
     using type = type_list<TTypes..., T>;
-  };
-
-  template <typename T>
-  struct type_list_push_back<T>
-  {
-    using type = etl::type_list<T>;
   };
 
   template <typename TypeList, typename T>
@@ -481,7 +460,7 @@ namespace etl
   private:
 
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
-    ETL_STATIC_ASSERT(Index <= TTypeList::size,         "Index out of range");
+    ETL_STATIC_ASSERT(Index <= TTypeList::size,              "Index out of range");
 
     using index_sequence_for_prefix = etl::make_index_sequence<Index>;
     using index_sequence_for_suffix = etl::make_index_sequence_with_offset<Index, TTypeList::size - Index>;

@@ -624,7 +624,7 @@ namespace
       // Uncomment to generate static_assert error.
 
       //using list     = etl::type_list<>;
-      //using result1  = etl::type_list_pop_front_t<list>;
+      //using result1  = etl::type_list_pop_back_t<list>;
     }
 
     //*************************************************************************
