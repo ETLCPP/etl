@@ -31,6 +31,7 @@ SOFTWARE.
 #include "data.h"
 
 #include "etl/tuple.h"
+#include "etl/type_list.h"
 
 #include <string>
 #include <array>
@@ -101,6 +102,26 @@ namespace
       CHECK_TRUE((std::is_same<double, etl::tuple_element_t<1, Tuple>>::value));
       CHECK_TRUE((std::is_same<int,    etl::tuple_element_t<2, Tuple>>::value));
       CHECK_TRUE((std::is_same<Data,   etl::tuple_element_t<3, Tuple>>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_tuple_from_type_list)
+    {
+      using TypeList        = etl::type_list<int, double, int, Data>;
+      using TupleFromTypeList = etl::tuple_from_type_list_t<TypeList>;
+      using Tuple             = etl::tuple<int, double, int, Data>;
+
+      CHECK_TRUE((std::is_same<Tuple,    TupleFromTypeList>::value));
+      CHECK_TRUE((std::is_same<TypeList, TupleFromTypeList::type_list>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_tuple_type_list)
+    {
+      using Tuple = etl::tuple<int, double, int, Data>;
+      using TupleTypes = etl::type_list<int, double, int, Data>;
+
+      CHECK_TRUE((std::is_same<TupleTypes, Tuple::type_list>::value));
     }
 
     //*************************************************************************

@@ -76,7 +76,7 @@ cog.outl("//********************************************************************
 #include "placement_new.h"
 #include "successor.h"
 #include "type_traits.h"
-
+#include "type_list.h"
 #include <stdint.h>
 
 namespace etl
@@ -560,6 +560,114 @@ namespace etl
       }
     }
   };
+
+  //***************************************************************************
+  // The definition for 0 message types.
+  //***************************************************************************
+  template <typename TDerived>
+  class message_router<TDerived> : public imessage_router
+  {
+  public:
+
+    using message_packet = etl::message_packet<>;
+    using message_types  = etl::type_list<>;
+
+    //**********************************************
+    message_router()
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
+    {
+    }
+
+    //**********************************************
+    message_router(etl::imessage_router& successor_)
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
+    {
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    using etl::imessage_router::receive;
+
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
+    {
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
+    }
+
+    template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
+    void receive(const TMessage& msg)
+    {
+#include "etl/private/diagnostic_array_bounds_push.h"
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
+#include "etl/private/diagnostic_pop.h"
+    }
+
+    //**********************************************
+    using imessage_router::accepts;
+
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //********************************************
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+  };
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::message_router<TTypes...>
+  template <typename TDerived, typename TList>
+  struct message_router_from_type_list;
+
+  template <typename TDerived, typename... TMessageTypes>
+  struct message_router_from_type_list<TDerived, etl::type_list<TMessageTypes...>>
+  {
+    using type = etl::message_router<TDerived, TMessageTypes...>;
+  };
+
+  template <typename TDerived, typename TTypeList>
+  using message_router_from_type_list_t = typename message_router_from_type_list<TDerived, TTypeList>::type;
+
 #else
 //*************************************************************************************************
 // For C++14 and below.
@@ -574,8 +682,7 @@ namespace etl
       cog.outl("//***************************************************************************")
       cog.outl("template <typename TDerived,")
       cog.out("          ")
-      cog.out("typename T1, ")
-      for n in range(2, int(Handlers)):
+      for n in range(1, int(Handlers)):
           cog.out("typename T%s = void, " % n)
           if n % 4 == 0:
               cog.outl("")
@@ -589,8 +696,17 @@ namespace etl
       cog.out("  typedef etl::message_packet<")
       for n in range(1, int(Handlers)):
           cog.out("T%s, " % n)
-      cog.outl(" T%s> message_packet;" % int(Handlers))
+      cog.outl("T%s> message_packet;" % int(Handlers))
       cog.outl("")
+      
+      cog.outl("#if ETL_USING_CPP11")     
+      cog.out("  using message_types = etl::type_list<")
+      for n in range(1, int(Handlers)):
+          cog.out("T%s, " % n)
+      cog.outl("T%s>;" % int(Handlers))
+      cog.outl("#endif")
+      cog.outl("")
+
       cog.outl("  //**********************************************")
       cog.outl("  message_router(etl::message_router_id_t id_)")
       cog.outl("    : imessage_router(id_)")
@@ -765,6 +881,15 @@ namespace etl
               cog.out("T%s, " % t)
           cog.outl(" T%s> message_packet;" % n)
           cog.outl("")
+
+          cog.outl("#if ETL_USING_CPP11")     
+          cog.out("  using message_types = etl::type_list<")
+          for t in range(1, n):
+              cog.out("T%s, " % t)
+          cog.outl("T%s>;" % n)
+          cog.outl("#endif")
+          cog.outl("")
+
           cog.outl("  //**********************************************")
           cog.outl("  message_router(etl::message_router_id_t id_)")
           cog.outl("    : imessage_router(id_)")
@@ -902,6 +1027,94 @@ namespace etl
           cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+
+  //***************************************************************************
+  // Specialisation for 0 message types.
+  //***************************************************************************
+  template <typename TDerived>
+  class message_router<TDerived, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
+    : public imessage_router
+  {
+  public:
+
+    typedef etl::message_packet<> message_packet;
+
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<>;
+#endif
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router()
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
+    {
+    }
+
+    //**********************************************
+    message_router(etl::imessage_router& successor_)
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)
+    {
+    }
+
+    //**********************************************
+    using etl::imessage_router::receive;
+
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
+    {
+#include "etl/private/diagnostic_array_bounds_push.h"
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
+#include "etl/private/diagnostic_pop.h"
+    }
+
+    //**********************************************
+    using imessage_router::accepts;
+
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //********************************************
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+  };
 #endif
 }
 
