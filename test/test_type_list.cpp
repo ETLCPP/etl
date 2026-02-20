@@ -226,8 +226,8 @@ namespace
     //*************************************************************************
     TEST(test_type_list_indices_of_type)
     {
-      typedef etl::type_list<char, int, char, uint32_t, char, char> t1;
-      typedef etl::type_list<> t2;
+      using t1 = etl::type_list<char, int, char, uint32_t, char, char>;
+      using t2 = etl::type_list<>;
 
       using indices1  = etl::type_list_indices_of_type_t<t1, char>;
       using expected1 = etl::index_sequence<0U, 2U, 4U, 5U>;

@@ -179,6 +179,8 @@ namespace etl
   //***************************************************************************
   /// Defines an integral constant that is the index of the <i>first</i> instance of specified type in the type_list.
   /// If the type is not in the type_list, then defined as etl::type_list_npos.
+  /// Useful for type lists that do not contain duplicates, otherwise use type_list_indices_of_type.
+  /// Static asserts if TTypeList is not an etl::type_list.
   //***************************************************************************
   template <typename TTypeList, typename T>
   struct type_list_index_of_type
@@ -201,7 +203,10 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Returns an index_sequence of indices where T appears in the type_list.
+  /// Defines an index_sequence of indices where T appears in the type_list.
+  /// If the type is not in the type_list, then defined as an empty index_sequence.
+  /// Useful for type lists that contain duplicates, otherwise use type_list_index_of_type.
+  /// Static asserts if TTypeList is not an etl::type_list.
   //***************************************************************************
   namespace private_type_list
   {
