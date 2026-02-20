@@ -2822,6 +2822,10 @@ namespace etl
       size_t free_space = static_cast<size_t>(etl::distance(position, p_buffer + CAPACITY));
       size_t count      = etl::min(length, free_space);
 
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(start <= CAPACITY, ETL_ERROR(string_iterator));
+#endif
+
       etl::mem_move(src, count, position);
 
       current_size = start + count;
