@@ -45,6 +45,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 #include "functional.h"
+#include "type_list.h"
 
 #include "private/tuple_element.h"
 #include "private/tuple_size.h"
@@ -131,6 +132,7 @@ namespace etl
     using value_type          = void;                        ///< The type contained by this tuple.
     using this_type           = tuple<>;                     ///< The type of this tuple.
     using base_type           = void;                        ///< The type of the base tuple.
+    using type_list           = etl::type_list<>;            ///< The type list for this tuple.
     using index_sequence_type = etl::make_index_sequence<0>; ///< The index_sequence type for this tuple.
 
     //*********************************
@@ -233,6 +235,7 @@ namespace etl
     using value_type          = THead;                  ///< The type contained by this tuple.
     using this_type           = tuple<THead, TTail...>; ///< The type of this tuple.
     using base_type           = tuple<TTail...>;        ///< The type of the base tuple.
+    using type_list           = etl::type_list<THead, TTail...>;  ///< The type list for this tuple.
     using index_sequence_type = etl::make_index_sequence<number_of_types<THead, TTail...>()>; ///< The index_sequence type for this tuple.
 
     //*********************************
@@ -559,9 +562,9 @@ namespace etl
     //*********************************
     /// Assign from lvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-    tuple& operator =(pair<U1, U2>& p)
+    tuple& operator =(ETL_OR_STD::pair<U1, U2>& p)
     {
       get_value()            = p.first;
       get_base().get_value() = p.second;
@@ -572,9 +575,9 @@ namespace etl
     //*********************************
     /// Assign from const lvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-    tuple& operator =(const pair<U1, U2>& p)
+    tuple& operator =(const ETL_OR_STD::pair<U1, U2>& p)
     {
       get_value()            = p.first;
       get_base().get_value() = p.second;
@@ -585,9 +588,9 @@ namespace etl
     //*********************************
     /// Assign from rvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-    tuple& operator =(pair<U1, U2>&& p)
+    tuple& operator =(ETL_OR_STD::pair<U1, U2>&& p)
     {
       get_value()            = etl::forward<U1>(p.first);
       get_base().get_value() = etl::forward<U2>(p.second);
@@ -598,12 +601,12 @@ namespace etl
     //*********************************
     /// Assign from const rvalue pair tuple type.
     //*********************************
-    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>, etl::enable_if_t<NTypes == 2U, int> = 0>
+    template <typename U1, typename U2, size_t NTypes = number_of_types<THead, TTail...>(), etl::enable_if_t<NTypes == 2U, int> = 0>
     ETL_CONSTEXPR14
-      tuple& operator =(const pair<U1, U2>&& p)
+    tuple& operator =(const ETL_OR_STD::pair<U1, U2>&& p)
     {
-      get_value()            = etl::forward<U1>(p.first);
-      get_base().get_value() = etl::forward<U2>(p.second);
+      get_value()            = p.first;
+      get_base().get_value() = p.second;
 
       return *this;
     }
@@ -1273,6 +1276,20 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::tuple<TTypes...>
+  template <typename TList>
+  struct tuple_from_type_list;
+
+  template <typename... TTypes>
+  struct tuple_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::tuple<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using tuple_from_type_list_t = typename tuple_from_type_list<TTypeList>::type;
 }
 
 namespace std

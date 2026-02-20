@@ -370,13 +370,14 @@ namespace etl
 
   //***************************************************************************
   /// A template class that can store any of the types defined in the template parameter list.
-  /// Supports up to 8 types.
   ///\ingroup variant
   //***************************************************************************
   template <typename... TTypes>
   class variant
   {
   public:
+
+    using type_list = etl::type_list<TTypes...>;
 
     //***************************************************************************
     /// get() is a friend function.
@@ -1920,5 +1921,19 @@ namespace etl
     }
   }
 #endif
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::variant<TTypes...>
+  template <typename TList>
+  struct variant_from_type_list;
+
+  template <typename... TTypes>
+  struct variant_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::variant<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using variant_from_type_list_t = typename variant_from_type_list<TTypeList>::type;
 }
 #endif

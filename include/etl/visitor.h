@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
+#include "type_list.h"
 
 //*****************************************************************************
 ///\defgroup visitor visitor
@@ -64,6 +65,7 @@ namespace etl
 
     using visitable<T1>::accept;
     using visitable<Types...>::accept;
+    using type_list = etl::type_list<T1, Types...>;
   };
 
   //*****************************************************************
@@ -75,10 +77,26 @@ namespace etl
   {
   public:
 
+    using type_list = etl::type_list<T1>;
+
     virtual ~visitable() = default;
 
     virtual void accept(T1&) = 0;
   };
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::visitable<TTypes...>
+  template <typename TList>
+  struct visitable_from_type_list;
+
+  template <typename... TTypes>
+  struct visitable_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::visitable<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using visitable_from_type_list_t = typename visitable_from_type_list<TTypeList>::type;
 
 #else
 
@@ -186,6 +204,20 @@ namespace etl
 
     virtual void visit(T1) = 0;
   };
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::visitor<TTypes...>
+  template <typename TList>
+  struct visitor_from_type_list;
+
+  template <typename... TTypes>
+  struct visitor_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::visitor<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using visitor_from_type_list_t = typename visitor_from_type_list<TTypeList>::type;
 
 #else
 

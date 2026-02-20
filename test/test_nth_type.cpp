@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/nth_type.h"
+#include "etl/type_list.h"
 #include <type_traits>
 
 namespace
@@ -41,6 +42,16 @@ namespace
       CHECK((std::is_same<etl::nth_type_t<0, int, long, double>, int>::value));
       CHECK((std::is_same<etl::nth_type_t<1, int, long, double>, long>::value));
       CHECK((std::is_same<etl::nth_type_t<2, int, long, double>, double>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_nth_type_from_type_list)
+    {
+      using types = etl::type_list<int, long, double>;
+
+      CHECK((std::is_same<etl::nth_type_t<0, types>, int>::value));
+      CHECK((std::is_same<etl::nth_type_t<1, types>, long>::value));
+      CHECK((std::is_same<etl::nth_type_t<2, types>, double>::value));
     }
   }
 }
