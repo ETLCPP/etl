@@ -177,7 +177,7 @@ namespace etl
   using type_list_type_at_index_t = typename type_list_type_at_index<TTypeList, Index>::type;
 
   //***************************************************************************
-  /// Defines an integral constant that is the index of the specified type in the type_list.
+  /// Defines an integral constant that is the index of the <i>first</i> instance of specified type in the type_list.
   /// If the type is not in the type_list, then defined as etl::type_list_npos.
   //***************************************************************************
   template <typename TTypeList, typename T>
@@ -198,6 +198,62 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename TTypeList, typename T>
   inline constexpr size_t type_list_index_of_v = etl::type_list_index_of_type<TTypeList, T>::value;
+#endif
+
+  //***************************************************************************
+  /// Returns an index_sequence of indices where T appears in the type_list.
+  //***************************************************************************
+  namespace private_type_list
+  {
+    template <typename TIndexSequence, size_t Index>
+    struct index_sequence_push_back;
+
+    template <size_t... Indices, size_t Index>
+    struct index_sequence_push_back<etl::index_sequence<Indices...>, Index>
+    {
+      using type = etl::index_sequence<Indices..., Index>;
+    };
+
+    template <typename TTypeList, typename T, size_t Index, typename TResult>
+    struct type_list_indices_of_type_impl;
+
+    // The general case, check the head type, then recurse with the rest of the types.
+    template <typename Head, typename... Tail, typename T, size_t Index, typename TResult>
+    struct type_list_indices_of_type_impl<etl::type_list<Head, Tail...>, T, Index, TResult>
+    {
+    private:
+
+      // If Head is the same as T then append a new index to the result, otherwise no change.
+      using next_result = etl::conditional_t<etl::is_same<Head, T>::value,
+                                             typename index_sequence_push_back<TResult, Index>::type,
+                                             TResult>;
+
+    public:
+
+      // Recurse with the rest of the type_list, passing on the current result.
+      using type = typename type_list_indices_of_type_impl<etl::type_list<Tail...>, T, Index + 1U, next_result>::type;
+    };
+
+    // Specialisation for an empty type_list.
+    // This is the terminating specialisation for the general case.
+    template <typename T, size_t Index, typename TResult>
+    struct type_list_indices_of_type_impl<etl::type_list<>, T, Index, TResult>
+    {
+      using type = TResult;
+    };
+  }
+
+  template <typename TTypeList, typename T>
+  struct type_list_indices_of_type
+  {
+    ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
+
+    using type = typename private_type_list::type_list_indices_of_type_impl<TTypeList, T, 0U, etl::index_sequence<>>::type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename TTypeList, typename T>
+  using type_list_indices_of_type_t = typename type_list_indices_of_type<TTypeList, T>::type;
 #endif
 
   //***************************************************************************

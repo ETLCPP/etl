@@ -224,6 +224,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_type_list_indices_of_type)
+    {
+      typedef etl::type_list<char, int, char, uint32_t, char, char> t1;
+      typedef etl::type_list<> t2;
+
+      using indices1  = etl::type_list_indices_of_type_t<t1, char>;
+      using expected1 = etl::index_sequence<0U, 2U, 4U, 5U>;
+
+      using indices2  = etl::type_list_indices_of_type_t<t2, char>;
+      using expected2 = etl::index_sequence<>;
+
+      CHECK_TRUE((etl::is_same<indices1, expected1>::value));
+      CHECK_TRUE((etl::is_same<indices2, expected2>::value));
+    }
+
+    //*************************************************************************
     TEST(test_type_list_type_at_index)
     {
       typedef etl::type_list<char, int, uint32_t> t1;
