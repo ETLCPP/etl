@@ -659,9 +659,9 @@ namespace
     {
       using list1 = etl::type_list<>;
 
-      CHECK_FALSE((etl::type_list_all_of<list1, is_type_a>::value));
-      CHECK_FALSE((etl::type_list_all_of<list1, is_type_b>::value));
-      CHECK_FALSE((etl::type_list_all_of<list1, is_type_c>::value));
+      CHECK_TRUE((etl::type_list_all_of<list1, is_type_a>::value));
+      CHECK_TRUE((etl::type_list_all_of<list1, is_type_b>::value));
+      CHECK_TRUE((etl::type_list_all_of<list1, is_type_c>::value));
 
 #if ETL_USING_CPP17
       CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_a>));
