@@ -2818,17 +2818,17 @@ namespace etl
     //*********************************************************************
     void append_impl(iterator position, const_pointer src, size_t length, bool truncated, bool secure)
     {
-      difference_type start      = etl::distance(p_buffer, position);
-      difference_type free_space = etl::distance(position, p_buffer + CAPACITY);
-      size_t count               = etl::min(length, size_t(free_space));
+      size_t start      = static_cast<size_t>(etl::distance(p_buffer, position));
+      size_t free_space = static_cast<size_t>(etl::distance(position, p_buffer + CAPACITY));
+      size_t count      = etl::min(length, free_space);
 
       etl::mem_move(src, count, position);
 
-      current_size = size_t(start) + count;
+      current_size = start + count;
       p_buffer[current_size] = 0;
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
-      set_truncated((length > size_t(free_space)) || truncated);
+      set_truncated((length > free_space) || truncated);
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
