@@ -1296,14 +1296,13 @@ namespace etl
     }
 #endif
   };
-}
 
 //*******************************************
 /// Equivalence operators.
 //*******************************************
 template <typename TValue, typename TError, typename TValue2, typename TError2>
 ETL_CONSTEXPR14
-bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::expected<TValue2, TError2>& rhs)
+bool operator ==(const expected<TValue, TError>& lhs, const expected<TValue2, TError2>& rhs)
 {
   if (lhs.has_value() != rhs.has_value())
   {
@@ -1319,7 +1318,7 @@ bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::expected<T
 //*******************************************
 template <typename TValue, typename TError, typename TValue2>
 ETL_CONSTEXPR14
-bool operator ==(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
+bool operator ==(const expected<TValue, TError>& lhs, const TValue2& rhs)
 {
   if (!lhs.has_value())
   {
@@ -1331,7 +1330,7 @@ bool operator ==(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
 //*******************************************
 template <typename TValue, typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::unexpected<TError2>& rhs)
+bool operator ==(const expected<TValue, TError>& lhs, const unexpected<TError2>& rhs)
 {
   if (lhs.has_value())
   {
@@ -1343,7 +1342,7 @@ bool operator ==(const etl::expected<TValue, TError>& lhs, const etl::unexpected
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator ==(const etl::expected<void, TError>& lhs, const etl::expected<void, TError2>& rhs)
+bool operator ==(const expected<void, TError>& lhs, const expected<void, TError2>& rhs)
 {
   if (lhs.has_value() != rhs.has_value())
   {
@@ -1359,7 +1358,7 @@ bool operator ==(const etl::expected<void, TError>& lhs, const etl::expected<voi
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator ==(const etl::expected<void, TError>& lhs, const etl::unexpected<TError2>& rhs)
+bool operator ==(const expected<void, TError>& lhs, const unexpected<TError2>& rhs)
 {
   if (lhs.has_value())
   {
@@ -1371,7 +1370,7 @@ bool operator ==(const etl::expected<void, TError>& lhs, const etl::unexpected<T
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator ==(const etl::unexpected<TError>& lhs, const etl::unexpected<TError2>& rhs)
+bool operator ==(const unexpected<TError>& lhs, const unexpected<TError2>& rhs)
 {
   return lhs.error() == rhs.error();
 }
@@ -1379,7 +1378,7 @@ bool operator ==(const etl::unexpected<TError>& lhs, const etl::unexpected<TErro
 //*******************************************
 template <typename TValue, typename TError, typename TValue2, typename TError2>
 ETL_CONSTEXPR14
-bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::expected<TValue2, TError2>& rhs)
+bool operator !=(const expected<TValue, TError>& lhs, const expected<TValue2, TError2>& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1387,7 +1386,7 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::expected<T
 //*******************************************
 template <typename TValue, typename TError, typename TValue2>
 ETL_CONSTEXPR14
-bool operator !=(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
+bool operator !=(const expected<TValue, TError>& lhs, const TValue2& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1395,7 +1394,7 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const TValue2& rhs)
 //*******************************************
 template <typename TValue, typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::unexpected<TError2>& rhs)
+bool operator !=(const expected<TValue, TError>& lhs, const unexpected<TError2>& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1403,7 +1402,7 @@ bool operator !=(const etl::expected<TValue, TError>& lhs, const etl::unexpected
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator !=(const etl::expected<void, TError>& lhs, const etl::expected<void, TError2>& rhs)
+bool operator !=(const expected<void, TError>& lhs, const expected<void, TError2>& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1411,7 +1410,7 @@ bool operator !=(const etl::expected<void, TError>& lhs, const etl::expected<voi
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator !=(const etl::expected<void, TError>& lhs, const etl::unexpected<TError2>& rhs)
+bool operator !=(const expected<void, TError>& lhs, const unexpected<TError2>& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1419,7 +1418,7 @@ bool operator !=(const etl::expected<void, TError>& lhs, const etl::unexpected<T
 //*******************************************
 template <typename TError, typename TError2>
 ETL_CONSTEXPR14
-bool operator !=(const etl::unexpected<TError>& lhs, const etl::unexpected<TError2>& rhs)
+bool operator !=(const unexpected<TError>& lhs, const unexpected<TError2>& rhs)
 {
   return !(lhs == rhs);
 }
@@ -1429,7 +1428,7 @@ bool operator !=(const etl::unexpected<TError>& lhs, const etl::unexpected<TErro
 //*******************************************
 template <typename TValue, typename TError>
 ETL_CONSTEXPR14
-void swap(etl::expected<TValue, TError>& lhs, etl::expected<TValue, TError>& rhs)
+void swap(expected<TValue, TError>& lhs, expected<TValue, TError>& rhs)
 {
   lhs.swap(rhs);
 }
@@ -1439,9 +1438,10 @@ void swap(etl::expected<TValue, TError>& lhs, etl::expected<TValue, TError>& rhs
 //*******************************************
 template <typename TError>
 ETL_CONSTEXPR14
-void swap(etl::unexpected<TError>& lhs, etl::unexpected<TError>& rhs)
+void swap(unexpected<TError>& lhs, unexpected<TError>& rhs)
 {
   lhs.swap(rhs);
 }
+}  // namespace etl
 
 #endif
