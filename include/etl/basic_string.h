@@ -2757,10 +2757,11 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Common implementation for 'assign' and 'append' for iterators.
+    /// Common implementation for 'assign' and 'append' for non-pointer iterators.
     //*********************************************************************
     template <typename TIterator>
-    void append_impl(iterator position, TIterator first, TIterator last, bool truncated, bool secure)
+    typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TIterator>::type>::value>::type
+    append_impl(iterator position, TIterator first, TIterator last, bool truncated, bool secure)
     {
       difference_type start      = etl::distance(p_buffer, position);
       difference_type count      = etl::distance(first, last);
@@ -2809,20 +2810,25 @@ namespace etl
         return;
       }
 
+      append_impl(position, src, get_string_length(src), truncated, secure);
+    }
+
+    //*********************************************************************
+    /// Core non-template implementation for 'assign' and 'append'.
+    //*********************************************************************
+    void append_impl(iterator position, const_pointer src, size_t length, bool truncated, bool secure)
+    {
       difference_type start      = etl::distance(p_buffer, position);
       difference_type free_space = etl::distance(position, p_buffer + CAPACITY);
+      size_t count               = etl::min(length, size_t(free_space));
 
-      pointer dst    = position;     
-      size_t  length = get_string_length(src);
-      size_t  count  = (length < size_t(free_space)) ? length : size_t(free_space);
-      etl::mem_move(src, count, dst);
+      etl::mem_move(src, count, position);
 
-      truncated |= (src[count] != 0);
       current_size = size_t(start) + count;
       p_buffer[current_size] = 0;
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
-      set_truncated(truncated);
+      set_truncated((length > size_t(free_space)) || truncated);
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(is_truncated() == false, ETL_ERROR(string_truncation));
 #endif
@@ -2840,6 +2846,16 @@ namespace etl
 #endif
 
       cleanup();
+    }
+
+    //*********************************************************************
+    /// Common implementation for 'assign' and 'append' for pointer iterators.
+    //*********************************************************************
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_pointer<typename etl::remove_reference<TIterator>::type>::value>::type
+    append_impl(iterator position, TIterator first, TIterator last, bool truncated, bool secure)
+    {
+      append_impl(position, first, size_t(etl::distance(first, last)), truncated || is_truncated(), secure);
     }
 
     //*************************************************************************
