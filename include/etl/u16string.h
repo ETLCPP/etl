@@ -731,7 +731,7 @@ namespace etl
   template<size_t Array_Size>
   etl::u16string<Array_Size - 1U> make_string(const char16_t(&text)[Array_Size])
   {
-    return etl::u16string<Array_Size - 1U>(text);
+    return etl::u16string<Array_Size - 1U>(text, etl::strlen(text, Array_Size - 1U));
   }
 
   //***************************************************************************
