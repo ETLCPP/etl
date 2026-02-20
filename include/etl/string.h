@@ -420,7 +420,7 @@ namespace etl
       }
       else
       {
-        this->assign(text, text + etl::strlen(text));
+        this->assign(text);
       }
     }
 
@@ -440,7 +440,7 @@ namespace etl
       }
       else
       {
-        this->assign(text, text + etl::strlen(text));
+        this->assign(text);
       }
     }
 
@@ -751,7 +751,7 @@ namespace etl
   template<size_t Array_Size>
   etl::string<Array_Size - 1U> make_string(const char(&text)[Array_Size])
   {
-    return etl::string<Array_Size - 1U>(text, etl::strlen(text, Array_Size - 1));
+    return etl::string<Array_Size - 1U>(text);
   }
 
   //***************************************************************************
