@@ -1002,7 +1002,7 @@ namespace
     //*********************************
     TEST(test_index_sequence_at_matches_expected)
     {
-      using seq0    = etl::index_sequence<>;
+      // using seq0    = etl::index_sequence<>;          // This should fail to compile as seq0 is empty
       using seq1    = etl::index_sequence<1U, 2U, 3U>;
       //using result0 = etl::index_sequence_at<seq0, 0>; // This should fail to compile as seq0 is empty
       //auto  ignore0 = result0;                         // Uses result0
