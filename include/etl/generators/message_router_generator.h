@@ -205,9 +205,11 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
     using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
     using message_types        = etl::type_list<>;                                                    ///> The message types.
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
+#endif
 
     //********************************************
     null_message_router()
@@ -287,9 +289,11 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
     using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
     using message_types        = etl::type_list<>;                                                    ///> The message types.
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
+#endif
 
     //********************************************
     message_producer()
