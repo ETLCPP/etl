@@ -66,6 +66,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "type_list.h"
 #include "array.h"
+
 #include <stdint.h>
 
 namespace etl
@@ -407,9 +408,9 @@ namespace etl
     destination.receive(id, message);
   }
 
-//*************************************************************************************************
-// For C++11 and above.
-//*************************************************************************************************
+  //*************************************************************************************************
+  // For C++11 and above.
+  //*************************************************************************************************
 #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // The definition for all message types.
@@ -479,16 +480,7 @@ namespace etl
       // The IDs are sorted, so an ID less than the first is not handled by this router.
       if (id >= Message_Id_Start)
       {
-        if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
-        {
-          // The IDs are contiguous, so we can calculate the index directly.
-          index = static_cast<size_t>(id) - Message_Id_Start;
-        }
-        else
-        {
-          // The IDs are not contiguous, so we need to do a binary search.
-          index = get_dispatch_index_from_message_id(id);
-        }
+        index = get_dispatch_index_from_message_id(id);
       }
 
       // If the index is less than Number_Of_Messages, then we have a handler for this message type, so dispatch it.
@@ -556,7 +548,15 @@ namespace etl
     //***********************************************
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      if (get_dispatch_index_from_message_id(id) != Number_Of_Messages)
+      size_t index = Number_Of_Messages;
+
+      // The IDs are sorted, so an ID less than the first is not handled by this router.
+      if (id >= Message_Id_Start)
+      {
+        index = get_dispatch_index_from_message_id(id);
+      }
+
+      if (index < Number_Of_Messages)
       {
         return true;
       }
@@ -674,33 +674,42 @@ namespace etl
     //**********************************************
     // Get the dispatch index for a message id.
     // This will be used at runtime to find the handler for a message id.
-    // This is a binary search of the message id table, which is sorted by message id.
+    // If the message ids are contiguous, we can calculate the index directly. If they are not contiguous, we need to do a binary search.
     // This will return Number_Of_Messages if the message id is not found, which indicates that the message should be passed to the successor.
     //**********************************************
     static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
     {
-      size_t left  = 0;
-      size_t right = Number_Of_Messages;
-
-      while (left < right)
+      if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
       {
-        size_t mid = (left + right) / 2;
+        // The IDs are contiguous, so we can calculate the index directly.
+        return static_cast<size_t>(id) - Message_Id_Start;
+      }
+      else
+      {
+        // The IDs are not contiguous, so we need to do a binary search.
+        size_t left  = 0;
+        size_t right = Number_Of_Messages;
 
-        if (message_id_table[mid] == id)
+        while (left < right)
         {
-          return mid;
-        }
-        else if (message_id_table[mid] < id)
-        {
-          left = mid + 1;
-        }
-        else
-        {
-          right = mid;
+          size_t mid = (left + right) / 2;
+
+          if (message_id_table[mid] == id)
+          {
+            return mid;
+          }
+          else if (message_id_table[mid] < id)
+          {
+            left = mid + 1;
+          }
+          else
+          {
+            right = mid;
+          }
         }
       }
 
-      return Number_Of_Messages; // not found
+      return Number_Of_Messages; // Not found
     }
 
     //**********************************************
