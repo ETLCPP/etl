@@ -526,7 +526,7 @@ namespace etl
     /// \param msg The message.
     /// Enabled if TMessage is a message type, but not in the message type list.
     //**********************************************
-    template <typename TMessage, typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value &&
+    template <typename TMessage, typename etl::enable_if<etl::is_message<TMessage>::value &&
                                                          !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
@@ -867,9 +867,9 @@ namespace etl
   using message_router_from_type_list_t = typename message_router_from_type_list<TDerived, TTypeList>::type;
 
 #else
-//*************************************************************************************************
-// For C++03/98.
-//*************************************************************************************************
+  //*************************************************************************************************
+  // For C++03/98.
+  //*************************************************************************************************
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
@@ -957,7 +957,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -966,7 +966,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -1111,7 +1111,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -1120,7 +1120,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -1265,7 +1265,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -1274,7 +1274,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -1418,7 +1418,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -1427,7 +1427,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -1569,7 +1569,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -1578,7 +1578,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -1719,7 +1719,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -1728,7 +1728,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -1868,7 +1868,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -1877,7 +1877,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2016,7 +2016,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2025,7 +2025,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2162,7 +2162,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2171,7 +2171,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2307,7 +2307,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2316,7 +2316,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2450,7 +2450,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2459,7 +2459,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2592,7 +2592,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2601,7 +2601,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2732,7 +2732,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2741,7 +2741,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -2871,7 +2871,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -2880,7 +2880,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -3009,7 +3009,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -3018,7 +3018,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1, T2>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())
@@ -3146,7 +3146,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1>::value, void>::type
       receive(const TMessage& msg)
     {
   #include "etl/private/diagnostic_array_bounds_push.h"
@@ -3155,7 +3155,7 @@ namespace etl
     }
 
     template <typename TMessage>
-    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1>::value, void>::type
+    typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, T1>::value, void>::type
       receive(const TMessage& msg)
     {
       if (has_successor())

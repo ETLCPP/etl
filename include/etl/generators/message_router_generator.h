@@ -538,7 +538,7 @@ namespace etl
     /// \param msg The message.
     /// Enabled if TMessage is a message type, but not in the message type list.
     //**********************************************
-    template <typename TMessage, typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value &&
+    template <typename TMessage, typename etl::enable_if<etl::is_message<TMessage>::value &&
                                                          !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
@@ -879,9 +879,9 @@ namespace etl
   using message_router_from_type_list_t = typename message_router_from_type_list<TDerived, TTypeList>::type;
 
 #else
-//*************************************************************************************************
-// For C++03/98.
-//*************************************************************************************************
+  //*************************************************************************************************
+  // For C++03/98.
+  //*************************************************************************************************
   /*[[[cog
       import cog
       ################################################
@@ -976,7 +976,7 @@ namespace etl
       cog.outl("  }")
       cog.outl("")
       cog.outl("  template <typename TMessage>")
-      cog.out("  typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, ")
+      cog.out("  typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, ")
       for n in range(1, int(Handlers)):
           cog.out("T%s, " % n)
       cog.outl("T%s>::value, void>::type" % int(Handlers))
@@ -988,7 +988,7 @@ namespace etl
       cog.outl("  }")
       cog.outl("")
       cog.outl("  template <typename TMessage>")
-      cog.out("  typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, ")
+      cog.out("  typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, ")
       for n in range(1, int(Handlers)):
           cog.out("T%s, " % n)
       cog.outl("T%s>::value, void>::type" % int(Handlers))
@@ -1161,7 +1161,7 @@ namespace etl
           cog.outl("  }")
           cog.outl("")
           cog.outl("  template <typename TMessage>")
-          cog.out("  typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, ")
+          cog.out("  typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, ")
           for t in range(1, n):
               cog.out("T%s, " % t)
           cog.outl("T%s>::value, void>::type" % n)
@@ -1173,7 +1173,7 @@ namespace etl
           cog.outl("  }")
           cog.outl("")
           cog.outl("  template <typename TMessage>")
-          cog.out("  typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, ")
+          cog.out("  typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, ")
           for t in range(1, n):
               cog.out("T%s, " % t)
           cog.outl("T%s>::value, void>::type" % n)
