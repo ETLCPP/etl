@@ -434,6 +434,10 @@ namespace etl
   template <typename TDerived, typename... TMessageTypes>
   class message_router : public imessage_router
   {
+  private:
+
+    using message_id_types = etl::type_list<etl::integral_constant<etl::message_id_t, TMessageTypes::ID>...>;
+
   public:
 
     using message_packet       = etl::message_packet<TMessageTypes...>;                               ///< The message packet type.
@@ -442,6 +446,7 @@ namespace etl
 
     static_assert(etl::type_list_is_unique<message_types>::value,               "All TMessageTypes must be unique");
     static_assert(etl::type_list_all_of<message_types, etl::is_message>::value, "All TMessageTypes must satisfy the condition etl::is_message");
+    static_assert(etl::type_list_is_unique<message_id_types>::value,            "All message IDs must be unique");
 
     //**********************************************
     /// Default constructor. The message router id will be MESSAGE_ROUTER.
@@ -529,7 +534,9 @@ namespace etl
     template <typename TMessage, typename etl::enable_if<etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
+#include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -609,8 +616,8 @@ namespace etl
 
   private:
 
-    static constexpr size_t Number_Of_Messages = sizeof...(TMessageTypes);
-    static constexpr size_t Message_Id_Start = etl::type_list_type_at_index_t<sorted_message_types, 0>::ID;
+    static constexpr size_t            Number_Of_Messages = sizeof...(TMessageTypes);
+    static constexpr etl::message_id_t Message_Id_Start   = etl::type_list_type_at_index_t<sorted_message_types, 0>::ID;
 
     //**********************************************
     // Checks that the message ids are contiguous.
@@ -634,9 +641,9 @@ namespace etl
     // The message ids are contiguous if there are 0 or 1 message types, or if each message id is one greater than the previous message id.
     static constexpr bool Message_Ids_Are_Contiguous = (Number_Of_Messages <= 1U) ? true : contiguous_impl<0U>::value;
 
-    using handler_ptr = void (*)(TDerived&, const etl::imessage&);  ///< Pointer to a handler function that takes a reference to the derived class and a reference to the message.
-    using message_dispatch_table_t = etl::array<handler_ptr, Number_Of_Messages>;    ///< The dispatch table type. An array of handler pointers, one for each message type.
-    using message_id_table_t = etl::array<etl::message_id_t, Number_Of_Messages>;    ///< The message id table type. An array of message ids, one for each message type.
+    using handler_ptr              = void (*)(TDerived&, const etl::imessage&);         ///< Pointer to a handler function that takes a reference to the derived class and a reference to the message.
+    using message_dispatch_table_t = etl::array<handler_ptr, Number_Of_Messages>;       ///< The dispatch table type. An array of handler pointers, one for each message type.
+    using message_id_table_t       = etl::array<etl::message_id_t, Number_Of_Messages>; ///< The message id table type. An array of message ids, one for each message type.
 
     //**********************************************
     // Call for a single message type
@@ -698,7 +705,7 @@ namespace etl
       if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
       {
         // The IDs are contiguous, so we can calculate the index directly.
-        return static_cast<size_t>(id) - Message_Id_Start;
+        return static_cast<size_t>(id - Message_Id_Start);
       }
       else
       {
