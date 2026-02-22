@@ -274,8 +274,8 @@ namespace etl
   struct compare_message_id_less
     : etl::bool_constant<TMsg1::ID < TMsg2::ID>
   {
-    ETL_STATIC_ASSERT(etl::is_message<TMsg1>::value, "TMsg1 is not a message");
-    ETL_STATIC_ASSERT(etl::is_message<TMsg2>::value, "TMsg2 is not a message");
+    ETL_STATIC_ASSERT(etl::is_message_type<TMsg1>::value, "TMsg1 is not a message");
+    ETL_STATIC_ASSERT(etl::is_message_type<TMsg2>::value, "TMsg2 is not a message");
   };
 
 #if ETL_USING_CPP17
