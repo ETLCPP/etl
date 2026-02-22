@@ -195,7 +195,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
-    using message_types        = etl::type_list<>;                                                    ///> The message types.
+    using message_types        = etl::type_list<>;                                                    ///< The message types.
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 #endif
 
@@ -279,7 +279,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
-    using message_types        = etl::type_list<>;                                                    ///> The message types.
+    using message_types        = etl::type_list<>;                                                    ///< The message types.
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 #endif
 
@@ -756,7 +756,7 @@ namespace etl
   public:
 
     using message_packet = etl::message_packet<>;                                                     ///< The message packet type.
-    using message_types = etl::type_list<>;                                                           ///> The message types.
+    using message_types = etl::type_list<>;                                                           ///< The message types.
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 
     //**********************************************
