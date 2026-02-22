@@ -762,6 +762,112 @@ namespace etl
   template <typename TIndexSequence, size_t Nth>
   inline constexpr size_t index_sequence_at_v = index_sequence_at<TIndexSequence, Nth>::value;
 #endif
+
+  //************************************
+  /// Checks if an index_sequence contains a value.
+  //************************************
+  template <typename TIndexSequence, size_t Value>
+  struct index_sequence_contains;
+
+  // An empty sequence does not contain any value.
+  template <size_t Value>
+  struct index_sequence_contains<etl::index_sequence<>, Value> : etl::false_type
+  {
+  };
+
+  // When the front index of the sequence is the value, the sequence contains the value.
+  // When the front index of the sequence is not the value, recurse with the tail of the sequence.
+  template <size_t Index, size_t... Indices, size_t Value>
+  struct index_sequence_contains<etl::index_sequence<Index, Indices...>, Value>
+    : etl::integral_constant<bool, (Index == Value) || index_sequence_contains<etl::index_sequence<Indices...>, Value>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TIndexSequence, size_t Value>
+  inline constexpr bool index_sequence_contains_v = index_sequence_contains<TIndexSequence, Value>::value;
+#endif
+
+  //***************************************************************************
+  /// Defines a new index_sequence by removing duplicate indexes from a given index_sequence, preserving the first occurrence.
+  //***************************************************************************
+  namespace private_index_sequence
+  {
+    template <typename TIndexSequence, typename TUniqueIndices>
+    struct type_index_sequence_impl;
+
+    // When the front index of the sequence is not in the unique sequence, add it to the back of the unique sequence and recurse with the tail of the sequence.
+    template <size_t Index, size_t... Indices, size_t... UniqueIndices>
+    struct type_index_sequence_impl<etl::index_sequence<Index, Indices...>, etl::index_sequence<UniqueIndices...>>
+    {
+      // If the index is already in the unique sequence, do not add it again. Otherwise, add it to the back of the unique sequence.
+      using type = typename etl::conditional_t<etl::index_sequence_contains<etl::index_sequence<UniqueIndices...>, Index>::value,
+                                              type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<UniqueIndices...>>,
+                                              type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence_push_back_t<etl::index_sequence<UniqueIndices...>, Index>>>::type;
+    };
+
+    // When the sequence is empty, the unique sequence is the result.
+    template <size_t... UniqueIndices>
+    struct type_index_sequence_impl<etl::index_sequence<>, etl::index_sequence<UniqueIndices...>>
+    {
+      using type = etl::index_sequence<UniqueIndices...>;
+    };
+  }
+
+  template <typename T>
+  struct index_sequence_unique;
+
+  template <size_t... Indices>
+  struct index_sequence_unique<etl::index_sequence<Indices...>>
+  {
+    using type = typename private_index_sequence::type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<>>::type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename TIndexSequence>
+  using index_sequence_unique_t = typename etl::index_sequence_unique<TIndexSequence>::type;
+#endif
+
+  //***************************************************************************
+  /// Checks that all of the indices in an index_sequence are unique.
+  //***************************************************************************
+  template <typename T>
+  struct index_sequence_is_unique;
+
+  template <size_t... Indices>
+  struct index_sequence_is_unique<etl::index_sequence<Indices...>>
+    : etl::bool_constant<etl::is_same<etl::index_sequence<Indices...>,
+                                      etl::index_sequence_unique_t<etl::index_sequence<Indices...>>>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TIndexSequence>
+  inline constexpr bool index_sequence_is_unique_v = index_sequence_is_unique<TIndexSequence>::type::value;
+#endif
+
+  //***************************************************************************
+  /// Checks if the index_sequence is empty.
+  //***************************************************************************
+  template <typename T>
+  struct index_sequence_is_empty;
+
+  template <>
+  struct index_sequence_is_empty<etl::index_sequence<>>
+    : etl::true_type
+  {
+  };
+
+  template <size_t... Indices>
+  struct index_sequence_is_empty<etl::index_sequence<Indices...>>
+    : etl::false_type
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename... TTypes>
+  inline constexpr bool index_sequence_is_empty_v = index_sequence_is_empty<TTypes...>::value;
+#endif
 #endif
 
   //***************************************************************************

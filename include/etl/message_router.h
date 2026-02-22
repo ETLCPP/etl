@@ -424,7 +424,7 @@ namespace etl
   {
   private:
 
-    using message_id_types = etl::type_list<etl::integral_constant<etl::message_id_t, TMessageTypes::ID>...>;
+    using message_id_sequence = etl::index_sequence<TMessageTypes::ID...>;
 
   public:
 
@@ -432,9 +432,9 @@ namespace etl
     using message_types        = etl::type_list<TMessageTypes...>;                                    ///< The message types.
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 
-    static_assert(etl::type_list_is_unique<message_types>::value,               "All TMessageTypes must be unique");
-    static_assert(etl::type_list_all_of<message_types, etl::is_message>::value, "All TMessageTypes must satisfy the condition etl::is_message");
-    static_assert(etl::type_list_is_unique<message_id_types>::value,            "All message IDs must be unique");
+    static_assert(etl::type_list_is_unique<message_types>::value,                    "All TMessageTypes must be unique");
+    static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value, "All TMessageTypes must satisfy the condition etl::is_message_type");
+    static_assert(etl::index_sequence_is_unique<message_id_sequence>::value,         "All message IDs must be unique");
 
     //**********************************************
     /// Default constructor. The message router id will be MESSAGE_ROUTER.
