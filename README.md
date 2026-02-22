@@ -48,7 +48,7 @@ Its design goals include:
 
 -	Offering APIs that closely resemble those of the STL, enabling familiar and consistent usage.
 
--	Maintaining compatibility with C++98 while implementing many features introduced in later standards 
+-	Maintaining compatibility with C++98 while implementing many features introduced in later standards
 (C++11/14/17/20/23) where possible.
 
 -	Ensuring deterministic behavior, which is critical in real-time and resource-constrained environments.
@@ -228,7 +228,7 @@ extern "C"
 
 etl::chrono::high_resolution_clock::rep etl_get_high_resolution_clock()
 {
-  etl::chrono::high_resolution_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+  return etl::chrono::high_resolution_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
 }
 
 etl::chrono::system_clock::rep etl_get_system_clock()
