@@ -125,21 +125,27 @@ namespace etl
       ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
     };
 
+#if ETL_USING_64BIT_TYPES
     template <>
     struct decoded<uint16_t>
     {
       typedef uint8_t type;
     };
+#endif
+
     template <>
     struct decoded<uint32_t>
     {
       typedef uint16_t type;
     };
+
+#if ETL_USING_64BIT_TYPES
     template <>
     struct decoded<uint64_t>
     {
       typedef uint32_t type;
     };
+#endif
 
     //*************************************************************************
     /// Normal Manchester encoding type (no inversion).
@@ -167,7 +173,9 @@ namespace etl
 
     //*************************************************************************
     /// Alias for memcpy. etl::mem_copy is not suitable for the Manchester
-    /// algorithm. This is an alternative way to respect ETL_USING_BUILTIN_MEMCPY
+    /// algorithm because all memory copies are between different types. This
+    /// alias is a way to respect ETL_USING_BUILTIN_MEMCPY while using the 
+    /// memcpy function signature
     //*************************************************************************
     inline void* memcpy(void* dest, const void* src, std::size_t count) ETL_NOEXCEPT
     {
@@ -320,7 +328,7 @@ namespace etl
 
     //*************************************************************************
     /// Encode a span of data with the minimum chunk size. This version is
-    /// constexpr so that it can be used to decode data at compile time.
+    /// constexpr so that it can be used to encode data at compile time.
     ///\param source      The source data to encode.
     ///\param destination The destination buffer for encoded data.
     ///\tparam TChunk     The chunk size for encoding (default: uint_least8_t).
@@ -516,11 +524,11 @@ namespace etl
         uint16_t chunk{};
         if (etl::endianness::value() == etl::endian::little)
         {
-          chunk = static_cast<uint16_t>((encoded[i + 1] << 8) | encoded[i]);
+          chunk = static_cast<uint16_t>((encoded[i + 1] << CHAR_BIT | encoded[i]);
         }
         else
         {
-          chunk = static_cast<uint16_t>((encoded[i] << 8) | encoded[i + 1]);
+          chunk = static_cast<uint16_t>((encoded[i] << CHAR_BIT) | encoded[i + 1]);
         }
 
         if (!is_valid<uint16_t>(chunk))
