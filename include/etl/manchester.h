@@ -164,6 +164,19 @@ namespace etl
       static const uint32_t inversion_mask = 0xFFFFFFFFUL;
 #endif
     };
+
+    //*************************************************************************
+    /// Alias for memcpy. etl::mem_copy is not suitable for the Manchester
+    /// algorithm. This is an alternative way to respect ETL_USING_BUILTIN_MEMCPY
+    //*************************************************************************
+    inline void* memcpy(void* dest, const void* src, std::size_t count) ETL_NOEXCEPT
+    {
+#if ETL_USING_BUILTIN_MEMCPY
+      return __builtin_memcpy(dest, src, count);
+#else
+      return ::memcpy(dest, src, count);
+#endif
+    }
   }  // namespace private_manchester
 
   //***************************************************************************
@@ -296,9 +309,9 @@ namespace etl
       for (size_t i = 0; i < decoded.size() / sizeof(TDecoded); ++i)
       {
         TDecoded decoded_value = 0;
-        memcpy(&decoded_value, &decoded[source_index], sizeof(TDecoded));
+        etl::private_manchester::memcpy(&decoded_value, &decoded[source_index], sizeof(TDecoded));
         const TEncoded encoded_value = encode(decoded_value);
-        memcpy(&encoded[dest_index], &encoded_value, sizeof(TEncoded));
+        etl::private_manchester::memcpy(&encoded[dest_index], &encoded_value, sizeof(TEncoded));
 
         source_index += sizeof(TDecoded);
         dest_index += sizeof(TEncoded);
@@ -425,9 +438,9 @@ namespace etl
       for (size_t i = 0; i < encoded.size() / sizeof(TEncoded); ++i)
       {
         TChunk encoded_value = 0;
-        memcpy(&encoded_value, &encoded[source_index], sizeof(TEncoded));
+        etl::private_manchester::memcpy(&encoded_value, &encoded[source_index], sizeof(TEncoded));
         const TDecoded decoded_value = decode(encoded_value);
-        memcpy(&decoded[dest_index], &decoded_value, sizeof(TDecoded));
+        etl::private_manchester::memcpy(&decoded[dest_index], &decoded_value, sizeof(TDecoded));
 
         source_index += sizeof(TEncoded);
         dest_index += sizeof(TDecoded);
