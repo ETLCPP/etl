@@ -174,7 +174,7 @@ namespace etl
     //*************************************************************************
     /// Alias for memcpy. etl::mem_copy is not suitable for the Manchester
     /// algorithm because all memory copies are between different types. This
-    /// alias is a way to respect ETL_USING_BUILTIN_MEMCPY while using the 
+    /// alias is a way to respect ETL_USING_BUILTIN_MEMCPY while using the
     /// memcpy function signature
     //*************************************************************************
     inline void* memcpy(void* dest, const void* src, std::size_t count) ETL_NOEXCEPT
@@ -524,7 +524,7 @@ namespace etl
         uint16_t chunk{};
         if (etl::endianness::value() == etl::endian::little)
         {
-          chunk = static_cast<uint16_t>((encoded[i + 1] << CHAR_BIT | encoded[i]);
+          chunk = static_cast<uint16_t>((encoded[i + 1] << CHAR_BIT) | encoded[i]);
         }
         else
         {
