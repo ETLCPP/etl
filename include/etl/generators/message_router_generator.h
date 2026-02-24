@@ -109,6 +109,53 @@ namespace etl
     }
   };
 
+  namespace private_message_router
+  {
+    //***************************************************************************
+    // Traits for a message router.
+    // message packet type
+    // message type_list
+    // sorted message type_list.
+    //***************************************************************************
+    template <typename... TMessageTypes>
+    class traits
+    {
+    private:
+
+      using message_id_sequence = etl::index_sequence<TMessageTypes::ID...>;
+
+    public:
+
+#if ETL_USING_CPP11
+      using message_packet       = etl::message_packet<TMessageTypes...>;
+      using message_types        = etl::type_list<TMessageTypes...>;
+      using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
+
+      static_assert(etl::type_list_is_unique<message_types>::value,                    "All TMessageTypes must be unique");
+      static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value, "All TMessageTypes must satisfy the condition etl::is_message_type");
+      static_assert(etl::index_sequence_is_unique<message_id_sequence>::value,         "All message IDs must be unique");
+#endif
+    };
+
+    //***************************************************************************
+    // Specialisation of traits for no message types.
+    // message packet type
+    // message type_list
+    // sorted message type_list.
+    //***************************************************************************
+    template <>
+    class traits<>
+    {
+    public:
+
+#if ETL_USING_CPP11
+      using message_packet = etl::message_packet<>;
+      using message_types = etl::type_list<>;
+      using sorted_message_types = etl::type_list<>;
+#endif
+    };
+  }
+
   //***************************************************************************
   /// Forward declare null message router functionality.
   //***************************************************************************
@@ -202,14 +249,9 @@ namespace etl
   /// This router can be used as a sink for messages or a 'null source' router.
   //***************************************************************************
   class null_message_router : public imessage_router
+                            , public private_message_router::traits<>
   {
   public:
-
-#if ETL_USING_CPP11
-    using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
-    using message_types        = etl::type_list<>;                                                    ///< The message types.
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
-#endif
 
     //********************************************
     null_message_router()
@@ -286,14 +328,9 @@ namespace etl
   /// This router can be used as a producer-only of messages, such an interrupt routine.
   //***************************************************************************
   class message_producer : public imessage_router
+                         , public private_message_router::traits<>
   {
   public:
-
-#if ETL_USING_CPP11
-    using message_packet       = etl::message_packet<>;                                               ///< The message packet type.
-    using message_types        = etl::type_list<>;                                                    ///< The message types.
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
-#endif
 
     //********************************************
     message_producer()
@@ -433,20 +470,13 @@ namespace etl
   //***************************************************************************
   template <typename TDerived, typename... TMessageTypes>
   class message_router : public imessage_router
+                       , public private_message_router::traits<TMessageTypes...>
   {
-  private:
-
-    using message_id_types = etl::type_list<etl::integral_constant<etl::message_id_t, TMessageTypes::ID>...>;
-
   public:
 
-    using message_packet       = etl::message_packet<TMessageTypes...>;                               ///< The message packet type.
-    using message_types        = etl::type_list<TMessageTypes...>;                                    ///< The message types.
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
-
-    static_assert(etl::type_list_is_unique<message_types>::value,               "All TMessageTypes must be unique");
-    static_assert(etl::type_list_all_of<message_types, etl::is_message>::value, "All TMessageTypes must satisfy the condition etl::is_message");
-    static_assert(etl::type_list_is_unique<message_id_types>::value,            "All message IDs must be unique");
+    using typename private_message_router::traits<TMessageTypes...>::message_packet;
+    using typename private_message_router::traits<TMessageTypes...>::message_types;
+    using typename private_message_router::traits<TMessageTypes...>::sorted_message_types;
 
     //**********************************************
     /// Default constructor. The message router id will be MESSAGE_ROUTER.
@@ -549,16 +579,16 @@ namespace etl
                                                          !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
-#include "etl/private/diagnostic_array_bounds_push.h"
       if (has_successor())
       {
         get_successor().receive(msg);
       }
       else
       {
+#include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-      }
 #include "etl/private/diagnostic_pop.h"
+      }
     }
 
     //**********************************************
@@ -771,12 +801,9 @@ namespace etl
   //***************************************************************************
   template <typename TDerived>
   class message_router<TDerived> : public imessage_router
+                                 , public private_message_router::traits<>
   {
   public:
-
-    using message_packet = etl::message_packet<>;                                                     ///< The message packet type.
-    using message_types = etl::type_list<>;                                                           ///< The message types.
-    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;  ///< The message types sorted by message id.
 
     //**********************************************
     /// Default constructor. The message router id will be MESSAGE_ROUTER.
