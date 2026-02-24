@@ -131,17 +131,38 @@ SUITE(test_message)
   }
 
   //*************************************************************************
+  TEST(test_has_message_id)
+  {
+    struct Message1 : public etl::message<1> {};
+    struct Message2 : public etl::message<2> {};
+    struct MessageNoID : public etl::imessage {};
+
+    CHECK_TRUE(etl::has_message_id<Message1>::value);
+    CHECK_TRUE(etl::has_message_id<Message2>::value);
+    CHECK_FALSE(etl::has_message_id<MessageNoID>::value);
+
+#if ETL_USING_CPP17
+    CHECK_TRUE(etl::has_message_id_v<Message1>);
+    CHECK_TRUE(etl::has_message_id_v<Message2>);
+    CHECK_FALSE(etl::has_message_id_v<MessageNoID>);
+#endif
+  }
+
+  //*************************************************************************
   TEST(test_message_compare_message_id)
   {
     struct Message1 : public etl::message<1> {};
     struct Message2 : public etl::message<2> {};
+    struct MessageNoID : public etl::imessage {};
 
     CHECK_TRUE((etl::compare_message_id_less<Message1, Message2>::value));
     CHECK_FALSE((etl::compare_message_id_less<Message2, Message1>::value));
 
+    // CHECK_FALSE((etl::compare_message_id_less<Message1, MessageNoID>::value)); // Uncomment to trigger static assert.
+
 #if ETL_USING_CPP17
-    CHECK_TRUE((etl::compare_message_id_v<Message1, Message2>));
-    CHECK_FALSE((etl::compare_message_id_v<Message2, Message1>));
+    CHECK_TRUE((etl::compare_message_id_less_v<Message1, Message2>));
+    CHECK_FALSE((etl::compare_message_id_less_v<Message2, Message1>));
 #endif
   }
 }
