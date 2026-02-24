@@ -138,10 +138,10 @@ namespace
   // Created from a type list.
   //***************************************************************************
 #if ETL_USING_CPP17 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
-  using Router1Messages = etl::type_list<Message1, Message2, Message3, Message4, Message5>;
+  using Router1Messages = etl::type_list<Message5, Message3, Message2, Message4, Message1>;
   class Router1 : public etl::message_router_from_type_list_t<Router1, Router1Messages>
 #else
-  class Router1 : public etl::message_router<Router1, Message1, Message2, Message3, Message4, Message5>
+  class Router1 : public etl::message_router<Router1, Message5, Message3, Message2, Message4, Message1>
 #endif
   {
   public:
@@ -397,6 +397,32 @@ namespace
       CHECK_EQUAL(4, r2.callback_count);
     }
 
+#if !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(message_router_member_types)
+    {
+      CHECK((std::is_same<etl::message_packet<>, Router0::message_packet>::value));
+      CHECK((std::is_same<etl::type_list<>,      Router0::message_types>::value));
+      CHECK((std::is_same<etl::type_list<>,      Router0::sorted_message_types>::value));
+
+      CHECK((std::is_same<etl::message_packet<Message5, Message3, Message2, Message4, Message1>, Router1::message_packet>::value));
+      CHECK((std::is_same<etl::type_list<Message5, Message3, Message2, Message4, Message1>,      Router1::message_types>::value));
+      CHECK((std::is_same<etl::type_list<Message1, Message2, Message3, Message4, Message5>,      Router1::sorted_message_types>::value));
+
+      CHECK((std::is_same<etl::message_packet<Message1, Message2, Message4, Message5>, Router2::message_packet>::value));
+      CHECK((std::is_same<etl::type_list<Message1, Message2, Message4, Message5>,      Router2::message_types>::value));
+      CHECK((std::is_same<etl::type_list<Message1, Message2, Message4, Message5>,      Router2::sorted_message_types>::value));
+
+      CHECK((std::is_same<etl::message_packet<>, etl::null_message_router::message_packet>::value));
+      CHECK((std::is_same<etl::type_list<>,      etl::null_message_router::message_types>::value));
+      CHECK((std::is_same<etl::type_list<>,      etl::null_message_router::sorted_message_types>::value));
+
+      CHECK((std::is_same<etl::message_packet<>, etl::message_producer::message_packet>::value));
+      CHECK((std::is_same<etl::type_list<>,      etl::message_producer::message_types>::value));
+      CHECK((std::is_same<etl::type_list<>,      etl::message_producer::sorted_message_types>::value));
+    }
+#endif
+
     //*************************************************************************
     TEST(message_router_with_no_message_types)
     {
@@ -410,8 +436,6 @@ namespace
       Message4 message4(r2);
 
       r0.append_successor(r1); // All messages are passed to r1.
-
-      CHECK_TRUE((etl::is_same<Router0::message_types, etl::type_list<>>::value));
 
       CHECK(!r0.is_null_router());
       CHECK(r0.is_producer());
