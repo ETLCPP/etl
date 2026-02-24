@@ -108,13 +108,13 @@ namespace etl
     template <typename... TMessageTypes>
     class traits
     {
+#if ETL_USING_CPP11
     private:
 
       using message_id_sequence = etl::index_sequence<TMessageTypes::ID...>;
 
     public:
 
-#if ETL_USING_CPP11
       using message_packet       = etl::message_packet<TMessageTypes...>;
       using message_types        = etl::type_list<TMessageTypes...>;
       using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
