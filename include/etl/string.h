@@ -92,7 +92,6 @@ namespace etl
     string(const etl::string<MAX_SIZE_>& other)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(other);
     }
 
@@ -103,7 +102,6 @@ namespace etl
     string(const etl::istring& other)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(other);
     }
 
@@ -118,7 +116,6 @@ namespace etl
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->initialise();
       this->assign(other, position, length);
     }
 
@@ -129,7 +126,6 @@ namespace etl
     ETL_EXPLICIT_STRING_FROM_CHAR string(const value_type* text)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(text);
     }
 
@@ -141,7 +137,6 @@ namespace etl
     string(const value_type* text, size_t count)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(text, text + count);
     }
 
@@ -167,7 +162,6 @@ namespace etl
     string(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(first, last);
     }
 
@@ -178,7 +172,6 @@ namespace etl
     string(std::initializer_list<value_type> init)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(init.begin(), init.end());
     }
 #endif
@@ -190,7 +183,6 @@ namespace etl
     explicit string(const etl::string_view& view)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
-      this->initialise();
       this->assign(view.begin(), view.end());
     }
 
@@ -329,7 +321,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(other);
       }
     }
@@ -347,7 +338,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(other);
       }
     }
@@ -367,7 +357,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(other);
       }
     }
@@ -389,7 +378,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(other, position, length);
       }
     }
@@ -413,7 +401,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(other, position, length);
       }
     }
@@ -433,8 +420,7 @@ namespace etl
       }
       else
       {
-        this->initialise();
-        this->assign(text, text + etl::strlen(text));
+        this->assign(text);
       }
     }
 
@@ -454,8 +440,7 @@ namespace etl
       }
       else
       {
-        this->initialise();
-        this->assign(text, text + etl::strlen(text));
+        this->assign(text);
       }
     }
 
@@ -473,7 +458,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(literal);
       }
     }
@@ -493,7 +477,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(literal);
       }
     }
@@ -512,7 +495,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(text, text + count);
       }
     }
@@ -533,7 +515,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(text, text + count);
       }
     }
@@ -577,7 +558,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(view.begin(), view.end());
       }
     }
@@ -597,7 +577,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(view.begin(), view.end());
       }
     }
@@ -618,7 +597,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(first, last);
       }
     }
@@ -640,7 +618,6 @@ namespace etl
       }
       else
       {
-        this->initialise();
         this->assign(first, last);
       }
     }
@@ -652,7 +629,6 @@ namespace etl
     string_ext(std::initializer_list<value_type> init, value_type* buffer, size_type buffer_size)
       : istring(buffer, buffer_size - 1U)
     {
-      this->initialise();
       this->assign(init.begin(), init.end());
     }
 
@@ -665,7 +641,6 @@ namespace etl
     string_ext(std::initializer_list<value_type> init, value_type (&buffer)[BufferSize])
       : istring(buffer, BufferSize - 1U)
     {
-      this->initialise();
       this->assign(init.begin(), init.end());
     }
 #endif
