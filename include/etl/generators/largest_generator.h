@@ -33,7 +33,7 @@ import cog
 cog.outl("#if 0")
 ]]]*/
 /*[[[end]]]*/
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 /*[[[cog
 import cog
 cog.outl("#endif")
@@ -63,19 +63,19 @@ cog.outl("//********************************************************************
 //***************************************************************************
 
 #ifndef ETL_LARGEST_INCLUDED
-#define ETL_LARGEST_INCLUDED
+  #define ETL_LARGEST_INCLUDED
 
 ///\defgroup largest largest
 ///\ingroup utilities
 
-#include "platform.h"
-#include "type_traits.h"
-#include "smallest.h"
-#include "static_assert.h"
+  #include "platform.h"
+  #include "smallest.h"
+  #include "static_assert.h"
+  #include "type_traits.h"
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -94,10 +94,10 @@ namespace etl
 
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
-    using type = typename etl::conditional<(etl::size_of<T1>::value > etl::size_of<largest_other>::value),  // Boolean
-                                            T1,                                                             // TrueType
-                                            largest_other>                                                  // FalseType
-                                            ::type;                                                         // The largest type of the two.
+    using type = typename etl::conditional<(etl::size_of<T1>::value > etl::size_of<largest_other>::value), // Boolean
+                                           T1,                                                             // TrueType
+                                           largest_other>                                                  // FalseType
+      ::type;                                                                                              // The largest type of the two.
 
     // The size of the largest type.
     enum
@@ -122,18 +122,18 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP11
+    #if ETL_USING_CPP11
   template <typename... T>
   using largest_type_t = typename largest_type<T...>::type;
-#endif
+    #endif
 
-#if ETL_USING_CPP17
+    #if ETL_USING_CPP17
   template <typename... T>
   constexpr size_t largest_type_v = largest_type<T...>::size;
-#endif
+    #endif
 
-#else
-  /*[[[cog
+  #else
+    /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
   cog.outl("/// Template to determine the largest type and size.")
@@ -142,16 +142,16 @@ namespace etl
   cog.outl("/// Defines 'size' which is the size of the largest parameter.")
   cog.outl("///\\ingroup largest")
   cog.outl("//***************************************************************************")
-  cog.out("template <typename T1, ")
+  cog.out("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.out("typename T%s = void, " % n)
+      cog.out(" typename T%s = void," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s = void>" % int(NTypes))
+          cog.out("         ")
+  cog.outl(" typename T%s = void>" % int(NTypes))
   cog.outl("struct largest_type")
   cog.outl("{")
-  cog.outl("  // Define 'largest_other' as 'largest_type' with all but the first parameter. ")
+  cog.outl("  // Define 'largest_other' as 'largest_type' with all but the first parameter.")
   cog.out("  typedef typename largest_type<")
   for n in range(2, int(NTypes)):
       cog.out("T%s, " % n)
@@ -163,9 +163,9 @@ namespace etl
   cog.outl("  // Set 'type' to be the largest of the first parameter and any of the others.")
   cog.outl("  // This is recursive.")
   cog.outl("  typedef typename etl::conditional<(sizeof(T1) > sizeof(largest_other)), // Boolean")
-  cog.outl("                                     T1,                                  // TrueType")
-  cog.outl("                                     largest_other>                       // FalseType")
-  cog.outl("                                     ::type type;                         // The largest type of the two.")
+  cog.outl("                                    T1,                                   // TrueType")
+  cog.outl("                                    largest_other>                        // FalseType")
+  cog.outl("    ::type type;                                                          // The largest type of the two.")
   cog.outl("")
   cog.outl("  // The size of the largest type.")
   cog.outl("  enum")
@@ -178,13 +178,13 @@ namespace etl
   cog.outl("// Specialisation for one template parameter.")
   cog.outl("//***************************************************************************")
   cog.outl("template <typename T1>")
-  cog.out("struct largest_type<T1,   ")
+  cog.out("struct largest_type<T1,")
   for n in range(2, int(NTypes)):
-      cog.out("void, ")
+      cog.out(" void,")
       if n % 8 == 0:
           cog.outl("")
-          cog.out("                    ")
-  cog.outl("void>")
+          cog.out("                   ")
+  cog.outl(" void>")
   cog.outl("{")
   cog.outl("  typedef T1 type;")
   cog.outl("")
@@ -194,10 +194,10 @@ namespace etl
   cog.outl("  };")
   cog.outl("};")
   ]]]*/
-  /*[[[end]]]*/
-#endif
+    /*[[[end]]]*/
+  #endif
 
-#if ETL_USING_CPP11 && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest alignment.
   /// Defines <b>value</b> which is the largest alignment of all the parameters.
@@ -212,9 +212,9 @@ namespace etl
     // Set 'type' to be the largest of the first parameter and any of the others.
     // This is recursive.
     using type = typename etl::conditional<(etl::alignment_of<T1>::value > etl::alignment_of<largest_other>::value), // Boolean
-                                            T1,                                                                      // TrueType
-                                            largest_other>                                                           // FalseType
-                                            ::type;                                                                  // The largest type of the two.
+                                           T1,                                                                       // TrueType
+                                           largest_other>                                                            // FalseType
+      ::type;                                                                                                        // The largest type of the two.
 
     // The largest alignment.
     enum
@@ -237,13 +237,13 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP17
+    #if ETL_USING_CPP17
   template <typename... T>
   inline constexpr size_t largest_alignment_v = largest_alignment<T...>::value;
-#endif
+    #endif
 
-#else
-  /*[[[cog
+  #else
+    /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
   cog.outl("/// Template to determine the largest alignment.")
@@ -251,16 +251,16 @@ namespace etl
   cog.outl("/// Defines <b>value</b> which is the largest alignment of all the parameters.")
   cog.outl("///\\ingroup largest")
   cog.outl("//***************************************************************************")
-  cog.out("template <typename T1, ")
+  cog.out("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.out("typename T%s = void, " % n)
+      cog.out(" typename T%s = void," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s = void>" % int(NTypes))
+          cog.out("         ")
+  cog.outl(" typename T%s = void>" % int(NTypes))
   cog.outl("struct largest_alignment")
   cog.outl("{")
-  cog.outl("  // Define 'largest_other' as 'largest_type' with all but the first parameter. ")
+  cog.outl("  // Define 'largest_other' as 'largest_type' with all but the first parameter.")
   cog.out("  typedef typename largest_alignment<")
   for n in range(2, int(NTypes)):
       cog.out("T%s, " % n)
@@ -272,9 +272,9 @@ namespace etl
   cog.outl("  // Set 'type' to be the largest of the first parameter and any of the others.")
   cog.outl("  // This is recursive.")
   cog.outl("  typedef typename etl::conditional<(etl::alignment_of<T1>::value > etl::alignment_of<largest_other>::value), // Boolean")
-  cog.outl("                                     T1,                                                                      // TrueType")
-  cog.outl("                                     largest_other>                                                           // FalseType")
-  cog.outl("                                     ::type type;                                                             // The largest type of the two.")
+  cog.outl("                                    T1,                                                                       // TrueType")
+  cog.outl("                                    largest_other>                                                            // FalseType")
+  cog.outl("    ::type type;                                                                                              // The largest type of the two.")
   cog.outl("")
   cog.outl("  // The largest alignment.")
   cog.outl("  enum")
@@ -287,13 +287,13 @@ namespace etl
   cog.outl("// Specialisation for one template parameter.")
   cog.outl("//***************************************************************************")
   cog.outl("template <typename T1>")
-  cog.out("struct largest_alignment<T1,   ")
+  cog.out("struct largest_alignment<T1,")
   for n in range(2, int(NTypes)):
-      cog.out("void, ")
+      cog.out(" void,")
       if n % 8 == 0:
           cog.outl("")
-          cog.out("                         ")
-  cog.outl("void>")
+          cog.out("                        ")
+  cog.outl(" void>")
   cog.outl("{")
   cog.outl("  typedef T1 type;")
   cog.outl("")
@@ -303,8 +303,8 @@ namespace etl
   cog.outl("  };")
   cog.outl("};")
   ]]]*/
-  /*[[[end]]]*/
-#endif
+    /*[[[end]]]*/
+  #endif
 
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
@@ -319,10 +319,10 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename T>
   using larger_int_type_t = typename larger_int_type<T>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
@@ -337,10 +337,10 @@ namespace etl
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename T>
   using larger_uint_type_t = typename larger_uint_type<T>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
@@ -367,12 +367,12 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename T>
   using larger_type_t = typename larger_type<T>::type;
-#endif
+  #endif
 
-#if ETL_USING_CPP11 && !defined(ETL_LARGEST_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_LARGEST_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type, size and alignment.
   /// Defines <b>value</b> which is the largest type, size and alignment of all the parameters.
@@ -390,18 +390,18 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP11
-    template <typename... T>
-    using largest_t = typename largest<T...>::type;
-#endif
+    #if ETL_USING_CPP11
+  template <typename... T>
+  using largest_t = typename largest<T...>::type;
+    #endif
 
-#if ETL_USING_CPP17
-    template <typename... T>
-    inline constexpr size_t largest_size = largest<T...>::size;
-#endif
+    #if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr size_t largest_size = largest<T...>::size;
+    #endif
 
-#else
-  /*[[[cog
+  #else
+    /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
   cog.outl("/// Template to determine the largest type, size and alignment.")
@@ -409,13 +409,13 @@ namespace etl
   cog.outl("/// Defines <b>value</b> which is the largest type, size and alignment of all the parameters.")
   cog.outl("///\\ingroup largest")
   cog.outl("//***************************************************************************")
-  cog.out("template <typename T1, ")
+  cog.out("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.out("typename T%s = void, " % n)
+      cog.out(" typename T%s = void," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s = void>" % NTypes)
+          cog.out("         ")
+  cog.outl(" typename T%s = void>" % NTypes)
   cog.outl("struct largest")
   cog.outl("{")
   cog.out("  typedef typename etl::largest_type<")
@@ -445,8 +445,8 @@ namespace etl
   cog.outl("  };")
   cog.outl("};")
   ]]]*/
-  /*[[[end]]]*/
-#endif
-}
+    /*[[[end]]]*/
+  #endif
+} // namespace etl
 
 #endif

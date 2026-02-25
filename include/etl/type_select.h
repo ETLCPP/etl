@@ -30,12 +30,12 @@ SOFTWARE.
 #define ETL_TYPE_SELECT_INCLUDED
 
 #include "platform.h"
+#include "null_type.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "null_type.h"
 
 #if 0
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
 
 //***************************************************************************
@@ -87,7 +87,7 @@ namespace etl
   // Select type alias
   //***************************************************************************
   template <size_t Index, typename... TTypes>
-  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<Index>;
+  using type_select_t = typename etl::type_select<TTypes...>::template select_t<Index>;
 
 #else
 
@@ -95,15 +95,15 @@ namespace etl
   // For 16 types.
   //***************************************************************************
   template <typename T0,
-            typename T1 = void,
-            typename T2 = void,
-            typename T3 = void,
-            typename T4 = void,
-            typename T5 = void,
-            typename T6 = void,
-            typename T7 = void,
-            typename T8 = void,
-            typename T9 = void,
+            typename T1  = void,
+            typename T2  = void,
+            typename T3  = void,
+            typename T4  = void,
+            typename T5  = void,
+            typename T6  = void,
+            typename T7  = void,
+            typename T8  = void,
+            typename T9  = void,
             typename T10 = void,
             typename T11 = void,
             typename T12 = void,
@@ -117,6 +117,7 @@ namespace etl
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -136,6 +137,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 16, "Invalid Id");
     };
@@ -144,27 +146,29 @@ namespace etl
   //***************************************************************************
   // For 15 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
-            typename T8, 
-            typename T9, 
-            typename T10, 
-            typename T11, 
-            typename T12, 
-            typename T13, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
+            typename T8,
+            typename T9,
+            typename T10,
+            typename T11,
+            typename T12,
+            typename T13,
             typename T14>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -183,6 +187,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 15, "Invalid Id");
     };
@@ -191,26 +196,28 @@ namespace etl
   //***************************************************************************
   // For 14 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
-            typename T8, 
-            typename T9, 
-            typename T10, 
-            typename T11, 
-            typename T12, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
+            typename T8,
+            typename T9,
+            typename T10,
+            typename T11,
+            typename T12,
             typename T13>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -228,6 +235,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 14, "Invalid Id");
     };
@@ -236,25 +244,27 @@ namespace etl
   //***************************************************************************
   // For 13 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
-            typename T8, 
-            typename T9, 
-            typename T10, 
-            typename T11, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
+            typename T8,
+            typename T9,
+            typename T10,
+            typename T11,
             typename T12>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -271,6 +281,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 13, "Invalid Id");
     };
@@ -279,24 +290,26 @@ namespace etl
   //***************************************************************************
   // For 12 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
-            typename T8, 
-            typename T9, 
-            typename T10, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
+            typename T8,
+            typename T9,
+            typename T10,
             typename T11>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -312,6 +325,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 12, "Invalid Id");
     };
@@ -320,23 +334,25 @@ namespace etl
   //***************************************************************************
   // For 11 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
-            typename T8, 
-            typename T9, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
+            typename T8,
+            typename T9,
             typename T10>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -351,6 +367,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 11, "Invalid Id");
     };
@@ -359,22 +376,24 @@ namespace etl
   //***************************************************************************
   // For 10 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
-            typename T8, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
+            typename T8,
             typename T9>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -388,6 +407,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 10, "Invalid Id");
     };
@@ -396,21 +416,23 @@ namespace etl
   //***************************************************************************
   // For 9 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
-            typename T7, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
+            typename T7,
             typename T8>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -423,6 +445,7 @@ namespace etl
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type>
               ::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 9, "Invalid Id");
     };
@@ -431,20 +454,22 @@ namespace etl
   //***************************************************************************
   // For 8 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
-            typename T6, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
+            typename T6,
             typename T7>
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -455,6 +480,7 @@ namespace etl
               typename etl::conditional<Id == 7, T7,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 8, "Invalid Id");
     };
@@ -463,19 +489,21 @@ namespace etl
   //***************************************************************************
   // For 7 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
-            typename T5, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
+            typename T5,
             typename T6>
   struct type_select<T0, T1, T2, T3, T4, T5, T6>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -485,6 +513,7 @@ namespace etl
               typename etl::conditional<Id == 6, T6,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 7, "Invalid Id");
     };
@@ -493,18 +522,20 @@ namespace etl
   //***************************************************************************
   // For 6 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
-            typename T4, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
+            typename T4,
             typename T5>
   struct type_select<T0, T1, T2, T3, T4, T5>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -513,6 +544,7 @@ namespace etl
               typename etl::conditional<Id == 5, T5,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 6, "Invalid Id");
     };
@@ -521,17 +553,19 @@ namespace etl
   //***************************************************************************
   // For 5 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
-            typename T3, 
+  template <typename T0,
+            typename T1,
+            typename T2,
+            typename T3,
             typename T4>
   struct type_select<T0, T1, T2, T3, T4>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
@@ -539,6 +573,7 @@ namespace etl
               typename etl::conditional<Id == 4, T4,
               etl::null_type<0> >
               ::type>::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 5, "Invalid Id");
     };
@@ -547,22 +582,25 @@ namespace etl
   //***************************************************************************
   // For 4 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
-            typename T2, 
+  template <typename T0,
+            typename T1,
+            typename T2,
             typename T3>
   struct type_select<T0, T1, T2, T3>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
               typename etl::conditional<Id == 3, T3,
               etl::null_type<0> >
               ::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 4, "Invalid Id");
     };
@@ -571,20 +609,23 @@ namespace etl
   //***************************************************************************
   // For 3 types.
   //***************************************************************************
-  template <typename T0, 
-            typename T1, 
+  template <typename T0,
+            typename T1,
             typename T2>
   struct type_select<T0, T1, T2>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               typename etl::conditional<Id == 2, T2,
               etl::null_type<0> >
               ::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 3, "Invalid Id");
     };
@@ -593,18 +634,21 @@ namespace etl
   //***************************************************************************
   // For 2 types.
   //***************************************************************************
-  template <typename T0, 
+  template <typename T0,
             typename T1>
   struct type_select<T0, T1>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               typename etl::conditional<Id == 1, T1,
               etl::null_type<0> >
               ::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 2, "Invalid Id");
     };
@@ -617,17 +661,20 @@ namespace etl
   struct type_select<T0>
   {
   public:
+
     template <size_t Id>
     struct select
     {
+      // clang-format off
       typedef typename etl::conditional<Id == 0, T0,
               etl::null_type<0> >
               ::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(Id < 1, "Invalid Id");
     };
   };
 #endif
-}
+} // namespace etl
 
 #endif

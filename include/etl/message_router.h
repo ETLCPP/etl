@@ -27,7 +27,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #if 0
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
 
 //***************************************************************************
@@ -49,25 +49,25 @@ SOFTWARE.
 //***************************************************************************
 
 #ifndef ETL_MESSAGE_ROUTER_INCLUDED
-#define ETL_MESSAGE_ROUTER_INCLUDED
+  #define ETL_MESSAGE_ROUTER_INCLUDED
 
-#include "platform.h"
-#include "message.h"
-#include "shared_message.h"
-#include "message_packet.h"
-#include "message_types.h"
-#include "alignment.h"
-#include "error_handler.h"
-#include "exception.h"
-#include "largest.h"
-#include "nullptr.h"
-#include "placement_new.h"
-#include "successor.h"
-#include "type_traits.h"
-#include "type_list.h"
-#include "array.h"
+  #include "platform.h"
+  #include "alignment.h"
+  #include "array.h"
+  #include "error_handler.h"
+  #include "exception.h"
+  #include "largest.h"
+  #include "message.h"
+  #include "message_packet.h"
+  #include "message_types.h"
+  #include "nullptr.h"
+  #include "placement_new.h"
+  #include "shared_message.h"
+  #include "successor.h"
+  #include "type_list.h"
+  #include "type_traits.h"
 
-#include <stdint.h>
+  #include <stdint.h>
 
 namespace etl
 {
@@ -108,7 +108,8 @@ namespace etl
     template <typename... TMessageTypes>
     class traits
     {
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
+
     private:
 
       using message_id_sequence = etl::index_sequence<TMessageTypes::ID...>;
@@ -119,10 +120,10 @@ namespace etl
       using message_types        = etl::type_list<TMessageTypes...>;
       using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
 
-      static_assert(etl::type_list_is_unique<message_types>::value,                    "All TMessageTypes must be unique");
+      static_assert(etl::type_list_is_unique<message_types>::value, "All TMessageTypes must be unique");
       static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value, "All TMessageTypes must satisfy the condition etl::is_message_type");
-      static_assert(etl::index_sequence_is_unique<message_id_sequence>::value,         "All message IDs must be unique");
-#endif
+      static_assert(etl::index_sequence_is_unique<message_id_sequence>::value, "All message IDs must be unique");
+  #endif
     };
 
     //***************************************************************************
@@ -136,13 +137,13 @@ namespace etl
     {
     public:
 
-#if ETL_USING_CPP11
-      using message_packet = etl::message_packet<>;
-      using message_types = etl::type_list<>;
+  #if ETL_USING_CPP11
+      using message_packet       = etl::message_packet<>;
+      using message_types        = etl::type_list<>;
       using sorted_message_types = etl::type_list<>;
-#endif
+  #endif
     };
-  }
+  } // namespace private_message_router
 
   //***************************************************************************
   /// Forward declare null message router functionality.
@@ -159,11 +160,11 @@ namespace etl
   public:
 
     virtual ~imessage_router() {}
-    virtual void receive(const etl::imessage&) = 0;
+    virtual void receive(const etl::imessage&)    = 0;
     virtual bool accepts(etl::message_id_t) const = 0;
-    virtual bool is_null_router() const = 0;
-    virtual bool is_producer() const = 0;
-    virtual bool is_consumer() const = 0;
+    virtual bool is_null_router() const           = 0;
+    virtual bool is_producer() const              = 0;
+    virtual bool is_consumer() const              = 0;
 
     //********************************************
     virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message)
@@ -228,16 +229,16 @@ namespace etl
 
     // Disabled.
     imessage_router(const imessage_router&);
-    imessage_router& operator =(const imessage_router&);
+    imessage_router& operator=(const imessage_router&);
 
-    etl::message_router_id_t  message_router_id;
+    etl::message_router_id_t message_router_id;
   };
 
   //***************************************************************************
   /// This router can be used as a sink for messages or a 'null source' router.
   //***************************************************************************
   class null_message_router : public imessage_router
-                            , public private_message_router::traits<>
+    , public private_message_router::traits<>
   {
   public:
 
@@ -316,7 +317,7 @@ namespace etl
   /// This router can be used as a producer-only of messages, such an interrupt routine.
   //***************************************************************************
   class message_producer : public imessage_router
-                         , public private_message_router::traits<>
+    , public private_message_router::traits<>
   {
   public:
 
@@ -404,7 +405,7 @@ namespace etl
   //***************************************************************************
   template <typename TRouter, typename TMessage>
   static
-  typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
+    typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
     send_message(TRouter&        destination,
                  const TMessage& message)
   {
@@ -416,7 +417,7 @@ namespace etl
   //***************************************************************************
   template <typename TRouter>
   static
-  typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
+    typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
     send_message(TRouter&            destination,
                  etl::shared_message message)
   {
@@ -428,7 +429,7 @@ namespace etl
   //***************************************************************************
   template <typename TRouter, typename TMessage>
   static
-  typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
+    typename etl::enable_if<etl::is_message_router<TRouter>::value && etl::is_message<TMessage>::value, void>::type
     send_message(TRouter&                 destination,
                  etl::message_router_id_t id,
                  const TMessage&          message)
@@ -441,7 +442,7 @@ namespace etl
   //***************************************************************************
   template <typename TRouter>
   static
-  typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
+    typename etl::enable_if<etl::is_message_router<TRouter>::value, void>::type
     send_message(TRouter&                 destination,
                  etl::message_router_id_t id,
                  etl::shared_message      message)
@@ -452,13 +453,13 @@ namespace etl
   //*************************************************************************************************
   // For C++11 and above.
   //*************************************************************************************************
-#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // The definition for all message types.
   //***************************************************************************
   template <typename TDerived, typename... TMessageTypes>
   class message_router : public imessage_router
-                       , public private_message_router::traits<TMessageTypes...>
+    , public private_message_router::traits<TMessageTypes...>
   {
   public:
 
@@ -513,8 +514,8 @@ namespace etl
     //***********************************************
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-      etl::message_id_t id = msg.get_message_id();
-      size_t index = Number_Of_Messages;
+      etl::message_id_t id    = msg.get_message_id();
+      size_t            index = Number_Of_Messages;
 
       // The IDs are sorted, so an ID less than the first is not handled by this router.
       if (id >= Message_Id_Start)
@@ -536,9 +537,9 @@ namespace etl
         }
         else
         {
-#include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
           static_cast<TDerived*>(this)->on_receive_unknown(msg);
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
         }
       }
     }
@@ -552,9 +553,9 @@ namespace etl
     template <typename TMessage, typename etl::enable_if<etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
-#include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -563,8 +564,7 @@ namespace etl
     /// \param msg The message.
     /// Enabled if TMessage is a message type, but not in the message type list.
     //**********************************************
-    template <typename TMessage, typename etl::enable_if<etl::is_message<TMessage>::value &&
-                                                         !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
+    template <typename TMessage, typename etl::enable_if<etl::is_message<TMessage>::value && !etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
       if (has_successor())
@@ -573,9 +573,9 @@ namespace etl
       }
       else
       {
-#include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -650,9 +650,7 @@ namespace etl
 
     template <size_t Index>
     struct contiguous_impl<Index, false>
-      : etl::bool_constant<(etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U ==
-                            etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) &&
-                            contiguous_impl<Index + 1U>::value>
+      : etl::bool_constant<(etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U == etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) && contiguous_impl<Index + 1U>::value>
     {
     };
 
@@ -689,7 +687,7 @@ namespace etl
     template <size_t... Indices>
     static constexpr message_dispatch_table_t make_message_dispatch_table(etl::index_sequence<Indices...>)
     {
-      return message_dispatch_table_t{ { get_message_handler<Indices>()... } };
+      return message_dispatch_table_t{{get_message_handler<Indices>()...}};
     }
 
     //**********************************************
@@ -709,7 +707,7 @@ namespace etl
     template <size_t... Indices>
     static constexpr message_id_table_t make_message_id_table(etl::index_sequence<Indices...>)
     {
-      return message_id_table_t{ { get_message_id_from_index<Indices>()... } };
+      return message_id_table_t{{get_message_id_from_index<Indices>()...}};
     }
 
     //**********************************************
@@ -720,7 +718,7 @@ namespace etl
     //**********************************************
     static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
     {
-      if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
+      if ETL_IF_CONSTEXPR (Message_Ids_Are_Contiguous)
       {
         // The IDs are contiguous, so we can calculate the index directly.
         return static_cast<size_t>(id - Message_Id_Start);
@@ -774,7 +772,7 @@ namespace etl
       etl::message_router<TDerived, TMessageTypes...>::make_message_id_table(etl::make_index_sequence<etl::message_router<TDerived, TMessageTypes...>::Number_Of_Messages>{});
   };
 
-#if ETL_USING_CPP11 && !ETL_USING_CPP17
+    #if ETL_USING_CPP11 && !ETL_USING_CPP17
   template <typename TDerived, typename... TMessageTypes>
   constexpr const typename etl::message_router<TDerived, TMessageTypes...>::message_dispatch_table_t
     etl::message_router<TDerived, TMessageTypes...>::message_dispatch_table;
@@ -782,14 +780,14 @@ namespace etl
   template <typename TDerived, typename... TMessageTypes>
   constexpr const typename etl::message_router<TDerived, TMessageTypes...>::message_id_table_t
     etl::message_router<TDerived, TMessageTypes...>::message_id_table;
-#endif
+    #endif
 
   //***************************************************************************
   // The definition of a message_router for zero message types.
   //***************************************************************************
   template <typename TDerived>
   class message_router<TDerived> : public imessage_router
-                                 , public private_message_router::traits<>
+    , public private_message_router::traits<>
   {
   public:
 
@@ -838,12 +836,12 @@ namespace etl
     //***********************************************
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-#include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       if (has_successor())
       {
         get_successor().receive(msg);
       }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -900,7 +898,7 @@ namespace etl
   template <typename TDerived, typename TTypeList>
   using message_router_from_type_list_t = typename message_router_from_type_list<TDerived, TTypeList>::type;
 
-#else
+  #else
   //*************************************************************************************************
   // For C++03/98.
   //*************************************************************************************************
@@ -912,15 +910,15 @@ namespace etl
             typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
             typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
-  class message_router  : public imessage_router
+  class message_router : public imessage_router
   {
   public:
 
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -955,7 +953,7 @@ namespace etl
     {
       const etl::message_id_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -975,28 +973,28 @@ namespace etl
         case T15::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T15&>(msg)); break;
         case T16::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T16&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1009,9 +1007,9 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
 
@@ -1022,20 +1020,34 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
+        case T11::ID:
+        case T12::ID:
+        case T13::ID:
+        case T14::ID:
+        case T15::ID:
+        case T16::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1067,15 +1079,15 @@ namespace etl
             typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14, typename T15>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  T15> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1110,7 +1122,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1129,28 +1141,28 @@ namespace etl
         case T14::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T14&>(msg)); break;
         case T15::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T15&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1163,12 +1175,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -1177,20 +1188,33 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
+        case T11::ID:
+        case T12::ID:
+        case T13::ID:
+        case T14::ID:
+        case T15::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1222,15 +1246,15 @@ namespace etl
             typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  T14> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1265,7 +1289,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1283,28 +1307,28 @@ namespace etl
         case T13::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T13&>(msg)); break;
         case T14::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T14&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1317,12 +1341,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -1331,20 +1354,32 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
+        case T11::ID:
+        case T12::ID:
+        case T13::ID:
+        case T14::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1376,15 +1411,15 @@ namespace etl
             typename T9, typename T10, typename T11, typename T12,
             typename T13>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  T13> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1419,7 +1454,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1436,28 +1471,28 @@ namespace etl
         case T12::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T12&>(msg)); break;
         case T13::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T13&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1470,12 +1505,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -1484,20 +1518,31 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
+        case T11::ID:
+        case T12::ID:
+        case T13::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1528,15 +1573,15 @@ namespace etl
             typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11, typename T12>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  T12> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1571,7 +1616,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1587,28 +1632,28 @@ namespace etl
         case T11::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T11&>(msg)); break;
         case T12::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T12&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1621,12 +1666,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -1635,20 +1679,30 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
+        case T11::ID:
+        case T12::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1679,15 +1733,15 @@ namespace etl
             typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  T11> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1722,7 +1776,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1737,28 +1791,28 @@ namespace etl
         case T10::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T10&>(msg)); break;
         case T11::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T11&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1771,12 +1825,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -1785,20 +1838,29 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID: case T11::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
+        case T11::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1829,15 +1891,15 @@ namespace etl
             typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9,  T10> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1872,7 +1934,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -1886,28 +1948,28 @@ namespace etl
         case T9::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T9&>(msg)); break;
         case T10::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T10&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -1920,12 +1982,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -1934,20 +1995,28 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-        case T9::ID: case T10::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
+        case T9::ID:
+        case T10::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -1978,15 +2047,15 @@ namespace etl
             typename T5, typename T6, typename T7, typename T8,
             typename T9>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8,  T9> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8, T9>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2021,7 +2090,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2034,28 +2103,28 @@ namespace etl
         case T8::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T8&>(msg)); break;
         case T9::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T9&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2068,12 +2137,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2082,20 +2150,27 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
         case T9::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2125,15 +2200,15 @@ namespace etl
             typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6, typename T7, typename T8>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7,  T8> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7, T8>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2168,7 +2243,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2180,28 +2255,28 @@ namespace etl
         case T7::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T7&>(msg)); break;
         case T8::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T8&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2214,12 +2289,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2228,20 +2302,26 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID:
-
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
+        case T8::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2271,15 +2351,15 @@ namespace etl
             typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6, typename T7>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5, T6,  T7> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6, T7>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2314,7 +2394,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2325,28 +2405,28 @@ namespace etl
         case T6::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T6&>(msg)); break;
         case T7::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T7&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2359,12 +2439,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2373,19 +2452,25 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
+        case T7::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2415,15 +2500,15 @@ namespace etl
             typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6>
   class message_router<TDerived, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4, T5,  T6> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5, T6> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5, T6>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2458,7 +2543,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2468,28 +2553,28 @@ namespace etl
         case T5::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T5&>(msg)); break;
         case T6::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T6&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2502,12 +2587,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2516,19 +2600,24 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
+        case T6::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2558,15 +2647,15 @@ namespace etl
             typename T1, typename T2, typename T3, typename T4,
             typename T5>
   class message_router<TDerived, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3, T4,  T5> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4, T5> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4, T5>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2601,7 +2690,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2610,28 +2699,28 @@ namespace etl
         case T4::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T4&>(msg)); break;
         case T5::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T5&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2644,12 +2733,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2658,19 +2746,23 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
+        case T5::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2699,15 +2791,15 @@ namespace etl
   template <typename TDerived,
             typename T1, typename T2, typename T3, typename T4>
   class message_router<TDerived, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2, T3,  T4> message_packet;
+    typedef etl::message_packet<T1, T2, T3, T4> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3, T4>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2742,7 +2834,7 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
@@ -2750,28 +2842,28 @@ namespace etl
         case T3::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T3&>(msg)); break;
         case T4::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T4&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2784,12 +2876,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2798,19 +2889,22 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
+        case T4::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2839,15 +2933,15 @@ namespace etl
   template <typename TDerived,
             typename T1, typename T2, typename T3>
   class message_router<TDerived, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1, T2,  T3> message_packet;
+    typedef etl::message_packet<T1, T2, T3> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2, T3>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2882,35 +2976,35 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
         case T2::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T2&>(msg)); break;
         case T3::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T3&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -2923,12 +3017,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -2937,19 +3030,21 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID: case T3::ID:
+        case T1::ID:
+        case T2::ID:
+        case T3::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -2978,15 +3073,15 @@ namespace etl
   template <typename TDerived,
             typename T1, typename T2>
   class message_router<TDerived, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet<T1,  T2> message_packet;
+    typedef etl::message_packet<T1, T2> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1, T2>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -3021,34 +3116,34 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
         case T2::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T2&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1, T2>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -3061,12 +3156,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -3075,19 +3169,20 @@ namespace etl
     {
       switch (id)
       {
-        case T1::ID: case T2::ID:
+        case T1::ID:
+        case T2::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -3116,15 +3211,15 @@ namespace etl
   template <typename TDerived,
             typename T1>
   class message_router<TDerived, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void>
-   : public imessage_router
+    : public imessage_router
   {
   public:
 
-    typedef etl::message_packet< T1> message_packet;
+    typedef etl::message_packet<T1> message_packet;
 
-  #if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<T1>;
-  #endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -3159,33 +3254,33 @@ namespace etl
     {
       const size_t id = msg.get_message_id();
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       switch (id)
       {
         case T1::ID: static_cast<TDerived*>(this)->on_receive(static_cast<const T1&>(msg)); break;
         default:
-        {
-           if (has_successor())
-           {
-             get_successor().receive(msg);
-           }
-           else
-           {
-             static_cast<TDerived*>(this)->on_receive_unknown(msg);
-           }
-           break;
-        }
+          {
+            if (has_successor())
+            {
+              get_successor().receive(msg);
+            }
+            else
+            {
+              static_cast<TDerived*>(this)->on_receive_unknown(msg);
+            }
+            break;
+          }
       }
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
     typename etl::enable_if<etl::is_message<TMessage>::value && etl::is_one_of<TMessage, T1>::value, void>::type
       receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     template <typename TMessage>
@@ -3198,12 +3293,11 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;
@@ -3215,16 +3309,16 @@ namespace etl
         case T1::ID:
           return true;
         default:
-        {
-          if (has_successor())
           {
-            return get_successor().accepts(id);
+            if (has_successor())
+            {
+              return get_successor().accepts(id);
+            }
+            else
+            {
+              return false;
+            }
           }
-          else
-          {
-            return false;
-          }
-        }
       }
     }
 
@@ -3258,9 +3352,9 @@ namespace etl
 
     typedef etl::message_packet<> message_packet;
 
-#if ETL_USING_CPP11
+    #if ETL_USING_CPP11
     using message_types = etl::type_list<>;
-#endif
+    #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -3293,12 +3387,12 @@ namespace etl
 
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-#include "etl/private/diagnostic_array_bounds_push.h"
+    #include "etl/private/diagnostic_array_bounds_push.h"
       if (has_successor())
       {
         get_successor().receive(msg);
       }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -3334,7 +3428,7 @@ namespace etl
       return true;
     }
   };
-#endif
-}
+  #endif
+} // namespace etl
 
 #endif

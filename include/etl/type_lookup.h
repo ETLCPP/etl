@@ -30,15 +30,15 @@ SOFTWARE.
 #define ETL_TYPE_LOOKUP_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
-#include "static_assert.h"
 #include "integral_limits.h"
 #include "null_type.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include <limits.h>
 
 #if 0
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
 
 //***************************************************************************
@@ -73,7 +73,7 @@ namespace etl
 
 #if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  // type_id_lookup 
+  // type_id_lookup
   //***************************************************************************
   template <typename... TTypes>
   struct type_id_lookup
@@ -81,7 +81,9 @@ namespace etl
   private:
 
     // The type for no match.
-    struct nulltype {};
+    struct nulltype
+    {
+    };
 
     // For N type pairs.
     template <size_t Id, typename T1, typename... TRest>
@@ -148,10 +150,10 @@ namespace etl
       static_assert(value != UNKNOWN, "Invalid type");
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t id_from_type_v = id_from_type<T>::value;
-#endif
+  #endif
 
     //************************************
     template <typename T>
@@ -159,7 +161,7 @@ namespace etl
     {
       return get_id_from_type<T>();
     }
-     
+
     //************************************
     template <typename T>
     static unsigned int get_id_from_type()
@@ -177,7 +179,9 @@ namespace etl
   private:
 
     // The type for no match.
-    struct nulltype {};
+    struct nulltype
+    {
+    };
 
     template <typename T, typename T1, typename... TRest>
     struct type_from_type_helper
@@ -219,14 +223,14 @@ namespace etl
   // For 16 types.
   //***************************************************************************
   template <typename T1,
-            typename T2 = etl::type_id_pair<etl::null_type<0>, -2>,
-            typename T3 = etl::type_id_pair<etl::null_type<0>, -3>,
-            typename T4 = etl::type_id_pair<etl::null_type<0>, -4>,
-            typename T5 = etl::type_id_pair<etl::null_type<0>, -5>,
-            typename T6 = etl::type_id_pair<etl::null_type<0>, -6>,
-            typename T7 = etl::type_id_pair<etl::null_type<0>, -7>,
-            typename T8 = etl::type_id_pair<etl::null_type<0>, -8>,
-            typename T9 = etl::type_id_pair<etl::null_type<0>, -9>,
+            typename T2  = etl::type_id_pair<etl::null_type<0>, -2>,
+            typename T3  = etl::type_id_pair<etl::null_type<0>, -3>,
+            typename T4  = etl::type_id_pair<etl::null_type<0>, -4>,
+            typename T5  = etl::type_id_pair<etl::null_type<0>, -5>,
+            typename T6  = etl::type_id_pair<etl::null_type<0>, -6>,
+            typename T7  = etl::type_id_pair<etl::null_type<0>, -7>,
+            typename T8  = etl::type_id_pair<etl::null_type<0>, -8>,
+            typename T9  = etl::type_id_pair<etl::null_type<0>, -9>,
             typename T10 = etl::type_id_pair<etl::null_type<0>, -10>,
             typename T11 = etl::type_id_pair<etl::null_type<0>, -11>,
             typename T12 = etl::type_id_pair<etl::null_type<0>, -12>,
@@ -242,7 +246,8 @@ namespace etl
     template <int Id>
     struct type_from_id
     {
-      typedef 
+      // clang-format off
+      typedef
             typename etl::conditional<Id == T1::Id, typename T1::type,
             typename etl::conditional<Id == T2::Id, typename T2::type,
             typename etl::conditional<Id == T3::Id, typename T3::type,
@@ -263,6 +268,7 @@ namespace etl
                               ::type>::type>::type>::type>
                               ::type>::type>::type>::type>
                               ::type>::type>::type>::type type;
+      // clang-format on
 
       ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid id");
     };
@@ -278,24 +284,23 @@ namespace etl
     {
       enum
       {
-        value =
-          (unsigned int) etl::is_same<T, typename T1::type>::value ? (unsigned int)T1::Id :
-          (unsigned int) etl::is_same<T, typename T2::type>::value ? (unsigned int)T2::Id :
-          (unsigned int) etl::is_same<T, typename T3::type>::value ? (unsigned int)T3::Id :
-          (unsigned int) etl::is_same<T, typename T4::type>::value ? (unsigned int)T4::Id :
-          (unsigned int) etl::is_same<T, typename T5::type>::value ? (unsigned int)T5::Id :
-          (unsigned int) etl::is_same<T, typename T6::type>::value ? (unsigned int)T6::Id :
-          (unsigned int) etl::is_same<T, typename T7::type>::value ? (unsigned int)T7::Id :
-          (unsigned int) etl::is_same<T, typename T8::type>::value ? (unsigned int)T8::Id :
-          (unsigned int) etl::is_same<T, typename T9::type>::value ? (unsigned int)T9::Id :
-          (unsigned int) etl::is_same<T, typename T10::type>::value ? (unsigned int)T10::Id :
-          (unsigned int) etl::is_same<T, typename T11::type>::value ? (unsigned int)T11::Id :
-          (unsigned int) etl::is_same<T, typename T12::type>::value ? (unsigned int)T12::Id :
-          (unsigned int) etl::is_same<T, typename T13::type>::value ? (unsigned int)T13::Id :
-          (unsigned int) etl::is_same<T, typename T14::type>::value ? (unsigned int)T14::Id :
-          (unsigned int) etl::is_same<T, typename T15::type>::value ? (unsigned int)T15::Id :
-          (unsigned int) etl::is_same<T, typename T16::type>::value ? (unsigned int)T16::Id :
-          (unsigned int) UNKNOWN
+        value = (unsigned int)etl::is_same<T, typename T1::type>::value    ? (unsigned int)T1::Id
+                : (unsigned int)etl::is_same<T, typename T2::type>::value  ? (unsigned int)T2::Id
+                : (unsigned int)etl::is_same<T, typename T3::type>::value  ? (unsigned int)T3::Id
+                : (unsigned int)etl::is_same<T, typename T4::type>::value  ? (unsigned int)T4::Id
+                : (unsigned int)etl::is_same<T, typename T5::type>::value  ? (unsigned int)T5::Id
+                : (unsigned int)etl::is_same<T, typename T6::type>::value  ? (unsigned int)T6::Id
+                : (unsigned int)etl::is_same<T, typename T7::type>::value  ? (unsigned int)T7::Id
+                : (unsigned int)etl::is_same<T, typename T8::type>::value  ? (unsigned int)T8::Id
+                : (unsigned int)etl::is_same<T, typename T9::type>::value  ? (unsigned int)T9::Id
+                : (unsigned int)etl::is_same<T, typename T10::type>::value ? (unsigned int)T10::Id
+                : (unsigned int)etl::is_same<T, typename T11::type>::value ? (unsigned int)T11::Id
+                : (unsigned int)etl::is_same<T, typename T12::type>::value ? (unsigned int)T12::Id
+                : (unsigned int)etl::is_same<T, typename T13::type>::value ? (unsigned int)T13::Id
+                : (unsigned int)etl::is_same<T, typename T14::type>::value ? (unsigned int)T14::Id
+                : (unsigned int)etl::is_same<T, typename T15::type>::value ? (unsigned int)T15::Id
+                : (unsigned int)etl::is_same<T, typename T16::type>::value ? (unsigned int)T16::Id
+                                                                           : (unsigned int)UNKNOWN
       };
 
       ETL_STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), "Invalid type");
@@ -320,14 +325,14 @@ namespace etl
   // For 16 types.
   //***************************************************************************
   template <typename T1,
-            typename T2 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T3 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T4 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T5 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T6 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T7 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T8 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
-            typename T9 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T2  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T3  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T4  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T5  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T6  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T7  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T8  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
+            typename T9  = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
             typename T10 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
             typename T11 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
             typename T12 = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >,
@@ -340,6 +345,7 @@ namespace etl
   public:
 
     //************************************
+    // clang-format off
     template <typename T>
     struct type_from_type
     {
@@ -365,9 +371,10 @@ namespace etl
 
       ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), "Invalid type");
     };
+    // clang-format on
   };
 
 #endif
-}
+} // namespace etl
 
 #endif

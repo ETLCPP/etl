@@ -29,7 +29,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #if 0
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
 
 //***************************************************************************
@@ -51,19 +51,19 @@ SOFTWARE.
 //***************************************************************************
 
 #ifndef ETL_SMALLEST_INCLUDED
-#define ETL_SMALLEST_INCLUDED
+  #define ETL_SMALLEST_INCLUDED
 
-#include "platform.h"
-#include "integral_limits.h"
+  #include "platform.h"
+  #include "integral_limits.h"
 
-#include <stdint.h>
+  #include <stdint.h>
 
 ///\defgroup smallest smallest
 ///\ingroup utilities
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -83,9 +83,9 @@ namespace etl
     // Set 'type' to be the smallest of the first parameter and any of the others.
     // This is recursive.
     using type = typename etl::conditional<(etl::size_of<T1>::value < etl::size_of<smallest_other>::value), // Boolean
-                                            T1,                                                             // TrueType
-                                            smallest_other>                                                 // FalseType
-                                            ::type;                                                         // The smallest type of the two.
+                                           T1,                                                              // TrueType
+                                           smallest_other>                                                  // FalseType
+      ::type;                                                                                               // The smallest type of the two.
 
     // The size of the smallest type.
     enum
@@ -110,17 +110,17 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP11
+    #if ETL_USING_CPP11
   template <typename... T>
   using smallest_type_t = typename smallest_type<T...>::type;
-#endif
+    #endif
 
-#if ETL_USING_CPP17
+    #if ETL_USING_CPP17
   template <typename... T>
   constexpr size_t smallest_type_v = smallest_type<T...>::size;
-#endif
+    #endif
 
-#else
+  #else
   //***************************************************************************
   /// Template to determine the smallest type and size.
   /// Supports up to 16 types.
@@ -128,9 +128,9 @@ namespace etl
   /// Defines 'size' which is the size of the smallest parameter.
   ///\ingroup smallest
   //***************************************************************************
-  template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+  template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   struct smallest_type
   {
@@ -148,7 +148,7 @@ namespace etl
       typedef TrueType type;
     };
 
-    // Specialisation for 'false'. 
+    // Specialisation for 'false'.
     // Defines 'type' as 'FalseType'.
     template <typename TrueType, typename FalseType>
     struct choose_type<false, TrueType, FalseType>
@@ -158,15 +158,15 @@ namespace etl
 
   public:
 
-    // Define 'smallest_other' as 'smallest_type' with all but the first parameter. 
+    // Define 'smallest_other' as 'smallest_type' with all but the first parameter.
     typedef typename smallest_type<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::type smallest_other;
 
     // Set 'type' to be the smallest of the first parameter and any of the others.
     // This is recursive.
     typedef typename choose_type<(sizeof(T1) < sizeof(smallest_other)), // Boolean
-                                  T1,                                   // TrueType
-                                  smallest_other>                       // FalseType
-                                  ::type type;                          // The smallest type of the two.
+                                 T1,                                    // TrueType
+                                 smallest_other>                        // FalseType
+      ::type type;                                                      // The smallest type of the two.
 
     // The size of the smallest type.
     enum
@@ -179,7 +179,7 @@ namespace etl
   // Specialisation for one template parameter.
   //***************************************************************************
   template <typename T1>
-  struct smallest_type<T1,   void, void, void, void, void, void, void, 
+  struct smallest_type<T1, void, void, void, void, void, void, void,
                        void, void, void, void, void, void, void, void>
   {
     typedef T1 type;
@@ -189,7 +189,7 @@ namespace etl
       size = sizeof(type)
     };
   };
-#endif
+  #endif
 
   namespace private_smallest
   {
@@ -226,7 +226,7 @@ namespace etl
       typedef uint_least32_t type;
     };
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     //*************************************************************************
     // Greater than 32 bits.
     //*************************************************************************
@@ -235,7 +235,7 @@ namespace etl
     {
       typedef uint_least64_t type;
     };
-#endif
+  #endif
 
     //*************************************************************************
     // Determine the type to hold the number of bits based on the index.
@@ -270,7 +270,7 @@ namespace etl
       typedef int_least32_t type;
     };
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     //*************************************************************************
     // Greater than 32 bits.
     //*************************************************************************
@@ -279,8 +279,8 @@ namespace etl
     {
       typedef int_least64_t type;
     };
-#endif
-  }
+  #endif
+  } // namespace private_smallest
 
   //***************************************************************************
   /// Template to determine the smallest unsigned int type that can contain a
@@ -294,9 +294,7 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required number of bits.
-    static ETL_CONSTANT int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
-                                         ((NBITS > 16) ? 1 : 0) +
-                                         ((NBITS > 32) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((NBITS > 8) ? 1 : 0) + ((NBITS > 16) ? 1 : 0) + ((NBITS > 32) ? 1 : 0);
 
   public:
 
@@ -306,10 +304,10 @@ namespace etl
   template <size_t NBITS>
   ETL_CONSTANT int smallest_uint_for_bits<NBITS>::TYPE_INDEX;
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <size_t NBITS>
   using smallest_uint_for_bits_t = typename smallest_uint_for_bits<NBITS>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Template to determine the smallest signed int type that can contain a
@@ -323,9 +321,7 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required number of bits.
-    static ETL_CONSTANT int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
-                                         ((NBITS > 16) ? 1 : 0) +
-                                         ((NBITS > 32) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((NBITS > 8) ? 1 : 0) + ((NBITS > 16) ? 1 : 0) + ((NBITS > 32) ? 1 : 0);
 
   public:
 
@@ -335,10 +331,10 @@ namespace etl
   template <size_t NBITS>
   ETL_CONSTANT int smallest_int_for_bits<NBITS>::TYPE_INDEX;
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <size_t NBITS>
   using smallest_int_for_bits_t = typename smallest_int_for_bits<NBITS>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Template to determine the smallest unsigned int type that can contain the
@@ -352,9 +348,7 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required value.
-    static ETL_CONSTANT int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX) ? 1 : 0) +
-      ((VALUE > UINT16_MAX) ? 1 : 0) +
-      ((VALUE > UINT32_MAX) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX) ? 1 : 0) + ((VALUE > UINT16_MAX) ? 1 : 0) + ((VALUE > UINT32_MAX) ? 1 : 0);
 
   public:
 
@@ -364,10 +358,10 @@ namespace etl
   template <uintmax_t VALUE>
   ETL_CONSTANT int smallest_uint_for_value<VALUE>::TYPE_INDEX;
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <uintmax_t VALUE>
   using smallest_uint_for_value_t = typename smallest_uint_for_value<VALUE>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Template to determine the smallest int type that can contain the
@@ -381,9 +375,7 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static ETL_CONSTANT int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX)) || (VALUE < intmax_t(INT_LEAST8_MIN))) ? 1 : 0) +
-      (((VALUE > intmax_t(INT16_MAX)) || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) +
-      (((VALUE > intmax_t(INT32_MAX)) || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX)) || (VALUE < intmax_t(INT_LEAST8_MIN))) ? 1 : 0) + (((VALUE > intmax_t(INT16_MAX)) || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) + (((VALUE > intmax_t(INT32_MAX)) || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
 
   public:
 
@@ -393,10 +385,10 @@ namespace etl
   template <intmax_t VALUE>
   ETL_CONSTANT int smallest_int_for_value<VALUE>::TYPE_INDEX;
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <intmax_t VALUE>
   using smallest_int_for_value_t = typename smallest_int_for_value<VALUE>::type;
-#endif
-}
+  #endif
+} // namespace etl
 
 #endif

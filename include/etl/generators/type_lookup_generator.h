@@ -30,10 +30,10 @@ SOFTWARE.
 #define ETL_TYPE_LOOKUP_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
-#include "static_assert.h"
 #include "integral_limits.h"
 #include "null_type.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include <limits.h>
 
@@ -42,7 +42,7 @@ import cog
 cog.outl("#if 0")
 ]]]*/
 /*[[[end]]]*/
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 /*[[[cog
 import cog
 cog.outl("#endif")
@@ -85,7 +85,7 @@ namespace etl
 
 #if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  // type_id_lookup 
+  // type_id_lookup
   //***************************************************************************
   template <typename... TTypes>
   struct type_id_lookup
@@ -93,7 +93,9 @@ namespace etl
   private:
 
     // The type for no match.
-    struct nulltype {};
+    struct nulltype
+    {
+    };
 
     // For N type pairs.
     template <size_t Id, typename T1, typename... TRest>
@@ -160,10 +162,10 @@ namespace etl
       static_assert(value != UNKNOWN, "Invalid type");
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t id_from_type_v = id_from_type<T>::value;
-#endif
+  #endif
 
     //************************************
     template <typename T>
@@ -171,7 +173,7 @@ namespace etl
     {
       return get_id_from_type<T>();
     }
-     
+
     //************************************
     template <typename T>
     static unsigned int get_id_from_type()
@@ -189,7 +191,9 @@ namespace etl
   private:
 
     // The type for no match.
-    struct nulltype {};
+    struct nulltype
+    {
+    };
 
     template <typename T, typename T1, typename... TRest>
     struct type_from_type_helper
@@ -227,14 +231,17 @@ namespace etl
 
 #else
 
-  /*[[[cog
+    /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
   cog.outl("// For %s types." % int(NTypes))
   cog.outl("//***************************************************************************")
+  max_w = len(str(int(NTypes)))
   cog.outl("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.outl("          typename T%s = etl::type_id_pair<etl::null_type<0>, -%s>," %(n, n))
+      pad = " " * (max_w - len(str(n)))
+      cog.outl("          typename T%s%s = etl::type_id_pair<etl::null_type<0>, -%s>," %(n, pad, n))
+
   cog.outl("          typename T%s = etl::type_id_pair<etl::null_type<0>, -%s> >" %(NTypes, NTypes))
   cog.outl("struct type_id_lookup")
   cog.outl("{")
@@ -244,7 +251,8 @@ namespace etl
   cog.outl("  template <int Id>")
   cog.outl("  struct type_from_id")
   cog.outl("  {")
-  cog.outl("    typedef ")
+  cog.outl("    // clang-format off")
+  cog.outl("    typedef")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<Id == T%s::Id, typename T%s::type," %(n, n))
   cog.out("          etl::null_type<0> >")
@@ -257,6 +265,7 @@ namespace etl
           if n != int(NTypes):
               cog.outl("")
               cog.out("                            ")
+  cog.outl("    // clang-format on")
   cog.outl("")
   cog.outl("    ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), \"Invalid id\");")
   cog.outl("  };")
@@ -272,10 +281,12 @@ namespace etl
   cog.outl("  {")
   cog.outl("    enum")
   cog.outl("    {")
-  cog.outl("      value =")
-  for n in range(1, int(NTypes) + 1) :
-      cog.outl("        (unsigned int) etl::is_same<T, typename T%s::type>::value ? (unsigned int)T%s::Id :" % (n, n))
-  cog.outl("        (unsigned int) UNKNOWN")
+  first_pad = " " * (max_w - 1 + 3)
+  cog.outl("      value = (unsigned int)etl::is_same<T, typename T1::type>::value%s? (unsigned int)T1::Id" % first_pad)
+  for n in range(2, int(NTypes) + 1) :
+      pad = " " * (max_w - len(str(n)) + 1)
+      cog.outl("              : (unsigned int)etl::is_same<T, typename T%s::type>::value%s? (unsigned int)T%s::Id" % (n, pad, n))
+  cog.outl("                                                                         : (unsigned int)UNKNOWN")
   cog.outl("    };")
   cog.outl("")
   cog.outl("    ETL_STATIC_ASSERT(((unsigned int)value != (unsigned int)UNKNOWN), \"Invalid type\");")
@@ -301,13 +312,15 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.outl("          typename T%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >," %n)
+      pad = " " * (max_w - len(str(n)))
+      cog.outl("          typename T%s%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> >," %(n, pad))
   cog.outl("          typename T%s = etl::type_type_pair<etl::null_type<0>, etl::null_type<0> > >" %NTypes)
   cog.outl("struct type_type_lookup")
   cog.outl("{")
   cog.outl("public:")
   cog.outl("")
   cog.outl("  //************************************")
+  cog.outl("  // clang-format off")
   cog.outl("  template <typename T>")
   cog.outl("  struct type_from_type")
   cog.outl("  {")
@@ -327,11 +340,12 @@ namespace etl
   cog.outl("")
   cog.outl("    ETL_STATIC_ASSERT(!(etl::is_same<etl::null_type<0>, type>::value), \"Invalid type\");")
   cog.outl("  };")
+  cog.outl("  // clang-format on")
   cog.outl("};")
   ]]]*/
-  /*[[[end]]]*/
+    /*[[[end]]]*/
 
 #endif
-}
+} // namespace etl
 
 #endif

@@ -27,7 +27,7 @@ SOFTWARE.
 ******************************************************************************/
 
 #if 0
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
 
 //***************************************************************************
@@ -49,21 +49,21 @@ SOFTWARE.
 //***************************************************************************
 
 #ifndef ETL_VARIANT_POOL_INCLUDED
-#define ETL_VARIANT_POOL_INCLUDED
+  #define ETL_VARIANT_POOL_INCLUDED
 
-#include "platform.h"
-#include "pool.h"
-#include "type_traits.h"
-#include "static_assert.h"
-#include "largest.h"
+  #include "platform.h"
+  #include "largest.h"
+  #include "pool.h"
+  #include "static_assert.h"
+  #include "type_traits.h"
 
-#include <stdint.h>
+  #include <stdint.h>
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_VARIANT_POOL_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_VARIANT_POOL_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  template <size_t MAX_SIZE_, typename ... Ts>
+  template <size_t MAX_SIZE_, typename... Ts>
   class variant_pool
     : public etl::generic_pool<etl::largest<Ts...>::size,
                                etl::largest<Ts...>::alignment,
@@ -73,7 +73,8 @@ namespace etl
 
     typedef etl::generic_pool<etl::largest<Ts...>::size,
                               etl::largest<Ts...>::alignment,
-                              MAX_SIZE_> base_t;
+                              MAX_SIZE_>
+      base_t;
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
@@ -117,11 +118,11 @@ namespace etl
   private:
 
     variant_pool(const variant_pool&) ETL_DELETE;
-    variant_pool& operator =(const variant_pool&) ETL_DELETE;
+    variant_pool& operator=(const variant_pool&) ETL_DELETE;
   };
 
   //***************************************************************************
-  template <typename ... Ts>
+  template <typename... Ts>
   class variant_pool_ext
     : public etl::generic_pool_ext<etl::largest<Ts...>::size,
                                    etl::largest<Ts...>::alignment>
@@ -129,7 +130,8 @@ namespace etl
   public:
 
     typedef etl::generic_pool_ext<etl::largest<Ts...>::size,
-                                  etl::largest<Ts...>::alignment> base_t;
+                                  etl::largest<Ts...>::alignment>
+      base_t;
 
     //*************************************************************************
     /// Default constructor.
@@ -172,20 +174,20 @@ namespace etl
   private:
 
     variant_pool_ext(const variant_pool_ext&) ETL_DELETE;
-    variant_pool_ext& operator =(const variant_pool_ext&) ETL_DELETE;
+    variant_pool_ext& operator=(const variant_pool_ext&) ETL_DELETE;
   };
-#else
+  #else
   //***************************************************************************
   template <size_t MAX_SIZE_,
             typename T1,
-            typename T2 = void,
-            typename T3 = void,
-            typename T4 = void,
-            typename T5 = void,
-            typename T6 = void,
-            typename T7 = void,
-            typename T8 = void,
-            typename T9 = void,
+            typename T2  = void,
+            typename T3  = void,
+            typename T4  = void,
+            typename T5  = void,
+            typename T6  = void,
+            typename T7  = void,
+            typename T8  = void,
+            typename T9  = void,
             typename T10 = void,
             typename T11 = void,
             typename T12 = void,
@@ -202,7 +204,8 @@ namespace etl
 
     typedef etl::generic_pool<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
                               etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment,
-                              MAX_SIZE_> base_t;
+                              MAX_SIZE_>
+      base_t;
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
@@ -213,7 +216,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
+    #if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
@@ -268,7 +271,7 @@ namespace etl
 
       return base_t::template create<T>(p1, p2, p3, p4);
     }
-#else
+    #else
     //*************************************************************************
     /// Creates the object from a type. Variadic parameter constructor.
     //*************************************************************************
@@ -279,7 +282,7 @@ namespace etl
 
       return base_t::template create<T>(etl::forward<Args>(args)...);
     }
-#endif
+    #endif
 
     //*************************************************************************
     /// Destroys the object.
@@ -287,23 +290,12 @@ namespace etl
     template <typename T>
     void destroy(const T* const p)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
-                         etl::is_base_of<T, T1>::value ||
-                         etl::is_base_of<T, T2>::value ||
-                         etl::is_base_of<T, T3>::value ||
-                         etl::is_base_of<T, T4>::value ||
-                         etl::is_base_of<T, T5>::value ||
-                         etl::is_base_of<T, T6>::value ||
-                         etl::is_base_of<T, T7>::value ||
-                         etl::is_base_of<T, T8>::value ||
-                         etl::is_base_of<T, T9>::value ||
-                         etl::is_base_of<T, T10>::value ||
-                         etl::is_base_of<T, T11>::value ||
-                         etl::is_base_of<T, T12>::value ||
-                         etl::is_base_of<T, T13>::value ||
-                         etl::is_base_of<T, T14>::value ||
-                         etl::is_base_of<T, T15>::value ||
-                         etl::is_base_of<T, T16>::value), "Invalid type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value
+                         || etl::is_base_of<T, T1>::value || etl::is_base_of<T, T2>::value || etl::is_base_of<T, T3>::value || etl::is_base_of<T, T4>::value
+                         || etl::is_base_of<T, T5>::value || etl::is_base_of<T, T6>::value || etl::is_base_of<T, T7>::value || etl::is_base_of<T, T8>::value
+                         || etl::is_base_of<T, T9>::value || etl::is_base_of<T, T10>::value || etl::is_base_of<T, T11>::value || etl::is_base_of<T, T12>::value
+                         || etl::is_base_of<T, T13>::value || etl::is_base_of<T, T14>::value || etl::is_base_of<T, T15>::value || etl::is_base_of<T, T16>::value),
+                        "Invalid type");
 
       base_t::destroy(p);
     }
@@ -319,19 +311,19 @@ namespace etl
   private:
 
     variant_pool(const variant_pool&) ETL_DELETE;
-    variant_pool& operator =(const variant_pool&) ETL_DELETE;
+    variant_pool& operator=(const variant_pool&) ETL_DELETE;
   };
 
   //***************************************************************************
   template <typename T1,
-            typename T2 = void,
-            typename T3 = void,
-            typename T4 = void,
-            typename T5 = void,
-            typename T6 = void,
-            typename T7 = void,
-            typename T8 = void,
-            typename T9 = void,
+            typename T2  = void,
+            typename T3  = void,
+            typename T4  = void,
+            typename T5  = void,
+            typename T6  = void,
+            typename T7  = void,
+            typename T8  = void,
+            typename T9  = void,
             typename T10 = void,
             typename T11 = void,
             typename T12 = void,
@@ -346,17 +338,18 @@ namespace etl
   public:
 
     typedef etl::generic_pool_ext<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
-                                  etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment> base_t;
+                                  etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment>
+      base_t;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     variant_pool_ext(typename base_t::element* buffer, size_t size)
-      : base_t(buffer, size) 
+      : base_t(buffer, size)
     {
     }
 
-#if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
+    #if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
@@ -411,7 +404,7 @@ namespace etl
 
       return base_t::template create<T>(p1, p2, p3, p4);
     }
-#else
+    #else
     //*************************************************************************
     /// Creates the object from a type. Variadic parameter constructor.
     //*************************************************************************
@@ -422,7 +415,7 @@ namespace etl
 
       return base_t::template create<T>(etl::forward<Args>(args)...);
     }
-#endif
+    #endif
 
     //*************************************************************************
     /// Destroys the object.
@@ -430,23 +423,12 @@ namespace etl
     template <typename T>
     void destroy(const T* const p)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
-                         etl::is_base_of<T, T1>::value ||
-                         etl::is_base_of<T, T2>::value ||
-                         etl::is_base_of<T, T3>::value ||
-                         etl::is_base_of<T, T4>::value ||
-                         etl::is_base_of<T, T5>::value ||
-                         etl::is_base_of<T, T6>::value ||
-                         etl::is_base_of<T, T7>::value ||
-                         etl::is_base_of<T, T8>::value ||
-                         etl::is_base_of<T, T9>::value ||
-                         etl::is_base_of<T, T10>::value ||
-                         etl::is_base_of<T, T11>::value ||
-                         etl::is_base_of<T, T12>::value ||
-                         etl::is_base_of<T, T13>::value ||
-                         etl::is_base_of<T, T14>::value ||
-                         etl::is_base_of<T, T15>::value ||
-                         etl::is_base_of<T, T16>::value), "Invalid type");
+      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value
+                         || etl::is_base_of<T, T1>::value || etl::is_base_of<T, T2>::value || etl::is_base_of<T, T3>::value || etl::is_base_of<T, T4>::value
+                         || etl::is_base_of<T, T5>::value || etl::is_base_of<T, T6>::value || etl::is_base_of<T, T7>::value || etl::is_base_of<T, T8>::value
+                         || etl::is_base_of<T, T9>::value || etl::is_base_of<T, T10>::value || etl::is_base_of<T, T11>::value || etl::is_base_of<T, T12>::value
+                         || etl::is_base_of<T, T13>::value || etl::is_base_of<T, T14>::value || etl::is_base_of<T, T15>::value || etl::is_base_of<T, T16>::value),
+                        "Invalid type");
 
       base_t::destroy(p);
     }
@@ -454,17 +436,17 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items in the variant_pool.
     //*************************************************************************
-    size_t max_size() const 
-    { 
-      return base_t::max_size(); 
+    size_t max_size() const
+    {
+      return base_t::max_size();
     }
 
   private:
 
     variant_pool_ext(const variant_pool_ext&) ETL_DELETE;
-    variant_pool_ext& operator =(const variant_pool_ext&) ETL_DELETE;
+    variant_pool_ext& operator=(const variant_pool_ext&) ETL_DELETE;
   };
-#endif
-}
+  #endif
+} // namespace etl
 
 #endif

@@ -31,7 +31,7 @@ import cog
 cog.outl("#if 0")
 ]]]*/
 /*[[[end]]]*/
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 /*[[[cog
 import cog
 cog.outl("#endif")
@@ -61,21 +61,21 @@ cog.outl("//********************************************************************
 //***************************************************************************
 
 #ifndef ETL_VARIANT_POOL_INCLUDED
-#define ETL_VARIANT_POOL_INCLUDED
+  #define ETL_VARIANT_POOL_INCLUDED
 
-#include "platform.h"
-#include "pool.h"
-#include "type_traits.h"
-#include "static_assert.h"
-#include "largest.h"
+  #include "platform.h"
+  #include "largest.h"
+  #include "pool.h"
+  #include "static_assert.h"
+  #include "type_traits.h"
 
-#include <stdint.h>
+  #include <stdint.h>
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_VARIANT_POOL_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && !defined(ETL_VARIANT_POOL_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  template <size_t MAX_SIZE_, typename ... Ts>
+  template <size_t MAX_SIZE_, typename... Ts>
   class variant_pool
     : public etl::generic_pool<etl::largest<Ts...>::size,
                                etl::largest<Ts...>::alignment,
@@ -85,7 +85,8 @@ namespace etl
 
     typedef etl::generic_pool<etl::largest<Ts...>::size,
                               etl::largest<Ts...>::alignment,
-                              MAX_SIZE_> base_t;
+                              MAX_SIZE_>
+      base_t;
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
@@ -129,11 +130,11 @@ namespace etl
   private:
 
     variant_pool(const variant_pool&) ETL_DELETE;
-    variant_pool& operator =(const variant_pool&) ETL_DELETE;
+    variant_pool& operator=(const variant_pool&) ETL_DELETE;
   };
 
   //***************************************************************************
-  template <typename ... Ts>
+  template <typename... Ts>
   class variant_pool_ext
     : public etl::generic_pool_ext<etl::largest<Ts...>::size,
                                    etl::largest<Ts...>::alignment>
@@ -141,7 +142,8 @@ namespace etl
   public:
 
     typedef etl::generic_pool_ext<etl::largest<Ts...>::size,
-                                  etl::largest<Ts...>::alignment> base_t;
+                                  etl::largest<Ts...>::alignment>
+      base_t;
 
     //*************************************************************************
     /// Default constructor.
@@ -184,16 +186,18 @@ namespace etl
   private:
 
     variant_pool_ext(const variant_pool_ext&) ETL_DELETE;
-    variant_pool_ext& operator =(const variant_pool_ext&) ETL_DELETE;
+    variant_pool_ext& operator=(const variant_pool_ext&) ETL_DELETE;
   };
-#else
+  #else
   //***************************************************************************
   /*[[[cog
   import cog
+  max_w = len(str(int(NTypes)))
   cog.outl("template <size_t MAX_SIZE_,")
   cog.outl("          typename T1,")
   for n in range(2, int(NTypes)):
-      cog.outl("          typename T%s = void," % n)
+      pad = " " * (max_w - len(str(n)))
+      cog.outl("          typename T%s%s = void," % (n, pad))
   cog.outl("          typename T%s = void>" % int(NTypes))
   cog.outl("class variant_pool")
   cog.out("  : public etl::generic_pool<")
@@ -222,7 +226,8 @@ namespace etl
     for n in range(1, int(NTypes)):
         cog.out("T%s, " % n)
     cog.outl("T%s>::alignment," % int(NTypes))
-    cog.outl("                          MAX_SIZE_> base_t;")
+    cog.outl("                          MAX_SIZE_>")
+    cog.outl("  base_t;")
     ]]]*/
     /*[[[end]]]*/
 
@@ -235,7 +240,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
+    #if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
@@ -340,7 +345,7 @@ namespace etl
 
       return base_t::template create<T>(p1, p2, p3, p4);
     }
-#else
+    #else
     //*************************************************************************
     /// Creates the object from a type. Variadic parameter constructor.
     //*************************************************************************
@@ -361,7 +366,7 @@ namespace etl
 
       return base_t::template create<T>(etl::forward<Args>(args)...);
     }
-#endif
+    #endif
 
     //*************************************************************************
     /// Destroys the object.
@@ -374,15 +379,17 @@ namespace etl
       cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
-          if n % 16 == 0:
+      cog.outl("T%s>::value" % int(NTypes))
+      for n in range(1, int(NTypes) + 1):
+          if (n - 1) % 4 == 0:
+              cog.out("                   || etl::is_base_of<T, T%s>::value" % n)
+          else:
+              cog.out(" || etl::is_base_of<T, T%s>::value" % n)
+          if n == int(NTypes):
+              cog.outl("),")
+          elif n % 4 == 0:
               cog.outl("")
-              cog.out("                              ")
-      cog.outl("T%s>::value ||" % int(NTypes))
-
-      for n in range(1, int(NTypes)):
-          cog.outl("                   etl::is_base_of<T, T%s>::value ||" % n)
-      cog.outl("                   etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
-
+      cog.outl('                  "Invalid type");')
       ]]]*/
       /*[[[end]]]*/
 
@@ -400,7 +407,7 @@ namespace etl
   private:
 
     variant_pool(const variant_pool&) ETL_DELETE;
-    variant_pool& operator =(const variant_pool&) ETL_DELETE;
+    variant_pool& operator=(const variant_pool&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -408,7 +415,8 @@ namespace etl
   import cog
   cog.outl("template <typename T1,")
   for n in range(2, int(NTypes)):
-      cog.outl("          typename T%s = void," % n)
+      pad = " " * (max_w - len(str(n)))
+      cog.outl("          typename T%s%s = void," % (n, pad))
   cog.outl("          typename T%s = void>" % int(NTypes))
   cog.outl("class variant_pool_ext")
   cog.out("  : public etl::generic_pool_ext<")
@@ -435,7 +443,8 @@ namespace etl
     cog.out("                              etl::largest<")
     for n in range(1, int(NTypes)):
         cog.out("T%s, " % n)
-    cog.outl("T%s>::alignment> base_t;" % int(NTypes))
+    cog.outl("T%s>::alignment>" % int(NTypes))
+    cog.outl("  base_t;")
     ]]]*/
     /*[[[end]]]*/
 
@@ -443,11 +452,11 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     variant_pool_ext(typename base_t::element* buffer, size_t size)
-      : base_t(buffer, size) 
+      : base_t(buffer, size)
     {
     }
 
-#if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
+    #if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
     //*************************************************************************
     /// Creates the object. Default constructor.
     //*************************************************************************
@@ -552,7 +561,7 @@ namespace etl
 
       return base_t::template create<T>(p1, p2, p3, p4);
     }
-#else
+    #else
     //*************************************************************************
     /// Creates the object from a type. Variadic parameter constructor.
     //*************************************************************************
@@ -573,7 +582,7 @@ namespace etl
 
       return base_t::template create<T>(etl::forward<Args>(args)...);
     }
-#endif
+    #endif
 
     //*************************************************************************
     /// Destroys the object.
@@ -586,15 +595,17 @@ namespace etl
       cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
       for n in range(1, int(NTypes)):
           cog.out("T%s, " % n)
-          if n % 16 == 0:
+      cog.outl("T%s>::value" % int(NTypes))
+      for n in range(1, int(NTypes) + 1):
+          if (n - 1) % 4 == 0:
+              cog.out("                   || etl::is_base_of<T, T%s>::value" % n)
+          else:
+              cog.out(" || etl::is_base_of<T, T%s>::value" % n)
+          if n == int(NTypes):
+              cog.outl("),")
+          elif n % 4 == 0:
               cog.outl("")
-              cog.out("                              ")
-      cog.outl("T%s>::value ||" % int(NTypes))
-
-      for n in range(1, int(NTypes)):
-          cog.outl("                   etl::is_base_of<T, T%s>::value ||" % n)
-      cog.outl("                   etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
-
+      cog.outl('                  "Invalid type");')
       ]]]*/
       /*[[[end]]]*/
 
@@ -604,17 +615,17 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum number of items in the variant_pool.
     //*************************************************************************
-    size_t max_size() const 
-    { 
-      return base_t::max_size(); 
+    size_t max_size() const
+    {
+      return base_t::max_size();
     }
 
   private:
 
     variant_pool_ext(const variant_pool_ext&) ETL_DELETE;
-    variant_pool_ext& operator =(const variant_pool_ext&) ETL_DELETE;
+    variant_pool_ext& operator=(const variant_pool_ext&) ETL_DELETE;
   };
-#endif
-}
+  #endif
+} // namespace etl
 
 #endif

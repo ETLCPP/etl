@@ -30,16 +30,16 @@ SOFTWARE.
 #define ETL_TYPE_SELECT_INCLUDED
 
 #include "platform.h"
+#include "null_type.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "null_type.h"
 
 /*[[[cog
 import cog
 cog.outl("#if 0")
 ]]]*/
 /*[[[end]]]*/
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 /*[[[cog
 import cog
 cog.outl("#endif")
@@ -99,19 +99,22 @@ namespace etl
   // Select type alias
   //***************************************************************************
   template <size_t Index, typename... TTypes>
-  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<Index>;
+  using type_select_t = typename etl::type_select<TTypes...>::template select_t<Index>;
 
 #else
 
-  /*[[[cog
+    /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
   cog.outl("// For %s types." % int(NTypes))
   cog.outl("//***************************************************************************")
+  max_w = len(str(int(NTypes) - 1))
   cog.outl("template <typename T0,")
   for n in range(1, int(NTypes) - 1):
-      cog.outl("          typename T%s = void," % n)
-  cog.outl("          typename T%s = void>" %(int(NTypes) - 1))
+      pad = " " * (max_w - len(str(n)))
+      cog.outl("          typename T%s%s = void," % (n, pad))
+  pad = " " * (max_w - len(str(int(NTypes) - 1)))
+  cog.outl("          typename T%s%s = void>" %(int(NTypes) - 1, pad))
   cog.outl("struct type_select")
   cog.outl("{")
   cog.outl("public:")
@@ -119,6 +122,7 @@ namespace etl
   cog.outl("  template <size_t Id>")
   cog.outl("  struct select")
   cog.outl("  {")
+  cog.outl("    // clang-format off")
   cog.outl("    typedef typename etl::conditional<Id == 0, T0,")
   for n in range(1, int(NTypes)) :
       cog.outl("            typename etl::conditional<Id == %s, T%s," % (n, n))
@@ -130,6 +134,7 @@ namespace etl
           cog.outl("")
           cog.out("            ")
   cog.outl("::type type;")
+  cog.outl("    // clang-format on")
   cog.outl("");
   cog.outl("    ETL_STATIC_ASSERT(Id < %s, \"Invalid Id\");" % int(NTypes));
   cog.outl("  };")
@@ -142,7 +147,7 @@ namespace etl
       cog.outl("//***************************************************************************")
       cog.out("template <")
       for n in range(0, s - 1):
-          cog.outl("typename T%s, " % n)
+          cog.outl("typename T%s," % n)
           cog.out("          ")
       cog.outl("typename T%s>" % (s - 1))
       cog.out("struct type_select<")
@@ -151,9 +156,11 @@ namespace etl
       cog.outl("T%s>" % (s - 1))
       cog.outl("{")
       cog.outl("public:")
+      cog.outl("")
       cog.outl("  template <size_t Id>")
       cog.outl("  struct select")
       cog.outl("  {")
+      cog.outl("    // clang-format off")
       cog.outl("    typedef typename etl::conditional<Id == 0, T0,")
       for n in range(1, s) :
           cog.outl("            typename etl::conditional<Id == %s, T%s," % (n, n))
@@ -165,13 +172,14 @@ namespace etl
             cog.outl("")
             cog.out("            ")
       cog.outl("::type type;")
+      cog.outl("    // clang-format on")
       cog.outl("");
       cog.outl("    ETL_STATIC_ASSERT(Id < %s, \"Invalid Id\");" % s);
       cog.outl("  };")
       cog.outl("};")
   ]]]*/
-  /*[[[end]]]*/
+    /*[[[end]]]*/
 #endif
-}
+} // namespace etl
 
 #endif

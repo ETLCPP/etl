@@ -31,7 +31,7 @@ import cog
 cog.outl("#if 0")
 ]]]*/
 /*[[[end]]]*/
-#error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
+  #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 /*[[[cog
 import cog
 cog.outl("#endif")
@@ -61,24 +61,24 @@ cog.outl("//********************************************************************
 //***************************************************************************
 
 #ifndef ETL_FSM_INCLUDED
-#define ETL_FSM_INCLUDED
+  #define ETL_FSM_INCLUDED
 
-#include "platform.h"
-#include "array.h"
-#include "nullptr.h"
-#include "error_handler.h"
-#include "exception.h"
-#include "user_type.h"
-#include "message_router.h"
-#include "integral_limits.h"
-#include "largest.h"
-#if ETL_USING_CPP11
-  #include "tuple.h"
-#endif
+  #include "platform.h"
+  #include "array.h"
+  #include "error_handler.h"
+  #include "exception.h"
+  #include "integral_limits.h"
+  #include "largest.h"
+  #include "message_router.h"
+  #include "nullptr.h"
+  #include "user_type.h"
+  #if ETL_USING_CPP11
+    #include "tuple.h"
+  #endif
 
-#include <stdint.h>
+  #include <stdint.h>
 
-#include "private/minmax_push.h"
+  #include "private/minmax_push.h"
 
 namespace etl
 {
@@ -86,33 +86,33 @@ namespace etl
   class hfsm;
 
   /// Allow alternative type for state id.
-#if !defined(ETL_FSM_STATE_ID_TYPE)
+  #if !defined(ETL_FSM_STATE_ID_TYPE)
   typedef uint_least8_t fsm_state_id_t;
-#else
+  #else
   typedef ETL_FSM_STATE_ID_TYPE fsm_state_id_t;
-#endif
+  #endif
 
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-#if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+  #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   template <typename, typename, etl::fsm_state_id_t, typename...>
   class fsm_state;
-#else
-  /*[[[cog
+  #else
+    /*[[[cog
   import cog
   cog.outl("template <typename, typename, etl::fsm_state_id_t,")
-  cog.out("          ")
+  cog.out("         ")
   for n in range(1, int(Handlers)):
-    cog.out("typename, ")
+    cog.out(" typename,")
     if n % 4 == 0:
         cog.outl("")
-        cog.out("          ")
-  cog.outl("typename>")
+        cog.out("         ")
+  cog.outl(" typename>")
   cog.outl("class fsm_state;")
   ]]]*/
-  /*[[[end]]]*/
-#endif
+    /*[[[end]]]*/
+  #endif
 
   //***************************************************************************
   /// Base exception class for FSM.
@@ -185,6 +185,7 @@ namespace etl
   class fsm_not_started : public etl::fsm_exception
   {
   public:
+
     fsm_not_started(string_type file_name_, numeric_type line_number_)
       : etl::fsm_exception(ETL_ERROR_TEXT("fsm:not started", ETL_FSM_FILE_ID"F"), file_name_, line_number_)
     {
@@ -198,6 +199,7 @@ namespace etl
   class fsm_reentrant_transition_forbidden : public etl::fsm_exception
   {
   public:
+
     fsm_reentrant_transition_forbidden(string_type file_name_, numeric_type line_number_)
       : etl::fsm_exception(ETL_ERROR_TEXT("fsm:reentrant calls to start/receive/etc. forbidden", ETL_FSM_FILE_ID"G"), file_name_, line_number_)
     {
@@ -214,7 +216,7 @@ namespace etl
       // Pass this whenever no state change is desired.
       // The highest unsigned value of fsm_state_id_t.
       static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
-      
+
       // Pass this when this event also needs to be passed to the parent.
       static ETL_CONSTANT fsm_state_id_t Pass_To_Parent = No_State_Change - 1U;
 
@@ -232,15 +234,16 @@ namespace etl
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
 
     // Compile-time: TState::ID must equal its index in the type list (0..N-1)
-    template <size_t Id, typename...> struct check_ids : etl::true_type 
+    template <size_t Id, typename...>
+    struct check_ids : etl::true_type
     {
     };
 
     template <size_t Id, typename TState0, typename... TRest>
     struct check_ids<Id, TState0, TRest...>
-      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
+      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value>
     {
-    };   
+    };
 
     //***************************************************************************
     /// RAII detection mechanism to catch reentrant calls to methods that might
@@ -250,6 +253,7 @@ namespace etl
     class fsm_reentrancy_guard
     {
     public:
+
       //*******************************************
       /// Constructor.
       /// Checks if another method has locked reentrancy.
@@ -269,29 +273,30 @@ namespace etl
       {
         is_locked = false;
       }
-      
+
     private:
+
       // Reference to the flag signifying a lock on the state machine.
       bool& is_locked;
-      
+
       // Copy & move semantics disabled since this is a guard.
       fsm_reentrancy_guard(fsm_reentrancy_guard const&) ETL_DELETE;
-      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard const&) ETL_DELETE;
-#if ETL_USING_CPP11
+      fsm_reentrancy_guard& operator=(fsm_reentrancy_guard const&) ETL_DELETE;
+  #if ETL_USING_CPP11
       fsm_reentrancy_guard(fsm_reentrancy_guard&&) ETL_DELETE;
-      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard&&) ETL_DELETE;
-#endif
+      fsm_reentrancy_guard& operator=(fsm_reentrancy_guard&&) ETL_DELETE;
+  #endif
     };
-  }
+  } // namespace private_fsm
 
   class ifsm_state;
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   //***************************************************************************
   /// A class to store FSM states.
   //***************************************************************************
   template <typename... TStates>
-  class fsm_state_pack 
+  class fsm_state_pack
   {
   public:
 
@@ -313,18 +318,18 @@ namespace etl
     /// Gets a reference to the state.
     //*********************************
     template <typename TState>
-    TState& get() 
-    { 
-      return etl::get<TState>(storage); 
+    TState& get()
+    {
+      return etl::get<TState>(storage);
     }
 
     //*********************************
     /// Gets a const reference to the state.
     //*********************************
     template <typename TState>
-    const TState& get() const 
-    { 
-      return etl::get<TState>(storage); 
+    const TState& get() const
+    {
+      return etl::get<TState>(storage);
     }
 
   private:
@@ -341,9 +346,9 @@ namespace etl
     etl::tuple<TStates...> storage{};
 
     /// Pointers to the states.
-    etl::ifsm_state* states[sizeof...(TStates)]{ &etl::get<TStates>(storage)... };
+    etl::ifsm_state* states[sizeof...(TStates)]{&etl::get<TStates>(storage)...};
   };
-#endif
+  #endif
 
   //***************************************************************************
   /// Interface class for FSM states.
@@ -360,24 +365,24 @@ namespace etl
     using private_fsm::ifsm_state_helper<>::Pass_To_Parent;
     using private_fsm::ifsm_state_helper<>::Self_Transition;
 
-#if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+  #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
     template <typename, typename, etl::fsm_state_id_t, typename...>
     friend class fsm_state;
-#else
+  #else
     /*[[[cog
     import cog
     cog.outl("  template <typename, typename, etl::fsm_state_id_t,")
-    cog.out("            ")
+    cog.out("           ")
     for n in range(1, int(Handlers)):
-      cog.out("typename, ")
+      cog.out(" typename,")
       if n % 4 == 0:
           cog.outl("")
-          cog.out("            ")
-    cog.outl("typename>")
+          cog.out("           ")
+    cog.outl(" typename>")
     ]]]*/
     /*[[[end]]]*/
     friend class etl::fsm_state;
-#endif
+  #endif
 
     //*******************************************
     /// Gets the id for this state.
@@ -409,7 +414,7 @@ namespace etl
     template <typename TSize>
     void set_child_states(etl::ifsm_state** state_list, TSize size)
     {
-      p_active_child = ETL_NULLPTR;
+      p_active_child  = ETL_NULLPTR;
       p_default_child = ETL_NULLPTR;
 
       for (TSize i = 0; i < size; ++i)
@@ -425,11 +430,11 @@ namespace etl
     /// Constructor.
     //*******************************************
     ifsm_state(etl::fsm_state_id_t state_id_)
-      : state_id(state_id_),
-      p_context(ETL_NULLPTR),
-      p_parent(ETL_NULLPTR),
-      p_active_child(ETL_NULLPTR),
-      p_default_child(ETL_NULLPTR)
+      : state_id(state_id_)
+      , p_context(ETL_NULLPTR)
+      , p_parent(ETL_NULLPTR)
+      , p_active_child(ETL_NULLPTR)
+      , p_default_child(ETL_NULLPTR)
     {
     }
 
@@ -450,8 +455,11 @@ namespace etl
 
     virtual fsm_state_id_t process_event(const etl::imessage& message) = 0;
 
-    virtual fsm_state_id_t on_enter_state() { return No_State_Change; } // By default, do nothing.
-    virtual void on_exit_state() {}  // By default, do nothing.
+    virtual fsm_state_id_t on_enter_state()
+    {
+      return No_State_Change;
+    } // By default, do nothing.
+    virtual void on_exit_state() {} // By default, do nothing.
 
     //*******************************************
     void set_fsm_context(etl::fsm& context)
@@ -476,7 +484,7 @@ namespace etl
 
     // Disabled.
     ifsm_state(const ifsm_state&) ETL_DELETE;
-    ifsm_state& operator =(const ifsm_state&) ETL_DELETE;
+    ifsm_state& operator=(const ifsm_state&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -508,7 +516,7 @@ namespace etl
     template <typename TSize>
     void set_states(etl::ifsm_state** p_states, TSize size)
     {
-      state_list = p_states;
+      state_list       = p_states;
       number_of_states = etl::fsm_state_id_t(size);
 
       ETL_ASSERT(number_of_states > 0, ETL_ERROR(etl::fsm_state_list_exception));
@@ -522,7 +530,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
     //*******************************************
     /// Set the states for the FSM
     /// From an etl::fsm_state_pack.
@@ -530,7 +538,7 @@ namespace etl
     template <typename... TStates>
     void set_states(etl::fsm_state_pack<TStates...>& state_pack)
     {
-      state_list = state_pack.get_state_list();
+      state_list       = state_pack.get_state_list();
       number_of_states = etl::fsm_state_id_t(state_pack.size());
 
       for (etl::fsm_state_id_t i = 0; i < number_of_states; ++i)
@@ -538,7 +546,7 @@ namespace etl
         state_list[i]->set_fsm_context(*this);
       }
     }
-#endif
+  #endif
 
     //*******************************************
     /// Starts the FSM.
@@ -559,11 +567,11 @@ namespace etl
         if (call_on_enter_state)
         {
           etl::fsm_state_id_t next_state_id;
-          etl::ifsm_state* p_last_state;
+          etl::ifsm_state*    p_last_state;
 
           do
           {
-            p_last_state = p_state;
+            p_last_state  = p_state;
             next_state_id = p_state->on_enter_state();
             if (next_state_id != ifsm_state::No_State_Change)
             {
@@ -586,7 +594,7 @@ namespace etl
       {
         etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-        process_state_change(next_state_id); 
+        process_state_change(next_state_id);
       }
       else
       {
@@ -696,9 +704,7 @@ namespace etl
     //********************************************
     bool have_changed_state(etl::fsm_state_id_t next_state_id) const
     {
-      return (next_state_id != p_state->get_state_id()) &&
-             (next_state_id != ifsm_state::No_State_Change) &&
-             (next_state_id != ifsm_state::Self_Transition);
+      return (next_state_id != p_state->get_state_id()) && (next_state_id != ifsm_state::No_State_Change) && (next_state_id != ifsm_state::Self_Transition);
     }
 
     //********************************************
@@ -717,7 +723,7 @@ namespace etl
         p_state->on_exit_state();
         next_state_id = p_state->on_enter_state();
       }
-      
+
       if (have_changed_state(next_state_id))
       {
         ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
@@ -741,16 +747,16 @@ namespace etl
       return p_state->get_state_id();
     }
 
-    etl::ifsm_state*    p_state;          ///< A pointer to the current state.
-    etl::ifsm_state**   state_list;       ///< The list of added states.
-    etl::fsm_state_id_t number_of_states; ///< The number of states.
-    bool is_processing_state_change;      ///< Whether a method call that could potentially trigger a state change is active
+    etl::ifsm_state*    p_state;                    ///< A pointer to the current state.
+    etl::ifsm_state**   state_list;                 ///< The list of added states.
+    etl::fsm_state_id_t number_of_states;           ///< The number of states.
+    bool                is_processing_state_change; ///< Whether a method call that could potentially trigger a state change is active
   };
 
   //*************************************************************************************************
   // For C++17 and above.
   //*************************************************************************************************
-#if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+  #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************
@@ -782,7 +788,7 @@ namespace etl
     //********************************************
     struct result_t
     {
-      bool was_handled;
+      bool                was_handled;
       etl::fsm_state_id_t state_id;
     };
 
@@ -821,11 +827,11 @@ namespace etl
   template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
   ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::STATE_ID;
 
-#else
-//*************************************************************************************************
-// For C++14 and below.
-//*************************************************************************************************
-  /*[[[cog
+  #else
+  //*************************************************************************************************
+  // For C++14 and below.
+  //*************************************************************************************************
+    /*[[[cog
   import cog
   ################################################
   # The first definition for all of the events.
@@ -833,14 +839,14 @@ namespace etl
   cog.outl("//***************************************************************************")
   cog.outl("// The definition for all %s message types." % Handlers)
   cog.outl("//***************************************************************************")
-  cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, ")
-  cog.out("          ")
+  cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,")
+  cog.out("         ")
   for n in range(1, int(Handlers)):
-      cog.out("typename T%s = void, " % n)
+      cog.out(" typename T%s = void," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s = void>" % Handlers)
+          cog.out("         ")
+  cog.outl(" typename T%s = void>" % Handlers)
   cog.outl("class fsm_state : public ifsm_state")
   cog.outl("{")
   cog.outl("public:")
@@ -868,7 +874,7 @@ namespace etl
   cog.outl("  etl::fsm_state_id_t process_event(const etl::imessage& message)")
   cog.outl("  {")
   cog.outl("    etl::fsm_state_id_t new_state_id;")
-  cog.outl("    etl::message_id_t event_id = message.get_message_id();")
+  cog.outl("    etl::message_id_t   event_id = message.get_message_id();")
   cog.outl("")
   cog.outl("    switch (event_id)")
   cog.outl("    {")
@@ -896,14 +902,14 @@ namespace etl
       else:
           cog.outl("// Specialisation for %d message types." % n)
       cog.outl("//***************************************************************************")
-      cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, ")
-      cog.out("          ")
+      cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,")
+      cog.out("         ")
       for t in range(1, n):
-          cog.out("typename T%d, " % t)
+          cog.out(" typename T%d," % t)
           if t % 4 == 0:
               cog.outl("")
-              cog.out("          ")
-      cog.outl("typename T%d>" % n)
+              cog.out("         ")
+      cog.outl(" typename T%d>" % n)
       cog.out("class fsm_state<TContext, TDerived, STATE_ID_, ")
       for t in range(1, n + 1):
           cog.out("T%d, " % t)
@@ -942,7 +948,7 @@ namespace etl
       cog.outl("  etl::fsm_state_id_t process_event(const etl::imessage& message)")
       cog.outl("  {")
       cog.outl("    etl::fsm_state_id_t new_state_id;")
-      cog.outl("    etl::message_id_t event_id = message.get_message_id();")
+      cog.outl("    etl::message_id_t   event_id = message.get_message_id();")
       cog.outl("")
       cog.outl("    switch (event_id)")
       cog.outl("    {")
@@ -993,6 +999,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
   cog.outl("  }")
+  cog.outl("")
   cog.outl("private:")
   cog.outl("")
   cog.outl("  etl::fsm_state_id_t process_event(const etl::imessage& message)")
@@ -1002,23 +1009,23 @@ namespace etl
   cog.outl("};")
 
   cog.outl("")
-  cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, ")
-  cog.out("          ")
+  cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,")
+  cog.out("         ")
   for n in range(1, int(Handlers)):
-      cog.out("typename T%s, " % n)
+      cog.out(" typename T%s," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s>" % Handlers)
+          cog.out("         ")
+  cog.outl(" typename T%s>" % Handlers)
   cog.out("ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, ")
   for n in range(1, int(Handlers)):
       cog.out("T%s, " % n)
   cog.outl("T%s>::STATE_ID;" % Handlers)
   ]]]*/
-  /*[[[end]]]*/
-#endif
-}
+    /*[[[end]]]*/
+  #endif
+} // namespace etl
 
-#include "private/minmax_pop.h"
+  #include "private/minmax_pop.h"
 
 #endif
