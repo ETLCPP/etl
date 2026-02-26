@@ -2182,6 +2182,49 @@ namespace
       CHECK_TRUE(variant1.is_supported_type<std::string>());
       CHECK_FALSE(variant1.is_supported_type<double>());
     }
+
+    //*************************************************************************
+    TEST(test_variant_same_types_get)
+    {
+      etl::variant<int, int> v1;
+      etl::variant<int, int> v2;
+
+      v1.emplace<0>(1);
+      v2.emplace<0>(1);
+
+      CHECK(v1 == v2);
+
+      v1.emplace<0>(1);
+      v2.emplace<1>(1);
+
+      CHECK(v1 != v2);
+
+      v1.emplace<0>(0);
+      v2.emplace<0>(1);
+
+      CHECK(v1 != v2);
+
+      v1.emplace<1>(0);
+      v2.emplace<1>(1);
+
+      CHECK(v1 != v2);
+
+      v1.emplace<1>(1);
+      v2.emplace<1>(1);
+
+      CHECK(v1 == v2);
+
+      v1.emplace<0>(42);
+      CHECK_EQUAL(42, etl::get<0>(v1));
+      CHECK_EQUAL(0U, v1.index());
+
+      v1.emplace<1>(99);
+      CHECK_EQUAL(99, etl::get<1>(v1));
+      CHECK_EQUAL(1U, v1.index());
+
+      CHECK(etl::holds_alternative<int>(v1));
+      CHECK(etl::get_if<int>(&v1) != nullptr);
+    }
   }
 }
 

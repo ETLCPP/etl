@@ -410,6 +410,12 @@ namespace etl
     template <typename T, typename... VTypes>
     friend ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
 
+    template< class T, typename... VTypes >
+    friend ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<VTypes...>* pv) ETL_NOEXCEPT;
+
+    template< class T, typename... VTypes >
+    friend ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<VTypes...>* pv) ETL_NOEXCEPT;
+
   private:
 
     // All types of variant are friends.
@@ -1218,15 +1224,78 @@ namespace etl
     size_t type_id;
   };
 
+  namespace private_variant
+  {
+    //***************************************************************************
+    /// is_same_type_in.
+    /// Checks if specified type T is at specified index in given type list
+    //***************************************************************************
+    template<typename T, typename T0, typename T1, typename... Ts>
+    typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+
+    template<typename T, typename T0>
+    typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+
+    template<typename T, typename T0, typename T1, typename... Ts>
+    typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+
+    template<typename T, typename T0>
+    typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+
+    template<typename T, typename T0, typename T1, typename... Ts>
+    typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
+    {
+      if (index == 0)
+      {
+        return true;
+      }
+      else
+      {
+        return is_same_type_in<T, T1, Ts...>(index - 1);
+      }
+    }
+
+    template<typename T, typename T0>
+    typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
+    {
+      return index == 0;
+    }
+
+    template<typename T, typename T0, typename T1, typename... Ts>
+    typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
+    {
+      if (index == 0)
+      {
+        return false;
+      }
+      else
+      {
+        return is_same_type_in<T, T1, Ts...>(index - 1);
+      }
+    }
+
+    template<typename T, typename T0>
+    typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
+    ETL_CONSTEXPR14 is_same_type_in(size_t) ETL_NOEXCEPT
+    {
+      return false;
+    }
+  }
+
   //***************************************************************************
   /// Checks if the variant v holds the alternative T.
   //***************************************************************************
 	template <typename T, typename... TTypes>
 	ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT
-	{  
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
-
-    return (Index == variant_npos) ? false : (v.index() == Index);
+	{
+    return private_variant::is_same_type_in<T, TTypes...>(v.index());
 	}
 
   //***************************************************************************
@@ -1274,6 +1343,8 @@ namespace etl
     static_assert(Index < sizeof...(TTypes), "Index out of range");
 #endif
 
+    ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
+
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
 
     return etl::move(*static_cast<type*>(v.data));
@@ -1315,36 +1386,36 @@ namespace etl
   template <typename T, typename... TTypes>
   ETL_CONSTEXPR14 T& get(etl::variant<TTypes...>& v)
   {
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
+    ETL_ASSERT((private_variant::is_same_type_in<T, TTypes...>(v.index())), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-    return get<Index>(v);
+    return *static_cast<T*>(v.data);
   }
 
   //***********************************
   template <typename T, typename... TTypes>
   ETL_CONSTEXPR14 T&& get(etl::variant<TTypes...>&& v)
   {
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
+    ETL_ASSERT((private_variant::is_same_type_in<T, TTypes...>(v.index())), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-    return get<Index>(etl::move(v));
+    return etl::move(*static_cast<T*>(v.data));
   }
 
   //***********************************
   template <typename T, typename... TTypes>
   ETL_CONSTEXPR14 const T& get(const etl::variant<TTypes...>& v)
   {
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
+    ETL_ASSERT((private_variant::is_same_type_in<T, TTypes...>(v.index())), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-    return get<Index>(v);
+    return *static_cast<const T*>(v.data);
   }
 
   //***********************************
   template <typename T, typename... TTypes>
   ETL_CONSTEXPR14 const T&& get(const etl::variant<TTypes...>&& v)
   {
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
+    ETL_ASSERT((private_variant::is_same_type_in<T, TTypes...>(v.index())), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-    return get<Index>(etl::move(v));
+    return etl::move(*static_cast<const T*>(v.data));
   }
 
   //***************************************************************************
@@ -1383,11 +1454,9 @@ namespace etl
   template< class T, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
-
-    if ((pv != nullptr) && (pv->index() == Index))
+    if ((pv != nullptr) && (private_variant::is_same_type_in<T, TTypes...>(pv->index())))
     {
-      return &etl::get<Index>(*pv);
+      return static_cast<T*>(pv->data);
     }
     else
     {
@@ -1399,11 +1468,9 @@ namespace etl
   template< typename T, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
-    constexpr size_t Index = etl::type_list_index_of_type<etl::type_list<TTypes...>, T>::value;
-
-    if ((pv != nullptr) && (pv->index() == Index))
+    if ((pv != nullptr) && (private_variant::is_same_type_in<T, TTypes...>(pv->index())))
     {
-      return &etl::get<Index>(*pv);
+      return static_cast<const T*>(pv->data);
     }
     else
     {
