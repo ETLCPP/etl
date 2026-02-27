@@ -1,4 +1,6 @@
-# Manchester encoding and decoding
+---
+title: Manchester encoding and decoding
+---
 
 Efficient Manchester encoding and decoding of data. The Manchester code represents a data bit as a sequence of a 'high' and a 'low' value. In software this translates to a conversion from one to two bits, or in a practical situation, from `n` bytes to `n*2` bytes.
 
