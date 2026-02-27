@@ -172,11 +172,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(byte_stream_endianness)
+    {
+      std::array<char, 8> storage;
+
+      etl::byte_stream_reader reader_big(storage.data(),    storage.size(), etl::endian::big);
+      etl::byte_stream_reader reader_little(storage.data(), storage.size(), etl::endian::little);
+      etl::byte_stream_writer writer_big(storage.data(),    storage.size(), etl::endian::big);
+      etl::byte_stream_writer writer_little(storage.data(), storage.size(), etl::endian::little);
+
+      CHECK(writer_big.get_endianness()    == etl::endian::big);
+      CHECK(writer_little.get_endianness() == etl::endian::little);
+      CHECK(reader_big.get_endianness()    == etl::endian::big);
+      CHECK(reader_little.get_endianness() == etl::endian::little);
+    }
+
+    //*************************************************************************
     TEST(write_bool)
     {
       char storage[8];
       char result[8] = { 0, 1, 0, 1, 1, 0, 1, 0 };
-      
+
       etl::byte_stream_writer byte_stream(storage, 8U, etl::endian::big);
 
       CHECK(byte_stream.write(false));
@@ -489,28 +505,29 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<int8_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-      
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<int8_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<int8_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<int8_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<int8_t>());
 
       etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
+
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<int8_t>());
       CHECK_EQUAL(4U, reader.available_bytes());
@@ -546,22 +563,22 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<uint8_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-      
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<uint8_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<uint8_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<uint8_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
@@ -602,22 +619,22 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<int16_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-      
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<int16_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<int16_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<int16_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
@@ -658,22 +675,22 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<uint16_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-      
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<uint16_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<uint16_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<uint16_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
@@ -714,22 +731,22 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<int32_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-     
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<int32_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<int32_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<int32_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
@@ -770,22 +787,22 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<uint32_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-      
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<uint32_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<uint32_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<uint32_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
@@ -826,22 +843,22 @@ namespace
       CHECK(!writer.full());
       CHECK_EQUAL(4U, writer.available<int64_t>());
       CHECK_EQUAL(0U, writer.size_bytes());
-      
+
       writer.write(put_data[0]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(3U, writer.available<int64_t>());
-      
+
       writer.write(put_data[1]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(2U, writer.available<int64_t>());
-      
+
       writer.write(put_data[2]);
       CHECK(!writer.empty());
       CHECK(!writer.full());
       CHECK_EQUAL(1U, writer.available<int64_t>());
-      
+
       writer.write(put_data[3]);
       CHECK(!writer.empty());
       CHECK(writer.full());
@@ -1131,7 +1148,7 @@ namespace
 
     //*************************************************************************
     TEST(write_read_object)
-    {    
+    {
       std::array<char, 2 * sizeof(Object)> storage;
 
       etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
@@ -1283,9 +1300,9 @@ namespace
     {
       std::array<char, sizeof(int32_t)> storage;
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
-      std::vector<char> expected = { char(0x00), char(0x00), char(0x00), char(0x01), 
-                                     char(0xA5), char(0x5A), char(0xA5), char(0x5A), 
-                                     char(0x5A), char(0xA5), char(0x5A), char(0xA5), 
+      std::vector<char> expected = { char(0x00), char(0x00), char(0x00), char(0x01),
+                                     char(0xA5), char(0x5A), char(0xA5), char(0x5A),
+                                     char(0x5A), char(0xA5), char(0x5A), char(0xA5),
                                      char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
       std::vector<char> result;
 
@@ -1314,12 +1331,12 @@ namespace
                                      char(0xA5), char(0x5A), char(0xA5), char(0x5A),
                                      char(0x5A), char(0xA5), char(0x5A), char(0xA5),
                                      char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
-      
+
 
       static std::vector<char> result;
 
-      auto lambda = [&](etl::byte_stream_writer::callback_parameter_type sp) 
-        { 
+      auto lambda = [&](etl::byte_stream_writer::callback_parameter_type sp)
+        {
           std::copy(sp.begin(), sp.end(), std::back_inserter(result));
         };
 
