@@ -33,9 +33,9 @@ SOFTWARE.
 #include "etl/private/delegate_cpp03.h"
 #include "etl/vector.h"
 
-#include <vector>
-#include <functional>
 #include <algorithm>
+#include <functional>
+#include <vector>
 
 namespace
 {
@@ -66,8 +66,8 @@ namespace
   FunctionCalled function_called = FunctionCalled::Not_Called;
 
   //*****************************************************************************
-  const int VALUE1 = 1;
-  bool parameter_correct = false;
+  const int VALUE1            = 1;
+  bool      parameter_correct = false;
 
   //*****************************************************************************
   // Object data structure.
@@ -90,7 +90,7 @@ namespace
   //*****************************************************************************
   void free_int(int i)
   {
-    function_called = FunctionCalled::Free_Int_Called;
+    function_called   = FunctionCalled::Free_Int_Called;
     parameter_correct = (i == VALUE1);
   }
 
@@ -99,7 +99,7 @@ namespace
   //*****************************************************************************
   void free_reference(const Data& data)
   {
-    function_called = FunctionCalled::Free_Reference_Called;
+    function_called   = FunctionCalled::Free_Reference_Called;
     parameter_correct = (data.d == VALUE1);
   }
 
@@ -108,7 +108,7 @@ namespace
   //*****************************************************************************
   int normal(int i)
   {
-    function_called = FunctionCalled::Normal_Called;
+    function_called   = FunctionCalled::Normal_Called;
     parameter_correct = (i == VALUE1);
 
     return i;
@@ -119,7 +119,7 @@ namespace
   //*****************************************************************************
   void normal_returning_void(int i)
   {
-    function_called = FunctionCalled::Normal_Returning_Void_Called;
+    function_called   = FunctionCalled::Normal_Returning_Void_Called;
     parameter_correct = (i == VALUE1);
   }
 
@@ -128,7 +128,7 @@ namespace
   //*****************************************************************************
   int alternative(int i)
   {
-    function_called = FunctionCalled::Alternative_Called;
+    function_called   = FunctionCalled::Alternative_Called;
     parameter_correct = (i == VALUE1);
 
     return i + 1;
@@ -157,13 +157,13 @@ namespace
     // int
     void member_int(int i)
     {
-      function_called = FunctionCalled::Member_Int_Called;
+      function_called   = FunctionCalled::Member_Int_Called;
       parameter_correct = (i == VALUE1);
     }
 
     void member_int_const(int i) const
     {
-      function_called = FunctionCalled::Member_Int_Const_Called;
+      function_called   = FunctionCalled::Member_Int_Const_Called;
       parameter_correct = (i == VALUE1);
     }
 
@@ -171,13 +171,13 @@ namespace
     // reference
     void member_reference(const Data& data)
     {
-      function_called = FunctionCalled::Member_Reference_Called;
+      function_called   = FunctionCalled::Member_Reference_Called;
       parameter_correct = (data.d == VALUE1);
     }
 
     void member_reference_const(const Data& data) const
     {
-      function_called = FunctionCalled::Member_Reference_Const_Called;
+      function_called   = FunctionCalled::Member_Reference_Const_Called;
       parameter_correct = (data.d == VALUE1);
     }
 
@@ -185,7 +185,7 @@ namespace
     // static
     static void member_static(const Data& data)
     {
-      function_called = FunctionCalled::Member_Static_Called;
+      function_called   = FunctionCalled::Member_Static_Called;
       parameter_correct = (data.d == VALUE1);
     }
 
@@ -203,14 +203,14 @@ namespace
   };
 
   //*******************************************
-  int times_2(int a) 
+  int times_2(int a)
   {
     return a * 2;
   }
 
-  Object test_static;
+  Object       test_static;
   const Object const_test_static;
-}
+} // namespace
 
 namespace
 {
@@ -420,7 +420,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_reference)
     {
       Object object;
-      auto d = etl_cpp03::delegate<void(const Data&)>::create<Object, &Object::member_reference>(object);
+      auto   d = etl_cpp03::delegate<void(const Data&)>::create<Object, &Object::member_reference>(object);
 
       Data data;
       data.d = VALUE1;
@@ -435,7 +435,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_reference_const)
     {
       const Object object;
-      auto d = etl_cpp03::delegate<void(const Data&)>::create<Object, &Object::member_reference_const>(object);
+      auto         d = etl_cpp03::delegate<void(const Data&)>::create<Object, &Object::member_reference_const>(object);
 
       Data data;
       data.d = VALUE1;
@@ -605,7 +605,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_set_free_int)
     {
       etl_cpp03::delegate<void(int)> d;
-      
+
       d.set<free_int>();
 
       d(VALUE1);
@@ -618,8 +618,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_set_lambda_int)
     {
       etl_cpp03::delegate<void(int)> d;
-      
-      d.set([](int i) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1); });
+
+      d.set([](int i)
+            { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1); });
 
       d(VALUE1);
 
@@ -630,9 +631,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference)
     {
-      Object object;
+      Object                                 object;
       etl_cpp03::delegate<void(const Data&)> d;
-      
+
       d.set<Object, &Object::member_reference>(object);
 
       Data data;
@@ -647,7 +648,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_const_member_reference)
     {
-      Object object;
+      Object                                 object;
       etl_cpp03::delegate<void(const Data&)> d;
 
       d.set<Object, &Object::member_reference_const>(object);
@@ -745,7 +746,7 @@ namespace
     {
       Object object;
 
-      auto d1 = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int>(object);
+      auto                           d1 = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int>(object);
       etl_cpp03::delegate<void(int)> d2;
 
       d2 = d1;
@@ -889,7 +890,7 @@ namespace
 
       using Delegate_List = std::vector<etl_cpp03::delegate<void(int)>>;
 
-      Delegate_List delegate_list = { d1, d2, d3 };
+      Delegate_List delegate_list = {d1, d2, d3};
 
       Delegate_List::const_iterator itr;
 
@@ -914,11 +915,11 @@ namespace
       CHECK(*itr != d2);
       CHECK(*itr == d3);
 
-      d4 = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int>(test2); // Same as d3
+      d4  = etl_cpp03::delegate<void(int)>::create<Object, &Object::member_int>(test2); // Same as d3
       itr = std::find(delegate_list.begin(), delegate_list.end(), d4);
       CHECK(*itr != d1);
       CHECK(*itr != d2);
       CHECK(*itr == d3);
     }
   }
-}
+} // namespace

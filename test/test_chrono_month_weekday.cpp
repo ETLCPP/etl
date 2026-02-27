@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -58,7 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_with_month_and_day)
     {
-      Chrono::month_weekday mwd{ Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2) };
+      Chrono::month_weekday mwd{Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_TRUE(mwd.ok()); // Valid month_weekday
       CHECK_EQUAL(Chrono::January, mwd.month());
@@ -85,7 +85,7 @@ namespace
     //*************************************************************************
     TEST(test_month_weekday_equality_operator)
     {
-      Chrono::month_weekday mwd1{Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
+      Chrono::month_weekday mwd1{Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
       Chrono::month_weekday mwd2{Chrono::February, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_TRUE(mwd1 == mwd1);  // January == January
@@ -96,7 +96,7 @@ namespace
     //*************************************************************************
     TEST(test_month_weekday_not_equality_operator)
     {
-      Chrono::month_weekday mwd1{Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
+      Chrono::month_weekday mwd1{Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
       Chrono::month_weekday mwd2{Chrono::February, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_FALSE(mwd1 != mwd1); // January == January
@@ -121,4 +121,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

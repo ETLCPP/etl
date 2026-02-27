@@ -4,19 +4,21 @@
 #include "Config.h"
 #ifndef UNITTEST_NO_EXCEPTIONS
 
-#include "HelperMacros.h"
-#include <exception>
+  #include "HelperMacros.h"
+  #include <exception>
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class UNITTEST_LINKAGE AssertException : public std::exception
-   {
-   public:
-      AssertException();
-      virtual ~AssertException() throw();
-   };
+  class UNITTEST_LINKAGE AssertException : public std::exception
+  {
+  public:
 
-}
+    AssertException();
+    virtual ~AssertException() throw();
+  };
+
+} // namespace UnitTest
 
 #endif
 

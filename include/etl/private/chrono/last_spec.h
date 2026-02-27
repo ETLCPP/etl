@@ -48,5 +48,5 @@ namespace etl
 #else
     static ETL_CONSTANT last_spec last{};
 #endif
-  }
-}
+  } // namespace chrono
+} // namespace etl

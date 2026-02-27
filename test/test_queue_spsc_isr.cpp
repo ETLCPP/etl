@@ -30,12 +30,12 @@ SOFTWARE.
 
 #include "etl/queue_spsc_isr.h"
 
-#include <thread>
 #include <mutex>
+#include <thread>
 #include <vector>
 
 #if defined(ETL_COMPILER_MICROSOFT)
-#include <Windows.h>
+  #include <Windows.h>
 #endif
 
 #include "data.h"
@@ -50,7 +50,7 @@ namespace
 
     static void clear()
     {
-      called_lock = false;
+      called_lock   = false;
       called_unlock = false;
     }
 
@@ -95,7 +95,7 @@ namespace
     int d;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
+  bool operator==(const Data& lhs, const Data& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
@@ -663,8 +663,8 @@ namespace
       FIX_PROCESSOR_AFFINITY;
 
       const size_t TICK = 1UL;
-      size_t tick = TICK;
-      ticks = 1;
+      size_t       tick = TICK;
+      ticks             = 1;
 
       while (ticks <= LENGTH)
       {
@@ -713,4 +713,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

@@ -31,17 +31,17 @@ SOFTWARE.
 #ifndef ETL_CONST_MULTISET_INCLUDED
 #define ETL_CONST_MULTISET_INCLUDED
 
-#include "platform.h" 
+#include "platform.h"
 
 #if ETL_NOT_USING_CPP11
   #error NOT SUPPORTED FOR C++03 OR BELOW
 #endif
 
 #include "algorithm.h"
-#include "type_traits.h"
 #include "functional.h"
 #include "nth_type.h"
 #include "span.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -190,7 +190,7 @@ namespace etl
 
       return size_type(etl::distance(range.first, range.second));
     }
-      
+
     //*************************************************************************
     ///\brief Counts the numbeer elements with key.
     /// Enabled if the comparator is transparent.
@@ -206,9 +206,9 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a range containing all elements with the key. 
-    /// The range is defined by a pair of two iterators, one to the 
-    /// first element that is not less than the key and second to the first 
+    ///\brief Returns a range containing all elements with the key.
+    /// The range is defined by a pair of two iterators, one to the
+    /// first element that is not less than the key and second to the first
     /// element greater than the key.
     ///\param key The key of the element
     ///\return etl::pair or std::pair containing a pair of iterators.
@@ -219,9 +219,9 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a range containing all elements with the key. 
-    /// The range is defined by a pair of two iterators, one to the 
-    /// first element that is not less than the key and second to the first 
+    ///\brief Returns a range containing all elements with the key.
+    /// The range is defined by a pair of two iterators, one to the
+    /// first element that is not less than the key and second to the first
     /// element greater than the key.
     /// Enabled if the comparator is transparent.
     ///\param key The key of the element
@@ -234,7 +234,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a const_iterator to the first element that is not less than the key. 
+    ///\brief Returns a const_iterator to the first element that is not less than the key.
     /// Returns a const_iterator to the first element that is not less than the key.
     ///\param key The key of the element
     ///\return const_iterator to the element or end()
@@ -245,7 +245,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a const_iterator to the first element that is not less than the key. 
+    ///\brief Returns a const_iterator to the first element that is not less than the key.
     /// Returns a const_iterator to the first element that is not less than the key.
     /// Enabled if the comparator is transparent.
     ///\param key The key of the element
@@ -258,7 +258,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a const_iterator to the first element that is greater than the key. 
+    ///\brief Returns a const_iterator to the first element that is greater than the key.
     /// Returns a const_iterator to the first element that is greater than the key.
     ///\param key The key of the element
     ///\return const_iterator to the element or end()
@@ -269,7 +269,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ///\brief Returns a const_iterator to the first element that is greater than the key. 
+    ///\brief Returns a const_iterator to the first element that is greater than the key.
     /// Returns a const_iterator to the first element that is greater than the key.
     /// Enabled if the comparator is transparent.
     ///\param key The key of the element
@@ -383,7 +383,7 @@ namespace etl
 
     const value_type* element_list;
     const value_type* element_list_end;
-    size_type   max_elements;
+    size_type         max_elements;
   };
 
   //*************************************************************************
@@ -418,7 +418,7 @@ namespace etl
       , element_list{etl::forward<TElements>(elements)...}
     {
       static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
-      static_assert(sizeof...(elements) <= Size,                                        "Number of elements exceeds capacity");
+      static_assert(sizeof...(elements) <= Size, "Number of elements exceeds capacity");
     }
 
   private:
@@ -475,7 +475,7 @@ namespace etl
     ///\brief Construct a const_multiset from an array.
     //*************************************************************************
     template <size_type Size>
-    ETL_CONSTEXPR14 explicit const_multiset_ext(const value_type(&begin_)[Size]) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit const_multiset_ext(const value_type (&begin_)[Size]) ETL_NOEXCEPT
       : iconst_multiset<TKey, TKeyCompare>(begin_, Size, Size)
     {
     }
@@ -489,15 +489,15 @@ namespace etl
   const_multiset_ext(const etl::span<TElements, Size>&) -> const_multiset_ext<TElements>;
 
   template <typename TElements, size_t Size>
-  const_multiset_ext(const TElements(&)[Size]) -> const_multiset_ext<TElements>;
+  const_multiset_ext(const TElements (&)[Size]) -> const_multiset_ext<TElements>;
 #endif
 
   //*************************************************************************
   /// Equality test.
   //*************************************************************************
   template <typename TKey, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator ==(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
-                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator==(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -506,8 +506,8 @@ namespace etl
   /// Inequality test.
   //*************************************************************************
   template <typename TKey, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator !=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
-                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator!=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(lhs == rhs);
   }
@@ -520,10 +520,10 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator <(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
-                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator<(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                 const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
-    return etl::lexicographical_compare(lhs.begin(), lhs.end(), 
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(),
                                         rhs.begin(), rhs.end(),
                                         lhs.value_comp());
   }
@@ -536,8 +536,8 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator >(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
-                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator>(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                 const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return (rhs < lhs);
   }
@@ -550,8 +550,8 @@ namespace etl
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator <=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
-                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator<=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(rhs < lhs);
   }
@@ -564,11 +564,11 @@ namespace etl
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TKeyCompare>
-  ETL_CONSTEXPR14 bool operator >=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
-                                   const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator>=(const etl::iconst_multiset<TKey, TKeyCompare>& lhs,
+                                  const etl::iconst_multiset<TKey, TKeyCompare>& rhs) ETL_NOEXCEPT
   {
     return !(lhs < rhs);
   }
-}
+} // namespace etl
 
 #endif

@@ -38,21 +38,21 @@ namespace
     //*************************************************************************
     TEST(test_index_of_type)
     {
-      CHECK_EQUAL(0,                       (etl::index_of_type<int,    int, long, double>::value));
-      CHECK_EQUAL(1,                       (etl::index_of_type<long,   int, long, double>::value));
-      CHECK_EQUAL(2,                       (etl::index_of_type<double, int, long, double>::value));
-      CHECK_EQUAL(etl::index_of_type_npos, (etl::index_of_type<float,  int, long, double>::value));
+      CHECK_EQUAL(0, (etl::index_of_type<int, int, long, double>::value));
+      CHECK_EQUAL(1, (etl::index_of_type<long, int, long, double>::value));
+      CHECK_EQUAL(2, (etl::index_of_type<double, int, long, double>::value));
+      CHECK_EQUAL(etl::index_of_type_npos, (etl::index_of_type<float, int, long, double>::value));
     }
 
     //*************************************************************************
 #if ETL_USING_CPP17
     TEST(test_index_of_type_v)
     {
-      CHECK_EQUAL(0,                       (etl::index_of_type_v<int,    int, long, double>));
-      CHECK_EQUAL(1,                       (etl::index_of_type_v<long,   int, long, double>));
-      CHECK_EQUAL(2,                       (etl::index_of_type_v<double, int, long, double>));
-      CHECK_EQUAL(etl::index_of_type_npos, (etl::index_of_type_v<float,  int, long, double>));
+      CHECK_EQUAL(0, (etl::index_of_type_v<int, int, long, double>));
+      CHECK_EQUAL(1, (etl::index_of_type_v<long, int, long, double>));
+      CHECK_EQUAL(2, (etl::index_of_type_v<double, int, long, double>));
+      CHECK_EQUAL(etl::index_of_type_npos, (etl::index_of_type_v<float, int, long, double>));
     }
 #endif
   }
-}
+} // namespace

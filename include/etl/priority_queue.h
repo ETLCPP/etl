@@ -33,14 +33,14 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "utility.h"
-#include "functional.h"
-#include "iterator.h"
-#include "vector.h"
-#include "type_traits.h"
-#include "parameter_type.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "functional.h"
+#include "iterator.h"
+#include "parameter_type.h"
+#include "type_traits.h"
+#include "utility.h"
+#include "vector.h"
 
 #include <stddef.h>
 
@@ -116,15 +116,15 @@ namespace etl
   {
   public:
 
-    typedef T                     value_type;         ///< The type stored in the queue.
-    typedef TContainer            container_type;     ///< The container type used for priority queue.
-    typedef TCompare              compare_type;       ///< The comparison type.
-    typedef T&                    reference;          ///< A reference to the type used in the queue.
-    typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
+    typedef T          value_type;      ///< The type stored in the queue.
+    typedef TContainer container_type;  ///< The container type used for priority queue.
+    typedef TCompare   compare_type;    ///< The comparison type.
+    typedef T&         reference;       ///< A reference to the type used in the queue.
+    typedef const T&   const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                   rvalue_reference;   ///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
+    typedef typename TContainer::size_type                                                size_type; ///< The type used for determining the size of the queue.
     typedef typename etl::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
 
     //*************************************************************************
@@ -186,8 +186,8 @@ namespace etl
     /// is the priority queue is already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
-    template <typename ... Args>
-    void emplace(Args && ... args)
+    template <typename... Args>
+    void emplace(Args&&... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
 
@@ -381,7 +381,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ipriority_queue& operator = (const ipriority_queue& rhs)
+    ipriority_queue& operator=(const ipriority_queue& rhs)
     {
       if (&rhs != this)
       {
@@ -395,7 +395,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ipriority_queue& operator = (ipriority_queue&& rhs)
+    ipriority_queue& operator=(ipriority_queue&& rhs)
     {
       if (&rhs != this)
       {
@@ -518,7 +518,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    priority_queue& operator = (const priority_queue& rhs)
+    priority_queue& operator=(const priority_queue& rhs)
     {
       if (&rhs != this)
       {
@@ -532,7 +532,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    priority_queue& operator = (priority_queue&& rhs)
+    priority_queue& operator=(priority_queue&& rhs)
     {
       if (&rhs != this)
       {
@@ -547,6 +547,6 @@ namespace etl
 
   template <typename T, const size_t SIZE, typename TContainer, typename TCompare>
   ETL_CONSTANT typename priority_queue<T, SIZE, TContainer, TCompare>::size_type priority_queue<T, SIZE, TContainer, TCompare>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

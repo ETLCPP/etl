@@ -31,11 +31,11 @@ SOFTWARE.
 #include "murmurhash3.h" // The 'C' reference implementation.
 
 #include <iterator>
-#include <string>
-#include <vector>
-#include <type_traits>
 #include <stdint.h>
 #include <string.h>
+#include <string>
+#include <type_traits>
+#include <vector>
 
 #include "etl/murmur3.h"
 
@@ -50,11 +50,11 @@ namespace
     TEST(test_murmur3_32_constructor)
     {
       typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
-      std::string data("123456789");      
+      std::string                                                                           data("123456789");
 
       char* begin = (char*)&storage[0];
       strcpy(begin, data.c_str());
-      
+
       uint32_t hash = etl::murmur3<uint32_t>(begin, begin + data.size());
 
       uint32_t compare;
@@ -67,7 +67,7 @@ namespace
     TEST(test_murmur3_32_add_values)
     {
       typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
-      std::string data("123456789");
+      std::string                                                                           data("123456789");
 
       char* begin = (char*)&storage[0];
       strcpy(begin, data.c_str());
@@ -91,7 +91,7 @@ namespace
     TEST(test_murmur3_32_add_range)
     {
       typename etl::aligned_storage<sizeof(char), std::alignment_of<uint32_t>::value>::type storage[10];
-      std::string data("123456789");
+      std::string                                                                           data("123456789");
 
       char* begin = (char*)&storage[0];
       strcpy(begin, data.c_str());
@@ -111,15 +111,15 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
 
       uint32_t hash1 = etl::murmur3<uint32_t>(data1.begin(), data1.end());
@@ -136,5 +136,4 @@ namespace
       CHECK_EQUAL(compare2, hash2);
     }
   }
-}
-
+} // namespace

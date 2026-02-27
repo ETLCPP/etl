@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "unit_test_framework.h"
 #include "etl/not_null.h"
+#include "unit_test_framework.h"
 
 namespace
 {
@@ -46,7 +46,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_non_null_pointer)
     {
-      int value = 123;
+      int                 value = 123;
       etl::not_null<int*> nn(&value);
       CHECK_EQUAL(&value, nn.get());
       CHECK_EQUAL(123, *nn);
@@ -55,7 +55,7 @@ namespace
     //*************************************************************************
     TEST(test_copy_construct)
     {
-      int value = 123;
+      int                 value = 123;
       etl::not_null<int*> nn1(&value);
       etl::not_null<int*> nn2(nn1); // Copy constructor
       CHECK_EQUAL(&value, nn2.get());
@@ -65,7 +65,7 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_pointer)
     {
-      int value1 = 123;
+      int                 value1 = 123;
       etl::not_null<int*> nn1(&value1);
 
       int value2 = 456;
@@ -78,10 +78,10 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_not_null)
     {
-      int value1 = 123;
+      int                 value1 = 123;
       etl::not_null<int*> nn1(&value1);
 
-      int value2 = 456;
+      int                 value2 = 456;
       etl::not_null<int*> nn2(&value2);
 
       nn1 = nn2;
@@ -92,7 +92,7 @@ namespace
     //*************************************************************************
     TEST(test_implicit_conversion)
     {
-      S s{123};
+      S                 s{123};
       etl::not_null<S*> nn(&s);
 
       S* raw = nn;
@@ -102,7 +102,7 @@ namespace
     //*************************************************************************
     TEST(test_arrow_operator)
     {
-      S s{123};
+      S                 s{123};
       etl::not_null<S*> nn(&s);
 
       CHECK_EQUAL(s.x, nn->x);
@@ -112,7 +112,7 @@ namespace
     //*************************************************************************
     TEST(test_dereference_operator)
     {
-      S s{123};
+      S                 s{123};
       etl::not_null<S*> nn(&s);
 
       CHECK_EQUAL(s.x, (*nn).x);
@@ -128,7 +128,7 @@ namespace
     //*************************************************************************
     TEST(test_assign_null_pointer_asserts)
     {
-      int value = 1;
+      int                 value = 1;
       etl::not_null<int*> nn(&value);
 
       CHECK_THROW(nn = nullptr, etl::not_null_contains_null);
@@ -137,7 +137,7 @@ namespace
     //*************************************************************************
     TEST(test_non_null_comparisons)
     {
-      int value[2] = { 123, 456 };
+      int                 value[2] = {123, 456};
       etl::not_null<int*> nn1(&value[0]);
       etl::not_null<int*> nn2(&value[1]);
       CHECK_TRUE(nn1 == nn1);
@@ -161,4 +161,4 @@ namespace
       CHECK_TRUE(nn2 >= nn1);
     }
   }
-}
+} // namespace

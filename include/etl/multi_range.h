@@ -32,10 +32,10 @@ SOFTWARE.
 #define ETL_MULTI_LOOP_INCLUDED
 
 #include "platform.h"
-#include "nullptr.h"
-#include "functional.h"
-#include "exception.h"
 #include "error_handler.h"
+#include "exception.h"
+#include "functional.h"
+#include "nullptr.h"
 
 namespace etl
 {
@@ -175,7 +175,7 @@ namespace etl
     //***************************************************************************
     /// Pure virtual functions.
     //***************************************************************************
-    virtual void next() = 0;
+    virtual void next()  = 0;
     virtual void start() = 0;
 
   protected:
@@ -225,7 +225,7 @@ namespace etl
       range->inner = next;
     }
 
-    bool has_completed;
+    bool          has_completed;
     imulti_range* inner;
   };
 
@@ -457,7 +457,7 @@ namespace etl
         inner->start();
       }
 
-      current = first;
+      current       = first;
       has_completed = !(*p_compare)(current, last); // Check for null range.
     }
 
@@ -512,7 +512,7 @@ namespace etl
 
     multi_range() ETL_DELETE;
     multi_range(const multi_range&) ETL_DELETE;
-    multi_range& operator =(const multi_range&) ETL_DELETE;
+    multi_range& operator=(const multi_range&) ETL_DELETE;
 
     value_type first;   ///< The first value of the range.
     value_type last;    ///< The terminating value of the range.
@@ -524,6 +524,6 @@ namespace etl
     compare_type*     p_compare;
     not_equal_compare default_compare;
   };
-}
+} // namespace etl
 
 #endif

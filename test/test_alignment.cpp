@@ -31,10 +31,10 @@ SOFTWARE.
 #include "etl/alignment.h"
 #include "etl/type_traits.h"
 
+#include <ostream>
+#include <string>
 #include <type_traits>
 #include <utility>
-#include <string>
-#include <ostream>
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #pragma warning(disable : 4996)
@@ -52,8 +52,8 @@ void f(int)
 struct A_t
 {
   A_t(uint32_t v_x, uint8_t v_y)
-   : x(v_x)
-   , y(v_y)
+    : x(v_x)
+    , y(v_y)
   {
   }
 
@@ -78,7 +78,7 @@ struct A_t
   }
 
   uint32_t x;
-  uint8_t y;
+  uint8_t  y;
 };
 
 namespace
@@ -92,7 +92,7 @@ namespace
       size_t expected;
 
       typedef etl::aligned_storage<sizeof(uint16_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
-      static storage32_t data32[10];
+      static storage32_t                                                                       data32[10];
 
       alignment = etl::alignment_of<storage32_t>::value;
       expected  = std::alignment_of<uint32_t>::value;
@@ -112,28 +112,28 @@ namespace
     TEST(test_aligned_storage_conversion_operators)
     {
       typedef etl::aligned_storage<sizeof(uint32_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
-      static storage32_t data;
+      static storage32_t                                                                       data;
 
       void* pdata = &data.data;
 
-      uint32_t& ref        = data;
+      uint32_t&       ref  = data;
       const uint32_t& cref = data;
-      CHECK(&ref  == pdata);
+      CHECK(&ref == pdata);
       CHECK(&cref == pdata);
 
-      uint32_t* ptr        = data;
+      uint32_t*       ptr  = data;
       const uint32_t* cptr = data;
-      CHECK(ptr  == pdata);
+      CHECK(ptr == pdata);
       CHECK(cptr == pdata);
 
-      uint32_t& ref2        = data.get_reference<uint32_t>();
+      uint32_t&       ref2  = data.get_reference<uint32_t>();
       const uint32_t& cref2 = data.get_reference<const uint32_t>();
-      CHECK(&ref2  == pdata);
+      CHECK(&ref2 == pdata);
       CHECK(&cref2 == pdata);
-      
-      uint32_t* ptr2        = data.get_address<uint32_t>();
+
+      uint32_t*       ptr2  = data.get_address<uint32_t>();
       const uint32_t* cptr2 = data.get_address<const uint32_t>();
-      CHECK(ptr2  == pdata);
+      CHECK(ptr2 == pdata);
       CHECK(cptr2 == pdata);
     }
 
@@ -144,10 +144,10 @@ namespace
       size_t expected;
 
       typedef etl::aligned_storage_as<sizeof(uint16_t), uint32_t>::type storage32_t;
-      static storage32_t data32[10];
+      static storage32_t                                                data32[10];
 
       alignment = etl::alignment_of<storage32_t>::value;
-      expected = std::alignment_of<uint32_t>::value;
+      expected  = std::alignment_of<uint32_t>::value;
 
       CHECK_EQUAL(expected, alignment);
 
@@ -197,10 +197,10 @@ namespace
     //*************************************************************************
     TEST(test_type_with_alignment)
     {
-      CHECK_EQUAL(1,  alignof(etl::type_with_alignment_t<1>));
-      CHECK_EQUAL(2,  alignof(etl::type_with_alignment_t<2>));
-      CHECK_EQUAL(4,  alignof(etl::type_with_alignment_t<4>));
-      CHECK_EQUAL(8,  alignof(etl::type_with_alignment_t<8>));
+      CHECK_EQUAL(1, alignof(etl::type_with_alignment_t<1>));
+      CHECK_EQUAL(2, alignof(etl::type_with_alignment_t<2>));
+      CHECK_EQUAL(4, alignof(etl::type_with_alignment_t<4>));
+      CHECK_EQUAL(8, alignof(etl::type_with_alignment_t<8>));
       CHECK_EQUAL(16, alignof(etl::type_with_alignment_t<16>));
       CHECK_EQUAL(32, alignof(etl::type_with_alignment_t<32>));
       CHECK_EQUAL(64, alignof(etl::type_with_alignment_t<64>));
@@ -213,11 +213,11 @@ namespace
       CHECK_FALSE(a.has_value());
 
       // Construct in place.
-      etl::typed_storage<A_t> b(789, 10);  
+      etl::typed_storage<A_t> b(789, 10);
       CHECK_TRUE(b.has_value());
       CHECK_EQUAL(b->x, 789);
       CHECK_EQUAL(b->y, 10);
-      
+
       // Create in place.
       auto& ref = a.create(123, 4);
       CHECK_TRUE(a.has_value());
@@ -253,7 +253,7 @@ namespace
       CHECK_EQUAL(b->y, 10);
 
       // Create in place.
-      auto& ref = a.create(123, 4);  
+      auto& ref = a.create(123, 4);
       CHECK_EQUAL(ref.x, 123);
       CHECK_EQUAL(ref.y, 4);
 
@@ -285,4 +285,4 @@ namespace
       CHECK_FALSE(c.has_value());
     }
   }
-}
+} // namespace

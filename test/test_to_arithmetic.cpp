@@ -28,24 +28,24 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <ostream>
-#include <sstream>
 #include <iomanip>
 #include <limits>
+#include <ostream>
+#include <sstream>
 
-#include "etl/to_arithmetic.h"
-#include "etl/string.h"
 #include "etl/format_spec.h"
+#include "etl/string.h"
+#include "etl/to_arithmetic.h"
 
 #undef STR
 #define STR(x) x
-using Text  = std::string;
+using Text = std::string;
 
 namespace
 {
   //*************************************************************************
   template <typename T>
-  std::ostream& operator <<(std::ostream& os, const etl::to_arithmetic_result<T>& result)
+  std::ostream& operator<<(std::ostream& os, const etl::to_arithmetic_result<T>& result)
   {
     if (result.has_value())
     {
@@ -1031,14 +1031,13 @@ namespace
 #if ETL_USING_CPP14
     TEST(test_constexpr_integral)
     {
-      constexpr Text::const_pointer text{ STR("123") };
+      constexpr Text::const_pointer text{STR("123")};
 
       constexpr etl::to_arithmetic_result<int> result = etl::to_arithmetic<int>(text, 3U, etl::radix::decimal);
-      constexpr int i = result.value();
+      constexpr int                            i      = result.value();
 
       CHECK_EQUAL(123, i);
     }
 #endif
   }
-}
-
+} // namespace

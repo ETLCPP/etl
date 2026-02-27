@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_string.h"
-#include "string_view.h"
 #include "hash.h"
 #include "initializer_list.h"
+#include "string_view.h"
 
 #include "private/minmax_push.h"
 
@@ -46,12 +46,12 @@ namespace etl
   {
     inline namespace string_literals
     {
-      inline constexpr etl::u32string_view operator ""_sv(const char32_t* str, size_t length) ETL_NOEXCEPT
+      inline constexpr etl::u32string_view operator""_sv(const char32_t* str, size_t length) ETL_NOEXCEPT
       {
-        return etl::u32string_view{ str, length };
+        return etl::u32string_view{str, length};
       }
-    }
-  }
+    } // namespace string_literals
+  } // namespace literals
 #endif
 
   typedef ibasic_string<char32_t> iu32string;
@@ -207,7 +207,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string& operator = (const u32string& rhs)
+    u32string& operator=(const u32string& rhs)
     {
       if (&rhs != this)
       {
@@ -220,7 +220,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string& operator = (const value_type* text)
+    u32string& operator=(const value_type* text)
     {
       this->assign(text);
 
@@ -230,7 +230,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string& operator = (const etl::u32string_view& view)
+    u32string& operator=(const etl::u32string_view& view)
     {
       this->assign(view);
 
@@ -266,7 +266,7 @@ namespace etl
     typedef iu32string interface_type;
 
     typedef iu32string::value_type value_type;
-    typedef iu32string::size_type size_type;
+    typedef iu32string::size_type  size_type;
 
     //*************************************************************************
     /// Constructor.
@@ -628,7 +628,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string_ext& operator = (const u32string_ext& rhs)
+    u32string_ext& operator=(const u32string_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -641,7 +641,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string_ext& operator = (const iu32string& rhs)
+    u32string_ext& operator=(const iu32string& rhs)
     {
       if (&rhs != this)
       {
@@ -654,7 +654,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string_ext& operator = (const value_type* text)
+    u32string_ext& operator=(const value_type* text)
     {
       this->assign(text);
 
@@ -664,7 +664,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    u32string_ext& operator = (const etl::u32string_view& view)
+    u32string_ext& operator=(const etl::u32string_view& view)
     {
       this->assign(view);
 
@@ -728,8 +728,8 @@ namespace etl
   //***************************************************************************
   /// Make string from string literal or array
   //***************************************************************************
-  template<size_t Array_Size>
-  etl::u32string<Array_Size - 1U> make_string(const char32_t(&text)[Array_Size])
+  template <size_t Array_Size>
+  etl::u32string<Array_Size - 1U> make_string(const char32_t (&text)[Array_Size])
   {
     return etl::u32string<Array_Size - 1U>(text, etl::strlen(text, Array_Size - 1U));
   }
@@ -737,12 +737,12 @@ namespace etl
   //***************************************************************************
   /// Make string with max capacity from string literal or array
   //***************************************************************************
-  template<size_t MAX_SIZE, size_t SIZE>
-  etl::u32string<MAX_SIZE> make_string_with_capacity(const char32_t(&text)[SIZE])
+  template <size_t MAX_SIZE, size_t SIZE>
+  etl::u32string<MAX_SIZE> make_string_with_capacity(const char32_t (&text)[SIZE])
   {
     return etl::u32string<MAX_SIZE>(text, etl::strlen(text, SIZE));
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

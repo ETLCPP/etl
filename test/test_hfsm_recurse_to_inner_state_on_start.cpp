@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/hfsm.h"
 #include "etl/enum_type.h"
+#include "etl/hfsm.h"
 
 #include <iostream>
 
@@ -204,9 +204,8 @@ namespace
       State1_2   state1_2;
 
       etl::ifsm_state* stateList[StateId::Number_Of_States] =
-      {
-        &state1, &state1_1, &state1_1_1, &state1_1_2, &state1_2
-      };
+        {
+          &state1, &state1_1, &state1_1_1, &state1_1_2, &state1_2};
 
       // Set up the state list.
       stateMachine.set_states(stateList, StateId::Number_Of_States);
@@ -229,19 +228,16 @@ namespace
       State1_2   state1_2;
 
       etl::ifsm_state* stateList[StateId::Number_Of_States] =
-      {
-        &state1, &state1_1, &state1_1_1, &state1_1_2, &state1_2
-      };
+        {
+          &state1, &state1_1, &state1_1_1, &state1_1_2, &state1_2};
 
       etl::ifsm_state* childStates1[] =
-      {
-        &state1_1, &state1_2
-      };
+        {
+          &state1_1, &state1_2};
 
       etl::ifsm_state* childStates1_1[] =
-      {
-        &state1_1_1, &state1_1_2
-      };
+        {
+          &state1_1_1, &state1_1_2};
 
       // Set up the state list.
       stateMachine.set_states(stateList, StateId::Number_Of_States);
@@ -257,4 +253,4 @@ namespace
       CHECK_EQUAL(StateId::State1_1_1, stateMachine.get_state_id());
     }
   }
-}
+} // namespace

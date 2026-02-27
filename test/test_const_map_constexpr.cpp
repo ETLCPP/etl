@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <map>
-#include <array>
 #include <algorithm>
-#include <utility>
+#include <array>
 #include <iterator>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "etl/const_map.h"
@@ -69,44 +69,44 @@ namespace
   };
 
   // Less-than operator for Key < Key
-  constexpr bool operator <(const Key& lhs, const Key& rhs) noexcept
+  constexpr bool operator<(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k < rhs.k);
   }
 
   // Less-than operator for Key < char
-  constexpr bool operator <(const Key& lhs, char rhs) noexcept
+  constexpr bool operator<(const Key& lhs, char rhs) noexcept
   {
     return (lhs.k < rhs);
   }
 
   // Less-than operator for char < Key
-  constexpr bool operator <(char lhs, const Key& rhs) noexcept
+  constexpr bool operator<(char lhs, const Key& rhs) noexcept
   {
     return (lhs < rhs.k);
   }
 
   // Equality operator for Key == Key
-  constexpr bool operator ==(const Key& lhs, const Key& rhs) noexcept
+  constexpr bool operator==(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k == rhs.k);
   }
 
   #define TEST_GREATER_THAN
   #ifdef TEST_GREATER_THAN
-    using Data                       = etl::const_map<Key,  int, Max_Size, etl::greater<Key>>;
-    using Data2                      = etl::const_map<Key,  int, Max_Size + 1, etl::greater<Key>>;
-    using IData                      = etl::iconst_map<Key, int, etl::greater<Key>>;
-    using DataTransparentComparator  = etl::const_map<Key,  int, Max_Size, etl::greater<>>;
-    using DataTransparentComparator2 = etl::const_map<Key,  int, Max_Size + 1, etl::greater<>>;
-    using IDataTransparentComparator = etl::iconst_map<Key, int, etl::greater<>>;
+  using Data                       = etl::const_map<Key, int, Max_Size, etl::greater<Key>>;
+  using Data2                      = etl::const_map<Key, int, Max_Size + 1, etl::greater<Key>>;
+  using IData                      = etl::iconst_map<Key, int, etl::greater<Key>>;
+  using DataTransparentComparator  = etl::const_map<Key, int, Max_Size, etl::greater<>>;
+  using DataTransparentComparator2 = etl::const_map<Key, int, Max_Size + 1, etl::greater<>>;
+  using IDataTransparentComparator = etl::iconst_map<Key, int, etl::greater<>>;
   #else
-    using Data                       = etl::const_map<Key,  int, Max_Size, etl::less<Key>>;
-    using Data2                      = etl::const_map<Key,  int, Max_Size + 1, etl::less<Key>>;
-    using IData                      = etl::iconst_map<Key, int, etl::less<Key>>;
-    using DataTransparentComparator  = etl::const_map<Key,  int, Max_Size, etl::less<>>;
-    using DataTransparentComparator2 = etl::const_map<Key,  int, Max_Size + 1, etl::less<>>;
-    using IDataTransparentComparator = etl::iconst_map<Key, int, etl::less<>>;
+  using Data                       = etl::const_map<Key, int, Max_Size, etl::less<Key>>;
+  using Data2                      = etl::const_map<Key, int, Max_Size + 1, etl::less<Key>>;
+  using IData                      = etl::iconst_map<Key, int, etl::less<Key>>;
+  using DataTransparentComparator  = etl::const_map<Key, int, Max_Size, etl::less<>>;
+  using DataTransparentComparator2 = etl::const_map<Key, int, Max_Size + 1, etl::less<>>;
+  using IDataTransparentComparator = etl::iconst_map<Key, int, etl::less<>>;
   #endif
 
   using value_type     = Data::value_type;
@@ -121,14 +121,14 @@ namespace
     {
       static constexpr Data data;
 
-      static constexpr bool   is_valid      = data.is_valid();
-      static constexpr size_t size          = data.size();
-      static constexpr bool   empty         = data.empty();
-      static constexpr bool   full          = data.full();
-      static constexpr size_t capacity      = data.capacity();
-      static constexpr size_t max_size      = data.max_size();
-      static constexpr const_iterator begin = data.begin();
-      static constexpr const_iterator end   = data.end();
+      static constexpr bool           is_valid = data.is_valid();
+      static constexpr size_t         size     = data.size();
+      static constexpr bool           empty    = data.empty();
+      static constexpr bool           full     = data.full();
+      static constexpr size_t         capacity = data.capacity();
+      static constexpr size_t         max_size = data.max_size();
+      static constexpr const_iterator begin    = data.begin();
+      static constexpr const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == 0UL);
@@ -142,16 +142,16 @@ namespace
     //*************************************************************************
     TEST(test_constructor_min_size)
     {
-      static constexpr Data data{ value_type{Key('A'), 0 } };
+      static constexpr Data data{value_type{Key('A'), 0}};
 
-      static constexpr bool   is_valid      = data.is_valid();
-      static constexpr size_t size          = data.size();
-      static constexpr bool   empty         = data.empty();
-      static constexpr bool   full          = data.full();
-      static constexpr size_t capacity      = data.capacity();
-      static constexpr size_t max_size      = data.max_size();
-      static constexpr const_iterator begin = data.begin();
-      static constexpr const_iterator end   = data.end();
+      static constexpr bool           is_valid = data.is_valid();
+      static constexpr size_t         size     = data.size();
+      static constexpr bool           empty    = data.empty();
+      static constexpr bool           full     = data.full();
+      static constexpr size_t         capacity = data.capacity();
+      static constexpr size_t         max_size = data.max_size();
+      static constexpr const_iterator begin    = data.begin();
+      static constexpr const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == 1U);
@@ -165,22 +165,22 @@ namespace
     //*************************************************************************
     TEST(test_constructor_max_size)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
-      static constexpr bool   is_valid      = data.is_valid();
-      static constexpr size_t size          = data.size();
-      static constexpr bool   empty         = data.empty();
-      static constexpr bool   full          = data.full();
-      static constexpr size_t capacity      = data.capacity();
-      static constexpr size_t max_size      = data.max_size();
-      static constexpr const_iterator begin = data.begin();
-      static constexpr const_iterator end   = data.end();
+      static constexpr bool           is_valid = data.is_valid();
+      static constexpr size_t         size     = data.size();
+      static constexpr bool           empty    = data.empty();
+      static constexpr bool           full     = data.full();
+      static constexpr size_t         capacity = data.capacity();
+      static constexpr size_t         max_size = data.max_size();
+      static constexpr const_iterator begin    = data.begin();
+      static constexpr const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == Max_Size);
@@ -194,24 +194,24 @@ namespace
     //*************************************************************************
     TEST(test_constructor_max_size_status_from_iconst_map)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr const IData& idata = data;
 
-      static constexpr bool   is_valid      = idata.is_valid();
-      static constexpr size_t size          = idata.size();
-      static constexpr bool   empty         = idata.empty();
-      static constexpr bool   full          = idata.full();
-      static constexpr size_t capacity      = idata.capacity();
-      static constexpr size_t max_size      = idata.max_size();
-      static constexpr const_iterator begin = idata.begin();
-      static constexpr const_iterator end   = idata.end();
+      static constexpr bool           is_valid = idata.is_valid();
+      static constexpr size_t         size     = idata.size();
+      static constexpr bool           empty    = idata.empty();
+      static constexpr bool           full     = idata.full();
+      static constexpr size_t         capacity = idata.capacity();
+      static constexpr size_t         max_size = idata.max_size();
+      static constexpr const_iterator begin    = idata.begin();
+      static constexpr const_iterator end      = idata.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == Max_Size);
@@ -225,21 +225,21 @@ namespace
     ////*************************************************************************
     // Enable to check static_assert "Number of elements exceeds capacity"
     ////*************************************************************************
-    //TEST(test_constructor_excess_size)
+    // TEST(test_constructor_excess_size)
     //{
-    //  static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-    //                              value_type{Key('F'), 5 }, value_type{'G'), 6 }, value_type{'H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 },
-    //                              value_type{Key('K'), 10 } };
-    //}
+    //   static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
+    //                               value_type{Key('F'), 5 }, value_type{'G'), 6 }, value_type{'H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 },
+    //                               value_type{Key('K'), 10 } };
+    // }
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
-      static constexpr etl::const_map data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                            value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-      etl::const_map<Key, int, 10U> check{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                           value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr etl::const_map data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                           value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+      etl::const_map<Key, int, 10U>   check{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                          value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       CHECK_TRUE(data.is_valid());
       CHECK_TRUE(data.size() == Max_Size);
@@ -249,34 +249,34 @@ namespace
       CHECK_TRUE(data.max_size() == Max_Size);
       CHECK_FALSE(data.begin() == data.end());
     }
-#endif
+  #endif
 
     //*************************************************************************
     TEST(test_begin)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       CHECK_TRUE(data.is_valid());
       static constexpr auto value = *data.begin();
 
-#ifdef TEST_GREATER_THAN
-      CHECK_TRUE((value_type{ Key('J'), 9 }) == value);
-#else
-      CHECK_TRUE((value_type{ Key('A'), 0 }) == value);
-#endif
+  #ifdef TEST_GREATER_THAN
+      CHECK_TRUE((value_type{Key('J'), 9}) == value);
+  #else
+      CHECK_TRUE((value_type{Key('A'), 0}) == value);
+  #endif
     }
 
     //*************************************************************************
     TEST(test_end)
     {
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr const_iterator end_itr = data.end();
 
@@ -286,13 +286,13 @@ namespace
     //*************************************************************************
     TEST(test_index)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr mapped_type atA = data[Key('A')];
       static constexpr mapped_type atB = data[Key('B')];
@@ -321,13 +321,13 @@ namespace
     //*************************************************************************
     TEST(test_index_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                                      value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                      value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr mapped_type atA = data['A'];
       static constexpr mapped_type atB = data['B'];
@@ -356,13 +356,13 @@ namespace
     //*************************************************************************
     TEST(test_at)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr mapped_type atA = data.at(Key('A'));
       static constexpr mapped_type atB = data.at(Key('B'));
@@ -391,13 +391,13 @@ namespace
     //*************************************************************************
     TEST(test_at_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                                      value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                      value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr mapped_type atA = data.at('A');
       static constexpr mapped_type atB = data.at('B');
@@ -426,13 +426,13 @@ namespace
     //*************************************************************************
     TEST(test_equal_range)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultA = data.equal_range(Key('A'));
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultB = data.equal_range(Key('B'));
@@ -445,7 +445,7 @@ namespace
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultI = data.equal_range(Key('I'));
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultJ = data.equal_range(Key('J'));
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(9, (std::distance(data.begin(), resultA.first)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultB.first)));
       CHECK_EQUAL(7, (std::distance(data.begin(), resultC.first)));
@@ -467,7 +467,7 @@ namespace
       CHECK_EQUAL(3, (std::distance(data.begin(), resultH.second)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultI.second)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultJ.second)));
-#else
+  #else
       CHECK_EQUAL(0, (std::distance(data.begin(), resultA.first)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB.first)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC.first)));
@@ -489,19 +489,19 @@ namespace
       CHECK_EQUAL(8, (std::distance(data.begin(), resultH.second)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultI.second)));
       CHECK_EQUAL(10, (std::distance(data.begin(), resultJ.second)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_equal_range_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                                      value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                      value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultA = data.equal_range('A');
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultB = data.equal_range('B');
@@ -514,7 +514,7 @@ namespace
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultI = data.equal_range('I');
       static constexpr ETL_OR_STD::pair<const_iterator, const_iterator> resultJ = data.equal_range('J');
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(9, (std::distance(data.begin(), resultA.first)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultB.first)));
       CHECK_EQUAL(7, (std::distance(data.begin(), resultC.first)));
@@ -536,7 +536,7 @@ namespace
       CHECK_EQUAL(3, (std::distance(data.begin(), resultH.second)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultI.second)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultJ.second)));
-#else
+  #else
       CHECK_EQUAL(0, (std::distance(data.begin(), resultA.first)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB.first)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC.first)));
@@ -558,19 +558,19 @@ namespace
       CHECK_EQUAL(8, (std::distance(data.begin(), resultH.second)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultI.second)));
       CHECK_EQUAL(10, (std::distance(data.begin(), resultJ.second)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_lower_bound)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
-                                  value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
-                                  value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('K'), 10}, value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6},
+                                 value_type{Key('F'), 5}, value_type{Key('E'), 4}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('E'), 4}, value_type{Key('F'), 5},
+                                 value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
+  #endif
 
       static constexpr const_iterator resultA = data.lower_bound(Key('A'));
       static constexpr const_iterator resultB = data.lower_bound(Key('B'));
@@ -584,7 +584,7 @@ namespace
       static constexpr const_iterator resultJ = data.lower_bound(Key('J'));
       static constexpr const_iterator resultK = data.lower_bound(Key('K'));
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
@@ -596,7 +596,7 @@ namespace
       CHECK_EQUAL(2, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(0, (std::distance(data.begin(), resultK)));
-#else
+  #else
       CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
@@ -608,19 +608,19 @@ namespace
       CHECK_EQUAL(7, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultK)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_lower_bound_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
-                                                       value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('K'), 10}, value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6},
+                                                      value_type{Key('F'), 5}, value_type{Key('E'), 4}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('E'), 4}, value_type{Key('F'), 5},
+                                                      value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
+  #endif
 
       static constexpr const_iterator resultA = data.lower_bound('A');
       static constexpr const_iterator resultB = data.lower_bound('B');
@@ -634,7 +634,7 @@ namespace
       static constexpr const_iterator resultJ = data.lower_bound('J');
       static constexpr const_iterator resultK = data.lower_bound('K');
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
@@ -646,7 +646,7 @@ namespace
       CHECK_EQUAL(2, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(0, (std::distance(data.begin(), resultK)));
-#else
+  #else
       CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
@@ -658,19 +658,19 @@ namespace
       CHECK_EQUAL(7, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultK)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_upper_bound)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
-                                  value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
-                                  value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('K'), 10}, value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6},
+                                 value_type{Key('F'), 5}, value_type{Key('E'), 4}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('E'), 4}, value_type{Key('F'), 5},
+                                 value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
+  #endif
 
       static constexpr const_iterator resultA = data.upper_bound(Key('A'));
       static constexpr const_iterator resultB = data.upper_bound(Key('B'));
@@ -684,7 +684,7 @@ namespace
       static constexpr const_iterator resultJ = data.upper_bound(Key('J'));
       static constexpr const_iterator resultK = data.upper_bound(Key('K'));
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(10, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultC)));
@@ -696,7 +696,7 @@ namespace
       CHECK_EQUAL(3, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultK)));
-#else
+  #else
       CHECK_EQUAL(1, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(3, (std::distance(data.begin(), resultC)));
@@ -708,19 +708,19 @@ namespace
       CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(10, (std::distance(data.begin(), resultK)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_upper_bound_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('K'), 10 }, value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('E'), 4 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('E'), 4 }, value_type{Key('F'), 5 }, 
-                                                       value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('K'), 10}, value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6},
+                                                      value_type{Key('F'), 5}, value_type{Key('E'), 4}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('E'), 4}, value_type{Key('F'), 5},
+                                                      value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
+  #endif
 
       static constexpr const_iterator resultA = data.upper_bound('A');
       static constexpr const_iterator resultB = data.upper_bound('B');
@@ -734,7 +734,7 @@ namespace
       static constexpr const_iterator resultJ = data.upper_bound('J');
       static constexpr const_iterator resultK = data.upper_bound('K');
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(10, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultC)));
@@ -746,7 +746,7 @@ namespace
       CHECK_EQUAL(3, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultK)));
-#else
+  #else
       CHECK_EQUAL(1, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(3, (std::distance(data.begin(), resultC)));
@@ -758,19 +758,19 @@ namespace
       CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
       CHECK_EQUAL(10, (std::distance(data.begin(), resultK)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_count)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr size_t countA = data.count(Key('A'));
       static constexpr size_t countB = data.count(Key('B'));
@@ -800,13 +800,13 @@ namespace
     //*************************************************************************
     TEST(test_count_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                                      value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                      value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr size_t countA = data.count('A');
       static constexpr size_t countB = data.count('B');
@@ -836,53 +836,53 @@ namespace
     //*************************************************************************
     TEST(test_const_iterator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       const_iterator itr = data.begin();
 
-#ifdef TEST_GREATER_THAN
-      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
-      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
-      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
-      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
-      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
-      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
-      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
-      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
-      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
-      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
+  #ifdef TEST_GREATER_THAN
+      CHECK_TRUE((value_type{Key('J'), 9}) == *itr++);
+      CHECK_TRUE((value_type{Key('I'), 8}) == *itr++);
+      CHECK_TRUE((value_type{Key('H'), 7}) == *itr++);
+      CHECK_TRUE((value_type{Key('G'), 6}) == *itr++);
+      CHECK_TRUE((value_type{Key('F'), 5}) == *itr++);
+      CHECK_TRUE((value_type{Key('E'), 4}) == *itr++);
+      CHECK_TRUE((value_type{Key('D'), 3}) == *itr++);
+      CHECK_TRUE((value_type{Key('C'), 2}) == *itr++);
+      CHECK_TRUE((value_type{Key('B'), 1}) == *itr++);
+      CHECK_TRUE((value_type{Key('A'), 0}) == *itr++);
       CHECK_TRUE(itr == data.end());
-#else
-      CHECK_TRUE((value_type{Key('A'), 0 }) == *itr++);
-      CHECK_TRUE((value_type{Key('B'), 1 }) == *itr++);
-      CHECK_TRUE((value_type{Key('C'), 2 }) == *itr++);
-      CHECK_TRUE((value_type{Key('D'), 3 }) == *itr++);
-      CHECK_TRUE((value_type{Key('E'), 4 }) == *itr++);
-      CHECK_TRUE((value_type{Key('F'), 5 }) == *itr++);
-      CHECK_TRUE((value_type{Key('G'), 6 }) == *itr++);
-      CHECK_TRUE((value_type{Key('H'), 7 }) == *itr++);
-      CHECK_TRUE((value_type{Key('I'), 8 }) == *itr++);
-      CHECK_TRUE((value_type{Key('J'), 9 }) == *itr++);
+  #else
+      CHECK_TRUE((value_type{Key('A'), 0}) == *itr++);
+      CHECK_TRUE((value_type{Key('B'), 1}) == *itr++);
+      CHECK_TRUE((value_type{Key('C'), 2}) == *itr++);
+      CHECK_TRUE((value_type{Key('D'), 3}) == *itr++);
+      CHECK_TRUE((value_type{Key('E'), 4}) == *itr++);
+      CHECK_TRUE((value_type{Key('F'), 5}) == *itr++);
+      CHECK_TRUE((value_type{Key('G'), 6}) == *itr++);
+      CHECK_TRUE((value_type{Key('H'), 7}) == *itr++);
+      CHECK_TRUE((value_type{Key('I'), 8}) == *itr++);
+      CHECK_TRUE((value_type{Key('J'), 9}) == *itr++);
       CHECK_TRUE(itr == data.end());
-#endif      
+  #endif
     }
 
     //*************************************************************************
     TEST(test_find)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                  value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                  value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr const_iterator resultA = data.find(Key('A'));
       static constexpr const_iterator resultB = data.find(Key('B'));
@@ -895,7 +895,7 @@ namespace
       static constexpr const_iterator resultI = data.find(Key('I'));
       static constexpr const_iterator resultJ = data.find(Key('J'));
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
@@ -906,7 +906,7 @@ namespace
       CHECK_EQUAL(2, (std::distance(data.begin(), resultH)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
-#else
+  #else
       CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
@@ -917,19 +917,19 @@ namespace
       CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_find_using_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                                      value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                      value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr const_iterator resultA = data.find('A');
       static constexpr const_iterator resultB = data.find('B');
@@ -942,7 +942,7 @@ namespace
       static constexpr const_iterator resultI = data.find('I');
       static constexpr const_iterator resultJ = data.find('J');
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_EQUAL(9, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(7, (std::distance(data.begin(), resultC)));
@@ -953,8 +953,8 @@ namespace
       CHECK_EQUAL(2, (std::distance(data.begin(), resultH)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
-#else
-      CHECK_EQUAL(0, (std::distance(data.begin(), resultA))); 
+  #else
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
       CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
@@ -964,7 +964,7 @@ namespace
       CHECK_EQUAL(7, (std::distance(data.begin(), resultH)));
       CHECK_EQUAL(8, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(9, (std::distance(data.begin(), resultJ)));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -977,13 +977,13 @@ namespace
       static constexpr Data::key_type a(Key('A'));
       static constexpr Data::key_type b(Key('B'));
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK(!compare(a, b));
       CHECK(compare(b, a));
-#else
+  #else
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -996,14 +996,14 @@ namespace
       static constexpr DataTransparentComparator::key_type a(Key('A'));
       static constexpr DataTransparentComparator::key_type b(Key('B'));
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK(!compare(a, b));
       CHECK(compare(b, a));
-#else
+  #else
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
-#endif
-   }
+  #endif
+    }
 
     //*************************************************************************
     TEST(test_value_compare)
@@ -1015,25 +1015,25 @@ namespace
       static constexpr Data::value_type a(Key('A'), 0);
       static constexpr Data::value_type b(Key('B'), 1);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK(!compare(a, b));
       CHECK(compare(b, a));
-#else
+  #else
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_contains)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr Data data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-        value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr Data data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr Data data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                 value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr Data data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                 value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr bool containsA = data.contains(Key('A'));
       static constexpr bool containsB = data.contains(Key('B'));
@@ -1063,13 +1063,13 @@ namespace
     //*************************************************************************
     TEST(test_contains_with_transparent_comparator)
     {
-#ifdef TEST_GREATER_THAN
-      static constexpr DataTransparentComparator data{ value_type{Key('J'), 9 }, value_type{Key('I'), 8 }, value_type{Key('H'), 7 }, value_type{Key('G'), 6 }, value_type{Key('F'), 5 },
-                                                       value_type{Key('E'), 4 }, value_type{Key('D'), 3 }, value_type{Key('C'), 2 }, value_type{Key('B'), 1 }, value_type{Key('A'), 0 } };
-#else
-      static constexpr DataTransparentComparator data{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                       value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
-#endif
+  #ifdef TEST_GREATER_THAN
+      static constexpr DataTransparentComparator data{value_type{Key('J'), 9}, value_type{Key('I'), 8}, value_type{Key('H'), 7}, value_type{Key('G'), 6}, value_type{Key('F'), 5},
+                                                      value_type{Key('E'), 4}, value_type{Key('D'), 3}, value_type{Key('C'), 2}, value_type{Key('B'), 1}, value_type{Key('A'), 0}};
+  #else
+      static constexpr DataTransparentComparator data{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                      value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+  #endif
 
       static constexpr bool containsA = data.contains('A');
       static constexpr bool containsB = data.contains('B');
@@ -1099,64 +1099,64 @@ namespace
     //*************************************************************************
     TEST(test_key_comp)
     {
-      static constexpr Data data;
+      static constexpr Data              data;
       static constexpr Data::key_compare compare = data.key_comp();
 
-      static constexpr bool compareAA = compare(Key{ 'A' }, Key{ 'A' });
-      static constexpr bool compareBA = compare(Key{ 'B' }, Key{ 'A' });
-      static constexpr bool compareAB = compare(Key{ 'A' }, Key{ 'B' });
+      static constexpr bool compareAA = compare(Key{'A'}, Key{'A'});
+      static constexpr bool compareBA = compare(Key{'B'}, Key{'A'});
+      static constexpr bool compareAB = compare(Key{'A'}, Key{'B'});
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA);
       CHECK_TRUE(compareBA);
       CHECK_FALSE(compareAB);
-#else
+  #else
       CHECK_FALSE(compareAA);
       CHECK_FALSE(compareBA);
       CHECK_TRUE(compareAB);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_key_comp_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data;
+      static constexpr DataTransparentComparator              data;
       static constexpr DataTransparentComparator::key_compare compare = data.key_comp();
 
       static constexpr bool compareAA = compare('A', 'A');
       static constexpr bool compareBA = compare('B', 'A');
       static constexpr bool compareAB = compare('A', 'B');
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA);
       CHECK_TRUE(compareBA);
       CHECK_FALSE(compareAB);
-#else
+  #else
       CHECK_FALSE(compareAA);
       CHECK_FALSE(compareBA);
       CHECK_TRUE(compareAB);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_value_comp)
     {
-      static constexpr Data data;
+      static constexpr Data                data;
       static constexpr Data::value_compare compare = data.value_comp();
 
-      static constexpr bool compareAA1 = compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'A' }, 0 });
-      static constexpr bool compareAA2 = compare(value_type{ Key{ 'A' }, 0 }, Key{ 'A' });
-      static constexpr bool compareAA3 = compare(Key{ 'A' }, value_type{ Key{ 'A' }, 0 });
+      static constexpr bool compareAA1 = compare(value_type{Key{'A'}, 0}, value_type{Key{'A'}, 0});
+      static constexpr bool compareAA2 = compare(value_type{Key{'A'}, 0}, Key{'A'});
+      static constexpr bool compareAA3 = compare(Key{'A'}, value_type{Key{'A'}, 0});
 
-      static constexpr bool compareBA1 = compare(value_type{ Key{ 'B' }, 0 }, value_type{ Key{ 'A' }, 0 });
-      static constexpr bool compareBA2 = compare(value_type{ Key{ 'B' }, 0 }, Key{ 'A' });
-      static constexpr bool compareBA3 = compare(Key{ 'B' }, value_type{ Key{ 'A' }, 0 });
-          
-      static constexpr bool compareAB1 = compare(value_type{ Key{ 'A' }, 0 }, value_type{ Key{ 'B' }, 0 });
-      static constexpr bool compareAB2 = compare(value_type{ Key{ 'A' }, 0 }, Key{ 'B' });
-      static constexpr bool compareAB3 = compare(Key{ 'A' }, value_type{ Key{ 'B' }, 0 });
+      static constexpr bool compareBA1 = compare(value_type{Key{'B'}, 0}, value_type{Key{'A'}, 0});
+      static constexpr bool compareBA2 = compare(value_type{Key{'B'}, 0}, Key{'A'});
+      static constexpr bool compareBA3 = compare(Key{'B'}, value_type{Key{'A'}, 0});
 
-#ifdef TEST_GREATER_THAN
+      static constexpr bool compareAB1 = compare(value_type{Key{'A'}, 0}, value_type{Key{'B'}, 0});
+      static constexpr bool compareAB2 = compare(value_type{Key{'A'}, 0}, Key{'B'});
+      static constexpr bool compareAB3 = compare(Key{'A'}, value_type{Key{'B'}, 0});
+
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
       CHECK_FALSE(compareAA2);
       CHECK_FALSE(compareAA3);
@@ -1168,7 +1168,7 @@ namespace
       CHECK_FALSE(compareAB1);
       CHECK_FALSE(compareAB2);
       CHECK_FALSE(compareAB3);
-#else
+  #else
       CHECK_FALSE(compareAA1);
       CHECK_FALSE(compareAA2);
       CHECK_FALSE(compareAA3);
@@ -1180,28 +1180,28 @@ namespace
       CHECK_TRUE(compareAB1);
       CHECK_TRUE(compareAB2);
       CHECK_TRUE(compareAB3);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_value_comp_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data;
+      static constexpr DataTransparentComparator                data;
       static constexpr DataTransparentComparator::value_compare compare = data.value_comp();
 
-      static constexpr bool compareAA1 = compare(value_type{ 'A', 0 }, value_type{ 'A', 0 });
-      static constexpr bool compareAA2 = compare(value_type{ 'A', 0 }, 'A');
-      static constexpr bool compareAA3 = compare('A', value_type{ 'A', 0 });
+      static constexpr bool compareAA1 = compare(value_type{'A', 0}, value_type{'A', 0});
+      static constexpr bool compareAA2 = compare(value_type{'A', 0}, 'A');
+      static constexpr bool compareAA3 = compare('A', value_type{'A', 0});
 
-      static constexpr bool compareBA1 = compare(value_type{ 'B', 0 }, value_type{ 'A', 0 });
-      static constexpr bool compareBA2 = compare(value_type{ 'B', 0 }, 'A');
-      static constexpr bool compareBA3 = compare('B', value_type{ 'A', 0 });
+      static constexpr bool compareBA1 = compare(value_type{'B', 0}, value_type{'A', 0});
+      static constexpr bool compareBA2 = compare(value_type{'B', 0}, 'A');
+      static constexpr bool compareBA3 = compare('B', value_type{'A', 0});
 
-      static constexpr bool compareAB1 = compare(value_type{ 'A', 0 }, value_type{ 'B', 0 });
-      static constexpr bool compareAB2 = compare(value_type{ 'A', 0 }, 'B');
-      static constexpr bool compareAB3 = compare('A', value_type{ 'B', 0 });
+      static constexpr bool compareAB1 = compare(value_type{'A', 0}, value_type{'B', 0});
+      static constexpr bool compareAB2 = compare(value_type{'A', 0}, 'B');
+      static constexpr bool compareAB3 = compare('A', value_type{'B', 0});
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
       CHECK_FALSE(compareAA2);
       CHECK_FALSE(compareAA3);
@@ -1213,7 +1213,7 @@ namespace
       CHECK_FALSE(compareAB1);
       CHECK_FALSE(compareAB2);
       CHECK_FALSE(compareAB3);
-#else
+  #else
       CHECK_FALSE(compareAA1);
       CHECK_FALSE(compareAA2);
       CHECK_FALSE(compareAA3);
@@ -1225,23 +1225,23 @@ namespace
       CHECK_TRUE(compareAB1);
       CHECK_TRUE(compareAB2);
       CHECK_TRUE(compareAB3);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_equal)
     {
-      static constexpr Data data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data2 data4{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                    value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+      static constexpr Data2 data4{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                   value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
 
       static constexpr bool equal12 = (data1 == data2);
       static constexpr bool equal13 = (data1 == data3);
@@ -1255,17 +1255,17 @@ namespace
     //*************************************************************************
     TEST(test_equal_with_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator2 data4{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                         value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+      static constexpr DataTransparentComparator2 data4{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                        value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
 
       static constexpr bool equal12 = (data1 == data2);
       static constexpr bool equal13 = (data1 == data3);
@@ -1279,17 +1279,17 @@ namespace
     //*************************************************************************
     TEST(test_not_equal)
     {
-      static constexpr Data data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data2 data4{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                    value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
+      static constexpr Data2 data4{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                   value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
 
       static constexpr bool not_equal12 = (data1 != data2);
       static constexpr bool not_equal13 = (data1 != data3);
@@ -1303,18 +1303,17 @@ namespace
     //*************************************************************************
     TEST(test_not_equal_with_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator2 data4{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                         value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 6 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 }, value_type{Key('K'), 10 } };
-
+      static constexpr DataTransparentComparator2 data4{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                        value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 6}, value_type{Key('I'), 8}, value_type{Key('J'), 9}, value_type{Key('K'), 10}};
 
       static constexpr bool not_equal12 = (data1 != data2);
       static constexpr bool not_equal13 = (data1 != data3);
@@ -1328,74 +1327,74 @@ namespace
     //*************************************************************************
     TEST(test_less_than)
     {
-      static constexpr Data data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool less_than12 = (data1 < data2);
       static constexpr bool less_than23 = (data2 < data3);
       static constexpr bool less_than21 = (data2 < data1);
       static constexpr bool less_than32 = (data3 < data2);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(less_than12);
       CHECK_FALSE(less_than23);
       CHECK_TRUE(less_than21);
       CHECK_TRUE(less_than32);
-#else
+  #else
       CHECK_TRUE(less_than12);
       CHECK_TRUE(less_than23);
       CHECK_FALSE(less_than21);
       CHECK_FALSE(less_than32);
-#endif
+  #endif
     }
-    
+
     //*************************************************************************
     TEST(test_less_than_with_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool less_than12 = (data1 < data2);
       static constexpr bool less_than23 = (data2 < data3);
       static constexpr bool less_than21 = (data2 < data1);
       static constexpr bool less_than32 = (data3 < data2);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(less_than12);
       CHECK_FALSE(less_than23);
       CHECK_TRUE(less_than21);
       CHECK_TRUE(less_than32);
-#else
+  #else
       CHECK_TRUE(less_than12);
       CHECK_TRUE(less_than23);
       CHECK_FALSE(less_than21);
       CHECK_FALSE(less_than32);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_less_than_equal)
     {
-      static constexpr Data data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool less_than_equal12 = (data1 <= data2);
       static constexpr bool less_than_equal23 = (data2 <= data3);
@@ -1403,32 +1402,32 @@ namespace
       static constexpr bool less_than_equal32 = (data3 <= data2);
       static constexpr bool less_than_equal11 = (data1 <= data1);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(less_than_equal12);
       CHECK_FALSE(less_than_equal23);
       CHECK_TRUE(less_than_equal21);
       CHECK_TRUE(less_than_equal32);
       CHECK_TRUE(less_than_equal11);
-#else
+  #else
       CHECK_TRUE(less_than_equal12);
       CHECK_TRUE(less_than_equal23);
       CHECK_FALSE(less_than_equal21);
       CHECK_FALSE(less_than_equal32);
       CHECK_TRUE(less_than_equal11);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_less_than_equal_with_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool less_than_equal12 = (data1 <= data2);
       static constexpr bool less_than_equal23 = (data2 <= data3);
@@ -1436,92 +1435,92 @@ namespace
       static constexpr bool less_than_equal32 = (data3 <= data2);
       static constexpr bool less_than_equal11 = (data1 <= data1);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_FALSE(less_than_equal12);
       CHECK_FALSE(less_than_equal23);
       CHECK_TRUE(less_than_equal21);
       CHECK_TRUE(less_than_equal32);
       CHECK_TRUE(less_than_equal11);
-#else
+  #else
       CHECK_TRUE(less_than_equal12);
       CHECK_TRUE(less_than_equal23);
       CHECK_FALSE(less_than_equal21);
       CHECK_FALSE(less_than_equal32);
       CHECK_TRUE(less_than_equal11);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_greater_than)
     {
-      static constexpr Data data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool greater_than12 = (data1 > data2);
       static constexpr bool greater_than23 = (data2 > data3);
       static constexpr bool greater_than21 = (data2 > data1);
       static constexpr bool greater_than32 = (data3 > data2);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_TRUE(greater_than12);
       CHECK_TRUE(greater_than23);
       CHECK_FALSE(greater_than21);
       CHECK_FALSE(greater_than32);
-#else
+  #else
       CHECK_FALSE(greater_than12);
       CHECK_FALSE(greater_than23);
       CHECK_TRUE(greater_than21);
       CHECK_TRUE(greater_than32);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_greater_than_with_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool greater_than12 = (data1 > data2);
       static constexpr bool greater_than23 = (data2 > data3);
       static constexpr bool greater_than21 = (data2 > data1);
       static constexpr bool greater_than32 = (data3 > data2);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_TRUE(greater_than12);
       CHECK_TRUE(greater_than23);
       CHECK_FALSE(greater_than21);
       CHECK_FALSE(greater_than32);
-#else
+  #else
       CHECK_FALSE(greater_than12);
       CHECK_FALSE(greater_than23);
       CHECK_TRUE(greater_than21);
       CHECK_TRUE(greater_than32);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_greater_than_equal)
     {
-      static constexpr Data data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr Data data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                   value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr Data data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                  value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool greater_than_equal12 = (data1 >= data2);
       static constexpr bool greater_than_equal23 = (data2 >= data3);
@@ -1529,32 +1528,32 @@ namespace
       static constexpr bool greater_than_equal32 = (data3 >= data2);
       static constexpr bool greater_than_equal11 = (data1 >= data1);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_TRUE(greater_than_equal12);
       CHECK_TRUE(greater_than_equal23);
       CHECK_FALSE(greater_than_equal21);
       CHECK_FALSE(greater_than_equal32);
       CHECK_TRUE(greater_than_equal11);
-#else
+  #else
       CHECK_FALSE(greater_than_equal12);
       CHECK_FALSE(greater_than_equal23);
       CHECK_TRUE(greater_than_equal21);
       CHECK_TRUE(greater_than_equal32);
       CHECK_TRUE(greater_than_equal11);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_greater_than_equal_with_transparent_comparator)
     {
-      static constexpr DataTransparentComparator data1{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('B'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data1{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('B'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data2{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('C'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data2{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
-      static constexpr DataTransparentComparator data3{ value_type{Key('A'), 0 }, value_type{Key('B'), 1 }, value_type{Key('D'), 2 }, value_type{Key('D'), 3 }, value_type{Key('E'), 4 },
-                                                        value_type{Key('F'), 5 }, value_type{Key('G'), 6 }, value_type{Key('H'), 7 }, value_type{Key('I'), 8 }, value_type{Key('J'), 9 } };
+      static constexpr DataTransparentComparator data3{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('D'), 2}, value_type{Key('D'), 3}, value_type{Key('E'), 4},
+                                                       value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7}, value_type{Key('I'), 8}, value_type{Key('J'), 9}};
 
       static constexpr bool greater_than_equal12 = (data1 >= data2);
       static constexpr bool greater_than_equal23 = (data2 >= data3);
@@ -1562,21 +1561,21 @@ namespace
       static constexpr bool greater_than_equal32 = (data3 >= data2);
       static constexpr bool greater_than_equal11 = (data1 >= data1);
 
-#ifdef TEST_GREATER_THAN
+  #ifdef TEST_GREATER_THAN
       CHECK_TRUE(greater_than_equal12);
       CHECK_TRUE(greater_than_equal23);
       CHECK_FALSE(greater_than_equal21);
       CHECK_FALSE(greater_than_equal32);
       CHECK_TRUE(greater_than_equal11);
-#else
+  #else
       CHECK_FALSE(greater_than_equal12);
       CHECK_FALSE(greater_than_equal23);
       CHECK_TRUE(greater_than_equal21);
       CHECK_TRUE(greater_than_equal32);
       CHECK_TRUE(greater_than_equal11);
-#endif
+  #endif
     }
   }
-}
+} // namespace
 
 #endif

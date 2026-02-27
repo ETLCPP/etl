@@ -63,8 +63,8 @@ namespace etl
     /// Constructor.
     //*******************************************
     task(task_priority_t priority)
-      : task_running(true),
-        task_priority(priority)
+      : task_running(true)
+      , task_priority(priority)
     {
     }
 
@@ -121,9 +121,9 @@ namespace etl
 
   private:
 
-    bool task_running;
+    bool                 task_running;
     etl::task_priority_t task_priority;
   };
-}
+} // namespace etl
 
 #endif

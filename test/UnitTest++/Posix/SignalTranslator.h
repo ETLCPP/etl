@@ -4,38 +4,41 @@
 #include <setjmp.h>
 #include <signal.h>
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class SignalTranslator
-   {
-   public:
-      SignalTranslator();
-      ~SignalTranslator();
+  class SignalTranslator
+  {
+  public:
 
-      static sigjmp_buf* s_jumpTarget;
+    SignalTranslator();
+    ~SignalTranslator();
 
-   private:
-      sigjmp_buf m_currentJumpTarget;
-      sigjmp_buf* m_oldJumpTarget;
+    static sigjmp_buf* s_jumpTarget;
 
-      struct sigaction m_old_SIGFPE_action;
-      struct sigaction m_old_SIGTRAP_action;
-      struct sigaction m_old_SIGSEGV_action;
-      struct sigaction m_old_SIGBUS_action;
-      struct sigaction m_old_SIGILL_action;
-   };
+  private:
 
-#if !defined (__GNUC__)
-   #define UNITTEST_EXTENSION
+    sigjmp_buf  m_currentJumpTarget;
+    sigjmp_buf* m_oldJumpTarget;
+
+    struct sigaction m_old_SIGFPE_action;
+    struct sigaction m_old_SIGTRAP_action;
+    struct sigaction m_old_SIGSEGV_action;
+    struct sigaction m_old_SIGBUS_action;
+    struct sigaction m_old_SIGILL_action;
+  };
+
+#if !defined(__GNUC__)
+  #define UNITTEST_EXTENSION
 #else
-   #define UNITTEST_EXTENSION __extension__
+  #define UNITTEST_EXTENSION __extension__
 #endif
 
-   #define UNITTEST_THROW_SIGNALS_POSIX_ONLY                                               \
-      UnitTest::SignalTranslator sig;                                                      \
-      if (UNITTEST_EXTENSION sigsetjmp(*UnitTest::SignalTranslator::s_jumpTarget, 1) != 0) \
-         throw ("Unhandled system exception");
+#define UNITTEST_THROW_SIGNALS_POSIX_ONLY                                              \
+  UnitTest::SignalTranslator sig;                                                      \
+  if (UNITTEST_EXTENSION sigsetjmp(*UnitTest::SignalTranslator::s_jumpTarget, 1) != 0) \
+    throw("Unhandled system exception");
 
-}
+} // namespace UnitTest
 
 #endif

@@ -37,27 +37,27 @@ SOFTWARE.
 
 namespace
 {
-  int data5[]  = { 0, 1, 2, 3, 4 };
-  int data5b[] = { 100, 100, 100, 100, 100 };
-  int data5c[] = { 0, 1, 2, 3, 4 };
-  int data5d[] = { 100, 100, 100, 100, 100 };
-  extern const int data5same[] = { 0, 1, 2, 3, 4 };
-  extern const int data5greater[] = { 0, 1, 5, 3, 4 };
-  extern const int data5smaller[] = { 0, 1, 1, 3, 4 };
-  extern const int data4[] = { 0, 1, 2, 3 };
-  extern const int data6[] = { 0, 1, 2, 3, 4, 5 };
-  extern const int cdata5[] = { 5, 6, 7, 8, 9 };
+  int              data5[]        = {0, 1, 2, 3, 4};
+  int              data5b[]       = {100, 100, 100, 100, 100};
+  int              data5c[]       = {0, 1, 2, 3, 4};
+  int              data5d[]       = {100, 100, 100, 100, 100};
+  extern const int data5same[]    = {0, 1, 2, 3, 4};
+  extern const int data5greater[] = {0, 1, 5, 3, 4};
+  extern const int data5smaller[] = {0, 1, 1, 3, 4};
+  extern const int data4[]        = {0, 1, 2, 3};
+  extern const int data6[]        = {0, 1, 2, 3, 4, 5};
+  extern const int cdata5[]       = {5, 6, 7, 8, 9};
 
-  typedef ETL_ARRAY_WRAPPER(int, data5)              Data5;
-  typedef ETL_ARRAY_WRAPPER(int, data5b)             Data5b;
-  typedef ETL_ARRAY_WRAPPER(int, data5c)             Data5c;
-  typedef ETL_ARRAY_WRAPPER(int, data5d)             Data5d;
-  typedef ETL_ARRAY_WRAPPER(const int, data5same)    Data5Same;
+  typedef ETL_ARRAY_WRAPPER(int, data5) Data5;
+  typedef ETL_ARRAY_WRAPPER(int, data5b) Data5b;
+  typedef ETL_ARRAY_WRAPPER(int, data5c) Data5c;
+  typedef ETL_ARRAY_WRAPPER(int, data5d) Data5d;
+  typedef ETL_ARRAY_WRAPPER(const int, data5same) Data5Same;
   typedef ETL_ARRAY_WRAPPER(const int, data5greater) Data5Greater;
   typedef ETL_ARRAY_WRAPPER(const int, data5smaller) Data5Smaller;
-  typedef ETL_ARRAY_WRAPPER(const int, cdata5)       CData5;
-  typedef ETL_ARRAY_WRAPPER(const int, data4)        Data4;
-  typedef ETL_ARRAY_WRAPPER(const int, data6)        Data6;
+  typedef ETL_ARRAY_WRAPPER(const int, cdata5) CData5;
+  typedef ETL_ARRAY_WRAPPER(const int, data4) Data4;
+  typedef ETL_ARRAY_WRAPPER(const int, data6) Data6;
 
   int temp;
 
@@ -89,13 +89,13 @@ namespace
     //*************************************************************************
     TEST(test_indexes)
     {
-      CHECK_EQUAL(5 ,               Data5::SIZE);
-      CHECK_EQUAL(Data5::SIZE,      Data5::MAX_SIZE);
-      CHECK_EQUAL(0,                Data5::FRONT);
-      CHECK_EQUAL(Data5::SIZE - 1,  Data5::BACK);
-      CHECK_EQUAL(0,                Data5::BEGIN);
-      CHECK_EQUAL(Data5::SIZE,      Data5::END);
-      CHECK_EQUAL(Data5::SIZE - 1,  Data5::RBEGIN);
+      CHECK_EQUAL(5, Data5::SIZE);
+      CHECK_EQUAL(Data5::SIZE, Data5::MAX_SIZE);
+      CHECK_EQUAL(0, Data5::FRONT);
+      CHECK_EQUAL(Data5::SIZE - 1, Data5::BACK);
+      CHECK_EQUAL(0, Data5::BEGIN);
+      CHECK_EQUAL(Data5::SIZE, Data5::END);
+      CHECK_EQUAL(Data5::SIZE - 1, Data5::RBEGIN);
       CHECK_EQUAL(Data5::BEGIN - 1, Data5::REND);
     }
 
@@ -119,7 +119,7 @@ namespace
     TEST(test_at_const)
     {
       const Data5 caw5a; // array_wrapper is const.
-      CData5 caw5b;      // array wrapped by array_wrapper is const.
+      CData5      caw5b; // array wrapped by array_wrapper is const.
 
       CHECK_EQUAL(data5[2], caw5a.at(2));
       CHECK_EQUAL(cdata5[2], caw5b.at(2));
@@ -149,7 +149,7 @@ namespace
     TEST(test_index_operator_const)
     {
       const Data5 caw5a; // array_wrapper is const.
-      CData5 caw5b;      // array wrapped by array_wrapper is const.
+      CData5      caw5b; // array wrapped by array_wrapper is const.
 
       CHECK_EQUAL(data5[2], caw5a[2]);
       CHECK_EQUAL(cdata5[2], caw5b[2]);
@@ -286,9 +286,9 @@ namespace
     //*************************************************************************
     TEST(test_iterator)
     {
-      Data5 aw5;
+      Data5           aw5;
       Data5::iterator itr = aw5.begin();
-      int* p = data5;
+      int*            p   = data5;
 
       while (p != data5 + Data5::END)
       {
@@ -298,7 +298,7 @@ namespace
       }
 
       Save(data5[2]);
-      itr = aw5.begin() + 2;
+      itr  = aw5.begin() + 2;
       *itr = 100;
       CHECK_EQUAL(100, data5[2]);
       Restore(data5[2]);
@@ -307,9 +307,9 @@ namespace
     //*************************************************************************
     TEST(test_const_iterator)
     {
-      const Data5 caw5a;
+      const Data5           caw5a;
       Data5::const_iterator itr = caw5a.begin();
-      int* p = data5;
+      int*                  p   = data5;
 
       while (p != data5 + Data5::END)
       {
@@ -325,9 +325,9 @@ namespace
     //*************************************************************************
     TEST(test_reverse_iterator)
     {
-      Data5 aw5;
+      Data5                   aw5;
       Data5::reverse_iterator itr = aw5.rbegin();
-      int* p = data5 + Data5::RBEGIN;
+      int*                    p   = data5 + Data5::RBEGIN;
 
       while (itr != aw5.rend())
       {
@@ -337,7 +337,7 @@ namespace
       }
 
       Save(data5[2]);
-      itr = aw5.rbegin() + 2;
+      itr  = aw5.rbegin() + 2;
       *itr = 100;
       CHECK_EQUAL(100, data5[2]);
       Restore(data5[2]);
@@ -346,9 +346,9 @@ namespace
     //*************************************************************************
     TEST(test_const_reverse_iterator)
     {
-      Data5 aw5;
+      Data5                         aw5;
       Data5::const_reverse_iterator itr = aw5.crbegin();
-      int* p = data5 + Data5::RBEGIN;
+      int*                          p   = data5 + Data5::RBEGIN;
 
       while (itr != aw5.crend())
       {
@@ -362,15 +362,15 @@ namespace
     TEST(test_size)
     {
       Data5 aw5;
-      CHECK_EQUAL(5 , aw5.SIZE);
+      CHECK_EQUAL(5, aw5.SIZE);
       CHECK_EQUAL(5U, aw5.size());
 
       const Data5 caw5a;
-      CHECK_EQUAL(5 , caw5a.SIZE);
+      CHECK_EQUAL(5, caw5a.SIZE);
       CHECK_EQUAL(5U, caw5a.size());
 
       CData5 caw5b;
-      CHECK_EQUAL(5 , caw5b.SIZE);
+      CHECK_EQUAL(5, caw5b.SIZE);
       CHECK_EQUAL(5U, caw5b.size());
     }
 
@@ -378,22 +378,22 @@ namespace
     TEST(test_max_size)
     {
       Data5 aw5;
-      CHECK_EQUAL(5 , aw5.MAX_SIZE);
+      CHECK_EQUAL(5, aw5.MAX_SIZE);
       CHECK_EQUAL(5U, aw5.max_size());
 
       const Data5 caw5a;
-      CHECK_EQUAL(5 , caw5a.MAX_SIZE);
+      CHECK_EQUAL(5, caw5a.MAX_SIZE);
       CHECK_EQUAL(5U, caw5a.max_size());
 
       CData5 caw5b;
-      CHECK_EQUAL(5 , caw5b.MAX_SIZE);
+      CHECK_EQUAL(5, caw5b.MAX_SIZE);
       CHECK_EQUAL(5U, caw5b.max_size());
     }
 
     //*************************************************************************
     TEST(test_fill)
     {
-      Data5 aw5;
+      Data5     aw5;
       Data5Same aw5same;
 
       aw5.fill(100);
@@ -412,7 +412,7 @@ namespace
 
       swap(aw5, aw5b);
 
-      CHECK_ARRAY_EQUAL(aw5d.begin(), aw5.begin(),  aw5.size());
+      CHECK_ARRAY_EQUAL(aw5d.begin(), aw5.begin(), aw5.size());
       CHECK_ARRAY_EQUAL(aw5c.begin(), aw5b.begin(), aw5b.size());
 
       // Put them back.
@@ -422,12 +422,12 @@ namespace
     //*************************************************************************
     TEST(test_equal)
     {
-      Data5  aw5;
-      Data5Same aw5same;
+      Data5        aw5;
+      Data5Same    aw5same;
       Data5Greater aw5greater;
       Data5Smaller aw5smaller;
-      Data4 aw4;
-      Data6 aw6;
+      Data4        aw4;
+      Data6        aw6;
 
       CHECK(aw5 == aw5same);
       CHECK(!(aw5 == aw5greater));
@@ -439,12 +439,12 @@ namespace
     //*************************************************************************
     TEST(test_not_equal)
     {
-      Data5  aw5;
-      Data5Same aw5same;
+      Data5        aw5;
+      Data5Same    aw5same;
       Data5Greater aw5greater;
       Data5Smaller aw5smaller;
-      Data4 aw4;
-      Data6 aw6;
+      Data4        aw4;
+      Data6        aw6;
 
       CHECK(!(aw5 != aw5same));
       CHECK(aw5 != aw5greater);
@@ -456,12 +456,12 @@ namespace
     //*************************************************************************
     TEST(test_less_than)
     {
-      Data5  aw5;
-      Data5Same aw5same;
+      Data5        aw5;
+      Data5Same    aw5same;
       Data5Greater aw5greater;
       Data5Smaller aw5smaller;
-      Data4 aw4;
-      Data6 aw6;
+      Data4        aw4;
+      Data6        aw6;
 
       CHECK(!(aw5 < aw5same));
       CHECK(!(aw5same < aw5));
@@ -482,12 +482,12 @@ namespace
     //*************************************************************************
     TEST(test_less_than_equal)
     {
-      Data5  aw5;
-      Data5Same aw5same;
+      Data5        aw5;
+      Data5Same    aw5same;
       Data5Greater aw5greater;
       Data5Smaller aw5smaller;
-      Data4 aw4;
-      Data6 aw6;
+      Data4        aw4;
+      Data6        aw6;
 
       CHECK(aw5 <= aw5same);
       CHECK(aw5same <= aw5);
@@ -508,12 +508,12 @@ namespace
     //*************************************************************************
     TEST(test_greater_than)
     {
-      Data5  aw5;
-      Data5Same aw5same;
+      Data5        aw5;
+      Data5Same    aw5same;
       Data5Greater aw5greater;
       Data5Smaller aw5smaller;
-      Data4 aw4;
-      Data6 aw6;
+      Data4        aw4;
+      Data6        aw6;
 
       CHECK(!(aw5 > aw5same));
       CHECK(!(aw5same > aw5));
@@ -534,12 +534,12 @@ namespace
     //*************************************************************************
     TEST(test_greater_than_equal)
     {
-      Data5 aw5;
-      Data5Same aw5same;
+      Data5        aw5;
+      Data5Same    aw5same;
       Data5Greater aw5greater;
       Data5Smaller aw5smaller;
-      Data4 aw4;
-      Data6 aw6;
+      Data4        aw4;
+      Data6        aw6;
 
       CHECK(aw5 >= aw5same);
       CHECK(aw5same >= aw5);
@@ -568,9 +568,8 @@ namespace
       CHECK_EQUAL(compare_hash, hash);
     }
   }
-}
+} // namespace
 
 #if defined(ETL_COMPILER_CLANG)
   #pragma clang diagnostic pop
 #endif
-

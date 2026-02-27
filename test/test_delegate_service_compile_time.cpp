@@ -41,10 +41,10 @@ namespace
   using Service = etl::delegate_service<Size, Offset>;
 
   //*****************************************************************************
-  bool global_called    = false;
-  bool member_called    = false;
-  bool unhandled_called = false;
-  size_t called_id      = UINT_MAX;
+  bool   global_called    = false;
+  bool   member_called    = false;
+  bool   unhandled_called = false;
+  size_t called_id        = UINT_MAX;
 
   //*****************************************************************************
   // The global function taking no parameters.
@@ -78,7 +78,7 @@ namespace
     void member(size_t id)
     {
       member_called = true;
-      called_id      = id;
+      called_id     = id;
     }
   };
 
@@ -93,12 +93,10 @@ namespace
   // Callback for 'unhandled'.
   ETL_CONSTEXPR14 etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
 
-  ETL_CONSTEXPR14 etl::delegate<void(size_t)> delegate_list[]
-  {
+  ETL_CONSTEXPR14 etl::delegate<void(size_t)> delegate_list[]{
     global_callback,
     member_callback,
-    unhandled_callback
-  };
+    unhandled_callback};
 
   //*****************************************************************************
   // Initialises the test results.
@@ -113,7 +111,7 @@ namespace
       unhandled_called = false;
     }
   };
-}
+} // namespace
 
 namespace
 {
@@ -137,9 +135,9 @@ namespace
       CHECK(!member_called);
       CHECK(!unhandled_called);
 
-      called_id = UINT_MAX;
-      global_called = false;
-      member_called = false;
+      called_id        = UINT_MAX;
+      global_called    = false;
+      member_called    = false;
       unhandled_called = false;
 
       service.call<Member>();
@@ -148,9 +146,9 @@ namespace
       CHECK(member_called);
       CHECK(!unhandled_called);
 
-      called_id = UINT_MAX;
-      global_called = false;
-      member_called = false;
+      called_id        = UINT_MAX;
+      global_called    = false;
+      member_called    = false;
       unhandled_called = false;
 
       service.call(Out_Of_Range);
@@ -160,6 +158,6 @@ namespace
       CHECK(unhandled_called);
     }
   }
-}
+} // namespace
 
 #endif

@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_RATIO_INCLUDED
 
 #include "platform.h"
-#include "static_assert.h"
 #include "gcd.h"
+#include "static_assert.h"
 
 #include "type_traits.h"
 
@@ -141,58 +141,58 @@ namespace etl
   };
 
 #if ETL_USING_CPP17
-  template<typename R1, typename R2>
+  template <typename R1, typename R2>
   inline constexpr bool ratio_equal_v = ratio_equal<R1, R2>::value;
 
-  template<typename R1, typename R2>
+  template <typename R1, typename R2>
   inline constexpr bool ratio_not_equal_v = ratio_not_equal<R1, R2>::value;
 
-  template<typename R1, typename R2>
+  template <typename R1, typename R2>
   inline constexpr bool ratio_less_v = ratio_less<R1, R2>::value;
 
-  template<typename R1, typename R2>
+  template <typename R1, typename R2>
   inline constexpr bool ratio_less_equal_v = ratio_less_equal<R1, R2>::value;
 
-  template<typename R1, typename R2>
+  template <typename R1, typename R2>
   inline constexpr bool ratio_greater_v = ratio_greater<R1, R2>::value;
 
-  template<typename R1, typename R2>
+  template <typename R1, typename R2>
   inline constexpr bool ratio_greater_equal_v = ratio_greater_equal<R1, R2>::value;
 #endif
 
-  //***********************************************************************
-  /// Predefined ration types.
-  //***********************************************************************
-  #if INT_MAX > INT32_MAX
-    typedef ratio<1, 1000000000000000000>       atto;
-    typedef ratio<1, 1000000000000000>          femto;
-    typedef ratio<1, 1000000000000>             pico;
-  #endif
+//***********************************************************************
+/// Predefined ration types.
+//***********************************************************************
+#if INT_MAX > INT32_MAX
+  typedef ratio<1, 1000000000000000000> atto;
+  typedef ratio<1, 1000000000000000>    femto;
+  typedef ratio<1, 1000000000000>       pico;
+#endif
 
-  #if (INT_MAX >= INT32_MAX)
-    typedef ratio<1, 1000000000>                nano;
-    typedef ratio<1, 1000000>                   micro;
-  #endif
+#if (INT_MAX >= INT32_MAX)
+  typedef ratio<1, 1000000000> nano;
+  typedef ratio<1, 1000000>    micro;
+#endif
 
-  #if (INT_MAX >= INT16_MAX)
-    typedef ratio<1, 1000>                      milli;
-    typedef ratio<1, 100>                       centi;
-    typedef ratio<1, 10>                        deci;
-    typedef ratio<10, 1>                        deca;
-    typedef ratio<100, 1>                       hecto;
-    typedef ratio<1000, 1>                      kilo;
-  #endif
+#if (INT_MAX >= INT16_MAX)
+  typedef ratio<1, 1000> milli;
+  typedef ratio<1, 100>  centi;
+  typedef ratio<1, 10>   deci;
+  typedef ratio<10, 1>   deca;
+  typedef ratio<100, 1>  hecto;
+  typedef ratio<1000, 1> kilo;
+#endif
 
-  #if (INT_MAX >= INT32_MAX)
-    typedef ratio<1000000, 1>                   mega;
-    typedef ratio<1000000000, 1>                giga;
-  #endif
+#if (INT_MAX >= INT32_MAX)
+  typedef ratio<1000000, 1>    mega;
+  typedef ratio<1000000000, 1> giga;
+#endif
 
-  #if INT_MAX > INT32_MAX
-    typedef ratio<1000000000000, 1>             tera;
-    typedef ratio<1000000000000000, 1>          peta;
-    typedef ratio<1000000000000000000, 1>       exa;
-  #endif
+#if INT_MAX > INT32_MAX
+  typedef ratio<1000000000000, 1>       tera;
+  typedef ratio<1000000000000000, 1>    peta;
+  typedef ratio<1000000000000000000, 1> exa;
+#endif
 
   /// An approximation of Pi.
   typedef ratio<355, 113> ratio_pi;
@@ -240,7 +240,7 @@ namespace etl
       static constexpr T value = product / ratio_gcd<T, Value1, Value2>::value;
     };
 
-    template<typename R1>
+    template <typename R1>
     struct ratio_reduce
     {
     private:
@@ -252,7 +252,7 @@ namespace etl
       using type = ratio<R1::num / gcd, R1::den / gcd>;
     };
 
-    template<typename R1, typename R2>
+    template <typename R1, typename R2>
     struct ratio_add
     {
     private:
@@ -264,34 +264,37 @@ namespace etl
       using type = typename ratio_reduce<ratio<R1::num * lcm / R1::den + R2::num * lcm / R2::den, lcm>>::type;
     };
 
-    template<typename R1, typename R2>
+    template <typename R1, typename R2>
     struct ratio_subtract
     {
     public:
+
       using type = typename ratio_add<R1, ratio<-R2::num, R2::den>>::type;
     };
 
-    template<typename R1, typename R2>
+    template <typename R1, typename R2>
     struct ratio_multiply
     {
     private:
+
       static ETL_CONSTEXPR11 intmax_t gcd1 = etl::private_ratio::ratio_gcd<intmax_t, R1::num, R2::den>::value;
       static ETL_CONSTEXPR11 intmax_t gcd2 = etl::private_ratio::ratio_gcd<intmax_t, R2::num, R1::den>::value;
 
     public:
+
       using type = ratio<(R1::num / gcd1) * (R2::num / gcd2), (R1::den / gcd2) * (R2::den / gcd1)>;
     };
 
-    template<typename R1, typename R2>
+    template <typename R1, typename R2>
     struct ratio_divide
     {
     public:
+
       using type = typename ratio_multiply<R1, ratio<R2::den, R2::num>>::type;
     };
-  }
+  } // namespace private_ratio
 
 #endif
-}
+} // namespace etl
 
 #endif
-

@@ -28,17 +28,17 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/message_router.h"
 #include "etl/message_bus.h"
+#include "etl/message_router.h"
 #include "etl/message_timer_atomic.h"
 
-#include <iostream>
-#include <vector>
-#include <thread>
 #include <chrono>
+#include <iostream>
+#include <thread>
+#include <vector>
 
 #if defined(ETL_COMPILER_MICROSOFT)
-#include <Windows.h>
+  #include <Windows.h>
 #endif
 
 #define REALTIME_TEST 0
@@ -88,7 +88,6 @@ namespace
     Router1()
       : message_router(ROUTER1)
     {
-
     }
 
     void on_receive(const Message1&)
@@ -127,7 +126,6 @@ namespace
   //***************************************************************************
   class Bus1 : public etl::message_bus<1>
   {
-
   };
 
   //***********************************
@@ -138,29 +136,32 @@ namespace
 
   class TimerInsertRemoveTest
   {
-    public:
+  public:
+
     uint32_t inserted;
     uint32_t removed;
-    TimerInsertRemoveTest() : inserted(0), removed(0)
+    TimerInsertRemoveTest()
+      : inserted(0)
+      , removed(0)
     {
     }
 
     void insert_handler(etl::timer::id::type id_)
     {
-        (void)id_;
-        inserted++;
+      (void)id_;
+      inserted++;
     }
 
     void remove_handler(etl::timer::id::type id_)
     {
-        (void)id_;
-        removed++;
+      (void)id_;
+      removed++;
     }
 
     void clear(void)
     {
-        inserted = 0;
-        removed = 0;
+      inserted = 0;
+      removed  = 0;
     }
   };
 
@@ -213,9 +214,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37ULL };
-      std::vector<uint64_t> compare2 = { 23ULL };
-      std::vector<uint64_t> compare3 = { 11ULL };
+      std::vector<uint64_t> compare1 = {37ULL};
+      std::vector<uint64_t> compare2 = {23ULL};
+      std::vector<uint64_t> compare3 = {11ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -295,9 +296,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37ULL, 74ULL };
-      std::vector<uint64_t> compare2 = { 23ULL, 46ULL, 69ULL, 92ULL };
-      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL };
+      std::vector<uint64_t> compare1 = {37ULL, 74ULL};
+      std::vector<uint64_t> compare2 = {23ULL, 46ULL, 69ULL, 92ULL};
+      std::vector<uint64_t> compare3 = {11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -335,9 +336,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 40ULL, 75ULL };
-      std::vector<uint64_t> compare2 = { 25ULL, 50ULL, 70ULL, 95ULL };
-      std::vector<uint64_t> compare3 = { 15ULL, 25ULL, 35ULL, 45ULL, 55ULL, 70ULL, 80ULL, 90ULL, 100ULL };
+      std::vector<uint64_t> compare1 = {40ULL, 75ULL};
+      std::vector<uint64_t> compare2 = {25ULL, 50ULL, 70ULL, 95ULL};
+      std::vector<uint64_t> compare3 = {15ULL, 25ULL, 35ULL, 45ULL, 55ULL, 70ULL, 80ULL, 90ULL, 100ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -382,9 +383,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 77ULL };
-      std::vector<uint64_t> compare2 = { 23ULL };
-      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL };
+      std::vector<uint64_t> compare1 = {77ULL};
+      std::vector<uint64_t> compare2 = {23ULL};
+      std::vector<uint64_t> compare3 = {11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -425,9 +426,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 77ULL };
-      std::vector<uint64_t> compare2 = { 23ULL };
-      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL };
+      std::vector<uint64_t> compare1 = {77ULL};
+      std::vector<uint64_t> compare2 = {23ULL};
+      std::vector<uint64_t> compare3 = {11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -467,9 +468,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37ULL };
-      std::vector<uint64_t> compare2 = { 23ULL };
-      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL };
+      std::vector<uint64_t> compare1 = {37ULL};
+      std::vector<uint64_t> compare2 = {23ULL};
+      std::vector<uint64_t> compare3 = {11ULL, 22ULL, 33ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -505,9 +506,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37ULL };
-      std::vector<uint64_t> compare2 = { 23ULL };
-      std::vector<uint64_t> compare3 = { 11ULL };
+      std::vector<uint64_t> compare1 = {37ULL};
+      std::vector<uint64_t> compare2 = {23ULL};
+      std::vector<uint64_t> compare3 = {11ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -546,9 +547,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 6ULL, 42ULL, 79ULL };
-      std::vector<uint64_t> compare2 = { 6ULL, 28ULL, 51ULL, 74ULL, 97ULL };
-      std::vector<uint64_t> compare3 = { 16ULL, 27ULL, 38ULL, 49ULL, 60ULL, 71ULL, 82ULL, 93ULL };
+      std::vector<uint64_t> compare1 = {6ULL, 42ULL, 79ULL};
+      std::vector<uint64_t> compare2 = {6ULL, 28ULL, 51ULL, 74ULL, 97ULL};
+      std::vector<uint64_t> compare3 = {16ULL, 27ULL, 38ULL, 49ULL, 60ULL, 71ULL, 82ULL, 93ULL};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -561,7 +562,7 @@ namespace
       etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 15, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1,  5, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 5, etl::timer::mode::Repeating);
 
       router1.clear();
 
@@ -580,8 +581,8 @@ namespace
       ticks += step;
       timer_controller.tick(step);
 
-      std::vector<uint64_t> compare1 = { 22 };
-      std::vector<uint64_t> compare2 = { 11, 11, 22, 22 };
+      std::vector<uint64_t> compare1 = {22};
+      std::vector<uint64_t> compare2 = {11, 11, 22, 22};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -620,7 +621,7 @@ namespace
         ++ticks;
         timer_controller.tick(1);
       }
-      std::vector<uint64_t> compare1 = { 5, 10 };
+      std::vector<uint64_t> compare1 = {5, 10};
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
     }
@@ -747,8 +748,8 @@ namespace
     void timer_event()
     {
       const uint32_t TICK = 1UL;
-      uint32_t tick = TICK;
-      ticks = 1;
+      uint32_t       tick = TICK;
+      ticks               = 1;
 
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY;
@@ -774,9 +775,9 @@ namespace
     {
       FIX_PROCESSOR_AFFINITY;
 
-      etl::timer::id::type id1 = controller.register_timer(message1, router1, 400,  etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = controller.register_timer(message2, router1, 100,  etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = controller.register_timer(message3, router1, 10,   etl::timer::mode::Repeating);
+      etl::timer::id::type id1 = controller.register_timer(message1, router1, 400, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = controller.register_timer(message2, router1, 100, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = controller.register_timer(message3, router1, 10, etl::timer::mode::Repeating);
 
       router1.clear();
 
@@ -811,13 +812,13 @@ namespace
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
       }
 
-      //Join the thread with the main thread
+      // Join the thread with the main thread
       t1.join();
 
-      CHECK_EQUAL(2U,  router1.message1.size());
+      CHECK_EQUAL(2U, router1.message1.size());
       CHECK_EQUAL(10U, router1.message2.size());
       CHECK(router1.message2.size() < 65U);
     }
 #endif
   }
-}
+} // namespace

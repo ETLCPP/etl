@@ -52,49 +52,49 @@ struct non_random_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iter
     ptr = other.ptr;
   }
 
-  non_random_iterator& operator =(const non_random_iterator& other)
+  non_random_iterator& operator=(const non_random_iterator& other)
   {
     ptr = other.ptr;
     return *this;
   }
 
-  T& operator *()
+  T& operator*()
   {
     return *ptr;
   }
 
-  const T& operator *() const
+  const T& operator*() const
   {
     return *ptr;
   }
 
-  non_random_iterator& operator ++()
+  non_random_iterator& operator++()
   {
     ++ptr;
     return *this;
   }
 
-  non_random_iterator operator ++(int)
+  non_random_iterator operator++(int)
   {
     T* temp = ptr;
     ++ptr;
     return non_random_iterator(temp);
   }
 
-  non_random_iterator& operator --()
+  non_random_iterator& operator--()
   {
     --ptr;
     return *this;
   }
 
-  non_random_iterator operator --(int)
+  non_random_iterator operator--(int)
   {
     T* temp = ptr;
     --ptr;
     return non_random_iterator(temp);
   }
 
-  non_random_iterator& operator =(T* other)
+  non_random_iterator& operator=(T* other)
   {
     ptr = other;
     return *this;
@@ -114,7 +114,7 @@ struct non_random_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iter
 };
 
 template <typename T>
-bool operator !=(const non_random_iterator<T>& lhs, const non_random_iterator<T>& rhs)
+bool operator!=(const non_random_iterator<T>& lhs, const non_random_iterator<T>& rhs)
 {
   return lhs.ptr != rhs.ptr;
 }
@@ -137,61 +137,61 @@ struct random_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator
     ptr = other.ptr;
   }
 
-  random_iterator& operator =(const random_iterator& other)
+  random_iterator& operator=(const random_iterator& other)
   {
     ptr = other.ptr;
     return *this;
   }
 
-  T& operator *()
+  T& operator*()
   {
     return *ptr;
   }
 
-  const T& operator *() const
+  const T& operator*() const
   {
     return *ptr;
   }
 
-  random_iterator& operator ++()
+  random_iterator& operator++()
   {
     ++ptr;
     return *this;
   }
 
-  random_iterator operator ++(int)
+  random_iterator operator++(int)
   {
     T* temp = ptr;
     ++ptr;
     return random_iterator(temp);
   }
 
-  random_iterator& operator --()
+  random_iterator& operator--()
   {
     --ptr;
     return *this;
   }
 
-  random_iterator operator --(int)
+  random_iterator operator--(int)
   {
     T* temp = ptr;
     --ptr;
     return random_iterator(temp);
   }
 
-  random_iterator& operator +=(int n)
+  random_iterator& operator+=(int n)
   {
     ptr += n;
     return *this;
   }
 
-  random_iterator& operator -=(int n)
+  random_iterator& operator-=(int n)
   {
     ptr -= n;
     return *this;
   }
 
-  random_iterator& operator =(T* other)
+  random_iterator& operator=(T* other)
   {
     ptr = other;
     return *this;
@@ -211,7 +211,7 @@ struct random_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator
 };
 
 template <typename T>
-ptrdiff_t operator -(const random_iterator<T>& lhs, const random_iterator<T>& rhs)
+ptrdiff_t operator-(const random_iterator<T>& lhs, const random_iterator<T>& rhs)
 {
   return lhs.ptr - rhs.ptr;
 }

@@ -35,22 +35,22 @@ class Container
 {
 public:
 
-//#if ETL_USING_INITIALIZER_LIST
+  // #if ETL_USING_INITIALIZER_LIST
   ETL_CONSTEXPR14 Container(std::initializer_list<T> init)
     : length(init.size())
     , buffer()
   {
     typename std::initializer_list<T>::const_iterator itr = std::begin(init);
-    T* p = buffer;
+    T*                                                p   = buffer;
 
     while (itr != std::end(init))
     {
       *p++ = *itr++;
     }
   }
-//#endif
+  // #endif
 
-  const T& operator [](int i) const
+  const T& operator[](int i) const
   {
     return buffer[i];
   }
@@ -66,25 +66,37 @@ int main()
 {
   int result = 0;
 
-  Container<int> c = { 1, 2, 3, 4, 5 };
+  Container<int> c = {1, 2, 3, 4, 5};
 
-  if (c[0] != 1) result =  1;
-  if (c[1] != 2) result =  2;
-  if (c[2] != 3) result =  3;
-  if (c[3] != 4) result =  4;
-  if (c[4] != 5) result =  5;
+  if (c[0] != 1)
+    result = 1;
+  if (c[1] != 2)
+    result = 2;
+  if (c[2] != 3)
+    result = 3;
+  if (c[3] != 4)
+    result = 4;
+  if (c[4] != 5)
+    result = 5;
 
-  if (c.length != 5) result =  6;
+  if (c.length != 5)
+    result = 6;
 
-  ETL_CONSTEXPR14 Container<int> cc = { 1, 2, 3, 4, 5 };
+  ETL_CONSTEXPR14 Container<int> cc = {1, 2, 3, 4, 5};
 
-  if (cc[0] != 1) result =  7;
-  if (cc[1] != 2) result =  8;
-  if (cc[2] != 3) result =  9;
-  if (cc[3] != 4) result =  10;
-  if (cc[4] != 5) result =  11;
+  if (cc[0] != 1)
+    result = 7;
+  if (cc[1] != 2)
+    result = 8;
+  if (cc[2] != 3)
+    result = 9;
+  if (cc[3] != 4)
+    result = 10;
+  if (cc[4] != 5)
+    result = 11;
 
-  if (cc.length != 5) result =  12;
+  if (cc.length != 5)
+    result = 12;
 
   if (result == 0)
   {
@@ -97,4 +109,3 @@ int main()
 
   return result;
 }
-

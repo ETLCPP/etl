@@ -35,11 +35,11 @@ SOFTWARE.
 
 #include "../platform.h"
 #include "../algorithm.h"
-#include "vector_base.h"
-#include "../type_traits.h"
 #include "../error_handler.h"
 #include "../functional.h"
 #include "../iterator.h"
+#include "../type_traits.h"
+#include "vector_base.h"
 
 #include <stddef.h>
 
@@ -55,16 +55,16 @@ namespace etl
   {
   public:
 
-    typedef void*                                 value_type;
-    typedef value_type&                           reference;
-    typedef const value_type&                     const_reference;
-    typedef value_type*                           pointer;
-    typedef const value_type*                     const_pointer;
-    typedef value_type*                           iterator;
-    typedef const value_type*                     const_iterator;
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef size_t                                size_type;
+    typedef void*                                           value_type;
+    typedef value_type&                                     reference;
+    typedef const value_type&                               const_reference;
+    typedef value_type*                                     pointer;
+    typedef const value_type*                               const_pointer;
+    typedef value_type*                                     iterator;
+    typedef const value_type*                               const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>          reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>    const_reverse_iterator;
+    typedef size_t                                          size_type;
     typedef etl::iterator_traits<iterator>::difference_type difference_type;
 
   public:
@@ -206,7 +206,7 @@ namespace etl
       // Size up if necessary.
       if (p_end < p_new_end)
       {
-        etl::fill(p_end, p_new_end, value);       
+        etl::fill(p_end, p_new_end, value);
       }
 
       p_end = p_new_end;
@@ -228,7 +228,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator[](size_t i)
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
@@ -239,7 +239,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator[](size_t i) const
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(vector_out_of_bounds));
       return p_buffer[i];
@@ -363,7 +363,7 @@ namespace etl
     typename etl::enable_if<etl::is_pointer<TIterator>::value, void>::type
       assign(TIterator first, TIterator last)
     {
-#if ETL_IS_DEBUG_BUILD     
+#if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
       ETL_ASSERT_OR_RETURN(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
 #endif
@@ -420,7 +420,7 @@ namespace etl
     {
       ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(size() != CAPACITY, ETL_ERROR(vector_full));
 
-      * p_end++ = value;
+      *p_end++ = value;
     }
 
     //*************************************************************************
@@ -449,7 +449,7 @@ namespace etl
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       iterator position_ = to_iterator(position);
-      
+
       if (size() != CAPACITY)
       {
         if (position_ != end())
@@ -649,7 +649,7 @@ namespace etl
     iterator erase(const_iterator first, const_iterator last)
     {
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= first && first <= last && last <= cend(), ETL_ERROR(vector_out_of_bounds));
-      
+
       iterator first_ = to_iterator(first);
       iterator last_  = to_iterator(last);
 
@@ -665,7 +665,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    etl::pvoidvector& operator = (const etl::pvoidvector& rhs)
+    etl::pvoidvector& operator=(const etl::pvoidvector& rhs)
     {
       if (&rhs != this)
       {
@@ -681,7 +681,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    etl::pvoidvector& operator = (etl::pvoidvector&& rhs)
+    etl::pvoidvector& operator=(etl::pvoidvector&& rhs)
     {
       if (&rhs != this)
       {
@@ -759,7 +759,7 @@ namespace etl
       uintptr_t length = static_cast<uintptr_t>(p_end - p_buffer);
 
       p_buffer = p_buffer_;
-      p_end = p_buffer_ + length;
+      p_end    = p_buffer_ + length;
     }
 
     void** p_buffer;
@@ -786,7 +786,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  inline bool operator ==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  inline bool operator==(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -798,7 +798,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  inline bool operator !=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  inline bool operator!=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return !(lhs == rhs);
   }
@@ -810,7 +810,7 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically less than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  inline bool operator <(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  inline bool operator<(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -822,7 +822,7 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically greater than the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  inline bool operator >(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  inline bool operator>(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return (rhs < lhs);
   }
@@ -834,7 +834,7 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  inline bool operator <=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  inline bool operator<=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return !(lhs > rhs);
   }
@@ -846,11 +846,11 @@ namespace etl
   ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
-  inline bool operator >=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
+  inline bool operator>=(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
     return !(lhs < rhs);
   }
-}
+} // namespace etl
 
 #include "minmax_pop.h"
 

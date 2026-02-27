@@ -32,12 +32,12 @@ SOFTWARE.
 #define ETL_SHARED_MESSAGE_INCLUDED
 
 #include "platform.h"
-#include "utility.h"
-#include "reference_counted_message.h"
 #include "ireference_counted_message_pool.h"
 #include "message.h"
-#include "type_traits.h"
+#include "reference_counted_message.h"
 #include "static_assert.h"
+#include "type_traits.h"
+#include "utility.h"
 
 //*****************************************************************************
 /// A wrapper for reference counted messages.
@@ -129,7 +129,7 @@ namespace etl
     //*************************************************************************
     /// Copy assignment operator
     //*************************************************************************
-    shared_message& operator =(const etl::shared_message& other)
+    shared_message& operator=(const etl::shared_message& other)
     {
       if (&other != this)
       {
@@ -142,7 +142,7 @@ namespace etl
         // Copy over the new one.
         p_rcmessage = other.p_rcmessage;
         p_rcmessage->get_reference_counter().increment_reference_count();
-       }
+      }
 
       return *this;
     }
@@ -151,7 +151,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator
     //*************************************************************************
-    shared_message& operator =(etl::shared_message&& other) ETL_NOEXCEPT
+    shared_message& operator=(etl::shared_message&& other) ETL_NOEXCEPT
     {
       if (&other != this)
       {
@@ -162,7 +162,7 @@ namespace etl
         }
 
         // Move over the new one.
-        p_rcmessage = etl::move(other.p_rcmessage);
+        p_rcmessage       = etl::move(other.p_rcmessage);
         other.p_rcmessage = ETL_NULLPTR;
       }
 
@@ -176,9 +176,8 @@ namespace etl
     //*************************************************************************
     ~shared_message()
     {
-      if ((p_rcmessage != ETL_NULLPTR) &&
-          (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U))
-      {       
+      if ((p_rcmessage != ETL_NULLPTR) && (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U))
+      {
         p_rcmessage->release();
       }
     }
@@ -221,6 +220,6 @@ namespace etl
 
     etl::ireference_counted_message* p_rcmessage; ///< A pointer to the reference  counted message.
   };
-}
+} // namespace etl
 
 #endif

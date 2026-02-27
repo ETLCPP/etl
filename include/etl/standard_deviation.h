@@ -68,17 +68,17 @@ namespace etl
     {
       typedef double calc_t;
     };
-  }
+  } // namespace private_standard_deviation
 
   //***************************************************************************
   /// Standard Deviation Type.
   //***************************************************************************
   namespace private_standard_deviation
   {
-    template<typename T = void>
+    template <typename T = void>
     struct standard_deviation_type_helper
     {
-      static ETL_CONSTANT bool Sample = false;
+      static ETL_CONSTANT bool Sample     = false;
       static ETL_CONSTANT bool Population = true;
     };
 
@@ -87,7 +87,7 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT bool standard_deviation_type_helper<T>::Population;
-  }
+  } // namespace private_standard_deviation
 
   struct standard_deviation_type : public private_standard_deviation::standard_deviation_type_helper<>
   {
@@ -97,7 +97,7 @@ namespace etl
   /// Standard Deviation.
   //***************************************************************************
   template <bool Standard_Deviation_Type, typename TInput, typename TCalc = TInput>
-  class standard_deviation 
+  class standard_deviation
     : public private_standard_deviation::standard_deviation_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
@@ -133,7 +133,7 @@ namespace etl
     void add(TInput value)
     {
       sum_of_squares += TCalc(value * value);
-      sum            += TCalc(value);
+      sum += TCalc(value);
       ++counter;
       recalculate = true;
     }
@@ -155,7 +155,7 @@ namespace etl
     /// operator ()
     /// Add a pair of values.
     //*********************************
-    void operator ()(TInput value)
+    void operator()(TInput value)
     {
       add(value);
     }
@@ -165,7 +165,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -220,7 +220,7 @@ namespace etl
     }
 
   private:
-  
+
     //*********************************
     /// Do the calculation.
     //*********************************
@@ -229,11 +229,11 @@ namespace etl
       if (recalculate)
       {
         standard_deviation_value = 0.0;
-        variance_value = 0.0;
+        variance_value           = 0.0;
 
         if (counter != 0)
         {
-          double n = double(counter);
+          double n          = double(counter);
           double adjustment = 1.0 / (n * (n - Adjustment));
 
           double square_of_sum = (sum * sum);
@@ -250,13 +250,13 @@ namespace etl
       }
     }
 
-    calc_t   sum_of_squares;
-    calc_t   sum;
-    uint32_t counter;
+    calc_t         sum_of_squares;
+    calc_t         sum;
+    uint32_t       counter;
     mutable double variance_value;
     mutable double standard_deviation_value;
     mutable bool   recalculate;
   };
-}
+} // namespace etl
 
 #endif

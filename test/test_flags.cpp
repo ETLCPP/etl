@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/flags.h"
 #include "etl/binary.h"
+#include "etl/flags.h"
 #include "etl/string.h"
-#include "etl/wstring.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
+#include "etl/wstring.h"
 
 namespace
 {
@@ -51,7 +51,7 @@ namespace
     F023467   = F0 | F2 | F3 | F4 | F6 | F7,
     F0246     = F0 | F2 | F4 | F6,
     F1246     = F1 | F2 | F4 | F6,
-    F246      = F2 | F4 | F6,  
+    F246      = F2 | F4 | F6,
     F235      = F2 | F3 | F5,
     F46       = F4 | F6,
     F13       = F1 | F3,
@@ -96,11 +96,11 @@ namespace
       constexpr Flags cef2(F01234567);
       constexpr Flags cef3(cef2);
       constexpr Flags cef4(cef2.value());
-      constexpr bool is_f1a     = cef2.test(F1);
-      constexpr bool is_f1b     = cef2.test<F1>();
-      constexpr bool is_all     = cef2.all();
-      constexpr bool is_all_of1= cef2.all_of(F1357);
-      constexpr bool is_all_of2 = cef2.all_of<F1357>();
+      constexpr bool  is_f1a     = cef2.test(F1);
+      constexpr bool  is_f1b     = cef2.test<F1>();
+      constexpr bool  is_all     = cef2.all();
+      constexpr bool  is_all_of1 = cef2.all_of(F1357);
+      constexpr bool  is_all_of2 = cef2.all_of<F1357>();
 
       constexpr bool is_any     = cef2.any();
       constexpr bool is_any_of1 = cef2.any_of(F1357);
@@ -111,9 +111,9 @@ namespace
       constexpr bool is_none_of2 = cef2.none_of<F1357>();
 
       constexpr uint8_t value = cef2;
-      constexpr Flags cef5(Flags(F1357).flip());
-      constexpr Flags cef6(Flags(F01234567).flip(F1357));
-      constexpr Flags cef7(Flags(F01234567).flip<F1357>());
+      constexpr Flags   cef5(Flags(F1357).flip());
+      constexpr Flags   cef6(Flags(F01234567).flip(F1357));
+      constexpr Flags   cef7(Flags(F01234567).flip<F1357>());
 
       constexpr Flags cef8(Flags(F01234567).reset(F1357));
       constexpr Flags cef9(Flags(F01234567).reset<F1357>());
@@ -128,8 +128,8 @@ namespace
 
       constexpr Flags cef16(Flags(F1357).value(F0246));
 
-      constexpr Flags cef17(Flags(F1357).operator =(F01234567));
-      constexpr Flags cef18(Flags(F1357).operator =(cef2));
+      constexpr Flags cef17(Flags(F1357).operator=(F01234567));
+      constexpr Flags cef18(Flags(F1357).operator=(cef2));
 
       constexpr bool is_same1 = (cef3 == cef4);
       constexpr bool is_same2 = (cef3 == F01234567);
@@ -139,25 +139,25 @@ namespace
       constexpr bool is_not_same2 = (cef3 != F01234567);
       constexpr bool is_not_same3 = (F01234567 != cef3);
 
-      CHECK_EQUAL(int(FNONE),     int(cef1));
+      CHECK_EQUAL(int(FNONE), int(cef1));
       CHECK_EQUAL(int(F01234567), int(cef2));
       CHECK_EQUAL(int(F01234567), int(cef3));
       CHECK_EQUAL(int(F01234567), int(cef4));
-      CHECK_EQUAL(int(F0246),     int(cef5));
-      CHECK_EQUAL(int(F0246),     int(cef6));
-      CHECK_EQUAL(int(F0246),     int(cef7));
-      CHECK_EQUAL(int(F0246),     int(cef8));
-      CHECK_EQUAL(int(F0246),     int(cef9));
-      CHECK_EQUAL(int(FNONE),     int(cef10));
+      CHECK_EQUAL(int(F0246), int(cef5));
+      CHECK_EQUAL(int(F0246), int(cef6));
+      CHECK_EQUAL(int(F0246), int(cef7));
+      CHECK_EQUAL(int(F0246), int(cef8));
+      CHECK_EQUAL(int(F0246), int(cef9));
+      CHECK_EQUAL(int(FNONE), int(cef10));
       CHECK_EQUAL(int(F01234567), int(cef11));
       CHECK_EQUAL(int(F01234567), int(cef12));
       CHECK_EQUAL(int(F01234567), int(cef13));
       CHECK_EQUAL(int(F01234567), int(cef14));
       CHECK_EQUAL(int(F01234567), int(cef15));
-      CHECK_EQUAL(int(F0246),     int(cef16));
+      CHECK_EQUAL(int(F0246), int(cef16));
       CHECK_EQUAL(int(F01234567), int(cef17));
-      CHECK_EQUAL(int(cef2),      int(cef18));
-      CHECK_EQUAL(int(cef2),      int(value));
+      CHECK_EQUAL(int(cef2), int(cef18));
+      CHECK_EQUAL(int(cef2), int(value));
       CHECK(is_f1a);
       CHECK(is_f1b);
       CHECK(is_all);
@@ -290,30 +290,30 @@ namespace
     {
       Flags flags1(F0246);
 
-      CHECK(flags1.all_of(F0246)     == true);
+      CHECK(flags1.all_of(F0246) == true);
       CHECK((flags1.all_of<F0246>()) == true);
 
-      CHECK(flags1.all_of(F246)     == true);
+      CHECK(flags1.all_of(F246) == true);
       CHECK((flags1.all_of<F246>()) == true);
 
-      CHECK(flags1.all_of(F1246)     == false);
+      CHECK(flags1.all_of(F1246) == false);
       CHECK((flags1.all_of<F1246>()) == false);
 
-      CHECK(flags1.all_of(F01234567)     == false);
+      CHECK(flags1.all_of(F01234567) == false);
       CHECK((flags1.all_of<F01234567>()) == false);
 
       Flags flags2(F1357);
 
-      CHECK(flags2.all_of(F0246)     == false);
+      CHECK(flags2.all_of(F0246) == false);
       CHECK((flags2.all_of<F0246>()) == false);
 
-      CHECK(flags2.all_of(F246)     == false);
+      CHECK(flags2.all_of(F246) == false);
       CHECK((flags2.all_of<F246>()) == false);
 
-      CHECK(flags2.all_of(F1246)     == false);
+      CHECK(flags2.all_of(F1246) == false);
       CHECK((flags2.all_of<F1246>()) == false);
 
-      CHECK(flags2.all_of(F01234567)     == false);
+      CHECK(flags2.all_of(F01234567) == false);
       CHECK((flags2.all_of<F01234567>()) == false);
     }
 
@@ -321,31 +321,31 @@ namespace
     TEST(test_all_of_masked)
     {
       FlagsM0246 flags1(F0246);
-      
-      CHECK(flags1.all_of(F0246)     == true);
+
+      CHECK(flags1.all_of(F0246) == true);
       CHECK((flags1.all_of<F0246>()) == true);
 
-      CHECK(flags1.all_of(F246)     == true);
+      CHECK(flags1.all_of(F246) == true);
       CHECK((flags1.all_of<F246>()) == true);
 
-      CHECK(flags1.all_of(F1246)     == true);
+      CHECK(flags1.all_of(F1246) == true);
       CHECK((flags1.all_of<F1246>()) == true);
 
-      CHECK(flags1.all_of(F01234567)     == true);
+      CHECK(flags1.all_of(F01234567) == true);
       CHECK((flags1.all_of<F01234567>()) == true);
 
       FlagsM0246 flags2(F1357);
 
-      CHECK(flags2.all_of(F0246)     == false);
+      CHECK(flags2.all_of(F0246) == false);
       CHECK((flags2.all_of<F0246>()) == false);
 
-      CHECK(flags2.all_of(F246)     == false);
+      CHECK(flags2.all_of(F246) == false);
       CHECK((flags2.all_of<F246>()) == false);
 
-      CHECK(flags2.all_of(F1246)     == false);
+      CHECK(flags2.all_of(F1246) == false);
       CHECK((flags2.all_of<F1246>()) == false);
 
-      CHECK(flags2.all_of(F01234567)     == false);
+      CHECK(flags2.all_of(F01234567) == false);
       CHECK((flags2.all_of<F01234567>()) == false);
     }
 
@@ -378,16 +378,16 @@ namespace
     {
       Flags flags(F0246);
 
-      CHECK(flags.any_of(F0246)     == true);
+      CHECK(flags.any_of(F0246) == true);
       CHECK((flags.any_of<F0246>()) == true);
 
-      CHECK(flags.any_of(F246)     == true);
+      CHECK(flags.any_of(F246) == true);
       CHECK((flags.any_of<F246>()) == true);
 
-      CHECK(flags.any_of(F1357)     == false);
+      CHECK(flags.any_of(F1357) == false);
       CHECK((flags.any_of<F1357>()) == false);
 
-      CHECK(flags.any_of(F01234567)     == true);
+      CHECK(flags.any_of(F01234567) == true);
       CHECK((flags.any_of<F01234567>()) == true);
     }
 
@@ -396,16 +396,16 @@ namespace
     {
       FlagsM0246 flags(F0246);
 
-      CHECK(flags.any_of(F0246)     == true);
+      CHECK(flags.any_of(F0246) == true);
       CHECK((flags.any_of<F0246>()) == true);
 
-      CHECK(flags.any_of(F235)     == true);
+      CHECK(flags.any_of(F235) == true);
       CHECK((flags.any_of<F235>()) == true);
 
-      CHECK(flags.any_of(F1357)     == false);
+      CHECK(flags.any_of(F1357) == false);
       CHECK((flags.any_of<F1357>()) == false);
 
-      CHECK(flags.any_of(F01234567)     == true);
+      CHECK(flags.any_of(F01234567) == true);
       CHECK((flags.any_of<F01234567>()) == true);
     }
 
@@ -435,17 +435,17 @@ namespace
       Flags flags1(FNONE);
       Flags flags2(F0246);
 
-      CHECK(flags1.none_of(FNONE)       == true);
-      CHECK(flags1.none_of(F01234567)   == true);
+      CHECK(flags1.none_of(FNONE) == true);
+      CHECK(flags1.none_of(F01234567) == true);
       CHECK(flags1.none_of<F01234567>() == true);
 
-      CHECK(flags2.none_of(F01234567)   == false);
+      CHECK(flags2.none_of(F01234567) == false);
       CHECK(flags2.none_of<F01234567>() == false);
-      CHECK(flags2.none_of(F0246)       == false);
-      CHECK(flags2.none_of<F0246>()     == false);
-      CHECK(flags2.none_of(F1357)       == true);
-      CHECK(flags2.none_of<F1357>()     == true);
-      CHECK(flags2.none_of(F01234567)   == false);
+      CHECK(flags2.none_of(F0246) == false);
+      CHECK(flags2.none_of<F0246>() == false);
+      CHECK(flags2.none_of(F1357) == true);
+      CHECK(flags2.none_of<F1357>() == true);
+      CHECK(flags2.none_of(F01234567) == false);
       CHECK(flags2.none_of<F01234567>() == false);
     }
 
@@ -455,17 +455,17 @@ namespace
       FlagsM0246 flags1(FNONE);
       FlagsM0246 flags2(F01234567);
 
-      CHECK(flags1.none_of(FNONE)       == true);
-      CHECK(flags1.none_of(F01234567)   == true);
+      CHECK(flags1.none_of(FNONE) == true);
+      CHECK(flags1.none_of(F01234567) == true);
       CHECK(flags1.none_of<F01234567>() == true);
 
-      CHECK(flags2.none_of(F01234567)   == false);
+      CHECK(flags2.none_of(F01234567) == false);
       CHECK(flags2.none_of<F01234567>() == false);
-      CHECK(flags2.none_of(F0246)       == false);
-      CHECK(flags2.none_of<F0246>()     == false);
-      CHECK(flags2.none_of(F1357)       == true);
-      CHECK(flags2.none_of<F1357>()     == true);
-      CHECK(flags2.none_of(F01234567)   == false);
+      CHECK(flags2.none_of(F0246) == false);
+      CHECK(flags2.none_of<F0246>() == false);
+      CHECK(flags2.none_of(F1357) == true);
+      CHECK(flags2.none_of<F1357>() == true);
+      CHECK(flags2.none_of(F01234567) == false);
       CHECK(flags2.none_of<F01234567>() == false);
     }
 
@@ -490,7 +490,7 @@ namespace
       FlagsM0246 flags1(F0246);
       FlagsM0246 flags2(F0246);
       FlagsM0246 flags3(F0246);
-			FlagsM0246 flags4(F0246);
+      FlagsM0246 flags4(F0246);
 
       CHECK_EQUAL(int(F46), flags1.flip(F02).value());
       CHECK_EQUAL(int(F46), (flags2.flip<F02>().value()));
@@ -501,7 +501,7 @@ namespace
 
     //*************************************************************************
     TEST(test_assignment)
-		{
+    {
       Flags flags1(F0246);
       Flags flags2(F1357);
       Flags flags3(F1357);
@@ -529,7 +529,7 @@ namespace
 
     //*************************************************************************
     TEST(test_and_operation)
-		{
+    {
       Flags flags1(F0246);
       Flags flags2(F0246);
       Flags flags3(F0246);
@@ -563,10 +563,10 @@ namespace
       Flags flags3(F0246);
       Flags flags4(F0246);
 
-      CHECK_EQUAL(int(F0246),     int(flags1 |= F0246));
+      CHECK_EQUAL(int(F0246), int(flags1 |= F0246));
       CHECK_EQUAL(int(F01234567), int(flags2 |= F1357));
       CHECK_EQUAL(int(F01234567), int(flags3 |= F01234567));
-      CHECK_EQUAL(int(F0246),     int(flags4 |= FNONE));
+      CHECK_EQUAL(int(F0246), int(flags4 |= FNONE));
     }
 
     //*************************************************************************
@@ -591,10 +591,10 @@ namespace
       Flags flags3(F0246);
       Flags flags4(F0246);
 
-      CHECK_EQUAL(int(FNONE),     int(flags1 ^= F0246));
+      CHECK_EQUAL(int(FNONE), int(flags1 ^= F0246));
       CHECK_EQUAL(int(F01234567), int(flags2 ^= F1357));
-      CHECK_EQUAL(int(F1357),     int(flags3 ^= F01234567));
-      CHECK_EQUAL(int(F0246),     int(flags4 ^= FNONE));
+      CHECK_EQUAL(int(F1357), int(flags3 ^= F01234567));
+      CHECK_EQUAL(int(F0246), int(flags4 ^= FNONE));
     }
 
     //*************************************************************************
@@ -611,4 +611,4 @@ namespace
       CHECK_EQUAL(int(F0246), int(flags4 ^= FNONE));
     }
   }
-}
+} // namespace

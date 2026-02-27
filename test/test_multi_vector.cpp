@@ -1,40 +1,40 @@
 ///******************************************************************************
-//The MIT License(MIT)
+// The MIT License(MIT)
 //
-//Embedded Template Library.
-//https://github.com/ETLCPP/etl
-//https://www.etlcpp.com
+// Embedded Template Library.
+// https://github.com/ETLCPP/etl
+// https://www.etlcpp.com
 //
-//Copyright(c) 2021 John Wellbelove
+// Copyright(c) 2021 John Wellbelove
 //
-//Permission is hereby granted, free of charge, to any person obtaining a copy
-//of this software and associated documentation files(the "Software"), to deal
-//in the Software without restriction, including without limitation the rights
-//to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-//copies of the Software, and to permit persons to whom the Software is
-//furnished to do so, subject to the following conditions :
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
 //
-//The above copyright notice and this permission notice shall be included in all
-//copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 //******************************************************************************/
 
 #include "unit_test_framework.h"
 
-#include "etl/vector.h"
 #include "etl/multi_vector.h"
+#include "etl/vector.h"
 
-#include <array>
-#include <vector>
 #include <algorithm>
+#include <array>
 #include <iterator>
+#include <vector>
 
 #include "etl/integral_limits.h"
 
@@ -43,9 +43,9 @@ namespace
   static const size_t SIZE1 = 4UL;
   static const size_t SIZE2 = 3UL;
 
-  using Data = etl::multi_vector<int, SIZE1, SIZE2>;
+  using Data         = etl::multi_vector<int, SIZE1, SIZE2>;
   using Compare_Data = std::vector<std::vector<int>>;
-  using Array = std::array<std::array<int, SIZE2>, SIZE1>;
+  using Array        = std::array<std::array<int, SIZE2>, SIZE1>;
 
   void Copy(const Array& from, Data& to)
   {
@@ -62,30 +62,30 @@ namespace
     }
   }
 
-  Compare_Data compare_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+  Compare_Data compare_data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
   SUITE(test_multi_vector_external_buffer)
   {
     //*************************************************************************
     TEST(test_constructor)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
-      CHECK_EQUAL(data.size(),     SIZE1);
+      CHECK_EQUAL(data.size(), SIZE1);
       CHECK_EQUAL(data.max_size(), SIZE1);
 
-      CHECK_EQUAL(data[0].size(),     SIZE2);
+      CHECK_EQUAL(data[0].size(), SIZE2);
       CHECK_EQUAL(data[0].max_size(), SIZE2);
     }
 
     //*************************************************************************
     TEST(test_assignment)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
-      Data other_data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
+      Data  other_data;
       Copy(initial, data);
 
       other_data = data;
@@ -98,8 +98,8 @@ namespace
     //*************************************************************************
     TEST(test_at)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -117,8 +117,8 @@ namespace
     //*************************************************************************
     TEST(test_at_const)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -135,8 +135,8 @@ namespace
     //*************************************************************************
     TEST(test_index_operator)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -151,8 +151,8 @@ namespace
     //*************************************************************************
     TEST(test_index_operator_const)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -167,8 +167,8 @@ namespace
     //*************************************************************************
     TEST(test_front)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       int& ref = data.front().front();
@@ -178,8 +178,8 @@ namespace
     //*************************************************************************
     TEST(test_front_const)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       const int& ref = data.front().front();
@@ -189,8 +189,8 @@ namespace
     //*************************************************************************
     TEST(test_back)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       int& ref = data.back().back();
@@ -200,8 +200,8 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       const int& ref = data.back().back();
@@ -211,8 +211,8 @@ namespace
     //*************************************************************************
     TEST(test_data)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       bool isEqual = std::equal(data.begin(), data.end(), data.data());
@@ -223,8 +223,8 @@ namespace
     //*************************************************************************
     TEST(test_data_const)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       bool isEqual = std::equal(data.begin(), data.end(), data.data());
@@ -235,8 +235,8 @@ namespace
     //*************************************************************************
     TEST(test_begin)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       CHECK(data.begin() == &data[0]);
@@ -249,8 +249,8 @@ namespace
     //*************************************************************************
     TEST(test_end)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       CHECK(data.end() == &data[0] + SIZE1);
@@ -263,8 +263,8 @@ namespace
     //*************************************************************************
     TEST(test_cbegin)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       CHECK(data.cbegin() == &data[0]);
@@ -277,8 +277,8 @@ namespace
     //*************************************************************************
     TEST(test_cend)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       CHECK(data.cend() == &data[0] + SIZE1);
@@ -291,8 +291,8 @@ namespace
     //*************************************************************************
     TEST(test_rbegin)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       typedef etl::multi_vector<int, SIZE2> Inner;
@@ -307,8 +307,8 @@ namespace
     //*************************************************************************
     TEST(test_rend)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data  data;
       Copy(initial, data);
 
       typedef etl::multi_vector<int, SIZE2> Inner;
@@ -323,8 +323,8 @@ namespace
     //*************************************************************************
     TEST(test_crbegin)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       typedef etl::multi_vector<int, SIZE2> Inner;
@@ -339,8 +339,8 @@ namespace
     //*************************************************************************
     TEST(test_crend)
     {
-      const Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data;
+      const Array initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data        data;
       Copy(initial, data);
 
       typedef etl::multi_vector<int, SIZE2> Inner;
@@ -389,8 +389,8 @@ namespace
     //*************************************************************************
     TEST(test_swap)
     {
-      Data initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data initial2 = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
+      Data initial1 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data initial2 = {{{12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23}}};
 
       Data data1 = initial1;
       Data data2 = initial2;
@@ -407,10 +407,10 @@ namespace
     //*************************************************************************
     TEST(test_assign)
     {
-      Data initial = { { { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Data initial_source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data initial_check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Data initial_check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
+      Data initial        = {{{-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}}};
+      Data initial_source = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data initial_check1 = {{{0, 1, 2}, {3, 4, 5}, {-1, -1, -1}, {-1, -1, -1}}};
+      Data initial_check2 = {{{0, 1, 2}, {3, 4, 5}, {99, 99, 99}, {99, 99, 99}}};
 
       Data source = initial_source;
       Data check1 = initial_check1;
@@ -435,19 +435,19 @@ namespace
     //*************************************************************************
     TEST(test_insert_value)
     {
-      Data initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data initial_check1  = { { { 9, 10, 11 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data initial_check2  = { { { 0, 1, 2 }, { 9, 10, 11 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data initial_check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial        = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}}};
+      Data initial_check1 = {{{9, 10, 11}, {0, 1, 2}, {3, 4, 5}, {6, 7, 8}}};
+      Data initial_check2 = {{{0, 1, 2}, {9, 10, 11}, {3, 4, 5}, {6, 7, 8}}};
+      Data initial_check3 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       Data check1 = initial_check1;
       Data check2 = initial_check2;
       Data check3 = initial_check3;
 
       typedef etl::multi_vector<int, SIZE2> Inner;
-      const Inner inserted = { { 9, 10, 11 } };
+      const Inner                           inserted = {{9, 10, 11}};
 
-      Data data;
+      Data           data;
       Data::iterator result;
 
       // Insert beginning.
@@ -477,8 +477,8 @@ namespace
 #if ETL_HAS_INITIALIZER_LIST
     TEST(test_equal)
     {
-      Data initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data initial2 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial1 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data initial2 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(initial1 == initial2);
     }
@@ -488,8 +488,8 @@ namespace
 #if ETL_HAS_INITIALIZER_LIST
     TEST(test_not_equal)
     {
-      Array initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial2 = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial1 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial2 = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(initial1 != initial2);
     }
@@ -498,9 +498,9 @@ namespace
     //*************************************************************************
     TEST(test_less_than)
     {
-      Array initial_data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
       Data data;
       Data lesser;
@@ -510,17 +510,17 @@ namespace
       Copy(initial_lesser, lesser);
       Copy(initial_greater, greater);
 
-      CHECK(lesser    < data);
-      CHECK(!(data    < data));
+      CHECK(lesser < data);
+      CHECK(!(data < data));
       CHECK(!(greater < data));
     }
 
     //*************************************************************************
     TEST(test_less_than_equal)
     {
-      Array initial_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_lesser = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
       Data data;
       Data lesser;
@@ -530,17 +530,17 @@ namespace
       Copy(initial_lesser, lesser);
       Copy(initial_greater, greater);
 
-      CHECK(lesser    <= data);
-      CHECK(data      <= data);
+      CHECK(lesser <= data);
+      CHECK(data <= data);
       CHECK(!(greater <= data));
     }
 
     //*************************************************************************
     TEST(test_greater_than)
     {
-      Array initial_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_lesser = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
       Data data;
       Data lesser;
@@ -550,17 +550,17 @@ namespace
       Copy(initial_lesser, lesser);
       Copy(initial_greater, greater);
 
-      CHECK(greater  > data);
-      CHECK(!(data   > data));
+      CHECK(greater > data);
+      CHECK(!(data > data));
       CHECK(!(lesser > data));
     }
 
     //*************************************************************************
     TEST(test_greater_than_equal)
     {
-      Array initial_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_lesser = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Array initial_greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
       Data data;
       Data lesser;
@@ -570,9 +570,9 @@ namespace
       Copy(initial_lesser, lesser);
       Copy(initial_greater, greater);
 
-      CHECK(greater  >= data);
-      CHECK(data     >= data);
+      CHECK(greater >= data);
+      CHECK(data >= data);
       CHECK(!(lesser >= data));
     }
   }
-}
+} // namespace

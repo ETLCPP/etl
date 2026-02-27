@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/state_chart.h"
+#include "etl/array.h"
 #include "etl/enum_type.h"
 #include "etl/queue.h"
-#include "etl/array.h"
+#include "etl/state_chart.h"
 
-#include <iterator>
 #include <iostream>
+#include <iterator>
 
 namespace
 {
@@ -193,15 +193,15 @@ namespace
       ++null;
     }
 
-    int startCount;
-    int stopCount;
-    int setSpeedCount;
-    int stoppedCount;
+    int  startCount;
+    int  stopCount;
+    int  setSpeedCount;
+    int  stoppedCount;
     bool isLampOn;
-    int speed;
-    int windingDown;
+    int  speed;
+    int  windingDown;
     bool entered_idle;
-    int null;
+    int  null;
 
     bool guard;
   };
@@ -210,35 +210,34 @@ namespace
   using transition = etl::state_chart_traits::transition<MotorControl>;
 
   constexpr transition transitionTable[7] =
-  {
-    transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
-    transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
-    transition(StateId::RUNNING,      EventId::STOP,           StateId::WINDING_DOWN, &MotorControl::OnStop),
-    transition(StateId::RUNNING,      EventId::EMERGENCY_STOP, StateId::IDLE,         &MotorControl::OnStop),
-    transition(StateId::RUNNING,      EventId::SET_SPEED,      StateId::RUNNING,      &MotorControl::OnSetSpeed),
-    transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped),
-    transition(                       EventId::ABORT,          StateId::IDLE)
-  };
+    {
+      transition(StateId::IDLE, EventId::START, StateId::RUNNING, &MotorControl::OnStart, &MotorControl::Guard),
+      transition(StateId::IDLE, EventId::START, StateId::IDLE, &MotorControl::Null, &MotorControl::NotGuard),
+      transition(StateId::RUNNING, EventId::STOP, StateId::WINDING_DOWN, &MotorControl::OnStop),
+      transition(StateId::RUNNING, EventId::EMERGENCY_STOP, StateId::IDLE, &MotorControl::OnStop),
+      transition(StateId::RUNNING, EventId::SET_SPEED, StateId::RUNNING, &MotorControl::OnSetSpeed),
+      transition(StateId::WINDING_DOWN, EventId::STOPPED, StateId::IDLE, &MotorControl::OnStopped),
+      transition(EventId::ABORT, StateId::IDLE)};
 
   //***************************************************************************
   using state = etl::state_chart_traits::state<MotorControl>;
 
   constexpr state stateTable[3] =
-  {
-    state(StateId::IDLE,         &MotorControl::OnEnterIdle,        nullptr),
-    state(StateId::RUNNING,      &MotorControl::OnEnterRunning,     nullptr),
-    state(StateId::WINDING_DOWN, &MotorControl::OnEnterWindingDown, &MotorControl::OnExitWindingDown)
-  };
+    {
+      state(StateId::IDLE, &MotorControl::OnEnterIdle, nullptr),
+      state(StateId::RUNNING, &MotorControl::OnEnterRunning, nullptr),
+      state(StateId::WINDING_DOWN, &MotorControl::OnEnterWindingDown, &MotorControl::OnExitWindingDown)};
 
   MotorControl motorControl;
 
-  etl::state_chart_ct<MotorControl, 
-                      motorControl, 
+  etl::state_chart_ct<MotorControl,
+                      motorControl,
                       transitionTable,
                       7,
                       stateTable,
                       3,
-                      StateId::IDLE> motorControlStateChart;
+                      StateId::IDLE>
+    motorControlStateChart;
 
   SUITE(test_state_chart_compile_time)
   {
@@ -407,7 +406,7 @@ namespace
     }
 
     //*************************************************************************
-    //TEST(test_state_chart_with_delegate)
+    // TEST(test_state_chart_with_delegate)
     //{
     //  motorControl.ClearStatistics();
 
@@ -544,9 +543,9 @@ namespace
     //}
 
     ////*************************************************************************
-    //TEST(test_fsm_emergency_stop)
+    // TEST(test_fsm_emergency_stop)
     //{
-    //  motorControl.ClearStatistics();
+    //   motorControl.ClearStatistics();
 
     //  // Now in Idle state.
 
@@ -609,4 +608,4 @@ namespace
       CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
     }
   }
-}
+} // namespace

@@ -3,26 +3,27 @@
 
 #include <sys/time.h>
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class Timer
-   {
-   public:
-      Timer();
-      void Start();
-      double GetTimeInMs() const;
+  class Timer
+  {
+  public:
 
-   private:
-      struct timeval m_startTime;
-   };
+    Timer();
+    void   Start();
+    double GetTimeInMs() const;
 
+  private:
 
-   namespace TimeHelpers
-   {
-      void SleepMs(int ms);
-   }
+    struct timeval m_startTime;
+  };
 
+  namespace TimeHelpers
+  {
+    void SleepMs(int ms);
+  }
 
-}
+} // namespace UnitTest
 
 #endif

@@ -4,19 +4,21 @@
 #include "Config.h"
 #ifndef UNITTEST_NO_EXCEPTIONS
 
-#include "HelperMacros.h"
-#include <exception>
+  #include "HelperMacros.h"
+  #include <exception>
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class UNITTEST_LINKAGE RequiredCheckException : public std::exception
-   {
-   public:
-      RequiredCheckException();
-      virtual ~RequiredCheckException() throw();
-   };
+  class UNITTEST_LINKAGE RequiredCheckException : public std::exception
+  {
+  public:
 
-}
+    RequiredCheckException();
+    virtual ~RequiredCheckException() throw();
+  };
+
+} // namespace UnitTest
 
 #endif
 

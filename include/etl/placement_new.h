@@ -53,14 +53,20 @@ SOFTWARE.
 #if ETL_USING_STD_NEW
   #include <new>
 #else
-  //*****************************************************************************
-  // Define placement new if no new header is available.
-  //*****************************************************************************
-  inline void* operator new(size_t, void* p) ETL_NOEXCEPT { return p; }
-  inline void* operator new[](size_t, void* p) ETL_NOEXCEPT { return p; }
+//*****************************************************************************
+// Define placement new if no new header is available.
+//*****************************************************************************
+inline void* operator new(size_t, void* p) ETL_NOEXCEPT
+{
+  return p;
+}
+inline void* operator new[](size_t, void* p) ETL_NOEXCEPT
+{
+  return p;
+}
 
-  inline void operator delete(void*, void*) ETL_NOEXCEPT {}
-  inline void operator delete[](void*, void*) ETL_NOEXCEPT{}
+inline void operator delete(void*, void*) ETL_NOEXCEPT {}
+inline void operator delete[](void*, void*) ETL_NOEXCEPT {}
 
 #endif
 

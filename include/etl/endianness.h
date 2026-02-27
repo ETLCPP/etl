@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_ENDIAN_INCLUDED
 
 #include "platform.h"
-#include "enum_type.h"
 #include "binary.h"
+#include "enum_type.h"
 
 #include <stdint.h>
 
@@ -100,9 +100,9 @@ namespace etl
   {
     enum enum_type
     {
-      little  = ETL_ENDIAN_LITTLE,
-      big     = ETL_ENDIAN_BIG,
-      native  = ETL_ENDIAN_NATIVE
+      little = ETL_ENDIAN_LITTLE,
+      big    = ETL_ENDIAN_BIG,
+      native = ETL_ENDIAN_NATIVE
     };
 
     ETL_DECLARE_ENUM_TYPE(endian, int)
@@ -117,7 +117,7 @@ namespace etl
   //***************************************************************************
   struct endianness
   {
-    etl::endian operator ()() const
+    etl::endian operator()() const
     {
       return etl::endian(*this);
     }
@@ -187,6 +187,6 @@ namespace etl
       return value;
     }
   }
-}
+} // namespace etl
 
 #endif

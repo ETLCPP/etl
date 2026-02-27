@@ -48,6 +48,6 @@ namespace etl
   template <typename T>
   inline constexpr size_t tuple_size_v = tuple_size<T>::value;
 #endif
-}
+} // namespace etl
 
 #endif

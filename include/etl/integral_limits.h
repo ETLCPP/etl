@@ -34,8 +34,8 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#include <stddef.h>
 #include <limits.h>
+#include <stddef.h>
 
 #include "private/minmax_push.h"
 
@@ -46,11 +46,11 @@ SOFTWARE.
 //*****************************************************************************
 
 #ifndef LLONG_MAX
-  #define LLONG_MAX	9223372036854775807LL
+  #define LLONG_MAX 9223372036854775807LL
 #endif
 
 #ifndef LLONG_MIN
-  #define LLONG_MIN	(-LLONG_MAX - 1LL)
+  #define LLONG_MIN (-LLONG_MAX - 1LL)
 #endif
 
 #ifndef ULLONG_MAX
@@ -69,7 +69,7 @@ namespace etl
     /// In C++17 and above this is not necessary, as the inline keyword may be used.
     /// At the time of writing, the ETL is generally aimed to be compatible with C++98 and above.
     //*****************************************************************************
-    
+
     //*********************************
     // signed char
     template <typename T = void>
@@ -85,13 +85,13 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT signed char statics_signed_char<T>::min;
-    
+
     template <typename T>
     ETL_CONSTANT signed char statics_signed_char<T>::max;
-    
+
     template <typename T>
     ETL_CONSTANT int statics_signed_char<T>::bits;
-    
+
     template <typename T>
     ETL_CONSTANT bool statics_signed_char<T>::is_signed;
 
@@ -446,7 +446,7 @@ namespace etl
       static ETL_CONSTANT int      bits      = 32;
       static ETL_CONSTANT bool     is_signed = false;
     };
-     
+
     template <typename T>
     ETL_CONSTANT char32_t statics_char32_t<T>::min;
 
@@ -461,7 +461,7 @@ namespace etl
 #endif
 
 #if ETL_USING_20BIT_TYPES
-template <typename T = void>
+    template <typename T = void>
     struct statics___int20
     {
       typedef __int20 value_type;
@@ -507,7 +507,7 @@ template <typename T = void>
     template <typename T>
     ETL_CONSTANT bool statics_unsigned___int20<T>::is_signed;
 #endif
-  }
+  } // namespace private_integral_limits
 
   //***************************************************************************
   ///\ingroup integral_limits
@@ -594,7 +594,7 @@ template <typename T = void>
   //***************************************************************************
   template <>
   struct integral_limits<long long> : public private_integral_limits::statics_long_long<>
-  {    
+  {
   };
 
   //***************************************************************************
@@ -605,7 +605,7 @@ template <typename T = void>
   {
   };
 
-  #if ETL_USING_20BIT_TYPES
+#if ETL_USING_20BIT_TYPES
   //***************************************************************************
   ///\ingroup integral_limits
   //***************************************************************************
@@ -618,8 +618,8 @@ template <typename T = void>
   struct integral_limits<unsigned __int20> : public private_integral_limits::statics_unsigned___int20<>
   {
   };
-  #endif
-}
+#endif
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

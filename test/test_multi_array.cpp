@@ -31,8 +31,8 @@ SOFTWARE.
 #include "etl/array.h"
 #include "etl/multi_array.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <iterator>
 
 #include "etl/integral_limits.h"
@@ -47,24 +47,24 @@ namespace
     using Data         = etl::multi_array<int, SIZE1, SIZE2>;
     using Compare_Data = std::array<std::array<int, SIZE2>, SIZE1>;
 
-    Compare_Data compare_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+    Compare_Data compare_data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
     //*************************************************************************
     TEST(test_constructor)
     {
-      Data data   = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
-      CHECK_EQUAL(data.size(),     SIZE1);
+      CHECK_EQUAL(data.size(), SIZE1);
       CHECK_EQUAL(data.max_size(), SIZE1);
 
-      CHECK_EQUAL(data[0].size(),     SIZE2);
+      CHECK_EQUAL(data[0].size(), SIZE2);
       CHECK_EQUAL(data[0].max_size(), SIZE2);
     }
 
     //*************************************************************************
     TEST(test_assignment)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
       Data other_data;
 
       other_data = data;
@@ -77,7 +77,7 @@ namespace
     //*************************************************************************
     TEST(test_at)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -94,7 +94,7 @@ namespace
     //*************************************************************************
     TEST(test_at_const)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -110,7 +110,7 @@ namespace
     //*************************************************************************
     TEST(test_index_operator)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -124,7 +124,7 @@ namespace
     //*************************************************************************
     TEST(test_index_operator_const)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -138,7 +138,7 @@ namespace
     //*************************************************************************
     TEST(test_front)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       int& ref = data.front().front();
       CHECK(ref == compare_data.front().front());
@@ -147,7 +147,7 @@ namespace
     //*************************************************************************
     TEST(test_front_const)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       const int& ref = data.front().front();
       CHECK(ref == compare_data.front().front());
@@ -156,7 +156,7 @@ namespace
     //*************************************************************************
     TEST(test_back)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       int& ref = data.back().back();
       CHECK(ref == compare_data.back().back());
@@ -165,7 +165,7 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       const int& ref = data.back().back();
       CHECK(ref == compare_data.back().back());
@@ -174,7 +174,7 @@ namespace
     //*************************************************************************
     TEST(test_data)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       bool isEqual = std::equal(data.begin(), data.end(), data.data());
 
@@ -184,7 +184,7 @@ namespace
     //*************************************************************************
     TEST(test_data_const)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       bool isEqual = std::equal(data.begin(), data.end(), data.data());
 
@@ -194,7 +194,7 @@ namespace
     //*************************************************************************
     TEST(test_begin)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(data.begin() == &data[0]);
       CHECK(data[0].begin() == &data[0][0]);
@@ -206,7 +206,7 @@ namespace
     //*************************************************************************
     TEST(test_end)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(data.end() == &data[0] + SIZE1);
       CHECK(data[0].end() == &data[0][0] + SIZE2);
@@ -218,7 +218,7 @@ namespace
     //*************************************************************************
     TEST(test_cbegin)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(data.cbegin() == &data[0]);
       CHECK(data[0].cbegin() == &data[0][0]);
@@ -230,7 +230,7 @@ namespace
     //*************************************************************************
     TEST(test_cend)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(data.cend() == &data[0] + SIZE1);
       CHECK(data[0].cend() == &data[0][0] + SIZE2);
@@ -242,7 +242,7 @@ namespace
     //*************************************************************************
     TEST(test_rbegin)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       typedef etl::multi_array<int, SIZE2> Inner;
 
@@ -256,7 +256,7 @@ namespace
     //*************************************************************************
     TEST(test_rend)
     {
-      Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       typedef etl::multi_array<int, SIZE2> Inner;
 
@@ -270,7 +270,7 @@ namespace
     //*************************************************************************
     TEST(test_crbegin)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       typedef etl::multi_array<int, SIZE2> Inner;
 
@@ -284,7 +284,7 @@ namespace
     //*************************************************************************
     TEST(test_crend)
     {
-      const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      const Data data = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       typedef etl::multi_array<int, SIZE2> Inner;
 
@@ -328,9 +328,9 @@ namespace
     //*************************************************************************
     TEST(test_fill)
     {
-      Data data;
+      Data                                 data;
       typedef etl::multi_array<int, SIZE2> Inner;
-      const Inner fillData = { { 12, 13, 14 } };
+      const Inner                          fillData = {{12, 13, 14}};
 
       data.fill(fillData);
 
@@ -343,11 +343,11 @@ namespace
     //*************************************************************************
     TEST(test_swap)
     {
-      Data data1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data2 = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
+      Data data1 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data data2 = {{{12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23}}};
 
-      Data data1b = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
-      Data data2b = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data1b = {{{12, 13, 14}, {15, 16, 17}, {18, 19, 20}, {21, 22, 23}}};
+      Data data2b = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       using ETL_OR_STD::swap;
       swap(data1, data2);
@@ -359,13 +359,13 @@ namespace
     //*************************************************************************
     TEST(test_assign)
     {
-      Data initial = { { { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Data source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Data check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
+      Data initial = {{{-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}, {-1, -1, -1}}};
+      Data source  = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data check1  = {{{0, 1, 2}, {3, 4, 5}, {-1, -1, -1}, {-1, -1, -1}}};
+      Data check2  = {{{0, 1, 2}, {3, 4, 5}, {99, 99, 99}, {99, 99, 99}}};
 
       typedef etl::multi_array<int, SIZE2> Inner;
-      const Inner ninetynine = { { 99, 99, 99 } };
+      const Inner                          ninetynine = {{99, 99, 99}};
 
       Data data;
 
@@ -390,15 +390,15 @@ namespace
     //*************************************************************************
     TEST(test_insert_value)
     {
-      Data initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data check1  = { { { 12, 13, 14 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check2  = { { { 0, 1, 2 }, { 12, 13, 14 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 12, 13, 14 } } };
+      Data initial = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data check1  = {{{12, 13, 14}, {0, 1, 2}, {3, 4, 5}, {6, 7, 8}}};
+      Data check2  = {{{0, 1, 2}, {12, 13, 14}, {3, 4, 5}, {6, 7, 8}}};
+      Data check3  = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {12, 13, 14}}};
 
       typedef etl::multi_array<int, SIZE2> Inner;
-      const Inner inserted = { { 12, 13, 14 } };
+      const Inner                          inserted = {{12, 13, 14}};
 
-      Data data;
+      Data           data;
       Data::iterator result;
 
       // Insert beginning.
@@ -426,8 +426,8 @@ namespace
     //*************************************************************************
     TEST(test_equal)
     {
-      Data data1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data2 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data1 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data data2 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(data1 == data2);
     }
@@ -435,8 +435,8 @@ namespace
     //*************************************************************************
     TEST(test_not_equal)
     {
-      Data data1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data data2 = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data1 = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data data2 = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
       CHECK(data1 != data2);
     }
@@ -444,49 +444,49 @@ namespace
     //*************************************************************************
     TEST(test_less_than)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Data greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
-      CHECK(lesser    < data);
-      CHECK(!(data    < data));
+      CHECK(lesser < data);
+      CHECK(!(data < data));
       CHECK(!(greater < data));
     }
 
     //*************************************************************************
     TEST(test_less_than_equal)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Data greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
-      CHECK(lesser    <= data);
-      CHECK(data      <= data);
+      CHECK(lesser <= data);
+      CHECK(data <= data);
       CHECK(!(greater <= data));
     }
 
     //*************************************************************************
     TEST(test_greater_than)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Data greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
-      CHECK(greater  > data);
-      CHECK(!(data   > data));
+      CHECK(greater > data);
+      CHECK(!(data > data));
       CHECK(!(lesser > data));
     }
 
     //*************************************************************************
     TEST(test_greater_than_equal)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data    = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}}};
+      Data lesser  = {{{0, 1, 2}, {3, 4, 4}, {6, 7, 8}, {9, 10, 11}}};
+      Data greater = {{{0, 1, 2}, {3, 4, 6}, {6, 7, 8}, {9, 10, 11}}};
 
-      CHECK(greater  >= data);
-      CHECK(data     >= data);
+      CHECK(greater >= data);
+      CHECK(data >= data);
       CHECK(!(lesser >= data));
     }
   }
-}
+} // namespace

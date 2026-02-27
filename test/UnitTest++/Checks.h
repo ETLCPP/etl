@@ -14,11 +14,11 @@
 #endif
 
 #include "Config.h"
-#include "TestResults.h"
 #include "MemoryOutStream.h"
-#include<iomanip> 
+#include "TestResults.h"
+#include <iomanip>
 
-namespace UnitTest 
+namespace UnitTest
 {
   template <typename T>
   typename std::enable_if<!std::is_pointer<T>::value, std::string>::type
@@ -159,231 +159,231 @@ namespace UnitTest
   }
 #endif
 
-   template< typename Value >
-   bool Check(Value const& value)
-   {
-      return !!value; // doing double negative to avoid silly VS warnings
-   }
+  template < typename Value >
+  bool Check(Value const& value)
+  {
+    return !!value; // doing double negative to avoid silly VS warnings
+  }
 
-   template< typename Value >
-   bool CheckFalse(Value const& value)
-   {
-     return !value;
-   }
+  template < typename Value >
+  bool CheckFalse(Value const& value)
+  {
+    return !value;
+  }
 
 #if __cplusplus >= 201103L
-   template< typename Expected, typename Actual >
-   void CheckEqual(TestResults& results, Expected&& expected, Actual&& actual, TestDetails const& details)
-   {
-     if (!(expected == actual))
-     {
-       UnitTest::MemoryOutStream stream;
-       stream << "Expected " 
-         << DisplayValue(expected) << " but was " << DisplayValue(actual);
+  template < typename Expected, typename Actual >
+  void CheckEqual(TestResults& results, Expected&& expected, Actual&& actual, TestDetails const& details)
+  {
+    if (!(expected == actual))
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << "Expected "
+             << DisplayValue(expected) << " but was " << DisplayValue(actual);
 
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
 #else
-   template< typename Expected, typename Actual >
-   void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
-   {
-     if (!(expected == actual))
-     {
-       UnitTest::MemoryOutStream stream;
-       stream << "Expected "
-         << DisplayValue(expected) << " but was " << DisplayValue(actual);
+  template < typename Expected, typename Actual >
+  void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+  {
+    if (!(expected == actual))
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << "Expected "
+             << DisplayValue(expected) << " but was " << DisplayValue(actual);
 
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
 #endif
 
-   template< typename Expected, typename Actual >
-   void CheckEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
-   {
-     if (!(expected == actual))
-     {
-       UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') 
-              << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (expected & ~(typename std::make_unsigned<Expected>::type(0))) 
-              << " but was 0x" << std::setw(2 * sizeof(Actual))   << (actual   & ~(typename std::make_unsigned<Actual>::type(0)));
+  template < typename Expected, typename Actual >
+  void CheckEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+  {
+    if (!(expected == actual))
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << std::hex << std::uppercase << std::setfill('0')
+             << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (expected & ~(typename std::make_unsigned<Expected>::type(0)))
+             << " but was 0x" << std::setw(2 * sizeof(Actual)) << (actual & ~(typename std::make_unsigned<Actual>::type(0)));
 
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
 
-   template< typename Expected, typename Actual >
-   void CheckNotEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
-   {
-     if (expected == actual)
-     {
-       UnitTest::MemoryOutStream stream;
-       stream << "Expected not equal, but both values are" << actual;
+  template < typename Expected, typename Actual >
+  void CheckNotEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+  {
+    if (expected == actual)
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << "Expected not equal, but both values are" << actual;
 
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
 
-   template< typename Expected, typename Actual >
-   void CheckNotEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
-   {
-     if (expected == actual)
-     {
-       UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) 
-              << "Expected not equal, but both values are " << (actual & ~(typename std::make_unsigned<Actual>::type(0)));
+  template < typename Expected, typename Actual >
+  void CheckNotEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+  {
+    if (expected == actual)
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual))
+             << "Expected not equal, but both values are " << (actual & ~(typename std::make_unsigned<Actual>::type(0)));
 
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
 
-   UNITTEST_LINKAGE void CheckEqual(TestResults& results, char const* expected, char const* actual, TestDetails const& details);
+  UNITTEST_LINKAGE void CheckEqual(TestResults& results, char const* expected, char const* actual, TestDetails const& details);
 
-   UNITTEST_LINKAGE void CheckEqual(TestResults& results, char* expected, char* actual, TestDetails const& details);
+  UNITTEST_LINKAGE void CheckEqual(TestResults& results, char* expected, char* actual, TestDetails const& details);
 
-   UNITTEST_LINKAGE void CheckEqual(TestResults& results, char* expected, char const* actual, TestDetails const& details);
+  UNITTEST_LINKAGE void CheckEqual(TestResults& results, char* expected, char const* actual, TestDetails const& details);
 
-   UNITTEST_LINKAGE void CheckEqual(TestResults& results, char const* expected, char* actual, TestDetails const& details);
+  UNITTEST_LINKAGE void CheckEqual(TestResults& results, char const* expected, char* actual, TestDetails const& details);
 
-   template< typename Expected, typename Actual, typename Tolerance >
-   bool AreClose(Expected const& expected, Actual const& actual, Tolerance const& tolerance)
-   {
-      return (actual >= (expected - tolerance)) && (actual <= (expected + tolerance));
-   }
+  template < typename Expected, typename Actual, typename Tolerance >
+  bool AreClose(Expected const& expected, Actual const& actual, Tolerance const& tolerance)
+  {
+    return (actual >= (expected - tolerance)) && (actual <= (expected + tolerance));
+  }
 
-   template< typename Expected, typename Actual, typename Tolerance >
-   void CheckClose(TestResults& results, Expected const& expected, Actual const& actual, Tolerance const& tolerance,
-                   TestDetails const& details)
-   {
-      if (!AreClose(expected, actual, tolerance))
+  template < typename Expected, typename Actual, typename Tolerance >
+  void CheckClose(TestResults& results, Expected const& expected, Actual const& actual, Tolerance const& tolerance,
+                  TestDetails const& details)
+  {
+    if (!AreClose(expected, actual, tolerance))
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << "Expected " << expected << " +/- " << tolerance << " but was " << actual;
+
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
+
+  template < typename Expected, typename Actual, typename Tolerance >
+  void CheckNotClose(TestResults& results, Expected const& expected, Actual const& actual, Tolerance const& tolerance,
+                     TestDetails const& details)
+  {
+    if (AreClose(expected, actual, tolerance))
+    {
+      UnitTest::MemoryOutStream stream;
+      stream << "Expected " << expected << " +/- " << tolerance << " but was " << actual;
+
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
+
+  template < typename Expected, typename Actual >
+  void CheckArrayEqual(TestResults& results, Expected const& expected, Actual const& actual,
+                       size_t const count, TestDetails const& details)
+  {
+    bool equal = true;
+    for (size_t i = 0; i < count; ++i)
+      equal &= (expected[i] == actual[i]);
+
+    if (!equal)
+    {
+      UnitTest::MemoryOutStream stream;
+
+      stream << "Expected [ ";
+
+      for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
+        stream << DisplayValue(expected[expectedIndex]) << " ";
+
+      stream << "] but was [ ";
+
+      for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
+        stream << DisplayValue(actual[actualIndex]) << " ";
+
+      stream << "]";
+
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
+
+  template < typename Expected, typename Actual, typename Tolerance >
+  bool ArrayAreClose(Expected const& expected, Actual const& actual, size_t const count, Tolerance const& tolerance)
+  {
+    bool equal = true;
+    for (size_t i = 0; i < count; ++i)
+      equal &= AreClose(expected[i], actual[i], tolerance);
+    return equal;
+  }
+
+  template < typename Expected, typename Actual, typename Tolerance >
+  void CheckArrayClose(TestResults& results, Expected const& expected, Actual const& actual,
+                       size_t const count, Tolerance const& tolerance, TestDetails const& details)
+  {
+    bool equal = ArrayAreClose(expected, actual, count, tolerance);
+
+    if (!equal)
+    {
+      UnitTest::MemoryOutStream stream;
+
+      stream << "Expected [ ";
+      for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
+        stream << expected[expectedIndex] << " ";
+      stream << "] +/- " << tolerance << " but was [ ";
+
+      for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
+        stream << actual[actualIndex] << " ";
+      stream << "]";
+
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
+
+  template < typename Expected, typename Actual, typename Tolerance >
+  void CheckArray2DClose(TestResults& results, Expected const& expected, Actual const& actual,
+                         size_t const rows, size_t const columns, Tolerance const& tolerance, TestDetails const& details)
+  {
+    bool equal = true;
+    for (size_t i = 0; i < rows; ++i)
+      equal &= ArrayAreClose(expected[i], actual[i], columns, tolerance);
+
+    if (!equal)
+    {
+      UnitTest::MemoryOutStream stream;
+
+      stream << "Expected [ ";
+
+      for (size_t expectedRow = 0; expectedRow < rows; ++expectedRow)
       {
-         UnitTest::MemoryOutStream stream;
-         stream << "Expected " << expected << " +/- " << tolerance << " but was " << actual;
-
-         results.OnTestFailure(details, stream.GetText());
+        stream << "[ ";
+        for (size_t expectedColumn = 0; expectedColumn < columns; ++expectedColumn)
+          stream << expected[expectedRow][expectedColumn] << " ";
+        stream << "] ";
       }
-   }
 
-   template< typename Expected, typename Actual, typename Tolerance >
-   void CheckNotClose(TestResults& results, Expected const& expected, Actual const& actual, Tolerance const& tolerance,
-                      TestDetails const& details)
-   {
-     if (AreClose(expected, actual, tolerance))
-     {
-       UnitTest::MemoryOutStream stream;
-       stream << "Expected " << expected << " +/- " << tolerance << " but was " << actual;
+      stream << "] +/- " << tolerance << " but was [ ";
 
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
-
-   template< typename Expected, typename Actual >
-   void CheckArrayEqual(TestResults& results, Expected const& expected, Actual const& actual,
-                        size_t const count, TestDetails const& details)
-   {
-     bool equal = true;
-     for (size_t i = 0; i < count; ++i)
-       equal &= (expected[i] == actual[i]);
-
-     if (!equal)
-     {
-       UnitTest::MemoryOutStream stream;
-
-       stream << "Expected [ ";
-
-       for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
-         stream << DisplayValue(expected[expectedIndex]) << " ";
-
-       stream << "] but was [ ";
-
-       for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
-         stream << DisplayValue(actual[actualIndex]) << " ";
-
-       stream << "]";
-
-       results.OnTestFailure(details, stream.GetText());
-     }
-   }
-
-   template< typename Expected, typename Actual, typename Tolerance >
-   bool ArrayAreClose(Expected const& expected, Actual const& actual, size_t const count, Tolerance const& tolerance)
-   {
-      bool equal = true;
-      for (size_t i = 0; i < count; ++i)
-         equal &= AreClose(expected[i], actual[i], tolerance);
-      return equal;
-   }
-
-   template< typename Expected, typename Actual, typename Tolerance >
-   void CheckArrayClose(TestResults& results, Expected const& expected, Actual const& actual,
-                        size_t const count, Tolerance const& tolerance, TestDetails const& details)
-   {
-      bool equal = ArrayAreClose(expected, actual, count, tolerance);
-
-      if (!equal)
+      for (size_t actualRow = 0; actualRow < rows; ++actualRow)
       {
-         UnitTest::MemoryOutStream stream;
-
-         stream << "Expected [ ";
-         for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
-            stream << expected[expectedIndex] << " ";
-         stream << "] +/- " << tolerance << " but was [ ";
-
-         for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
-            stream << actual[actualIndex] << " ";
-         stream << "]";
-
-         results.OnTestFailure(details, stream.GetText());
+        stream << "[ ";
+        for (size_t actualColumn = 0; actualColumn < columns; ++actualColumn)
+          stream << actual[actualRow][actualColumn] << " ";
+        stream << "] ";
       }
-   }
 
-   template< typename Expected, typename Actual, typename Tolerance >
-   void CheckArray2DClose(TestResults& results, Expected const& expected, Actual const& actual,
-                          size_t const rows, size_t const columns, Tolerance const& tolerance, TestDetails const& details)
-   {
-      bool equal = true;
-      for (size_t i = 0; i < rows; ++i)
-         equal &= ArrayAreClose(expected[i], actual[i], columns, tolerance);
+      stream << "]";
 
-      if (!equal)
-      {
-         UnitTest::MemoryOutStream stream;
+      results.OnTestFailure(details, stream.GetText());
+    }
+  }
 
-         stream << "Expected [ ";
-
-         for (size_t expectedRow = 0; expectedRow < rows; ++expectedRow)
-         {
-            stream << "[ ";
-            for (size_t expectedColumn = 0; expectedColumn < columns; ++expectedColumn)
-               stream << expected[expectedRow][expectedColumn] << " ";
-            stream << "] ";
-         }
-
-         stream << "] +/- " << tolerance << " but was [ ";
-
-         for (size_t actualRow = 0; actualRow < rows; ++actualRow)
-         {
-            stream << "[ ";
-            for (size_t actualColumn = 0; actualColumn < columns; ++actualColumn)
-               stream << actual[actualRow][actualColumn] << " ";
-            stream << "] ";
-         }
-
-         stream << "]";
-
-         results.OnTestFailure(details, stream.GetText());
-      }
-   }
-
-}
+} // namespace UnitTest
 
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
-#pragma GCC diagnostic pop
+  #pragma GCC diagnostic pop
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
-#pragma clang diagnostic pop
+  #pragma clang diagnostic pop
 #endif
 
 #endif

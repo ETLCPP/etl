@@ -30,14 +30,14 @@ SOFTWARE.
 
 #include "etl/threshold.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <math.h>
 
 namespace
 {
   constexpr size_t Size = 10U;
- 
+
   using IntThreshold        = etl::threshold<int>;
   using IntThresholdGreater = etl::threshold<int, std::greater<int>>;
 
@@ -46,45 +46,39 @@ namespace
 
   struct Compare
   {
-    bool operator ()(double lhs, double rhs) const
+    bool operator()(double lhs, double rhs) const
     {
       return fabs(lhs - rhs) < 0.1;
     }
   };
 
   //***********************************
-  const std::array<int, Size> input1 = 
-  { 
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-  };
+  const std::array<int, Size> input1 =
+    {
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-  const std::array<int, Size> result1a = 
-  { 
-    0, 0, 0, 0, 9, 9, 9, 9, 9, 9
-  };
+  const std::array<int, Size> result1a =
+    {
+      0, 0, 0, 0, 9, 9, 9, 9, 9, 9};
 
-  const std::array<int, Size> result1b = 
-  { 
-    9, 9, 9, 9, 9, 0, 0, 0, 0, 0
-  };
+  const std::array<int, Size> result1b =
+    {
+      9, 9, 9, 9, 9, 0, 0, 0, 0, 0};
 
   std::array<int, Size> output1;
 
   //***********************************
-  const std::array<double, Size> input2 = 
-  { 
-    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
-  };
+  const std::array<double, Size> input2 =
+    {
+      0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 
-  const std::array<double, Size> result2a = 
-  { 
-    0.0, 0.0, 0.0, 0.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0
-  };
+  const std::array<double, Size> result2a =
+    {
+      0.0, 0.0, 0.0, 0.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0};
 
-  const std::array<double, Size> result2b = 
-  { 
-    9.0, 9.0, 9.0, 9.0, 9.0, 0.0, 0.0, 0.0, 0.0, 0.0
-  };
+  const std::array<double, Size> result2b =
+    {
+      9.0, 9.0, 9.0, 9.0, 9.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   std::array<double, Size> output2;
 
@@ -134,4 +128,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

@@ -30,9 +30,9 @@ SOFTWARE.
 
 #include <queue>
 
-#include "etl/queue.h"
-#include "etl/math.h"
 #include "data.h"
+#include "etl/math.h"
+#include "etl/queue.h"
 
 namespace
 {
@@ -52,12 +52,12 @@ namespace
     {
     }
 
-    char c;
-    int i;
+    char   c;
+    int    i;
     double d;
   };
 
-  bool operator == (const Item& lhs, const Item& rhs)
+  bool operator==(const Item& lhs, const Item& rhs)
   {
 #include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
@@ -254,7 +254,7 @@ namespace
     //*************************************************************************
     TEST(test_front_const)
     {
-      etl::queue<int, 4> queue;
+      etl::queue<int, 4>        queue;
       const etl::queue<int, 4>& constQueue = queue;
 
       queue.push(1);
@@ -288,7 +288,7 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
-      etl::queue<int, 4> queue;
+      etl::queue<int, 4>        queue;
       const etl::queue<int, 4>& constQueue = queue;
 
       queue.push(1);
@@ -557,9 +557,9 @@ namespace
       queue.push(3);
       queue.push(4);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       queue = queue;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       CHECK(queue.max_size() == queue.size());
 
@@ -576,4 +576,4 @@ namespace
       queue.pop();
     }
   }
-}
+} // namespace

@@ -74,11 +74,11 @@ namespace etl
     }
   };
 
-  template<class... Args>
+  template <class... Args>
   ETL_CONSTEXPR14 bool check_f(const char* fmt)
   {
     // to be implemented later
-    //return fmt[0] == 0; // actual check
+    // return fmt[0] == 0; // actual check
 
     (void)fmt;
     return true;
@@ -86,30 +86,30 @@ namespace etl
 
   inline void please_note_this_is_error_message_1() noexcept {}
 
-  template<class... Args>
+  template <class... Args>
   struct basic_format_string
   {
     inline ETL_CONSTEVAL basic_format_string(const char* fmt)
-    : _sv(fmt)
+      : _sv(fmt)
     {
       bool format_string_ok = check_f(fmt);
 
       if (!format_string_ok)
       {
-        //if (etl::is_constant_evaluated()) // compile time error path
+        // if (etl::is_constant_evaluated()) // compile time error path
         //{
-        //  // calling a non-constexpr function in a consteval context to trigger a compile error
-        //  please_note_this_is_error_message_1();
-        //}
-        //else // run time error path
+        //   // calling a non-constexpr function in a consteval context to trigger a compile error
+        //   please_note_this_is_error_message_1();
+        // }
+        // else // run time error path
         //{
-          ETL_ASSERT_FAIL_AND_RETURN(ETL_ERROR(bad_format_string_exception));
+        ETL_ASSERT_FAIL_AND_RETURN(ETL_ERROR(bad_format_string_exception));
         //}
       }
     }
 
-    ETL_CONSTEXPR basic_format_string(const basic_format_string& other) = default;
-    ETL_CONSTEXPR14 basic_format_string& operator=(const basic_format_string& other) = default;
+    ETL_CONSTEXPR                        basic_format_string(const basic_format_string& other) = default;
+    ETL_CONSTEXPR14 basic_format_string& operator=(const basic_format_string& other)           = default;
 
     ETL_CONSTEXPR string_view get() const
     {
@@ -117,10 +117,11 @@ namespace etl
     }
 
   private:
+
     string_view _sv;
   };
 
-  template<class... Args>
+  template <class... Args>
   using format_string = basic_format_string<type_identity_t<Args>...>;
 
   // Supported types to format
@@ -145,19 +146,23 @@ namespace etl
     etl::string_view,
     const void*
     // basic_format_arg::handle,
-  >;
+    >;
 
-  template<class CharT>
+  template <class CharT>
   class basic_format_parse_context
   {
   public:
 
-    using iterator = string_view::const_iterator;
+    using iterator       = string_view::const_iterator;
     using const_iterator = string_view::const_iterator;
-    using char_type = CharT;
+    using char_type      = CharT;
 
     basic_format_parse_context(etl::string_view fmt, size_t n_args = 0)
-    : range(fmt), num_args(n_args), current(0), automatic_mode(false), manual_mode(false)
+      : range(fmt)
+      , num_args(n_args)
+      , current(0)
+      , automatic_mode(false)
+      , manual_mode(false)
     {
     }
 
@@ -184,7 +189,7 @@ namespace etl
       ETL_ASSERT(manual_mode == false, ETL_ERROR(bad_format_string_exception));
       automatic_mode = true;
       // TODO: compile time check
-      ETL_ASSERT(current < num_args, ETL_ERROR(bad_format_string_exception)/* not enough arguments for generated index */);
+      ETL_ASSERT(current < num_args, ETL_ERROR(bad_format_string_exception) /* not enough arguments for generated index */);
       return current++;
     }
 
@@ -193,23 +198,24 @@ namespace etl
       // manual index specification only allowed if not already in automatic mode
       ETL_ASSERT(automatic_mode == false, ETL_ERROR(bad_format_string_exception));
       manual_mode = true;
-      ETL_ASSERT(id < num_args, ETL_ERROR(bad_format_string_exception)/* index out of range */);
+      ETL_ASSERT(id < num_args, ETL_ERROR(bad_format_string_exception) /* index out of range */);
     }
 
   private:
-    etl::string_view range;
-    size_t num_args;
-    size_t current;
-    bool automatic_mode;
-    bool manual_mode;
 
-    template<class, class>
+    etl::string_view range;
+    size_t           num_args;
+    size_t           current;
+    bool             automatic_mode;
+    bool             manual_mode;
+
+    template <class, class>
     friend struct formatter;
   };
 
   using format_parse_context = basic_format_parse_context<char>;
 
-  template<class Context>
+  template <class Context>
   class basic_format_arg
   {
   public:
@@ -217,17 +223,19 @@ namespace etl
     class handle
     {
     public:
+
       void format(etl::basic_format_parse_context<char>& /* parse_ctx */,
-             Context& /*format_ctx*/)
+                  Context& /*format_ctx*/)
       {
-        //typename Context::template formatter_type<TD> f;
-        //parse_ctx.advance_to(f.parse(parse_ctx));
-        //format_ctx.advance_to(f.format(const_cast<TQ&>(static_cast<const TD&>(ref)), format_ctx));
+        // typename Context::template formatter_type<TD> f;
+        // parse_ctx.advance_to(f.parse(parse_ctx));
+        // format_ctx.advance_to(f.format(const_cast<TQ&>(static_cast<const TD&>(ref)), format_ctx));
       }
 
     private:
+
       const void* obj;
-      typedef void(*function_type)(etl::basic_format_parse_context<char>&, Context&, const void*);
+      typedef void (*function_type)(etl::basic_format_parse_context<char>&, Context&, const void*);
       function_type func;
     };
 
@@ -236,103 +244,104 @@ namespace etl
     }
 
     basic_format_arg(const bool v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const int v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const short v)
-    : data(static_cast<int>(v))
+      : data(static_cast<int>(v))
     {
     }
 
     basic_format_arg(const unsigned short v)
-    : data(static_cast<unsigned int>(v))
+      : data(static_cast<unsigned int>(v))
     {
     }
 
     basic_format_arg(const long int v)
-    : data(static_cast<long long int>(v))
+      : data(static_cast<long long int>(v))
     {
     }
 
     basic_format_arg(const unsigned int v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const long long int v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const unsigned long long int v)
-    : data(v)
+      : data(v)
     {
     }
 
     // Additional type to list of basic types as defined for std::basic_format_arg:
     // Mapping unsigned long to unsigned long long int
     basic_format_arg(const unsigned long v)
-    : data(static_cast<unsigned long long int>(v))
+      : data(static_cast<unsigned long long int>(v))
     {
     }
 
     basic_format_arg(const char* v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(char v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const signed char v)
-    : data(static_cast<char>(v))
+      : data(static_cast<char>(v))
     {
     }
 
     basic_format_arg(const unsigned char v)
-    : data(static_cast<char>(v))
+      : data(static_cast<char>(v))
     {
     }
 
     basic_format_arg(const float v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const double v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const long double v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const etl::string_view v)
-    : data(v)
+      : data(v)
     {
     }
 
     basic_format_arg(const etl::ibasic_string<char>& v)
-    : data(etl::string_view(v.data(), v.size()))
+      : data(etl::string_view(v.data(), v.size()))
     {
     }
 
-    basic_format_arg(const basic_format_arg& other): data(other.data)
+    basic_format_arg(const basic_format_arg& other)
+      : data(other.data)
     {
     }
 
     basic_format_arg(const void* v)
-    : data(v)
+      : data(v)
     {
     }
 
@@ -347,21 +356,26 @@ namespace etl
       return !etl::holds_alternative<etl::monostate>(data);
     }
 
-    template<class R, class Visitor>
+    template <class R, class Visitor>
     R visit(Visitor&& vis)
     {
       return etl::visit(etl::forward<Visitor>(vis), data);
     }
 
   private:
+
     supported_format_types data;
   };
 
-  template<class Context, class... Args>
+  template <class Context, class... Args>
   class format_arg_store
   {
   public:
-    format_arg_store(Args&... args): _args{args...} {}
+
+    format_arg_store(Args&... args)
+      : _args{args...}
+    {
+    }
 
     basic_format_arg<Context> get(size_t i) const
     {
@@ -374,19 +388,23 @@ namespace etl
     }
 
   private:
+
     etl::array<basic_format_arg<Context>, sizeof...(Args)> _args;
   };
 
-  template<class Context>
+  template <class Context>
   class basic_format_args
   {
   public:
-    template<class... Args>
-    basic_format_args(format_arg_store<Context, Args...>& store): _args(store.get())
+
+    template <class... Args>
+    basic_format_args(format_arg_store<Context, Args...>& store)
+      : _args(store.get())
     {
     }
 
-    basic_format_args(const basic_format_args<Context>& other): _args(other._args)
+    basic_format_args(const basic_format_args<Context>& other)
+      : _args(other._args)
     {
     }
 
@@ -408,6 +426,7 @@ namespace etl
     }
 
   private:
+
     etl::array_view<basic_format_arg<Context>> _args;
   };
 
@@ -433,37 +452,41 @@ namespace etl
     struct format_spec_t
     {
       etl::optional<size_t> index{etl::nullopt_t()};
-      spec_align_t align{spec_align_t::NONE}; // '<' / '>' / '^' / none (default)
-      char_type fill{' '}; // fill character (' ' is default)
-      spec_sign_t sign{spec_sign_t::MINUS}; // '+' / '-' (default) / ' '
-      bool hash{false}; // #
-      bool zero{false}; // 0
-      etl::optional<size_t> width{etl::nullopt_t()}; // the arg index if width_nested_replacement == true
-      bool width_nested_replacement{false}; // {}
-      etl::optional<size_t> precision{etl::nullopt_t()}; // the arg index if precision_nested_replacement == true
-      bool precision_nested_replacement{false}; // {}
-      bool locale_specific{false}; // 'L'
-      etl::optional<char> type{etl::nullopt_t()}; // literal 's', 'b', 'd', ...
+      spec_align_t          align{spec_align_t::NONE};           // '<' / '>' / '^' / none (default)
+      char_type             fill{' '};                           // fill character (' ' is default)
+      spec_sign_t           sign{spec_sign_t::MINUS};            // '+' / '-' (default) / ' '
+      bool                  hash{false};                         // #
+      bool                  zero{false};                         // 0
+      etl::optional<size_t> width{etl::nullopt_t()};             // the arg index if width_nested_replacement == true
+      bool                  width_nested_replacement{false};     // {}
+      etl::optional<size_t> precision{etl::nullopt_t()};         // the arg index if precision_nested_replacement == true
+      bool                  precision_nested_replacement{false}; // {}
+      bool                  locale_specific{false};              // 'L'
+      etl::optional<char>   type{etl::nullopt_t()};              // literal 's', 'b', 'd', ...
     };
-  }
+  } // namespace private_format
 
-  template<class OutputIt, class CharT>
+  template <class OutputIt, class CharT>
   class basic_format_context
   {
   public:
 
-    using iterator = OutputIt;
+    using iterator  = OutputIt;
     using char_type = CharT;
 
-    basic_format_context(const basic_format_context& other): _it(other._it), _format_args(other._format_args)
+    basic_format_context(const basic_format_context& other)
+      : _it(other._it)
+      , _format_args(other._format_args)
     {
     }
 
-    basic_format_context(OutputIt it, basic_format_args<basic_format_context>& fmt_args): _it(it), _format_args(fmt_args)
+    basic_format_context(OutputIt it, basic_format_args<basic_format_context>& fmt_args)
+      : _it(it)
+      , _format_args(fmt_args)
     {
     }
 
-    basic_format_context& operator= (const basic_format_context&) = delete;
+    basic_format_context& operator=(const basic_format_context&) = delete;
 
     basic_format_arg<basic_format_context> arg(size_t id) const
     {
@@ -483,20 +506,21 @@ namespace etl
     private_format::format_spec_t format_spec;
 
   private:
-    iterator _it;
+
+    iterator                                 _it;
     basic_format_args<basic_format_context>& _format_args;
   };
 
-  template<class OutputIt>
+  template <class OutputIt>
   using format_context = basic_format_context<OutputIt, char>;
 
-  template<class OutputIt>
+  template <class OutputIt>
   using format_args = basic_format_args<format_context<OutputIt>>;
 
-  template<class OutputIt>
+  template <class OutputIt>
   using format_arg = basic_format_arg<format_context<OutputIt>>;
 
-  template<class OutputIt, class Context = format_context<OutputIt>, class... Args>
+  template <class OutputIt, class Context = format_context<OutputIt>, class... Args>
   format_arg_store<Context, Args...> make_format_args(Args&... args)
   {
     return format_arg_store<Context, Args...>(args...);
@@ -517,7 +541,7 @@ namespace etl
     inline etl::optional<size_t> parse_num(format_parse_context& parse_ctx)
     {
       etl::optional<size_t> result;
-      auto fmt_it = parse_ctx.begin();
+      auto                  fmt_it = parse_ctx.begin();
       while (fmt_it != parse_ctx.end())
       {
         const char c = *fmt_it;
@@ -525,7 +549,8 @@ namespace etl
         {
           size_t old_value = result.value_or(0);
           size_t new_value = old_value * 10 + static_cast<size_t>(c - '0');
-          if (new_value < old_value) {
+          if (new_value < old_value)
+          {
             // Overflow detected
             ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
           }
@@ -547,11 +572,11 @@ namespace etl
     inline etl::optional<char> parse_any_of(format_parse_context& parse_ctx, etl::string_view chars)
     {
       etl::optional<char> result;
-      auto fmt_it = parse_ctx.begin();
+      auto                fmt_it = parse_ctx.begin();
       if (fmt_it != parse_ctx.end())
       {
-        const char c = *fmt_it;
-        auto it = etl::find(chars.cbegin(), chars.cend(), c);
+        const char c  = *fmt_it;
+        auto       it = etl::find(chars.cbegin(), chars.cend(), c);
         if (it != chars.cend())
         {
           result = *it;
@@ -568,7 +593,8 @@ namespace etl
       if (fmt_it != parse_ctx.end())
       {
         char value = *fmt_it;
-        if (value == c) {
+        if (value == c)
+        {
           ++fmt_it;
           parse_ctx.advance_to(fmt_it);
           return true;
@@ -612,7 +638,7 @@ namespace etl
     inline spec_align_t parse_fill_and_align(format_parse_context& parse_ctx, char_type& fill)
     {
       spec_align_t result = spec_align_t::NONE;
-      fill = ' '; // default
+      fill                = ' '; // default
 
       auto fmt_it = parse_ctx.begin();
       if (fmt_it != parse_ctx.end())
@@ -700,7 +726,7 @@ namespace etl
       return false;
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     void parse_format_spec(format_parse_context& parse_ctx, format_context<OutputIt>& fmt_context)
     {
       auto& format_spec = fmt_context.format_spec;
@@ -715,7 +741,8 @@ namespace etl
         format_spec.align = parse_fill_and_align(parse_ctx, format_spec.fill);
 
         etl::optional<char> sign = parse_any_of(parse_ctx, "+- ");
-        if (sign) {
+        if (sign)
+        {
           format_spec.sign = sign_from_char(*sign);
         }
 
@@ -744,15 +771,15 @@ namespace etl
         format_spec.type = parse_any_of(parse_ctx, "s?bBcdoxXaAeEfFgGpP");
       }
     }
-  }
+  } // namespace private_format
 
-  template<class T, class CharT = char>
+  template <class T, class CharT = char>
   struct formatter
   {
     using char_type = CharT;
   };
 
-  template<>
+  template <>
   struct formatter<etl::monostate>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -760,7 +787,7 @@ namespace etl
       return parse_ctx.end();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(etl::monostate arg, format_context<OutputIt>& fmt_ctx)
     {
       (void)arg;
@@ -771,7 +798,7 @@ namespace etl
   namespace private_format
   {
     // for 4321, return 1000
-    template<typename UnsignedT, typename = etl::enable_if_t<etl::is_unsigned<UnsignedT>::value>>
+    template <typename UnsignedT, typename = etl::enable_if_t<etl::is_unsigned<UnsignedT>::value>>
     UnsignedT get_highest_digit(UnsignedT value, size_t base = 10)
     {
       ETL_ASSERT(base > 1, ETL_ERROR(bad_format_string_exception));
@@ -784,19 +811,21 @@ namespace etl
       return result;
     }
 
-    template<typename T>
+    template <typename T>
     T int_pow(T base, T exp)
     {
       T result = 1;
-      while (exp > 0) {
-        if (exp % 2 == 1) result *= base;
+      while (exp > 0)
+      {
+        if (exp % 2 == 1)
+          result *= base;
         base *= base;
         exp /= 2;
       }
       return result;
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_sign(OutputIt& it, T value, const format_spec_t& spec)
     {
       char c = '\0';
@@ -830,7 +859,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_sequence(OutputIt& out_it, etl::string_view value)
     {
       auto it = value.cbegin();
@@ -842,7 +871,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_alternate_form(OutputIt& it, const format_spec_t& spec)
     {
       if (spec.hash && spec.type.has_value())
@@ -864,19 +893,19 @@ namespace etl
           case 'X':
             format_sequence(it, "0X");
             break;
-          // default: no prefix
+            // default: no prefix
         }
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_plain_char(OutputIt& it, char_type c)
     {
       *it = c;
       ++it;
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_escaped_char(OutputIt& it, char_type c)
     {
       switch (c)
@@ -905,7 +934,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void fill(OutputIt& it, size_t size, char_type c)
     {
       while (size > 0)
@@ -916,7 +945,7 @@ namespace etl
       }
     }
 
-    template<size_t default_base = 10>
+    template <size_t default_base = 10>
     inline size_t base_from_spec(const format_spec_t& spec)
     {
       size_t base = default_base;
@@ -941,7 +970,7 @@ namespace etl
           case 'X':
             base = 16;
             break;
-          // default: no prefix
+            // default: no prefix
         }
       }
       return base;
@@ -952,7 +981,7 @@ namespace etl
       return c >= 'A' && c <= 'Z';
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_digit_char(OutputIt& it, T value, const format_spec_t& spec)
     {
       if (value <= 9)
@@ -993,19 +1022,19 @@ namespace etl
     // used for both integers and float parts
     // skip_last_zeros helps in case of printing after-the-decimal zeros which are
     // redundant then
-    template<typename OutputIt, typename T, T default_base = 10, bool skip_last_zeros = false>
+    template <typename OutputIt, typename T, T default_base = 10, bool skip_last_zeros = false>
     void format_plain_num(OutputIt& it, T value, const format_spec_t& spec, size_t width = 0)
     {
       using UnsignedT = typename etl::make_unsigned<T>::type;
 
       UnsignedT unsigned_value = etl::absolute_unsigned(value);
 
-      size_t base = base_from_spec<default_base>(spec);
+      size_t    base          = base_from_spec<default_base>(spec);
       UnsignedT highest_digit = get_highest_digit<UnsignedT>(unsigned_value, base);
       if (width > 0)
       {
         UnsignedT align_highest_digit = int_pow<UnsignedT>(base, width - 1);
-        highest_digit = etl::max<UnsignedT>(align_highest_digit, highest_digit);
+        highest_digit                 = etl::max<UnsignedT>(align_highest_digit, highest_digit);
       }
 
       // this loop is iterated at least once, to print a number
@@ -1028,7 +1057,7 @@ namespace etl
     }
 
     // for integers
-    template<typename OutputIt, typename T, bool skip_last_zeros = false>
+    template <typename OutputIt, typename T, bool skip_last_zeros = false>
     void format_num(OutputIt& it, T value, const format_spec_t& spec)
     {
       size_t width = 0;
@@ -1039,27 +1068,27 @@ namespace etl
       format_plain_num(it, value, spec, width);
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_floating_default(OutputIt& it, T value, const format_spec_t& spec)
     {
       const size_t fractional_decimals = 6; // default
 
-      T integral;
-      T fractional = modf(value, &integral);
-      bool sign;
+      T                      integral;
+      T                      fractional = modf(value, &integral);
+      bool                   sign;
       unsigned long long int fractional_int;
       unsigned long long int integral_int;
       if (integral < 0.0)
       {
-        sign = true;
+        sign           = true;
         fractional_int = static_cast<unsigned long long int>(-fractional * pow(10., fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(-integral);
+        integral_int   = static_cast<unsigned long long int>(-integral);
       }
       else
       {
-        sign = false;
+        sign           = false;
         fractional_int = static_cast<unsigned long long int>(fractional * pow(10., fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(integral);
+        integral_int   = static_cast<unsigned long long int>(integral);
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1069,14 +1098,14 @@ namespace etl
     }
 
     // floating point in hex notation
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_floating_a(OutputIt& it, T value, const format_spec_t& spec)
     {
       static const size_t fractional_decimals = 10; // default
-      static const size_t exponent_decimals = 1;
-      long long int exponent_int = 0;
+      static const size_t exponent_decimals   = 1;
+      long long int       exponent_int        = 0;
 
-      bool sign;
+      bool                   sign;
       unsigned long long int fractional_int;
       unsigned long long int integral_int;
 
@@ -1099,15 +1128,15 @@ namespace etl
 
       if (integral < 0.0)
       {
-        sign = true;
+        sign           = true;
         fractional_int = static_cast<unsigned long long int>(-fractional * pow(static_cast<T>(0x10), fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(-integral);
+        integral_int   = static_cast<unsigned long long int>(-integral);
       }
       else
       {
-        sign = false;
+        sign           = false;
         fractional_int = static_cast<unsigned long long int>(fractional * pow(static_cast<T>(0x10), fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(integral);
+        integral_int   = static_cast<unsigned long long int>(integral);
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1131,14 +1160,14 @@ namespace etl
       private_format::format_plain_num<OutputIt, long long int, 16>(it, exponent_int, spec, exponent_decimals);
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_floating_e(OutputIt& it, T value, const format_spec_t& spec)
     {
       static const size_t fractional_decimals = 6; // default
-      static const size_t exponent_decimals = 2;
-      long long int exponent_int = 0;
+      static const size_t exponent_decimals   = 2;
+      long long int       exponent_int        = 0;
 
-      bool sign;
+      bool                   sign;
       unsigned long long int fractional_int;
       unsigned long long int integral_int;
 
@@ -1161,15 +1190,15 @@ namespace etl
 
       if (integral < 0.0)
       {
-        sign = true;
+        sign           = true;
         fractional_int = static_cast<unsigned long long int>(-fractional * pow(10., fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(-integral);
+        integral_int   = static_cast<unsigned long long int>(-integral);
       }
       else
       {
-        sign = false;
+        sign           = false;
         fractional_int = static_cast<unsigned long long int>(fractional * pow(10., fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(integral);
+        integral_int   = static_cast<unsigned long long int>(integral);
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1186,27 +1215,27 @@ namespace etl
       private_format::format_plain_num<OutputIt, long long int>(it, exponent_int, spec, exponent_decimals);
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_floating_f(OutputIt& it, T value, const format_spec_t& spec)
     {
       const size_t fractional_decimals = 6; // default
 
-      T integral;
-      T fractional = modf(value, &integral);
-      bool sign;
+      T                      integral;
+      T                      fractional = modf(value, &integral);
+      bool                   sign;
       unsigned long long int fractional_int;
       unsigned long long int integral_int;
       if (integral < 0.0)
       {
-        sign = true;
+        sign           = true;
         fractional_int = static_cast<unsigned long long int>(-fractional * pow(10., fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(-integral);
+        integral_int   = static_cast<unsigned long long int>(-integral);
       }
       else
       {
-        sign = false;
+        sign           = false;
         fractional_int = static_cast<unsigned long long int>(fractional * pow(10., fractional_decimals));
-        integral_int = static_cast<unsigned long long int>(integral);
+        integral_int   = static_cast<unsigned long long int>(integral);
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1218,19 +1247,21 @@ namespace etl
     class dummy_assign_to
     {
     public:
+
       dummy_assign_to& operator=(char_type)
       {
         return *this;
       }
     };
 
-    template<class OutputIt>
+    template <class OutputIt>
     class limit_assign_to
     {
     public:
+
       limit_assign_to(OutputIt o, bool is_active)
-      : out(o)
-      , active(is_active)
+        : out(o)
+        , active(is_active)
       {
       }
 
@@ -1244,24 +1275,26 @@ namespace etl
       }
 
     private:
+
       OutputIt out;
-      bool active;
+      bool     active;
     };
 
-    template<class OutputIt>
+    template <class OutputIt>
     class limit_iterator
     {
     public:
+
       limit_iterator(OutputIt& it, size_t n)
-      : out(it)
-      , limit(n)
+        : out(it)
+        , limit(n)
       {
       }
 
-      limit_iterator(const limit_iterator& other) = default;
-      limit_iterator(limit_iterator&& other) = default;
+      limit_iterator(const limit_iterator& other)            = default;
+      limit_iterator(limit_iterator&& other)                 = default;
       limit_iterator& operator=(const limit_iterator& other) = default;
-      limit_iterator& operator=(limit_iterator&& other) = default;
+      limit_iterator& operator=(limit_iterator&& other)      = default;
 
       limit_assign_to<OutputIt> operator*()
       {
@@ -1295,18 +1328,21 @@ namespace etl
       }
 
     private:
+
       OutputIt out;
-      size_t limit;
+      size_t   limit;
     };
 
     class counter_iterator
     {
     public:
-      counter_iterator(): count(0)
+
+      counter_iterator()
+        : count(0)
       {
       }
 
-      counter_iterator(const counter_iterator& other) = default;
+      counter_iterator(const counter_iterator& other)            = default;
       counter_iterator& operator=(const counter_iterator& other) = default;
 
       dummy_assign_to operator*()
@@ -1333,10 +1369,11 @@ namespace etl
       }
 
     private:
+
       size_t count;
     };
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_floating_g(OutputIt& it, T value, const format_spec_t& spec)
     {
       private_format::counter_iterator counter_e, counter_f;
@@ -1354,7 +1391,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt, typename T>
+    template <typename OutputIt, typename T>
     void format_floating(OutputIt& it, T value, const format_spec_t& spec)
     {
       if (isnan(value))
@@ -1410,42 +1447,42 @@ namespace etl
       }
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     struct format_visitor
     {
       using output_iterator = OutputIt;
 
       format_visitor(format_parse_context& parse_context, format_context<OutputIt>& f_ctx)
-      : parse_ctx(parse_context)
-      , fmt_ctx(f_ctx)
+        : parse_ctx(parse_context)
+        , fmt_ctx(f_ctx)
       {
       }
 
       // for all types in supported_format_types
-      template<typename T>
+      template <typename T>
       void operator()(T value)
       {
-        formatter<T> f;
+        formatter<T>                   f;
         format_parse_context::iterator it = f.parse(parse_ctx);
         parse_ctx.advance_to(it);
         OutputIt fit = f.format(value, fmt_ctx);
         fmt_ctx.advance_to(fit);
       }
 
-      format_parse_context& parse_ctx;
+      format_parse_context&     parse_ctx;
       format_context<OutputIt>& fmt_ctx;
     };
 
-    template<class OutputIt>
+    template <class OutputIt>
     void output(format_context<OutputIt>& fmt_context, char c)
     {
       *fmt_context.out() = c;
-      OutputIt tmp = fmt_context.out();
+      OutputIt tmp       = fmt_context.out();
       tmp++;
       fmt_context.advance_to(tmp);
     }
 
-    template<typename OutputIt, typename Int>
+    template <typename OutputIt, typename Int>
     typename format_context<OutputIt>::iterator format_aligned_int(Int arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1490,7 +1527,7 @@ namespace etl
       return it;
     }
 
-    template<typename OutputIt, typename Float>
+    template <typename OutputIt, typename Float>
     typename format_context<OutputIt>::iterator format_aligned_floating(Float arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1535,7 +1572,7 @@ namespace etl
       return it;
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_string_view(OutputIt& it, etl::string_view arg, const format_spec_t& spec)
     {
       bool escaped = false;
@@ -1585,7 +1622,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_string_view(etl::string_view arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1630,7 +1667,7 @@ namespace etl
       return it;
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_chars(OutputIt& it, const char* arg, const format_spec_t& spec)
     {
       bool escaped = false;
@@ -1680,7 +1717,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_chars(const char* arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1727,18 +1764,13 @@ namespace etl
 
     inline void check_char_spec(const format_spec_t& spec)
     {
-      if ((!spec.type.has_value() || spec.type.value() == 'c' || spec.type.value() == '?') &&
-          (spec.sign != spec_sign_t::MINUS ||
-           spec.zero ||
-           spec.hash ||
-           spec.precision)
-      )
+      if ((!spec.type.has_value() || spec.type.value() == 'c' || spec.type.value() == '?') && (spec.sign != spec_sign_t::MINUS || spec.zero || spec.hash || spec.precision))
       {
         ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_char(OutputIt& it, char_type c, const format_spec_t& spec)
     {
       check_char_spec(spec);
@@ -1775,7 +1807,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_char(char_type arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1831,7 +1863,7 @@ namespace etl
       return it;
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_bool(OutputIt& it, bool value, const format_spec_t& spec)
     {
       if (spec.type.has_value())
@@ -1861,7 +1893,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_bool(bool arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1906,7 +1938,7 @@ namespace etl
       return it;
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     void format_pointer(OutputIt& it, const void* value, const format_spec_t& spec)
     {
       if (spec.type.has_value())
@@ -1930,7 +1962,7 @@ namespace etl
       }
     }
 
-    template<typename OutputIt>
+    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_pointer(const void* arg, format_context<OutputIt>& fmt_ctx)
     {
       size_t prefix_size = 0;
@@ -1976,7 +2008,7 @@ namespace etl
     }
   } // namespace private_format
 
-  template<>
+  template <>
   struct formatter<int>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -1985,7 +2017,7 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(int arg, format_context<OutputIt>& fmt_ctx)
     {
       if (fmt_ctx.format_spec.type.has_value() && fmt_ctx.format_spec.type.value() == 'c')
@@ -1996,7 +2028,7 @@ namespace etl
     }
   };
 
-  template<>
+  template <>
   struct formatter<unsigned int>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2005,7 +2037,7 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(unsigned int arg, format_context<OutputIt>& fmt_ctx)
     {
       if (fmt_ctx.format_spec.type.has_value() && fmt_ctx.format_spec.type.value() == 'c')
@@ -2016,7 +2048,7 @@ namespace etl
     }
   };
 
-  template<>
+  template <>
   struct formatter<long long int>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2025,7 +2057,7 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(long long int arg, format_context<OutputIt>& fmt_ctx)
     {
       if (fmt_ctx.format_spec.type.has_value() && fmt_ctx.format_spec.type.value() == 'c')
@@ -2036,7 +2068,7 @@ namespace etl
     }
   };
 
-  template<>
+  template <>
   struct formatter<unsigned long long int>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2045,7 +2077,7 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(unsigned long long int arg, format_context<OutputIt>& fmt_ctx)
     {
       if (fmt_ctx.format_spec.type.has_value() && fmt_ctx.format_spec.type.value() == 'c')
@@ -2056,7 +2088,7 @@ namespace etl
     }
   };
 
-  template<>
+  template <>
   struct formatter<char>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2065,14 +2097,14 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(private_format::char_type arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_char<OutputIt>(arg, fmt_ctx);
     }
   };
 
-  template<>
+  template <>
   struct formatter<float>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2081,14 +2113,14 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(float arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_floating<OutputIt, float>(arg, fmt_ctx);
     }
   };
 
-  template<>
+  template <>
   struct formatter<double>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2097,14 +2129,14 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(double arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_floating<OutputIt, double>(arg, fmt_ctx);
     }
   };
 
-  template<>
+  template <>
   struct formatter<long double>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2113,14 +2145,14 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(long double arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_floating<OutputIt, long double>(arg, fmt_ctx);
     }
   };
 
-  template<>
+  template <>
   struct formatter<etl::string_view>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2129,7 +2161,7 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(etl::string_view arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_string_view<OutputIt>(arg, fmt_ctx);
@@ -2137,7 +2169,7 @@ namespace etl
   };
 
   // string formatter
-  template<>
+  template <>
   struct formatter<const char*>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2146,14 +2178,14 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(const char* arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_chars<OutputIt>(arg, fmt_ctx);
     }
   };
 
-  template<>
+  template <>
   struct formatter<bool>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2162,14 +2194,14 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(bool arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_bool<OutputIt>(arg, fmt_ctx);
     }
   };
 
-  template<>
+  template <>
   struct formatter<const void*>
   {
     format_parse_context::iterator parse(format_parse_context& parse_ctx)
@@ -2178,18 +2210,18 @@ namespace etl
       return parse_ctx.begin();
     }
 
-    template<class OutputIt>
+    template <class OutputIt>
     typename format_context<OutputIt>::iterator format(const void* arg, format_context<OutputIt>& fmt_ctx)
     {
       return private_format::format_aligned_pointer<OutputIt>(arg, fmt_ctx);
     }
   };
 
-  template<class OutputIt>
+  template <class OutputIt>
   OutputIt vformat_to(OutputIt out, etl::string_view fmt, format_args<OutputIt> args)
   {
-    format_parse_context parse_context(fmt, args.size());
-    format_context<OutputIt> fmt_context(out, args);
+    format_parse_context                     parse_context(fmt, args.size());
+    format_context<OutputIt>                 fmt_context(out, args);
     private_format::format_visitor<OutputIt> v(parse_context, fmt_context);
 
     while (parse_context.begin() != parse_context.end())
@@ -2198,7 +2230,6 @@ namespace etl
       private_format::advance(parse_context);
       if (c == '{')
       {
-
         if (*parse_context.begin() == '{')
         {
           // escape sequence for literal '{'
@@ -2220,7 +2251,7 @@ namespace etl
           format_arg<OutputIt> arg = args.get(*index);
           arg.template visit<void>(v);
 
-          ETL_ASSERT(*parse_context.begin() == '}', ETL_ERROR(bad_format_string_exception)/*"Closing brace missing"*/);
+          ETL_ASSERT(*parse_context.begin() == '}', ETL_ERROR(bad_format_string_exception) /*"Closing brace missing"*/);
           if (parse_context.begin() != parse_context.end())
           {
             private_format::advance(parse_context);
@@ -2229,7 +2260,7 @@ namespace etl
       }
       else if (c == '}') // only matches here if } without { is found
       {
-        ETL_ASSERT(*parse_context.begin() == '}', ETL_ERROR(bad_format_string_exception)/*"2nd closing brace missing on escaped closing brace"*/);
+        ETL_ASSERT(*parse_context.begin() == '}', ETL_ERROR(bad_format_string_exception) /*"2nd closing brace missing on escaped closing brace"*/);
         // escape sequence for literal '}'
         private_format::output<OutputIt>(fmt_context, c);
         private_format::advance(parse_context);
@@ -2243,26 +2274,27 @@ namespace etl
     return fmt_context.out();
   }
 
-  template<typename OutputIt,
-           typename = etl::enable_if_t<!etl::is_base_of<etl::remove_reference<etl::istring>::type, OutputIt>::value>,
-           class... Args>
+  template <typename OutputIt,
+            typename = etl::enable_if_t<!etl::is_base_of<etl::remove_reference<etl::istring>::type, OutputIt>::value>,
+            class... Args>
   OutputIt format_to(OutputIt out, format_string<Args...> fmt, Args&&... args)
   {
     auto the_args{make_format_args<OutputIt>(args...)};
     return vformat_to(etl::move(out), fmt.get(), format_args<OutputIt>(the_args));
   }
 
-  template<typename OutputIt, class WrapperIt = private_format::limit_iterator<OutputIt>, class... Args>
+  template <typename OutputIt, class WrapperIt = private_format::limit_iterator<OutputIt>, class... Args>
   OutputIt format_to_n(OutputIt out, size_t n, format_string<Args...> fmt, Args&&... args)
   {
     auto the_args{make_format_args<WrapperIt>(args...)};
     return vformat_to(WrapperIt(out, n),
                       fmt.get(),
-                      format_args<WrapperIt>(the_args)).get();
+                      format_args<WrapperIt>(the_args))
+      .get();
   }
 
   // non std in the following, specific to etl
-  template<class... Args>
+  template <class... Args>
   etl::istring::iterator format_to(etl::istring& out, format_string<Args...> fmt, Args&&... args)
   {
     etl::istring::iterator result = format_to_n(out.begin(), out.max_size(), fmt, etl::forward<Args>(args)...);
@@ -2270,14 +2302,14 @@ namespace etl
     return result;
   }
 
-  template<class... Args>
+  template <class... Args>
   size_t formatted_size(format_string<Args...> fmt, Args&&... args)
   {
     private_format::counter_iterator it;
     it = format_to(it, fmt, etl::forward<Args>(args)...);
     return it.value();
   }
-}
+} // namespace etl
 
 #endif
 

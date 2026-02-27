@@ -32,12 +32,12 @@ SOFTWARE.
 #define ETL_INTRUSIVE_LINKS_INCLUDED
 
 #include "platform.h"
+#include "algorithm.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "nullptr.h"
 #include "type_traits.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "utility.h"
-#include "algorithm.h"
 
 #include <assert.h>
 
@@ -110,7 +110,7 @@ namespace etl
     }
 
     //***********************************
-    forward_link& operator =(const forward_link& other)
+    forward_link& operator=(const forward_link& other)
     {
       etl_next = other.etl_next;
 
@@ -124,15 +124,13 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD
-    bool is_linked() const
+    ETL_NODISCARD bool is_linked() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD
-    bool has_next() const
+    ETL_NODISCARD bool has_next() const
     {
       return etl_next != ETL_NULLPTR;
     }
@@ -150,8 +148,7 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD
-    forward_link* get_next() const
+    ETL_NODISCARD forward_link* get_next() const
     {
       return etl_next;
     }
@@ -238,7 +235,7 @@ namespace etl
     {
       if (rhs != ETL_NULLPTR)
       {
-          rhs->etl_next = lhs->etl_next;
+        rhs->etl_next = lhs->etl_next;
       }
 
       lhs->etl_next = rhs;
@@ -291,7 +288,7 @@ namespace etl
     if (lhs != ETL_NULLPTR)
     {
       last.etl_next = lhs->etl_next;
-      lhs->etl_next  = &first;
+      lhs->etl_next = &first;
     }
     else
     {
@@ -310,7 +307,7 @@ namespace etl
     if (node.etl_next != ETL_NULLPTR)
     {
       TLink* unlinked_node = node.etl_next;
-      node.etl_next = unlinked_node->etl_next;
+      node.etl_next        = unlinked_node->etl_next;
       unlinked_node->clear();
       return unlinked_node;
     }
@@ -543,7 +540,7 @@ namespace etl
     }
 
     //***********************************
-    bidirectional_link& operator =(const bidirectional_link& other)
+    bidirectional_link& operator=(const bidirectional_link& other)
     {
       etl_previous = other.etl_previous;
       etl_next     = other.etl_next;
@@ -559,22 +556,19 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD
-    bool is_linked() const
+    ETL_NODISCARD bool is_linked() const
     {
       return (etl_previous != ETL_NULLPTR) || (etl_next != ETL_NULLPTR);
     }
 
     //***********************************
-    ETL_NODISCARD
-    bool has_next() const
+    ETL_NODISCARD bool has_next() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD
-    bool has_previous() const
+    ETL_NODISCARD bool has_previous() const
     {
       return etl_previous != ETL_NULLPTR;
     }
@@ -592,8 +586,7 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD
-    bidirectional_link* get_next() const
+    ETL_NODISCARD bidirectional_link* get_next() const
     {
       return etl_next;
     }
@@ -611,8 +604,7 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD
-    bidirectional_link* get_previous() const
+    ETL_NODISCARD bidirectional_link* get_previous() const
     {
       return etl_previous;
     }
@@ -722,7 +714,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink& lhs, TLink& rhs)
   {
-    rhs.etl_next = lhs.etl_next;
+    rhs.etl_next     = lhs.etl_next;
     rhs.etl_previous = &lhs;
 
     if (lhs.etl_next != ETL_NULLPTR)
@@ -770,7 +762,7 @@ namespace etl
   {
     if (rhs != ETL_NULLPTR)
     {
-      rhs->etl_next = lhs.etl_next;
+      rhs->etl_next     = lhs.etl_next;
       rhs->etl_previous = &lhs;
     }
 
@@ -812,7 +804,7 @@ namespace etl
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink& lhs, TLink& first, TLink& last)
   {
-    last.etl_next = lhs.etl_next;
+    last.etl_next      = lhs.etl_next;
     first.etl_previous = &lhs;
 
     if (last.etl_next != ETL_NULLPTR)
@@ -1027,147 +1019,141 @@ namespace etl
   template <size_t ID_>
   struct tree_link
   {
-      enum
-      {
-        ID = ID_,
-      };
+    enum
+    {
+      ID = ID_,
+    };
 
-      //***********************************
-      tree_link()
-        : etl_parent(ETL_NULLPTR)
-        , etl_left(ETL_NULLPTR)
-        , etl_right(ETL_NULLPTR)
-      {
-      }
+    //***********************************
+    tree_link()
+      : etl_parent(ETL_NULLPTR)
+      , etl_left(ETL_NULLPTR)
+      , etl_right(ETL_NULLPTR)
+    {
+    }
 
-      //***********************************
-      tree_link(tree_link* p_parent, tree_link* p_left, tree_link* p_right)
-        : etl_parent(p_parent)
-        , etl_left(p_left)
-        , etl_right(p_right)
-      {
-      }
+    //***********************************
+    tree_link(tree_link* p_parent, tree_link* p_left, tree_link* p_right)
+      : etl_parent(p_parent)
+      , etl_left(p_left)
+      , etl_right(p_right)
+    {
+    }
 
-      //***********************************
-      tree_link(const tree_link& other)
-        : etl_parent(other.etl_parent)
-        , etl_left(other.etl_left)
-        , etl_right(other.etl_right)
-      {
-      }
+    //***********************************
+    tree_link(const tree_link& other)
+      : etl_parent(other.etl_parent)
+      , etl_left(other.etl_left)
+      , etl_right(other.etl_right)
+    {
+    }
 
-      //***********************************
-      tree_link& operator =(const tree_link& other)
-      {
-        etl_parent = other.etl_parent;
-        etl_left   = other.etl_left;
-        etl_right  = other.etl_right;
+    //***********************************
+    tree_link& operator=(const tree_link& other)
+    {
+      etl_parent = other.etl_parent;
+      etl_left   = other.etl_left;
+      etl_right  = other.etl_right;
 
-        return *this;
-      }
+      return *this;
+    }
 
-      //***********************************
-      void clear()
-      {
-        etl_parent = ETL_NULLPTR;
-        etl_left   = ETL_NULLPTR;
-        etl_right  = ETL_NULLPTR;
-      }
+    //***********************************
+    void clear()
+    {
+      etl_parent = ETL_NULLPTR;
+      etl_left   = ETL_NULLPTR;
+      etl_right  = ETL_NULLPTR;
+    }
 
-      //***********************************
-      bool is_linked() const
-      {
-        return (etl_parent != ETL_NULLPTR) || (etl_left != ETL_NULLPTR) || (etl_right != ETL_NULLPTR);
-      }
+    //***********************************
+    bool is_linked() const
+    {
+      return (etl_parent != ETL_NULLPTR) || (etl_left != ETL_NULLPTR) || (etl_right != ETL_NULLPTR);
+    }
 
-      //***********************************
-      ETL_NODISCARD
-      bool has_parent() const
-      {
-        return etl_parent != ETL_NULLPTR;
-      }
+    //***********************************
+    ETL_NODISCARD bool has_parent() const
+    {
+      return etl_parent != ETL_NULLPTR;
+    }
 
-      //***********************************
-      ETL_NODISCARD
-      bool has_left() const
-      {
-        return etl_left != ETL_NULLPTR;
-      }
+    //***********************************
+    ETL_NODISCARD bool has_left() const
+    {
+      return etl_left != ETL_NULLPTR;
+    }
 
-      //***********************************
-      ETL_NODISCARD
-      bool has_right() const
-      {
-        return etl_right != ETL_NULLPTR;
-      }
+    //***********************************
+    ETL_NODISCARD bool has_right() const
+    {
+      return etl_right != ETL_NULLPTR;
+    }
 
-      //***********************************
-      void set_parent(tree_link* p)
-      {
-        etl_parent = p;
-      }
+    //***********************************
+    void set_parent(tree_link* p)
+    {
+      etl_parent = p;
+    }
 
-      //***********************************
-      void set_left(tree_link* l)
-      {
-        etl_left = l;
-      }
+    //***********************************
+    void set_left(tree_link* l)
+    {
+      etl_left = l;
+    }
 
-      //***********************************
-      void set_right(tree_link* r)
-      {
-        etl_right = r;
-      }
+    //***********************************
+    void set_right(tree_link* r)
+    {
+      etl_right = r;
+    }
 
-      //***********************************
-      void set_parent(tree_link& p)
-      {
-        etl_parent = &p;
-      }
+    //***********************************
+    void set_parent(tree_link& p)
+    {
+      etl_parent = &p;
+    }
 
-      //***********************************
-      void set_left(tree_link& l)
-      {
-        etl_left = &l;
-      }
+    //***********************************
+    void set_left(tree_link& l)
+    {
+      etl_left = &l;
+    }
 
-      //***********************************
-      void set_right(tree_link& r)
-      {
-        etl_right = &r;
-      }
+    //***********************************
+    void set_right(tree_link& r)
+    {
+      etl_right = &r;
+    }
 
-      //***********************************
-      ETL_NODISCARD
-      tree_link* get_parent() const
-      {
-        return etl_parent;
-      }
+    //***********************************
+    ETL_NODISCARD tree_link* get_parent() const
+    {
+      return etl_parent;
+    }
 
-      //***********************************
-      ETL_NODISCARD
-      tree_link* get_left() const
-      {
-        return etl_left;
-      }
+    //***********************************
+    ETL_NODISCARD tree_link* get_left() const
+    {
+      return etl_left;
+    }
 
-      //***********************************
-      ETL_NODISCARD
-      tree_link* get_right() const
-      {
-        return etl_right;
-      }
+    //***********************************
+    ETL_NODISCARD tree_link* get_right() const
+    {
+      return etl_right;
+    }
 
-      //***********************************
-      void mirror()
-      {
-        using ETL_OR_STD::swap;
-        swap(etl_left, etl_right);
-      }
+    //***********************************
+    void mirror()
+    {
+      using ETL_OR_STD::swap;
+      swap(etl_left, etl_right);
+    }
 
-      tree_link* etl_parent;
-      tree_link* etl_left;
-      tree_link* etl_right;
+    tree_link* etl_parent;
+    tree_link* etl_left;
+    tree_link* etl_right;
   };
 
   //***********************************
@@ -1250,7 +1236,7 @@ namespace etl
     link_right(TLink& parent, TLink& leaf)
   {
     parent.etl_right = &leaf;
-    leaf.etl_parent = &parent;
+    leaf.etl_parent  = &parent;
   }
 
   //***********************************
@@ -1539,6 +1525,6 @@ namespace etl
   {
     return node->is_linked();
   }
-}
+} // namespace etl
 
 #endif

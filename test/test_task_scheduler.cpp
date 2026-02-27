@@ -32,9 +32,9 @@ SOFTWARE.
 #include <string>
 #include <vector>
 
-#include "etl/task.h"
-#include "etl/scheduler.h"
 #include "etl/container.h"
+#include "etl/scheduler.h"
+#include "etl/task.h"
 
 typedef std::vector<std::string> WorkList_t;
 
@@ -43,9 +43,9 @@ struct Common
 {
   //*********************************************
   Common()
-    : idle_callback(*this, &Common::IdleCallback),
-      watchdog_callback(*this, &Common::WatchdogCallback),
-      watchdog_called(false)
+    : idle_callback(*this, &Common::IdleCallback)
+    , watchdog_callback(*this, &Common::WatchdogCallback)
+    , watchdog_called(false)
   {
   }
 
@@ -67,11 +67,11 @@ struct Common
     watchdog_called = true;
   }
 
-  WorkList_t workList;
+  WorkList_t                  workList;
   etl::function<Common, void> idle_callback;
   etl::function<Common, void> watchdog_callback;
-  etl::ischeduler* pScheduler;
-  bool watchdog_called;
+  etl::ischeduler*            pScheduler;
+  bool                        watchdog_called;
 };
 
 //*****************************************************************************
@@ -140,31 +140,31 @@ public:
 
 private:
 
-  WorkList_t work;
-  WorkList_t workCopy;
-  Common &common;
+  WorkList_t    work;
+  WorkList_t    workCopy;
+  Common&       common;
   uint_least8_t workIndex;
-  int addAtIndex;
-  std::string workToAdd;
-  Task* pTaskToAddTo;
+  int           addAtIndex;
+  std::string   workToAdd;
+  Task*         pTaskToAddTo;
 };
 
 Common common;
 
-WorkList_t work1 = { "T1W1", "T1W2", "T1W3" };
-WorkList_t work2 = { "T2W1", "T2W2", "T2W3", "T2W4" };
-WorkList_t work3 = { "T3W1", "T3W2" };
+WorkList_t work1 = {"T1W1", "T1W2", "T1W3"};
+WorkList_t work2 = {"T2W1", "T2W2", "T2W3", "T2W4"};
+WorkList_t work3 = {"T3W1", "T3W2"};
 
 Task task1(1, work1, common);
 Task task2(2, work2, common);
 Task task3(3, work3, common);
 
-etl::task* taskList[] = { &task1, &task2, &task3 };
+etl::task* taskList[] = {&task1, &task2, &task3};
 
-typedef etl::scheduler<etl::scheduler_policy_sequential_single,   sizeof(etl::array_size(taskList))> SchedulerSequentialSingle;
+typedef etl::scheduler<etl::scheduler_policy_sequential_single, sizeof(etl::array_size(taskList))>   SchedulerSequentialSingle;
 typedef etl::scheduler<etl::scheduler_policy_sequential_multiple, sizeof(etl::array_size(taskList))> SchedulerSequentialMultiple;
-typedef etl::scheduler<etl::scheduler_policy_highest_priority,    sizeof(etl::array_size(taskList))> SchedulerHighestPriority;
-typedef etl::scheduler<etl::scheduler_policy_most_work,           sizeof(etl::array_size(taskList))> SchedulerMostWork;
+typedef etl::scheduler<etl::scheduler_policy_highest_priority, sizeof(etl::array_size(taskList))>    SchedulerHighestPriority;
+typedef etl::scheduler<etl::scheduler_policy_most_work, sizeof(etl::array_size(taskList))>           SchedulerMostWork;
 
 namespace
 {
@@ -207,7 +207,7 @@ namespace
       s.add_task_list(taskList, ETL_OR_STD17::size(taskList));
       s.start(); // If 'start' returns then the idle callback was successfully called.
 
-      WorkList_t expected = { "T3W1", "T2W1", "T1W1", "T3W2", "T2W2", "T1W2", "T3W3", "T2W3", "T1W3", "T2W4" };
+      WorkList_t expected = {"T3W1", "T2W1", "T1W1", "T3W2", "T2W2", "T1W2", "T3W3", "T2W3", "T1W3", "T2W4"};
 
       CHECK(expected == common.workList);
       CHECK(common.watchdog_called);
@@ -232,7 +232,7 @@ namespace
       s.add_task_list(taskList, ETL_OR_STD17::size(taskList));
       s.start(); // If 'start' returns then the idle callback was successfully called.
 
-      WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3", "T3W3" };
+      WorkList_t expected = {"T3W1", "T3W2", "T2W1", "T2W2", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3", "T3W3"};
 
       CHECK(expected == common.workList);
       CHECK(common.watchdog_called);
@@ -257,7 +257,7 @@ namespace
       s.add_task_list(taskList, ETL_OR_STD17::size(taskList));
       s.start(); // If 'start' returns then the idle callback was successfully called.
 
-      WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T3W3", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3" };
+      WorkList_t expected = {"T3W1", "T3W2", "T2W1", "T2W2", "T3W3", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3"};
 
       CHECK(expected == common.workList);
       CHECK(common.watchdog_called);
@@ -282,10 +282,10 @@ namespace
       s.add_task_list(taskList, ETL_OR_STD17::size(taskList));
       s.start(); // If 'start' returns then the idle callback was successfully called.
 
-      WorkList_t expected = { "T2W1", "T2W2", "T1W1", "T3W1", "T2W3", "T3W2", "T1W2", "T3W3", "T2W4", "T1W3" };
+      WorkList_t expected = {"T2W1", "T2W2", "T1W1", "T3W1", "T2W3", "T3W2", "T1W2", "T3W3", "T2W4", "T1W3"};
 
       CHECK(expected == common.workList);
       CHECK(common.watchdog_called);
     }
   }
-}
+} // namespace

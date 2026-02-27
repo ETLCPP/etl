@@ -28,25 +28,25 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <string>
-#include <ostream>
 #include <cstdint>
+#include <ostream>
+#include <string>
 #include <vector>
 
+#include "data.h"
 #include "etl/optional.h"
 #include "etl/vector.h"
-#include "data.h"
 
 typedef TestDataNDC<std::string> Data;
 typedef TestDataM<uint32_t>      DataM;
 
-std::ostream& operator << (std::ostream& os, const Data& data)
+std::ostream& operator<<(std::ostream& os, const Data& data)
 {
   os << data.value;
   return os;
 }
 
-std::ostream& operator << (std::ostream& os, const etl::optional<Data>& data)
+std::ostream& operator<<(std::ostream& os, const etl::optional<Data>& data)
 {
   os << data.value();
   return os;
@@ -58,16 +58,22 @@ namespace
   //*************************************************************************
   struct NonTrivial
   {
-    constexpr NonTrivial() : a(0) {}
+    constexpr NonTrivial()
+      : a(0)
+    {
+    }
 
-    constexpr NonTrivial(int a_) : a(a_) {}
+    constexpr NonTrivial(int a_)
+      : a(a_)
+    {
+    }
 
-    constexpr friend bool operator <(const NonTrivial& lhs, const NonTrivial& rhs)
+    constexpr friend bool operator<(const NonTrivial& lhs, const NonTrivial& rhs)
     {
       return lhs.a < rhs.a;
     }
 
-    constexpr friend bool operator ==(const NonTrivial& lhs, const NonTrivial& rhs)
+    constexpr friend bool operator==(const NonTrivial& lhs, const NonTrivial& rhs)
     {
       return lhs.a == rhs.a;
     }
@@ -138,7 +144,8 @@ namespace
       struct TestData
       {
         constexpr TestData(int a_, int b_)
-          : a(a_), b(b_)
+          : a(a_)
+          , b(b_)
         {
         }
 
@@ -175,11 +182,11 @@ namespace
         }
 
         std::vector<int> vi;
-        int a;
-        int b;
+        int              a;
+        int              b;
       };
 
-      etl::optional<S> opt(etl::in_place_t{}, { 10, 11, 12 }, 1, 2);
+      etl::optional<S> opt(etl::in_place_t{}, {10, 11, 12}, 1, 2);
 
       CHECK_EQUAL(10, opt.value().vi[0]);
       CHECK_EQUAL(11, opt.value().vi[1]);
@@ -193,7 +200,7 @@ namespace
     {
       Data data("Hello");
 
-      etl::optional<Data> opt{ data };
+      etl::optional<Data> opt{data};
 
       CHECK(opt.has_value());
       CHECK(bool(opt));
@@ -293,7 +300,7 @@ namespace
       Data result = data.value_or(Data("Default"));
       CHECK_EQUAL(Data("Default"), result);
 
-      data = Data("Value");
+      data   = Data("Value");
       result = data.value_or(Data("Default"));
       CHECK_EQUAL(Data("Value"), result);
     }
@@ -301,22 +308,22 @@ namespace
     //*************************************************************************
     TEST(test_value_or_const)
     {
-      using FundamentalType = int;
+      using FundamentalType    = int;
       using NonFundamentalType = std::string;
 
-      const FundamentalType constFT{ 5 };
-      int resultFT = etl::optional<FundamentalType>{}.value_or(constFT);
+      const FundamentalType constFT{5};
+      int                   resultFT = etl::optional<FundamentalType>{}.value_or(constFT);
       CHECK_EQUAL(5, resultFT);
 
-      const NonFundamentalType constNFT{ "Default" };
-      NonFundamentalType resultNFT = etl::optional<NonFundamentalType>{}.value_or(constNFT);
+      const NonFundamentalType constNFT{"Default"};
+      NonFundamentalType       resultNFT = etl::optional<NonFundamentalType>{}.value_or(constNFT);
       CHECK_EQUAL("Default", resultNFT);
     }
 
     //*************************************************************************
     struct github_bug_720_bug_helper
     {
-      int value{ 5 };
+      int value{5};
 
       etl::optional<int> get_valid() const
       {
@@ -329,9 +336,9 @@ namespace
       }
     };
 
-    TEST(test_chained_value_or_github_bug_720 )
+    TEST(test_chained_value_or_github_bug_720)
     {
-      github_bug_720_bug_helper helper {};
+      github_bug_720_bug_helper helper{};
 
       int value1 = helper.get_valid().value_or(1);
       CHECK_EQUAL(5, value1);
@@ -515,7 +522,6 @@ namespace
       CHECK(Data("Data1") < data2);
     }
 #include "etl/private/diagnostic_pop.h"
-
 
 #if ETL_USING_CPP20 && ETL_USING_STL
     //*************************************************************************
@@ -789,7 +795,7 @@ namespace
       // The indexed access doesn't work in Linux for some reason!!!
 #ifndef ETL_PLATFORM_LINUX
       etl::optional<etl::vector<Data, 10>> container;
-      CHECK(!bool(container));//
+      CHECK(!bool(container)); //
 
       container = etl::vector<Data, 10>();
       CHECK(bool(container));
@@ -868,7 +874,7 @@ namespace
     {
       etl::optional<std::uint8_t> result = 8;
       result.reset();
-      
+
       return result;
     }
 
@@ -911,12 +917,12 @@ namespace
     TEST(test_optional_pod_assign_bug_714)
     {
       etl::optional<int> opt = 42;
-      opt = etl::nullopt;
+      opt                    = etl::nullopt;
 
       CHECK_EQUAL(false, opt.has_value());
     }
 
-    //*************************************************************************   
+    //*************************************************************************
     TEST(test_dereference_operator_bug_730)
     {
       etl::optional<int> opt = 42;
@@ -932,7 +938,7 @@ namespace
       CHECK_EQUAL(42, *opt);
     }
 
-    //*************************************************************************   
+    //*************************************************************************
     TEST(test_arrow_operator_bug_730)
     {
       struct Object
@@ -940,12 +946,12 @@ namespace
         int value;
       };
 
-      etl::optional<Object> opt = Object{ 42 };
+      etl::optional<Object> opt = Object{42};
 
       CHECK_EQUAL(42, opt->value);
     }
 
-    //*************************************************************************   
+    //*************************************************************************
     TEST(test_const_arrow_operator_bug_730)
     {
       struct Object
@@ -953,7 +959,7 @@ namespace
         int value;
       };
 
-      const etl::optional<Object> opt = Object{ 42 };
+      const etl::optional<Object> opt = Object{42};
 
       CHECK_EQUAL(42, opt->value);
     }
@@ -982,7 +988,7 @@ namespace
         int v;
       };
 
-      constexpr NonPod data(42);
+      constexpr NonPod                data(42);
       constexpr etl::optional<NonPod> opt = data;
 
       CHECK_EQUAL(42, (*opt).v);
@@ -993,7 +999,7 @@ namespace
     TEST(test_optional_issue_819)
     {
       // The code below should compile without error.
-      class optional_type 
+      class optional_type
       {
       public:
 
@@ -1007,7 +1013,7 @@ namespace
     //*************************************************************************
     using ItemType = etl::array<uint8_t, 2>;
 
-    etl::optional<const ItemType> create_optional_issue_1171() 
+    etl::optional<const ItemType> create_optional_issue_1171()
     {
       ItemType t;
       t[0] = 1;
@@ -1018,12 +1024,12 @@ namespace
 
     TEST(test_optional_issue_1171)
     {
-      etl::optional<const ItemType> opt1 = create_optional_issue_1171(); 
+      etl::optional<const ItemType> opt1 = create_optional_issue_1171();
       CHECK_TRUE(opt1.has_value());
       CHECK_EQUAL(1, (*opt1)[0]);
       CHECK_EQUAL(20, (*opt1)[1]);
 
-      etl::optional<const ItemType> opt2(create_optional_issue_1171());     
+      etl::optional<const ItemType> opt2(create_optional_issue_1171());
       CHECK_TRUE(opt2.has_value());
       CHECK_EQUAL(1, (*opt2)[0]);
       CHECK_EQUAL(20, (*opt2)[1]);
@@ -1098,8 +1104,8 @@ namespace
 
     TEST(test_range_based_for_loop_non_trivial)
     {
-      etl::optional<Data> opt = Data("TEST");
-      int count= 0;
+      etl::optional<Data> opt   = Data("TEST");
+      int                 count = 0;
 
       for (const Data& value : opt)
       {
@@ -1119,4 +1125,4 @@ namespace
       CHECK_EQUAL(42, *opt);
     }
   }
-}
+} // namespace

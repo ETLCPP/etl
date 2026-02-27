@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_CUMULATIVE_MOVING_AVERAGE_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "iterator.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -73,7 +73,7 @@ namespace etl
       }
 
       //***********************************
-      add_insert_iterator& operator =(typename TPseudo_Moving_Average::value_type value)
+      add_insert_iterator& operator=(typename TPseudo_Moving_Average::value_type value)
       {
         p_pma->add(value);
         return *this;
@@ -83,7 +83,7 @@ namespace etl
 
       TPseudo_Moving_Average* p_pma;
     };
-  }
+  } // namespace private_pseudo_moving_average
 
   //***************************************************************************
   /// Pseudo Moving Average
@@ -93,9 +93,9 @@ namespace etl
   //***************************************************************************
   template <typename T,
             const size_t SAMPLE_SIZE,
-            const size_t SCALING  = 1U,
-            const bool IsIntegral = etl::is_integral<T>::value,
-            const bool IsFloat    = etl::is_floating_point<T>::value>
+            const size_t SCALING    = 1U,
+            const bool   IsIntegral = etl::is_integral<T>::value,
+            const bool   IsFloat    = etl::is_floating_point<T>::value>
   class pseudo_moving_average;
 
   //***************************************************************************
@@ -120,7 +120,7 @@ namespace etl
 
   public:
 
-    typedef T value_type;
+    typedef T                                                          value_type;
     typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static ETL_CONSTANT size_t SAMPLE_SIZE = SAMPLE_SIZE_; ///< The number of samples averaged over.
@@ -180,16 +180,16 @@ namespace etl
 
   template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
   ETL_CONSTANT size_t pseudo_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>::SAMPLE_SIZE;
-  
+
   template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
   ETL_CONSTANT size_t pseudo_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>::SCALING;
 
   //***************************************************************************
-/// Pseudo Moving Average
-/// For integral types.
-/// \tparam T           The sample value type.
-/// \tparam SCALING     The scaling factor applied to samples. Default = 1.
-//***************************************************************************
+  /// Pseudo Moving Average
+  /// For integral types.
+  /// \tparam T           The sample value type.
+  /// \tparam SCALING     The scaling factor applied to samples. Default = 1.
+  //***************************************************************************
   template <typename T, const size_t SCALING_>
   class pseudo_moving_average<T, 0, SCALING_, true, false>
   {
@@ -202,10 +202,10 @@ namespace etl
 
   public:
 
-    typedef T value_type;
+    typedef T                                                          value_type;
     typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
-    static ETL_CONSTANT size_t SCALING = SCALING_;     ///< The sample scaling factor.
+    static ETL_CONSTANT size_t SCALING = SCALING_; ///< The sample scaling factor.
 
     //*************************************************************************
     /// Constructor
@@ -286,7 +286,7 @@ namespace etl
 
   public:
 
-    typedef T value_type;
+    typedef T                                                          value_type;
     typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static ETL_CONSTANT size_t SAMPLE_SIZE = SAMPLE_SIZE_;
@@ -358,7 +358,7 @@ namespace etl
 
   public:
 
-    typedef T value_type;
+    typedef T                                                          value_type;
     typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     //*************************************************************************
@@ -421,6 +421,6 @@ namespace etl
     T reciprocal_samples_plus_1; ///< Reciprocal of one greater than the sample size.
     T average;                   ///< The current pseudo moving average.
   };
-}
+} // namespace etl
 
 #endif

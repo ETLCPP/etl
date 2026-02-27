@@ -32,16 +32,16 @@ SOFTWARE.
 #define ETL_REFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
 
 #include "platform.h"
-#include "message.h"
+#include "atomic.h"
+#include "error_handler.h"
 #include "imemory_block_allocator.h"
 #include "ireference_counted_message_pool.h"
+#include "largest.h"
+#include "memory.h"
+#include "message.h"
 #include "reference_counted_message.h"
 #include "static_assert.h"
-#include "error_handler.h"
 #include "utility.h"
-#include "atomic.h"
-#include "memory.h"
-#include "largest.h"
 
 namespace etl
 {
@@ -110,7 +110,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-      typedef rcm_t* prcm_t;
+      typedef rcm_t*                                             prcm_t;
 
       prcm_t p = ETL_NULLPTR;
 
@@ -120,7 +120,7 @@ namespace etl
 
       if (p != ETL_NULLPTR)
       {
-        ::new(p) rcm_t(*this, etl::forward<TArgs>(args)...);
+        ::new (p) rcm_t(*this, etl::forward<TArgs>(args)...);
       }
 
       ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
@@ -138,7 +138,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-      typedef rcm_t* prcm_t;
+      typedef rcm_t*                                             prcm_t;
 
       prcm_t p = ETL_NULLPTR;
 
@@ -148,7 +148,7 @@ namespace etl
 
       if (p != ETL_NULLPTR)
       {
-        ::new(p) rcm_t(message, *this);
+        ::new (p) rcm_t(message, *this);
       }
 
       ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
@@ -165,7 +165,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-      typedef rcm_t* prcm_t;
+      typedef rcm_t*                                             prcm_t;
 
       prcm_t p = ETL_NULLPTR;
 
@@ -175,7 +175,7 @@ namespace etl
 
       if (p != ETL_NULLPTR)
       {
-        ::new(p) rcm_t(*this);
+        ::new (p) rcm_t(*this);
       }
 
       ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
@@ -245,7 +245,7 @@ namespace etl
     };
 
 #else
-    template <typename TMessage1,             typename TMessage2 = TMessage1, typename TMessage3 = TMessage1, typename TMessage4 = TMessage1,
+    template <typename TMessage1, typename TMessage2 = TMessage1, typename TMessage3 = TMessage1, typename TMessage4 = TMessage1,
               typename TMessage5 = TMessage1, typename TMessage6 = TMessage1, typename TMessage7 = TMessage1, typename TMessage8 = TMessage1>
     struct pool_message_parameters
     {
@@ -267,7 +267,6 @@ namespace etl
                                                          etl::reference_counted_message<TMessage7, TCounter>,
                                                          etl::reference_counted_message<TMessage8, TCounter> >::size;
 
-
       static ETL_CONSTANT size_t max_alignment = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
                                                               etl::reference_counted_message<TMessage2, TCounter>,
                                                               etl::reference_counted_message<TMessage3, TCounter>,
@@ -287,7 +286,7 @@ namespace etl
 
     // Should not be copied.
     reference_counted_message_pool(const reference_counted_message_pool&) ETL_DELETE;
-    reference_counted_message_pool& operator =(const reference_counted_message_pool&) ETL_DELETE;
+    reference_counted_message_pool& operator=(const reference_counted_message_pool&) ETL_DELETE;
   };
 
 #if ETL_USING_CPP11
@@ -315,8 +314,8 @@ namespace etl
 #endif
 
 #if ETL_USING_CPP11 && ETL_HAS_ATOMIC
-  using  atomic_counted_message_pool = reference_counted_message_pool<etl::atomic_int>;
+  using atomic_counted_message_pool = reference_counted_message_pool<etl::atomic_int>;
 #endif
-}
+} // namespace etl
 
 #endif

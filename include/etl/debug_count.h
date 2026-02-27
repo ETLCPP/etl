@@ -65,6 +65,7 @@ namespace etl
   class debug_count
   {
   public:
+
     debug_count()
       : count(0)
     {
@@ -110,7 +111,7 @@ namespace etl
     }
 
   #if ETL_HAS_ATOMIC
-    void swap(debug_count& other) ETL_NOEXCEPT  // NOT ATOMIC
+    void swap(debug_count& other) ETL_NOEXCEPT // NOT ATOMIC
     {
       int32_t temp = other.count.load();
       other.count.store(count.load());
@@ -144,13 +145,14 @@ namespace etl
     }
 
   private:
+
   #if ETL_HAS_ATOMIC
     etl::atomic_int32_t count;
   #else
     int32_t count;
   #endif
   };
-}  // namespace etl
+} // namespace etl
 
 inline void swap(etl::debug_count& lhs, etl::debug_count& rhs)
 {
@@ -158,16 +160,19 @@ inline void swap(etl::debug_count& lhs, etl::debug_count& rhs)
 }
 
 #else
-#define ETL_DECLARE_DEBUG_COUNT              enum { etl_debug_count_suppressed__ = 0 }
-#define ETL_SET_DEBUG_COUNT(n)               ((void)0)
-#define ETL_GET_DEBUG_COUNT                  0
-#define ETL_INCREMENT_DEBUG_COUNT            ((void)0)
-#define ETL_DECREMENT_DEBUG_COUNT            ((void)0)
-#define ETL_ADD_DEBUG_COUNT(n)               ((void)0)
-#define ETL_SUBTRACT_DEBUG_COUNT(n)          ((void)0)
-#define ETL_RESET_DEBUG_COUNT                ((void)0)
-#define ETL_OBJECT_RESET_DEBUG_COUNT(object) ((void)0)
-#define ETL_OBJECT_GET_DEBUG_COUNT(object)   0
-#endif  // ETL_DEBUG_COUNT
+  #define ETL_DECLARE_DEBUG_COUNT enum \
+  {                                    \
+    etl_debug_count_suppressed__ = 0   \
+  }
+  #define ETL_SET_DEBUG_COUNT(n)               ((void)0)
+  #define ETL_GET_DEBUG_COUNT                  0
+  #define ETL_INCREMENT_DEBUG_COUNT            ((void)0)
+  #define ETL_DECREMENT_DEBUG_COUNT            ((void)0)
+  #define ETL_ADD_DEBUG_COUNT(n)               ((void)0)
+  #define ETL_SUBTRACT_DEBUG_COUNT(n)          ((void)0)
+  #define ETL_RESET_DEBUG_COUNT                ((void)0)
+  #define ETL_OBJECT_RESET_DEBUG_COUNT(object) ((void)0)
+  #define ETL_OBJECT_GET_DEBUG_COUNT(object)   0
+#endif // ETL_DEBUG_COUNT
 
 #endif

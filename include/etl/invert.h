@@ -42,7 +42,7 @@ namespace etl
   //***************************************************************************
   /// Invert.
   //***************************************************************************
-  template<typename TInput>
+  template <typename TInput>
   class invert : public etl::unary_function<TInput, TInput>
   {
   public:
@@ -68,7 +68,7 @@ namespace etl
     //*****************************************************************
     // operator ()
     //*****************************************************************
-    TInput operator ()(TInput value) const
+    TInput operator()(TInput value) const
     {
       return minuend - (value - offset);
     }
@@ -78,6 +78,6 @@ namespace etl
     const TInput offset;
     const TInput minuend;
   };
-}
+} // namespace etl
 
 #endif

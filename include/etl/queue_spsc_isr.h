@@ -33,11 +33,11 @@ SOFTWARE.
 
 #include "platform.h"
 #include "alignment.h"
-#include "parameter_type.h"
-#include "memory_model.h"
 #include "integral_limits.h"
-#include "utility.h"
+#include "memory_model.h"
+#include "parameter_type.h"
 #include "placement_new.h"
+#include "utility.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -56,7 +56,7 @@ namespace etl
     typedef T&       reference;       ///< A reference to the type used in the queue.
     typedef const T& const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&      rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
 
     //*************************************************************************
@@ -83,7 +83,7 @@ namespace etl
     ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_from_isr(Args&&... args)
     {
       return emplace_implementation(etl::forward<Args>(args)...);
@@ -188,11 +188,11 @@ namespace etl
   protected:
 
     queue_spsc_isr_base(T* p_buffer_, size_type max_size_)
-      : p_buffer(p_buffer_),
-        write_index(0),
-        read_index(0),
-        current_size(0),
-        MAX_SIZE(max_size_)
+      : p_buffer(p_buffer_)
+      , write_index(0)
+      , read_index(0)
+      , current_size(0)
+      , MAX_SIZE(max_size_)
     {
     }
 
@@ -244,7 +244,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_implementation(Args&&... args)
     {
       if (current_size != MAX_SIZE)
@@ -442,19 +442,20 @@ namespace etl
     {
       ++index;
 
-      if (index == maximum) ETL_UNLIKELY
-      {
-        index = 0;
-      }
+      if (index == maximum)
+        ETL_UNLIKELY
+        {
+          index = 0;
+        }
 
       return index;
     }
 
-    T* p_buffer;              ///< The internal buffer.
-    size_type write_index;    ///< Where to input new data.
-    size_type read_index;     ///< Where to get the oldest data.
-    size_type current_size;   ///< The current size of the queue.
-    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
+    T*              p_buffer;     ///< The internal buffer.
+    size_type       write_index;  ///< Where to input new data.
+    size_type       read_index;   ///< Where to get the oldest data.
+    size_type       current_size; ///< The current size of the queue.
+    const size_type MAX_SIZE;     ///< The maximum number of items in the queue.
 
   private:
 
@@ -462,12 +463,16 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_SPSC_QUEUE_ISR) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~queue_spsc_isr_base()
     {
     }
 #else
+
   protected:
+
     ~queue_spsc_isr_base()
     {
     }
@@ -494,13 +499,13 @@ namespace etl
 
   public:
 
-    typedef typename base_t::value_type       value_type;      ///< The type stored in the queue.
-    typedef typename base_t::reference        reference;       ///< A reference to the type used in the queue.
-    typedef typename base_t::const_reference  const_reference; ///< A const reference to the type used in the queue.
+    typedef typename base_t::value_type      value_type;      ///< The type stored in the queue.
+    typedef typename base_t::reference       reference;       ///< A reference to the type used in the queue.
+    typedef typename base_t::const_reference const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef typename base_t::rvalue_reference rvalue_reference;///< A const reference to the type used in the queue.
+    typedef typename base_t::rvalue_reference rvalue_reference; ///< A const reference to the type used in the queue.
 #endif
-    typedef typename base_t::size_type        size_type;       ///< The type used for determining the size of the queue.
+    typedef typename base_t::size_type size_type; ///< The type used for determining the size of the queue.
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -537,7 +542,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace(Args&&... args)
     {
       TAccess::lock();
@@ -692,7 +697,7 @@ namespace etl
     {
       TAccess::lock();
 
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         this->write_index  = 0;
         this->read_index   = 0;
@@ -779,11 +784,11 @@ namespace etl
 
     // Disable copy construction and assignment.
     iqueue_spsc_isr(const iqueue_spsc_isr&) ETL_DELETE;
-    iqueue_spsc_isr& operator =(const iqueue_spsc_isr&) ETL_DELETE;
+    iqueue_spsc_isr& operator=(const iqueue_spsc_isr&) ETL_DELETE;
 
 #if ETL_USING_CPP11
-    iqueue_spsc_isr(iqueue_spsc_isr&&) = delete;
-    iqueue_spsc_isr& operator =(iqueue_spsc_isr&&) = delete;
+    iqueue_spsc_isr(iqueue_spsc_isr&&)            = delete;
+    iqueue_spsc_isr& operator=(iqueue_spsc_isr&&) = delete;
 #endif
 
     TAccess access; ///< The object that locks/unlocks interrupts.
@@ -832,11 +837,11 @@ namespace etl
   private:
 
     queue_spsc_isr(const queue_spsc_isr&) ETL_DELETE;
-    queue_spsc_isr& operator = (const queue_spsc_isr&) ETL_DELETE;
+    queue_spsc_isr& operator=(const queue_spsc_isr&) ETL_DELETE;
 
 #if ETL_USING_CPP11
-    queue_spsc_isr(queue_spsc_isr&&) = delete;
-    queue_spsc_isr& operator =(queue_spsc_isr&&) = delete;
+    queue_spsc_isr(queue_spsc_isr&&)            = delete;
+    queue_spsc_isr& operator=(queue_spsc_isr&&) = delete;
 #endif
 
     /// The uninitialised buffer of T used in the queue_spsc_isr.
@@ -845,6 +850,6 @@ namespace etl
 
   template <typename T, size_t SIZE, typename TAccess, const size_t MEMORY_MODEL>
   ETL_CONSTANT typename queue_spsc_isr<T, SIZE, TAccess, MEMORY_MODEL>::size_type queue_spsc_isr<T, SIZE, TAccess, MEMORY_MODEL>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

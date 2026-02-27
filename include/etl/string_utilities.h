@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
+#include "char_traits.h"
 #include "enum_type.h"
 #include "memory.h"
-#include "char_traits.h"
 #include "optional.h"
 
 #include <ctype.h>
@@ -458,7 +458,7 @@ namespace etl
   /// replace_characters
   //***************************************************************************
   template <typename TIString, typename TPair>
-  void replace_characters(TIString& s,
+  void replace_characters(TIString&    s,
                           const TPair* pairsbegin,
                           const TPair* pairsend)
   {
@@ -473,9 +473,9 @@ namespace etl
   /// replace_strings
   //***************************************************************************
   template <typename TIString, typename TPair>
-  void replace_strings(TIString& s,
-                        const TPair* pairsbegin,
-                        const TPair* pairsend)
+  void replace_strings(TIString&    s,
+                       const TPair* pairsbegin,
+                       const TPair* pairsend)
   {
     while (pairsbegin != pairsend)
     {
@@ -718,17 +718,17 @@ namespace etl
   {
     typedef typename TInput::const_pointer const_pointer;
 
-    bool token_found = false;
-    typename TStringView::size_type position  = 0U;
-    TStringView view = last_view.value_or(TStringView());
-    const_pointer begin_ptr = input.data();
+    bool                            token_found = false;
+    typename TStringView::size_type position    = 0U;
+    TStringView                     view        = last_view.value_or(TStringView());
+    const_pointer                   begin_ptr   = input.data();
 
     if (begin_ptr == ETL_NULLPTR)
     {
       return etl::optional<TStringView>();
     }
 
-    const_pointer end_ptr   = begin_ptr + input.size();
+    const_pointer end_ptr = begin_ptr + input.size();
 
     while (!token_found)
     {
@@ -762,7 +762,7 @@ namespace etl
   /// The tokenisation stops if:
   ///   1. The end of the input text is reached.
   ///   2. The max_size() of the output container is reached.
-  ///   3. The number of tokens found reaches max_n_tokens. 
+  ///   3. The number of tokens found reaches max_n_tokens.
   /// The input container must define <code>const_pointer</code>.
   /// The output container must define <code>value_type</code>.
   /// The output container must define the member function <code>max_size</code> that returns the maximum size of the container.
@@ -782,9 +782,7 @@ namespace etl
     etl::optional<string_view_t> token;
 
     size_t count = 0;
-    while ((token = etl::get_token(input, delimiters, token, ignore_empty_tokens)) &&
-           (count != output.max_size()) &&
-           (count != max_n_tokens))
+    while ((token = etl::get_token(input, delimiters, token, ignore_empty_tokens)) && (count != output.max_size()) && (count != max_n_tokens))
     {
       output.push_back(token.value());
       ++count;
@@ -834,21 +832,21 @@ namespace etl
     switch (int(pad_direction))
     {
       case string_pad_direction::LEFT:
-      {
-        pad_left(s, required_size, pad_char);
-        break;
-      }
+        {
+          pad_left(s, required_size, pad_char);
+          break;
+        }
 
       case string_pad_direction::RIGHT:
-      {
-        pad_right(s, required_size, pad_char);
-        break;
-      }
+        {
+          pad_right(s, required_size, pad_char);
+          break;
+        }
 
       default:
-      {
-        break;
-      }
+        {
+          break;
+        }
     }
   }
 
@@ -886,7 +884,7 @@ namespace etl
 
   //***************************************************************************
   /// str_n_copy
-  /// Copies from src to dst until either n characters have been copied, or a 
+  /// Copies from src to dst until either n characters have been copied, or a
   /// terminating null is found.
   /// Null terminates the destination if less than n characters have been copied.
   /// Returns a str_n_copy_result.
@@ -903,7 +901,7 @@ namespace etl
   {
     if ((src == ETL_NULLPTR) || (dst == ETL_NULLPTR))
     {
-      str_n_copy_result result = { 0, false, false };
+      str_n_copy_result result = {0, false, false};
       return result;
     }
 
@@ -919,18 +917,18 @@ namespace etl
     if (count != n)
     {
       // Yes we did.
-      *dst = 0;
-      str_n_copy_result result = { count, false, true };
+      *dst                     = 0;
+      str_n_copy_result result = {count, false, true};
       return result;
     }
     else
     {
       // No. Truncation depends on the next src character being a terminating zero or not.
-      str_n_copy_result result = { count, *src != 0, false };
+      str_n_copy_result result = {count, *src != 0, false};
       return result;
     }
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

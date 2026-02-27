@@ -1,8 +1,10 @@
 #include "TestReporter.h"
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   TestReporter::~TestReporter()
-   {}
+  TestReporter::~TestReporter()
+  {
+  }
 
-}
+} // namespace UnitTest

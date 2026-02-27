@@ -112,7 +112,7 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_MEMCPY)
     #define ETL_USING_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
-   #endif
+  #endif
 
   #if !defined(ETL_USING_BUILTIN_MEMMOVE)
     #define ETL_USING_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
@@ -198,7 +198,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
     static ETL_CONSTANT bool using_builtin_memcmp                     = (ETL_USING_BUILTIN_MEMCMP == 1);
     static ETL_CONSTANT bool using_builtin_memchr                     = (ETL_USING_BUILTIN_MEMCHR == 1);
-  }
-}
+  } // namespace traits
+} // namespace etl
 
 #endif

@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_ABSOLUTE_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "integral_limits.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -42,8 +42,8 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_NODISCARD
-  ETL_CONSTEXPR 
-  typename etl::enable_if<etl::is_signed<T>::value, T>::type
+  ETL_CONSTEXPR
+    typename etl::enable_if<etl::is_signed<T>::value, T>::type
     absolute(T value) ETL_NOEXCEPT
   {
     return (value < T(0)) ? -value : value;
@@ -55,7 +55,7 @@ namespace etl
   template <typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     absolute(T value) ETL_NOEXCEPT
   {
     return value;
@@ -67,14 +67,15 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_NODISCARD
-  ETL_CONSTEXPR 
-  typename etl::enable_if<etl::is_signed<T>::value, typename etl::make_unsigned<T>::type>::type
+  ETL_CONSTEXPR
+    typename etl::enable_if<etl::is_signed<T>::value, typename etl::make_unsigned<T>::type>::type
     absolute_unsigned(T value) ETL_NOEXCEPT
   {
     typedef typename etl::make_unsigned<T>::type TReturn;
 
     return (value == etl::integral_limits<T>::min) ? (etl::integral_limits<TReturn>::max / 2U) + 1U
-                                                   : (value < T(0)) ? TReturn(-value) : TReturn(value);
+           : (value < T(0))                        ? TReturn(-value)
+                                                   : TReturn(value);
   }
 
   //***************************************************************************
@@ -84,12 +85,11 @@ namespace etl
   template <typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     absolute_unsigned(T value) ETL_NOEXCEPT
   {
     return etl::absolute(value);
   }
-}
+} // namespace etl
 
 #endif
-

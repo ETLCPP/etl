@@ -3,31 +3,33 @@
 
 #include "HelperMacros.h"
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class Test;
+  class Test;
 
-   class UNITTEST_LINKAGE TestList
-   {
-   public:
-      TestList();
-      void Add (Test* test);
+  class UNITTEST_LINKAGE TestList
+  {
+  public:
 
-      Test* GetHead() const;
+    TestList();
+    void Add(Test* test);
 
-   private:
-      Test* m_head;
-      Test* m_tail;
-   };
+    Test* GetHead() const;
 
+  private:
 
-   class UNITTEST_LINKAGE ListAdder
-   {
-   public:
-      ListAdder(TestList& list, Test* test);
-   };
+    Test* m_head;
+    Test* m_tail;
+  };
 
-}
+  class UNITTEST_LINKAGE ListAdder
+  {
+  public:
 
+    ListAdder(TestList& list, Test* test);
+  };
+
+} // namespace UnitTest
 
 #endif

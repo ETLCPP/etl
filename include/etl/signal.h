@@ -36,20 +36,20 @@ SOFTWARE.
 #include "platform.h"
 
 #if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
-#error NOT SUPPORTED FOR C++03 OR BELOW
+  #error NOT SUPPORTED FOR C++03 OR BELOW
 #endif
 
 #if ETL_USING_CPP11
 
-#include "exception.h"
-#include "error_handler.h"
-#include "delegate.h"
-#include "algorithm.h"
-#include "iterator.h"
-#include "type_traits.h"
-#include "initializer_list.h"
-#include "span.h"
-#include "file_error_numbers.h"
+  #include "algorithm.h"
+  #include "delegate.h"
+  #include "error_handler.h"
+  #include "exception.h"
+  #include "file_error_numbers.h"
+  #include "initializer_list.h"
+  #include "iterator.h"
+  #include "span.h"
+  #include "type_traits.h"
 
 //*****************************************************************************
 ///\defgroup signal signal
@@ -66,7 +66,8 @@ namespace etl
   class signal_exception : public exception
   {
   public:
-    signal_exception(string_type reason_, string_type file_name_, numeric_type line_number_) 
+
+    signal_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception{reason_, file_name_, line_number_}
     {
     }
@@ -79,6 +80,7 @@ namespace etl
   class signal_full : public signal_exception
   {
   public:
+
     signal_full(string_type file_name_, numeric_type line_number_)
       : signal_exception{ETL_ERROR_TEXT("signal:full", ETL_SIGNAL_FILE_ID"A"), file_name_, line_number_}
     {
@@ -88,7 +90,7 @@ namespace etl
   //***************************************************************************
   ///\ingroup signal
   ///
-  ///\brief A lightweight signal class designed for efficient memory usage and 
+  ///\brief A lightweight signal class designed for efficient memory usage and
   /// ability to store in ROM.
   ///
   ///\tparam TFunction: Callback signature.
@@ -136,7 +138,7 @@ namespace etl
       return true;
     }
 
-#if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
+  #if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
     //*************************************************************************
     ///\brief Connects slots to the signal.
     /// Ignores the slots if it has already been connected.
@@ -157,7 +159,7 @@ namespace etl
 
       return true;
     }
-#endif
+  #endif
 
     //*************************************************************************
     ///\brief Connects slots to the signal.
@@ -198,7 +200,7 @@ namespace etl
       }
     }
 
-#if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
+  #if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP17
     //*************************************************************************
     ///\brief Disconnects multiple slots from the signal.
     ///
@@ -211,7 +213,7 @@ namespace etl
         disconnect(slot);
       }
     }
-#endif
+  #endif
 
     //*************************************************************************
     ///\brief Disconnects multiple slots from the signal.
@@ -242,7 +244,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool connected(const slot_type& slot) const ETL_NOEXCEPT
     {
-      return etl::any_of(begin(), end(), [&slot](const slot_type& s) { return s == slot; });
+      return etl::any_of(begin(), end(), [&slot](const slot_type& s)
+                         { return s == slot; });
     }
 
     //*************************************************************************
@@ -288,7 +291,7 @@ namespace etl
     //*************************************************************************
     ///\brief Invokes all the slots connected to the signal.
     /// Checks if the slot is valid to call.
-    /// 
+    ///
     ///\param args: Arguments to pass to the slots.
     //*************************************************************************
     template <typename... TArgs>
@@ -324,8 +327,8 @@ namespace etl
     /// For a delegate slot type.
     //*************************************************************************
     template <typename TSlotType, typename... TArgs>
-    static 
-    typename etl::enable_if_t<etl::is_delegate<TSlotType>::value, bool>
+    static
+      typename etl::enable_if_t<etl::is_delegate<TSlotType>::value, bool>
       slot_is_valid(const TSlotType& s) ETL_NOEXCEPT
     {
       return s.is_valid();
@@ -335,8 +338,8 @@ namespace etl
     /// For a non-delegate slot type.
     //*************************************************************************
     template <typename TSlotType, typename... TArgs>
-    static 
-    typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, bool>
+    static
+      typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, bool>
       slot_is_valid(const TSlotType&) ETL_NOEXCEPT
     {
       return true;
@@ -374,7 +377,7 @@ namespace etl
       return slot_list_end;
     }
   };
-}
+} // namespace etl
 
 #endif
 #endif

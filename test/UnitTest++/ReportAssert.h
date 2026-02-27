@@ -3,9 +3,10 @@
 
 #include "HelperMacros.h"
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   UNITTEST_LINKAGE void ReportAssert(char const* description, char const* filename, int lineNumber);
+  UNITTEST_LINKAGE void ReportAssert(char const* description, char const* filename, int lineNumber);
 
 }
 

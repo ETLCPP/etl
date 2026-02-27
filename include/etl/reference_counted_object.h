@@ -1,29 +1,29 @@
 ///******************************************************************************
-//The MIT License(MIT)
+// The MIT License(MIT)
 //
-//Embedded Template Library.
-//https://github.com/ETLCPP/etl
-//https://www.etlcpp.com
+// Embedded Template Library.
+// https://github.com/ETLCPP/etl
+// https://www.etlcpp.com
 //
-//Copyright(c) 2021 John Wellbelove
+// Copyright(c) 2021 John Wellbelove
 //
-//Permission is hereby granted, free of charge, to any person obtaining a copy
-//of this software and associated documentation files(the "Software"), to deal
-//in the Software without restriction, including without limitation the rights
-//to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-//copies of the Software, and to permit persons to whom the Software is
-//furnished to do so, subject to the following conditions :
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
 //
-//The above copyright notice and this permission notice shall be included in all
-//copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 //******************************************************************************/
 
 #ifndef ETL_REFERENCE_COUNTED_OBJECT_INCLUDED
@@ -31,8 +31,8 @@
 
 #include "platform.h"
 #include "atomic.h"
-#include "exception.h"
 #include "error_handler.h"
+#include "exception.h"
 #include "utility.h"
 
 #include <stdint.h>
@@ -47,6 +47,7 @@ namespace etl
   class reference_counting_exception : public etl::exception
   {
   public:
+
     reference_counting_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
@@ -60,6 +61,7 @@ namespace etl
   class reference_count_overrun : public etl::reference_counting_exception
   {
   public:
+
     reference_count_overrun(string_type file_name_, numeric_type line_number_)
       : etl::reference_counting_exception(ETL_ERROR_TEXT("reference_counting:overrun", ETL_REFERENCE_COUNTED_OBJECT_FILE_ID"A"), file_name_, line_number_)
     {
@@ -74,10 +76,10 @@ namespace etl
   public:
 
     virtual ~ireference_counter() {}
-    virtual void set_reference_count(int32_t value) = 0;
-    virtual void increment_reference_count() = 0;
-    ETL_NODISCARD virtual int32_t decrement_reference_count() = 0;
-    ETL_NODISCARD virtual int32_t get_reference_count() const = 0;
+    virtual void                  set_reference_count(int32_t value) = 0;
+    virtual void                  increment_reference_count()        = 0;
+    ETL_NODISCARD virtual int32_t decrement_reference_count()        = 0;
+    ETL_NODISCARD virtual int32_t get_reference_count() const        = 0;
   };
 
   //***************************************************************************
@@ -192,7 +194,7 @@ namespace etl
   public:
 
     virtual ~ireference_counted_object() {}
-    ETL_NODISCARD virtual ireference_counter& get_reference_counter() = 0;
+    ETL_NODISCARD virtual ireference_counter&       get_reference_counter()       = 0;
     ETL_NODISCARD virtual const ireference_counter& get_reference_counter() const = 0;
   };
 
@@ -243,7 +245,6 @@ namespace etl
       return object;
     }
 
-
     //***************************************************************************
     /// Get a const reference to the counted object.
     //***************************************************************************
@@ -272,9 +273,9 @@ namespace etl
 
     // This class must not be copy constructed or assigned.
     reference_counted_object(const reference_counted_object&) ETL_DELETE;
-    reference_counted_object& operator =(const reference_counted_object&) ETL_DELETE;
-        
-    TObject object;                                     ///< The object being reference counted.
+    reference_counted_object& operator=(const reference_counted_object&) ETL_DELETE;
+
+    TObject                          object;            ///< The object being reference counted.
     etl::reference_counter<TCounter> reference_counter; ///< The reference counter.
   };
 
@@ -286,6 +287,6 @@ namespace etl
   template <typename TObject>
   using atomic_counted_object = etl::reference_counted_object<TObject, etl::atomic_int32_t>;
 #endif
-}
+} // namespace etl
 
 #endif

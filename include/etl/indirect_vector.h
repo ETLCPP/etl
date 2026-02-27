@@ -32,13 +32,13 @@ SOFTWARE.
 #define ETL_INDIRECT_VECTOR_INCLUDED
 
 #include "platform.h"
-#include "vector.h"
-#include "pool.h"
-#include "iterator.h"
-#include "utility.h"
 #include "functional.h"
-#include "static_assert.h"
 #include "initializer_list.h"
+#include "iterator.h"
+#include "pool.h"
+#include "static_assert.h"
+#include "utility.h"
+#include "vector.h"
 
 //*****************************************************************************
 ///\defgroup indirect_vector indirect_vector
@@ -72,17 +72,17 @@ namespace etl
   {
   public:
 
-    typedef T              value_type;
-    typedef T&             reference;
-    typedef const T&       const_reference;
+    typedef T        value_type;
+    typedef T&       reference;
+    typedef const T& const_reference;
 #if ETL_USING_CPP11
-    typedef T&&            rvalue_reference;
+    typedef T&& rvalue_reference;
 #endif
-    typedef T*             pointer;
-    typedef const T*       const_pointer;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
 
-    typedef typename etl::ivector<T*>::iterator        indirect_iterator;
-    typedef typename etl::ivector<T*>::const_iterator  indirect_const_iterator;
+    typedef typename etl::ivector<T*>::iterator       indirect_iterator;
+    typedef typename etl::ivector<T*>::const_iterator indirect_const_iterator;
 
     typedef typename etl::ivector<T*>::size_type       size_type;
     typedef typename etl::ivector<T*>::difference_type difference_type;
@@ -189,73 +189,73 @@ namespace etl
       {
       }
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         ++lookup_itr;
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         ++lookup_itr;
         return temp;
       }
 
-      iterator& operator --()
+      iterator& operator--()
       {
         --lookup_itr;
         return *this;
       }
 
-      iterator operator --(int)
+      iterator operator--(int)
       {
         iterator temp(*this);
         --lookup_itr;
         return temp;
       }
 
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
         lookup_itr = other.lookup_itr;
         return *this;
       }
 
-      iterator operator +=(size_type n)
+      iterator operator+=(size_type n)
       {
         lookup_itr += n;
         return *this;
       }
 
-      iterator operator -=(size_type n)
+      iterator operator-=(size_type n)
       {
         lookup_itr -= n;
         return *this;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
         return **lookup_itr;
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return &(**lookup_itr);
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return &(**lookup_itr);
       }
 
-      friend iterator operator +(const iterator& lhs, difference_type offset)
+      friend iterator operator+(const iterator& lhs, difference_type offset)
       {
         iterator result(lhs);
         result += offset;
         return result;
       }
 
-      friend iterator operator -(const iterator& lhs, difference_type offset)
+      friend iterator operator-(const iterator& lhs, difference_type offset)
       {
         iterator result(lhs);
         result -= offset;
@@ -272,27 +272,27 @@ namespace etl
         return lookup_itr;
       }
 
-      friend difference_type operator -(const iterator& lhs, const iterator& rhs)
+      friend difference_type operator-(const iterator& lhs, const iterator& rhs)
       {
         return lhs.lookup_itr - rhs.lookup_itr;
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.lookup_itr == rhs.lookup_itr;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
 
-      friend bool operator < (const iterator& lhs, const iterator& rhs)
+      friend bool operator<(const iterator& lhs, const iterator& rhs)
       {
         return lhs.lookup_itr < rhs.lookup_itr;
       }
 
-      friend bool operator <= (const iterator& lhs, const iterator& rhs)
+      friend bool operator<=(const iterator& lhs, const iterator& rhs)
       {
         return lhs.lookup_itr <= rhs.lookup_itr;
       }
@@ -331,61 +331,61 @@ namespace etl
       {
       }
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         ++lookup_itr;
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         ++lookup_itr;
         return temp;
       }
 
-      const_iterator& operator --()
+      const_iterator& operator--()
       {
         --lookup_itr;
         return *this;
       }
 
-      const_iterator operator --(int)
+      const_iterator operator--(int)
       {
         const_iterator temp(*this);
         --lookup_itr;
         return temp;
       }
 
-      const_iterator operator +=(size_type n)
+      const_iterator operator+=(size_type n)
       {
         lookup_itr += n;
         return *this;
       }
 
-      const_iterator operator -=(size_type n)
+      const_iterator operator-=(size_type n)
       {
         lookup_itr -= n;
         return *this;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         lookup_itr = other.lookup_itr;
         return *this;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return **lookup_itr;
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return &(**lookup_itr);
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return &(**lookup_itr);
       }
@@ -395,41 +395,41 @@ namespace etl
         return lookup_itr;
       }
 
-      friend const_iterator operator +(const const_iterator& lhs, difference_type offset)
+      friend const_iterator operator+(const const_iterator& lhs, difference_type offset)
       {
         const_iterator result(lhs);
         result += offset;
         return result;
       }
 
-      friend const_iterator operator -(const const_iterator& lhs, difference_type offset)
+      friend const_iterator operator-(const const_iterator& lhs, difference_type offset)
       {
         const_iterator result(lhs);
         result -= offset;
         return result;
       }
 
-      friend difference_type operator -(const const_iterator& lhs, const const_iterator& rhs)
+      friend difference_type operator-(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.lookup_itr - rhs.lookup_itr;
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.lookup_itr == rhs.lookup_itr;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
 
-      friend bool operator < (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator<(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.lookup_itr < rhs.lookup_itr;
       }
 
-      friend bool operator <= (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator<=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.lookup_itr <= rhs.lookup_itr;
       }
@@ -616,7 +616,7 @@ namespace etl
     //*********************************************************************
     void reserve(size_t n)
     {
-      (void)n;  // Stop 'unused parameter' warning in release mode.
+      (void)n; // Stop 'unused parameter' warning in release mode.
       ETL_ASSERT(n <= capacity(), ETL_ERROR(vector_out_of_bounds));
     }
 
@@ -625,7 +625,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator[](size_t i)
     {
       return *lookup[i];
     }
@@ -635,7 +635,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator[](size_t i) const
     {
       return *lookup[i];
     }
@@ -794,8 +794,8 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    template <typename ... Args>
-    reference emplace_back(Args && ... args)
+    template <typename... Args>
+    reference emplace_back(Args&&... args)
     {
       ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(vector_full));
 
@@ -902,7 +902,7 @@ namespace etl
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(value);
+      T* p     = storage.create<T>(value);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -920,7 +920,7 @@ namespace etl
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(etl::move(value));
+      T* p     = storage.create<T>(etl::move(value));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -931,13 +931,13 @@ namespace etl
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
-    template <typename ... Args>
-    iterator emplace(const_iterator position, Args && ... args)
+    template <typename... Args>
+    iterator emplace(const_iterator position, Args&&... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(etl::forward<Args>(args)...);
+      T* p     = storage.create<T>(etl::forward<Args>(args)...);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -948,7 +948,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>();
+      T* p     = storage.create<T>();
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -960,7 +960,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(value1);
+      T* p     = storage.create<T>(value1);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -972,7 +972,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(value1, value2);
+      T* p     = storage.create<T>(value1, value2);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -984,7 +984,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(value1, value2, value3);
+      T* p     = storage.create<T>(value1, value2, value3);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -996,7 +996,7 @@ namespace etl
       ETL_ASSERT(!full(), ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
-      T* p = storage.create<T>(value1, value2, value3, value4);
+      T* p     = storage.create<T>(value1, value2, value3, value4);
       position = iterator(lookup.insert(position.lookup_itr, p));
 
       return to_iterator(position);
@@ -1023,7 +1023,7 @@ namespace etl
 
       while (n-- != 0U)
       {
-        T* p = storage.create<T>(value);
+        T* p          = storage.create<T>(value);
         *lookup_itr++ = p;
       }
 
@@ -1051,8 +1051,8 @@ namespace etl
 
       while (first != last)
       {
-        T* p = storage.create<T>(*first);
-        *lookup_itr++ =  p;
+        T* p          = storage.create<T>(*first);
+        *lookup_itr++ = p;
         ++first;
       }
 
@@ -1115,7 +1115,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iindirect_vector& operator = (const iindirect_vector& rhs)
+    iindirect_vector& operator=(const iindirect_vector& rhs)
     {
       if (&rhs != this)
       {
@@ -1129,7 +1129,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    iindirect_vector& operator = (iindirect_vector&& rhs)
+    iindirect_vector& operator=(iindirect_vector&& rhs)
     {
       if (&rhs != this)
       {
@@ -1218,7 +1218,7 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         storage.release_all();
       }
@@ -1271,12 +1271,15 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_INDIRECT_VECTOR) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual
 #else
+
   protected:
 #endif
-    ~iindirect_vector()
+      ~iindirect_vector()
     {
     }
 
@@ -1299,7 +1302,7 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
+  bool operator==(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -1312,7 +1315,7 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
+  bool operator!=(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -1325,7 +1328,7 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
+  bool operator<(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -1338,7 +1341,7 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
+  bool operator>(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
     return (rhs < lhs);
   }
@@ -1351,7 +1354,7 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
+  bool operator<=(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -1364,7 +1367,7 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
+  bool operator>=(const etl::iindirect_vector<T>& lhs, const etl::iindirect_vector<T>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -1449,7 +1452,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    indirect_vector& operator = (const indirect_vector& rhs)
+    indirect_vector& operator=(const indirect_vector& rhs)
     {
       if (&rhs != this)
       {
@@ -1472,7 +1475,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    indirect_vector& operator = (indirect_vector&& rhs)
+    indirect_vector& operator=(indirect_vector&& rhs)
     {
       this->move_container(etl::move(rhs));
 
@@ -1503,8 +1506,8 @@ namespace etl
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
   template <typename T, typename... Ts>
   indirect_vector(T, Ts...)
-    ->indirect_vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
-#endif 
+    -> indirect_vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif
 
   //*************************************************************************
   /// Make
@@ -1513,7 +1516,7 @@ namespace etl
   template <typename... T>
   constexpr auto make_indirect_vector(T&&... t) -> etl::indirect_vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
-    return { etl::forward<T>(t)... };
+    return {etl::forward<T>(t)...};
   }
 #endif
 
@@ -1604,7 +1607,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    indirect_vector_ext& operator = (const indirect_vector_ext& rhs)
+    indirect_vector_ext& operator=(const indirect_vector_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -1633,7 +1636,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    indirect_vector_ext& operator = (indirect_vector_ext&& rhs)
+    indirect_vector_ext& operator=(indirect_vector_ext&& rhs)
     {
       this->move_container(etl::move(rhs));
 
@@ -1649,7 +1652,6 @@ namespace etl
       this->clear();
     }
   };
-}
+} // namespace etl
 
 #endif
-

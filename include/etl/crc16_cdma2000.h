@@ -61,7 +61,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc16_cdma2000_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -74,5 +74,5 @@ namespace etl
   typedef etl::crc16_cdma2000_t<16U>  crc16_cdma2000_t16;
   typedef etl::crc16_cdma2000_t<4U>   crc16_cdma2000_t4;
   typedef crc16_cdma2000_t256         crc16_cdma2000;
-}
+} // namespace etl
 #endif

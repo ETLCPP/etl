@@ -34,8 +34,8 @@ SOFTWARE.
 #include "platform.h"
 #include "delegate.h"
 #include "tuple.h"
-#include "utility.h"
 #include "type_list.h"
+#include "utility.h"
 
 namespace etl
 {
@@ -62,10 +62,10 @@ namespace etl
   class closure<TReturn(TArgs...)>
   {
   public:
-   
+
     using delegate_type  = etl::delegate<TReturn(TArgs...)>; ///< The delegate type to be invoked.
     using argument_types = etl::type_list<TArgs...>;         ///< The type list of arguments.
-    
+
     //*********************************************************************
     /// Construct a closure with a delegate and its arguments.
     /// \param f    The delegate to be invoked.
@@ -133,13 +133,13 @@ namespace etl
     /// \tparam idx Index sequence for tuple unpacking.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    template<size_t... Indexes>
+    template <size_t... Indexes>
     ETL_CONSTEXPR14 TReturn execute(etl::index_sequence<Indexes...>) const
     {
       return m_f(etl::get<Indexes>(m_args)...);
     }
 
-    delegate_type m_f;           ///< The delegate to invoke.
+    delegate_type        m_f;    ///< The delegate to invoke.
     etl::tuple<TArgs...> m_args; ///< The bound arguments.
   };
 #else
@@ -154,7 +154,7 @@ namespace etl
   /// \tparam TReturn The return type of the delegate.
   /// \tparam TArg0    The type of the argument.
   //*************************************************************************
-  template<typename TReturn, typename TArg0>
+  template <typename TReturn, typename TArg0>
   class closure<TReturn(TArg0)>
   {
   public:
@@ -177,7 +177,7 @@ namespace etl
     /// Invoke the stored delegate with the bound argument.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    TReturn operator()() const 
+    TReturn operator()() const
     {
       return m_f(m_arg0);
     }
@@ -185,7 +185,7 @@ namespace etl
   private:
 
     delegate_type m_f; ///< The delegate to invoke.
-    TArg0 m_arg0;
+    TArg0         m_arg0;
   };
 
   //*************************************************************************
@@ -194,7 +194,7 @@ namespace etl
   /// \tparam TArg0    The type of the first argument.
   /// \tparam TArg1    The type of the second argument.
   //*************************************************************************
-  template<typename TReturn, typename TArg0, typename TArg1>
+  template <typename TReturn, typename TArg0, typename TArg1>
   class closure<TReturn(TArg0, TArg1)>
   {
   public:
@@ -218,7 +218,7 @@ namespace etl
     /// Invoke the stored delegate with the bound arguments.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    TReturn operator()() const 
+    TReturn operator()() const
     {
       return m_f(m_arg0, m_arg1);
     }
@@ -226,8 +226,8 @@ namespace etl
   private:
 
     delegate_type m_f; ///< The delegate to invoke.
-    TArg0 m_arg0;
-    TArg1 m_arg1;
+    TArg0         m_arg0;
+    TArg1         m_arg1;
   };
 
   //*************************************************************************
@@ -237,7 +237,7 @@ namespace etl
   /// \tparam TArg1    The type of the second argument.
   /// \tparam TArg2    The type of the third argument.
   //*************************************************************************
-  template<typename TReturn, typename TArg0, typename TArg1, typename TArg2>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2>
   class closure<TReturn(TArg0, TArg1, TArg2)>
   {
   public:
@@ -263,7 +263,7 @@ namespace etl
     /// Invoke the stored delegate with the bound arguments.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    TReturn operator()() const 
+    TReturn operator()() const
     {
       return m_f(m_arg0, m_arg1, m_arg2);
     }
@@ -271,9 +271,9 @@ namespace etl
   private:
 
     delegate_type m_f; ///< The delegate to invoke.
-    TArg0 m_arg0;
-    TArg1 m_arg1;
-    TArg2 m_arg2;
+    TArg0         m_arg0;
+    TArg1         m_arg1;
+    TArg2         m_arg2;
   };
 
   //*************************************************************************
@@ -284,7 +284,7 @@ namespace etl
   /// \tparam TArg2    The type of the third argument.
   /// \tparam TArg3    The type of the fourth argument.
   //*************************************************************************
-  template<typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3>
   class closure<TReturn(TArg0, TArg1, TArg2, TArg3)>
   {
   public:
@@ -312,7 +312,7 @@ namespace etl
     /// Invoke the stored delegate with the bound arguments.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    TReturn operator()() const 
+    TReturn operator()() const
     {
       return m_f(m_arg0, m_arg1, m_arg2, m_arg3);
     }
@@ -320,10 +320,10 @@ namespace etl
   private:
 
     delegate_type m_f; ///< The delegate to invoke.
-    TArg0 m_arg0;
-    TArg1 m_arg1;
-    TArg2 m_arg2;
-    TArg3 m_arg3;
+    TArg0         m_arg0;
+    TArg1         m_arg1;
+    TArg2         m_arg2;
+    TArg3         m_arg3;
   };
 
   //*************************************************************************
@@ -335,7 +335,7 @@ namespace etl
   /// \tparam TArg3    The type of the fourth argument.
   /// \tparam TArg4    The type of the fifth argument.
   //*************************************************************************
-  template<typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4>
   class closure<TReturn(TArg0, TArg1, TArg2, TArg3, TArg4)>
   {
   public:
@@ -365,7 +365,7 @@ namespace etl
     /// Invoke the stored delegate with the bound arguments.
     /// \return The result of the delegate invocation.
     //*********************************************************************
-    TReturn operator()() const 
+    TReturn operator()() const
     {
       return m_f(m_arg0, m_arg1, m_arg2, m_arg3, m_arg4);
     }
@@ -373,13 +373,13 @@ namespace etl
   private:
 
     delegate_type m_f; ///< The delegate to invoke.
-    TArg0 m_arg0;
-    TArg1 m_arg1;
-    TArg2 m_arg2;
-    TArg3 m_arg3;
-    TArg4 m_arg4;
+    TArg0         m_arg0;
+    TArg1         m_arg1;
+    TArg2         m_arg2;
+    TArg3         m_arg3;
+    TArg4         m_arg4;
   };
 #endif
-}
+} // namespace etl
 
 #endif

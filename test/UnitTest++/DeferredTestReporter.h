@@ -5,31 +5,33 @@
 
 #ifndef UNITTEST_NO_DEFERRED_REPORTER
 
-#include "TestReporter.h"
-#include "DeferredTestResult.h"
+  #include "DeferredTestResult.h"
+  #include "TestReporter.h"
 
-#include <vector>
+  #include <vector>
 
 UNITTEST_STDVECTOR_LINKAGE(UnitTest::DeferredTestResult);
 
 namespace UnitTest
 {
 
-   class UNITTEST_LINKAGE DeferredTestReporter : public TestReporter
-   {
-   public:
-      virtual void ReportTestStart(TestDetails const& details);
-      virtual void ReportFailure(TestDetails const& details, char const* failure);
-      virtual void ReportTestFinish(TestDetails const& details, float secondsElapsed);
+  class UNITTEST_LINKAGE DeferredTestReporter : public TestReporter
+  {
+  public:
 
-      typedef std::vector< DeferredTestResult > DeferredTestResultList;
-      DeferredTestResultList& GetResults();
+    virtual void ReportTestStart(TestDetails const& details);
+    virtual void ReportFailure(TestDetails const& details, char const* failure);
+    virtual void ReportTestFinish(TestDetails const& details, float secondsElapsed);
 
-   private:
-      DeferredTestResultList m_results;
-   };
+    typedef std::vector< DeferredTestResult > DeferredTestResultList;
+    DeferredTestResultList&                   GetResults();
 
-}
+  private:
+
+    DeferredTestResultList m_results;
+  };
+
+} // namespace UnitTest
 
 #endif
 #endif

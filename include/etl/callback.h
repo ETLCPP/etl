@@ -49,25 +49,25 @@ namespace etl
     template <typename T, const int I>
     struct parameter
     {
-        parameter(T value_)
-            : value(value_)
-        {
-        }
+      parameter(T value_)
+        : value(value_)
+      {
+      }
 
-        typedef T value_type;
+      typedef T value_type;
 
-        T value;
+      T value;
 
     private:
 
-        parameter();
+      parameter();
     };
 
     // Specialisation for void.
     template <const int I>
     struct parameter<void, I>
     {
-        typedef void value_type;
+      typedef void value_type;
     };
 
   public:
@@ -76,6 +76,6 @@ namespace etl
 
     virtual void etl_callback(type p = type()) = 0;
   };
-}
+} // namespace etl
 
 #endif

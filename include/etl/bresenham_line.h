@@ -91,7 +91,7 @@ namespace etl
       //***************************************************
       /// Assignment operator
       //***************************************************
-      const_iterator& operator =(const const_iterator& rhs)
+      const_iterator& operator=(const const_iterator& rhs)
       {
         p_bresenham_line = rhs.p_bresenham_line;
 
@@ -101,7 +101,7 @@ namespace etl
       //***************************************************
       /// Pre-increment operator
       //***************************************************
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         // Has the end of the series has been reached?
         if (p_bresenham_line->get_coordinate() == p_bresenham_line->back())
@@ -120,7 +120,7 @@ namespace etl
       //***************************************************
       /// De-reference operator
       //***************************************************
-      value_type operator *() const
+      value_type operator*() const
       {
         return p_bresenham_line->get_coordinate();
       }
@@ -128,7 +128,7 @@ namespace etl
       //***************************************************
       /// Equality operator
       //***************************************************
-      friend bool operator ==(const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_bresenham_line == rhs.p_bresenham_line;
       }
@@ -136,7 +136,7 @@ namespace etl
       //***************************************************
       /// Inequality operator
       //***************************************************
-      friend bool operator !=(const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -240,7 +240,7 @@ namespace etl
     {
       if (y_is_major_axis())
       {
-        return (dy / 2) + 1;       
+        return (dy / 2) + 1;
       }
       else
       {
@@ -251,7 +251,7 @@ namespace etl
     //***************************************************
     /// Equality operator
     //***************************************************
-    friend bool operator ==(const bresenham_line& lhs, const bresenham_line& rhs)
+    friend bool operator==(const bresenham_line& lhs, const bresenham_line& rhs)
     {
       return (lhs.front() == rhs.front()) && (lhs.back() == rhs.back());
     }
@@ -259,7 +259,7 @@ namespace etl
     //***************************************************
     /// Inequality operator
     //***************************************************
-    friend bool operator !=(const bresenham_line& lhs, const bresenham_line& rhs)
+    friend bool operator!=(const bresenham_line& lhs, const bresenham_line& rhs)
     {
       return !(lhs == rhs);
     }
@@ -272,7 +272,7 @@ namespace etl
     void initialise(T first_x, T first_y, T last_x, T last_y)
     {
       first              = value_type(first_x, first_y);
-      last               = value_type(last_x,  last_y);
+      last               = value_type(last_x, last_y);
       coordinate         = first;
       x_increment        = (last_x < first_x) ? -1 : 1;
       y_increment        = (last_y < first_y) ? -1 : 1;
@@ -355,7 +355,6 @@ namespace etl
     work_t     balance;
     bool       do_minor_increment;
   };
-}
+} // namespace etl
 
 #endif
-

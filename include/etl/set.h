@@ -32,21 +32,20 @@ SOFTWARE.
 #define ETL_SET_INCLUDED
 
 #include "platform.h"
-#include "pool.h"
-#include "exception.h"
-#include "error_handler.h"
-#include "debug_count.h"
-#include "nullptr.h"
-#include "type_traits.h"
-#include "parameter_type.h"
-#include "iterator.h"
-#include "utility.h"
 #include "algorithm.h"
-#include "iterator.h"
+#include "debug_count.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "functional.h"
-#include "placement_new.h"
-#include "nth_type.h"
 #include "initializer_list.h"
+#include "iterator.h"
+#include "nth_type.h"
+#include "nullptr.h"
+#include "parameter_type.h"
+#include "placement_new.h"
+#include "pool.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -182,8 +181,8 @@ namespace etl
 
     enum
     {
-      kLeft = 0,
-      kRight = 1,
+      kLeft    = 0,
+      kRight   = 1,
       kNeither = 2
     };
 
@@ -195,9 +194,9 @@ namespace etl
       //***********************************************************************
       /// Constructor
       //***********************************************************************
-      Node() :
-        weight(kNeither),
-        dir(kNeither)
+      Node()
+        : weight(kNeither)
+        , dir(kNeither)
       {
         children[0] = ETL_NULLPTR;
         children[1] = ETL_NULLPTR;
@@ -208,13 +207,13 @@ namespace etl
       //***********************************************************************
       void mark_as_leaf()
       {
-        weight = kNeither;
-        dir = kNeither;
+        weight      = kNeither;
+        dir         = kNeither;
         children[0] = ETL_NULLPTR;
         children[1] = ETL_NULLPTR;
       }
 
-      Node* children[2];
+      Node*         children[2];
       uint_least8_t weight;
       uint_least8_t dir;
     };
@@ -261,7 +260,7 @@ namespace etl
       // their references in the process (e.g. position is the same as
       // replacement or replacement is a child of position)
       Node* detached = position;
-      Node* swap = replacement;
+      Node* swap     = replacement;
 
       // Update current position to point to swap (replacement) node first
       position = swap;
@@ -271,9 +270,9 @@ namespace etl
       replacement = swap->children[1 - swap->dir];
 
       // Point swap node to detached node's children and weight
-      swap->children[kLeft] = detached->children[kLeft];
+      swap->children[kLeft]  = detached->children[kLeft];
       swap->children[kRight] = detached->children[kRight];
-      swap->weight = detached->weight;
+      swap->weight           = detached->weight;
     }
 
     //*************************************************************************
@@ -310,7 +309,7 @@ namespace etl
         }
       } // while(weight_node)
 
-        // Step 2: Update weight for critical_node or rotate tree to balance node
+      // Step 2: Update weight for critical_node or rotate tree to balance node
       if (uint_least8_t(kNeither) == critical_node->weight)
       {
         critical_node->weight = critical_node->dir;
@@ -325,23 +324,25 @@ namespace etl
       {
         // If critical node matches child node direction then perform a two
         // node rotate in the direction of the critical node
-        if (critical_node->children[critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
-        {
-          if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
+        if (critical_node->children[critical_node->dir] != ETL_NULLPTR)
+          ETL_UNLIKELY
           {
-            rotate_2node(critical_node, critical_node->dir);
-          }
-          // Otherwise perform a three node rotation in the direction of the
-          // critical node
-          else
-          {
-            if (critical_node->children[critical_node->dir]->children[1 - critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
+            if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
             {
-              rotate_3node(critical_node, critical_node->dir,
-                           critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+              rotate_2node(critical_node, critical_node->dir);
+            }
+            // Otherwise perform a three node rotation in the direction of the
+            // critical node
+            else
+            {
+              if (critical_node->children[critical_node->dir]->children[1 - critical_node->dir] != ETL_NULLPTR)
+                ETL_UNLIKELY
+                {
+                  rotate_3node(critical_node, critical_node->dir,
+                               critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+                }
             }
           }
-        }
       }
     }
 
@@ -449,11 +450,10 @@ namespace etl
       position->weight = uint_least8_t(kNeither);
     }
 
-    size_type current_size;   ///< The number of the used nodes.
-    const size_type CAPACITY; ///< The maximum size of the set.
-    Node* root_node;          ///< The node that acts as the set root.
+    size_type       current_size; ///< The number of the used nodes.
+    const size_type CAPACITY;     ///< The maximum size of the set.
+    Node*           root_node;    ///< The node that acts as the set root.
     ETL_DECLARE_DEBUG_COUNT;
-
   };
 
   //***************************************************************************
@@ -465,18 +465,18 @@ namespace etl
   {
   public:
 
-    typedef TKey                key_type;
-    typedef TKey                value_type;
-    typedef TCompare            key_compare;
-    typedef TCompare            value_compare;
-    typedef value_type&         reference;
-    typedef const value_type&   const_reference;
+    typedef TKey              key_type;
+    typedef TKey              value_type;
+    typedef TCompare          key_compare;
+    typedef TCompare          value_compare;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
 #if ETL_USING_CPP11
-    typedef value_type&&        rvalue_reference;
+    typedef value_type&& rvalue_reference;
 #endif
-    typedef value_type*         pointer;
-    typedef const value_type*   const_pointer;
-    typedef size_t              size_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef size_t            size_type;
 
   protected:
 
@@ -570,6 +570,7 @@ namespace etl
     }
 
   public:
+
     //*************************************************************************
     /// iterator.
     //*************************************************************************
@@ -608,60 +609,60 @@ namespace etl
       {
       }
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         p_set->next_node(p_node);
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         p_set->next_node(p_node);
         return temp;
       }
 
-      iterator& operator --()
+      iterator& operator--()
       {
         p_set->prev_node(p_node);
         return *this;
       }
 
-      iterator operator --(int)
+      iterator operator--(int)
       {
         iterator temp(*this);
         p_set->prev_node(p_node);
         return temp;
       }
 
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
-        p_set = other.p_set;
+        p_set  = other.p_set;
         p_node = other.p_node;
         return *this;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
         return iset::data_cast(p_node)->value;
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return &(iset::data_cast(p_node)->value);
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return &(iset::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.p_set == rhs.p_set && lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -719,60 +720,60 @@ namespace etl
       {
       }
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         p_set->next_node(p_node);
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         p_set->next_node(p_node);
         return temp;
       }
 
-      const_iterator& operator --()
+      const_iterator& operator--()
       {
         p_set->prev_node(p_node);
         return *this;
       }
 
-      const_iterator operator --(int)
+      const_iterator operator--(int)
       {
         const_iterator temp(*this);
         p_set->prev_node(p_node);
         return temp;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
-        p_set = other.p_set;
+        p_set  = other.p_set;
         p_node = other.p_node;
         return *this;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return iset::data_cast(p_node)->value;
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return iset::data_cast(p_node)->value;
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return &(iset::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_set == rhs.p_set && lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -801,7 +802,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iset& operator = (const iset& rhs)
+    iset& operator=(const iset& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -816,7 +817,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    iset& operator = (iset&& rhs)
+    iset& operator=(iset&& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -1031,7 +1032,7 @@ namespace etl
     iterator erase(const_iterator position)
     {
       // Find the parent node to be removed
-      Node*& reference_node = find_node(root_node, position.p_node);
+      Node*&   reference_node = find_node(root_node, position.p_node);
       iterator next(*this, reference_node);
       ++next;
 
@@ -1119,7 +1120,7 @@ namespace etl
     {
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
-      bool inserted = false;
+      bool  inserted      = false;
 
       if (full())
       {
@@ -1133,13 +1134,13 @@ namespace etl
           return ETL_OR_STD::make_pair(iter, false);
         }
       }
-      
+
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
       // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
-      inserted = inserted_node == &node;
+      inserted      = inserted_node == &node;
 
       // Insert node into tree and return iterator to new node location in tree
       return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
@@ -1155,8 +1156,8 @@ namespace etl
     {
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
-      bool inserted = false;
-      
+      bool  inserted      = false;
+
       if (full())
       {
         iterator iter = find(value);
@@ -1175,7 +1176,7 @@ namespace etl
 
       // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
-      inserted = inserted_node == &node;
+      inserted      = inserted_node == &node;
 
       // Insert node into tree and return iterator to new node location in tree
       return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
@@ -1604,8 +1605,8 @@ namespace etl
         else
         {
           // Downcast found to Data_Node class for comparison and other operations
-          Data_Node& found_data_node = iset::data_cast(*found);
-          const Data_Node& data_node = iset::data_cast(*node);
+          Data_Node&       found_data_node = iset::data_cast(*found);
+          const Data_Node& data_node       = iset::data_cast(*node);
 
           // Compare the node value to the current position value
           if (node_comp(data_node, found_data_node))
@@ -1645,12 +1646,11 @@ namespace etl
         while (position)
         {
           // Is this position not the parent of the node we are looking for?
-          if (position->children[kLeft] != node &&
-            position->children[kRight] != node)
+          if (position->children[kLeft] != node && position->children[kRight] != node)
           {
             // Downcast node and position to Data_Node references for key comparisons
-            const Data_Node& node_data_node = iset::data_cast(*node);
-            Data_Node& position_data_node = iset::data_cast(*position);
+            const Data_Node& node_data_node     = iset::data_cast(*node);
+            Data_Node&       position_data_node = iset::data_cast(*position);
             // Compare the node value to the current position value
             if (node_comp(node_data_node, position_data_node))
             {
@@ -1693,11 +1693,10 @@ namespace etl
         while (position)
         {
           // Is this position not the parent of the node we are looking for?
-          if (position->children[kLeft] != node &&
-            position->children[kRight] != node)
+          if (position->children[kLeft] != node && position->children[kRight] != node)
           {
             // Downcast node and position to Data_Node references for key comparisons
-            const Data_Node& node_data_node = iset::data_cast(*node);
+            const Data_Node& node_data_node     = iset::data_cast(*node);
             const Data_Node& position_data_node = iset::data_cast(*position);
             // Compare the node value to the current position value
             if (node_comp(node_data_node, position_data_node))
@@ -1759,7 +1758,7 @@ namespace etl
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position   = position->children[kLeft];
         }
       }
 
@@ -1800,7 +1799,7 @@ namespace etl
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position   = position->children[kLeft];
         }
       }
 
@@ -1826,7 +1825,7 @@ namespace etl
         if (node_comp(key, data_node))
         {
           upper_node = node;
-          node = node->children[kLeft];
+          node       = node->children[kLeft];
         }
         else if (node_comp(data_node, key))
         {
@@ -1864,7 +1863,7 @@ namespace etl
         if (node_comp(key, data_node))
         {
           upper_node = node;
-          node = node->children[kLeft];
+          node       = node->children[kLeft];
         }
         else if (node_comp(data_node, key))
         {
@@ -1899,7 +1898,7 @@ namespace etl
       {
         // Find the critical parent node (default to ETL_NULLPTR)
         Node* critical_parent_node = ETL_NULLPTR;
-        Node* critical_node = root_node;
+        Node* critical_node        = root_node;
 
         while (found)
         {
@@ -2002,7 +2001,7 @@ namespace etl
     //*************************************************************************
     /// Find the next node in sequence from the node provided
     //*************************************************************************
-    void next_node(Node*&position)
+    void next_node(Node*& position)
     {
       if (position)
       {
@@ -2066,7 +2065,7 @@ namespace etl
     //*************************************************************************
     /// Find the previous node in sequence from the node provided
     //*************************************************************************
-    void prev_node(Node*&position)
+    void prev_node(Node*& position)
     {
       // If starting at the terminal end, the previous node is the maximum node
       // from the root
@@ -2148,12 +2147,12 @@ namespace etl
       // Step 1: Find the target node that matches the key provided, the
       // replacement node (might be the same as target node), and the critical
       // node to start rebalancing the tree from (up to the replacement node)
-      Node* found_parent = ETL_NULLPTR;
-      Node* found = ETL_NULLPTR;
+      Node* found_parent   = ETL_NULLPTR;
+      Node* found          = ETL_NULLPTR;
       Node* replace_parent = ETL_NULLPTR;
-      Node* replace = position;
+      Node* replace        = position;
       Node* balance_parent = ETL_NULLPTR;
-      Node* balance = root_node;
+      Node* balance        = root_node;
       while (replace)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -2177,7 +2176,7 @@ namespace etl
 
           // Note the target node was found (and its parent)
           found_parent = replace_parent;
-          found = replace;
+          found        = replace;
         }
         // Replacement node found if its missing a child in the replace->dir
         // value set above
@@ -2191,18 +2190,16 @@ namespace etl
         // path of replacement node and our sibling (on longer path) is
         // balanced then we need to update the balance node to match this
         // replacement node but all our ancestors will not require rebalancing
-        if ((replace->weight == kNeither) ||
-          (replace->weight == (1 - replace->dir) &&
-            replace->children[1 - replace->dir]->weight == kNeither))
+        if ((replace->weight == kNeither) || (replace->weight == (1 - replace->dir) && replace->children[1 - replace->dir]->weight == kNeither))
         {
           // Update balance node (and its parent) to replacement node
           balance_parent = replace_parent;
-          balance = replace;
+          balance        = replace;
         }
 
         // Keep searching for the replacement node
         replace_parent = replace;
-        replace = replace->children[replace->dir];
+        replace        = replace->children[replace->dir];
       }
 
       // If target node was found, proceed with rebalancing and replacement
@@ -2234,12 +2231,12 @@ namespace etl
               if (balance_parent == ETL_NULLPTR)
               {
                 rotate_3node(root_node, 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
               else
               {
                 rotate_3node(balance_parent->children[balance_parent->dir], 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
             }
             // Already balanced, rebalance and make it heavy in opposite
@@ -2286,7 +2283,7 @@ namespace etl
               }
               else
               {
-                found_parent = root_node;
+                found_parent   = root_node;
                 root_node->dir = root_node->children[kLeft] == found ? kLeft : kRight;
               }
             }
@@ -2294,15 +2291,15 @@ namespace etl
 
           // Next balance node to consider
           balance_parent = balance;
-          balance = balance->children[balance->dir];
+          balance        = balance->children[balance->dir];
         } // while(balance)
 
-          // Step 3: Swap found node with replacement node
+        // Step 3: Swap found node with replacement node
         if (found_parent)
         {
           // Handle traditional case
           detach_node(found_parent->children[found_parent->dir],
-            replace_parent->children[replace_parent->dir]);
+                      replace_parent->children[replace_parent->dir]);
         }
         // Handle root node removal
         else
@@ -2329,7 +2326,7 @@ namespace etl
         destroy_data_node(found_data_node);
       } // if(found)
 
-        // Return node found (might be ETL_NULLPTR)
+      // Return node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -2341,12 +2338,12 @@ namespace etl
       // Step 1: Find the target node that matches the key provided, the
       // replacement node (might be the same as target node), and the critical
       // node to start rebalancing the tree from (up to the replacement node)
-      Node* found_parent = ETL_NULLPTR;
-      Node* found = ETL_NULLPTR;
+      Node* found_parent   = ETL_NULLPTR;
+      Node* found          = ETL_NULLPTR;
       Node* replace_parent = ETL_NULLPTR;
-      Node* replace = position;
+      Node* replace        = position;
       Node* balance_parent = ETL_NULLPTR;
-      Node* balance = root_node;
+      Node* balance        = root_node;
       while (replace)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -2370,7 +2367,7 @@ namespace etl
 
           // Note the target node was found (and its parent)
           found_parent = replace_parent;
-          found = replace;
+          found        = replace;
         }
         // Replacement node found if its missing a child in the replace->dir
         // value set above
@@ -2384,18 +2381,16 @@ namespace etl
         // path of replacement node and our sibling (on longer path) is
         // balanced then we need to update the balance node to match this
         // replacement node but all our ancestors will not require rebalancing
-        if ((replace->weight == kNeither) ||
-          (replace->weight == (1 - replace->dir) &&
-            replace->children[1 - replace->dir]->weight == kNeither))
+        if ((replace->weight == kNeither) || (replace->weight == (1 - replace->dir) && replace->children[1 - replace->dir]->weight == kNeither))
         {
           // Update balance node (and its parent) to replacement node
           balance_parent = replace_parent;
-          balance = replace;
+          balance        = replace;
         }
 
         // Keep searching for the replacement node
         replace_parent = replace;
-        replace = replace->children[replace->dir];
+        replace        = replace->children[replace->dir];
       }
 
       // If target node was found, proceed with rebalancing and replacement
@@ -2427,12 +2422,12 @@ namespace etl
               if (balance_parent == ETL_NULLPTR)
               {
                 rotate_3node(root_node, 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
               else
               {
                 rotate_3node(balance_parent->children[balance_parent->dir], 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
             }
             // Already balanced, rebalance and make it heavy in opposite
@@ -2479,7 +2474,7 @@ namespace etl
               }
               else
               {
-                found_parent = root_node;
+                found_parent   = root_node;
                 root_node->dir = root_node->children[kLeft] == found ? kLeft : kRight;
               }
             }
@@ -2487,15 +2482,15 @@ namespace etl
 
           // Next balance node to consider
           balance_parent = balance;
-          balance = balance->children[balance->dir];
+          balance        = balance->children[balance->dir];
         } // while(balance)
 
-          // Step 3: Swap found node with replacement node
+        // Step 3: Swap found node with replacement node
         if (found_parent)
         {
           // Handle traditional case
           detach_node(found_parent->children[found_parent->dir],
-            replace_parent->children[replace_parent->dir]);
+                      replace_parent->children[replace_parent->dir]);
         }
         // Handle root node removal
         else
@@ -2522,7 +2517,7 @@ namespace etl
         destroy_data_node(found_data_node);
       } // if(found)
 
-        // Return node found (might be ETL_NULLPTR)
+      // Return node found (might be ETL_NULLPTR)
       return found;
     }
 #endif
@@ -2534,12 +2529,16 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_SET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~iset()
     {
     }
 #else
+
   protected:
+
     ~iset()
     {
     }
@@ -2635,7 +2634,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    set& operator = (const set& rhs)
+    set& operator=(const set& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -2650,7 +2649,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    set& operator = (set&& rhs)
+    set& operator=(set&& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -2697,7 +2696,7 @@ namespace etl
   template <typename TKey, typename TCompare = etl::less<TKey>, typename... T>
   constexpr auto make_set(T&&... keys) -> etl::set<TKey, sizeof...(T), TCompare>
   {
-    return { etl::forward<T>(keys)... };
+    return {etl::forward<T>(keys)...};
   }
 #endif
 
@@ -2709,7 +2708,7 @@ namespace etl
   ///\ingroup lookup
   //***************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator ==(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
+  bool operator==(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -2722,7 +2721,7 @@ namespace etl
   ///\ingroup lookup
   //***************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator !=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
+  bool operator!=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2735,10 +2734,10 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator <(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
+  bool operator<(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
-    return etl::lexicographical_compare(lhs.begin(), lhs.end(), 
-                                        rhs.begin(), rhs.end(), 
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end(),
                                         etl::iset<TKey, TCompare>::value_compare());
   }
 
@@ -2750,7 +2749,7 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator >(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
+  bool operator>(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2763,7 +2762,7 @@ namespace etl
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator <=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
+  bool operator<=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2776,11 +2775,11 @@ namespace etl
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator >=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
+  bool operator>=(const etl::iset<TKey, TCompare>& lhs, const etl::iset<TKey, TCompare>& rhs)
   {
     return !(lhs < rhs);
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

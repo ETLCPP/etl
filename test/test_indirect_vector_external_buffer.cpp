@@ -1,41 +1,41 @@
 ///******************************************************************************
-//The MIT License(MIT)
+// The MIT License(MIT)
 //
-//Embedded Template Library.
-//https://github.com/ETLCPP/etl
-//https://www.etlcpp.com
+// Embedded Template Library.
+// https://github.com/ETLCPP/etl
+// https://www.etlcpp.com
 //
-//Copyright(c) 2019 John Wellbelove
+// Copyright(c) 2019 John Wellbelove
 //
-//Permission is hereby granted, free of charge, to any person obtaining a copy
-//of this software and associated documentation files(the "Software"), to deal
-//in the Software without restriction, including without limitation the rights
-//to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-//copies of the Software, and to permit persons to whom the Software is
-//furnished to do so, subject to the following conditions :
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
 //
-//The above copyright notice and this permission notice shall be included in all
-//copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 //******************************************************************************/
 
 #include "unit_test_framework.h"
 
-#include <vector>
-#include <array>
 #include <algorithm>
+#include <array>
 #include <memory>
+#include <vector>
 
 #include "etl/indirect_vector.h"
-#include "etl/vector.h"
 #include "etl/pool.h"
+#include "etl/vector.h"
 
 #include "data.h"
 
@@ -48,9 +48,9 @@ namespace
     typedef TestDataNDC<std::string> NDC;
     typedef TestDataDC<std::string>  DC;
 
-    using LookupDC = etl::vector<DC*, SIZE>;
+    using LookupDC       = etl::vector<DC*, SIZE>;
     using LookupDCLarger = etl::vector<DC*, SIZE + 1>;
-    using PoolDC   = etl::pool<DC, SIZE>;
+    using PoolDC         = etl::pool<DC, SIZE>;
 
     using LookupNDC = etl::vector<NDC*, SIZE>;
     using PoolNDC   = etl::pool<NDC, SIZE>;
@@ -102,25 +102,24 @@ namespace
     {
       SetupFixture()
       {
-        NDC n[]                             = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
-        NDC n_insert[]                      = { NDC("11"), NDC("12"), NDC("13") };
-        NDC n_less[]                        = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
-        NDC n_greater[]                     = { NDC("0"), NDC("1"), NDC("2"), NDC("4"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+        NDC n[]         = {NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9")};
+        NDC n_insert[]  = {NDC("11"), NDC("12"), NDC("13")};
+        NDC n_less[]    = {NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9")};
+        NDC n_greater[] = {NDC("0"), NDC("1"), NDC("2"), NDC("4"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9")};
 
-        NDC n_unordered[]                   = { NDC("1"), NDC("4", 1), NDC("7"), NDC("4", 2), NDC("2"), NDC("4", 3), NDC("3"), NDC("6"), NDC("9"), NDC("0"), NDC("8"), NDC("5") };
+        NDC n_unordered[] = {NDC("1"), NDC("4", 1), NDC("7"), NDC("4", 2), NDC("2"), NDC("4", 3), NDC("3"), NDC("6"), NDC("9"), NDC("0"), NDC("8"), NDC("5")};
 
-        NDC n_ordered[]                     = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
-        NDC n_stable_default_ordered[]      = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4", 1), NDC("4", 2), NDC("4", 3), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
-        NDC n_stable_reverse_ordered[]      = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4", 3), NDC("4", 2), NDC("4", 1), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
-        NDC n_stable_greater_ordered[]      = { NDC("9"), NDC("8"), NDC("7"), NDC("6"), NDC("5"), NDC("4", 1), NDC("4", 2), NDC("4", 3), NDC("3"), NDC("2"), NDC("1"), NDC("0") };
-        NDC n_stable_greater_reverse_ordered_data[] = { NDC("9"), NDC("8"), NDC("7"), NDC("6"), NDC("5"), NDC("4", 3), NDC("4", 2), NDC("4", 1), NDC("3"), NDC("2"), NDC("1"), NDC("0") };
+        NDC n_ordered[]                             = {NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9")};
+        NDC n_stable_default_ordered[]              = {NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4", 1), NDC("4", 2), NDC("4", 3), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9")};
+        NDC n_stable_reverse_ordered[]              = {NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4", 3), NDC("4", 2), NDC("4", 1), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9")};
+        NDC n_stable_greater_ordered[]              = {NDC("9"), NDC("8"), NDC("7"), NDC("6"), NDC("5"), NDC("4", 1), NDC("4", 2), NDC("4", 3), NDC("3"), NDC("2"), NDC("1"), NDC("0")};
+        NDC n_stable_greater_reverse_ordered_data[] = {NDC("9"), NDC("8"), NDC("7"), NDC("6"), NDC("5"), NDC("4", 3), NDC("4", 2), NDC("4", 1), NDC("3"), NDC("2"), NDC("1"), NDC("0")};
 
-        NDC n_part_ordered[]                = { NDC("1"), NDC("4", 1), NDC("0"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("6"), NDC("7"), NDC("9"), NDC("8"), NDC("5") };
-        NDC n_part_reverse_ordered[]        = { NDC("1"), NDC("4"), NDC("9"), NDC("7"), NDC("6"), NDC("4"), NDC("4"), NDC("3"), NDC("2"), NDC("0"), NDC("8"), NDC("5") };
+        NDC n_part_ordered[]         = {NDC("1"), NDC("4", 1), NDC("0"), NDC("2"), NDC("3"), NDC("4"), NDC("4"), NDC("6"), NDC("7"), NDC("9"), NDC("8"), NDC("5")};
+        NDC n_part_reverse_ordered[] = {NDC("1"), NDC("4"), NDC("9"), NDC("7"), NDC("6"), NDC("4"), NDC("4"), NDC("3"), NDC("2"), NDC("0"), NDC("8"), NDC("5")};
 
-        NDC n_stable_part_ordered[]         = { NDC("1"), NDC("4", 1), NDC("0"), NDC("2"), NDC("3"), NDC("4", 2), NDC("4", 3), NDC("6"), NDC("7"), NDC("9"), NDC("8"), NDC("5") };
-        NDC n_stable_part_greater_ordered[] = { NDC("1"), NDC("4", 1), NDC("9"), NDC("7"), NDC("6"), NDC("4", 2), NDC("4", 3), NDC("3"), NDC("2"), NDC("0"), NDC("8"), NDC("5") };
-
+        NDC n_stable_part_ordered[]         = {NDC("1"), NDC("4", 1), NDC("0"), NDC("2"), NDC("3"), NDC("4", 2), NDC("4", 3), NDC("6"), NDC("7"), NDC("9"), NDC("8"), NDC("5")};
+        NDC n_stable_part_greater_ordered[] = {NDC("1"), NDC("4", 1), NDC("9"), NDC("7"), NDC("6"), NDC("4", 2), NDC("4", 3), NDC("3"), NDC("2"), NDC("0"), NDC("8"), NDC("5")};
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -171,7 +170,7 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       int current_count = NDC::get_instance_count();
 
@@ -194,9 +193,9 @@ namespace
 
       DataDC data(lookup, pool);
 
-      CHECK(data.begin()   == data.end());
-      CHECK(data.cbegin()  == data.cend());
-      CHECK(data.rbegin()  == data.rend());
+      CHECK(data.begin() == data.end());
+      CHECK(data.cbegin() == data.cend());
+      CHECK(data.rbegin() == data.rend());
       CHECK(data.crbegin() == data.crend());
     }
 
@@ -207,7 +206,7 @@ namespace
       PoolDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      DataDC data(INITIAL_SIZE, lookup, pool);
+      DataDC       data(INITIAL_SIZE, lookup, pool);
 
       CHECK(data.size() == INITIAL_SIZE);
       CHECK(!data.empty());
@@ -220,10 +219,10 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
-      DataNDC data(5UL, NDC("1"), lookup, pool);
+      DataNDC          data(5UL, NDC("1"), lookup, pool);
 
       CHECK(data.size() == INITIAL_SIZE);
       CHECK(!data.empty());
@@ -265,8 +264,8 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      CompareDataNDC compare_data = { NDC("0"), NDC("1"), NDC("2"), NDC("3") };
-      DataNDC data({ NDC("0"), NDC("1"), NDC("2"), NDC("3") }, lookup, pool);
+      CompareDataNDC compare_data = {NDC("0"), NDC("1"), NDC("2"), NDC("3")};
+      DataNDC        data({NDC("0"), NDC("1"), NDC("2"), NDC("3")}, lookup, pool);
 
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -424,7 +423,7 @@ namespace
       PoolUniquePtr   pool2;
 
       typedef etl::indirect_vector_ext<std::unique_ptr<uint32_t>> Data;
-      typedef etl::iindirect_vector<std::unique_ptr<uint32_t>> IData;
+      typedef etl::iindirect_vector<std::unique_ptr<uint32_t>>    IData;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
       std::unique_ptr<uint32_t> p2(new uint32_t(2U));
@@ -467,9 +466,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end(), lookup1, pool1);
       DataNDC other_data(data, lookup2, pool2);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool is_equal = std::equal(data.begin(),
                                  data.end(),
@@ -487,7 +486,7 @@ namespace
       LookupDC lookup2;
       PoolDC   pool2;
 
-      DataDC data(10, lookup1, pool1);
+      DataDC       data(10, lookup1, pool1);
       const DataDC constData(10, lookup2, pool2);
 
       CHECK_EQUAL(&data[0], &(*data.begin()));
@@ -505,7 +504,7 @@ namespace
       LookupDC lookup2;
       PoolDC   pool2;
 
-      DataDC data(10, lookup1, pool1);
+      DataDC       data(10, lookup1, pool1);
       const DataDC constData(10, lookup2, pool2);
 
       CHECK(std::distance(data.begin(), data.end()) == 10U);
@@ -521,7 +520,7 @@ namespace
       PoolDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const size_t NEW_SIZE = 8UL;
+      const size_t NEW_SIZE     = 8UL;
 
       DataDC data(INITIAL_SIZE, lookup, pool);
       data.resize(NEW_SIZE);
@@ -536,8 +535,8 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const size_t NEW_SIZE = 8UL;
-      const NDC INITIAL_VALUE("1");
+      const size_t NEW_SIZE     = 8UL;
+      const NDC    INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
       data.resize(NEW_SIZE, INITIAL_VALUE);
@@ -558,7 +557,7 @@ namespace
       PoolDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const size_t NEW_SIZE = SIZE + 1UL;
+      const size_t NEW_SIZE     = SIZE + 1UL;
 
       DataDC data(INITIAL_SIZE, lookup, pool);
 
@@ -572,7 +571,7 @@ namespace
       PoolDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const size_t NEW_SIZE = 2UL;
+      const size_t NEW_SIZE     = 2UL;
 
       DataDC data(INITIAL_SIZE, lookup, pool);
       data.resize(NEW_SIZE);
@@ -587,8 +586,8 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const size_t NEW_SIZE = 2UL;
-      const NDC INITIAL_VALUE("1");
+      const size_t NEW_SIZE     = 2UL;
+      const NDC    INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
       data.resize(NEW_SIZE, INITIAL_VALUE);
@@ -675,7 +674,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -692,7 +691,7 @@ namespace
       PoolNDC   pool;
 
       const CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      const DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -709,7 +708,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.front() == compare_data.front());
 
@@ -727,7 +726,7 @@ namespace
       PoolNDC   pool;
 
       const CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      const DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.front() == compare_data.front());
 
@@ -745,7 +744,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.back() == compare_data.back());
 
@@ -763,7 +762,7 @@ namespace
       PoolNDC   pool;
 
       const CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      const DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       CHECK(data.back() == compare_data.back());
 
@@ -789,8 +788,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -801,8 +800,8 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const size_t     INITIAL_SIZE = 5UL;
+      const NDC        INITIAL_VALUE("1");
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
 
       DataNDC data(lookup, pool);
@@ -823,9 +822,9 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1UL;
-      const NDC INITIAL_VALUE("1");
+      const size_t     INITIAL_SIZE = SIZE;
+      const size_t     EXCESS_SIZE  = SIZE + 1UL;
+      const NDC        INITIAL_VALUE("1");
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
 
       DataNDC data(lookup, pool);
@@ -840,7 +839,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data;
-      DataNDC data(lookup, pool);
+      DataNDC        data(lookup, pool);
 
       for (size_t i = 0UL; i < SIZE; ++i)
       {
@@ -884,7 +883,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data;
-      DataNDC data(lookup, pool);
+      DataNDC        data(lookup, pool);
 
       for (size_t i = 0UL; i < SIZE; ++i)
       {
@@ -1001,7 +1000,6 @@ namespace
       CHECK_EQUAL(4, *data[0]);
       CHECK_EQUAL(3, *data[1]);
       CHECK_EQUAL(2, *data[2]);
-
     }
 
     //*************************************************************************
@@ -1011,7 +1009,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       compare_data.pop_back();
       compare_data.pop_back();
@@ -1051,12 +1049,12 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
-        DataNDC data(lookup, pool);
+        DataNDC        data(lookup, pool);
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
@@ -1078,7 +1076,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
     {
       const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       LookupNDC lookup;
       PoolNDC   pool;
@@ -1100,13 +1098,13 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5UL;
+      const size_t      INITIAL_SIZE = 5UL;
       const std::string INITIAL_VALUE("1");
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
-        DataNDC data(lookup, pool);
+        DataNDC        data(lookup, pool);
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
@@ -1126,7 +1124,7 @@ namespace
 
     TEST_FIXTURE(SetupFixture, test_emplace_position_value_outofbounds)
     {
-      const size_t INITIAL_SIZE = 5UL;
+      const size_t      INITIAL_SIZE = 5UL;
       const std::string INITIAL_VALUE("1");
 
       LookupNDC lookup;
@@ -1149,9 +1147,9 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE     = SIZE;
-      const NDC INITIAL_VALUE("1");
-      const NDC UNINITIALISED_VALUE("Z");
+      const size_t INITIAL_SIZE = SIZE;
+      const NDC    INITIAL_VALUE("1");
+      const NDC    UNINITIALISED_VALUE("Z");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
 
@@ -1174,14 +1172,14 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE     = 5UL;
-      const size_t INSERT_SIZE      = 3UL;
-      const NDC INITIAL_VALUE("1");
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t INSERT_SIZE  = 3UL;
+      const NDC    INITIAL_VALUE("1");
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
-        DataNDC data(lookup, pool);
+        DataNDC        data(lookup, pool);
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
@@ -1224,7 +1222,7 @@ namespace
 
       const size_t INITIAL_SIZE = SIZE;
       const size_t INSERT_SIZE  = 4UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
 
@@ -1252,12 +1250,12 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
-        DataNDC data(lookup, pool);
+        DataNDC        data(lookup, pool);
 
         data.resize(SIZE, NDC("Z"));
 
@@ -1301,7 +1299,7 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = 5UL;
-      const NDC INITIAL_VALUE("1");
+      const NDC    INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
 
@@ -1329,7 +1327,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       compare_data.erase(compare_data.cbegin() + 2);
 
@@ -1363,7 +1361,7 @@ namespace
       PoolNDC   pool;
 
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
-      DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
+      DataNDC        data(initial_data.begin(), initial_data.end(), lookup, pool);
 
       compare_data.erase(compare_data.cbegin() + 2, compare_data.cbegin() + 4);
 
@@ -1724,7 +1722,7 @@ namespace
 
       typedef typename DataNDC::unary_function_adaptor<functor> wrapped_functor;
 
-      functor unwrapped;
+      functor         unwrapped;
       wrapped_functor wrapped(unwrapped);
 
       functor direct = std::for_each(data.begin(),
@@ -1733,7 +1731,8 @@ namespace
 
       functor indirect = std::for_each(data.begin().indirection(),
                                        data.end().indirection(),
-                                       wrapped).unary_function;
+                                       wrapped)
+                           .unary_function;
 
       CHECK_EQUAL(direct.result, indirect.result);
     }
@@ -1762,7 +1761,7 @@ namespace
 
       typedef typename DataNDC::unary_function_adaptor<functor, bool> wrapped_functor;
 
-      functor unwrapped;
+      functor         unwrapped;
       wrapped_functor wrapped(unwrapped);
 
       typename DataNDC::iterator direct = std::partition(data1.begin(),
@@ -1797,7 +1796,7 @@ namespace
 
       typedef typename DataNDC::binary_function_adaptor<functor> wrapped_functor;
 
-      functor unwrapped;
+      functor         unwrapped;
       wrapped_functor wrapped(unwrapped);
 
       LookupNDC lookup1;
@@ -1850,4 +1849,4 @@ namespace
       CHECK(is_equal);
     }
   }
-}
+} // namespace

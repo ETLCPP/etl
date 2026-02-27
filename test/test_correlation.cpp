@@ -34,52 +34,34 @@ SOFTWARE.
 
 namespace
 {
-  std::array<int8_t, 10> input_c
-  {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-  };
+  std::array<int8_t, 10> input_c{
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-  std::array<int8_t, 10> input_c_flat
-  {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
+  std::array<int8_t, 10> input_c_flat{
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-  std::array<int8_t, 10> input_c_inv
-  {
-    0, -1, -2, -3, -4, -5, -6, -7, -8, -9
-  };
+  std::array<int8_t, 10> input_c_inv{
+    0, -1, -2, -3, -4, -5, -6, -7, -8, -9};
 
   //*********************************
-  std::array<float, 10> input_f
-  {
-    0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f
-  };
+  std::array<float, 10> input_f{
+    0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
 
-  std::array<float, 10> input_f_flat
-  {
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
-  };
+  std::array<float, 10> input_f_flat{
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-  std::array<float, 10> input_f_inv
-  {
-    0.0f, -1.0f, -2.0f, -3.0f, -4.0f, -5.0f, -6.0f, -7.0f, -8.0f, -9.0f
-  };
+  std::array<float, 10> input_f_inv{
+    0.0f, -1.0f, -2.0f, -3.0f, -4.0f, -5.0f, -6.0f, -7.0f, -8.0f, -9.0f};
 
   //*********************************
-  std::array<double, 10> input_d
-  {
-    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
-  };
+  std::array<double, 10> input_d{
+    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 
-  std::array<double, 10> input_d_flat
-  {
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-  };
+  std::array<double, 10> input_d_flat{
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-  std::array<double, 10> input_d_inv
-  {
-    0.0, -1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0
-  };
+  std::array<double, 10> input_d_inv{
+    0.0, -1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0};
 
   SUITE(test_correlation)
   {
@@ -281,4 +263,4 @@ namespace
       CHECK_CLOSE(9.17, covariance_result, 0.1);
     }
   }
-}
+} // namespace

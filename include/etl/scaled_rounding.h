@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_SCALED_ROUNDING_INCLUDED
 
 #include "platform.h"
+#include "absolute.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "absolute.h"
 
 namespace etl
 {
@@ -66,7 +66,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_ceiling_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_ceiling_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -93,7 +94,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_ceiling_scaled(T value) ETL_NOEXCEPT
+    T
+    round_ceiling_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -108,7 +110,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_floor_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_floor_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
     if (Scaling == 1)
@@ -134,7 +137,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_floor_scaled(T value) ETL_NOEXCEPT
+    T
+    round_floor_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -150,7 +154,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_up_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_half_up_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -180,7 +185,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_up_scaled(T value) ETL_NOEXCEPT
+    T
+    round_half_up_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -196,7 +202,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_down_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_half_down_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -224,7 +231,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_down_scaled(T value) ETL_NOEXCEPT
+    T
+    round_half_down_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -239,7 +247,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_zero_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_zero_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -261,7 +270,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_zero_scaled(T value) ETL_NOEXCEPT
+    T
+    round_zero_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -276,7 +286,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_infinity_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_infinity_unscaled(T value) ETL_NOEXCEPT
   {
     if (value >= 0)
     {
@@ -296,7 +307,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_infinity_scaled(T value) ETL_NOEXCEPT
+    T
+    round_infinity_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -312,7 +324,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_even_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_half_even_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -351,7 +364,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_even_scaled(T value) ETL_NOEXCEPT
+    T
+    round_half_even_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -367,7 +381,8 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_odd_unscaled(T value) ETL_NOEXCEPT
+    T
+    round_half_odd_unscaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
@@ -406,12 +421,13 @@ namespace etl
   template <uint32_t Scaling, typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T round_half_odd_scaled(T value) ETL_NOEXCEPT
+    T
+    round_half_odd_scaled(T value) ETL_NOEXCEPT
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
 
     return T(round_half_odd_unscaled<Scaling>(value) * scale_t(Scaling));
   }
-}
+} // namespace etl
 
 #endif

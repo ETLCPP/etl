@@ -38,11 +38,11 @@ SOFTWARE.
 #define ETL_TARGET_DEVICE_ARM
 #define ETL_TARGET_OS_NONE
 #define ETL_COMPILER_ARM5
-#define ETL_CPP11_SUPPORTED 0
-#define ETL_CPP14_SUPPORTED 0
-#define ETL_CPP17_SUPPORTED 0
-#define ETL_NO_NULLPTR_SUPPORT (__cplusplus < 201103L)
-#define ETL_NO_LARGE_CHAR_SUPPORT  (__cplusplus < 201103L)
+#define ETL_CPP11_SUPPORTED                        0
+#define ETL_CPP14_SUPPORTED                        0
+#define ETL_CPP17_SUPPORTED                        0
+#define ETL_NO_NULLPTR_SUPPORT                     (__cplusplus < 201103L)
+#define ETL_NO_LARGE_CHAR_SUPPORT                  (__cplusplus < 201103L)
 #define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED 0
 #define ETL_NO_STL
 

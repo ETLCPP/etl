@@ -32,13 +32,13 @@ SOFTWARE.
 #define ETL_FLAT_MAP_INCLUDED
 
 #include "platform.h"
-#include "reference_flat_map.h"
-#include "pool.h"
-#include "placement_new.h"
-#include "nth_type.h"
-#include "utility.h"
-#include "type_traits.h"
 #include "initializer_list.h"
+#include "nth_type.h"
+#include "placement_new.h"
+#include "pool.h"
+#include "reference_flat_map.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -65,27 +65,27 @@ namespace etl
   private:
 
     typedef etl::ireference_flat_map<TKey, TMapped, TKeyCompare> refmap_t;
-    typedef typename refmap_t::lookup_t lookup_t;
-    typedef etl::ipool storage_t;
+    typedef typename refmap_t::lookup_t                          lookup_t;
+    typedef etl::ipool                                           storage_t;
 
   public:
 
     typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
-    typedef TKey              key_type;
-    typedef TMapped           mapped_type;
-    typedef TKeyCompare       key_compare;
-    typedef value_type&       reference;
-    typedef const value_type& const_reference;
+    typedef TKey                                  key_type;
+    typedef TMapped                               mapped_type;
+    typedef TKeyCompare                           key_compare;
+    typedef value_type&                           reference;
+    typedef const value_type&                     const_reference;
 #if ETL_USING_CPP11
-    typedef value_type&&      rvalue_reference;
+    typedef value_type&& rvalue_reference;
 #endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-    typedef const key_type&    const_key_reference;
+    typedef const key_type& const_key_reference;
 #if ETL_USING_CPP11
-    typedef key_type&&         rvalue_key_reference;
+    typedef key_type&& rvalue_key_reference;
 #endif
     typedef mapped_type&       mapped_reference;
     typedef const mapped_type& const_mapped_reference;
@@ -93,8 +93,8 @@ namespace etl
     typedef typename refmap_t::iterator       iterator;
     typedef typename refmap_t::const_iterator const_iterator;
 
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   private:
@@ -106,12 +106,12 @@ namespace etl
     {
     public:
 
-      bool operator ()(const value_type& element, key_type key) const
+      bool operator()(const value_type& element, key_type key) const
       {
         return comp(element.first, key);
       }
 
-      bool operator ()(key_type key, const value_type& element) const
+      bool operator()(key_type key, const value_type& element) const
       {
         return comp(key, element.first);
       }
@@ -235,7 +235,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_reference operator [](rvalue_key_reference key)
+    mapped_reference operator[](rvalue_key_reference key)
     {
       iterator i_element = lower_bound(key);
 
@@ -254,7 +254,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_reference operator [](const_key_reference key)
+    mapped_reference operator[](const_key_reference key)
     {
       iterator i_element = lower_bound(key);
 
@@ -366,7 +366,7 @@ namespace etl
       // Doesn't already exist?
       if ((i_element == end()) || compare(value.first, i_element->first))
       {
-        //result = insert_value(i_element, etl::move(value.first), etl::move(value.second));
+        // result = insert_value(i_element, etl::move(value.first), etl::move(value.second));
         result = insert_value(i_element, etl::move(value));
       }
 
@@ -427,8 +427,8 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    template <typename ... Args>
-    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, Args && ... args)
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, Args&&... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -684,7 +684,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<value_type>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<value_type>::value)
       {
         storage.release_all();
       }
@@ -895,7 +895,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iflat_map& operator = (const iflat_map& rhs)
+    iflat_map& operator=(const iflat_map& rhs)
     {
       if (&rhs != this)
       {
@@ -909,7 +909,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    iflat_map& operator = (iflat_map&& rhs)
+    iflat_map& operator=(iflat_map&& rhs)
     {
       move_container(etl::move(rhs));
 
@@ -977,8 +977,8 @@ namespace etl
     /// Constructor.
     //*********************************************************************
     iflat_map(lookup_t& lookup_, storage_t& storage_)
-      : refmap_t(lookup_),
-        storage(storage_)
+      : refmap_t(lookup_)
+      , storage(storage_)
     {
     }
 
@@ -1070,7 +1070,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT;
-      
+
       return refmap_t::insert_at(i_element, *pvalue);
     }
 
@@ -1078,12 +1078,16 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_FLAT_MAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~iflat_map()
     {
     }
 #else
+
   protected:
+
     ~iflat_map()
     {
     }
@@ -1098,7 +1102,7 @@ namespace etl
   ///\ingroup flat_map
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator==(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -1111,7 +1115,7 @@ namespace etl
   ///\ingroup flat_map
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator!=(const etl::iflat_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iflat_map<TKey, TMapped, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -1197,7 +1201,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    flat_map& operator = (const flat_map& rhs)
+    flat_map& operator=(const flat_map& rhs)
     {
       if (&rhs != this)
       {
@@ -1211,7 +1215,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    flat_map& operator = (flat_map&& rhs)
+    flat_map& operator=(flat_map&& rhs)
     {
       if (&rhs != this)
       {
@@ -1253,9 +1257,9 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
   constexpr auto make_flat_map(TPairs&&... pairs) -> etl::flat_map<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
   {
-    return { etl::forward<TPairs>(pairs)... };
+    return {etl::forward<TPairs>(pairs)...};
   }
 #endif
-}
+} // namespace etl
 
 #endif

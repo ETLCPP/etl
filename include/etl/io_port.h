@@ -36,10 +36,10 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include "platform.h"
-#include "nullptr.h"
 #include "iterator.h"
-#include "utility.h"
+#include "nullptr.h"
 #include "static_assert.h"
+#include "utility.h"
 
 #include <stdint.h>
 
@@ -72,11 +72,11 @@ namespace etl
       //********************************
       /// Types
       //********************************
-      typedef TIO_Port io_port_type;
+      typedef TIO_Port                      io_port_type;
       typedef typename TIO_Port::value_type value_type;
 
       //********************************
-      /// 
+      ///
       //********************************
       iterator()
         : p_iop(ETL_NULLPTR)
@@ -84,7 +84,7 @@ namespace etl
       }
 
       //********************************
-      /// 
+      ///
       //********************************
       iterator(const iterator& other)
         : p_iop(other.p_iop)
@@ -92,26 +92,26 @@ namespace etl
       }
 
       //********************************
-      /// 
+      ///
       //********************************
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
         p_iop = other.p_iop;
         return *this;
       }
 
       //********************************
-      /// 
+      ///
       //********************************
-      io_port_type& operator *()
+      io_port_type& operator*()
       {
         return *p_iop;
       }
 
       //********************************
-      /// 
+      ///
       //********************************
-      const io_port_type& operator *() const
+      const io_port_type& operator*() const
       {
         return *p_iop;
       }
@@ -119,7 +119,7 @@ namespace etl
       //********************************
       /// Pre-increment operator.
       //********************************
-      iterator& operator ++()
+      iterator& operator++()
       {
         return *this;
       }
@@ -127,7 +127,7 @@ namespace etl
       //********************************
       /// Post-increment operator.
       //********************************
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         return *this;
       }
@@ -135,7 +135,7 @@ namespace etl
     private:
 
       //********************************
-      /// 
+      ///
       //********************************
       iterator(io_port_type& iop)
         : p_iop(&iop)
@@ -165,11 +165,11 @@ namespace etl
       //********************************
       /// Types
       //********************************
-      typedef TIO_Port io_port_type;
+      typedef TIO_Port                            io_port_type;
       typedef const typename TIO_Port::value_type value_type;
 
       //********************************
-      /// 
+      ///
       //********************************
       const_iterator()
         : p_iop(ETL_NULLPTR)
@@ -177,7 +177,7 @@ namespace etl
       }
 
       //********************************
-      /// 
+      ///
       //********************************
       const_iterator(const iterator_type& other)
         : p_iop(other.p_iop)
@@ -185,7 +185,7 @@ namespace etl
       }
 
       //********************************
-      /// 
+      ///
       //********************************
       const_iterator(const const_iterator& other)
         : p_iop(other.p_iop)
@@ -193,27 +193,27 @@ namespace etl
       }
 
       //********************************
-      /// 
+      ///
       //********************************
-      const_iterator& operator =(const iterator_type& other)
+      const_iterator& operator=(const iterator_type& other)
       {
         p_iop = other.p_iop;
         return *this;
       }
 
       //********************************
-      /// 
+      ///
       //********************************
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         p_iop = other.p_iop;
         return *this;
       }
 
       //********************************
-      /// 
+      ///
       //********************************
-      const io_port_type& operator *() const
+      const io_port_type& operator*() const
       {
         return *p_iop;
       }
@@ -221,7 +221,7 @@ namespace etl
       //********************************
       /// Pre-increment operator.
       //********************************
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         return *this;
       }
@@ -229,7 +229,7 @@ namespace etl
       //********************************
       /// Post-increment operator.
       //********************************
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         return *this;
       }
@@ -237,7 +237,7 @@ namespace etl
     private:
 
       //********************************
-      /// 
+      ///
       //********************************
       const_iterator(const io_port_type& iop)
         : p_iop(&iop)
@@ -246,7 +246,7 @@ namespace etl
 
       const io_port_type* p_iop;
     };
-  }
+  } // namespace private_io_port
 
   //***************************************************************************
   /// Read write port.
@@ -318,7 +318,7 @@ namespace etl
     //**********************************
     /// Write.
     //**********************************
-    io_port_rw& operator =(value_type value_)
+    io_port_rw& operator=(value_type value_)
     {
       *reinterpret_cast<pointer>(Address) = value_;
       return *this;
@@ -327,10 +327,10 @@ namespace etl
     //**********************************
     /// Or-Equals operator.
     //**********************************
-    io_port_rw& operator |=(value_type value)
+    io_port_rw& operator|=(value_type value)
     {
       pointer    address = reinterpret_cast<pointer>(Address);
-      value_type temp = *address;
+      value_type temp    = *address;
       temp |= value;
       *address = temp;
 
@@ -340,10 +340,10 @@ namespace etl
     //**********************************
     /// And-Equals operator.
     //**********************************
-    io_port_rw& operator &=(value_type value)
+    io_port_rw& operator&=(value_type value)
     {
       pointer    address = reinterpret_cast<pointer>(Address);
-      value_type temp = *address;
+      value_type temp    = *address;
       temp &= value;
       *address = temp;
 
@@ -353,10 +353,10 @@ namespace etl
     //**********************************
     /// Exclusive-Or-Equals operator.
     //**********************************
-    io_port_rw& operator ^=(value_type value)
+    io_port_rw& operator^=(value_type value)
     {
       pointer    address = reinterpret_cast<pointer>(Address);
-      value_type temp = *address;
+      value_type temp    = *address;
       temp ^= value;
       *address = temp;
 
@@ -366,10 +366,10 @@ namespace etl
     //**********************************
     /// Left-Shift-Equals operator.
     //**********************************
-    io_port_rw& operator <<=(int shift)
+    io_port_rw& operator<<=(int shift)
     {
       pointer    address = reinterpret_cast<pointer>(Address);
-      value_type temp = *address;
+      value_type temp    = *address;
       temp <<= shift;
       *address = temp;
 
@@ -379,10 +379,10 @@ namespace etl
     //**********************************
     /// Right-Shift-Equals operator.
     //**********************************
-    io_port_rw& operator >>=(int shift)
+    io_port_rw& operator>>=(int shift)
     {
       pointer    address = reinterpret_cast<pointer>(Address);
-      value_type temp = *address;
+      value_type temp    = *address;
       temp >>= shift;
       *address = temp;
 
@@ -392,7 +392,7 @@ namespace etl
     //**********************************
     /// Not operator.
     //**********************************
-    value_type operator ~() const
+    value_type operator~() const
     {
       return ~(*reinterpret_cast<pointer>(Address));
     }
@@ -416,7 +416,7 @@ namespace etl
   private:
 
     /// Disabled.
-    io_port_rw& operator =(const io_port_rw&);
+    io_port_rw& operator=(const io_port_rw&);
   };
 
   //***************************************************************************
@@ -488,10 +488,10 @@ namespace etl
   private:
 
     /// Write disabled.
-    void operator =(value_type value) ETL_DELETE;
+    void operator=(value_type value) ETL_DELETE;
 
     /// Disabled.
-    io_port_ro& operator =(const io_port_ro&) ETL_DELETE;
+    io_port_ro& operator=(const io_port_ro&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -523,7 +523,7 @@ namespace etl
     //**********************************
     /// Write.
     //**********************************
-    void operator =(value_type value)
+    void operator=(value_type value)
     {
       *reinterpret_cast<pointer>(Address) = value;
     }
@@ -558,7 +558,7 @@ namespace etl
     operator value_type() const ETL_DELETE;
 
     /// Disabled.
-    io_port_wo& operator =(const io_port_wo&) ETL_DELETE;
+    io_port_wo& operator=(const io_port_wo&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -633,16 +633,16 @@ namespace etl
     //**********************************
     void write(value_type value_)
     {
-      shadow_value = value_;
+      shadow_value                        = value_;
       *reinterpret_cast<pointer>(Address) = shadow_value;
     }
 
     //**********************************
     /// Write.
     //**********************************
-    io_port_wos& operator =(value_type value_)
+    io_port_wos& operator=(value_type value_)
     {
-      shadow_value = value_;
+      shadow_value                        = value_;
       *reinterpret_cast<pointer>(Address) = shadow_value;
       return *this;
     }
@@ -650,7 +650,7 @@ namespace etl
     //**********************************
     /// Or-Equals operator.
     //**********************************
-    io_port_wos& operator |=(value_type value)
+    io_port_wos& operator|=(value_type value)
     {
       shadow_value |= value;
       *reinterpret_cast<pointer>(Address) = shadow_value;
@@ -661,7 +661,7 @@ namespace etl
     //**********************************
     /// And-Equals operator.
     //**********************************
-    io_port_wos& operator &=(value_type value)
+    io_port_wos& operator&=(value_type value)
     {
       shadow_value &= value;
       *reinterpret_cast<pointer>(Address) = shadow_value;
@@ -672,7 +672,7 @@ namespace etl
     //**********************************
     /// Exclusive-Or-Equals operator.
     //**********************************
-    io_port_wos& operator ^=(value_type value)
+    io_port_wos& operator^=(value_type value)
     {
       shadow_value ^= value;
       *reinterpret_cast<pointer>(Address) = shadow_value;
@@ -683,7 +683,7 @@ namespace etl
     //**********************************
     /// Left-Shift-Equals operator.
     //**********************************
-    io_port_wos& operator <<=(int shift)
+    io_port_wos& operator<<=(int shift)
     {
       shadow_value <<= shift;
       *reinterpret_cast<pointer>(Address) = shadow_value;
@@ -694,7 +694,7 @@ namespace etl
     //**********************************
     /// Right-Shift-Equals operator.
     //**********************************
-    io_port_wos& operator >>=(int shift)
+    io_port_wos& operator>>=(int shift)
     {
       shadow_value >>= shift;
       *reinterpret_cast<pointer>(Address) = shadow_value;
@@ -705,7 +705,7 @@ namespace etl
     //**********************************
     /// Not operator.
     //**********************************
-    value_type operator ~() const
+    value_type operator~() const
     {
       return ~shadow_value;
     }
@@ -721,7 +721,7 @@ namespace etl
   private:
 
     /// Disabled.
-    io_port_wos& operator =(const io_port_wos&);
+    io_port_wos& operator=(const io_port_wos&);
 
     value_type shadow_value;
   };
@@ -773,7 +773,7 @@ namespace etl
     //**********************************
     /// Assignment.
     //**********************************
-    io_port_rw& operator =(const io_port_rw& other_)
+    io_port_rw& operator=(const io_port_rw& other_)
     {
       address = other_.address;
       return *this;
@@ -806,7 +806,7 @@ namespace etl
     //**********************************
     /// Or-Equals operator.
     //**********************************
-    io_port_rw& operator |=(value_type value)
+    io_port_rw& operator|=(value_type value)
     {
       value_type temp = *address;
       temp |= value;
@@ -818,7 +818,7 @@ namespace etl
     //**********************************
     /// And-Equals operator.
     //**********************************
-    io_port_rw& operator &=(value_type value)
+    io_port_rw& operator&=(value_type value)
     {
       value_type temp = *address;
       temp &= value;
@@ -830,7 +830,7 @@ namespace etl
     //**********************************
     /// Exclusive-Or-Equals operator.
     //**********************************
-    io_port_rw& operator ^=(value_type value)
+    io_port_rw& operator^=(value_type value)
     {
       value_type temp = *address;
       temp ^= value;
@@ -842,7 +842,7 @@ namespace etl
     //**********************************
     /// Left-Shift-Equals operator.
     //**********************************
-    io_port_rw& operator <<=(int shift)
+    io_port_rw& operator<<=(int shift)
     {
       value_type temp = *address;
       temp <<= shift;
@@ -854,7 +854,7 @@ namespace etl
     //**********************************
     /// Right-Shift-Equals operator.
     //**********************************
-    io_port_rw& operator >>=(int shift)
+    io_port_rw& operator>>=(int shift)
     {
       value_type temp = *address;
       temp >>= shift;
@@ -866,7 +866,7 @@ namespace etl
     //**********************************
     /// Not operator.
     //**********************************
-    value_type operator ~() const
+    value_type operator~() const
     {
       return ~(*address);
     }
@@ -922,7 +922,7 @@ namespace etl
     //**********************************
     /// Write.
     //**********************************
-    io_port_rw& operator =(value_type value_)
+    io_port_rw& operator=(value_type value_)
     {
       *address = value_;
       return *this;
@@ -979,7 +979,7 @@ namespace etl
     //**********************************
     /// Assignment.
     //**********************************
-    io_port_ro& operator =(const io_port_ro& other_)
+    io_port_ro& operator=(const io_port_ro& other_)
     {
       address = other_.address;
       return *this;
@@ -1036,7 +1036,7 @@ namespace etl
   private:
 
     /// Write disabled.
-    void operator =(value_type value) ETL_DELETE;
+    void operator=(value_type value) ETL_DELETE;
 
     pointer address;
   };
@@ -1059,7 +1059,7 @@ namespace etl
     typedef volatile const T& const_reference;
 
     typedef etl::private_io_port::iterator<io_port_wo<T, 0> > iterator;
-  
+
     //**********************************
     /// Default constructor.
     //**********************************
@@ -1087,7 +1087,7 @@ namespace etl
     //**********************************
     /// Assignment.
     //**********************************
-    io_port_wo& operator =(const io_port_wo& other_)
+    io_port_wo& operator=(const io_port_wo& other_)
     {
       address = other_.address;
       return *this;
@@ -1136,7 +1136,7 @@ namespace etl
     //**********************************
     /// Write.
     //**********************************
-    void operator =(value_type value)
+    void operator=(value_type value)
     {
       *address = value;
     }
@@ -1199,7 +1199,7 @@ namespace etl
     //**********************************
     /// Assignment.
     //**********************************
-    io_port_wos& operator =(const io_port_wos& other_)
+    io_port_wos& operator=(const io_port_wos& other_)
     {
       shadow_value = other_.shadow_value;
       address      = other_.address;
@@ -1233,7 +1233,7 @@ namespace etl
     //**********************************
     /// Or-Equals operator.
     //**********************************
-    io_port_wos& operator |=(value_type value)
+    io_port_wos& operator|=(value_type value)
     {
       shadow_value |= value;
       *address = shadow_value;
@@ -1244,7 +1244,7 @@ namespace etl
     //**********************************
     /// And-Equals operator.
     //**********************************
-    io_port_wos& operator &=(value_type value)
+    io_port_wos& operator&=(value_type value)
     {
       shadow_value &= value;
       *address = shadow_value;
@@ -1255,7 +1255,7 @@ namespace etl
     //**********************************
     /// Exclusive-Or-Equals operator.
     //**********************************
-    io_port_wos& operator ^=(value_type value)
+    io_port_wos& operator^=(value_type value)
     {
       shadow_value ^= value;
       *address = shadow_value;
@@ -1266,7 +1266,7 @@ namespace etl
     //**********************************
     /// Left-Shift-Equals operator.
     //**********************************
-    io_port_wos& operator <<=(int shift)
+    io_port_wos& operator<<=(int shift)
     {
       shadow_value <<= shift;
       *address = shadow_value;
@@ -1277,7 +1277,7 @@ namespace etl
     //**********************************
     /// Right-Shift-Equals operator.
     //**********************************
-    io_port_wos& operator >>=(int shift)
+    io_port_wos& operator>>=(int shift)
     {
       shadow_value >>= shift;
       *address = shadow_value;
@@ -1288,7 +1288,7 @@ namespace etl
     //**********************************
     /// Not operator.
     //**********************************
-    value_type operator ~() const
+    value_type operator~() const
     {
       return ~shadow_value;
     }
@@ -1345,7 +1345,7 @@ namespace etl
     //**********************************
     /// Write.
     //**********************************
-    io_port_wos& operator =(value_type value_)
+    io_port_wos& operator=(value_type value_)
     {
       shadow_value = value_;
       *address     = shadow_value;
@@ -1355,7 +1355,7 @@ namespace etl
     //**********************************
     /// Read / Write
     //**********************************
-    io_port_wos& operator *()
+    io_port_wos& operator*()
     {
       return *this;
     }
@@ -1363,7 +1363,7 @@ namespace etl
     //**********************************
     /// Read
     //**********************************
-    const_reference operator *() const
+    const_reference operator*() const
     {
       return shadow_value;
     }
@@ -1373,6 +1373,6 @@ namespace etl
     value_type shadow_value;
     pointer    address;
   };
-}
+} // namespace etl
 
 #endif

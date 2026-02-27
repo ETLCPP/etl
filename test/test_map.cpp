@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <map>
-#include <array>
 #include <algorithm>
-#include <utility>
+#include <array>
 #include <iterator>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "etl/map.h"
@@ -49,8 +49,8 @@ using Data         = etl::map<std::string, int, MAX_SIZE, std::greater<std::stri
 using IData        = etl::imap<std::string, int, std::greater<std::string>>;
 using Compare_Data = std::map<std::string, int, std::greater<std::string>>;
 #else
-using Data = etl::map<std::string, int, MAX_SIZE, std::less<std::string>>;
-using IData = etl::imap<std::string, int, std::less<std::string>>;
+using Data         = etl::map<std::string, int, MAX_SIZE, std::less<std::string>>;
+using IData        = etl::imap<std::string, int, std::less<std::string>>;
 using Compare_Data = std::map<std::string, int, std::less<std::string>>;
 #endif
 
@@ -74,12 +74,12 @@ namespace
     std::string k;
   };
 
-  bool operator <(const Key& lhs, const std::string& rhs)
+  bool operator<(const Key& lhs, const std::string& rhs)
   {
     return (lhs.k < rhs);
   }
 
-  bool operator <(const std::string& lhs, const Key& rhs)
+  bool operator<(const std::string& lhs, const Key& rhs)
   {
     return (lhs < rhs.k);
   }
@@ -132,16 +132,16 @@ namespace
         initial_data["9"] = 9;
 
         // Create a map of excess data
-        excess_data["0"] = 0;
-        excess_data["1"] = 1;
-        excess_data["2"] = 2;
-        excess_data["3"] = 3;
-        excess_data["4"] = 4;
-        excess_data["5"] = 5;
-        excess_data["6"] = 6;
-        excess_data["7"] = 7;
-        excess_data["8"] = 8;
-        excess_data["9"] = 9;
+        excess_data["0"]  = 0;
+        excess_data["1"]  = 1;
+        excess_data["2"]  = 2;
+        excess_data["3"]  = 3;
+        excess_data["4"]  = 4;
+        excess_data["5"]  = 5;
+        excess_data["6"]  = 6;
+        excess_data["7"]  = 7;
+        excess_data["8"]  = 8;
+        excess_data["9"]  = 9;
         excess_data["10"] = 10;
 
         // Create a map of different data
@@ -168,7 +168,7 @@ namespace
         random_data["7"] = 7;
         random_data["4"] = 4;
 
-        //even values
+        // even values
         initial_data_even["00"] = 0;
         initial_data_even["02"] = 2;
         initial_data_even["04"] = 4;
@@ -180,7 +180,7 @@ namespace
         initial_data_even["16"] = 16;
         initial_data_even["18"] = 18;
 
-        //test set
+        // test set
         test_data["00"] = 0;
         test_data["01"] = 1;
         test_data["02"] = 2;
@@ -220,10 +220,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
-      etl::map data{ std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
-                     std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9) };
-      etl::map<std::string, int, 10U> check = { std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
-                                                std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9) };
+      etl::map                        data{std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
+                    std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9)};
+      etl::map<std::string, int, 10U> check = {std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
+                                               std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9)};
 
       CHECK(!data.empty());
       CHECK(data.full());
@@ -240,8 +240,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data1(compare_data.begin(), compare_data.end());
-      Data data2(data1);
+      Data         data1(compare_data.begin(), compare_data.end());
+      Data         data2(data1);
 
       CHECK(initial_data.size() == data1.size());
       CHECK(data1.size() == data2.size());
@@ -310,11 +310,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
-      Compare_Data compare_data = { Data::value_type(std::string("0"), 0), Data::value_type(std::string("1"), 1),
-                                    Data::value_type(std::string("2"), 2), Data::value_type(std::string("3"), 3) };
+      Compare_Data compare_data = {Data::value_type(std::string("0"), 0), Data::value_type(std::string("1"), 1),
+                                   Data::value_type(std::string("2"), 2), Data::value_type(std::string("3"), 3)};
 
-      Data data = { Data::value_type(std::string("0"), 0), Data::value_type(std::string("1"), 1),
-                    Data::value_type(std::string("2"), 2), Data::value_type(std::string("3"), 3) };
+      Data data = {Data::value_type(std::string("0"), 0), Data::value_type(std::string("1"), 1),
+                   Data::value_type(std::string("2"), 2), Data::value_type(std::string("3"), 3)};
 
       CHECK(compare_data.size() == data.size());
       CHECK(!data.empty());
@@ -366,9 +366,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       Data other_data(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -404,7 +404,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_begin)
     {
-      Data data(initial_data.begin(), initial_data.end());
+      Data       data(initial_data.begin(), initial_data.end());
       const Data constData(data);
 
       CHECK(data.begin() == std::begin(data));
@@ -414,7 +414,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_end)
     {
-      Data data(initial_data.begin(), initial_data.end());
+      Data       data(initial_data.begin(), initial_data.end());
       const Data constData(data);
 
       CHECK(data.end() == std::end(data));
@@ -463,7 +463,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_index_value_changed)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       data["0"]         = 0;
       compare_data["0"] = 0;
@@ -478,7 +478,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_at)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       CHECK(data.at("0") == compare_data.at("0"));
       CHECK(data.at("1") == compare_data.at("1"));
@@ -528,7 +528,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end());
+      const Data         data(initial_data.begin(), initial_data.end());
 
       CHECK(data.at("0") == compare_data.at("0"));
       CHECK(data.at("1") == compare_data.at("1"));
@@ -591,7 +591,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_value)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(Data::value_type(std::string("0"), 0));
@@ -603,7 +603,7 @@ namespace
       CHECK(data_result.second == compare_result.second);
 
       // Try adding a duplicate (should return iterator pointing to duplicate)
-      data_result = data.insert(Data::value_type(std::string("0"), 0));
+      data_result    = data.insert(Data::value_type(std::string("0"), 0));
       compare_result = compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
 
       // Check that both return successful return results
@@ -639,7 +639,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_value2)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       data.insert(Data::value_type(std::string("0"), 0));
       compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
@@ -685,7 +685,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_value_changed)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       data.insert(Data::value_type(std::string("0"), 0));
       compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
@@ -710,7 +710,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_hint_value)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(Data::value_type(std::string("2"), 2));
@@ -723,16 +723,16 @@ namespace
 
       // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(data_result.first, ETL_OR_STD::make_pair(std::string("1"), 1));
       compare_data.insert(compare_result.first, ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -741,7 +741,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_const_hint_value)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       ETL_OR_STD::pair<Data::iterator, bool> data_result =
         data.insert(Data::value_type(std::string("2"), 2));
@@ -754,18 +754,18 @@ namespace
 
       // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(Data::const_iterator(data_result.first),
-        ETL_OR_STD::make_pair(std::string("1"), 1));
+                  ETL_OR_STD::make_pair(std::string("1"), 1));
       compare_data.insert(Compare_Data::const_iterator(compare_result.first),
-        ETL_OR_STD::make_pair(std::string("1"), 1));
+                          ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -782,7 +782,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_range)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       data.insert(initial_data.begin(), initial_data.end());
       compare_data.insert(initial_data.begin(), initial_data.end());
@@ -798,14 +798,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_range_random)
     {
       Compare_Data compare_data;
-      Data data;
+      Data         data;
 
       data.insert(random_data.begin(), random_data.end());
       compare_data.insert(random_data.begin(), random_data.end());
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -822,12 +822,12 @@ namespace
     TEST_FIXTURE(SetupFixture, test_equal_range)
     {
       Compare_Data compare_data(random_data.begin(), random_data.end());
-      Data data(random_data.begin(), random_data.end());
+      Data         data(random_data.begin(), random_data.end());
 
-      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result = data.equal_range("2");
-      Data::iterator data_lb = data.lower_bound("2");
-      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result = compare_data.equal_range("2");
-      Compare_Data::iterator compare_data_lb = compare_data.lower_bound("2");
+      ETL_OR_STD::pair<Data::iterator, Data::iterator>                 data_result     = data.equal_range("2");
+      Data::iterator                                                   data_lb         = data.lower_bound("2");
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result  = compare_data.equal_range("2");
+      Compare_Data::iterator                                           compare_data_lb = compare_data.lower_bound("2");
 
       // Check that both return the same return results
       CHECK(data_lb->first == compare_data_lb->first);
@@ -851,10 +851,10 @@ namespace
       CMap compare_data(random_data.begin(), random_data.end());
       EMap data(random_data.begin(), random_data.end());
 
-      ETL_OR_STD::pair<EMap::iterator, EMap::iterator> data_result = data.equal_range(Key("2"));
-      EMap::iterator data_lb = data.lower_bound("2");
-      ETL_OR_STD::pair<CMap::iterator, CMap::iterator> compare_result = compare_data.equal_range("2");
-      CMap::iterator compare_data_lb = compare_data.lower_bound("2");
+      ETL_OR_STD::pair<EMap::iterator, EMap::iterator> data_result     = data.equal_range(Key("2"));
+      EMap::iterator                                   data_lb         = data.lower_bound("2");
+      ETL_OR_STD::pair<CMap::iterator, CMap::iterator> compare_result  = compare_data.equal_range("2");
+      CMap::iterator                                   compare_data_lb = compare_data.lower_bound("2");
 
       // Check that both return the same return results
       CHECK(data_lb->first == compare_data_lb->first);
@@ -873,7 +873,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_equal_range)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end());
+      const Data         data(initial_data.begin(), initial_data.end());
 
       ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
         data.equal_range("2");
@@ -887,8 +887,8 @@ namespace
       CHECK(data_result.second->second == compare_result.second->second);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -902,10 +902,10 @@ namespace
       const CMap compare_data(random_data.begin(), random_data.end());
       const EMap data(random_data.begin(), random_data.end());
 
-      ETL_OR_STD::pair<EMap::const_iterator, EMap::const_iterator> data_result = data.equal_range(Key("2"));
-      EMap::const_iterator data_lb = data.lower_bound("2");
-      ETL_OR_STD::pair<CMap::const_iterator, CMap::const_iterator> compare_result = compare_data.equal_range("2");
-      CMap::const_iterator compare_data_lb = compare_data.lower_bound("2");
+      ETL_OR_STD::pair<EMap::const_iterator, EMap::const_iterator> data_result     = data.equal_range(Key("2"));
+      EMap::const_iterator                                         data_lb         = data.lower_bound("2");
+      ETL_OR_STD::pair<CMap::const_iterator, CMap::const_iterator> compare_result  = compare_data.equal_range("2");
+      CMap::const_iterator                                         compare_data_lb = compare_data.lower_bound("2");
 
       // Check that both return the same return results
       CHECK(data_lb->first == compare_data_lb->first);
@@ -924,7 +924,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_value)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       compare_data.erase("5");
       data.erase("5");
@@ -955,16 +955,16 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_single)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::iterator i_compare = compare_data.begin();
-      Data::iterator i_data            = data.begin();
+      Data::iterator         i_data    = data.begin();
 
       std::advance(i_compare, 2);
-      std::advance(i_data,    2);
+      std::advance(i_data, 2);
 
       Compare_Data::iterator i_compare1 = compare_data.erase(i_compare);
-      Data::iterator i_data1 = data.erase(i_data);
+      Data::iterator         i_data1    = data.erase(i_data);
 
       CHECK(i_compare1->second == i_data1->second);
 
@@ -979,22 +979,22 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_erase_single)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::const_iterator i_compare = compare_data.cbegin();
-      Data::const_iterator i_data = data.cbegin();
+      Data::const_iterator         i_data    = data.cbegin();
 
       std::advance(i_compare, 2);
       std::advance(i_data, 2);
 
       Compare_Data::const_iterator i_compare1 = compare_data.erase(i_compare);
-      Data::const_iterator i_data1 = data.erase(i_data);
+      Data::const_iterator         i_data1    = data.erase(i_data);
 
       CHECK(i_compare1->second == i_data1->second);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -1003,19 +1003,19 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       Compare_Data compare_data(random_data.begin(), random_data.end());
-      Data data(random_data.begin(), random_data.end());
+      Data         data(random_data.begin(), random_data.end());
 
       Compare_Data::iterator i_compare = compare_data.begin();
-      Data::iterator i_data            = data.begin();
+      Data::iterator         i_data    = data.begin();
 
       Compare_Data::iterator i_compare_end = compare_data.begin();
-      Data::iterator i_data_end            = data.begin();
+      Data::iterator         i_data_end    = data.begin();
 
       std::advance(i_compare, 2);
-      std::advance(i_data,    2);
+      std::advance(i_data, 2);
 
       std::advance(i_compare_end, 4);
-      std::advance(i_data_end,    4);
+      std::advance(i_data_end, 4);
 
       compare_data.erase(i_compare, i_compare_end);
       data.erase(i_data, i_data_end);
@@ -1030,13 +1030,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_erase_range)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::const_iterator i_compare = compare_data.cbegin();
-      Data::const_iterator i_data = data.cbegin();
+      Data::const_iterator         i_data    = data.cbegin();
 
       Compare_Data::const_iterator i_compare_end = compare_data.cbegin();
-      Data::const_iterator i_data_end = data.cbegin();
+      Data::const_iterator         i_data_end    = data.cbegin();
 
       std::advance(i_compare, 2);
       std::advance(i_data, 2);
@@ -1048,8 +1048,8 @@ namespace
       data.erase(i_data, i_data_end);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
     }
 
@@ -1236,10 +1236,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_lower_bound)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::iterator i_compare = compare_data.lower_bound("8");
-      Data::iterator i_data = data.lower_bound("8");
+      Data::iterator         i_data    = data.lower_bound("8");
       CHECK(i_compare->second == i_data->second);
 
 #ifdef TEST_GREATER_THAN
@@ -1250,11 +1250,11 @@ namespace
       CHECK(data.end() == i_data);
 
       i_compare = compare_data.lower_bound("A");
-      i_data = data.lower_bound("A");
+      i_data    = data.lower_bound("A");
       CHECK(i_compare->second == i_data->second);
 #else
       i_compare = compare_data.lower_bound(".");
-      i_data = data.lower_bound(".");
+      i_data    = data.lower_bound(".");
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.lower_bound("A");
@@ -1275,11 +1275,11 @@ namespace
       EMap data(initial_data.begin(), initial_data.end());
 
       CMap::iterator i_compare = compare_data.lower_bound("8");
-      EMap::iterator i_data = data.lower_bound(Key("8"));
+      EMap::iterator i_data    = data.lower_bound(Key("8"));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.lower_bound(".");
-      i_data = data.lower_bound(Key("."));
+      i_data    = data.lower_bound(Key("."));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.lower_bound("A");
@@ -1293,10 +1293,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_lower_bound_const)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end());
+      const Data   data(initial_data.begin(), initial_data.end());
 
       Compare_Data::const_iterator i_compare = compare_data.lower_bound("4");
-      Data::const_iterator i_data = data.lower_bound("4");
+      Data::const_iterator         i_data    = data.lower_bound("4");
       CHECK(i_compare->second == i_data->second);
 
 #ifdef TEST_GREATER_THAN
@@ -1307,11 +1307,11 @@ namespace
       CHECK(data.end() == i_data);
 
       i_compare = compare_data.lower_bound("A");
-      i_data = data.lower_bound("A");
+      i_data    = data.lower_bound("A");
       CHECK(i_compare->second == i_data->second);
 #else
       i_compare = compare_data.lower_bound(".");
-      i_data = data.lower_bound(".");
+      i_data    = data.lower_bound(".");
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.lower_bound("A");
@@ -1332,11 +1332,11 @@ namespace
       const EMap data(initial_data.begin(), initial_data.end());
 
       CMap::const_iterator i_compare = compare_data.lower_bound("8");
-      EMap::const_iterator i_data = data.lower_bound(Key("8"));
+      EMap::const_iterator i_data    = data.lower_bound(Key("8"));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.lower_bound(".");
-      i_data = data.lower_bound(Key("."));
+      i_data    = data.lower_bound(Key("."));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.lower_bound("A");
@@ -1350,10 +1350,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_upper_bound)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end());
+      Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::iterator i_compare = compare_data.upper_bound("2");
-      Data::iterator i_data = data.upper_bound("2");
+      Data::iterator         i_data    = data.upper_bound("2");
       CHECK(i_compare->second == i_data->second);
 
 #ifdef TEST_GREATER_THAN
@@ -1364,11 +1364,11 @@ namespace
       CHECK(data.end() == i_data);
 
       i_compare = compare_data.upper_bound("A");
-      i_data = data.upper_bound("A");
+      i_data    = data.upper_bound("A");
       CHECK(i_compare->second == i_data->second);
 #else
       i_compare = compare_data.upper_bound(".");
-      i_data = data.upper_bound(".");
+      i_data    = data.upper_bound(".");
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.upper_bound("A");
@@ -1389,11 +1389,11 @@ namespace
       EMap data(initial_data.begin(), initial_data.end());
 
       CMap::iterator i_compare = compare_data.upper_bound("2");
-      EMap::iterator i_data = data.upper_bound(Key("2"));
+      EMap::iterator i_data    = data.upper_bound(Key("2"));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.upper_bound(".");
-      i_data = data.upper_bound(Key("."));
+      i_data    = data.upper_bound(Key("."));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.upper_bound("A");
@@ -1407,10 +1407,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_upper_bound_const)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end());
+      const Data   data(initial_data.begin(), initial_data.end());
 
       Compare_Data::const_iterator i_compare = compare_data.upper_bound("7");
-      Data::const_iterator i_data = data.upper_bound("7");
+      Data::const_iterator         i_data    = data.upper_bound("7");
       CHECK(i_compare->second == i_data->second);
 
 #ifdef TEST_GREATER_THAN
@@ -1421,11 +1421,11 @@ namespace
       CHECK(data.end() == i_data);
 
       i_compare = compare_data.upper_bound("A");
-      i_data = data.upper_bound("A");
+      i_data    = data.upper_bound("A");
       CHECK(i_compare->second == i_data->second);
 #else
       i_compare = compare_data.upper_bound(".");
-      i_data = data.upper_bound(".");
+      i_data    = data.upper_bound(".");
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.upper_bound("A");
@@ -1446,11 +1446,11 @@ namespace
       const EMap data(initial_data.begin(), initial_data.end());
 
       CMap::const_iterator i_compare = compare_data.upper_bound("2");
-      EMap::const_iterator i_data = data.upper_bound(Key("2"));
+      EMap::const_iterator i_data    = data.upper_bound(Key("2"));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.upper_bound(".");
-      i_data = data.upper_bound(Key("."));
+      i_data    = data.upper_bound(Key("."));
       CHECK(i_compare->second == i_data->second);
 
       i_compare = compare_data.upper_bound("A");
@@ -1488,11 +1488,11 @@ namespace
       EMap::key_compare compare = data.key_comp();
 
       std::string a("A");
-      Key b("B");
+      Key         b("B");
 
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
-   }
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_value_compare)
@@ -1516,55 +1516,55 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
     {
-      Data data(initial_data_even.begin(), initial_data_even.end());
+      Data         data(initial_data_even.begin(), initial_data_even.end());
       Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
 
       std::vector<ETL_OR_STD::pair<std::string, int> > tab(test_data.begin(), test_data.end());
 
-      //make sure both data and compare contain same elements
+      // make sure both data and compare contain same elements
       std::vector<ETL_OR_STD::pair<std::string, int> > data_elements(data.begin(), data.end());
       std::vector<ETL_OR_STD::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
 
       CHECK(data_elements == compare_data_elements);
       CHECK(data_elements.size() == MAX_SIZE);
 
-      for(std::vector<ETL_OR_STD::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+      for (std::vector<ETL_OR_STD::pair<std::string, int> >::iterator it = tab.begin(); it != tab.end(); ++it)
       {
         std::string i = it->first;
 
-        //lower_bound
+        // lower_bound
         CHECK((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()));
-        //if both end, or none
-        if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
+        // if both end, or none
+        if ((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
         {
-          //if both are not end
-          if(compare.lower_bound(i) != compare.end())
+          // if both are not end
+          if (compare.lower_bound(i) != compare.end())
           {
             CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
           }
 
           ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-          ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
+          ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator>                 etlret = data.equal_range(i);
 
           CHECK((stlret.first == compare.end()) == (etlret.first == data.end()));
-          if((stlret.first != compare.end()) && (etlret.first != data.end()))
+          if ((stlret.first != compare.end()) && (etlret.first != data.end()))
           {
             CHECK((*stlret.first) == (*etlret.first));
           }
           CHECK((stlret.second == compare.end()) == (etlret.second == data.end()));
-          if((stlret.second != compare.end()) && (etlret.second != data.end()))
+          if ((stlret.second != compare.end()) && (etlret.second != data.end()))
           {
             CHECK((*stlret.second) == (*etlret.second));
           }
         }
 
-        //upper_bound
+        // upper_bound
         CHECK((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()));
-        //if both end, or none
-        if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+        // if both end, or none
+        if ((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
         {
-          //if both are not end
-          if(compare.upper_bound(i) != compare.end())
+          // if both are not end
+          if (compare.upper_bound(i) != compare.end())
           {
             CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
           }
@@ -1578,9 +1578,9 @@ namespace
     {
       using Pair = std::pair<const etl::string<1>, int>;
 
-      etl::map data { Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5} };
+      etl::map data{Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5}};
 
-      auto v = *data.begin();
+      auto v     = *data.begin();
       using Type = decltype(v);
       CHECK((std::is_same_v<Pair, Type>));
 
@@ -1599,9 +1599,9 @@ namespace
     {
       using Pair = ETL_OR_STD::pair<const etl::string<1>, int>;
 
-      auto data = etl::make_map<const etl::string<1>, int, std::less<etl::string<1>>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
+      auto data = etl::make_map<const etl::string<1>, int, std::less<etl::string<1>>>(Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5});
 
-      auto v = *data.begin();
+      auto v     = *data.begin();
       using Type = decltype(v);
       CHECK((std::is_same<Pair, Type>::value));
 
@@ -1635,4 +1635,4 @@ namespace
       CHECK(!data.contains(Key("99")));
     }
   }
-}
+} // namespace

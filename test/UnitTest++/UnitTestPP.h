@@ -1,12 +1,12 @@
 #ifndef UNITTESTPP_H
 #define UNITTESTPP_H
 
-#include "Config.h"
-#include "TestMacros.h"
 #include "CheckMacros.h"
+#include "Config.h"
+#include "ReportAssert.h"
 #include "RequireMacros.h"
+#include "TestMacros.h"
 #include "TestRunner.h"
 #include "TimeConstraint.h"
-#include "ReportAssert.h"
 
 #endif

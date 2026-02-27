@@ -32,8 +32,8 @@ SOFTWARE.
 //*****************************************************************************
 
 #include "etl/scheduler.h"
-#include "etl/task.h"
 #include "etl/function.h"
+#include "etl/task.h"
 
 #include <iostream>
 #include <string>
@@ -50,7 +50,6 @@ public:
     : task(1)
     , work(3)
   {
-
   }
 
   //*************************************
@@ -83,7 +82,6 @@ public:
     : task(2)
     , work(4)
   {
-
   }
 
   //*************************************
@@ -115,7 +113,6 @@ public:
   Idle(etl::ischeduler& scheduler_)
     : scheduler(scheduler_)
   {
-
   }
 
   //*************************************
@@ -181,4 +178,3 @@ int main()
 
   return 0;
 }
-

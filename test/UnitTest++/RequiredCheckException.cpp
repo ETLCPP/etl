@@ -2,16 +2,17 @@
 
 #ifndef UNITTEST_NO_EXCEPTIONS
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   RequiredCheckException::RequiredCheckException()
-   {
-   }
+  RequiredCheckException::RequiredCheckException()
+  {
+  }
 
-   RequiredCheckException::~RequiredCheckException() throw()
-   {
-   }
+  RequiredCheckException::~RequiredCheckException() throw()
+  {
+  }
 
-}
+} // namespace UnitTest
 
 #endif

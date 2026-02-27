@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2023 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 #include <iostream>
 
@@ -104,7 +104,7 @@ namespace
     TEST(test_pre_increment)
     {
       Chrono::weekday weekday(0);
-      unsigned count = 0;
+      unsigned        count = 0;
 
       for (int i = 0; i < 255; ++i)
       {
@@ -121,12 +121,12 @@ namespace
     TEST(test_post_increment)
     {
       Chrono::weekday weekday(0);
-      unsigned count = 0;
+      unsigned        count = 0;
 
       for (int i = 0; i < 255; ++i)
       {
         Chrono::weekday last_weekday = weekday++;
-        unsigned last_count = count++;
+        unsigned        last_count   = count++;
 
         CHECK_TRUE(last_weekday.ok());
         CHECK_EQUAL(last_count % 7, last_weekday.c_encoding());
@@ -142,7 +142,7 @@ namespace
     TEST(test_pre_decrement)
     {
       Chrono::weekday weekday(255U);
-      unsigned count = 255U;
+      unsigned        count = 255U;
 
       for (int i = 0; i < 255; ++i)
       {
@@ -159,12 +159,12 @@ namespace
     TEST(test_post_decrement)
     {
       Chrono::weekday weekday(255U);
-      unsigned count = 255U;
+      unsigned        count = 255U;
 
       for (int i = 0; i < 255; ++i)
       {
         Chrono::weekday last_weekday = weekday--;
-        unsigned last_count = count--;
+        unsigned        last_count   = count--;
 
         if (last_count == 255U)
         {
@@ -193,7 +193,7 @@ namespace
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
           Chrono::weekday weekday(wd);
-          Chrono::days days(ds);
+          Chrono::days    days(ds);
           weekday += days;
 
           unsigned expected = (wd + ds) % 7;
@@ -213,7 +213,7 @@ namespace
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
           Chrono::weekday weekday(wd);
-          Chrono::days days(ds);
+          Chrono::days    days(ds);
           weekday = weekday + days;
 
           unsigned expected = (wd + ds) % 7;
@@ -233,7 +233,7 @@ namespace
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
           Chrono::weekday weekday(wd);
-          Chrono::days days(ds);
+          Chrono::days    days(ds);
           weekday = weekday + days;
 
           unsigned expected = (ds + wd) % 7;
@@ -253,7 +253,7 @@ namespace
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
           Chrono::weekday weekday(wd);
-          Chrono::days days(ds);
+          Chrono::days    days(ds);
           weekday -= days;
 
           unsigned expected = ((wd + 7U) - (ds % 7U)) % 7U;
@@ -273,7 +273,7 @@ namespace
         for (unsigned ds = 0; ds <= 14; ++ds)
         {
           Chrono::weekday weekday(wd);
-          Chrono::days days(ds);
+          Chrono::days    days(ds);
           weekday = weekday - days;
 
           unsigned expected = ((wd + 7U) - (ds % 7U)) % 7U;
@@ -311,7 +311,7 @@ namespace
     //*************************************************************************
     TEST(test_min_max_weekday)
     {
-      CHECK_EQUAL(Chrono::Sunday.c_encoding(),   Chrono::weekday::min());
+      CHECK_EQUAL(Chrono::Sunday.c_encoding(), Chrono::weekday::min());
       CHECK_EQUAL(Chrono::Saturday.c_encoding(), Chrono::weekday::max());
     }
 #endif
@@ -342,16 +342,16 @@ namespace
       Chrono::weekday weekday1(1);
       Chrono::weekday weekday2(2);
 
-      CHECK_TRUE(weekday1  == weekday1);
+      CHECK_TRUE(weekday1 == weekday1);
       CHECK_FALSE(weekday1 != weekday1);
       CHECK_FALSE(weekday1 == weekday2);
-      CHECK_TRUE(weekday1  != weekday2);
+      CHECK_TRUE(weekday1 != weekday2);
     }
 
     //*************************************************************************
     TEST(test_weekday_index_operator_returning_weekday_indexed)
     {
-      Chrono::weekday wd(Chrono::Friday);
+      Chrono::weekday         wd(Chrono::Friday);
       Chrono::weekday_indexed wi = wd[2];
 
       CHECK_EQUAL(2, wi.index());
@@ -361,7 +361,7 @@ namespace
     //*************************************************************************
     TEST(test_weekday_index_operator_returning_weekday_last)
     {
-      Chrono::weekday wd(Chrono::Friday);
+      Chrono::weekday      wd(Chrono::Friday);
       Chrono::weekday_last wl = wd[Chrono::last];
 
       CHECK_EQUAL(Chrono::Friday.c_encoding(), wl.weekday().c_encoding());
@@ -384,4 +384,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

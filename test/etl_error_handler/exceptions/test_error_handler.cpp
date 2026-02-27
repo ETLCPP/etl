@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "etl/error_handler.h"
 
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 
 //*****************************************************************************
 int exception_count = 0;
-int return_count = 0;
+int return_count    = 0;
 
 //*****************************************************************************
 class test_exception : public etl::exception
@@ -220,4 +220,3 @@ int main()
 
   return (exception_count_passed && return_count_passed) ? 0 : 1;
 }
-

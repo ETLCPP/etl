@@ -2,14 +2,17 @@
 
 #ifndef UNITTEST_NO_EXCEPTIONS
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   AssertException::AssertException()
-   {}
+  AssertException::AssertException()
+  {
+  }
 
-   AssertException::~AssertException() throw()
-   {}
+  AssertException::~AssertException() throw()
+  {
+  }
 
-}
+} // namespace UnitTest
 
 #endif

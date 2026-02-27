@@ -28,11 +28,11 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <vector>
-#include <array>
 #include <algorithm>
+#include <array>
 #include <cstring>
 #include <numeric>
+#include <vector>
 
 #include "etl/vector.h"
 
@@ -66,12 +66,12 @@ namespace
     {
       SetupFixture()
       {
-        int n[]         = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        int n_insert[]  = { 11, 12, 13 };
-        int n_less[]    = { 0, 1, 2, 3, 3, 5, 6, 7, 8, 9 };
-        int n_greater[] = { 0, 1, 2, 4, 4, 5, 6, 7, 8, 9 };
-        int n_swap[]    = { 0, 1, 2, 3, 4, 5 };
-        int n_swap_other[] = { 6, 7, 8, 9 };
+        int n[]            = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int n_insert[]     = {11, 12, 13};
+        int n_less[]       = {0, 1, 2, 3, 3, 5, 6, 7, 8, 9};
+        int n_greater[]    = {0, 1, 2, 4, 4, 5, 6, 7, 8, 9};
+        int n_swap[]       = {0, 1, 2, 3, 4, 5};
+        int n_swap_other[] = {6, 7, 8, 9};
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -107,9 +107,9 @@ namespace
     {
       Data data(buffer1, SIZE);
 
-      CHECK(data.begin()   == data.end());
-      CHECK(data.cbegin()  == data.cend());
-      CHECK(data.rbegin()  == data.rend());
+      CHECK(data.begin() == data.end());
+      CHECK(data.cbegin() == data.cend());
+      CHECK(data.rbegin() == data.rend());
       CHECK(data.crbegin() == data.crend());
     }
 
@@ -117,7 +117,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
       const size_t INITIAL_SIZE = 5;
-      Data data(INITIAL_SIZE, buffer1, SIZE);
+      Data         data(INITIAL_SIZE, buffer1, SIZE);
 
       CHECK(data.size() == INITIAL_SIZE);
       CHECK(!data.empty());
@@ -126,8 +126,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE = 1;
+      const size_t INITIAL_SIZE  = 5;
+      const int    INITIAL_VALUE = 1;
 
       std::array<int, INITIAL_SIZE> compare_data;
       compare_data.fill(INITIAL_VALUE);
@@ -165,9 +165,9 @@ namespace
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
-      Compare_Data compare_data = { 0, 1, 2, 3 };
-      std::initializer_list<int> il = { 0, 1, 2, 3 };
-      Data data(il, buffer1, SIZE);
+      Compare_Data               compare_data = {0, 1, 2, 3};
+      std::initializer_list<int> il           = {0, 1, 2, 3};
+      Data                       data(il, buffer1, SIZE);
 
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -247,9 +247,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
       Data other_data(data, buffer1, SIZE);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool is_equal = std::equal(data.begin(),
                                  data.end(),
@@ -261,7 +261,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_begin)
     {
-      Data data(10, buffer1, SIZE);
+      Data       data(10, buffer1, SIZE);
       const Data constData(10, buffer1, SIZE);
 
       CHECK_EQUAL(&data[0], data.begin());
@@ -271,7 +271,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_end)
     {
-      Data data(10, buffer1, SIZE);
+      Data       data(10, buffer1, SIZE);
       const Data constData(10, buffer1, SIZE);
 
       CHECK_EQUAL(data.begin() + data.size(), data.end());
@@ -282,7 +282,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t NEW_SIZE     = 8;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE);
@@ -293,9 +293,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
-      const int INITIAL_VALUE = 1;
+      const size_t INITIAL_SIZE  = 5;
+      const size_t NEW_SIZE      = 8;
+      const int    INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE, buffer1, SIZE);
       data.resize(NEW_SIZE, INITIAL_VALUE);
@@ -314,7 +314,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t NEW_SIZE     = SIZE + 1;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
 
@@ -325,7 +325,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_down)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t NEW_SIZE     = 2;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE);
@@ -336,9 +336,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
-      const int INITIAL_VALUE = 1;
+      const size_t INITIAL_SIZE  = 5;
+      const size_t NEW_SIZE      = 2;
+      const int    INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE, INITIAL_VALUE);
@@ -350,13 +350,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t NEW_SIZE     = 8;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
 
       int* pbegin = &data.front();
-      int* pend = &data.back() + 1;
-      int* pmax = pbegin + data.max_size();
+      int* pend   = &data.back() + 1;
+      int* pmax   = pbegin + data.max_size();
 
       constexpr int Pattern = 0x12345678UL;
 
@@ -382,7 +382,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t NEW_SIZE     = SIZE + 1;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
 
@@ -393,13 +393,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t NEW_SIZE     = 2;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
 
       int* pbegin = &data.front();
-      int* pend = &data.back() + 1;
-      int* pmax = pbegin + data.max_size();
+      int* pend   = &data.back() + 1;
+      int* pmax   = pbegin + data.max_size();
 
       constexpr int Pattern = 0x12345678UL;
 
@@ -491,7 +491,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_at)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -505,7 +505,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      const Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -519,7 +519,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_front)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       CHECK_EQUAL(compare_data.front(), data.front());
 
@@ -531,7 +531,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_front_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      const Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       CHECK_EQUAL(compare_data.front(), data.front());
 
@@ -543,7 +543,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       CHECK_EQUAL(compare_data.back(), data.back());
 
@@ -555,7 +555,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_back_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      const Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       CHECK_EQUAL(compare_data.back(), data.back());
 
@@ -603,8 +603,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -612,8 +612,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE = 1;
+      const size_t                  INITIAL_SIZE  = 5;
+      const int                     INITIAL_VALUE = 1;
       std::array<int, INITIAL_SIZE> compare_data;
       compare_data.fill(INITIAL_VALUE);
 
@@ -632,9 +632,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
-      const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1;
-      const int INITIAL_VALUE = 1;
+      const size_t                  INITIAL_SIZE  = SIZE;
+      const size_t                  EXCESS_SIZE   = SIZE + 1;
+      const int                     INITIAL_VALUE = 1;
       std::array<int, INITIAL_SIZE> compare_data;
       compare_data.fill(INITIAL_VALUE);
 
@@ -647,7 +647,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_push_back)
     {
       Compare_Data compare_data;
-      Data data(buffer1, SIZE);
+      Data         data(buffer1, SIZE);
 
       for (int i = 0; i < int(SIZE); ++i)
       {
@@ -662,8 +662,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -672,7 +672,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_push_back_literal)
     {
       Compare_Data compare_data;
-      Data data(buffer1, SIZE);
+      Data         data(buffer1, SIZE);
 
       compare_data.push_back(1);
       compare_data.push_back(2);
@@ -710,7 +710,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_back)
     {
       Compare_Data compare_data;
-      Data data(buffer1, SIZE);
+      Data         data(buffer1, SIZE);
 
       for (int i = 0; i < int(SIZE); ++i)
       {
@@ -725,8 +725,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -745,7 +745,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       compare_data.pop_back();
       compare_data.pop_back();
@@ -756,8 +756,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -778,13 +778,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
+      const size_t INITIAL_SIZE  = 5;
+      const int    INITIAL_VALUE = 1;
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
-        Data data(buffer1, SIZE);
+        Data         data(buffer1, SIZE);
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
@@ -805,8 +805,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
     {
-      const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
+      const size_t INITIAL_SIZE  = 5;
+      const int    INITIAL_VALUE = 1;
 
       Data data(buffer1, SIZE);
       Data data2(buffer2, SIZE);
@@ -818,8 +818,8 @@ namespace
 #include "etl/private/diagnostic_array_bounds_push.h"
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
-      const size_t INITIAL_SIZE     = SIZE;
-      const int INITIAL_VALUE       = 1;
+      const size_t INITIAL_SIZE  = SIZE;
+      const int    INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE, buffer1, SIZE);
 
@@ -840,14 +840,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value)
     {
-      const size_t INITIAL_SIZE     = 5;
-      const size_t INSERT_SIZE      = 3;
-      const int INITIAL_VALUE       = 11;
+      const size_t INITIAL_SIZE  = 5;
+      const size_t INSERT_SIZE   = 3;
+      const int    INITIAL_VALUE = 11;
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
-        Data data(buffer1, SIZE);
+        Data         data(buffer1, SIZE);
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
@@ -868,8 +868,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
     {
       const int INITIAL_VALUE = 11;
-      Data data(buffer1, SIZE);
-      Data data2(buffer2, SIZE);
+      Data      data(buffer1, SIZE);
+      Data      data2(buffer2, SIZE);
 
       CHECK_THROW(data.insert(data2.end(), 1, INITIAL_VALUE);, etl::vector_out_of_bounds);
     }
@@ -877,9 +877,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
     {
-      const size_t INITIAL_SIZE = SIZE;
-      const size_t INSERT_SIZE  = 4;
-      const int INITIAL_VALUE   = 1;
+      const size_t INITIAL_SIZE  = SIZE;
+      const size_t INSERT_SIZE   = 4;
+      const int    INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE, buffer1, SIZE);
 
@@ -908,7 +908,7 @@ namespace
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
-        Data data(buffer1, SIZE);
+        Data         data(buffer1, SIZE);
 
         data.resize(SIZE, -1);
 
@@ -930,8 +930,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
-      const size_t INITIAL_SIZE = 5;
-      const int INITIAL_VALUE   = 1;
+      const size_t INITIAL_SIZE  = 5;
+      const int    INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, INITIAL_VALUE, buffer1, SIZE);
 
@@ -965,7 +965,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_single)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       compare_data.erase(compare_data.begin() + 2);
 
@@ -974,8 +974,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -992,7 +992,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
-      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data         data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
       compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
 
@@ -1001,8 +1001,8 @@ namespace
       CHECK_EQUAL(compare_data.size(), data.size());
 
       bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(is_equal);
     }
@@ -1264,21 +1264,23 @@ namespace
       {
         virtual ~S()
         {
-
         }
 
-        S(int i_): i(i_){}
+        S(int i_)
+          : i(i_)
+        {
+        }
 
         int i;
       };
 
-      S sbuffer1[SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-      S sbuffer2[SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+      S sbuffer1[SIZE] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+      S sbuffer2[SIZE] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-      const S raw[6] = { 1, 2, 3, 4, 5, 6 };
+      const S raw[6] = {1, 2, 3, 4, 5, 6};
 
       etl::vector_ext<S> dest(std::begin(raw), std::end(raw), sbuffer1, SIZE);
-      etl::vector_ext<S> src((size_t) 2, S(8), sbuffer2, SIZE);
+      etl::vector_ext<S> src((size_t)2, S(8), sbuffer2, SIZE);
 
       dest.insert(dest.begin(), src.begin(), src.end());
 
@@ -1300,25 +1302,27 @@ namespace
       {
         virtual ~S()
         {
-
         }
 
-        S(int i_): i(i_){}
+        S(int i_)
+          : i(i_)
+        {
+        }
 
         int i;
       };
 
-      S sbuffer1[SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+      S sbuffer1[SIZE] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-      const S raw[6] = { 1, 2, 3, 4, 5, 6 };
+      const S raw[6] = {1, 2, 3, 4, 5, 6};
 
       etl::vector_ext<S> dest(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw), sbuffer1, SIZE);
 
       dest.insert(dest.begin(), 2, S(8));
 
       CHECK(dest.size() == 8);
-      CHECK_EQUAL(8,        dest[0].i);
-      CHECK_EQUAL(8,        dest[1].i);
+      CHECK_EQUAL(8, dest[0].i);
+      CHECK_EQUAL(8, dest[1].i);
       CHECK_EQUAL(raw[0].i, dest[2].i);
       CHECK_EQUAL(raw[1].i, dest[3].i);
       CHECK_EQUAL(raw[2].i, dest[4].i);
@@ -1363,8 +1367,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_swap_different_capacity)
     {
       const size_t other_size = 6;
-      Data etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
-      Data etl_data2(swap_other_data.begin(), swap_other_data.end(), buffer2, other_size);
+      Data         etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
+      Data         etl_data2(swap_other_data.begin(), swap_other_data.end(), buffer2, other_size);
 
       CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
       CHECK(etl_data.size() == swap_data.size());
@@ -1395,7 +1399,7 @@ namespace
     //*************************************************************************
     TEST(test_swap_insufficient_capacity)
     {
-      Data etl_data(4, buffer1, 4);
+      Data                   etl_data(4, buffer1, 4);
       etl::vector<int, SIZE> etl_data2(6);
 
       CHECK_THROW(etl_data.swap(etl_data2), etl::vector_full);
@@ -1405,8 +1409,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_swap_between_internal_and_external)
     {
-      const size_t other_size = 6;
-      Data etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
+      const size_t                 other_size = 6;
+      Data                         etl_data(swap_data.begin(), swap_data.end(), buffer1, SIZE);
       etl::vector<int, other_size> etl_data2(swap_other_data.begin(), swap_other_data.end());
 
       CHECK(std::equal(swap_data.begin(), swap_data.end(), etl_data.begin()));
@@ -1435,4 +1439,4 @@ namespace
       CHECK(etl_data2.max_size() == other_size);
     }
   }
-}
+} // namespace

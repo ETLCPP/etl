@@ -31,8 +31,8 @@ SOFTWARE.
 #include "etl/functional.h"
 
 #include <list>
-#include <vector>
 #include <numeric>
+#include <vector>
 
 namespace
 {
@@ -152,7 +152,7 @@ namespace
     //*************************************************************************
     TEST(test_reference_wrapper)
     {
-      int a = 0;
+      int                         a = 0;
       etl::reference_wrapper<int> ra(a);
 
       ra.get() = 1;
@@ -167,8 +167,8 @@ namespace
     //*************************************************************************
     TEST(test_reference_wrapper_container)
     {
-      std::list<int> test    = { 0, 1, 2, 3, 4 };
-      std::list<int> compare = { 0, 1, 2, 3, 4 };
+      std::list<int>                           test    = {0, 1, 2, 3, 4};
+      std::list<int>                           compare = {0, 1, 2, 3, 4};
       std::vector<etl::reference_wrapper<int>> test_ref(test.begin(), test.end());
 
       std::list<int>::const_iterator itest    = test.begin();
@@ -185,7 +185,7 @@ namespace
     //*************************************************************************
     TEST(test_ref)
     {
-      int a = 0;
+      int                         a  = 0;
       etl::reference_wrapper<int> ra = etl::ref(a);
 
       ra.get() = 1;
@@ -196,7 +196,7 @@ namespace
     //*************************************************************************
     TEST(test_cref)
     {
-      int a = 0;
+      int                               a  = 0;
       etl::reference_wrapper<const int> ra = etl::cref(a);
 
       a = 1;
@@ -251,9 +251,9 @@ namespace
     {
       auto f = etl::logical_and<bool>();
       CHECK_EQUAL(false && false, f(false, false));
-      CHECK_EQUAL(false && true,  f(false, true));
-      CHECK_EQUAL(true  && false, f(true,  false));
-      CHECK_EQUAL(true &&  true,  f(true,  true));
+      CHECK_EQUAL(false && true, f(false, true));
+      CHECK_EQUAL(true && false, f(true, false));
+      CHECK_EQUAL(true && true, f(true, true));
     }
 
     //*************************************************************************
@@ -261,9 +261,9 @@ namespace
     {
       auto f = etl::logical_or<bool>();
       CHECK_EQUAL(false || false, f(false, false));
-      CHECK_EQUAL(false || true,  f(false, true));
-      CHECK_EQUAL(true  || false, f(true, false));
-      CHECK_EQUAL(true  || true,  f(true, true));
+      CHECK_EQUAL(false || true, f(false, true));
+      CHECK_EQUAL(true || false, f(true, false));
+      CHECK_EQUAL(true || true, f(true, true));
     }
 
     //*************************************************************************
@@ -317,7 +317,7 @@ namespace
     //*************************************************************************
     TEST(test_mem_fn)
     {
-      MemFnTest mft;
+      MemFnTest   mft;
       std::string result;
 
       auto f1 = etl::mem_fn(&MemFnTest::Function1);
@@ -340,7 +340,7 @@ namespace
     TEST(test_const_mem_fn)
     {
       const MemFnTest mft;
-      std::string result;
+      std::string     result;
 
       auto f1 = etl::mem_fn(&MemFnTest::Function1_Const);
       result.clear();
@@ -362,7 +362,7 @@ namespace
     TEST(test_constexpr_mem_fn)
     {
       const MemFnTest mft;
-      std::string result;
+      std::string     result;
 
       constexpr auto f1 = etl::mem_fn(&MemFnTest::Function1_Const);
       result.clear();
@@ -380,4 +380,4 @@ namespace
       CHECK_EQUAL("Function3_Const: Arg1 : Arg2", result);
     }
   }
-}
+} // namespace

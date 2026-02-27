@@ -157,12 +157,12 @@ namespace
 
     void clear()
     {
-      message1_count = 0;
-      message2_count = 0;
-      message3_count = 0;
-      message4_count = 0;
-      message5_count = 0;
-      message6_count = 0;
+      message1_count        = 0;
+      message2_count        = 0;
+      message3_count        = 0;
+      message4_count        = 0;
+      message5_count        = 0;
+      message6_count        = 0;
       message_unknown_count = 0;
     }
 
@@ -251,12 +251,12 @@ namespace
       Router router2(2);
       Router router3(3);
 
-      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
-      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+      Subscription subscription1{router1, {Message1::ID, Message2::ID, Message3::ID, Message4::ID}};
+      Subscription subscription3{router2, {Message1::ID, Message3::ID}};
 
-      Broker broker; 
+      Broker broker;
       CHECK_TRUE(broker.empty());
-      
+
       broker.subscribe(subscription1);
       CHECK_FALSE(broker.empty());
 
@@ -281,8 +281,8 @@ namespace
       Router router2(2);
       Router router3(3);
 
-      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
-      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+      Subscription subscription1{router1, {Message1::ID, Message2::ID, Message3::ID, Message4::ID}};
+      Subscription subscription3{router2, {Message1::ID, Message3::ID}};
 
       Broker broker;
 
@@ -383,9 +383,9 @@ namespace
       Router router2(2);
       Router router3(3);
 
-      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
-      Subscription subscription2{ router2, { Message1::ID, Message2::ID } };
-      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+      Subscription subscription1{router1, {Message1::ID, Message2::ID, Message3::ID, Message4::ID}};
+      Subscription subscription2{router2, {Message1::ID, Message2::ID}};
+      Subscription subscription3{router2, {Message1::ID, Message3::ID}};
 
       broker.subscribe(subscription1);
       broker.subscribe(subscription2);
@@ -440,9 +440,9 @@ namespace
       Router router2(2);
       Router router3(3);
 
-      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
-      Subscription subscription2{ router2, { Message1::ID, Message2::ID } };
-      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+      Subscription subscription1{router1, {Message1::ID, Message2::ID, Message3::ID, Message4::ID}};
+      Subscription subscription2{router2, {Message1::ID, Message2::ID}};
+      Subscription subscription3{router2, {Message1::ID, Message3::ID}};
 
       broker.subscribe(subscription1);
       broker.subscribe(subscription2);
@@ -461,8 +461,8 @@ namespace
       Router router2(2);
       Router router3(3);
 
-      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
-      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+      Subscription subscription1{router1, {Message1::ID, Message2::ID, Message3::ID, Message4::ID}};
+      Subscription subscription3{router2, {Message1::ID, Message3::ID}};
 
       broker.subscribe(subscription1);
       broker.subscribe(subscription3);
@@ -518,8 +518,8 @@ namespace
       Router router2(2);
       Router router3(3);
 
-      Subscription subscription1{ router1, { Message1::ID, Message3::ID } };
-      Subscription subscription2{ router2, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+      Subscription subscription1{router1, {Message1::ID, Message3::ID}};
+      Subscription subscription2{router2, {Message1::ID, Message2::ID, Message3::ID, Message4::ID}};
 
       // Default constructed broker.
       Broker broker;
@@ -559,4 +559,4 @@ namespace
       CHECK_TRUE(broker.accepts(MESSAGE6));
     }
   }
-}
+} // namespace

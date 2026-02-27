@@ -33,28 +33,26 @@ SOFTWARE.
 
 #include "../platform.h"
 #include "../algorithm.h"
-#include "../iterator.h"
-#include "../integral_limits.h"
-#include "../algorithm.h"
-#include "../nullptr.h"
-#include "../log.h"
-#include "../exception.h"
-#include "../integral_limits.h"
 #include "../binary.h"
 #include "../char_traits.h"
-#include "../static_assert.h"
 #include "../error_handler.h"
+#include "../exception.h"
+#include "../integral_limits.h"
+#include "../iterator.h"
+#include "../log.h"
+#include "../nullptr.h"
 #include "../span.h"
+#include "../static_assert.h"
 #include "../string.h"
 
-#include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "minmax_push.h"
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
+  #pragma diag_suppress 1300
 #endif
 
 #if ETL_USING_CPP11
@@ -143,7 +141,7 @@ namespace etl
 
     // The type used for each element in the array.
 #if !defined(ETL_BITSET_ELEMENT_TYPE)
-    #define ETL_BITSET_ELEMENT_TYPE uint_least8_t
+  #define ETL_BITSET_ELEMENT_TYPE uint_least8_t
 #endif
 
   public:
@@ -151,12 +149,12 @@ namespace etl
     typedef size_t size_type;
 
     typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_type;
-    typedef element_type element_t; // Backward compatibility
+    typedef element_type                                               element_t; // Backward compatibility
 
     static ETL_CONSTANT element_type ALL_SET   = etl::integral_limits<element_type>::max;
     static ETL_CONSTANT element_type ALL_CLEAR = 0;
 
-    static ETL_CONSTANT size_t       Bits_Per_Element  = etl::integral_limits<element_type>::bits;
+    static ETL_CONSTANT size_t Bits_Per_Element = etl::integral_limits<element_type>::bits;
 
 #if ETL_USING_CPP11
     typedef etl::span<element_type>       span_type;
@@ -197,7 +195,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      bit_reference& operator = (bool b)
+      bit_reference& operator=(bool b)
       {
         p_bitset->set(position, b);
         return *this;
@@ -206,7 +204,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      bit_reference& operator = (const bit_reference& r)
+      bit_reference& operator=(const bit_reference& r)
       {
         p_bitset->set(position, bool(r));
         return *this;
@@ -283,7 +281,7 @@ namespace etl
     bool test(size_t position) const
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), false);
-      size_t    index;
+      size_t       index;
       element_type mask;
 
       if (position >= Active_Bits)
@@ -297,12 +295,12 @@ namespace etl
       else if (Number_Of_Elements == 1)
       {
         index = 0;
-        mask = element_type(1) << position;
+        mask  = element_type(1) << position;
       }
       else
       {
         index = position >> etl::log2<Bits_Per_Element>::value;
-        mask = element_type(1) << (position & (Bits_Per_Element - 1));
+        mask  = element_type(1) << (position & (Bits_Per_Element - 1));
       }
 
       return (pdata[index] & mask) != 0;
@@ -325,24 +323,24 @@ namespace etl
     ibitset& set(size_t position, bool value = true)
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
-      size_t    index;
+      size_t       index;
       element_type bit;
 
       if (position < Active_Bits)
       {
-        if (Number_Of_Elements == 0) 
+        if (Number_Of_Elements == 0)
         {
           return *this;
         }
         else if (Number_Of_Elements == 1)
         {
           index = 0;
-          bit = element_type(1) << position;
+          bit   = element_type(1) << position;
         }
         else
         {
           index = position >> etl::log2<Bits_Per_Element>::value;
-          bit = element_type(1) << (position & (Bits_Per_Element - 1));
+          bit   = element_type(1) << (position & (Bits_Per_Element - 1));
         }
 
         if (value)
@@ -521,7 +519,7 @@ namespace etl
       return v;
     }
 
-    //************************************************************************* 
+    //*************************************************************************
     /// Put to a unsigned long.
     //*************************************************************************
     unsigned long to_ulong() const
@@ -565,12 +563,12 @@ namespace etl
         else if (Number_Of_Elements == 1)
         {
           index = 0;
-          bit = element_type(1) << position;
+          bit   = element_type(1) << position;
         }
         else
         {
           index = position >> etl::log2<Bits_Per_Element>::value;
-          bit = element_type(1) << (position & (Bits_Per_Element - 1));
+          bit   = element_type(1) << (position & (Bits_Per_Element - 1));
         }
 
         pdata[index] &= ~bit;
@@ -584,9 +582,9 @@ namespace etl
     //*************************************************************************
     ibitset& flip()
     {
-      etl::transform_n(pdata, 
-                       Number_Of_Elements, 
-                       pdata, 
+      etl::transform_n(pdata,
+                       Number_Of_Elements,
+                       pdata,
                        etl::binary_not<element_type>());
 
       clear_unused_bits_in_msb();
@@ -600,9 +598,9 @@ namespace etl
     ibitset& flip(size_t position)
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
-      size_t    index;
+      size_t       index;
       element_type bit;
-      
+
       if (Number_Of_Elements == 0)
       {
         return *this;
@@ -610,12 +608,12 @@ namespace etl
       else if (Number_Of_Elements == 1)
       {
         index = 0;
-        bit = element_type(1) << position;
+        bit   = element_type(1) << position;
       }
       else
       {
         index = position >> log2<Bits_Per_Element>::value;
-        bit = element_type(1) << (position & (Bits_Per_Element - 1));
+        bit   = element_type(1) << (position & (Bits_Per_Element - 1));
       }
 
       pdata[index] ^= bit;
@@ -704,12 +702,12 @@ namespace etl
       else if (Number_Of_Elements == 1)
       {
         index = 0;
-        bit = position;
+        bit   = position;
       }
       else
       {
         index = position >> log2<Bits_Per_Element>::value;
-        bit = position & (Bits_Per_Element - 1);
+        bit   = position & (Bits_Per_Element - 1);
       }
 
       element_type mask = 1 << bit;
@@ -720,8 +718,7 @@ namespace etl
         element_type value = pdata[index];
 
         // Needs checking?
-        if ((state && (value != ALL_CLEAR)) ||
-            (!state && (value != ALL_SET)))
+        if ((state && (value != ALL_CLEAR)) || (!state && (value != ALL_SET)))
         {
           // For each bit in the element...
           while ((bit < Bits_Per_Element) && (position < Active_Bits))
@@ -744,7 +741,7 @@ namespace etl
         }
 
         // Start at the beginning for all other elements.
-        bit = 0;
+        bit  = 0;
         mask = 1;
 
         ++index;
@@ -756,7 +753,7 @@ namespace etl
     //*************************************************************************
     /// Read [] operator.
     //*************************************************************************
-    bool operator[] (size_t position) const
+    bool operator[](size_t position) const
     {
       return test(position);
     }
@@ -764,7 +761,7 @@ namespace etl
     //*************************************************************************
     /// Write [] operator.
     //*************************************************************************
-    bit_reference operator [] (size_t position)
+    bit_reference operator[](size_t position)
     {
       return bit_reference(*this, position);
     }
@@ -772,7 +769,7 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    ibitset& operator &=(const ibitset& other)
+    ibitset& operator&=(const ibitset& other)
     {
       for (size_t i = 0UL; i < Number_Of_Elements; ++i)
       {
@@ -785,7 +782,7 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    ibitset& operator |=(const ibitset& other)
+    ibitset& operator|=(const ibitset& other)
     {
       for (size_t i = 0UL; i < Number_Of_Elements; ++i)
       {
@@ -798,7 +795,7 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    ibitset& operator ^=(const ibitset& other)
+    ibitset& operator^=(const ibitset& other)
     {
       for (size_t i = 0UL; i < Number_Of_Elements; ++i)
       {
@@ -847,7 +844,7 @@ namespace etl
           const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
           const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
           const element_type lsb_shifted_mask = element_type(lsb_mask << lsb_shift);
-          
+
           // First lsb.
           element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
           pdata[dst_index] = lsb;
@@ -862,7 +859,7 @@ namespace etl
             --dst_index;
 
             // Shift lsb.
-            lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
+            lsb              = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
             pdata[dst_index] = lsb;
             --src_index;
           }
@@ -933,10 +930,10 @@ namespace etl
             // Shift msb.
             element_type msb = element_type((pdata[src_index] & msb_mask) >> msb_shift);
             ++src_index;
-            
+
             // Shift lsb.
             element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
-            
+
             // Combine them.
             pdata[dst_index] = lsb | msb;
             ++dst_index;
@@ -965,7 +962,7 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    ibitset& operator =(const ibitset& other)
+    ibitset& operator=(const ibitset& other)
     {
       if (this != &other)
       {
@@ -1026,7 +1023,7 @@ namespace etl
         while ((value != 0) && (i < Number_Of_Elements))
         {
           pdata[i++] = value & ALL_SET;
-          value = value >> Shift;
+          value      = value >> Shift;
         }
       }
 
@@ -1066,13 +1063,13 @@ namespace etl
     {
       const size_t allocated_bits = Number_Of_Elements * Bits_Per_Element;
       const size_t top_mask_shift = ((Bits_Per_Element - (allocated_bits - Active_Bits)) % Bits_Per_Element);
-      Top_Mask = element_type(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
+      Top_Mask                    = element_type(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
     }
 
     //*************************************************************************
     /// Compare bitsets.
     //*************************************************************************
-    static bool is_equal(const ibitset& lhs, const ibitset&rhs)
+    static bool is_equal(const ibitset& lhs, const ibitset& rhs)
     {
       return etl::equal(lhs.pdata, lhs.pdata + lhs.Number_Of_Elements, rhs.pdata);
     }
@@ -1100,12 +1097,16 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_BITSET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~ibitset()
     {
     }
 #else
+
   protected:
+
     ~ibitset()
     {
     }
@@ -1128,7 +1129,6 @@ namespace etl
   template <size_t MaxN>
   class bitset : public etl::ibitset
   {
-
     static ETL_CONSTANT size_t Array_Size = (MaxN % Bits_Per_Element == 0) ? MaxN / Bits_Per_Element : MaxN / Bits_Per_Element + 1;
 
   public:
@@ -1364,18 +1364,18 @@ namespace etl
 
       ETL_ASSERT_OR_RETURN_VALUE((result.size() == MaxN), ETL_ERROR(etl::bitset_overflow), result);
 
-      for (size_t i = MaxN; i > 0; --i) 
+      for (size_t i = MaxN; i > 0; --i)
       {
         result[MaxN - i] = test(i - 1) ? one : zero;
       }
-      
+
       return result;
     }
 
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    bitset<MaxN>& operator =(const bitset<MaxN>& other)
+    bitset<MaxN>& operator=(const bitset<MaxN>& other)
     {
       if (this != &other)
       {
@@ -1388,34 +1388,34 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    bitset<MaxN>& operator &=(const bitset<MaxN>& other)
+    bitset<MaxN>& operator&=(const bitset<MaxN>& other)
     {
-      etl::ibitset::operator &=(other);
+      etl::ibitset::operator&=(other);
       return *this;
     }
 
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    bitset<MaxN>& operator |=(const bitset<MaxN>& other)
+    bitset<MaxN>& operator|=(const bitset<MaxN>& other)
     {
-      etl::ibitset::operator |=(other);
+      etl::ibitset::operator|=(other);
       return *this;
     }
 
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    bitset<MaxN>& operator ^=(const bitset<MaxN>& other)
+    bitset<MaxN>& operator^=(const bitset<MaxN>& other)
     {
-      ibitset::operator ^=(other);
+      ibitset::operator^=(other);
       return *this;
     }
 
     //*************************************************************************
     /// operator ~
     //*************************************************************************
-    bitset<MaxN> operator ~() const
+    bitset<MaxN> operator~() const
     {
       etl::bitset<MaxN> temp(*this);
 
@@ -1441,7 +1441,7 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& operator<<=(size_t shift)
     {
-      etl::ibitset::operator <<=(shift);
+      etl::ibitset::operator<<=(shift);
       return *this;
     }
 
@@ -1462,14 +1462,14 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& operator>>=(size_t shift)
     {
-      etl::ibitset::operator >>=(shift);
+      etl::ibitset::operator>>=(shift);
       return *this;
     }
 
     //*************************************************************************
     /// operator ==
     //*************************************************************************
-    friend bool operator == (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
+    friend bool operator==(const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
     {
       return etl::ibitset::is_equal(lhs, rhs);
     }
@@ -1481,7 +1481,7 @@ namespace etl
 
   template <size_t MaxN>
   ETL_CONSTANT size_t bitset<MaxN>::ALLOCATED_BITS;
-  
+
   template <size_t MaxN>
   ETL_CONSTANT size_t bitset<MaxN>::Allocated_Bits;
 
@@ -1490,7 +1490,7 @@ namespace etl
   ///\ingroup bitset
   //***************************************************************************
   template <size_t MaxN>
-  bitset<MaxN> operator & (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
+  bitset<MaxN> operator&(const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     bitset<MaxN> temp(lhs);
     temp &= rhs;
@@ -1501,8 +1501,8 @@ namespace etl
   /// operator |
   ///\ingroup bitset
   //***************************************************************************
-  template<size_t MaxN>
-  bitset<MaxN> operator | (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
+  template <size_t MaxN>
+  bitset<MaxN> operator|(const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     bitset<MaxN> temp(lhs);
     temp |= rhs;
@@ -1513,8 +1513,8 @@ namespace etl
   /// operator ^
   ///\ingroup bitset
   //***************************************************************************
-  template<size_t MaxN>
-  bitset<MaxN> operator ^ (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
+  template <size_t MaxN>
+  bitset<MaxN> operator^(const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     bitset<MaxN> temp(lhs);
     temp ^= rhs;
@@ -1525,12 +1525,12 @@ namespace etl
   /// operator !=
   ///\ingroup bitset
   //***************************************************************************
-  template<size_t MaxN>
-  bool operator != (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
+  template <size_t MaxN>
+  bool operator!=(const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     return !(lhs == rhs);
   }
-}
+} // namespace etl
 
 //*************************************************************************
 /// swap

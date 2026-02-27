@@ -33,12 +33,12 @@ SOFTWARE.
 
 #include "platform.h"
 #include "alignment.h"
-#include "parameter_type.h"
 #include "atomic.h"
-#include "memory_model.h"
 #include "integral_limits.h"
-#include "utility.h"
+#include "memory_model.h"
+#include "parameter_type.h"
 #include "placement_new.h"
+#include "utility.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -84,7 +84,7 @@ namespace etl
     size_type size() const
     {
       size_type write_index = write.load(etl::memory_order_acquire);
-      size_type read_index = read.load(etl::memory_order_acquire);
+      size_type read_index  = read.load(etl::memory_order_acquire);
 
       size_type n;
 
@@ -128,9 +128,9 @@ namespace etl
   protected:
 
     queue_spsc_atomic_base(size_type reserved_)
-      : write(0),
-        read(0),
-        Reserved(reserved_)
+      : write(0)
+      , read(0)
+      , Reserved(reserved_)
     {
     }
 
@@ -141,34 +141,39 @@ namespace etl
     {
       ++index;
 
-      if (index == maximum) ETL_UNLIKELY
-      {
-        index = 0;
-      }
+      if (index == maximum)
+        ETL_UNLIKELY
+        {
+          index = 0;
+        }
 
       return index;
     }
 
-    etl::atomic<size_type> write; ///< Where to input new data.
-    etl::atomic<size_type> read;  ///< Where to get the oldest data.
-    const size_type Reserved;     ///< The maximum number of items in the queue.
+    etl::atomic<size_type> write;    ///< Where to input new data.
+    etl::atomic<size_type> read;     ///< Where to get the oldest data.
+    const size_type        Reserved; ///< The maximum number of items in the queue.
 
   private:
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-#if defined(ETL_POLYMORPHIC_SPSC_QUEUE_ATOMIC) || defined(ETL_POLYMORPHIC_CONTAINERS)
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
+  #if defined(ETL_POLYMORPHIC_SPSC_QUEUE_ATOMIC) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~queue_spsc_atomic_base()
     {
     }
-#else
+  #else
+
   protected:
+
     ~queue_spsc_atomic_base()
     {
     }
-#endif
+  #endif
   };
 
   //***************************************************************************
@@ -191,18 +196,18 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;      ///< The type stored in the queue.
-    typedef T&                         reference;       ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference;///< An rvalue_reference to the type used in the queue.
-#endif
-    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+    typedef T        value_type;      ///< The type stored in the queue.
+    typedef T&       reference;       ///< A reference to the type used in the queue.
+    typedef const T& const_reference; ///< A const reference to the type used in the queue.
+  #if ETL_USING_CPP11
+    typedef T&& rvalue_reference; ///< An rvalue_reference to the type used in the queue.
+  #endif
+    typedef typename base_t::size_type size_type; ///< The type used for determining the size of the queue.
 
-    using base_t::write;
+    using base_t::get_next_index;
     using base_t::read;
     using base_t::Reserved;
-    using base_t::get_next_index;
+    using base_t::write;
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -225,14 +230,14 @@ namespace etl
       return false;
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ATOMIC_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ATOMIC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
     bool push(rvalue_reference value)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index = get_next_index(write_index, Reserved);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -246,14 +251,14 @@ namespace etl
       // Queue is full.
       return false;
     }
-#endif
+  #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ATOMIC_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ATOMIC_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace(Args&&... args)
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
@@ -271,7 +276,7 @@ namespace etl
       // Queue is full.
       return false;
     }
-#else
+  #else
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -279,7 +284,7 @@ namespace etl
     bool emplace()
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
-      size_type next_index = get_next_index(write_index, Reserved);
+      size_type next_index  = get_next_index(write_index, Reserved);
 
       if (next_index != read.load(etl::memory_order_acquire))
       {
@@ -385,7 +390,7 @@ namespace etl
       // Queue is full.
       return false;
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Peek the next value in the queue without removing it.
@@ -420,11 +425,11 @@ namespace etl
 
       size_type next_index = get_next_index(read_index, Reserved);
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[read_index]);
-#else
+  #else
       value = p_buffer[read_index];
-#endif
+  #endif
 
       p_buffer[read_index].~T();
 
@@ -482,7 +487,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         write = 0;
         read  = 0;
@@ -502,8 +507,8 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue_spsc_atomic(T* p_buffer_, size_type reserved_)
-      : base_t(reserved_),
-        p_buffer(p_buffer_)
+      : base_t(reserved_)
+      , p_buffer(p_buffer_)
     {
     }
 
@@ -511,12 +516,12 @@ namespace etl
 
     // Disable copy construction and assignment.
     iqueue_spsc_atomic(const iqueue_spsc_atomic&) ETL_DELETE;
-    iqueue_spsc_atomic& operator =(const iqueue_spsc_atomic&) ETL_DELETE;
+    iqueue_spsc_atomic& operator=(const iqueue_spsc_atomic&) ETL_DELETE;
 
-#if ETL_USING_CPP11
-    iqueue_spsc_atomic(iqueue_spsc_atomic&&) = delete;
-    iqueue_spsc_atomic& operator =(iqueue_spsc_atomic&&) = delete;
-#endif
+  #if ETL_USING_CPP11
+    iqueue_spsc_atomic(iqueue_spsc_atomic&&)            = delete;
+    iqueue_spsc_atomic& operator=(iqueue_spsc_atomic&&) = delete;
+  #endif
 
     T* p_buffer; ///< The internal buffer.
   };
@@ -574,7 +579,7 @@ namespace etl
 
   template <typename T, size_t Size, const size_t Memory_Model>
   ETL_CONSTANT typename queue_spsc_atomic<T, Size, Memory_Model>::size_type queue_spsc_atomic<T, Size, Memory_Model>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif
 

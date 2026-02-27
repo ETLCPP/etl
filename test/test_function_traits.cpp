@@ -121,13 +121,25 @@ namespace
   //*****************************************************************************
   // A functor with a unique operator()
   //*****************************************************************************
-  struct Functor { int operator()(int x) { return x + 1; } };
+  struct Functor
+  {
+    int operator()(int x)
+    {
+      return x + 1;
+    }
+  };
 
   //*****************************************************************************
   // A functor with a unique operator()
   //*****************************************************************************
-  struct FunctorConst { int operator()(int x) const { return x + 1; } };
-}
+  struct FunctorConst
+  {
+    int operator()(int x) const
+    {
+      return x + 1;
+    }
+  };
+} // namespace
 
 namespace
 {
@@ -140,10 +152,10 @@ namespace
 
       using traits = etl::function_traits<decltype(&free_void)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::object_type>::value));
-      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));     
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_member_function);
@@ -161,10 +173,10 @@ namespace
 
       using traits = etl::function_traits<decltype(&free_void_noexcept)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::object_type>::value));
-      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));     
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::object_type>::value));
+      CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_member_function);
@@ -180,11 +192,11 @@ namespace
 
       using traits = etl::function_traits<decltype(&free_int)>;
 
-      CHECK_TRUE((std::is_same<int(int, int),            traits::function_type>::value));
-      CHECK_TRUE((std::is_same<int,                      traits::return_type>::value));
-      CHECK_TRUE((std::is_same<void,                     traits::object_type>::value));
+      CHECK_TRUE((std::is_same<int(int, int), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<int, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<int, int>, traits::argument_types>::value));
-      
+
       CHECK_TRUE(traits::is_function);
       CHECK_FALSE(traits::is_member_function);
       CHECK_FALSE(traits::is_functor);
@@ -199,9 +211,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -218,9 +230,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_const)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -237,9 +249,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_noexcept)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -260,9 +272,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_const_noexcept)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -283,9 +295,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_volatile)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -302,9 +314,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_const_volatile)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -321,9 +333,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_volatile_noexcept)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -344,9 +356,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_void_const_volatile_noexcept)>;
 
-      CHECK_TRUE((std::is_same<void(void),       traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,             traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,           traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(void), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -367,9 +379,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_int)>;
 
-      CHECK_TRUE((std::is_same<int(int, int),            traits::function_type>::value));
-      CHECK_TRUE((std::is_same<int,                      traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,                   traits::object_type>::value));
+      CHECK_TRUE((std::is_same<int(int, int), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<int, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<int, int>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -386,9 +398,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_int_const)>;
 
-      CHECK_TRUE((std::is_same<int(int, int),            traits::function_type>::value));
-      CHECK_TRUE((std::is_same<int,                      traits::return_type>::value));
-      CHECK_TRUE((std::is_same<Object,                   traits::object_type>::value));
+      CHECK_TRUE((std::is_same<int(int, int), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<int, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<Object, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<int, int>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -405,9 +417,9 @@ namespace
     {
       using traits = etl::function_traits<decltype(&Object::member_static)>;
 
-      CHECK_TRUE((std::is_same<void(int),           traits::function_type>::value));
-      CHECK_TRUE((std::is_same<void,                traits::return_type>::value));
-      CHECK_TRUE((std::is_same<void,                traits::object_type>::value));
+      CHECK_TRUE((std::is_same<void(int), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<void, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<int>, traits::argument_types>::value));
 
       CHECK_TRUE(traits::is_function);
@@ -422,13 +434,16 @@ namespace
     //*************************************************************************
     TEST(test_lambda)
     {
-      auto lambda = [](int a, const std::string& s) -> long { return static_cast<long>(a + s.size()); };
+      auto lambda = [](int a, const std::string& s) -> long
+      {
+        return static_cast<long>(a + s.size());
+      };
 
       using traits = etl::function_traits<decltype(lambda)>;
 
-      CHECK_TRUE((std::is_same<long(int, const std::string&),           traits::function_type>::value));
-      CHECK_TRUE((std::is_same<long,                                    traits::return_type>::value));
-      CHECK_TRUE((std::is_same<decltype(lambda),                        traits::object_type>::value));
+      CHECK_TRUE((std::is_same<long(int, const std::string&), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<long, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<decltype(lambda), traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<int, const std::string&>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -453,9 +468,9 @@ namespace
 
       using traits = etl::function_traits<functor>;
 
-      CHECK_TRUE((std::is_same<long(int, const std::string&),           traits::function_type>::value));
-      CHECK_TRUE((std::is_same<long,                                    traits::return_type>::value));
-      CHECK_TRUE((std::is_same<functor,                                 traits::object_type>::value));
+      CHECK_TRUE((std::is_same<long(int, const std::string&), traits::function_type>::value));
+      CHECK_TRUE((std::is_same<long, traits::return_type>::value));
+      CHECK_TRUE((std::is_same<functor, traits::object_type>::value));
       CHECK_TRUE((std::is_same<etl::type_list<int, const std::string&>, traits::argument_types>::value));
 
       CHECK_FALSE(traits::is_function);
@@ -472,8 +487,8 @@ namespace
     TEST(test_function_traits_forward_cvref_free_ptr)
     {
       using ptr_t       = decltype(&free_void);
-      using const_ptr_t = typename std::add_const<ptr_t>::type;   // void(* const)()
-      using ref_ptr_t   = ptr_t&;                                  // void(*&)()
+      using const_ptr_t = typename std::add_const<ptr_t>::type; // void(* const)()
+      using ref_ptr_t   = ptr_t&;                               // void(*&)()
 
       using traits_c = etl::function_traits<const_ptr_t>;
       using traits_r = etl::function_traits<ref_ptr_t>;
@@ -531,4 +546,4 @@ namespace
       CHECK_EQUAL(1, traits_cf::arity);
     }
   }
-}
+} // namespace

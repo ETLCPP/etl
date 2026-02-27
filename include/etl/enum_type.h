@@ -82,35 +82,54 @@ SOFTWARE.
 //*****************************************************************************
 // The declaration of the member functions and the first section of the 'c_str' function.
 //*****************************************************************************
-#define ETL_DECLARE_ENUM_TYPE(TypeName, ValueType) \
-  typedef ValueType value_type; \
-	ETL_CONSTEXPR TypeName() : value(static_cast<enum_type>(value_type())) {} \
-	ETL_CONSTEXPR TypeName(enum_type value_) : value(value_) {} \
-  ETL_CONSTEXPR explicit TypeName(value_type value_) : value(static_cast<enum_type>(value_)) {} \
-	ETL_CONSTEXPR operator value_type() const {return static_cast<value_type>(value);} \
-  ETL_CONSTEXPR value_type get_value() const {return static_cast<value_type>(value);} \
-  ETL_CONSTEXPR enum_type get_enum() const {return value;} \
-  ETL_CONSTEXPR14 const char* c_str() const \
-  { \
-    switch (value) \
+#define ETL_DECLARE_ENUM_TYPE(TypeName, ValueType)   \
+  typedef ValueType value_type;                      \
+  ETL_CONSTEXPR     TypeName()                       \
+    : value(static_cast<enum_type>(value_type()))    \
+  {                                                  \
+  }                                                  \
+  ETL_CONSTEXPR TypeName(enum_type value_)           \
+    : value(value_)                                  \
+  {                                                  \
+  }                                                  \
+  ETL_CONSTEXPR explicit TypeName(value_type value_) \
+    : value(static_cast<enum_type>(value_))          \
+  {                                                  \
+  }                                                  \
+  ETL_CONSTEXPR operator value_type() const          \
+  {                                                  \
+    return static_cast<value_type>(value);           \
+  }                                                  \
+  ETL_CONSTEXPR value_type get_value() const         \
+  {                                                  \
+    return static_cast<value_type>(value);           \
+  }                                                  \
+  ETL_CONSTEXPR enum_type get_enum() const           \
+  {                                                  \
+    return value;                                    \
+  }                                                  \
+  ETL_CONSTEXPR14 const char* c_str() const          \
+  {                                                  \
+    switch (value)                                   \
     {
-
 //*****************************************************************************
 // A case in the 'c_str' function's switch statement.
 //*****************************************************************************
 #define ETL_ENUM_TYPE(value, name) \
-      case value: \
-        return name; \
+  case value:                      \
+    return name;
 
 //*****************************************************************************
 // The final section of the 'c_str' function and the value declaration.
 //*****************************************************************************
 #define ETL_END_ENUM_TYPE \
-      default: \
-        return "?"; \
-    } \
-  } \
-private: \
-  enum_type value;
+  default:                \
+    return "?";           \
+    }                     \
+    }                     \
+                          \
+  private:                \
+                          \
+    enum_type value;
 
 #endif

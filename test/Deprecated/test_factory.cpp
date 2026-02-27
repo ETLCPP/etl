@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++.h"
 #include "ExtraCheckMacros.h"
+#include "UnitTest++.h"
 
 #include "etl/factory.h"
 
@@ -176,180 +176,178 @@ namespace
     INTEGRAL
   };
 
-  typedef etl::type_id_pair<Derived1,   DERIVED1>   D1_Type;
-  typedef etl::type_id_pair<Derived2,   DERIVED2>   D2_Type;
-  typedef etl::type_id_pair<Derived3,   DERIVED3>   D3_Type;
+  typedef etl::type_id_pair<Derived1, DERIVED1>     D1_Type;
+  typedef etl::type_id_pair<Derived2, DERIVED2>     D2_Type;
+  typedef etl::type_id_pair<Derived3, DERIVED3>     D3_Type;
   typedef etl::type_id_pair<NonDerived, NONDERIVED> ND_Type;
-  typedef etl::type_id_pair<int,        INTEGRAL>   I_Type;
+  typedef etl::type_id_pair<int, INTEGRAL>          I_Type;
 
   const size_t SIZE = 5UL;
 
   // Notice that the type declaration order is not important.
   typedef etl::factory<SIZE, D1_Type, ND_Type, D3_Type, D2_Type, I_Type> Factory;
 
-  SUITE(test_factory)
-  {
+  SUITE(test_factory){
     //*************************************************************************
-    TEST(test_sizes)
-    {
+    TEST(test_sizes){
       Factory factory;
 
-      size_t ms = Factory::MAX_SIZE;
-      CHECK_EQUAL(SIZE, ms);
-      CHECK_EQUAL(SIZE, factory.max_size());
-      CHECK_EQUAL(SIZE, factory.available());
-      CHECK_EQUAL(0U, factory.size());
-      CHECK(factory.empty());
-      CHECK(!factory.full());
+  size_t ms = Factory::MAX_SIZE;
+  CHECK_EQUAL(SIZE, ms);
+  CHECK_EQUAL(SIZE, factory.max_size());
+  CHECK_EQUAL(SIZE, factory.available());
+  CHECK_EQUAL(0U, factory.size());
+  CHECK(factory.empty());
+  CHECK(!factory.full());
 
-      factory.create_from_type<Derived1>();
-      CHECK_EQUAL(SIZE - 1U, factory.available());
-      CHECK_EQUAL(1U, factory.size());
-      CHECK(!factory.empty());
-      CHECK(!factory.full());
+  factory.create_from_type<Derived1>();
+  CHECK_EQUAL(SIZE - 1U, factory.available());
+  CHECK_EQUAL(1U, factory.size());
+  CHECK(!factory.empty());
+  CHECK(!factory.full());
 
-      factory.create_from_type<Derived1>();
-      factory.create_from_type<Derived1>();
-      factory.create_from_type<Derived1>();
-      factory.create_from_type<Derived1>();
-      CHECK_EQUAL(0U, factory.available());
-      CHECK_EQUAL(SIZE, factory.size());
-      CHECK(!factory.empty());
-      CHECK(factory.full());
+  factory.create_from_type<Derived1>();
+  factory.create_from_type<Derived1>();
+  factory.create_from_type<Derived1>();
+  factory.create_from_type<Derived1>();
+  CHECK_EQUAL(0U, factory.available());
+  CHECK_EQUAL(SIZE, factory.size());
+  CHECK(!factory.empty());
+  CHECK(factory.full());
 
-      CHECK_THROW(factory.create_from_type<Derived1>(), etl::factory_cannot_create);
-    }
+  CHECK_THROW(factory.create_from_type<Derived1>(), etl::factory_cannot_create);
+} // namespace
 
-    //*************************************************************************
-    TEST(test_create_release)
-    {
-      Factory factory;
+//*************************************************************************
+TEST(test_create_release)
+{
+  Factory factory;
 
-      Base* p;
+  Base* p;
 
-      // Derived 1
-      p = factory.create_from_type<Derived1>();
-      Derived1* pd1 = static_cast<Derived1*>(p);
-      CHECK_EQUAL(0, pd1->i);
-      p->Set();
-      CHECK_EQUAL(1, pd1->i);
-      factory.destroy(p);
-      CHECK(destructor);
+  // Derived 1
+  p             = factory.create_from_type<Derived1>();
+  Derived1* pd1 = static_cast<Derived1*>(p);
+  CHECK_EQUAL(0, pd1->i);
+  p->Set();
+  CHECK_EQUAL(1, pd1->i);
+  factory.destroy(p);
+  CHECK(destructor);
 
-      // Derived 2
-      destructor = false;
-      p = factory.create_from_type<Derived2>();
-      Derived2* pd2 = static_cast<Derived2*>(p);
-      CHECK_EQUAL(0.0, pd2->d);
-      p->Set();
-      CHECK_EQUAL(1.2, pd2->d);
-      factory.destroy(p);
-      CHECK(destructor);
+  // Derived 2
+  destructor    = false;
+  p             = factory.create_from_type<Derived2>();
+  Derived2* pd2 = static_cast<Derived2*>(p);
+  CHECK_EQUAL(0.0, pd2->d);
+  p->Set();
+  CHECK_EQUAL(1.2, pd2->d);
+  factory.destroy(p);
+  CHECK(destructor);
 
-      // Derived 3
-      destructor = false;
-      p = factory.create_from_type<Derived3>();
-      Derived3* pd3 = static_cast<Derived3*>(p);
-      CHECK_EQUAL("constructed", pd3->s);
-      p->Set();
-      CHECK_EQUAL("set", pd3->s);
-      factory.destroy(p);
-      CHECK(destructor);
+  // Derived 3
+  destructor    = false;
+  p             = factory.create_from_type<Derived3>();
+  Derived3* pd3 = static_cast<Derived3*>(p);
+  CHECK_EQUAL("constructed", pd3->s);
+  p->Set();
+  CHECK_EQUAL("set", pd3->s);
+  factory.destroy(p);
+  CHECK(destructor);
 
-      // Non Derived
-      destructor = false;
-      NonDerived* pnd = factory.create_from_type<NonDerived>();
-      CHECK_EQUAL("constructed", pnd->s);
-      pnd->Set();
-      CHECK_EQUAL("set", pnd->s);
-      factory.destroy(pnd);
-      CHECK(destructor);
+  // Non Derived
+  destructor      = false;
+  NonDerived* pnd = factory.create_from_type<NonDerived>();
+  CHECK_EQUAL("constructed", pnd->s);
+  pnd->Set();
+  CHECK_EQUAL("set", pnd->s);
+  factory.destroy(pnd);
+  CHECK(destructor);
 
-      // Integral
-      int* pi = factory.create_from_type<int>();
-      factory.destroy(pi);
-    }
+  // Integral
+  int* pi = factory.create_from_type<int>();
+  factory.destroy(pi);
+}
 
-    //*************************************************************************
-    TEST(test_create_release_const)
-    {
-      Factory factory;
+//*************************************************************************
+TEST(test_create_release_const)
+{
+  Factory factory;
 
-      const Derived1& d = *factory.create_from_type<Derived1>();
+  const Derived1& d = *factory.create_from_type<Derived1>();
 
-      CHECK_EQUAL(0, d.i);
-      factory.destroy(&d);
-      CHECK(destructor);
+  CHECK_EQUAL(0, d.i);
+  factory.destroy(&d);
+  CHECK(destructor);
+}
 
-    }
+//*************************************************************************
+TEST(test_create_emplace)
+{
+  Factory factory;
 
-    //*************************************************************************
-    TEST(test_create_emplace)
-    {
-      Factory factory;
+  Base*     p;
+  Derived3* pd3;
 
-      Base* p;
-      Derived3* pd3;
+  p   = factory.create_from_type<Derived3>("1");
+  pd3 = static_cast<Derived3*>(p);
+  CHECK_EQUAL("constructed1", pd3->s);
+  factory.destroy(p);
 
-      p = factory.create_from_type<Derived3>("1");
-      pd3 = static_cast<Derived3*>(p);
-      CHECK_EQUAL("constructed1", pd3->s);
-      factory.destroy(p);
+  p   = factory.create_from_type<Derived3>("1", "2");
+  pd3 = static_cast<Derived3*>(p);
+  CHECK_EQUAL("constructed12", pd3->s);
+  factory.destroy(p);
 
-      p = factory.create_from_type<Derived3>("1", "2");
-      pd3 = static_cast<Derived3*>(p);
-      CHECK_EQUAL("constructed12", pd3->s);
-      factory.destroy(p);
+  p   = factory.create_from_type<Derived3>("1", "2", "3");
+  pd3 = static_cast<Derived3*>(p);
+  CHECK_EQUAL("constructed123", pd3->s);
+  factory.destroy(p);
 
-      p = factory.create_from_type<Derived3>("1", "2", "3");
-      pd3 = static_cast<Derived3*>(p);
-      CHECK_EQUAL("constructed123", pd3->s);
-      factory.destroy(p);
+  p   = factory.create_from_type<Derived3>("1", "2", "3", "4");
+  pd3 = static_cast<Derived3*>(p);
+  CHECK_EQUAL("constructed1234", pd3->s);
+  factory.destroy(p);
+}
 
-      p = factory.create_from_type<Derived3>("1", "2", "3", "4");
-      pd3 = static_cast<Derived3*>(p);
-      CHECK_EQUAL("constructed1234", pd3->s);
-      factory.destroy(p);
-    }
+//*************************************************************************
+TEST(test_did_not_create)
+{
+  Factory factory1;
+  Factory factory2;
 
-    //*************************************************************************
-    TEST(test_did_not_create)
-    {
-      Factory factory1;
-      Factory factory2;
+  Base* p;
 
-      Base* p;
+  p = factory1.create_from_type<Derived1>();
+  CHECK_NO_THROW(factory1.destroy(p));
 
-      p = factory1.create_from_type<Derived1>();
-      CHECK_NO_THROW(factory1.destroy(p));
+  p = factory2.create_from_type<Derived1>();
+  CHECK_THROW(factory1.destroy(p), etl::factory_did_not_create);
+}
 
-      p = factory2.create_from_type<Derived1>();
-      CHECK_THROW(factory1.destroy(p), etl::factory_did_not_create);
-    }
+//*************************************************************************
+TEST(test_create_from_index)
+{
+  Factory   factory;
+  Derived1* p1;
+  Derived2* p2;
+  Derived3* p3;
 
-    //*************************************************************************
-    TEST(test_create_from_index)
-    {
-      Factory factory;
-      Derived1* p1;
-      Derived2* p2;
-      Derived3* p3;
+  CHECK_NO_THROW(p1 = factory.create_from_id<DERIVED1>());
+  CHECK_EQUAL(0, p1->i);
+  factory.destroy(p1);
 
-      CHECK_NO_THROW(p1 = factory.create_from_id<DERIVED1>());
-      CHECK_EQUAL(0, p1->i);
-      factory.destroy(p1);
+  CHECK_NO_THROW(p2 = factory.create_from_id<DERIVED2>());
+  CHECK_EQUAL(0.0, p2->d);
+  factory.destroy(p2);
 
-      CHECK_NO_THROW(p2 = factory.create_from_id<DERIVED2>());
-      CHECK_EQUAL(0.0, p2->d);
-      factory.destroy(p2);
+  CHECK_NO_THROW(p3 = factory.create_from_id<DERIVED3>());
+  CHECK_EQUAL("constructed", p3->s);
+  factory.destroy(p3);
 
-      CHECK_NO_THROW(p3 = factory.create_from_id<DERIVED3>());
-      CHECK_EQUAL("constructed", p3->s);
-      factory.destroy(p3);
-
-      CHECK_NO_THROW(p3 = factory.create_from_id<DERIVED3>("1"));
-      CHECK_EQUAL("constructed1", p3->s);
-      factory.destroy(p3);
-    }
-  };
+  CHECK_NO_THROW(p3 = factory.create_from_id<DERIVED3>("1"));
+  CHECK_EQUAL("constructed1", p3->s);
+  factory.destroy(p3);
+}
+}
+;
 }

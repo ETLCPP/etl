@@ -29,13 +29,13 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/string.h"
-#include "etl/string_view.h"
 #include "etl/string_utilities.h"
+#include "etl/string_view.h"
 #include "etl/vector.h"
 
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
 
 #if ETL_USING_CPP17
   #include <string_view>
@@ -923,13 +923,12 @@ namespace
       String expected(STR("This---is_a__-file__name_"));
 
       etl::pair<Char, Char> lookup[] =
-      {
-        { STR('+'), STR('-') },
-        { STR(' '), STR('_') },
-        { STR('*'), STR('-') },
-        { STR('/'), STR('_') },
-        { STR(':'), STR('_') }
-      };
+        {
+          {STR('+'), STR('-')},
+          {STR(' '), STR('_')},
+          {STR('*'), STR('-')},
+          {STR('/'), STR('_')},
+          {STR(':'), STR('_')}};
 
       etl::replace_characters(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -943,13 +942,12 @@ namespace
       String expected(STR(""));
 
       etl::pair<Char, Char> lookup[] =
-      {
-        { STR('+'), STR('-') },
-        { STR(' '), STR('_') },
-        { STR('*'), STR('-') },
-        { STR('/'), STR('_') },
-        { STR(':'), STR('_') }
-      };
+        {
+          {STR('+'), STR('-')},
+          {STR(' '), STR('_')},
+          {STR('*'), STR('-')},
+          {STR('/'), STR('_')},
+          {STR(':'), STR('_')}};
 
       etl::replace_characters(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -963,13 +961,12 @@ namespace
       String expected(STR("Thisxyis%20a%20%20-file_name.txt"));
 
       etl::pair<const Char*, const Char*> lookup[] =
-      {
-        { STR("+++"), STR("xy") },
-        { STR(" "),   STR("%20") },
-        { STR("*"),   STR("-") },
-        { STR("//"),  STR("_") },
-        { STR(":"),   STR(".txt") }
-      };
+        {
+          {STR("+++"), STR("xy")},
+          {STR(" "), STR("%20")},
+          {STR("*"), STR("-")},
+          {STR("//"), STR("_")},
+          {STR(":"), STR(".txt")}};
 
       etl::replace_strings(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -983,13 +980,12 @@ namespace
       String expected(STR(""));
 
       etl::pair<const Char*, const Char*> lookup[] =
-      {
-        { STR("+++"), STR("xy") },
-        { STR(" "),   STR("%20") },
-        { STR("*"),   STR("-") },
-        { STR("//"),  STR("_") },
-        { STR(":"),   STR(".txt") }
-      };
+        {
+          {STR("+++"), STR("xy")},
+          {STR(" "), STR("%20")},
+          {STR("*"), STR("-")},
+          {STR("//"), STR("_")},
+          {STR(":"), STR(".txt")}};
 
       etl::replace_strings(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -1002,7 +998,7 @@ namespace
       String text(STR(",,,The,cat,sat,,on,the,mat,,,"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(","), token, true)))
@@ -1019,7 +1015,7 @@ namespace
       String text(STR(",,,The,cat,sat,,on,the,mat,,,"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(","), token, false)))
@@ -1036,7 +1032,7 @@ namespace
       String text(STR(""));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, Whitespace, token, true)))
@@ -1053,7 +1049,7 @@ namespace
       String text(STR("   .,  ;: .,;:"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(" .,;:"), token, true)))
@@ -1070,7 +1066,7 @@ namespace
       String text(STR("The cat sat on the mat"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(","), token, false)))
@@ -1086,7 +1082,7 @@ namespace
     {
       Vector tokens;
 
-      StringView textview;
+      StringView                textview;
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(textview, Whitespace, token, true)))
@@ -1100,7 +1096,7 @@ namespace
     //*************************************************************************
     TEST(test_split_to_vector_of_string_view_all_tokens_captured_ignore_empty_tokens)
     {
-      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      String         text(STR(",,,The,cat,sat,,on,the,mat"));
       VectorOfViews7 views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true);
@@ -1110,18 +1106,18 @@ namespace
       CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
       CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
       CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
-      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("on"), std::string(views[3].begin(), views[3].end()));
       CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
       CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
     }
 
     //*************************************************************************
-    //before the issue fix, 
-    //the return value was false when output vector max size equaled the number of tokens
-    //it should be true
+    // before the issue fix,
+    // the return value was false when output vector max size equaled the number of tokens
+    // it should be true
     TEST(test_issue_1270_output_vector_max_size_equals_num_tokens)
     {
-      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      String                     text(STR(",,,The,cat,sat,,on,the,mat"));
       etl::vector<StringView, 6> views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true);
@@ -1131,18 +1127,18 @@ namespace
       CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
       CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
       CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
-      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("on"), std::string(views[3].begin(), views[3].end()));
       CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
       CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
     }
 
     //*************************************************************************
-    //before the issue fix, 
-    //the return value was false when max number of tokens equaled the number of tokens
-    //it should be true
+    // before the issue fix,
+    // the return value was false when max number of tokens equaled the number of tokens
+    // it should be true
     TEST(test_issue_1270_max_tokens_equals_num_tokens)
     {
-      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      String         text(STR(",,,The,cat,sat,,on,the,mat"));
       VectorOfViews7 views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true, 6);
@@ -1152,7 +1148,7 @@ namespace
       CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
       CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
       CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
-      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("on"), std::string(views[3].begin(), views[3].end()));
       CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
       CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
     }
@@ -1160,7 +1156,7 @@ namespace
     //*************************************************************************
     TEST(test_get_token_list_to_vector_of_string_view_all_but_1_tokens_captured_ignore_empty_tokens)
     {
-      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      String         text(STR(",,,The,cat,sat,,on,the,mat"));
       VectorOfViews5 views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true);
@@ -1170,7 +1166,7 @@ namespace
       CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
       CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
       CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
-      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("on"), std::string(views[3].begin(), views[3].end()));
       CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
     }
 
@@ -1178,7 +1174,7 @@ namespace
     //*************************************************************************
     TEST(test_get_token_list_to_std_vector_of_std_string_view_all_tokens_captured_ignore_empty_tokens)
     {
-      std::string text(STR(",,,The,cat,sat,,on,the,mat"));
+      std::string                   text(STR(",,,The,cat,sat,,on,the,mat"));
       std::vector<std::string_view> views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true);
@@ -1188,7 +1184,7 @@ namespace
       CHECK_EQUAL(std::string("The"), std::string(views[0].begin(), views[0].end()));
       CHECK_EQUAL(std::string("cat"), std::string(views[1].begin(), views[1].end()));
       CHECK_EQUAL(std::string("sat"), std::string(views[2].begin(), views[2].end()));
-      CHECK_EQUAL(std::string("on"),  std::string(views[3].begin(), views[3].end()));
+      CHECK_EQUAL(std::string("on"), std::string(views[3].begin(), views[3].end()));
       CHECK_EQUAL(std::string("the"), std::string(views[4].begin(), views[4].end()));
       CHECK_EQUAL(std::string("mat"), std::string(views[5].begin(), views[5].end()));
     }
@@ -1197,7 +1193,7 @@ namespace
     //*************************************************************************
     TEST(test_get_token_list_to_vector_of_string_view_all_tokens_captured_ignore_empty_tokens_maximum_of_3_tokens)
     {
-      String text(STR(",,,The,cat,sat,,on,the,mat"));
+      String         text(STR(",,,The,cat,sat,,on,the,mat"));
       VectorOfViews7 views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true, 3);
@@ -1213,7 +1209,7 @@ namespace
     //*************************************************************************
     TEST(test_get_token_list_to_std_vector_of_std_string_view_all_tokens_captured_ignore_empty_tokens_maximum_of_3_tokens)
     {
-      std::string text(STR(",,,The,cat,sat,,on,the,mat"));
+      std::string                   text(STR(",,,The,cat,sat,,on,the,mat"));
       std::vector<std::string_view> views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true, 3);
@@ -1230,7 +1226,7 @@ namespace
     //*************************************************************************
     TEST(test_get_token_list_to_std_list_of_std_string_view_all_tokens_captured_ignore_empty_tokens)
     {
-      std::string text(STR(",,,The,cat,sat,,on,the,mat"));
+      std::string                 text(STR(",,,The,cat,sat,,on,the,mat"));
       std::list<std::string_view> views;
 
       bool all_views_found = etl::get_token_list(text, views, STR(","), true);
@@ -1246,7 +1242,7 @@ namespace
       ++itr;
       CHECK_EQUAL(std::string("sat"), std::string(itr->begin(), itr->end()));
       ++itr;
-      CHECK_EQUAL(std::string("on"),  std::string(itr->begin(), itr->end()));
+      CHECK_EQUAL(std::string("on"), std::string(itr->begin(), itr->end()));
       ++itr;
       CHECK_EQUAL(std::string("the"), std::string(itr->begin(), itr->end()));
       ++itr;
@@ -1474,7 +1470,7 @@ namespace
     TEST(test_find_first_of_string_view)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_of(textview, STR("Hel"));
 
@@ -1485,7 +1481,7 @@ namespace
     TEST(test_find_first_of_string_view_not_found)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_of(textview, STR("xyz"));
 
@@ -1505,7 +1501,7 @@ namespace
     //*************************************************************************
     TEST(test_find_first_not_of_iterator_iterator_not_found)
     {
-      String text(STR("abcHello Worldabc"));
+      String           text(STR("abcHello Worldabc"));
       String::iterator itr = etl::find_first_not_of(text.begin(), text.end(), STR("abcHello World"));
 
       CHECK(text.end() == itr);
@@ -1575,7 +1571,7 @@ namespace
     TEST(test_find_first_not_of_string_view)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abc"));
 
@@ -1586,7 +1582,7 @@ namespace
     TEST(test_find_first_not_of_string_view_not_found)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abcHello World"));
 
@@ -1676,7 +1672,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_of_string_view)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_of(textview, STR("rld"));
@@ -1687,7 +1683,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_of_string_view_not_found)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_of(textview, STR("xyz"));
@@ -1778,7 +1774,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_not_of_string_view)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abc"));
@@ -1789,7 +1785,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_not_of_string_view_not_found)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
@@ -1906,4 +1902,4 @@ namespace
       CHECK_FALSE(result.terminated);
     }
   }
-}
+} // namespace

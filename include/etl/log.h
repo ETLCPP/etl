@@ -125,6 +125,6 @@ namespace etl
   template <size_t Value>
   inline constexpr size_t log10_v = log10<Value>::value;
 #endif
-}
+} // namespace etl
 
 #endif

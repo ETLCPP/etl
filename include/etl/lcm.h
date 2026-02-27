@@ -32,10 +32,10 @@ SOFTWARE.
 #define ETL_LCM_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "absolute.h"
-#include "static_assert.h"
 #include "gcd.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -56,7 +56,7 @@ namespace etl
   template <typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     lcm(T a, T b) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral type required");
@@ -79,7 +79,7 @@ namespace etl
   template <typename T>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_signed<T>::value, T>::type
+    typename etl::enable_if<etl::is_signed<T>::value, T>::type
     lcm(T a, T b) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral type required");
@@ -99,10 +99,11 @@ namespace etl
   // Non-recursive, using an initializer_list.
   // Top level variadic function.
   //***************************************************************************
-  template<typename T, typename... TRest>
+  template <typename T, typename... TRest>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T lcm(T first, TRest... rest) ETL_NOEXCEPT
+    T
+    lcm(T first, TRest... rest) ETL_NOEXCEPT
   {
     T result = first;
 
@@ -126,10 +127,11 @@ namespace etl
   // Recursive
   // Top level variadic function.
   //***************************************************************************
-  template<typename T, typename... TRest>
+  template <typename T, typename... TRest>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  T lcm(T a, T b, TRest... rest) ETL_NOEXCEPT
+    T
+    lcm(T a, T b, TRest... rest) ETL_NOEXCEPT
   {
     T lcm_ab = lcm(a, b);
 
@@ -146,7 +148,6 @@ namespace etl
   }
   #endif
 #endif
-}
+} // namespace etl
 
 #endif
-

@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <thread>
 #include <chrono>
+#include <thread>
 #include <vector>
 
 #include "etl/queue_spsc_atomic.h"
@@ -38,29 +38,29 @@ SOFTWARE.
 
 #if ETL_HAS_ATOMIC
 
-#if defined(ETL_TARGET_OS_WINDOWS)
-  #include <Windows.h>
-#endif
+  #if defined(ETL_TARGET_OS_WINDOWS)
+    #include <Windows.h>
+  #endif
 
-#define REALTIME_TEST 0
+  #define REALTIME_TEST 0
 
 namespace
 {
   struct Data
   {
     Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
-      : a(a_),
-      b(b_),
-      c(c_),
-      d(d_)
+      : a(a_)
+      , b(b_)
+      , c(c_)
+      , d(d_)
     {
     }
 
     Data()
-      : a(0),
-      b(0),
-      c(0),
-      d(0)
+      : a(0)
+      , b(0)
+      , c(0)
+      , d(0)
     {
     }
 
@@ -70,7 +70,7 @@ namespace
     int d;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
+  bool operator==(const Data& lhs, const Data& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
@@ -155,7 +155,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
-#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+  #if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -190,7 +190,7 @@ namespace
       queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
-#endif
+  #endif
 
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
@@ -413,7 +413,7 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
+  #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
     #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);
       #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2);
@@ -432,8 +432,8 @@ namespace
       FIX_PROCESSOR_AFFINITY1;
 
       const size_t TICK = 1UL;
-      size_t tick = TICK;
-      ticks = 1;
+      size_t       tick = TICK;
+      ticks             = 1;
 
       while (ticks <= LENGTH)
       {
@@ -473,8 +473,8 @@ namespace
         CHECK_EQUAL(i + 1, tick_list[i]);
       }
     }
-#endif
+  #endif
   }
-}
+} // namespace
 
 #endif

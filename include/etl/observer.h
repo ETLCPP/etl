@@ -53,11 +53,11 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "vector.h"
-#include "exception.h"
 #include "error_handler.h"
-#include "utility.h"
+#include "exception.h"
 #include "type_list.h"
+#include "utility.h"
+#include "vector.h"
 
 namespace etl
 {
@@ -125,7 +125,7 @@ namespace etl
       {
       }
 
-      bool operator ()(const observer_item& item) const
+      bool operator()(const observer_item& item) const
       {
         return p_observer == item.p_observer;
       }
@@ -301,7 +301,8 @@ namespace etl
   ///\ingroup observer
   //*****************************************************************
   template <typename T1, typename... TRest>
-  class observer<T1, TRest...> : public observer<T1>, public observer<TRest...>
+  class observer<T1, TRest...> : public observer<T1>
+    , public observer<TRest...>
   {
   public:
 
@@ -365,23 +366,24 @@ namespace etl
   ///\ingroup observer
   //*********************************************************************
   template <typename T1,
-            typename T2  = void,
-            typename T3  = void,
-            typename T4  = void,
-            typename T5  = void,
-            typename T6  = void,
-            typename T7  = void,
-            typename T8  = void>
+            typename T2 = void,
+            typename T3 = void,
+            typename T4 = void,
+            typename T5 = void,
+            typename T6 = void,
+            typename T7 = void,
+            typename T8 = void>
   class observer : public observer<T1>
-                 , public observer<T2>
-                 , public observer<T3>
-                 , public observer<T4>
-                 , public observer<T5>
-                 , public observer<T6>
-                 , public observer<T7>
-                 , public observer<T8>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
+    , public observer<T6>
+    , public observer<T7>
+    , public observer<T8>
   {
   public:
+
     virtual ~observer() {}
 
     using observer<T1>::notification;
@@ -406,12 +408,12 @@ namespace etl
             typename T6,
             typename T7>
   class observer<T1, T2, T3, T4, T5, T6, T7> : public observer<T1>
-                                             , public observer<T2>
-                                             , public observer<T3>
-                                             , public observer<T4>
-                                             , public observer<T5>
-                                             , public observer<T6>
-                                             , public observer<T7>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
+    , public observer<T6>
+    , public observer<T7>
   {
   public:
 
@@ -436,11 +438,11 @@ namespace etl
             typename T5,
             typename T6>
   class observer<T1, T2, T3, T4, T5, T6> : public observer<T1>
-                                         , public observer<T2>
-                                         , public observer<T3>
-                                         , public observer<T4>
-                                         , public observer<T5>
-                                         , public observer<T6>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
+    , public observer<T6>
   {
   public:
 
@@ -463,10 +465,10 @@ namespace etl
             typename T4,
             typename T5>
   class observer<T1, T2, T3, T4, T5> : public observer<T1>
-                                     , public observer<T2>
-                                     , public observer<T3>
-                                     , public observer<T4>
-                                     , public observer<T5>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
   {
   public:
 
@@ -487,9 +489,9 @@ namespace etl
             typename T3,
             typename T4>
   class observer<T1, T2, T3, T4> : public observer<T1>
-                                 , public observer<T2>
-                                 , public observer<T3>
-                                 , public observer<T4>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
   {
   public:
 
@@ -508,8 +510,8 @@ namespace etl
             typename T2,
             typename T3>
   class observer<T1, T2, T3> : public observer<T1>
-                             , public observer<T2>
-                             , public observer<T3>
+    , public observer<T2>
+    , public observer<T3>
   {
   public:
 
@@ -526,7 +528,7 @@ namespace etl
   template <typename T1,
             typename T2>
   class observer<T1, T2> : public observer<T1>
-                         , public observer<T2>
+    , public observer<T2>
   {
   public:
 
@@ -562,6 +564,6 @@ namespace etl
   };
 
 #endif
-}
+} // namespace etl
 
 #endif

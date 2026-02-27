@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -34,9 +34,9 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -109,13 +109,13 @@ namespace
 
       ymdl += Chrono::years(10);
       CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2010), Chrono::month_day_last(Chrono::January)) == ymdl);
-      
+
       ymdl -= Chrono::years(5);
       CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2005), Chrono::month_day_last(Chrono::January)) == ymdl);
-      
+
       ymdl += Chrono::months(10);
       CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2005), Chrono::month_day_last(Chrono::November)) == ymdl);
-      
+
       ymdl -= Chrono::months(5);
       CHECK_TRUE(Chrono::year_month_day_last(Chrono::year(2005), Chrono::month_day_last(Chrono::June)) == ymdl);
     }
@@ -151,13 +151,13 @@ namespace
       Chrono::year_month_day_last year_month_day_last2(Chrono::year(2001), Chrono::month_day_last(Chrono::January));
       Chrono::year_month_day_last year_month_day_last3(Chrono::year(2000), Chrono::month_day_last(Chrono::February));
 
-      CHECK_TRUE(year_month_day_last1  == year_month_day_last1);
+      CHECK_TRUE(year_month_day_last1 == year_month_day_last1);
       CHECK_FALSE(year_month_day_last1 == year_month_day_last2);
       CHECK_FALSE(year_month_day_last1 == year_month_day_last3);
 
       CHECK_FALSE(year_month_day_last1 != year_month_day_last1);
       CHECK_TRUE(year_month_day_last1 != year_month_day_last2);
-      CHECK_TRUE(year_month_day_last1  != year_month_day_last3);
+      CHECK_TRUE(year_month_day_last1 != year_month_day_last3);
     }
 
 #if ETL_USING_ETL_CHRONO
@@ -191,9 +191,9 @@ namespace
     TEST(test_to_sys_days)
     {
       Chrono::year_month_day_last ymdl{Chrono::year(2000), Chrono::month_day_last(Chrono::February)};
-      Chrono::sys_days sd = Chrono::sys_days(ymdl);
+      Chrono::sys_days            sd = Chrono::sys_days(ymdl);
 
       CHECK_EQUAL(11016, sd.time_since_epoch().count());
     }
   }
-}
+} // namespace

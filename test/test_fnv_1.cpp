@@ -29,12 +29,12 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <iterator>
+#include <stdint.h>
 #include <string>
 #include <vector>
-#include <stdint.h>
 
-#include "etl/fnv_1.h"
 #include "etl/endianness.h"
+#include "etl/fnv_1.h"
 
 namespace
 {
@@ -98,17 +98,17 @@ namespace
     //*************************************************************************
     TEST(test_fnv_1_32_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint32_t hash1 = etl::fnv_1_32(data1.begin(), data1.end());
       uint32_t hash2 = etl::fnv_1_32((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -176,17 +176,17 @@ namespace
     //*************************************************************************
     TEST(test_fnv_1a_32_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint32_t hash1 = etl::fnv_1a_32(data1.begin(), data1.end());
       uint32_t hash2 = etl::fnv_1a_32((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -254,17 +254,17 @@ namespace
     //*************************************************************************
     TEST(test_fnv_1_64_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint64_t hash1 = etl::fnv_1_64(data1.begin(), data1.end());
       uint64_t hash2 = etl::fnv_1_64((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -332,17 +332,17 @@ namespace
     //*************************************************************************
     TEST(test_fnv_1a_64_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint64_t hash1 = etl::fnv_1a_64(data1.begin(), data1.end());
       uint64_t hash2 = etl::fnv_1a_64((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -352,5 +352,4 @@ namespace
       CHECK_EQUAL(int(hash1), int(hash3));
     }
   }
-}
-
+} // namespace

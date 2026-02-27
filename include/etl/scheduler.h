@@ -30,13 +30,13 @@ SOFTWARE.
 #define ETL_SCHEDULER_INCLUDED
 
 #include "platform.h"
-#include "vector.h"
-#include "nullptr.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "function.h"
+#include "nullptr.h"
 #include "task.h"
 #include "type_traits.h"
-#include "function.h"
+#include "vector.h"
 
 #include <stdint.h>
 
@@ -121,7 +121,8 @@ namespace etl
   };
 
   /// Typedef for backwards compatibility with miss-spelt struct name.
-  ETL_DEPRECATED_REASON("Misspelt class name") typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
+  ETL_DEPRECATED_REASON("Misspelt class name")
+  typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
 
   //***************************************************************************
   /// Sequential Multiple.
@@ -196,8 +197,8 @@ namespace etl
     {
       bool idle = true;
 
-      size_t most_index = 0UL;
-      uint32_t most_work = 0UL;
+      size_t   most_index = 0UL;
+      uint32_t most_work  = 0UL;
 
       for (size_t index = 0UL; index < task_list.size(); ++index)
       {
@@ -208,8 +209,8 @@ namespace etl
         if (n_work > most_work)
         {
           most_index = index;
-          most_work = n_work;
-          idle = false;
+          most_work  = n_work;
+          idle       = false;
         }
       }
 
@@ -289,9 +290,9 @@ namespace etl
       if (!task_list.full())
       {
         typename task_list_t::iterator itask = etl::upper_bound(task_list.begin(),
-                                                                   task_list.end(),
-                                                                   task.get_task_priority(),
-                                                                   compare_priority());
+                                                                task_list.end(),
+                                                                task.get_task_priority(),
+                                                                compare_priority());
 
         task_list.insert(itask, &task);
 
@@ -320,16 +321,16 @@ namespace etl
     /// Constructor.
     //*******************************************
     ischeduler(etl::ivector<etl::task*>& task_list_)
-      : scheduler_running(false),
-        scheduler_exit(false),
-        p_idle_callback(ETL_NULLPTR),
-        p_watchdog_callback(ETL_NULLPTR),
-        task_list(task_list_)
+      : scheduler_running(false)
+      , scheduler_exit(false)
+      , p_idle_callback(ETL_NULLPTR)
+      , p_watchdog_callback(ETL_NULLPTR)
+      , task_list(task_list_)
     {
     }
 
-    bool scheduler_running;
-    bool scheduler_exit;
+    bool                  scheduler_running;
+    bool                  scheduler_exit;
     etl::ifunction<void>* p_idle_callback;
     etl::ifunction<void>* p_watchdog_callback;
 
@@ -347,14 +348,15 @@ namespace etl
     };
 
     typedef etl::ivector<etl::task*> task_list_t;
-    task_list_t& task_list;
+    task_list_t&                     task_list;
   };
 
   //***************************************************************************
   /// Scheduler.
   //***************************************************************************
   template <typename TSchedulerPolicy, size_t MAX_TASKS_>
-  class scheduler : public etl::ischeduler, protected TSchedulerPolicy
+  class scheduler : public etl::ischeduler
+    , protected TSchedulerPolicy
   {
   public:
 
@@ -399,8 +401,8 @@ namespace etl
   private:
 
     typedef etl::vector<etl::task*, MAX_TASKS> task_list_t;
-    task_list_t task_list;
+    task_list_t                                task_list;
   };
-}
+} // namespace etl
 
 #endif

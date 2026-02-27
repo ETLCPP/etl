@@ -4,27 +4,27 @@
 #include "etl/alignment.h"
 #include "etl/array.h"
 #include "etl/bitset.h"
+#include "etl/constant.h"
 #include "etl/container.h"
-#include "etl/crc8_ccitt.h"
 #include "etl/crc16.h"
 #include "etl/crc16_ccitt.h"
 #include "etl/crc16_kermit.h"
 #include "etl/crc32.h"
 #include "etl/crc64_ecma.h"
+#include "etl/crc8_ccitt.h"
 #include "etl/cyclic_value.h"
 #include "etl/deque.h"
+#include "etl/integral_limits.h"
 #include "etl/io_port.h"
-#include "etl/vector.h"
-#include "etl/variant.h"
 #include "etl/list.h"
 #include "etl/map.h"
-#include "etl/integral_limits.h"
-#include "etl/constant.h"
+#include "etl/variant.h"
+#include "etl/vector.h"
 
 #include <algorithm>
 
 #if !defined(ETL_COMPILER_IAR) & !defined(ETL_COMPILER_TI)
-#include "etl/stm32f4xx.h"
+  #include "etl/stm32f4xx.h"
 #endif
 
 #if defined(COMPILER_KEIL)
@@ -33,18 +33,18 @@
 #endif
 
 #if defined(COMPILER_IAR)
-#pragma diag_suppress = pe177
+  #pragma diag_suppress = pe177
 #endif
 
 struct Test
 {
   Test(int i, double d)
-    : i(i),
-      d(d)
+    : i(i)
+    , d(d)
   {
   }
 
-  int i;
+  int    i;
   double d;
 };
 
@@ -53,15 +53,15 @@ struct Test
 //*****************************************************************************
 void test_algorithm()
 {
-  int data[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-  int data2[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  int data3[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int                   data[]  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  int                   data2[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  int                   data3[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   std::pair<int*, int*> result1;
-  std::pair<int, int> result2;
-  int  x = 0;
-  int  y = 1;
-  int* p;
-  bool b;
+  std::pair<int, int>   result2;
+  int                   x = 0;
+  int                   y = 1;
+  int*                  p;
+  bool                  b;
 
   // minmax_element
   result1 = etl::minmax_element(etl::begin(data), etl::end(data));
@@ -116,17 +116,17 @@ void test_algorithm()
 //*****************************************************************************
 // alignment
 //*****************************************************************************
-etl::aligned_storage<100, 8>::type data9;
+etl::aligned_storage<100, 8>::type         data9;
 etl::aligned_storage_as<100, double>::type data10;
 
 void test_alignment()
 {
   int a = static_cast<int&>(data9);
 
-  etl::aligned_storage<1, 1>::type  data1;
-  etl::aligned_storage<1, 2>::type  data2;
-  etl::aligned_storage<1, 4>::type  data3;
-  etl::aligned_storage<1, 8>::type  data4;
+  etl::aligned_storage<1, 1>::type data1;
+  etl::aligned_storage<1, 2>::type data2;
+  etl::aligned_storage<1, 4>::type data3;
+  etl::aligned_storage<1, 8>::type data4;
 
   etl::aligned_storage_as<1, char>::type   data5;
   etl::aligned_storage_as<1, short>::type  data6;
@@ -168,9 +168,9 @@ void test_bitset()
   b65.set(4, true);
   b65.reset();
   b65.reset(37);
-  b65 = ~b65;
+  b65    = ~b65;
   bool b = b65[4];
-  b = b65[64];
+  b      = b65[64];
   b65.flip();
   b65.flip(5);
 
@@ -191,7 +191,7 @@ void test_bitset()
 //*****************************************************************************
 void test_crc()
 {
-  char data[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+  char data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
   uint8_t crc1 = etl::crc8_ccitt(etl::begin(data), etl::end(data));
   uint8_t crc2 = etl::crc8_ccitt(etl::begin(data), etl::end(data));
@@ -236,15 +236,15 @@ void test_cyclic_value()
   cv1   = cv2;
 
   bool b;
-  b	= cv1 == cv2;
+  b = cv1 == cv2;
   b = cv1 != cv2;
 }
 
 template <uintptr_t ADDRESS>
 struct serial_port
 {
-  etl::io_port_ro<uint8_t,  ADDRESS>     rxdata;
-  etl::io_port_wo<uint8_t,  ADDRESS + 1> txdata;
+  etl::io_port_ro<uint8_t, ADDRESS>      rxdata;
+  etl::io_port_wo<uint8_t, ADDRESS + 1>  txdata;
   etl::io_port_rw<uint16_t, ADDRESS + 2> control;
   etl::io_port_ro<uint16_t, ADDRESS + 4> status;
   etl::io_port_wos<uint8_t, ADDRESS + 6> control2;
@@ -253,11 +253,11 @@ struct serial_port
 struct dynamic_serial_port
 {
   dynamic_serial_port(uint8_t* base)
-    : rxdata(base),
-      txdata(base + 1),
-      control(base + 2),
-      status(base + 4),
-      control2(base + 6)
+    : rxdata(base)
+    , txdata(base + 1)
+    , control(base + 2)
+    , status(base + 4)
+    , control2(base + 6)
   {
   }
 
@@ -282,7 +282,7 @@ void test_io_port()
   port1.control2  = 0xDEU;
   int control2    = port1.control2;
 
-  uint8_t memory[7];
+  uint8_t             memory[7];
   dynamic_serial_port port2(memory);
 
   uint8_t rxdata2  = port2.rxdata;
@@ -302,10 +302,10 @@ void test_variant()
 
   Data data;
 
-  data = int(1);
+  data  = int(1);
   int i = data;
 
-  data = double(2.2);
+  data     = double(2.2);
   double d = data;
 
   data = Test(3, 3.3);
@@ -404,7 +404,7 @@ void test_constant()
 
   unsigned int i1 = C1::value;
 
-  C1 c1;
+  C1           c1;
   unsigned int i2 = c1.value;
 }
 

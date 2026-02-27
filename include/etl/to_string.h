@@ -34,10 +34,10 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "type_traits.h"
-#include "string.h"
 #include "format_spec.h"
 #include "private/to_string_helper.h"
+#include "string.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -144,6 +144,6 @@ namespace etl
 
     return str;
   }
-}
+} // namespace etl
 
 #endif

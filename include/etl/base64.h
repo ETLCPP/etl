@@ -27,27 +27,27 @@ SOFTWARE.
 #define ETL_BASE64_INCLUDED
 
 #include "platform.h"
-#include "static_assert.h"
-#include "exception.h"
-#include "error_handler.h"
-#include "type_traits.h"
 #include "enum_type.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "integral_limits.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include <stdint.h>
 
 /**************************************************************************************************************************************************************************
-* See https://en.wikipedia.org/wiki/Base64
-* 
-* Encoding	                                                Encoding characters	     Separate encoding of lines	                          Decoding non-encoding characters
-*                                                           62nd	63rd	Pad	         Separators	Length	                        Checksum
-* RFC 1421 : Base64 for Privacy - Enhanced Mail(deprecated)   +    /    = mandatory 	CR + LF	    64, or lower for the last line	No	    No
-* RFC 2045 : Base64 transfer encoding for MIME                +    /    = mandatory 	CR + LF	    At most 76	No	                        Discarded
-* RFC 2152 : Base64 for UTF - 7                               +    /    No	         No	                                                  No
-* RFC 3501 : Base64 encoding for IMAP mailbox names           +    ,    No	         No	                                                  No
-* RFC 4648 : base64(standard)[a]                              +    /    = optional 	 No	                                                  No
-* RFC 4648 : base64url(URL - and filename - safe standard)    -    _    = optional   No	                                                  No
-**************************************************************************************************************************************************************************/
+ * See https://en.wikipedia.org/wiki/Base64
+ *
+ * Encoding	                                                Encoding characters	     Separate encoding of lines	                          Decoding non-encoding characters
+ *                                                           62nd	63rd	Pad	         Separators	Length	                        Checksum
+ * RFC 1421 : Base64 for Privacy - Enhanced Mail(deprecated)   +    /    = mandatory 	CR + LF	    64, or lower for the last line	No	    No
+ * RFC 2045 : Base64 transfer encoding for MIME                +    /    = mandatory 	CR + LF	    At most 76	No	                        Discarded
+ * RFC 2152 : Base64 for UTF - 7                               +    /    No	         No	                                                  No
+ * RFC 3501 : Base64 encoding for IMAP mailbox names           +    ,    No	         No	                                                  No
+ * RFC 4648 : base64(standard)[a]                              +    /    = optional 	 No	                                                  No
+ * RFC 4648 : base64url(URL - and filename - safe standard)    -    _    = optional   No	                                                  No
+ **************************************************************************************************************************************************************************/
 
 namespace etl
 {
@@ -114,8 +114,8 @@ namespace etl
     {
       enum enum_type
       {
-        //RFC_1421, // Not implemented
-        //RFC_2045, // Not implemented
+        // RFC_1421, // Not implemented
+        // RFC_2045, // Not implemented
         RFC_2152,
         RFC_3501,
         RFC_4648,
@@ -125,8 +125,8 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Encoding, int)
-      //ETL_ENUM_TYPE(RFC_1421, "RFC_1421") // Not implemented
-      //ETL_ENUM_TYPE(RFC_2045, "RFC_2045") // Not implemented
+      // ETL_ENUM_TYPE(RFC_1421, "RFC_1421") // Not implemented
+      // ETL_ENUM_TYPE(RFC_2045, "RFC_2045") // Not implemented
       ETL_ENUM_TYPE(RFC_2152,             "RFC_2152")
       ETL_ENUM_TYPE(RFC_3501,             "RFC_3501")
       ETL_ENUM_TYPE(RFC_4648,             "RFC_4648")
@@ -166,7 +166,7 @@ namespace etl
 
     enum
     {
-      Invalid_Data = etl::integral_limits<int>::max,
+      Invalid_Data           = etl::integral_limits<int>::max,
       Min_Encode_Buffer_Size = 4,
       Min_Decode_Buffer_Size = 3
     };
@@ -184,9 +184,7 @@ namespace etl
     //*************************************************************************
     // Character set for RFC-1421, RFC-2045, RFC-2152 and RFC-4648
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    const char* character_set_1()
+    static ETL_CONSTEXPR14 const char* character_set_1()
     {
       return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     }
@@ -194,9 +192,7 @@ namespace etl
     //*************************************************************************
     // Character set for RFC-4648-URL
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    const char* character_set_2()
+    static ETL_CONSTEXPR14 const char* character_set_2()
     {
       return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
     }
@@ -204,9 +200,7 @@ namespace etl
     //*************************************************************************
     // Character set for RFC-3501-URL
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    const char* character_set_3()
+    static ETL_CONSTEXPR14 const char* character_set_3()
     {
       return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
     }
@@ -214,5 +208,5 @@ namespace etl
     const char* encoder_table;
     const bool  use_padding;
   };
-}
+} // namespace etl
 #endif

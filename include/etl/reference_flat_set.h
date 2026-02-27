@@ -33,16 +33,15 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "iterator.h"
-#include "functional.h"
-#include "utility.h"
-#include "type_traits.h"
-#include "nth_type.h"
-#include "pool.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "vector.h"
+#include "functional.h"
 #include "iterator.h"
+#include "nth_type.h"
+#include "pool.h"
+#include "type_traits.h"
+#include "utility.h"
+#include "vector.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -139,59 +138,59 @@ namespace etl
       {
       }
 
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
         ilookup = other.ilookup;
         return *this;
       }
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         ++ilookup;
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         ++ilookup;
         return temp;
       }
 
-      iterator& operator --()
+      iterator& operator--()
       {
         --ilookup;
         return *this;
       }
 
-      iterator operator --(int)
+      iterator operator--(int)
       {
         iterator temp(*this);
         --ilookup;
         return temp;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
         return *(*ilookup);
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return etl::addressof(*(*ilookup));
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return etl::addressof(*(*ilookup));
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.ilookup == rhs.ilookup;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -227,65 +226,65 @@ namespace etl
       {
       }
 
-      const_iterator& operator =(const iterator& other)
+      const_iterator& operator=(const iterator& other)
       {
         ilookup = other.ilookup;
         return *this;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         ilookup = other.ilookup;
         return *this;
       }
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         ++ilookup;
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         ++ilookup;
         return temp;
       }
 
-      const_iterator& operator --()
+      const_iterator& operator--()
       {
         --ilookup;
         return *this;
       }
 
-      const_iterator operator --(int)
+      const_iterator operator--(int)
       {
         const_iterator temp(*this);
         --ilookup;
         return temp;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return *(*ilookup);
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return etl::addressof(*(*ilookup));
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return etl::addressof(*(*ilookup));
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.ilookup == rhs.ilookup;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -301,8 +300,8 @@ namespace etl
 
   public:
 
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
     //*********************************************************************
@@ -877,7 +876,7 @@ namespace etl
         ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_set_full));
 
         lookup.push_back(&value);
-        result.first = --end();
+        result.first  = --end();
         result.second = true;
       }
       else
@@ -902,7 +901,7 @@ namespace etl
 
     // Disable copy construction.
     ireference_flat_set(const ireference_flat_set&);
-    ireference_flat_set& operator =(const ireference_flat_set&);
+    ireference_flat_set& operator=(const ireference_flat_set&);
 
     lookup_t& lookup;
 
@@ -912,12 +911,16 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_REFERENCE_FLAT_SET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~ireference_flat_set()
     {
     }
 #else
+
   protected:
+
     ~ireference_flat_set()
     {
     }
@@ -999,7 +1002,7 @@ namespace etl
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_reference_flat_set(T&&... keys) -> etl::reference_flat_set<TKey, sizeof...(T), TKeyCompare>
   {
-    return { etl::forward<T>(keys)... };
+    return {etl::forward<T>(keys)...};
   }
 #endif
 
@@ -1011,7 +1014,7 @@ namespace etl
   ///\ingroup reference_flat_set
   //***************************************************************************
   template <typename T, typename TKeyCompare>
-  bool operator ==(const etl::ireference_flat_set<T, TKeyCompare>& lhs, const etl::ireference_flat_set<T, TKeyCompare>& rhs)
+  bool operator==(const etl::ireference_flat_set<T, TKeyCompare>& lhs, const etl::ireference_flat_set<T, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -1024,10 +1027,10 @@ namespace etl
   ///\ingroup reference_flat_set
   //***************************************************************************
   template <typename T, typename TKeyCompare>
-  bool operator !=(const etl::ireference_flat_set<T, TKeyCompare>& lhs, const etl::ireference_flat_set<T, TKeyCompare>& rhs)
+  bool operator!=(const etl::ireference_flat_set<T, TKeyCompare>& lhs, const etl::ireference_flat_set<T, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
-}
+} // namespace etl
 
 #endif

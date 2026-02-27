@@ -28,15 +28,15 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <string>
+#include <algorithm>
 #include <list>
 #include <queue>
-#include <algorithm>
+#include <string>
 
 #include "etl/iterator.h"
 
-#include "iterators_for_unit_tests.h"
 #include "data.h"
+#include "iterators_for_unit_tests.h"
 
 namespace
 {
@@ -44,34 +44,29 @@ namespace
 
   struct input : public etl::iterator<ETL_OR_STD::input_iterator_tag, int>
   {
-
   };
 
   struct output : public etl::iterator<ETL_OR_STD::output_iterator_tag, int>
   {
-
   };
 
   struct forward : public etl::iterator<ETL_OR_STD::forward_iterator_tag, int>
   {
-
   };
 
   struct bidirectional : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, int>
   {
-
   };
 
   struct random : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, int>
   {
-
   };
 
-  typedef int* pointer;
+  typedef int*       pointer;
   typedef const int* const_pointer;
 
-  const size_t SIZE = 10UL;
-  int dataA[SIZE] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+  const size_t SIZE        = 10UL;
+  int          dataA[SIZE] = {2, 1, 4, 3, 6, 5, 8, 7, 10, 9};
 
   SUITE(test_iterator)
   {
@@ -96,7 +91,7 @@ namespace
     //*************************************************************************
     TEST(advance_non_random)
     {
-      int* itr1 = std::begin(dataA);
+      int*                     itr1 = std::begin(dataA);
       non_random_iterator<int> itr2 = std::begin(dataA);
 
       std::advance(itr1, 4);
@@ -111,7 +106,7 @@ namespace
     //*************************************************************************
     TEST(advance_random)
     {
-      int* itr1 = std::begin(dataA);
+      int*                 itr1 = std::begin(dataA);
       random_iterator<int> itr2 = std::begin(dataA);
 
       std::advance(itr1, 4);
@@ -126,7 +121,7 @@ namespace
     //*************************************************************************
     TEST(prev)
     {
-      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       size_t length = 6UL;
 
@@ -141,7 +136,7 @@ namespace
     //*************************************************************************
     TEST(next)
     {
-      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       size_t length = 6UL;
 
@@ -156,7 +151,7 @@ namespace
     //*************************************************************************
     TEST(reverse_iterator)
     {
-      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       std::reverse_iterator<int*> sri(&data[7]);
       etl::reverse_iterator<int*> eri(&data[7]);
@@ -203,7 +198,7 @@ namespace
       eri -= 2;
       CHECK_EQUAL(*sri, *eri);
 
-      std::reverse_iterator<int*>    sri2 = sri + 3;
+      std::reverse_iterator<int*> sri2 = sri + 3;
       etl::reverse_iterator<int*> eri2 = eri + 3;
       CHECK_EQUAL(*sri, *eri);
 
@@ -215,7 +210,7 @@ namespace
     //*************************************************************************
     TEST(reverse_iterator_const)
     {
-      const int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      const int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       std::reverse_iterator<const int*> sri(&data[7]);
       etl::reverse_iterator<const int*> eri(&data[7]);
@@ -270,7 +265,7 @@ namespace
       eri -= 2;
       CHECK_EQUAL(*sri, *eri);
 
-      std::reverse_iterator<const int*>    sri2 = sri + 3;
+      std::reverse_iterator<const int*> sri2 = sri + 3;
       etl::reverse_iterator<const int*> eri2 = eri + 3;
       CHECK_EQUAL(*sri, *eri);
 
@@ -394,7 +389,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_constructors)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr1(&list[0]);
       etl::move_iterator<Item*> mitr2(&list[1]);
@@ -413,7 +408,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_relational_operators)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr1(&list[0]);
       etl::move_iterator<Item*> mitr2(&list[1]);
@@ -466,7 +461,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_index)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr(&list[0]);
 
@@ -477,7 +472,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_increment_decrement)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr(&list[0]);
 
@@ -517,7 +512,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_subtraction)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr1(&list[0]);
       etl::move_iterator<Item*> mitr2(&list[1]);
@@ -530,8 +525,8 @@ namespace
     //*************************************************************************
     TEST(test_front_insert_iterator)
     {
-      std::list<int> input    = {  0,  1,  2,  3,  4,  5, 6, 7, 8, 9 };
-      std::list<int> expected = { 81, 64, 49, 36, 25, 16, 9, 4, 1, 0 };
+      std::list<int> input    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      std::list<int> expected = {81, 64, 49, 36, 25, 16, 9, 4, 1, 0};
       std::list<int> output;
 
       auto squared = [](int value)
@@ -548,11 +543,11 @@ namespace
     //*************************************************************************
     TEST(test_back_insert_iterator)
     {
-      std::list<int> input    = { 0, 1, 2, 3,  4,  5,  6,  7,  8,  9 };
-      std::list<int> expected = { 0, 1, 4, 9, 16, 25, 36, 49, 64, 81 };
+      std::list<int> input    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      std::list<int> expected = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};
       std::list<int> output;
 
-      auto squared = [](int value) 
+      auto squared = [](int value)
       {
         return value * value;
       };
@@ -564,7 +559,7 @@ namespace
     }
 
     //*************************************************************************
-    //TEST(test_push_insert_iterator)
+    // TEST(test_push_insert_iterator)
     //{
     //  std::list<int> input = { 0, 1, 2, 3,  4,  5,  6,  7,  8,  9 };
     //  std::list<int> expected = { 0, 1, 4, 9, 16, 25, 36, 49, 64, 81 };
@@ -581,4 +576,4 @@ namespace
     //  CHECK(std::equal(output.begin(), output.end(), expected.begin()));
     //}
   }
-}
+} // namespace

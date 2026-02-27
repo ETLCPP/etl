@@ -81,10 +81,10 @@ namespace etl
       static constexpr size_t value = index_of_type_helper<T, TTypes...>::value - 1;
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t index_of_type_v = index_of_type<T>::value;
-#endif
+  #endif
 
     //***************************************************************************
     /// type_from_index
@@ -129,22 +129,22 @@ namespace etl
   template <typename... TTypes>
   constexpr size_t parameter_pack<TTypes...>::size;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename T, typename... TTypes>
   inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
-#endif
+  #endif
 
-#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER && !ETL_USING_CLANG_COMPILER
+  #if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER && !ETL_USING_CLANG_COMPILER
   //***********************************
   template <typename... TTypes>
   template <typename T>
   constexpr size_t parameter_pack<TTypes...>::template index_of_type<T>::value;
-#else
+  #else
   //***********************************
   template <typename... TTypes>
   template <typename T>
   constexpr size_t parameter_pack<TTypes...>::index_of_type<T>::value;
-#endif
-}
+  #endif
+} // namespace etl
 #endif
 #endif

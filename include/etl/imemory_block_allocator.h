@@ -121,15 +121,15 @@ namespace etl
   protected:
 
     virtual void* allocate_block(size_t required_size, size_t required_alignment) = 0;
-    virtual bool release_block(const void* const) = 0;
-    virtual bool is_owner_of_block(const void* const) const = 0;
+    virtual bool  release_block(const void* const)                                = 0;
+    virtual bool  is_owner_of_block(const void* const) const                      = 0;
 
   private:
 
     // No copying allowed.
     imemory_block_allocator(const etl::imemory_block_allocator&) ETL_DELETE;
-    imemory_block_allocator& operator =(const imemory_block_allocator&) ETL_DELETE;
+    imemory_block_allocator& operator=(const imemory_block_allocator&) ETL_DELETE;
   };
-}
+} // namespace etl
 
 #endif

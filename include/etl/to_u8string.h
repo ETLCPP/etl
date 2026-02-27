@@ -34,10 +34,10 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "type_traits.h"
-#include "u8string.h"
-#include "u8format_spec.h"
 #include "private/to_string_helper.h"
+#include "type_traits.h"
+#include "u8format_spec.h"
+#include "u8string.h"
 
 namespace etl
 {
@@ -88,7 +88,6 @@ namespace etl
   {
     return private_to_string::to_string(value, denominator_exponent, str, format, append);
   }
-
 
   //***************************************************************************
   /// Default format spec.
@@ -145,6 +144,6 @@ namespace etl
 
     return str;
   }
-}
+} // namespace etl
 
 #endif

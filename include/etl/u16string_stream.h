@@ -34,11 +34,11 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "u16string.h"
-#include "u16format_spec.h"
-#include "to_u16string.h"
-#include "string_view.h"
 #include "basic_string_stream.h"
+#include "string_view.h"
+#include "to_u16string.h"
+#include "u16format_spec.h"
+#include "u16string.h"
 
 namespace etl
 {

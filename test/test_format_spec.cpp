@@ -28,14 +28,14 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <iomanip>
 #include <ostream>
 #include <sstream>
-#include <iomanip>
 
 #include "etl/format_spec.h"
-#include "etl/wformat_spec.h"
 #include "etl/u16format_spec.h"
 #include "etl/u32format_spec.h"
+#include "etl/wformat_spec.h"
 
 namespace
 {
@@ -46,13 +46,13 @@ namespace
     {
       etl::format_spec format;
 
-      CHECK_EQUAL(10,    format.get_base());
-      CHECK_EQUAL(' ',   format.get_fill());
-      CHECK_EQUAL(0,     format.get_precision());
-      CHECK_EQUAL(0,     format.get_width());
+      CHECK_EQUAL(10, format.get_base());
+      CHECK_EQUAL(' ', format.get_fill());
+      CHECK_EQUAL(0, format.get_precision());
+      CHECK_EQUAL(0, format.get_width());
       CHECK_EQUAL(false, format.is_boolalpha());
       CHECK_EQUAL(false, format.is_left());
-      CHECK_EQUAL(true,  format.is_right());
+      CHECK_EQUAL(true, format.is_right());
       CHECK_EQUAL(false, format.is_show_base());
       CHECK_EQUAL(false, format.is_upper_case());
     }
@@ -80,18 +80,18 @@ namespace
 
       format.base(16).boolalpha(true).fill('?').left().precision(6).show_base(true).upper_case(true).width(10);
 
-      CHECK_EQUAL(16,    format.get_base());
-      CHECK_EQUAL('?',   format.get_fill());
-      CHECK_EQUAL(6,     format.get_precision());
-      CHECK_EQUAL(10,    format.get_width());
-      CHECK_EQUAL(true,  format.is_boolalpha());
-      CHECK_EQUAL(true,  format.is_left());
+      CHECK_EQUAL(16, format.get_base());
+      CHECK_EQUAL('?', format.get_fill());
+      CHECK_EQUAL(6, format.get_precision());
+      CHECK_EQUAL(10, format.get_width());
+      CHECK_EQUAL(true, format.is_boolalpha());
+      CHECK_EQUAL(true, format.is_left());
       CHECK_EQUAL(false, format.is_right());
-      CHECK_EQUAL(true,  format.is_show_base());
-      CHECK_EQUAL(true,  format.is_upper_case());
+      CHECK_EQUAL(true, format.is_show_base());
+      CHECK_EQUAL(true, format.is_upper_case());
     }
 
-        //*************************************************************************
+    //*************************************************************************
 #if ETL_USING_CPP11
     TEST(test_format_rvalue_ref_qualifiers)
     {
@@ -106,15 +106,15 @@ namespace
                       .upper_case(true)
                       .width(8);
 
-      CHECK_EQUAL(16,    format.get_base());
-      CHECK_EQUAL('*',   format.get_fill());
-      CHECK_EQUAL(3,     format.get_precision());
-      CHECK_EQUAL(8,     format.get_width());
-      CHECK_EQUAL(true,  format.is_boolalpha());
-      CHECK_EQUAL(true,  format.is_left());
+      CHECK_EQUAL(16, format.get_base());
+      CHECK_EQUAL('*', format.get_fill());
+      CHECK_EQUAL(3, format.get_precision());
+      CHECK_EQUAL(8, format.get_width());
+      CHECK_EQUAL(true, format.is_boolalpha());
+      CHECK_EQUAL(true, format.is_left());
       CHECK_EQUAL(false, format.is_right());
-      CHECK_EQUAL(true,  format.is_show_base());
-      CHECK_EQUAL(true,  format.is_upper_case());
+      CHECK_EQUAL(true, format.is_show_base());
+      CHECK_EQUAL(true, format.is_upper_case());
     }
 
     //*************************************************************************
@@ -122,16 +122,16 @@ namespace
     {
       // Test chaining on lvalue
       etl::format_spec format;
-      
+
       format.hex().boolalpha(true).fill('#').right().precision(5).show_base(false).upper_case(false).width(12);
 
-      CHECK_EQUAL(16,    format.get_base());
-      CHECK_EQUAL('#',   format.get_fill());
-      CHECK_EQUAL(5,     format.get_precision());
-      CHECK_EQUAL(12,    format.get_width());
-      CHECK_EQUAL(true,  format.is_boolalpha());
+      CHECK_EQUAL(16, format.get_base());
+      CHECK_EQUAL('#', format.get_fill());
+      CHECK_EQUAL(5, format.get_precision());
+      CHECK_EQUAL(12, format.get_width());
+      CHECK_EQUAL(true, format.is_boolalpha());
       CHECK_EQUAL(false, format.is_left());
-      CHECK_EQUAL(true,  format.is_right());
+      CHECK_EQUAL(true, format.is_right());
       CHECK_EQUAL(false, format.is_show_base());
       CHECK_EQUAL(false, format.is_upper_case());
     }
@@ -166,13 +166,13 @@ namespace
     {
       // Create as rvalue, then use as lvalue
       auto format = etl::format_spec().hex().width(8);
-      
+
       // Continue chaining on lvalue
       format.fill('0').upper_case(true).show_base(true);
 
-      CHECK_EQUAL(16,   format.get_base());
-      CHECK_EQUAL('0',  format.get_fill());
-      CHECK_EQUAL(8,    format.get_width());
+      CHECK_EQUAL(16, format.get_base());
+      CHECK_EQUAL('0', format.get_fill());
+      CHECK_EQUAL(8, format.get_width());
       CHECK_EQUAL(true, format.is_upper_case());
       CHECK_EQUAL(true, format.is_show_base());
     }
@@ -194,17 +194,16 @@ namespace
       constexpr bool show_base  = format.is_show_base();
       constexpr bool upper_case = format.is_upper_case();
 
-      CHECK_EQUAL(16,    base);
-      CHECK_EQUAL('?',   fill);
-      CHECK_EQUAL(6,     precision);
-      CHECK_EQUAL(10,    width);
-      CHECK_EQUAL(true,  boolalpha);
-      CHECK_EQUAL(true,  left);
+      CHECK_EQUAL(16, base);
+      CHECK_EQUAL('?', fill);
+      CHECK_EQUAL(6, precision);
+      CHECK_EQUAL(10, width);
+      CHECK_EQUAL(true, boolalpha);
+      CHECK_EQUAL(true, left);
       CHECK_EQUAL(false, right);
-      CHECK_EQUAL(true,  show_base);
-      CHECK_EQUAL(true,  upper_case);
+      CHECK_EQUAL(true, show_base);
+      CHECK_EQUAL(true, upper_case);
     }
 #endif
   }
-}
-
+} // namespace

@@ -35,10 +35,10 @@ SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <forward_list>
-#include <vector>
-#include <string>
-#include <list>
 #include <functional>
+#include <list>
+#include <string>
+#include <vector>
 
 namespace
 {
@@ -51,21 +51,21 @@ namespace
 
     typedef etl::forward_list_ext<ItemDC>  DataDC;
     typedef etl::forward_list_ext<ItemNDC> DataNDC;
-    typedef etl::iforward_list<ItemNDC>   IDataNDC;
+    typedef etl::iforward_list<ItemNDC>    IDataNDC;
 
     typedef etl::forward_list_ext<int> DataInt;
 
-    typedef std::forward_list<ItemDC> CompareDataDC;
+    typedef std::forward_list<ItemDC>  CompareDataDC;
     typedef std::forward_list<ItemNDC> CompareDataNDC;
-    typedef std::vector<ItemNDC> InitialDataNDC;
+    typedef std::vector<ItemNDC>       InitialDataNDC;
 
     typedef etl::pool<DataInt::pool_type, SIZE * 2> PoolInt2;
 
-    typedef etl::pool<DataDC::pool_type, SIZE> PoolDC;
+    typedef etl::pool<DataDC::pool_type, SIZE>     PoolDC;
     typedef etl::pool<DataDC::pool_type, SIZE * 2> PoolDC2;
     typedef etl::pool<DataDC::pool_type, SIZE * 4> PoolDC4;
 
-    typedef etl::pool<DataNDC::pool_type, SIZE> PoolNDC;
+    typedef etl::pool<DataNDC::pool_type, SIZE>     PoolNDC;
     typedef etl::pool<DataNDC::pool_type, SIZE * 2> PoolNDC2;
     typedef etl::pool<DataNDC::pool_type, SIZE * 4> PoolNDC4;
 
@@ -82,11 +82,11 @@ namespace
     {
       SetupFixture()
       {
-        stable_sort_data = { ItemNDC("1", 1), ItemNDC("2", 2), ItemNDC("3", 3), ItemNDC("2", 4), ItemNDC("0", 5), ItemNDC("2", 6), ItemNDC("7", 7), ItemNDC("4", 8), ItemNDC("4", 9), ItemNDC("8", 10) };
-        unsorted_data    = { ItemNDC("1"), ItemNDC("0"), ItemNDC("3"), ItemNDC("2"), ItemNDC("5"), ItemNDC("4"), ItemNDC("7"), ItemNDC("6"), ItemNDC("9"), ItemNDC("8") };
-        sorted_data      = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9") };
-        non_unique_data  = { ItemNDC("0"), ItemNDC("0"), ItemNDC("1"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
-        small_data       = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5") };
+        stable_sort_data = {ItemNDC("1", 1), ItemNDC("2", 2), ItemNDC("3", 3), ItemNDC("2", 4), ItemNDC("0", 5), ItemNDC("2", 6), ItemNDC("7", 7), ItemNDC("4", 8), ItemNDC("4", 9), ItemNDC("8", 10)};
+        unsorted_data    = {ItemNDC("1"), ItemNDC("0"), ItemNDC("3"), ItemNDC("2"), ItemNDC("5"), ItemNDC("4"), ItemNDC("7"), ItemNDC("6"), ItemNDC("9"), ItemNDC("8")};
+        sorted_data      = {ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9")};
+        non_unique_data  = {ItemNDC("0"), ItemNDC("0"), ItemNDC("1"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("3"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5")};
+        small_data       = {ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4"), ItemNDC("5")};
       }
     };
 
@@ -118,10 +118,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
-      PoolDC pool;
+      PoolDC       pool;
       const size_t INITIAL_SIZE = 4UL;
-      DataDC data1(INITIAL_SIZE, pool);
-      DataDC data2(INITIAL_SIZE, pool);
+      DataDC       data1(INITIAL_SIZE, pool);
+      DataDC       data2(INITIAL_SIZE, pool);
 
       CHECK(!data1.empty());
       CHECK(!data2.empty());
@@ -144,11 +144,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      PoolNDC pool;
-      const size_t INITIAL_SIZE = 4UL;
+      PoolNDC       pool;
+      const size_t  INITIAL_SIZE = 4UL;
       const ItemNDC INITIAL_VALUE("1");
 
-      std::array<ItemNDC, INITIAL_SIZE> compare_data = { ItemNDC("1"), ItemNDC("1"), ItemNDC("1"), ItemNDC("1") };
+      std::array<ItemNDC, INITIAL_SIZE> compare_data = {ItemNDC("1"), ItemNDC("1"), ItemNDC("1"), ItemNDC("1")};
 
       DataNDC data1(INITIAL_SIZE, INITIAL_VALUE, pool);
       DataNDC data2(INITIAL_SIZE, INITIAL_VALUE, pool);
@@ -166,10 +166,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
-      PoolNDC pool;
+      PoolNDC        pool;
       CompareDataNDC compare(sorted_data.begin(), sorted_data.end());
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       CHECK(!data1.empty());
       CHECK(!data2.empty());
@@ -185,10 +185,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
-      PoolNDC pool;
-      CompareDataNDC compare = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3") };
-      DataNDC data1({ ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3") }, pool);
-      DataNDC data2({ ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3") }, pool);
+      PoolNDC        pool;
+      CompareDataNDC compare = {ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3")};
+      DataNDC        data1({ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3")}, pool);
+      DataNDC        data2({ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3")}, pool);
 
       CHECK(!data1.empty());
       CHECK(!data2.empty());
@@ -205,7 +205,7 @@ namespace
     TEST(test_destruct_via_iforward_list)
     {
       PoolNDC pool;
-      int current_count = ItemNDC::get_instance_count();
+      int     current_count = ItemNDC::get_instance_count();
 
       DataNDC* pdata1 = new DataNDC(sorted_data.begin(), sorted_data.end(), pool);
       CHECK_EQUAL(int(current_count + sorted_data.size()), ItemNDC::get_instance_count());
@@ -226,10 +226,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor_implicit_pool)
     {
       PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), pool);
-      DataNDC other_data1(data1);
-      DataNDC other_data2(data2);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(unsorted_data.begin(), unsorted_data.end(), pool);
+      DataNDC  other_data1(data1);
+      DataNDC  other_data2(data2);
 
       CHECK(std::equal(data1.begin(), data1.end(), other_data1.begin()));
       CHECK(std::equal(data2.begin(), data2.end(), other_data2.begin()));
@@ -239,10 +239,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor_explicit_pool)
     {
       PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), pool);
-      DataNDC other_data1(data1, pool);
-      DataNDC other_data2(data2, pool);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(unsorted_data.begin(), unsorted_data.end(), pool);
+      DataNDC  other_data1(data1, pool);
+      DataNDC  other_data2(data2, pool);
 
       CHECK(std::equal(data1.begin(), data1.end(), other_data1.begin()));
       CHECK(std::equal(data2.begin(), data2.end(), other_data2.begin()));
@@ -252,10 +252,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_move_constructor_implicit_pool)
     {
       PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
-      DataNDC other_data1(std::move(data1));
-      DataNDC other_data2(std::move(data2));
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
+      DataNDC  other_data1(std::move(data1));
+      DataNDC  other_data2(std::move(data2));
 
       CHECK_EQUAL(0U, data1.size());
       CHECK(data1.empty());
@@ -278,10 +278,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_move_constructor_explicit_pool)
     {
       PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
-      DataNDC other_data1(std::move(data1), pool);
-      DataNDC other_data2(std::move(data2), pool);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
+      DataNDC  other_data1(std::move(data1), pool);
+      DataNDC  other_data2(std::move(data2), pool);
 
       CHECK_EQUAL(0U, data1.size());
       CHECK(data1.empty());
@@ -307,8 +307,8 @@ namespace
 
       CompareDataNDC compare_data1(sorted_data.begin(), sorted_data.end());
       CompareDataNDC compare_data2(unsorted_data.begin(), unsorted_data.end());
-      DataNDC data1(compare_data1.begin(), compare_data1.end(), pool);
-      DataNDC data2(compare_data2.begin(), compare_data2.end(), pool);
+      DataNDC        data1(compare_data1.begin(), compare_data1.end(), pool);
+      DataNDC        data2(compare_data2.begin(), compare_data2.end(), pool);
 
       are_equal = std::equal(data1.begin(), data1.end(), compare_data1.begin());
       CHECK(are_equal);
@@ -324,8 +324,8 @@ namespace
 
       CompareDataNDC compare_data1(sorted_data.begin(), sorted_data.end());
       CompareDataNDC compare_data2(unsorted_data.begin(), unsorted_data.end());
-      const DataNDC data1(compare_data1.begin(), compare_data1.end(), pool);
-      const DataNDC data2(compare_data2.begin(), compare_data2.end(), pool);
+      const DataNDC  data1(compare_data1.begin(), compare_data1.end(), pool);
+      const DataNDC  data2(compare_data2.begin(), compare_data2.end(), pool);
 
       are_equal = std::equal(data1.begin(), data1.end(), compare_data1.begin());
       CHECK(are_equal);
@@ -340,7 +340,7 @@ namespace
       PoolNDC2 pool;
 
       const size_t INITIAL_SIZE = 4UL;
-      const size_t NEW_SIZE = 8UL;
+      const size_t NEW_SIZE     = 8UL;
       const ItemDC VALUE1("1");
       const ItemDC VALUE2("2");
 
@@ -371,8 +371,8 @@ namespace
     {
       PoolNDC2 pool;
 
-      const size_t INITIAL_SIZE = 4UL;
-      const size_t NEW_SIZE     = 8UL;
+      const size_t  INITIAL_SIZE = 4UL;
+      const size_t  NEW_SIZE     = 8UL;
       const ItemNDC VALUE1("1");
       const ItemNDC VALUE2("2");
 
@@ -404,8 +404,8 @@ namespace
       PoolNDC2 pool;
 
       const size_t INITIAL_SIZE = 4UL;
-      DataDC data1(INITIAL_SIZE, pool);
-      DataDC data2(INITIAL_SIZE, pool);
+      DataDC       data1(INITIAL_SIZE, pool);
+      DataDC       data2(INITIAL_SIZE, pool);
 
       CHECK_THROW(data1.resize(data1.max_size() + 1), etl::forward_list_full);
       CHECK_THROW(data2.resize(data2.max_size() + 1), etl::forward_list_full);
@@ -417,7 +417,7 @@ namespace
       PoolNDC2 pool;
 
       const size_t INITIAL_SIZE = 4UL;
-      const size_t NEW_SIZE = 2UL;
+      const size_t NEW_SIZE     = 2UL;
       const ItemDC VALUE1("1");
       const ItemDC VALUE2("2");
 
@@ -446,9 +446,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
-      PoolNDC2 pool;
-      const size_t INITIAL_SIZE = 4UL;
-      const size_t NEW_SIZE = 2UL;
+      PoolNDC2      pool;
+      const size_t  INITIAL_SIZE = 4UL;
+      const size_t  NEW_SIZE     = 2UL;
       const ItemNDC VALUE1("1");
       const ItemNDC VALUE2("2");
 
@@ -505,8 +505,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_clear_pod)
     {
       PoolInt2 pool;
-      DataInt data1(SIZE, 1, pool);
-      DataInt data2(SIZE, 2, pool);
+      DataInt  data1(SIZE, 1, pool);
+      DataInt  data2(SIZE, 2, pool);
 
       data1.clear();
       CHECK(data1.empty());
@@ -532,8 +532,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assign_range)
     {
       PoolNDC2 pool;
-      DataNDC data1(SIZE, ItemNDC("1"), pool);
-      DataNDC data2(SIZE, ItemNDC("2"), pool);
+      DataNDC  data1(SIZE, ItemNDC("1"), pool);
+      DataNDC  data2(SIZE, ItemNDC("2"), pool);
 
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
 
@@ -563,14 +563,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 4UL;
+      const size_t  INITIAL_SIZE = 4UL;
       const ItemNDC VALUE0("0");
       const ItemNDC VALUE1("1");
       const ItemNDC VALUE2("2");
 
       PoolNDC2 pool;
-      DataNDC data1(SIZE, VALUE0, pool);
-      DataNDC data2(SIZE, VALUE0, pool);
+      DataNDC  data1(SIZE, VALUE0, pool);
+      DataNDC  data2(SIZE, VALUE0, pool);
 
       CompareDataNDC compare_data1(INITIAL_SIZE, VALUE1);
       CompareDataNDC compare_data2(INITIAL_SIZE, VALUE2);
@@ -606,15 +606,15 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_after_position_value)
     {
-      const size_t INITIAL_SIZE = 4UL;
+      const size_t  INITIAL_SIZE = 4UL;
       const ItemNDC VALUE("1");
       const ItemNDC INSERT_VALUE("2");
 
       CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
 
       PoolNDC2 pool;
-      DataNDC data1(INITIAL_SIZE, VALUE, pool);
-      DataNDC data2(INITIAL_SIZE, VALUE, pool);
+      DataNDC  data1(INITIAL_SIZE, VALUE, pool);
+      DataNDC  data2(INITIAL_SIZE, VALUE, pool);
 
       size_t offset = 2UL;
 
@@ -668,14 +668,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_after_position_size_value)
     {
-      const size_t INITIAL_SIZE = 4UL;
+      const size_t  INITIAL_SIZE = 4UL;
       const ItemNDC VALUE("1");
       const ItemNDC INSERT_VALUE("2");
 
       CompareDataNDC compare_data(INITIAL_SIZE, VALUE);
-      PoolNDC2 pool;
-      DataNDC data1(INITIAL_SIZE, VALUE, pool);
-      DataNDC data2(INITIAL_SIZE, VALUE, pool);
+      PoolNDC2       pool;
+      DataNDC        data1(INITIAL_SIZE, VALUE, pool);
+      DataNDC        data2(INITIAL_SIZE, VALUE, pool);
 
       size_t offset = 2UL;
 
@@ -729,13 +729,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_after_range)
     {
-      std::vector<ItemNDC> test1 = { ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4") };
-      std::vector<ItemNDC> test2 = { ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9") };
+      std::vector<ItemNDC> test1 = {ItemNDC("0"), ItemNDC("1"), ItemNDC("2"), ItemNDC("3"), ItemNDC("4")};
+      std::vector<ItemNDC> test2 = {ItemNDC("5"), ItemNDC("6"), ItemNDC("7"), ItemNDC("8"), ItemNDC("9")};
 
       CompareDataNDC compare_data(test1.begin(), test1.end());
-      PoolNDC2 pool;
-      DataNDC data1(test1.begin(), test1.end(), pool);
-      DataNDC data2(test1.begin(), test1.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(test1.begin(), test1.end(), pool);
+      DataNDC        data2(test1.begin(), test1.end(), pool);
 
       compare_data.insert_after(compare_data.before_begin(), test2.begin(), test2.end());
       data1.insert_after(data1.before_begin(), test2.begin(), test2.end());
@@ -754,8 +754,8 @@ namespace
       data2.assign(test1.begin(), test1.end());
 
       CompareDataNDC::iterator icd = compare_data.begin();
-      DataNDC::iterator         id1 = data1.begin();
-      DataNDC::iterator         id2 = data2.begin();
+      DataNDC::iterator        id1 = data1.begin();
+      DataNDC::iterator        id2 = data2.begin();
 
       std::advance(icd, 3);
       std::advance(id1, 3);
@@ -779,9 +779,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_push_front)
     {
       CompareDataNDC compare_data;
-      PoolNDC2 pool;
-      DataNDC data1(pool);
-      DataNDC data2(pool);
+      PoolNDC2       pool;
+      DataNDC        data1(pool);
+      DataNDC        data2(pool);
 
       compare_data.push_front(ItemNDC("1"));
       compare_data.push_front(ItemNDC("2"));
@@ -825,9 +825,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_front)
     {
       CompareDataNDC compare_data;
-      PoolNDC2 pool;
-      DataNDC data1(pool);
-      DataNDC data2(pool);
+      PoolNDC2       pool;
+      DataNDC        data1(pool);
+      DataNDC        data2(pool);
 
       compare_data.emplace_front("1");
       compare_data.emplace_front("2");
@@ -871,9 +871,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_after)
     {
       CompareDataNDC compare_data;
-      PoolNDC2 pool;
-      DataNDC data1(pool);
-      DataNDC data2(pool);
+      PoolNDC2       pool;
+      DataNDC        data1(pool);
+      DataNDC        data2(pool);
 
       CompareDataNDC::iterator itc;
 
@@ -933,7 +933,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_front_const)
     {
-      PoolNDC2 pool;
+      PoolNDC2      pool;
       const DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       const DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
 
@@ -944,7 +944,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_before_begin_const)
     {
-      PoolNDC2 pool;
+      PoolNDC2      pool;
       const DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       const DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
 
@@ -1048,9 +1048,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_single)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       DataNDC::iterator i_data1 = data1.begin();
       std::advance(i_data1, 2);
@@ -1095,15 +1095,14 @@ namespace
       are_equal = *i_data2 == *i_compare_data;
       CHECK(are_equal);
 
-
       // Move to the last value and erase.
       i_compare_data = compare_data.begin();
-      //std::advance(i_compare_data, compare_data.size() - 1);
+      // std::advance(i_compare_data, compare_data.size() - 1);
       i_compare_data = compare_data.erase_after(i_compare_data);
 
       i_data1 = data1.begin();
       i_data2 = data2.begin();
-      //std::advance(i_data, data.size() - 1);
+      // std::advance(i_data, data.size() - 1);
       i_data1 = data1.erase_after(i_data1);
       i_data2 = data2.erase_after(i_data2);
 
@@ -1127,9 +1126,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_range)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       DataNDC::iterator i_data1_1 = data1.begin();
       std::advance(i_data1_1, 2);
@@ -1171,9 +1170,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_range_end)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       DataNDC::iterator i_data1 = data1.begin();
       std::advance(i_data1, 4);
@@ -1206,8 +1205,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_after_all)
     {
       PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(sorted_data.begin(), sorted_data.end(), pool);
 
       data1.erase_after(data1.before_begin(), data1.end());
 
@@ -1224,9 +1223,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_front)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       CHECK_EQUAL(compare_data.front(), data1.front());
       CHECK_EQUAL(compare_data.front(), data2.front());
@@ -1236,11 +1235,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC4 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC other_data1(pool);
-      DataNDC other_data2(pool);
+      PoolNDC4       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        other_data1(pool);
+      DataNDC        other_data2(pool);
 
       other_data1 = data1;
       other_data2 = data2;
@@ -1259,10 +1258,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_move_assignment)
     {
       PoolNDC4 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
-      DataNDC other_data1(pool);
-      DataNDC other_data2(pool);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
+      DataNDC  other_data1(pool);
+      DataNDC  other_data2(pool);
 
       other_data1 = std::move(data1);
       other_data2 = std::move(data2);
@@ -1291,13 +1290,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_move_assignment_through_interface)
     {
       PoolNDC4 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
-      DataNDC other_data1(pool);
-      DataNDC other_data2(pool);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
+      DataNDC  other_data1(pool);
+      DataNDC  other_data2(pool);
 
-      IDataNDC& idata1 = data1;
-      IDataNDC& idata2 = data2;
+      IDataNDC& idata1       = data1;
+      IDataNDC& idata2       = data2;
       IDataNDC& iother_data1 = other_data1;
       IDataNDC& iother_data2 = other_data2;
 
@@ -1328,8 +1327,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_interface)
     {
       PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(pool);
+      DataNDC  data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC  data2(pool);
 
       IDataNDC& idata1 = data1;
       IDataNDC& idata2 = data2;
@@ -1344,13 +1343,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_self_assignment)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC other_data(data1, pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        other_data(data1, pool);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(data1.size(), other_data.size());
 
@@ -1362,9 +1361,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_unique_empty)
     {
       CompareDataNDC compare_data;
-      PoolNDC2 pool;
-      DataNDC data1(pool);
-      DataNDC data2(pool);
+      PoolNDC2       pool;
+      DataNDC        data1(pool);
+      DataNDC        data2(pool);
 
       compare_data.unique();
       data1.unique();
@@ -1378,16 +1377,15 @@ namespace
 
       are_equal = std::equal(data2.begin(), data2.end(), compare_data.begin());
       CHECK(are_equal);
-
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_unique)
     {
       CompareDataNDC compare_data(non_unique_data.begin(), non_unique_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(non_unique_data.begin(), non_unique_data.end(), pool);
-      DataNDC data2(non_unique_data.begin(), non_unique_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(non_unique_data.begin(), non_unique_data.end(), pool);
+      DataNDC        data2(non_unique_data.begin(), non_unique_data.end(), pool);
 
       compare_data.unique();
       data1.unique();
@@ -1407,9 +1405,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_remove)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       compare_data.remove(ItemNDC("7"));
       data1.remove(ItemNDC("7"));
@@ -1429,9 +1427,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_remove_if)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       compare_data.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
       data1.remove_if(std::bind(std::equal_to<ItemNDC>(), std::placeholders::_1, ItemNDC("7")));
@@ -1451,9 +1449,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_reverse)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
       compare_data.reverse();
       data1.reverse();
@@ -1479,8 +1477,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_reverse_empty)
     {
       PoolNDC2 pool;
-      DataNDC data1(pool);
-      DataNDC data2(pool);
+      DataNDC  data1(pool);
+      DataNDC  data2(pool);
 
       data1.reverse();
       data2.reverse();
@@ -1498,9 +1496,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_sort)
     {
       CompareDataNDC compare_data(unsorted_data.begin(), unsorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(unsorted_data.begin(), unsorted_data.end(), pool);
-      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(unsorted_data.begin(), unsorted_data.end(), pool);
+      DataNDC        data2(unsorted_data.begin(), unsorted_data.end(), pool);
 
       compare_data.sort();
       data1.sort();
@@ -1520,17 +1518,17 @@ namespace
     TEST_FIXTURE(SetupFixture, test_stable_sort)
     {
       std::list<ItemNDC> compare_data(stable_sort_data.begin(), stable_sort_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(stable_sort_data.begin(), stable_sort_data.end(), pool);
-      DataNDC data2(stable_sort_data.begin(), stable_sort_data.end(), pool);
+      PoolNDC2           pool;
+      DataNDC            data1(stable_sort_data.begin(), stable_sort_data.end(), pool);
+      DataNDC            data2(stable_sort_data.begin(), stable_sort_data.end(), pool);
 
       compare_data.sort();
       data1.sort();
       data2.sort();
 
-      std::list<ItemNDC>::const_iterator citr = compare_data.begin();
-      DataNDC::const_iterator d1itr = data1.begin();
-      DataNDC::const_iterator d2itr = data2.begin();
+      std::list<ItemNDC>::const_iterator citr  = compare_data.begin();
+      DataNDC::const_iterator            d1itr = data1.begin();
+      DataNDC::const_iterator            d2itr = data2.begin();
 
       while (d1itr != data1.end())
       {
@@ -1555,9 +1553,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_sort_empty)
     {
       CompareDataNDC compare_data;
-      PoolNDC2 pool;
-      DataNDC data1(pool);
-      DataNDC data2(pool);
+      PoolNDC2       pool;
+      DataNDC        data1(pool);
+      DataNDC        data2(pool);
 
       compare_data.sort();
       data1.sort();
@@ -1577,14 +1575,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_move)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
-      DataNDC::const_iterator i_from_before1;
-      DataNDC::const_iterator i_to_before1;
-      DataNDC::const_iterator i_from_before2;
-      DataNDC::const_iterator i_to_before2;
+      DataNDC::const_iterator        i_from_before1;
+      DataNDC::const_iterator        i_to_before1;
+      DataNDC::const_iterator        i_from_before2;
+      DataNDC::const_iterator        i_to_before2;
       CompareDataNDC::const_iterator i_compare_from_before;
       CompareDataNDC::const_iterator i_compare_to_before;
 
@@ -1728,16 +1726,16 @@ namespace
     TEST_FIXTURE(SetupFixture, test_move_range)
     {
       CompareDataNDC compare_data(sorted_data.begin(), sorted_data.end());
-      PoolNDC2 pool;
-      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
-      DataNDC data2(sorted_data.begin(), sorted_data.end(), pool);
+      PoolNDC2       pool;
+      DataNDC        data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC        data2(sorted_data.begin(), sorted_data.end(), pool);
 
-      DataNDC::const_iterator i_first_before1;
-      DataNDC::const_iterator i_last1;
-      DataNDC::const_iterator i_to_before1;
-      DataNDC::const_iterator i_first_before2;
-      DataNDC::const_iterator i_last2;
-      DataNDC::const_iterator i_to_before2;
+      DataNDC::const_iterator        i_first_before1;
+      DataNDC::const_iterator        i_last1;
+      DataNDC::const_iterator        i_to_before1;
+      DataNDC::const_iterator        i_first_before2;
+      DataNDC::const_iterator        i_last2;
+      DataNDC::const_iterator        i_to_before2;
       CompareDataNDC::const_iterator i_compare_first_before;
       CompareDataNDC::const_iterator i_compare_last;
       CompareDataNDC::const_iterator i_compare_to_before;
@@ -1927,4 +1925,4 @@ namespace
       CHECK(data3 > data1);
     }
   }
-}
+} // namespace

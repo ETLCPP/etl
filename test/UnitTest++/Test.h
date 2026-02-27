@@ -3,33 +3,35 @@
 
 #include "TestDetails.h"
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class TestResults;
-   class TestList;
+  class TestResults;
+  class TestList;
 
-   class UNITTEST_LINKAGE Test
-   {
-   public:
-      explicit Test(char const* testName, char const* suiteName = "DefaultSuite", char const* filename = "", int lineNumber = 0);
-      virtual ~Test();
-      void Run();
+  class UNITTEST_LINKAGE Test
+  {
+  public:
 
-      TestDetails const m_details;
-      Test* m_nextTest;
+    explicit Test(char const* testName, char const* suiteName = "DefaultSuite", char const* filename = "", int lineNumber = 0);
+    virtual ~Test();
+    void Run();
 
-      mutable bool m_isMockTest;
+    TestDetails const m_details;
+    Test*             m_nextTest;
 
-      static TestList& GetTestList();
+    mutable bool m_isMockTest;
 
-      virtual void RunImpl() const;
+    static TestList& GetTestList();
 
-   private:
-      Test(Test const&);
-      Test& operator =(Test const&);
-   };
+    virtual void RunImpl() const;
 
+  private:
 
-}
+    Test(Test const&);
+    Test& operator=(Test const&);
+  };
+
+} // namespace UnitTest
 
 #endif

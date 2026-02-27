@@ -29,18 +29,18 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "../platform.h"
-#include "../utility.h"
-#include "../array.h"
-#include "../largest.h"
-#include "../exception.h"
-#include "../type_traits.h"
-#include "../integral_limits.h"
-#include "../static_assert.h"
 #include "../alignment.h"
+#include "../array.h"
 #include "../error_handler.h"
+#include "../exception.h"
+#include "../integral_limits.h"
+#include "../largest.h"
+#include "../monostate.h"
 #include "../null_type.h"
 #include "../placement_new.h"
-#include "../monostate.h"
+#include "../static_assert.h"
+#include "../type_traits.h"
+#include "../utility.h"
 
 #include <stdint.h>
 
@@ -70,7 +70,7 @@ namespace etl
       struct no_type
       {
       };
-    }
+    } // namespace private_variant
 
     //***************************************************************************
     /// Monostate for variants.
@@ -85,6 +85,7 @@ namespace etl
     class variant_exception : public etl::exception
     {
     public:
+
       variant_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
         : exception(reason_, file_name_, line_number_)
       {
@@ -98,6 +99,7 @@ namespace etl
     class variant_incorrect_type_exception : public variant_exception
     {
     public:
+
       variant_incorrect_type_exception(string_type file_name_, numeric_type line_number_)
         : variant_exception(ETL_ERROR_TEXT("variant:unsupported type", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
       {
@@ -111,9 +113,11 @@ namespace etl
     class bad_variant_access : public variant_exception
     {
     public:
+
       bad_variant_access(string_type file_name_, numeric_type line_number_)
         : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"B"), file_name_, line_number_)
-      {}
+      {
+      }
     };
 
     //***************************************************************************
@@ -123,6 +127,7 @@ namespace etl
     class variant_not_a_base_exception : public variant_exception
     {
     public:
+
       variant_not_a_base_exception(string_type file_name_, numeric_type line_number_)
         : variant_exception(ETL_ERROR_TEXT("variant:not_a base", ETL_VARIANT_FILE_ID"C"), file_name_, line_number_)
       {
@@ -135,14 +140,14 @@ namespace etl
     ///\ingroup variant
     //***************************************************************************
     template <typename T1,
-      typename T2 = etl::null_type<2>,
-      typename T3 = etl::null_type<3>,
-      typename T4 = etl::null_type<4>,
-      typename T5 = etl::null_type<5>,
-      typename T6 = etl::null_type<6>,
-      typename T7 = etl::null_type<7>,
-      typename T8 = etl::null_type<8> >
-      class variant
+              typename T2 = etl::null_type<2>,
+              typename T3 = etl::null_type<3>,
+              typename T4 = etl::null_type<4>,
+              typename T5 = etl::null_type<5>,
+              typename T6 = etl::null_type<6>,
+              typename T7 = etl::null_type<7>,
+              typename T8 = etl::null_type<8> >
+    class variant
     {
     public:
 
@@ -194,30 +199,21 @@ namespace etl
       template <typename T>
       struct Type_Id_Lookup
       {
-        static const uint_least8_t type_id = etl::is_same<T, T1>::value ? 0 :
-          etl::is_same<T, T2>::value ? 1 :
-          etl::is_same<T, T3>::value ? 2 :
-          etl::is_same<T, T4>::value ? 3 :
-          etl::is_same<T, T5>::value ? 4 :
-          etl::is_same<T, T6>::value ? 5 :
-          etl::is_same<T, T7>::value ? 6 :
-          etl::is_same<T, T8>::value ? 7 :
-          UNSUPPORTED_TYPE_ID;
+        static const uint_least8_t type_id = etl::is_same<T, T1>::value ? 0 : etl::is_same<T, T2>::value ? 1
+                                                                            : etl::is_same<T, T3>::value ? 2
+                                                                            : etl::is_same<T, T4>::value ? 3
+                                                                            : etl::is_same<T, T5>::value ? 4
+                                                                            : etl::is_same<T, T6>::value ? 5
+                                                                            : etl::is_same<T, T7>::value ? 6
+                                                                            : etl::is_same<T, T8>::value ? 7
+                                                                                                         : UNSUPPORTED_TYPE_ID;
       };
 
       //***************************************************************************
       /// Lookup for the id of type.
       //***************************************************************************
       template <typename T>
-      struct Type_Is_Supported : public etl::integral_constant<bool,
-        etl::is_same<T, T1>::value ||
-        etl::is_same<T, T2>::value ||
-        etl::is_same<T, T3>::value ||
-        etl::is_same<T, T4>::value ||
-        etl::is_same<T, T5>::value ||
-        etl::is_same<T, T6>::value ||
-        etl::is_same<T, T7>::value ||
-        etl::is_same<T, T8>::value>
+      struct Type_Is_Supported : public etl::integral_constant<bool, etl::is_same<T, T1>::value || etl::is_same<T, T2>::value || etl::is_same<T, T3>::value || etl::is_same<T, T4>::value || etl::is_same<T, T5>::value || etl::is_same<T, T6>::value || etl::is_same<T, T7>::value || etl::is_same<T, T8>::value>
       {
       };
 
@@ -501,15 +497,15 @@ namespace etl
       {
         switch (other.type_id)
         {
-        case 0:  ::new (static_cast<T1*>(data)) T1(other.get<T1>()); break;
-        case 1:  ::new (static_cast<T2*>(data)) T2(other.get<T2>()); break;
-        case 2:  ::new (static_cast<T3*>(data)) T3(other.get<T3>()); break;
-        case 3:  ::new (static_cast<T4*>(data)) T4(other.get<T4>()); break;
-        case 4:  ::new (static_cast<T5*>(data)) T5(other.get<T5>()); break;
-        case 5:  ::new (static_cast<T6*>(data)) T6(other.get<T6>()); break;
-        case 6:  ::new (static_cast<T7*>(data)) T7(other.get<T7>()); break;
-        case 7:  ::new (static_cast<T8*>(data)) T8(other.get<T8>()); break;
-        default: break;
+          case 0: ::new (static_cast<T1*>(data)) T1(other.get<T1>()); break;
+          case 1: ::new (static_cast<T2*>(data)) T2(other.get<T2>()); break;
+          case 2: ::new (static_cast<T3*>(data)) T3(other.get<T3>()); break;
+          case 3: ::new (static_cast<T4*>(data)) T4(other.get<T4>()); break;
+          case 4: ::new (static_cast<T5*>(data)) T5(other.get<T5>()); break;
+          case 5: ::new (static_cast<T6*>(data)) T6(other.get<T6>()); break;
+          case 6: ::new (static_cast<T7*>(data)) T7(other.get<T7>()); break;
+          case 7: ::new (static_cast<T8*>(data)) T8(other.get<T8>()); break;
+          default: break;
         }
 
         type_id = other.type_id;
@@ -532,80 +528,80 @@ namespace etl
         return *static_cast<T*>(data);
       }
 #else
-      //***************************************************************************
-      /// Emplace with one constructor parameter.
-      //***************************************************************************
-      template <typename T>
-      T& emplace()
-      {
-        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+    //***************************************************************************
+    /// Emplace with one constructor parameter.
+    //***************************************************************************
+    template <typename T>
+    T& emplace()
+    {
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-        destruct_current();
-        ::new (static_cast<T*>(data)) T();
-        type_id = Type_Id_Lookup<T>::type_id;
+      destruct_current();
+      ::new (static_cast<T*>(data)) T();
+      type_id = Type_Id_Lookup<T>::type_id;
 
-        return *static_cast<T*>(data);
-      }
+      return *static_cast<T*>(data);
+    }
 
-      //***************************************************************************
-      /// Emplace with one constructor parameter.
-      //***************************************************************************
-      template <typename T, typename TP1>
-      T& emplace(const TP1& value1)
-      {
-        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+    //***************************************************************************
+    /// Emplace with one constructor parameter.
+    //***************************************************************************
+    template <typename T, typename TP1>
+    T& emplace(const TP1& value1)
+    {
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-        destruct_current();
-        ::new (static_cast<T*>(data)) T(value1);
-        type_id = Type_Id_Lookup<T>::type_id;
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1);
+      type_id = Type_Id_Lookup<T>::type_id;
 
-        return *static_cast<T*>(data);
-      }
+      return *static_cast<T*>(data);
+    }
 
-      //***************************************************************************
-      /// Emplace with two constructor parameters.
-      //***************************************************************************
-      template <typename T, typename TP1, typename TP2>
-      T& emplace(const TP1& value1, const TP2& value2)
-      {
-        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+    //***************************************************************************
+    /// Emplace with two constructor parameters.
+    //***************************************************************************
+    template <typename T, typename TP1, typename TP2>
+    T& emplace(const TP1& value1, const TP2& value2)
+    {
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-        destruct_current();
-        ::new (static_cast<T*>(data)) T(value1, value2);
-        type_id = Type_Id_Lookup<T>::type_id;
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1, value2);
+      type_id = Type_Id_Lookup<T>::type_id;
 
-        return *static_cast<T*>(data);
-      }
+      return *static_cast<T*>(data);
+    }
 
-      //***************************************************************************
-      /// Emplace with three constructor parameters.
-      //***************************************************************************
-      template <typename T, typename TP1, typename TP2, typename TP3>
-      T& emplace(const TP1& value1, const TP2& value2, const TP3& value3)
-      {
-        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+    //***************************************************************************
+    /// Emplace with three constructor parameters.
+    //***************************************************************************
+    template <typename T, typename TP1, typename TP2, typename TP3>
+    T& emplace(const TP1& value1, const TP2& value2, const TP3& value3)
+    {
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-        destruct_current();
-        ::new (static_cast<T*>(data)) T(value1, value2, value3);
-        type_id = Type_Id_Lookup<T>::type_id;
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1, value2, value3);
+      type_id = Type_Id_Lookup<T>::type_id;
 
-        return *static_cast<T*>(data);
-      }
+      return *static_cast<T*>(data);
+    }
 
-      //***************************************************************************
-      /// Emplace with four constructor parameters.
-      //***************************************************************************
-      template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
-      T& emplace(const TP1& value1, const TP2& value2, const TP3& value3, const TP4& value4)
-      {
-        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+    //***************************************************************************
+    /// Emplace with four constructor parameters.
+    //***************************************************************************
+    template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
+    T& emplace(const TP1& value1, const TP2& value2, const TP3& value3, const TP4& value4)
+    {
+      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
-        destruct_current();
-        ::new (static_cast<T*>(data)) T(value1, value2, value3, value4);
-        type_id = Type_Id_Lookup<T>::type_id;
+      destruct_current();
+      ::new (static_cast<T*>(data)) T(value1, value2, value3, value4);
+      type_id = Type_Id_Lookup<T>::type_id;
 
-        return *static_cast<T*>(data);
-      }
+      return *static_cast<T*>(data);
+    }
 #endif
 
       //***************************************************************************
@@ -613,7 +609,7 @@ namespace etl
       ///\param value The value to assign.
       //***************************************************************************
       template <typename T>
-      variant& operator =(const T& value)
+      variant& operator=(const T& value)
       {
         ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
 
@@ -628,7 +624,7 @@ namespace etl
       /// Assignment operator for variant type.
       ///\param other The variant to assign.
       //***************************************************************************
-      variant& operator =(const variant& other)
+      variant& operator=(const variant& other)
       {
         if (this != &other)
         {
@@ -636,15 +632,15 @@ namespace etl
 
           switch (other.type_id)
           {
-          case 0:  ::new (static_cast<T1*>(data)) T1(other.get<T1>()); break;
-          case 1:  ::new (static_cast<T2*>(data)) T2(other.get<T2>()); break;
-          case 2:  ::new (static_cast<T3*>(data)) T3(other.get<T3>()); break;
-          case 3:  ::new (static_cast<T4*>(data)) T4(other.get<T4>()); break;
-          case 4:  ::new (static_cast<T5*>(data)) T5(other.get<T5>()); break;
-          case 5:  ::new (static_cast<T6*>(data)) T6(other.get<T6>()); break;
-          case 6:  ::new (static_cast<T7*>(data)) T7(other.get<T7>()); break;
-          case 7:  ::new (static_cast<T8*>(data)) T8(other.get<T8>()); break;
-          default: break;
+            case 0: ::new (static_cast<T1*>(data)) T1(other.get<T1>()); break;
+            case 1: ::new (static_cast<T2*>(data)) T2(other.get<T2>()); break;
+            case 2: ::new (static_cast<T3*>(data)) T3(other.get<T3>()); break;
+            case 3: ::new (static_cast<T4*>(data)) T4(other.get<T4>()); break;
+            case 4: ::new (static_cast<T5*>(data)) T5(other.get<T5>()); break;
+            case 5: ::new (static_cast<T6*>(data)) T6(other.get<T6>()); break;
+            case 6: ::new (static_cast<T7*>(data)) T7(other.get<T7>()); break;
+            case 7: ::new (static_cast<T8*>(data)) T8(other.get<T8>()); break;
+            default: break;
           }
 
           type_id = other.type_id;
@@ -675,15 +671,15 @@ namespace etl
 
         switch (other.type_id)
         {
-        case 0: is_same = (type_id == Type_Id_Lookup<V1>::type_id); break;
-        case 1: is_same = (type_id == Type_Id_Lookup<V2>::type_id); break;
-        case 2: is_same = (type_id == Type_Id_Lookup<V3>::type_id); break;
-        case 3: is_same = (type_id == Type_Id_Lookup<V4>::type_id); break;
-        case 4: is_same = (type_id == Type_Id_Lookup<V5>::type_id); break;
-        case 5: is_same = (type_id == Type_Id_Lookup<V6>::type_id); break;
-        case 6: is_same = (type_id == Type_Id_Lookup<V7>::type_id); break;
-        case 7: is_same = (type_id == Type_Id_Lookup<V8>::type_id); break;
-        default: break;
+          case 0: is_same = (type_id == Type_Id_Lookup<V1>::type_id); break;
+          case 1: is_same = (type_id == Type_Id_Lookup<V2>::type_id); break;
+          case 2: is_same = (type_id == Type_Id_Lookup<V3>::type_id); break;
+          case 3: is_same = (type_id == Type_Id_Lookup<V4>::type_id); break;
+          case 4: is_same = (type_id == Type_Id_Lookup<V5>::type_id); break;
+          case 5: is_same = (type_id == Type_Id_Lookup<V6>::type_id); break;
+          case 6: is_same = (type_id == Type_Id_Lookup<V7>::type_id); break;
+          case 7: is_same = (type_id == Type_Id_Lookup<V8>::type_id); break;
+          default: break;
         }
 
         return is_same;
@@ -697,15 +693,15 @@ namespace etl
       {
         switch (type_id)
         {
-        case 0: r.read(static_cast<T1&>(data)); break;
-        case 1: r.read(static_cast<T2&>(data)); break;
-        case 2: r.read(static_cast<T3&>(data)); break;
-        case 3: r.read(static_cast<T4&>(data)); break;
-        case 4: r.read(static_cast<T5&>(data)); break;
-        case 5: r.read(static_cast<T6&>(data)); break;
-        case 6: r.read(static_cast<T7&>(data)); break;
-        case 7: r.read(static_cast<T8&>(data)); break;
-        default: break;
+          case 0: r.read(static_cast<T1&>(data)); break;
+          case 1: r.read(static_cast<T2&>(data)); break;
+          case 2: r.read(static_cast<T3&>(data)); break;
+          case 3: r.read(static_cast<T4&>(data)); break;
+          case 4: r.read(static_cast<T5&>(data)); break;
+          case 5: r.read(static_cast<T6&>(data)); break;
+          case 6: r.read(static_cast<T7&>(data)); break;
+          case 7: r.read(static_cast<T8&>(data)); break;
+          default: break;
         }
       }
 
@@ -844,15 +840,15 @@ namespace etl
 
         switch (type_id)
         {
-        case 0: is_base = etl::is_base_of<TBase, T1>::value; break;
-        case 1: is_base = etl::is_base_of<TBase, T2>::value; break;
-        case 2: is_base = etl::is_base_of<TBase, T3>::value; break;
-        case 3: is_base = etl::is_base_of<TBase, T4>::value; break;
-        case 4: is_base = etl::is_base_of<TBase, T5>::value; break;
-        case 5: is_base = etl::is_base_of<TBase, T6>::value; break;
-        case 6: is_base = etl::is_base_of<TBase, T7>::value; break;
-        case 7: is_base = etl::is_base_of<TBase, T8>::value; break;
-        default: is_base = false;  break;
+          case 0: is_base = etl::is_base_of<TBase, T1>::value; break;
+          case 1: is_base = etl::is_base_of<TBase, T2>::value; break;
+          case 2: is_base = etl::is_base_of<TBase, T3>::value; break;
+          case 3: is_base = etl::is_base_of<TBase, T4>::value; break;
+          case 4: is_base = etl::is_base_of<TBase, T5>::value; break;
+          case 5: is_base = etl::is_base_of<TBase, T6>::value; break;
+          case 6: is_base = etl::is_base_of<TBase, T7>::value; break;
+          case 7: is_base = etl::is_base_of<TBase, T8>::value; break;
+          default: is_base = false; break;
         }
 
         return is_base;
@@ -861,14 +857,38 @@ namespace etl
       //***************************************************************************
       /// Conversion operators for each type.
       //***************************************************************************
-      operator T1& () { return get<T1>(); }
-      operator T2& () { return get<T2>(); }
-      operator T3& () { return get<T3>(); }
-      operator T4& () { return get<T4>(); }
-      operator T5& () { return get<T5>(); }
-      operator T6& () { return get<T6>(); }
-      operator T7& () { return get<T7>(); }
-      operator T8& () { return get<T8>(); }
+      operator T1&()
+      {
+        return get<T1>();
+      }
+      operator T2&()
+      {
+        return get<T2>();
+      }
+      operator T3&()
+      {
+        return get<T3>();
+      }
+      operator T4&()
+      {
+        return get<T4>();
+      }
+      operator T5&()
+      {
+        return get<T5>();
+      }
+      operator T6&()
+      {
+        return get<T6>();
+      }
+      operator T7&()
+      {
+        return get<T7>();
+      }
+      operator T8&()
+      {
+        return get<T8>();
+      }
 
       //***************************************************************************
       /// Checks if the template type is supported by the implementation of variant..
@@ -881,6 +901,7 @@ namespace etl
       }
 
     private:
+
 #include "diagnostic_uninitialized_push.h"
       //***************************************************************************
       /// Destruct the current occupant of the variant.
@@ -889,15 +910,50 @@ namespace etl
       {
         switch (type_id)
         {
-        case 0: { static_cast<T1*>(data)->~T1(); break; }
-        case 1: { static_cast<T2*>(data)->~T2(); break; }
-        case 2: { static_cast<T3*>(data)->~T3(); break; }
-        case 3: { static_cast<T4*>(data)->~T4(); break; }
-        case 4: { static_cast<T5*>(data)->~T5(); break; }
-        case 5: { static_cast<T6*>(data)->~T6(); break; }
-        case 6: { static_cast<T7*>(data)->~T7(); break; }
-        case 7: { static_cast<T8*>(data)->~T8(); break; }
-        default: { break; }
+          case 0:
+            {
+              static_cast<T1*>(data)->~T1();
+              break;
+            }
+          case 1:
+            {
+              static_cast<T2*>(data)->~T2();
+              break;
+            }
+          case 2:
+            {
+              static_cast<T3*>(data)->~T3();
+              break;
+            }
+          case 3:
+            {
+              static_cast<T4*>(data)->~T4();
+              break;
+            }
+          case 4:
+            {
+              static_cast<T5*>(data)->~T5();
+              break;
+            }
+          case 5:
+            {
+              static_cast<T6*>(data)->~T6();
+              break;
+            }
+          case 6:
+            {
+              static_cast<T7*>(data)->~T7();
+              break;
+            }
+          case 7:
+            {
+              static_cast<T8*>(data)->~T8();
+              break;
+            }
+          default:
+            {
+              break;
+            }
         }
 
         type_id = UNSUPPORTED_TYPE_ID;
@@ -934,15 +990,15 @@ namespace etl
     typedef TYPE type;                                                               \
   };
       ETL_VARIANT_HELPER(0, T1)
-        ETL_VARIANT_HELPER(1, T2)
-        ETL_VARIANT_HELPER(2, T3)
-        ETL_VARIANT_HELPER(3, T4)
-        ETL_VARIANT_HELPER(4, T5)
-        ETL_VARIANT_HELPER(5, T6)
-        ETL_VARIANT_HELPER(6, T7)
-        ETL_VARIANT_HELPER(7, T8)
+      ETL_VARIANT_HELPER(1, T2)
+      ETL_VARIANT_HELPER(2, T3)
+      ETL_VARIANT_HELPER(3, T4)
+      ETL_VARIANT_HELPER(4, T5)
+      ETL_VARIANT_HELPER(5, T6)
+      ETL_VARIANT_HELPER(6, T7)
+      ETL_VARIANT_HELPER(7, T8)
 #undef ETL_VARIANT_HELPER
-    }  // namespace private_variant
+    } // namespace private_variant
 
     template <size_t tIndex, typename TVariant>
     struct variant_alternative
@@ -1011,13 +1067,13 @@ namespace etl
   }
 
     ETL_GEN_LEGACY_VISIT(&, &)
-      ETL_GEN_LEGACY_VISIT(const&, &)
-      ETL_GEN_LEGACY_VISIT(&, const&)
-      ETL_GEN_LEGACY_VISIT(const&, const&)
+    ETL_GEN_LEGACY_VISIT(const&, &)
+    ETL_GEN_LEGACY_VISIT(&, const&)
+    ETL_GEN_LEGACY_VISIT(const&, const&)
 
 #undef ETL_GEN_LEGACY_VISIT
 
 #if ETL_NOT_USING_LEGACY_VARIANT
   }
 #endif
-}
+} // namespace etl

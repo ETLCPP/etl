@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include "etl/gamma.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <math.h>
 
 namespace
@@ -43,7 +43,7 @@ namespace
 
   struct Compare
   {
-    bool operator ()(double lhs, double rhs) const
+    bool operator()(double lhs, double rhs) const
     {
       return fabs(lhs - rhs) < 0.1;
     }
@@ -51,24 +51,20 @@ namespace
 
   //***********************************
   const std::array<double, Size> input1a =
-  {
-    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
-  };
+    {
+      0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 
   const std::array<double, Size> result2a =
-  {
-    0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00
-  };
+    {
+      0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00};
 
   const std::array<double, Size> input1b =
-  {
-    0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00
-  };
+    {
+      0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00};
 
   const std::array<double, Size> result2b =
-  {
-    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
-  };
+    {
+      0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 
   std::array<double, Size> output2;
 
@@ -96,4 +92,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

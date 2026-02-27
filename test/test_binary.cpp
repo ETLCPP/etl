@@ -28,11 +28,11 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <cstdint>
-#include <type_traits>
-#include <limits>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <cstdint>
+#include <limits>
+#include <type_traits>
 
 #include "etl/binary.h"
 #include "etl/bitset.h"
@@ -166,14 +166,14 @@ namespace
   template <typename TReturn>
   TReturn test_fold_bits(uint64_t value, int size)
   {
-    int bits_remaining = 64;
-    uint64_t mask = test_power_of_2(size) - 1ULL;
-    TReturn  result = 0;
+    int      bits_remaining = 64;
+    uint64_t mask           = test_power_of_2(size) - 1ULL;
+    TReturn  result         = 0;
 
     while (bits_remaining > size)
     {
       result = result ^ (value & mask);
-      value = value >> size;
+      value  = value >> size;
       bits_remaining -= size;
     }
 
@@ -261,7 +261,7 @@ namespace
     TEST(test_rotate_left8_constexpr)
     {
       constexpr size_t Size = etl::rotate_left(uint8_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotate_left(uint8_t(0xAAU), 1), sizeof(temp));
     }
@@ -362,7 +362,7 @@ namespace
     TEST(test_rotate_left16_constexpr)
     {
       constexpr size_t Size = etl::rotate_left(uint16_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotate_left(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -427,7 +427,7 @@ namespace
     TEST(test_rotate_right8_constexpr)
     {
       constexpr size_t Size = etl::rotate_right(uint8_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotate_right(uint8_t(0xAAU), 1), sizeof(temp));
     }
@@ -537,16 +537,16 @@ namespace
     TEST(test_rotate16)
     {
       uint16_t value;
-      int offset;
+      int      offset;
 
       offset = 4;
-      value = 0xB73CU;
-      value = etl::rotate(value, offset);
+      value  = 0xB73CU;
+      value  = etl::rotate(value, offset);
       CHECK_EQUAL(0x73CBU, int(value));
 
       offset = -4;
-      value = 0xB73CU;
-      value = etl::rotate(value, offset);
+      value  = 0xB73CU;
+      value  = etl::rotate(value, offset);
       CHECK_EQUAL(0xCB73U, int(value));
     }
 
@@ -555,7 +555,7 @@ namespace
     TEST(test_rotate16_constexpr)
     {
       constexpr size_t Size = etl::rotate(uint16_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotate(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -596,7 +596,7 @@ namespace
     TEST(test_reverse_bits8_constexpr)
     {
       constexpr size_t Size = etl::reverse_bits(uint8_t(0xA5U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::reverse_bits(uint8_t(0xA5U)), sizeof(temp));
     }
@@ -625,7 +625,7 @@ namespace
     TEST(test_reverse_bits16_constexpr)
     {
       constexpr size_t Size = etl::reverse_bits(uint16_t(0xA500U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::reverse_bits(uint16_t(0xA500U)), sizeof(temp));
     }
@@ -654,7 +654,7 @@ namespace
     TEST(test_reverse_bits32_constexpr)
     {
       constexpr size_t Size = etl::reverse_bits(uint32_t(0xA5000000UL));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::reverse_bits(uint32_t(0xA5000000UL)), sizeof(temp));
     }
@@ -683,7 +683,7 @@ namespace
     TEST(test_reverse_bits64_constexpr)
     {
       constexpr uint64_t Size = etl::reverse_bits(uint64_t(0xA500000000000000ULL));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::reverse_bits(uint64_t(0xA500000000000000ULL)), sizeof(temp));
     }
@@ -712,7 +712,7 @@ namespace
     TEST(test_reverse_bytes16_constexpr)
     {
       constexpr size_t Size = etl::reverse_bytes(uint16_t(0xA500U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::reverse_bytes(uint16_t(0xA500U)), sizeof(temp));
     }
@@ -741,7 +741,7 @@ namespace
     TEST(test_reverse_bytes32_constexpr)
     {
       constexpr size_t Size = etl::reverse_bytes(uint32_t(0xA5000000UL));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::reverse_bytes(uint32_t(0xA5000000UL)), sizeof(temp));
     }
@@ -770,7 +770,7 @@ namespace
     TEST(test_reverse_bytes64_constexpr)
     {
       constexpr uint64_t Size = etl::reverse_bytes(uint64_t(0xA500000000000000ULL));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::reverse_bytes(uint64_t(0xA500000000000000ULL)), sizeof(temp));
     }
@@ -783,9 +783,9 @@ namespace
 
       for (size_t i = 1UL; i <= std::numeric_limits<uint8_t>::max(); ++i)
       {
-        uint8_t gray = etl::binary_to_gray(uint8_t(i));
+        uint8_t gray   = etl::binary_to_gray(uint8_t(i));
         uint8_t result = gray ^ last_gray;
-        last_gray = gray;
+        last_gray      = gray;
 
         bool pass = ((result != 0) && !(result & (result - 1)));
 
@@ -799,7 +799,7 @@ namespace
     TEST(test_binary_to_gray8_constexpr)
     {
       constexpr uint64_t Size = etl::binary_to_gray(uint8_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::binary_to_gray(uint8_t(0xFFU)), sizeof(temp));
     }
@@ -828,7 +828,7 @@ namespace
     TEST(test_binary_to_gray16_constexpr)
     {
       constexpr size_t Size = etl::binary_to_gray(uint16_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::binary_to_gray(uint16_t(0xFFU)), sizeof(temp));
     }
@@ -863,7 +863,7 @@ namespace
     TEST(test_binary_to_gray32_constexpr)
     {
       constexpr uint32_t Size = etl::binary_to_gray(uint32_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::binary_to_gray(uint32_t(0xFFU)), sizeof(temp));
     }
@@ -881,8 +881,8 @@ namespace
         uint64_t value = hash.value();
 
         uint64_t last_gray = etl::binary_to_gray(uint64_t(value));
-        uint64_t gray = etl::binary_to_gray(uint64_t(value + 1));
-        uint64_t result = gray ^ last_gray;
+        uint64_t gray      = etl::binary_to_gray(uint64_t(value + 1));
+        uint64_t result    = gray ^ last_gray;
 
         bool pass = ((result != 0) && !(result & (result - 1)));
 
@@ -898,7 +898,7 @@ namespace
     TEST(test_binary_to_gray64_constexpr)
     {
       constexpr uint64_t Size = etl::binary_to_gray(uint64_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::binary_to_gray(uint64_t(0xFFU)), sizeof(temp));
     }
@@ -919,7 +919,7 @@ namespace
     TEST(test_gray_to_binary8_constexpr)
     {
       constexpr size_t Size = etl::gray_to_binary(uint8_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::gray_to_binary(uint8_t(0xFFU)), sizeof(temp));
     }
@@ -940,7 +940,7 @@ namespace
     TEST(test_gray_to_binary16_constexpr)
     {
       constexpr size_t Size = etl::gray_to_binary(uint16_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::gray_to_binary(uint16_t(0xFFU)), sizeof(temp));
     }
@@ -966,7 +966,7 @@ namespace
     TEST(test_gray_to_binary32_constexpr)
     {
       constexpr uint32_t Size = etl::gray_to_binary(uint32_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::gray_to_binary(uint32_t(0xFFU)), sizeof(temp));
     }
@@ -992,7 +992,7 @@ namespace
     TEST(test_gray_to_binary64_constexpr)
     {
       constexpr uint64_t Size = etl::gray_to_binary(uint64_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::gray_to_binary(uint64_t(0xFFU)), sizeof(temp));
     }
@@ -1013,7 +1013,7 @@ namespace
     TEST(test_count_bits_8_constexpr)
     {
       constexpr size_t Size = etl::count_bits(uint8_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::count_bits(uint8_t(0xFFU)), sizeof(temp));
     }
@@ -1034,7 +1034,7 @@ namespace
     TEST(test_count_bits_16_constexpr)
     {
       constexpr size_t Size = etl::count_bits(uint16_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::count_bits(uint16_t(0xFFU)), sizeof(temp));
     }
@@ -1061,7 +1061,7 @@ namespace
     TEST(test_count_bits_32_constexpr)
     {
       constexpr uint32_t Size = etl::count_bits(uint32_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::count_bits(uint32_t(0xFFU)), sizeof(temp));
     }
@@ -1088,7 +1088,7 @@ namespace
     TEST(test_count_bits_64_constexpr)
     {
       constexpr uint64_t Size = etl::count_bits(uint64_t(0xFFU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::count_bits(uint64_t(0xFFU)), sizeof(temp));
     }
@@ -1109,7 +1109,7 @@ namespace
     TEST(test_parity_8_constexpr)
     {
       constexpr size_t Size = etl::parity(uint8_t(0xFEU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::parity(uint8_t(0xFEU)), sizeof(temp));
     }
@@ -1130,7 +1130,7 @@ namespace
     TEST(test_parity_16_constexpr)
     {
       constexpr size_t Size = etl::parity(uint16_t(0xFEU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::parity(uint16_t(0xFEU)), sizeof(temp));
     }
@@ -1157,7 +1157,7 @@ namespace
     TEST(test_parity_32_constexpr)
     {
       constexpr uint32_t Size = etl::parity(uint32_t(0xFEU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::parity(uint32_t(0xFEU)), sizeof(temp));
     }
@@ -1184,7 +1184,7 @@ namespace
     TEST(test_parity_64_constexpr)
     {
       constexpr uint64_t Size = etl::parity(uint64_t(0xFEU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::parity(uint64_t(0xFEU)), sizeof(temp));
     }
@@ -1195,15 +1195,15 @@ namespace
     {
       const uint64_t data = 0xE8C9AACCBC3D9A8FULL;
 
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  1), (etl::fold_bits<uint64_t,  1>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  2), (etl::fold_bits<uint64_t,  2>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  3), (etl::fold_bits<uint64_t,  3>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  4), (etl::fold_bits<uint64_t,  4>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  5), (etl::fold_bits<uint64_t,  5>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  6), (etl::fold_bits<uint64_t,  6>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  7), (etl::fold_bits<uint64_t,  7>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  8), (etl::fold_bits<uint64_t,  8>(data)));
-      CHECK_EQUAL(test_fold_bits<uint64_t>(data,  9), (etl::fold_bits<uint64_t,  9>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 1), (etl::fold_bits<uint64_t, 1>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 2), (etl::fold_bits<uint64_t, 2>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 3), (etl::fold_bits<uint64_t, 3>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 4), (etl::fold_bits<uint64_t, 4>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 5), (etl::fold_bits<uint64_t, 5>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 6), (etl::fold_bits<uint64_t, 6>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 7), (etl::fold_bits<uint64_t, 7>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 8), (etl::fold_bits<uint64_t, 8>(data)));
+      CHECK_EQUAL(test_fold_bits<uint64_t>(data, 9), (etl::fold_bits<uint64_t, 9>(data)));
       CHECK_EQUAL(test_fold_bits<uint64_t>(data, 10), (etl::fold_bits<uint64_t, 10>(data)));
       CHECK_EQUAL(test_fold_bits<uint64_t>(data, 11), (etl::fold_bits<uint64_t, 11>(data)));
       CHECK_EQUAL(test_fold_bits<uint64_t>(data, 12), (etl::fold_bits<uint64_t, 12>(data)));
@@ -1265,7 +1265,7 @@ namespace
     TEST(test_fold_bits_constexpr)
     {
       constexpr uint64_t Size = etl::fold_bits<int64_t, 7>(0xE8C9AACCBC3D9A8FULL);
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL((etl::fold_bits<int64_t, 7>(0xE8C9AACCBC3D9A8FULL)), sizeof(temp));
     }
@@ -1275,7 +1275,7 @@ namespace
     TEST(test_max_value_for_bits)
     {
       // Check that the values are correct.
-      //CHECK_EQUAL(0U, etl::max_value_for_nbits<0>::value);
+      // CHECK_EQUAL(0U, etl::max_value_for_nbits<0>::value);
       CHECK_EQUAL(1U, etl::max_value_for_nbits<1>::value);
       CHECK_EQUAL(3U, etl::max_value_for_nbits<2>::value);
       CHECK_EQUAL(7U, etl::max_value_for_nbits<3>::value);
@@ -1346,15 +1346,15 @@ namespace
     TEST(test_max_value_for_bits_types)
     {
       // Check that the value types are correct.
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<0>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<1>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<2>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<3>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<4>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<5>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<6>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<7>::value_type>::value));
-      CHECK((etl::is_same<uint8_t,  etl::max_value_for_nbits<8>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<0>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<1>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<2>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<3>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<4>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<5>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<6>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<7>::value_type>::value));
+      CHECK((etl::is_same<uint8_t, etl::max_value_for_nbits<8>::value_type>::value));
       CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<9>::value_type>::value));
       CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<10>::value_type>::value));
       CHECK((etl::is_same<uint16_t, etl::max_value_for_nbits<11>::value_type>::value));
@@ -1419,7 +1419,7 @@ namespace
       uint8_t value8 = 0x2AU;
       value8 &= 0x3FU; // 6 bit number.
 
-      CHECK_EQUAL(-22, (etl::sign_extend<int8_t,  6>(value8)));
+      CHECK_EQUAL(-22, (etl::sign_extend<int8_t, 6>(value8)));
       CHECK_EQUAL(-22, (etl::sign_extend<int16_t, 6>(value8)));
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6>(value8)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6>(value8)));
@@ -1464,7 +1464,7 @@ namespace
     TEST(test_sign_extend_template1_constexpr)
     {
       constexpr size_t Size = etl::sign_extend<int8_t, 6>(0x1AU);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL((etl::sign_extend<int8_t, 6>(0x1AU)), sizeof(temp));
     }
@@ -1526,7 +1526,7 @@ namespace
     TEST(test_sign_extend_template1b_constexpr)
     {
       constexpr size_t Size = etl::sign_extend<int8_t, 6, 0>(0x1A);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL((etl::sign_extend<int8_t, 6, 0>(0x1A)), sizeof(temp));
     }
@@ -1583,7 +1583,7 @@ namespace
     TEST(test_sign_extend_template2_constexpr)
     {
       constexpr size_t Size = etl::sign_extend<int8_t>(0x1AU, 6);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL((etl::sign_extend<int8_t>(0x1AU, 6)), sizeof(temp));
     }
@@ -1592,7 +1592,7 @@ namespace
     //*************************************************************************
     TEST(test_sign_extend_template2b)
     {
-      uint8_t value8 = 0x2AU;
+      uint8_t value8     = 0x2AU;
       uint8_t value8mask = 0x3FU;
 
       const uint32_t value_initial = 0x55555555UL;
@@ -1645,7 +1645,7 @@ namespace
     TEST(test_sign_extend_template2b_constexpr)
     {
       constexpr size_t Size = etl::sign_extend<int8_t>(0x1AU, 6, 0);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL((etl::sign_extend<int8_t>(0x1AU, 6, 0)), sizeof(temp));
     }
@@ -1728,16 +1728,16 @@ namespace
       CHECK_EQUAL(N << 63U, etl::bit_v<63>);
   #endif
 #else
-      CHECK_EQUAL(N <<  0U, etl::bit<0>::value);
-      CHECK_EQUAL(N <<  1U, etl::bit<1>::value);
-      CHECK_EQUAL(N <<  2U, etl::bit<2>::value);
-      CHECK_EQUAL(N <<  3U, etl::bit<3>::value);
-      CHECK_EQUAL(N <<  4U, etl::bit<4>::value);
-      CHECK_EQUAL(N <<  5U, etl::bit<5>::value);
-      CHECK_EQUAL(N <<  6U, etl::bit<6>::value);
-      CHECK_EQUAL(N <<  7U, etl::bit<7>::value);
-      CHECK_EQUAL(N <<  8U, etl::bit<8>::value);
-      CHECK_EQUAL(N <<  9U, etl::bit<9>::value);
+      CHECK_EQUAL(N << 0U, etl::bit<0>::value);
+      CHECK_EQUAL(N << 1U, etl::bit<1>::value);
+      CHECK_EQUAL(N << 2U, etl::bit<2>::value);
+      CHECK_EQUAL(N << 3U, etl::bit<3>::value);
+      CHECK_EQUAL(N << 4U, etl::bit<4>::value);
+      CHECK_EQUAL(N << 5U, etl::bit<5>::value);
+      CHECK_EQUAL(N << 6U, etl::bit<6>::value);
+      CHECK_EQUAL(N << 7U, etl::bit<7>::value);
+      CHECK_EQUAL(N << 8U, etl::bit<8>::value);
+      CHECK_EQUAL(N << 9U, etl::bit<9>::value);
       CHECK_EQUAL(N << 10U, etl::bit<10>::value);
       CHECK_EQUAL(N << 11U, etl::bit<11>::value);
       CHECK_EQUAL(N << 12U, etl::bit<12>::value);
@@ -1874,16 +1874,16 @@ namespace
     {
       const uint32_t N = 1UL;
 
-      CHECK_EQUAL(N <<  0U, etl::b0);
-      CHECK_EQUAL(N <<  1U, etl::b1);
-      CHECK_EQUAL(N <<  2U, etl::b2);
-      CHECK_EQUAL(N <<  3U, etl::b3);
-      CHECK_EQUAL(N <<  4U, etl::b4);
-      CHECK_EQUAL(N <<  5U, etl::b5);
-      CHECK_EQUAL(N <<  6U, etl::b6);
-      CHECK_EQUAL(N <<  7U, etl::b7);
-      CHECK_EQUAL(N <<  8U, etl::b8);
-      CHECK_EQUAL(N <<  9U, etl::b9);
+      CHECK_EQUAL(N << 0U, etl::b0);
+      CHECK_EQUAL(N << 1U, etl::b1);
+      CHECK_EQUAL(N << 2U, etl::b2);
+      CHECK_EQUAL(N << 3U, etl::b3);
+      CHECK_EQUAL(N << 4U, etl::b4);
+      CHECK_EQUAL(N << 5U, etl::b5);
+      CHECK_EQUAL(N << 6U, etl::b6);
+      CHECK_EQUAL(N << 7U, etl::b7);
+      CHECK_EQUAL(N << 8U, etl::b8);
+      CHECK_EQUAL(N << 9U, etl::b9);
       CHECK_EQUAL(N << 10U, etl::b10);
       CHECK_EQUAL(N << 11U, etl::b11);
       CHECK_EQUAL(N << 12U, etl::b12);
@@ -1912,40 +1912,39 @@ namespace
     TEST(test_binary_constants)
     {
       uint8_t constants[] =
-      {
-        etl::b00000000, etl::b00000001, etl::b00000010, etl::b00000011, etl::b00000100, etl::b00000101, etl::b00000110, etl::b00000111,
-        etl::b00001000, etl::b00001001, etl::b00001010, etl::b00001011, etl::b00001100, etl::b00001101, etl::b00001110, etl::b00001111,
-        etl::b00010000, etl::b00010001, etl::b00010010, etl::b00010011, etl::b00010100, etl::b00010101, etl::b00010110, etl::b00010111,
-        etl::b00011000, etl::b00011001, etl::b00011010, etl::b00011011, etl::b00011100, etl::b00011101, etl::b00011110, etl::b00011111,
-        etl::b00100000, etl::b00100001, etl::b00100010, etl::b00100011, etl::b00100100, etl::b00100101, etl::b00100110, etl::b00100111,
-        etl::b00101000, etl::b00101001, etl::b00101010, etl::b00101011, etl::b00101100, etl::b00101101, etl::b00101110, etl::b00101111,
-        etl::b00110000, etl::b00110001, etl::b00110010, etl::b00110011, etl::b00110100, etl::b00110101, etl::b00110110, etl::b00110111,
-        etl::b00111000, etl::b00111001, etl::b00111010, etl::b00111011, etl::b00111100, etl::b00111101, etl::b00111110, etl::b00111111,
-        etl::b01000000, etl::b01000001, etl::b01000010, etl::b01000011, etl::b01000100, etl::b01000101, etl::b01000110, etl::b01000111,
-        etl::b01001000, etl::b01001001, etl::b01001010, etl::b01001011, etl::b01001100, etl::b01001101, etl::b01001110, etl::b01001111,
-        etl::b01010000, etl::b01010001, etl::b01010010, etl::b01010011, etl::b01010100, etl::b01010101, etl::b01010110, etl::b01010111,
-        etl::b01011000, etl::b01011001, etl::b01011010, etl::b01011011, etl::b01011100, etl::b01011101, etl::b01011110, etl::b01011111,
-        etl::b01100000, etl::b01100001, etl::b01100010, etl::b01100011, etl::b01100100, etl::b01100101, etl::b01100110, etl::b01100111,
-        etl::b01101000, etl::b01101001, etl::b01101010, etl::b01101011, etl::b01101100, etl::b01101101, etl::b01101110, etl::b01101111,
-        etl::b01110000, etl::b01110001, etl::b01110010, etl::b01110011, etl::b01110100, etl::b01110101, etl::b01110110, etl::b01110111,
-        etl::b01111000, etl::b01111001, etl::b01111010, etl::b01111011, etl::b01111100, etl::b01111101, etl::b01111110, etl::b01111111,
-        etl::b10000000, etl::b10000001, etl::b10000010, etl::b10000011, etl::b10000100, etl::b10000101, etl::b10000110, etl::b10000111,
-        etl::b10001000, etl::b10001001, etl::b10001010, etl::b10001011, etl::b10001100, etl::b10001101, etl::b10001110, etl::b10001111,
-        etl::b10010000, etl::b10010001, etl::b10010010, etl::b10010011, etl::b10010100, etl::b10010101, etl::b10010110, etl::b10010111,
-        etl::b10011000, etl::b10011001, etl::b10011010, etl::b10011011, etl::b10011100, etl::b10011101, etl::b10011110, etl::b10011111,
-        etl::b10100000, etl::b10100001, etl::b10100010, etl::b10100011, etl::b10100100, etl::b10100101, etl::b10100110, etl::b10100111,
-        etl::b10101000, etl::b10101001, etl::b10101010, etl::b10101011, etl::b10101100, etl::b10101101, etl::b10101110, etl::b10101111,
-        etl::b10110000, etl::b10110001, etl::b10110010, etl::b10110011, etl::b10110100, etl::b10110101, etl::b10110110, etl::b10110111,
-        etl::b10111000, etl::b10111001, etl::b10111010, etl::b10111011, etl::b10111100, etl::b10111101, etl::b10111110, etl::b10111111,
-        etl::b11000000, etl::b11000001, etl::b11000010, etl::b11000011, etl::b11000100, etl::b11000101, etl::b11000110, etl::b11000111,
-        etl::b11001000, etl::b11001001, etl::b11001010, etl::b11001011, etl::b11001100, etl::b11001101, etl::b11001110, etl::b11001111,
-        etl::b11010000, etl::b11010001, etl::b11010010, etl::b11010011, etl::b11010100, etl::b11010101, etl::b11010110, etl::b11010111,
-        etl::b11011000, etl::b11011001, etl::b11011010, etl::b11011011, etl::b11011100, etl::b11011101, etl::b11011110, etl::b11011111,
-        etl::b11100000, etl::b11100001, etl::b11100010, etl::b11100011, etl::b11100100, etl::b11100101, etl::b11100110, etl::b11100111,
-        etl::b11101000, etl::b11101001, etl::b11101010, etl::b11101011, etl::b11101100, etl::b11101101, etl::b11101110, etl::b11101111,
-        etl::b11110000, etl::b11110001, etl::b11110010, etl::b11110011, etl::b11110100, etl::b11110101, etl::b11110110, etl::b11110111,
-        etl::b11111000, etl::b11111001, etl::b11111010, etl::b11111011, etl::b11111100, etl::b11111101, etl::b11111110, etl::b11111111
-      };
+        {
+          etl::b00000000, etl::b00000001, etl::b00000010, etl::b00000011, etl::b00000100, etl::b00000101, etl::b00000110, etl::b00000111,
+          etl::b00001000, etl::b00001001, etl::b00001010, etl::b00001011, etl::b00001100, etl::b00001101, etl::b00001110, etl::b00001111,
+          etl::b00010000, etl::b00010001, etl::b00010010, etl::b00010011, etl::b00010100, etl::b00010101, etl::b00010110, etl::b00010111,
+          etl::b00011000, etl::b00011001, etl::b00011010, etl::b00011011, etl::b00011100, etl::b00011101, etl::b00011110, etl::b00011111,
+          etl::b00100000, etl::b00100001, etl::b00100010, etl::b00100011, etl::b00100100, etl::b00100101, etl::b00100110, etl::b00100111,
+          etl::b00101000, etl::b00101001, etl::b00101010, etl::b00101011, etl::b00101100, etl::b00101101, etl::b00101110, etl::b00101111,
+          etl::b00110000, etl::b00110001, etl::b00110010, etl::b00110011, etl::b00110100, etl::b00110101, etl::b00110110, etl::b00110111,
+          etl::b00111000, etl::b00111001, etl::b00111010, etl::b00111011, etl::b00111100, etl::b00111101, etl::b00111110, etl::b00111111,
+          etl::b01000000, etl::b01000001, etl::b01000010, etl::b01000011, etl::b01000100, etl::b01000101, etl::b01000110, etl::b01000111,
+          etl::b01001000, etl::b01001001, etl::b01001010, etl::b01001011, etl::b01001100, etl::b01001101, etl::b01001110, etl::b01001111,
+          etl::b01010000, etl::b01010001, etl::b01010010, etl::b01010011, etl::b01010100, etl::b01010101, etl::b01010110, etl::b01010111,
+          etl::b01011000, etl::b01011001, etl::b01011010, etl::b01011011, etl::b01011100, etl::b01011101, etl::b01011110, etl::b01011111,
+          etl::b01100000, etl::b01100001, etl::b01100010, etl::b01100011, etl::b01100100, etl::b01100101, etl::b01100110, etl::b01100111,
+          etl::b01101000, etl::b01101001, etl::b01101010, etl::b01101011, etl::b01101100, etl::b01101101, etl::b01101110, etl::b01101111,
+          etl::b01110000, etl::b01110001, etl::b01110010, etl::b01110011, etl::b01110100, etl::b01110101, etl::b01110110, etl::b01110111,
+          etl::b01111000, etl::b01111001, etl::b01111010, etl::b01111011, etl::b01111100, etl::b01111101, etl::b01111110, etl::b01111111,
+          etl::b10000000, etl::b10000001, etl::b10000010, etl::b10000011, etl::b10000100, etl::b10000101, etl::b10000110, etl::b10000111,
+          etl::b10001000, etl::b10001001, etl::b10001010, etl::b10001011, etl::b10001100, etl::b10001101, etl::b10001110, etl::b10001111,
+          etl::b10010000, etl::b10010001, etl::b10010010, etl::b10010011, etl::b10010100, etl::b10010101, etl::b10010110, etl::b10010111,
+          etl::b10011000, etl::b10011001, etl::b10011010, etl::b10011011, etl::b10011100, etl::b10011101, etl::b10011110, etl::b10011111,
+          etl::b10100000, etl::b10100001, etl::b10100010, etl::b10100011, etl::b10100100, etl::b10100101, etl::b10100110, etl::b10100111,
+          etl::b10101000, etl::b10101001, etl::b10101010, etl::b10101011, etl::b10101100, etl::b10101101, etl::b10101110, etl::b10101111,
+          etl::b10110000, etl::b10110001, etl::b10110010, etl::b10110011, etl::b10110100, etl::b10110101, etl::b10110110, etl::b10110111,
+          etl::b10111000, etl::b10111001, etl::b10111010, etl::b10111011, etl::b10111100, etl::b10111101, etl::b10111110, etl::b10111111,
+          etl::b11000000, etl::b11000001, etl::b11000010, etl::b11000011, etl::b11000100, etl::b11000101, etl::b11000110, etl::b11000111,
+          etl::b11001000, etl::b11001001, etl::b11001010, etl::b11001011, etl::b11001100, etl::b11001101, etl::b11001110, etl::b11001111,
+          etl::b11010000, etl::b11010001, etl::b11010010, etl::b11010011, etl::b11010100, etl::b11010101, etl::b11010110, etl::b11010111,
+          etl::b11011000, etl::b11011001, etl::b11011010, etl::b11011011, etl::b11011100, etl::b11011101, etl::b11011110, etl::b11011111,
+          etl::b11100000, etl::b11100001, etl::b11100010, etl::b11100011, etl::b11100100, etl::b11100101, etl::b11100110, etl::b11100111,
+          etl::b11101000, etl::b11101001, etl::b11101010, etl::b11101011, etl::b11101100, etl::b11101101, etl::b11101110, etl::b11101111,
+          etl::b11110000, etl::b11110001, etl::b11110010, etl::b11110011, etl::b11110100, etl::b11110101, etl::b11110110, etl::b11110111,
+          etl::b11111000, etl::b11111001, etl::b11111010, etl::b11111011, etl::b11111100, etl::b11111101, etl::b11111110, etl::b11111111};
 
       for (int i = 0; i < 256; ++i)
       {
@@ -2129,43 +2128,43 @@ namespace
       CHECK((etl::has_byte_n<int64_t, 0xAB>(int64_t(0x0123456789ABCDEFLL))));
     }
 
-	  //*************************************************************************
-	  TEST(test_binary_merge)
-	  {
-		  CHECK_EQUAL((etl::binary_merge(uint8_t(0x12U), uint8_t(0x34U), uint8_t(0xF0U))), uint8_t(0x14U));
-		  CHECK_EQUAL((etl::binary_merge<uint8_t, 0xF0U>(uint8_t(0x12U), uint8_t(0x34U))), uint8_t(0x14U));
+    //*************************************************************************
+    TEST(test_binary_merge)
+    {
+      CHECK_EQUAL((etl::binary_merge(uint8_t(0x12U), uint8_t(0x34U), uint8_t(0xF0U))), uint8_t(0x14U));
+      CHECK_EQUAL((etl::binary_merge<uint8_t, 0xF0U>(uint8_t(0x12U), uint8_t(0x34U))), uint8_t(0x14U));
 
-		  CHECK_EQUAL((etl::binary_merge(uint16_t(0x1234U), uint16_t(0x3456U), uint16_t(0xF0F0U))), uint16_t(0x1436U));
-		  CHECK_EQUAL((etl::binary_merge<uint16_t, 0xF0F0U>(uint16_t(0x1234U), uint16_t(0x3456U))), uint16_t(0x1436U));
+      CHECK_EQUAL((etl::binary_merge(uint16_t(0x1234U), uint16_t(0x3456U), uint16_t(0xF0F0U))), uint16_t(0x1436U));
+      CHECK_EQUAL((etl::binary_merge<uint16_t, 0xF0F0U>(uint16_t(0x1234U), uint16_t(0x3456U))), uint16_t(0x1436U));
 
-		  CHECK_EQUAL((etl::binary_merge(uint32_t(0x12345678UL), uint32_t(0x3456789AUL), uint32_t(0xF0F0F0F0UL))), uint32_t(0x1436587AUL));
-		  CHECK_EQUAL((etl::binary_merge<uint32_t, 0xF0F0F0F0UL>(uint32_t(0x12345678UL), uint32_t(0x3456789AUL))), uint32_t(0x1436587AUL));
+      CHECK_EQUAL((etl::binary_merge(uint32_t(0x12345678UL), uint32_t(0x3456789AUL), uint32_t(0xF0F0F0F0UL))), uint32_t(0x1436587AUL));
+      CHECK_EQUAL((etl::binary_merge<uint32_t, 0xF0F0F0F0UL>(uint32_t(0x12345678UL), uint32_t(0x3456789AUL))), uint32_t(0x1436587AUL));
 
-		  CHECK_EQUAL((etl::binary_merge(uint64_t(0x123456789ABCDEF0ULL), uint64_t(0x3456789ABCDEF012ULL), uint64_t(0xF0F0F0F0F0F0F0F0ULL))), uint64_t(0x1436587A9CBED0F2ULL));
-		  CHECK_EQUAL((etl::binary_merge<uint64_t, 0xF0F0F0F0F0F0F0F0ULL>(uint64_t(0x123456789ABCDEF0ULL), uint64_t(0x3456789ABCDEF012ULL))), uint64_t(0x1436587A9CBED0F2ULL));
-	  }
+      CHECK_EQUAL((etl::binary_merge(uint64_t(0x123456789ABCDEF0ULL), uint64_t(0x3456789ABCDEF012ULL), uint64_t(0xF0F0F0F0F0F0F0F0ULL))), uint64_t(0x1436587A9CBED0F2ULL));
+      CHECK_EQUAL((etl::binary_merge<uint64_t, 0xF0F0F0F0F0F0F0F0ULL>(uint64_t(0x123456789ABCDEF0ULL), uint64_t(0x3456789ABCDEF012ULL))), uint64_t(0x1436587A9CBED0F2ULL));
+    }
 
-	  //*************************************************************************
-	  TEST(test_binary_interleave)
-	  {
-		  CHECK_EQUAL((etl::binary_interleave(uint8_t(0x5AU), uint8_t(0xA5U))), uint16_t(0x9966U));
-		  CHECK_EQUAL((etl::binary_interleave(uint16_t(0x5A5AU), uint16_t(0xA5A5U))), uint32_t(0x99669966UL));
-		  CHECK_EQUAL((etl::binary_interleave(uint32_t(0x5A5A5A5AUL), uint32_t(0xA5A5A5A5UL))), uint64_t(0x9966996699669966ULL));
-	  }
+    //*************************************************************************
+    TEST(test_binary_interleave)
+    {
+      CHECK_EQUAL((etl::binary_interleave(uint8_t(0x5AU), uint8_t(0xA5U))), uint16_t(0x9966U));
+      CHECK_EQUAL((etl::binary_interleave(uint16_t(0x5A5AU), uint16_t(0xA5A5U))), uint32_t(0x99669966UL));
+      CHECK_EQUAL((etl::binary_interleave(uint32_t(0x5A5A5A5AUL), uint32_t(0xA5A5A5A5UL))), uint64_t(0x9966996699669966ULL));
+    }
 
-	  //*************************************************************************
-	  TEST(test_is_odd)
-	  {
-		  CHECK(etl::is_odd(1));
-		  CHECK(!etl::is_odd(2));
-	  }
+    //*************************************************************************
+    TEST(test_is_odd)
+    {
+      CHECK(etl::is_odd(1));
+      CHECK(!etl::is_odd(2));
+    }
 
-	  //*************************************************************************
-	  TEST(test_is_even)
-	  {
-		  CHECK(!etl::is_even(1));
-		  CHECK(etl::is_even(2));
-	  }
+    //*************************************************************************
+    TEST(test_is_even)
+    {
+      CHECK(!etl::is_even(1));
+      CHECK(etl::is_even(2));
+    }
 
     //*************************************************************************
     TEST(test_count_trailing_zeros_8)
@@ -2188,7 +2187,7 @@ namespace
     TEST(test_count_trailing_zeros_8_constexpr)
     {
       constexpr size_t Size = etl::count_trailing_zeros(uint8_t(0x08));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_zeros(uint8_t(0x08)), sizeof(temp));
     }
@@ -2215,7 +2214,7 @@ namespace
     TEST(test_count_trailing_zeros_16_constexpr)
     {
       constexpr size_t Size = etl::count_trailing_zeros(uint16_t(0x08));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_zeros(uint16_t(0x08)), sizeof(temp));
     }
@@ -2246,7 +2245,7 @@ namespace
     TEST(test_count_trailing_zeros_32_constexpr)
     {
       constexpr uint32_t Size = etl::count_trailing_zeros(uint32_t(0x08));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_trailing_zeros(uint32_t(0x08)), sizeof(temp));
     }
@@ -2277,7 +2276,7 @@ namespace
     TEST(test_count_trailing_zeros_64_constexpr)
     {
       constexpr uint64_t Size = etl::count_trailing_zeros(uint64_t(0x08));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::count_trailing_zeros(uint64_t(0x08)), sizeof(temp));
     }
@@ -2304,7 +2303,7 @@ namespace
     TEST(test_count_trailing_ones_8_constexpr)
     {
       constexpr size_t Size = etl::count_trailing_ones(uint8_t(0x0F));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint8_t(0x0F)), sizeof(temp));
     }
@@ -2331,7 +2330,7 @@ namespace
     TEST(test_count_trailing_ones_16_constexpr)
     {
       constexpr size_t Size = etl::count_trailing_ones(uint16_t(0x000F));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint16_t(0x000F)), sizeof(temp));
     }
@@ -2362,7 +2361,7 @@ namespace
     TEST(test_count_trailing_ones_32_constexpr)
     {
       constexpr uint32_t Size = etl::count_trailing_ones(uint32_t(0x0000000F));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint32_t(0x0000000F)), sizeof(temp));
     }
@@ -2392,7 +2391,7 @@ namespace
     TEST(test_count_trailing_ones_64_constexpr)
     {
       constexpr uint64_t Size = etl::count_trailing_ones(uint64_t(0x000000000000000F));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint64_t(0x000000000000000F)), sizeof(temp));
     }
@@ -2419,8 +2418,8 @@ namespace
     TEST(test_count_leading_zeros_8_constexpr)
     {
       constexpr size_t Size = etl::count_leading_zeros(uint8_t(0x01U));
-      char temp[Size];
-      
+      char             temp[Size];
+
       CHECK_EQUAL(test_leading_zeros(uint8_t(0x01U)), sizeof(temp));
     }
 #endif
@@ -2446,7 +2445,7 @@ namespace
     TEST(test_count_leading_zeros_16_constexpr)
     {
       constexpr size_t Size = etl::count_leading_zeros(uint16_t(0x0800U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint16_t(0x0800U)), sizeof(temp));
     }
@@ -2477,7 +2476,7 @@ namespace
     TEST(test_count_leading_zeros_32_constexpr)
     {
       constexpr uint32_t Size = etl::count_leading_zeros(uint32_t(0x08000000U));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint32_t(0x08000000U)), sizeof(temp));
     }
@@ -2508,7 +2507,7 @@ namespace
     TEST(test_count_leading_zeros_64_constexpr)
     {
       constexpr uint64_t Size = etl::count_leading_zeros(uint64_t(0x0800000000000000U));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint64_t(0x0800000000000000U)), sizeof(temp));
     }
@@ -2535,7 +2534,7 @@ namespace
     TEST(test_count_leading_ones_8_constexpr)
     {
       constexpr size_t Size = etl::count_leading_ones(uint8_t(0xF0U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint8_t(0xF0U)), sizeof(temp));
     }
@@ -2562,7 +2561,7 @@ namespace
     TEST(test_count_leading_ones_16_constexpr)
     {
       constexpr size_t Size = etl::count_leading_ones(uint16_t(0xF000U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint16_t(0xF000U)), sizeof(temp));
     }
@@ -2593,7 +2592,7 @@ namespace
     TEST(test_count_leading_ones_32_constexpr)
     {
       constexpr uint32_t Size = etl::count_leading_ones(uint32_t(0xF0000000UL));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint32_t(0xF0000000UL)), sizeof(temp));
     }
@@ -2624,7 +2623,7 @@ namespace
     TEST(test_count_leading_ones_64_constexpr)
     {
       constexpr uint64_t Size = etl::count_leading_ones(uint64_t(0xF000000000000000UL));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint64_t(0xF000000000000000UL)), sizeof(temp));
     }
@@ -2647,8 +2646,8 @@ namespace
     //*************************************************************************
     TEST(test_lsb_mask_64_bit)
     {
-      CHECK(int64_t(0x0000000000000000) == (etl::lsb_mask<int64_t,  0>::value));
-      CHECK(int64_t(0x00000000000000FF) == (etl::lsb_mask<int64_t,  8>::value));
+      CHECK(int64_t(0x0000000000000000) == (etl::lsb_mask<int64_t, 0>::value));
+      CHECK(int64_t(0x00000000000000FF) == (etl::lsb_mask<int64_t, 8>::value));
       CHECK(int64_t(0x000000000000FFFF) == (etl::lsb_mask<int64_t, 16>::value));
       CHECK(int64_t(0x0000000000FFFFFF) == (etl::lsb_mask<int64_t, 24>::value));
       CHECK(int64_t(0x00000000FFFFFFFF) == (etl::lsb_mask<int64_t, 32>::value));
@@ -2763,8 +2762,8 @@ namespace
     //*************************************************************************
     TEST(test_make_lsb_mask_template_nbits_64_bit)
     {
-      ETL_CONSTEXPR int64_t mask0 = etl::make_lsb_mask<int64_t,  0>();
-      ETL_CONSTEXPR int64_t mask1 = etl::make_lsb_mask<int64_t,  8>();
+      ETL_CONSTEXPR int64_t mask0 = etl::make_lsb_mask<int64_t, 0>();
+      ETL_CONSTEXPR int64_t mask1 = etl::make_lsb_mask<int64_t, 8>();
       ETL_CONSTEXPR int64_t mask2 = etl::make_lsb_mask<int64_t, 16>();
       ETL_CONSTEXPR int64_t mask3 = etl::make_lsb_mask<int64_t, 24>();
       ETL_CONSTEXPR int64_t mask4 = etl::make_lsb_mask<int64_t, 32>();
@@ -2783,8 +2782,8 @@ namespace
       CHECK_EQUAL(int64_t(0x00FFFFFFFFFFFFFF), mask7);
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), mask8);
 
-      CHECK_EQUAL(int64_t(0x0000000000000000), (etl::make_lsb_mask<int64_t,  0>()));
-      CHECK_EQUAL(int64_t(0x00000000000000FF), (etl::make_lsb_mask<int64_t,  8>()));
+      CHECK_EQUAL(int64_t(0x0000000000000000), (etl::make_lsb_mask<int64_t, 0>()));
+      CHECK_EQUAL(int64_t(0x00000000000000FF), (etl::make_lsb_mask<int64_t, 8>()));
       CHECK_EQUAL(int64_t(0x000000000000FFFF), (etl::make_lsb_mask<int64_t, 16>()));
       CHECK_EQUAL(int64_t(0x0000000000FFFFFF), (etl::make_lsb_mask<int64_t, 24>()));
       CHECK_EQUAL(int64_t(0x00000000FFFFFFFF), (etl::make_lsb_mask<int64_t, 32>()));
@@ -2811,8 +2810,8 @@ namespace
     //*************************************************************************
     TEST(test_msb_mask_64_bit)
     {
-      CHECK(int64_t(0x0000000000000000) == (etl::msb_mask<int64_t,  0>::value));
-      CHECK(int64_t(0xFF00000000000000) == (etl::msb_mask<int64_t,  8>::value));
+      CHECK(int64_t(0x0000000000000000) == (etl::msb_mask<int64_t, 0>::value));
+      CHECK(int64_t(0xFF00000000000000) == (etl::msb_mask<int64_t, 8>::value));
       CHECK(int64_t(0xFFFF000000000000) == (etl::msb_mask<int64_t, 16>::value));
       CHECK(int64_t(0xFFFFFF0000000000) == (etl::msb_mask<int64_t, 24>::value));
       CHECK(int64_t(0xFFFFFFFF00000000) == (etl::msb_mask<int64_t, 32>::value));
@@ -2927,8 +2926,8 @@ namespace
     //*************************************************************************
     TEST(test_make_msb_mask_template_nbits_64_bit)
     {
-      ETL_CONSTEXPR int64_t mask0 = etl::make_msb_mask<int64_t,  0>();
-      ETL_CONSTEXPR int64_t mask1 = etl::make_msb_mask<int64_t,  8>();
+      ETL_CONSTEXPR int64_t mask0 = etl::make_msb_mask<int64_t, 0>();
+      ETL_CONSTEXPR int64_t mask1 = etl::make_msb_mask<int64_t, 8>();
       ETL_CONSTEXPR int64_t mask2 = etl::make_msb_mask<int64_t, 16>();
       ETL_CONSTEXPR int64_t mask3 = etl::make_msb_mask<int64_t, 24>();
       ETL_CONSTEXPR int64_t mask4 = etl::make_msb_mask<int64_t, 32>();
@@ -2947,8 +2946,8 @@ namespace
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), mask7);
       CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), mask8);
 
-      CHECK_EQUAL(int64_t(0x0000000000000000), (etl::make_msb_mask<int64_t,  0>()));
-      CHECK_EQUAL(int64_t(0xFF00000000000000), (etl::make_msb_mask<int64_t,  8>()));
+      CHECK_EQUAL(int64_t(0x0000000000000000), (etl::make_msb_mask<int64_t, 0>()));
+      CHECK_EQUAL(int64_t(0xFF00000000000000), (etl::make_msb_mask<int64_t, 8>()));
       CHECK_EQUAL(int64_t(0xFFFF000000000000), (etl::make_msb_mask<int64_t, 16>()));
       CHECK_EQUAL(int64_t(0xFFFFFF0000000000), (etl::make_msb_mask<int64_t, 24>()));
       CHECK_EQUAL(int64_t(0xFFFFFFFF00000000), (etl::make_msb_mask<int64_t, 32>()));
@@ -2997,8 +2996,8 @@ namespace
       std::array<uint8_t, 256> output;
 
       std::transform(input.begin(),
-                     input.end(), 
-                     output.begin(), 
+                     input.end(),
+                     output.begin(),
                      etl::binary_and<uint8_t>(value));
 
       CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
@@ -3053,7 +3052,6 @@ namespace
       CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
     }
   }
-}
+} // namespace
 
 #include "etl/private/diagnostic_pop.h"
-

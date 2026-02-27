@@ -49,7 +49,7 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_STEADY_CLOCK_DURATION)
-#define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::nanoseconds
+  #define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::nanoseconds
 #endif
 
 extern "C" ETL_CHRONO_SYSTEM_CLOCK_DURATION::rep          etl_get_system_clock();
@@ -70,7 +70,7 @@ namespace etl
 
       template <bool b>
       ETL_CONSTANT bool is_steady_trait<b>::is_steady;
-    }
+    } // namespace private_chrono
 
     //*************************************************************************
     /// The system clock time
@@ -153,7 +153,7 @@ namespace etl
     /// System time
     //***************************************************************************
     template <typename Duration>
-    using sys_time = etl::chrono::time_point<etl::chrono::system_clock, Duration> ;
+    using sys_time = etl::chrono::time_point<etl::chrono::system_clock, Duration>;
 
     using sys_seconds = sys_time<etl::chrono::seconds>;
     using sys_days    = sys_time<etl::chrono::days>;
@@ -161,7 +161,7 @@ namespace etl
     //***************************************************************************
     /// Local time
     //***************************************************************************
-    struct local_t 
+    struct local_t
     {
     };
 
@@ -177,7 +177,7 @@ namespace etl
     //*************************************************************************
     template <typename TToClock, typename TFromClock, typename TFromDuration>
     ETL_CONSTEXPR14 etl::chrono::time_point<TToClock, typename TToClock::duration>
-      clock_cast(const etl::chrono::time_point<TFromClock, TFromDuration>& from_time_point) ETL_NOEXCEPT
+                    clock_cast(const etl::chrono::time_point<TFromClock, TFromDuration>& from_time_point) ETL_NOEXCEPT
     {
       // Get the duration since the epoch of the FromClock
       auto from_duration = from_time_point.time_since_epoch();
@@ -188,5 +188,5 @@ namespace etl
       // Construct and return the time_point for the ToClock
       return etl::chrono::time_point<TToClock, typename TToClock::duration>(to_duration);
     }
-  }
-}
+  } // namespace chrono
+} // namespace etl

@@ -32,35 +32,33 @@ SOFTWARE.
 
 #include "../platform.h"
 #include "../algorithm.h"
-#include "../iterator.h"
-#include "../integral_limits.h"
-#include "../algorithm.h"
-#include "../nullptr.h"
-#include "../log.h"
-#include "../exception.h"
-#include "../integral_limits.h"
 #include "../binary.h"
 #include "../char_traits.h"
-#include "../static_assert.h"
-#include "../error_handler.h"
-#include "../span.h"
-#include "../string.h"
 #include "../enum_type.h"
+#include "../error_handler.h"
+#include "../exception.h"
+#include "../integral_limits.h"
+#include "../iterator.h"
 #include "../largest.h"
+#include "../log.h"
+#include "../nullptr.h"
 #include "../smallest.h"
+#include "../span.h"
+#include "../static_assert.h"
+#include "../string.h"
 
-#include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 #if ETL_USING_STL
-#include <algorithm>
+  #include <algorithm>
 #endif
 
 #include "minmax_push.h"
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
+  #pragma diag_suppress 1300
 #endif
 
 #if ETL_USING_CPP11
@@ -190,7 +188,7 @@ namespace etl
 
     template <typename TElement>
     ETL_CONSTANT TElement bitset_impl_common<TElement>::All_Clear_Element;
-  }
+  } // namespace private_bitset
 
   //*************************************************************************
   /// Bitset implementation declaration.
@@ -221,11 +219,9 @@ namespace etl
     //*************************************************************************
     /// Set all of the bits.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void set_all(pointer      pbuffer,
-                 size_t       /*number_of_elements*/,
-                 element_type top_mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void set_all(pointer pbuffer,
+                                        size_t /*number_of_elements*/,
+                                        element_type top_mask) ETL_NOEXCEPT
     {
       *pbuffer = All_Set_Element & top_mask;
     }
@@ -233,11 +229,9 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void set_position(pointer pbuffer, 
-                      size_t  position, 
-                      bool    value = true)
+    static ETL_CONSTEXPR14 void set_position(pointer pbuffer,
+                                             size_t  position,
+                                             bool    value = true)
     {
       const element_type mask = element_type(element_type(1) << position);
 
@@ -255,10 +249,8 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position>
-    static
-    ETL_CONSTEXPR14
-    void set_position(pointer pbuffer,
-                      bool    value = true)
+    static ETL_CONSTEXPR14 void set_position(pointer pbuffer,
+                                             bool    value = true)
     {
       const element_type mask = element_type(element_type(1) << Position);
 
@@ -276,9 +268,7 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position, bool Value>
-    static
-    ETL_CONSTEXPR14
-    void set_position(pointer pbuffer)
+    static ETL_CONSTEXPR14 void set_position(pointer pbuffer)
     {
       const element_type mask = element_type(element_type(1) << Position);
 
@@ -295,10 +285,8 @@ namespace etl
     //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void reset_all(pointer pbuffer, 
-                   size_t  /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void reset_all(pointer pbuffer,
+                                          size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *pbuffer = All_Clear_Element;
     }
@@ -306,11 +294,11 @@ namespace etl
     //*************************************************************************
     /// Reset the bit at the position.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
+    static ETL_CONSTEXPR14
 
-    void reset_position(pointer pbuffer, 
-                        size_t  position)
+      void
+      reset_position(pointer pbuffer,
+                     size_t  position)
     {
       const element_type mask = element_type(element_type(1) << position);
       *pbuffer &= ~mask;
@@ -319,12 +307,10 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void from_string(pointer     pbuffer, 
-                     size_t      /*number_of_elements*/, 
-                     size_t      active_bits, 
-                     const char* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer pbuffer,
+                                            size_t /*number_of_elements*/,
+                                            size_t      active_bits,
+                                            const char* text) ETL_NOEXCEPT
     {
       reset_all(pbuffer, 1U);
 
@@ -352,12 +338,10 @@ namespace etl
     //*************************************************************************
     /// Set from a wide string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void from_string(pointer        pbuffer, 
-                     size_t         /*number_of_elements*/, 
-                     size_t         active_bits, 
-                     const wchar_t* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer pbuffer,
+                                            size_t /*number_of_elements*/,
+                                            size_t         active_bits,
+                                            const wchar_t* text) ETL_NOEXCEPT
     {
       reset_all(pbuffer, 1U);
 
@@ -385,12 +369,10 @@ namespace etl
     //*************************************************************************
     /// Set from a u16 string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void from_string(pointer         pbuffer, 
-                     size_t          /*number_of_elements*/, 
-                     size_t          active_bits, 
-                     const char16_t* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer pbuffer,
+                                            size_t /*number_of_elements*/,
+                                            size_t          active_bits,
+                                            const char16_t* text) ETL_NOEXCEPT
     {
       reset_all(pbuffer, 1U);
 
@@ -418,12 +400,10 @@ namespace etl
     //*************************************************************************
     /// Set from a u32 string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void from_string(pointer         pbuffer, 
-                     size_t          /*number_of_elements*/, 
-                     size_t          active_bits, 
-                     const char32_t* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer pbuffer,
+                                            size_t /*number_of_elements*/,
+                                            size_t          active_bits,
+                                            const char32_t* text) ETL_NOEXCEPT
     {
       reset_all(pbuffer, 1U);
 
@@ -452,10 +432,10 @@ namespace etl
     /// Get as an integral value.
     //*************************************************************************
     template <typename T>
-    static
-    ETL_CONSTEXPR14
-    T value(const_pointer pbuffer, 
-            size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      T
+      value(const_pointer pbuffer,
+            size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       return T(*pbuffer);
     }
@@ -464,10 +444,10 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T>
-    static
-    ETL_CONSTEXPR14
-    T extract(const_pointer pbuffer, 
-              size_t        position, 
+    static ETL_CONSTEXPR14
+      T
+      extract(const_pointer pbuffer,
+              size_t        position,
               size_t        length = etl::integral_limits<T>::bits)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -491,11 +471,11 @@ namespace etl
 #if ETL_USING_CPP11
     template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
 #else
-		template <typename T, size_t Position, size_t Length>
+    template <typename T, size_t Position, size_t Length>
 #endif
-    static
-    ETL_CONSTEXPR14
-    T extract(const_pointer pbuffer)
+    static ETL_CONSTEXPR14
+      T
+      extract(const_pointer pbuffer)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
@@ -516,10 +496,8 @@ namespace etl
     /// Tests a bit at a position.
     /// Positions greater than the number of configured bits will return <b>false</b>.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool test(const_pointer pbuffer, 
-              size_t        position)
+    static ETL_CONSTEXPR14 bool test(const_pointer pbuffer,
+                                     size_t        position)
     {
       const element_type mask = element_type(element_type(1) << position);
       return (*pbuffer & mask) != 0U;
@@ -528,10 +506,10 @@ namespace etl
     //*************************************************************************
     /// Count the number of bits set.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    size_t count(const_pointer pbuffer, 
-                 size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      size_t
+      count(const_pointer pbuffer,
+            size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       return etl::count_bits(*pbuffer);
     }
@@ -539,11 +517,9 @@ namespace etl
     //*************************************************************************
     // Are all the bits sets?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    bool all(const_pointer pbuffer, 
-             size_t        /*number_of_elements*/, 
-             element_type  top_mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool all(const_pointer pbuffer,
+                                    size_t /*number_of_elements*/,
+                                    element_type top_mask) ETL_NOEXCEPT
     {
       return (*pbuffer & top_mask) == top_mask;
     }
@@ -551,12 +527,10 @@ namespace etl
     //*************************************************************************
     // Are all the mask bits sets?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool all(const_pointer pbuffer, 
-             size_t        /*number_of_elements*/, 
-             element_type  top_mask, 
-             element_type  mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool all(const_pointer pbuffer,
+                                    size_t /*number_of_elements*/,
+                                    element_type top_mask,
+                                    element_type mask) ETL_NOEXCEPT
     {
       return (*pbuffer & top_mask & mask) == mask;
     }
@@ -564,10 +538,8 @@ namespace etl
     //*************************************************************************
     /// Are none of the bits set?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool none(const_pointer pbuffer, 
-              size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool none(const_pointer pbuffer,
+                                     size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       return *pbuffer == All_Clear_Element;
     }
@@ -575,11 +547,9 @@ namespace etl
     //*************************************************************************
     /// Are none of the mask bits set?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool none(const_pointer pbuffer, 
-              size_t        /*number_of_elements*/, 
-              element_type  mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool none(const_pointer pbuffer,
+                                     size_t /*number_of_elements*/,
+                                     element_type mask) ETL_NOEXCEPT
     {
       return (*pbuffer & mask) == All_Clear_Element;
     }
@@ -587,10 +557,8 @@ namespace etl
     //*************************************************************************
     /// Are any of the bits set?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool any(const_pointer pbuffer, 
-             size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool any(const_pointer pbuffer,
+                                    size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       return *pbuffer != All_Clear_Element;
     }
@@ -598,11 +566,9 @@ namespace etl
     //*************************************************************************
     /// Are any of the mask bits set?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool any(const_pointer pbuffer, 
-             size_t        /*number_of_elements*/, 
-             element_type  mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool any(const_pointer pbuffer,
+                                    size_t /*number_of_elements*/,
+                                    element_type mask) ETL_NOEXCEPT
     {
       return (*pbuffer & mask) != All_Clear_Element;
     }
@@ -610,10 +576,8 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void flip_all(pointer pbuffer, 
-                     size_t  /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void flip_all(pointer pbuffer,
+                                         size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *pbuffer = ~*pbuffer;
     }
@@ -621,10 +585,8 @@ namespace etl
     //*************************************************************************
     /// Flip some of the bits.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void flip_bits(pointer      pbuffer, 
-                   element_type mask = etl::integral_limits<element_type>::max) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void flip_bits(pointer      pbuffer,
+                                          element_type mask = etl::integral_limits<element_type>::max) ETL_NOEXCEPT
     {
       *pbuffer ^= mask;
     }
@@ -632,10 +594,8 @@ namespace etl
     //*************************************************************************
     /// Flip the bit at the position.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void flip_position(pointer pbuffer, 
-                       size_t  position)
+    static ETL_CONSTEXPR14 void flip_position(pointer pbuffer,
+                                              size_t  position)
     {
       const element_type mask = element_type(element_type(1) << position);
       *pbuffer ^= mask;
@@ -645,12 +605,12 @@ namespace etl
     /// Returns a string representing the bitset.
     //*************************************************************************
     template <typename TString>
-    static
-    ETL_CONSTEXPR14 
-    TString to_string(const_pointer pbuffer,
-                      size_t active_bits,
-                      typename TString::value_type zero = typename TString::value_type('0'),
-                      typename TString::value_type one  = typename TString::value_type('1'))
+    static ETL_CONSTEXPR14
+      TString
+      to_string(const_pointer                pbuffer,
+                size_t                       active_bits,
+                typename TString::value_type zero = typename TString::value_type('0'),
+                typename TString::value_type one  = typename TString::value_type('1'))
     {
       TString result;
 
@@ -673,13 +633,13 @@ namespace etl
     ///\param position The position to start from.
     ///\returns The position of the bit or npos if none were found.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    size_t find_next(const_pointer pbuffer, 
-                     size_t        /*number_of_elements*/, 
-                     size_t        active_bits, 
-                     bool          state, 
-                     size_t        position) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      size_t
+      find_next(const_pointer pbuffer,
+                size_t /*number_of_elements*/,
+                size_t active_bits,
+                bool   state,
+                size_t position) ETL_NOEXCEPT
     {
       if (position < active_bits)
       {
@@ -714,11 +674,9 @@ namespace etl
     /// operator assignment
     /// Assigns rhs to lhs
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_assignment(pointer       lhs_pbuffer, 
-                             const_pointer rhs_pbuffer, 
-                             size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_assignment(pointer       lhs_pbuffer,
+                                                    const_pointer rhs_pbuffer,
+                                                    size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *lhs_pbuffer = *rhs_pbuffer;
     }
@@ -727,11 +685,9 @@ namespace etl
     /// operator and
     /// AND lhs and rhs and put the result in lhs
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_and(pointer       lhs_pbuffer, 
-                      const_pointer rhs_pbuffer, 
-                      size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_and(pointer       lhs_pbuffer,
+                                             const_pointer rhs_pbuffer,
+                                             size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *lhs_pbuffer &= *rhs_pbuffer;
     }
@@ -740,11 +696,9 @@ namespace etl
     /// operator or
     /// OR lhs and rhs and put the result in lhs
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_or(pointer       lhs_pbuffer, 
-                     const_pointer rhs_pbuffer, 
-                     size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_or(pointer       lhs_pbuffer,
+                                            const_pointer rhs_pbuffer,
+                                            size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *lhs_pbuffer |= *rhs_pbuffer;
     }
@@ -753,11 +707,9 @@ namespace etl
     /// operator xor
     /// XOR lhs and rhs and put the result in lhs
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_xor(pointer       lhs_pbuffer, 
-                      const_pointer rhs_pbuffer, 
-                      size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_xor(pointer       lhs_pbuffer,
+                                             const_pointer rhs_pbuffer,
+                                             size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *lhs_pbuffer ^= *rhs_pbuffer;
     }
@@ -766,10 +718,8 @@ namespace etl
     /// operator ~
     /// NOT the value in the buffer
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_not(pointer pbuffer, 
-                      size_t  /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_not(pointer pbuffer,
+                                             size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       *pbuffer = ~*pbuffer;
     }
@@ -777,12 +727,10 @@ namespace etl
     //*************************************************************************
     /// operator_shift_left
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_shift_left(pointer pbuffer, 
-                             size_t  /*number_of_elements*/, 
-                             size_t  active_bits, 
-                             size_t  shift) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_shift_left(pointer pbuffer,
+                                                    size_t /*number_of_elements*/,
+                                                    size_t active_bits,
+                                                    size_t shift) ETL_NOEXCEPT
     {
       if (shift >= active_bits)
       {
@@ -797,12 +745,10 @@ namespace etl
     //*************************************************************************
     /// operator_shift_right
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void operator_shift_right(pointer pbuffer, 
-                              size_t  /*number_of_elements*/, 
-                              size_t  active_bits, 
-                              size_t  shift) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_shift_right(pointer pbuffer,
+                                                     size_t /*number_of_elements*/,
+                                                     size_t active_bits,
+                                                     size_t shift) ETL_NOEXCEPT
     {
       if (shift >= active_bits)
       {
@@ -817,11 +763,9 @@ namespace etl
     //*************************************************************************
     /// operator_equality
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool operator_equality(const_pointer lhs_pbuffer, 
-                           const_pointer rhs_pbuffer, 
-                           size_t        /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool operator_equality(const_pointer lhs_pbuffer,
+                                                  const_pointer rhs_pbuffer,
+                                                  size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       return (*lhs_pbuffer == *rhs_pbuffer);
     }
@@ -830,11 +774,9 @@ namespace etl
     /// Initialise from an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
-    static
-    ETL_CONSTEXPR14 
-    void initialise(pointer            pbuffer, 
-                    size_t             /*number_of_elements*/,
-                    unsigned long long value) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void initialise(pointer pbuffer,
+                                           size_t /*number_of_elements*/,
+                                           unsigned long long value) ETL_NOEXCEPT
     {
       *pbuffer = static_cast<TElementType>(value);
     }
@@ -842,15 +784,13 @@ namespace etl
     //*************************************************************************
     /// swap
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void swap(pointer lhs_pbuffer, 
-              pointer rhs_pbuffer, 
-              size_t  /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void swap(pointer lhs_pbuffer,
+                                     pointer rhs_pbuffer,
+                                     size_t /*number_of_elements*/) ETL_NOEXCEPT
     {
       element_type temp = *lhs_pbuffer;
-      *lhs_pbuffer = *rhs_pbuffer;
-      *rhs_pbuffer = temp;
+      *lhs_pbuffer      = *rhs_pbuffer;
+      *rhs_pbuffer      = temp;
     }
   };
 
@@ -890,13 +830,11 @@ namespace etl
     /// Tests a bit at a position.
     /// Positions greater than the number of configured bits will return <b>false</b>.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    bool test(const_pointer pbuffer,
-              size_t        position) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool test(const_pointer pbuffer,
+                                     size_t        position) ETL_NOEXCEPT
     {
-      size_t index      = position >> etl::log2<Bits_Per_Element>::value;
-      element_type mask = element_type(1) << (position & (Bits_Per_Element - 1));
+      size_t       index = position >> etl::log2<Bits_Per_Element>::value;
+      element_type mask  = element_type(1) << (position & (Bits_Per_Element - 1));
 
       return (pbuffer[index] & mask) != 0;
     }
@@ -904,10 +842,10 @@ namespace etl
     //*************************************************************************
     /// Count the number of bits set.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    size_t count(const_pointer pbuffer,
-                 size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      size_t
+      count(const_pointer pbuffer,
+            size_t        number_of_elements) ETL_NOEXCEPT
     {
       size_t count = 0;
 
@@ -922,11 +860,9 @@ namespace etl
     //*************************************************************************
     // Are all the bits sets?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    bool all(const_pointer pbuffer,
-             size_t        number_of_elements,
-             element_type  top_mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool all(const_pointer pbuffer,
+                                    size_t        number_of_elements,
+                                    element_type  top_mask) ETL_NOEXCEPT
     {
       // All but the last.
       while (number_of_elements-- != 1U)
@@ -949,10 +885,8 @@ namespace etl
     //*************************************************************************
     /// Are none of the bits set?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    bool none(const_pointer pbuffer,
-              size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool none(const_pointer pbuffer,
+                                     size_t        number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -968,10 +902,8 @@ namespace etl
     //*************************************************************************
     /// Are any of the bits set?
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    bool any(const_pointer pbuffer,
-             size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool any(const_pointer pbuffer,
+                                    size_t        number_of_elements) ETL_NOEXCEPT
     {
       bool any_set = false;
 
@@ -990,11 +922,9 @@ namespace etl
     //*************************************************************************
     /// Set all bits
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void set_all(pointer      pbuffer,
-                 size_t       number_of_elements,
-                 element_type top_mask) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void set_all(pointer      pbuffer,
+                                        size_t       number_of_elements,
+                                        element_type top_mask) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 1U)
       {
@@ -1007,11 +937,9 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void set_position(pointer pbuffer, 
-                      size_t  position, 
-                      bool    value = true) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void set_position(pointer pbuffer,
+                                             size_t  position,
+                                             bool    value = true) ETL_NOEXCEPT
     {
       size_t       index = position >> etl::log2<Bits_Per_Element>::value;
       element_type bit   = element_type(1) << (position & (Bits_Per_Element - 1));
@@ -1030,10 +958,8 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position>
-    static
-    ETL_CONSTEXPR14
-    void set_position(pointer pbuffer,
-                      bool    value = true)
+    static ETL_CONSTEXPR14 void set_position(pointer pbuffer,
+                                             bool    value = true)
     {
       size_t       index = Position >> etl::log2<Bits_Per_Element>::value;
       element_type bit   = element_type(1) << (Position & (Bits_Per_Element - 1));
@@ -1052,12 +978,10 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     template <size_t Position, bool Value>
-    static
-    ETL_CONSTEXPR14
-    void set_position(pointer pbuffer)
+    static ETL_CONSTEXPR14 void set_position(pointer pbuffer)
     {
       size_t       index = Position >> etl::log2<Bits_Per_Element>::value;
-      element_type bit = element_type(1) << (Position & (Bits_Per_Element - 1));
+      element_type bit   = element_type(1) << (Position & (Bits_Per_Element - 1));
 
       if (Value == true)
       {
@@ -1072,12 +996,10 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14 
-    void from_string(pointer     pbuffer, 
-                     size_t      number_of_elements, 
-                     size_t      total_bits, 
-                     const char* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer     pbuffer,
+                                            size_t      number_of_elements,
+                                            size_t      total_bits,
+                                            const char* text) ETL_NOEXCEPT
     {
       if (text == ETL_NULLPTR)
       {
@@ -1086,7 +1008,7 @@ namespace etl
       else
       {
         size_t string_length = etl::strlen(text);
-        size_t index = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
+        size_t index         = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
 
         // Only reset elements we need to.
         while (index != number_of_elements)
@@ -1107,12 +1029,10 @@ namespace etl
     //*************************************************************************
     /// Set from a wide string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void from_string(pointer        pbuffer, 
-                     size_t         number_of_elements, 
-                     size_t         total_bits, 
-                     const wchar_t* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer        pbuffer,
+                                            size_t         number_of_elements,
+                                            size_t         total_bits,
+                                            const wchar_t* text) ETL_NOEXCEPT
     {
       if (text == ETL_NULLPTR)
       {
@@ -1121,7 +1041,7 @@ namespace etl
       else
       {
         size_t string_length = etl::strlen(text);
-        size_t index = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
+        size_t index         = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
 
         // Only reset elements we need to.
         while (index != number_of_elements)
@@ -1142,12 +1062,10 @@ namespace etl
     //*************************************************************************
     /// Set from a u16 string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void from_string(pointer         pbuffer, 
-                     size_t          number_of_elements, 
-                     size_t          total_bits, 
-                     const char16_t* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer         pbuffer,
+                                            size_t          number_of_elements,
+                                            size_t          total_bits,
+                                            const char16_t* text) ETL_NOEXCEPT
     {
       if (text == ETL_NULLPTR)
       {
@@ -1156,7 +1074,7 @@ namespace etl
       else
       {
         size_t string_length = etl::strlen(text);
-        size_t index = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
+        size_t index         = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
 
         // Only reset elements we need to.
         while (index != number_of_elements)
@@ -1177,12 +1095,10 @@ namespace etl
     //*************************************************************************
     /// Set from a u32 string.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void from_string(pointer         pbuffer, 
-                     size_t          number_of_elements, 
-                     size_t          total_bits, 
-                     const char32_t* text) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void from_string(pointer         pbuffer,
+                                            size_t          number_of_elements,
+                                            size_t          total_bits,
+                                            const char32_t* text) ETL_NOEXCEPT
     {
       if (text == ETL_NULLPTR)
       {
@@ -1191,7 +1107,7 @@ namespace etl
       else
       {
         size_t string_length = etl::strlen(text);
-        size_t index = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
+        size_t index         = etl::min(number_of_elements - 1U, (string_length / Bits_Per_Element));
 
         // Only reset elements we need to.
         while (index != number_of_elements)
@@ -1212,10 +1128,8 @@ namespace etl
     //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void reset_all(pointer pbuffer,
-                   size_t  number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void reset_all(pointer pbuffer,
+                                          size_t  number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0U)
       {
@@ -1226,13 +1140,11 @@ namespace etl
     //*************************************************************************
     /// Reset the bit at the position.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void reset_position(pointer pbuffer, 
-                        size_t  position) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void reset_position(pointer pbuffer,
+                                               size_t  position) ETL_NOEXCEPT
     {
       const size_t       index = position >> etl::log2<Bits_Per_Element>::value;
-      const element_type bit = element_type(1) << (position & (Bits_Per_Element - 1));
+      const element_type bit   = element_type(1) << (position & (Bits_Per_Element - 1));
 
       pbuffer[index] &= ~bit;
     }
@@ -1241,9 +1153,9 @@ namespace etl
     /// Get as a value.
     //*************************************************************************
     template <typename T>
-    static
-    ETL_CONSTEXPR14
-    T value(const_pointer pbuffer, 
+    static ETL_CONSTEXPR14
+      T
+      value(const_pointer pbuffer,
             size_t        number_of_elements) ETL_NOEXCEPT
     {
       T v = T(0);
@@ -1268,12 +1180,12 @@ namespace etl
     /// Extract an value from multiple elements.
     //*************************************************************************
     template <typename T>
-    static
-    ETL_CONSTEXPR14
-    typename etl::make_unsigned<T>::type extract_from_multiple_elements(const element_type* pbuffer,
-                                                                        int                 element_index,
-                                                                        size_t              active_bits_in_msb,
-                                                                        size_t              length) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      typename etl::make_unsigned<T>::type
+      extract_from_multiple_elements(const element_type* pbuffer,
+                                     int                 element_index,
+                                     size_t              active_bits_in_msb,
+                                     size_t              length) ETL_NOEXCEPT
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
@@ -1283,7 +1195,7 @@ namespace etl
       if (active_bits_in_msb < Bits_Per_Element)
       {
         element_type mask = etl::make_lsb_mask< element_type>(active_bits_in_msb);
-        value = pbuffer[element_index] & mask;
+        value             = pbuffer[element_index] & mask;
         length -= active_bits_in_msb;
         if (length >= Bits_Per_Element)
         {
@@ -1307,7 +1219,7 @@ namespace etl
       // Extract the last element, if partially filled.
       if (length != 0)
       {
-        value = value << length;
+        value             = value << length;
         element_type mask = etl::make_lsb_mask< element_type>(length);
         value |= (pbuffer[element_index] >> (Bits_Per_Element - length)) & mask;
       }
@@ -1320,11 +1232,11 @@ namespace etl
     /// Run time position and length.
     //*************************************************************************
     template <typename T>
-    static
-    ETL_CONSTEXPR14
-    typename etl::make_unsigned<T>::type extract_from_buffer(const_pointer pbuffer, 
-                                                             size_t        position, 
-                                                             size_t        length) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      typename etl::make_unsigned<T>::type
+      extract_from_buffer(const_pointer pbuffer,
+                          size_t        position,
+                          size_t        length) ETL_NOEXCEPT
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
@@ -1343,7 +1255,7 @@ namespace etl
       }
       else
       {
-        // Get the number of active bits in the msb element 
+        // Get the number of active bits in the msb element
         size_t active_bits_in_msb = (position + length) - (Msb_Element_Index * Bits_Per_Element);
 
         // Start with index of the element containing the msb.
@@ -1360,9 +1272,8 @@ namespace etl
     /// Compile time position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
-    static
-    ETL_CONSTEXPR14
-    typename etl::enable_if<value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
+    static ETL_CONSTEXPR14
+      typename etl::enable_if<value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -1370,8 +1281,8 @@ namespace etl
       const int        Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
       const unsigned_t Mask          = etl::lsb_mask<unsigned_t, Length>::value;
       const unsigned_t Shift         = Position % Bits_Per_Element;
-      
-      return  static_cast<unsigned_t>(pbuffer[Element_Index] >> Shift) & Mask;
+
+      return static_cast<unsigned_t>(pbuffer[Element_Index] >> Shift) & Mask;
     }
 
     //*************************************************************************
@@ -1379,15 +1290,14 @@ namespace etl
     /// Compile time position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
-    static
-    ETL_CONSTEXPR14
-    typename etl::enable_if<!value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
+    static ETL_CONSTEXPR14
+      typename etl::enable_if<!value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer)
-    {      
+    {
       // Start with index of the element containing the msb.
       const int Msb_Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
 
-      // Get the number of active bits in the first element 
+      // Get the number of active bits in the first element
       const size_t Active_Bits_In_Msb = ((Position + Length - 1) % Bits_Per_Element) + 1;
 
       return extract_from_multiple_elements<T>(pbuffer, Msb_Element_Index, Active_Bits_In_Msb, Length);
@@ -1397,9 +1307,9 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T>
-    static
-    ETL_CONSTEXPR14
-    T extract(const_pointer pbuffer,
+    static ETL_CONSTEXPR14
+      T
+      extract(const_pointer pbuffer,
               size_t        position,
               size_t        length = etl::integral_limits<T>::bits)
     {
@@ -1419,9 +1329,9 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
-    static
-    ETL_CONSTEXPR14
-    T extract(const_pointer pbuffer)
+    static ETL_CONSTEXPR14
+      T
+      extract(const_pointer pbuffer)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
@@ -1438,10 +1348,8 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void flip_all(pointer pbuffer, 
-                     size_t  number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void flip_all(pointer pbuffer,
+                                         size_t  number_of_elements) ETL_NOEXCEPT
     {
       operator_not(pbuffer, number_of_elements);
     }
@@ -1449,10 +1357,8 @@ namespace etl
     //*************************************************************************
     /// Flip the bit at the position.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void flip_position(pointer pbuffer, 
-                       size_t  position) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void flip_position(pointer pbuffer,
+                                              size_t  position) ETL_NOEXCEPT
     {
       const size_t       index = position >> etl::log2<Bits_Per_Element>::value;
       const element_type bit   = element_type(1) << (position & (Bits_Per_Element - 1));
@@ -1466,13 +1372,13 @@ namespace etl
     ///\param position The position to start from.
     ///\returns The position of the bit or npos if none were found.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    size_t find_next(const_pointer pbuffer, 
-                     size_t        number_of_elements, 
-                     size_t        total_bits, 
-                     bool          state, 
-                     size_t        position) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14
+      size_t
+      find_next(const_pointer pbuffer,
+                size_t        number_of_elements,
+                size_t        total_bits,
+                bool          state,
+                size_t        position) ETL_NOEXCEPT
     {
       // Where to start.
       size_t index = position >> log2<Bits_Per_Element>::value;
@@ -1486,8 +1392,7 @@ namespace etl
         element_type value = pbuffer[index];
 
         // Needs checking?
-        if ((state && (value != All_Clear_Element)) ||
-            (!state && (value != All_Set_Element)))
+        if ((state && (value != All_Clear_Element)) || (!state && (value != All_Set_Element)))
         {
           // For each bit in the element...
           while ((bit < Bits_Per_Element) && (position < total_bits))
@@ -1510,7 +1415,7 @@ namespace etl
         }
 
         // Start at the beginning for all other elements.
-        bit = 0;
+        bit  = 0;
         mask = 1;
 
         ++index;
@@ -1523,19 +1428,19 @@ namespace etl
     /// Returns a string representing the bitset.
     //*************************************************************************
     template <typename TString>
-    static
-    ETL_CONSTEXPR14
-    TString to_string(const_pointer                pbuffer,
-                      size_t                       active_bits, 
-                      typename TString::value_type zero, 
-                      typename TString::value_type one)
+    static ETL_CONSTEXPR14
+      TString
+      to_string(const_pointer                pbuffer,
+                size_t                       active_bits,
+                typename TString::value_type zero,
+                typename TString::value_type one)
     {
       TString result;
 
       result.resize(active_bits, '\0');
 
       // Check that the string type can contain the digits.
-      ETL_ASSERT_OR_RETURN_VALUE(result.size() == active_bits, ETL_ERROR(etl::bitset_string_too_small), result);      
+      ETL_ASSERT_OR_RETURN_VALUE(result.size() == active_bits, ETL_ERROR(etl::bitset_string_too_small), result);
 
       for (size_t i = active_bits; i > 0; --i)
       {
@@ -1548,11 +1453,9 @@ namespace etl
     //*************************************************************************
     /// operator assignment
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_assignment(pointer       lhs_pbuffer, 
-                             const_pointer rhs_pbuffer, 
-                             size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_assignment(pointer       lhs_pbuffer,
+                                                    const_pointer rhs_pbuffer,
+                                                    size_t        number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -1565,11 +1468,9 @@ namespace etl
     //*************************************************************************
     /// operator and
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_and(pointer       lhs_pbuffer, 
-                      const_pointer rhs_pbuffer, 
-                      size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_and(pointer       lhs_pbuffer,
+                                             const_pointer rhs_pbuffer,
+                                             size_t        number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -1582,11 +1483,9 @@ namespace etl
     //*************************************************************************
     /// operator or
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_or(pointer       lhs_pbuffer, 
-                     const_pointer rhs_pbuffer, 
-                     size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_or(pointer       lhs_pbuffer,
+                                            const_pointer rhs_pbuffer,
+                                            size_t        number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -1599,11 +1498,9 @@ namespace etl
     //*************************************************************************
     /// operator xor
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_xor(pointer       lhs_pbuffer, 
-                      const_pointer rhs_pbuffer, 
-                      size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_xor(pointer       lhs_pbuffer,
+                                             const_pointer rhs_pbuffer,
+                                             size_t        number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -1616,10 +1513,8 @@ namespace etl
     //*************************************************************************
     /// operator not
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_not(pointer pbuffer, 
-                      size_t  number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_not(pointer pbuffer,
+                                             size_t  number_of_elements) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
@@ -1631,12 +1526,10 @@ namespace etl
     //*************************************************************************
     /// operator_shift_left
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_shift_left(pointer pbuffer, 
-                             size_t  number_of_elements, 
-                             size_t  active_bits, 
-                             size_t  shift) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_shift_left(pointer pbuffer,
+                                                    size_t  number_of_elements,
+                                                    size_t  active_bits,
+                                                    size_t  shift) ETL_NOEXCEPT
     {
       if (shift >= active_bits)
       {
@@ -1657,12 +1550,12 @@ namespace etl
         const size_t lsb_shift = Bits_Per_Element - split_position;
         const size_t msb_shift = split_position;
 
-        const element_type lsb_mask = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
-        const element_type msb_mask = etl::integral_limits<element_type>::max - lsb_mask;
+        const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
+        const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
         const element_type lsb_shifted_mask = element_type(lsb_mask << lsb_shift);
 
         // First lsb.
-        element_type lsb = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
+        element_type lsb   = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
         pbuffer[dst_index] = lsb;
         --src_index;
 
@@ -1670,12 +1563,12 @@ namespace etl
         while (src_index >= 0)
         {
           // Shift msb.
-          element_type msb = element_type((pbuffer[src_index] & msb_mask) >> msb_shift);
+          element_type msb   = element_type((pbuffer[src_index] & msb_mask) >> msb_shift);
           pbuffer[dst_index] = pbuffer[dst_index] | msb;
           --dst_index;
 
           // Shift lsb.
-          lsb = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
+          lsb                = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
           pbuffer[dst_index] = lsb;
           --src_index;
         }
@@ -1695,12 +1588,10 @@ namespace etl
     //*************************************************************************
     /// operator_shift_right
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void operator_shift_right(pointer pbuffer, 
-                              size_t  number_of_elements, 
-                              size_t  active_bits, 
-                              size_t  shift) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_shift_right(pointer pbuffer,
+                                                     size_t  number_of_elements,
+                                                     size_t  active_bits,
+                                                     size_t  shift) ETL_NOEXCEPT
     {
       if (shift >= active_bits)
       {
@@ -1721,8 +1612,8 @@ namespace etl
         const size_t lsb_shift = Bits_Per_Element - split_position;
         const size_t msb_shift = split_position;
 
-        const element_type lsb_mask = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
-        const element_type msb_mask = etl::integral_limits<element_type>::max - lsb_mask;
+        const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
+        const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
         const element_type msb_shifted_mask = element_type(msb_mask >> msb_shift);
 
         // Now do the shifting.
@@ -1741,7 +1632,7 @@ namespace etl
         }
 
         // Final msb.
-        element_type msb = element_type((pbuffer[src_index] & msb_mask) >> msb_shift);
+        element_type msb   = element_type((pbuffer[src_index] & msb_mask) >> msb_shift);
         pbuffer[dst_index] = msb;
 
         // Clear the remaining bits.
@@ -1761,11 +1652,9 @@ namespace etl
     //*************************************************************************
     /// operator_equality
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    bool operator_equality(const_pointer lhs_pbuffer, 
-                           const_pointer rhs_pbuffer, 
-                           size_t        number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 bool operator_equality(const_pointer lhs_pbuffer,
+                                                  const_pointer rhs_pbuffer,
+                                                  size_t        number_of_elements) ETL_NOEXCEPT
     {
       return etl::equal(lhs_pbuffer, lhs_pbuffer + number_of_elements, rhs_pbuffer);
     }
@@ -1775,15 +1664,14 @@ namespace etl
     /// Enabled if the number of bits in the element equals the number of bits in an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
-    static
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::integral_limits<TElementType>::bits == etl::integral_limits<unsigned long long>::bits, void>::type
-      initialise(pointer            pbuffer, 
-                 size_t             number_of_elements, 
+    static ETL_CONSTEXPR14
+      typename etl::enable_if<etl::integral_limits<TElementType>::bits == etl::integral_limits<unsigned long long>::bits, void>::type
+      initialise(pointer            pbuffer,
+                 size_t             number_of_elements,
                  unsigned long long value) ETL_NOEXCEPT
     {
       size_t i = 0UL;
-      
+
       // Set the non-zero elements.
       pbuffer[i++] = value;
 
@@ -1799,9 +1687,8 @@ namespace etl
     /// Enabled if the number of bits in the element doesn't equal the number of bits in an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
-    static
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::integral_limits<TElementType>::bits != etl::integral_limits<unsigned long long>::bits, void>::type
+    static ETL_CONSTEXPR14
+      typename etl::enable_if<etl::integral_limits<TElementType>::bits != etl::integral_limits<unsigned long long>::bits, void>::type
       initialise(pointer            pbuffer,
                  size_t             number_of_elements,
                  unsigned long long value) ETL_NOEXCEPT
@@ -1814,7 +1701,7 @@ namespace etl
       while ((value != 0) && (i != number_of_elements))
       {
         pbuffer[i++] = value & All_Set_Element;
-        value = value >> Shift;
+        value        = value >> Shift;
       }
 
       // Clear the remaining elements.
@@ -1827,11 +1714,9 @@ namespace etl
     //*************************************************************************
     /// Swap bitset buffers.
     //*************************************************************************
-    static
-    ETL_CONSTEXPR14
-    void swap(pointer pbuffer1, 
-              pointer pbuffer2, 
-              size_t  number_of_elements)
+    static ETL_CONSTEXPR14 void swap(pointer pbuffer1,
+                                     pointer pbuffer2,
+                                     size_t  number_of_elements)
     {
       etl::swap_ranges(pbuffer1, pbuffer1 + number_of_elements, pbuffer2);
     }
@@ -1846,7 +1731,7 @@ namespace etl
     public:
 
       typedef typename etl::private_bitset::bitset_impl_common<TElement>::element_type element_type;
-      
+
       using etl::private_bitset::bitset_impl_common<TElement>::Bits_Per_Element;
       using etl::private_bitset::bitset_impl_common<TElement>::All_Set_Element;
       using etl::private_bitset::bitset_impl_common<TElement>::All_Clear_Element;
@@ -1861,7 +1746,7 @@ namespace etl
       static ETL_CONSTANT etl::bitset_storage_model Storage_Model;
 #endif
 
-      typedef etl::span<element_type,       Number_Of_Elements> span_type;
+      typedef etl::span<element_type, Number_Of_Elements>       span_type;
       typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
 
     private:
@@ -1872,7 +1757,6 @@ namespace etl
 
       static ETL_CONSTANT TElement Top_Mask = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
     };
-
 
     template <size_t Active_Bits, typename TElement>
     ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Number_Of_Elements;
@@ -1892,14 +1776,14 @@ namespace etl
     ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Top_Mask_Shift;
 
     template <size_t Active_Bits, typename TElement>
-    ETL_CONSTANT TElement bitset_common<Active_Bits, TElement>::Top_Mask;  
-  }
+    ETL_CONSTANT TElement bitset_common<Active_Bits, TElement>::Top_Mask;
+  } // namespace private_bitset
 
   //***************************************************************************
   /// Bitset forward declaration
   //***************************************************************************
-  template <size_t   Active_Bits = 0U,
-            typename TElement    = unsigned char>
+  template <size_t Active_Bits = 0U,
+            typename TElement  = unsigned char>
   class bitset;
 
   //***************************************************************************
@@ -1937,8 +1821,6 @@ namespace etl
     typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::element_type    element_type;
     typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::span_type       span_type;
     typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::const_span_type const_span_type;
-
-    
 
     using etl::private_bitset::bitset_common<Active_Bits, TElement>::Bits_Per_Element;
     using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Set_Element;
@@ -1978,7 +1860,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      ETL_CONSTEXPR14 bit_reference& operator = (bool b) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 bit_reference& operator=(bool b) ETL_NOEXCEPT
       {
         p_bitset->set(position, b);
         return *this;
@@ -1987,7 +1869,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      ETL_CONSTEXPR14 bit_reference& operator = (const bit_reference& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 bit_reference& operator=(const bit_reference& r) ETL_NOEXCEPT
       {
         p_bitset->set(position, bool(r));
         return *this;
@@ -2031,7 +1913,7 @@ namespace etl
       }
 
       bitset<Active_Bits, TElement>* p_bitset; ///< The bitset.
-      size_t position; ///< The position in the bitset.
+      size_t                         position; ///< The position in the bitset.
     };
 
     //*************************************************************************
@@ -2105,7 +1987,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset& operator =(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset& operator=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_assignment(buffer, other.buffer, Number_Of_Elements);
 
@@ -2131,7 +2013,7 @@ namespace etl
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
 
       implementation::set_position(buffer, position, value);
-      
+
       return *this;
     }
 
@@ -2166,7 +2048,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const char*>::value, bitset<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const char*>::value, bitset<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2179,7 +2061,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const wchar_t*>::value, bitset<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const wchar_t*>::value, bitset<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2192,7 +2074,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const char16_t*>::value, bitset<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const char16_t*>::value, bitset<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2204,8 +2086,8 @@ namespace etl
     /// Set from a char32 string.
     //*************************************************************************
     template <typename TPString>
-    ETL_CONSTEXPR14 
-    typename etl::enable_if<etl::is_same<TPString, const char32_t*>::value, bitset<Active_Bits, TElement>&>::type
+    ETL_CONSTEXPR14
+      typename etl::enable_if<etl::is_same<TPString, const char32_t*>::value, bitset<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2258,7 +2140,7 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+      typename etl::enable_if<etl::is_integral<T>::value, T>::type
       value() const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
@@ -2273,12 +2155,13 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-    T extract(size_t position, size_t length = etl::integral_limits<T>::bits) const
+      T
+      extract(size_t position, size_t length = etl::integral_limits<T>::bits) const
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
 
       ETL_ASSERT_OR_RETURN_VALUE(length <= etl::integral_limits<T>::bits, ETL_ERROR(bitset_overflow), 0);
-      ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits,      ETL_ERROR(bitset_overflow), 0);
+      ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits, ETL_ERROR(bitset_overflow), 0);
 
       return implementation::template extract<T>(buffer, position, length);
     }
@@ -2287,17 +2170,18 @@ namespace etl
     /// Extract an integral value from an arbitrary position and length.
     /// Compile time position and length.
     //*************************************************************************
-#if ETL_USING_CPP11    
-		template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
+#if ETL_USING_CPP11
+    template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
 #else
-	  template <typename T, size_t Position, size_t Length>
+    template <typename T, size_t Position, size_t Length>
 #endif
     ETL_CONSTEXPR14
-    T extract() const
+      T
+      extract() const
     {
-      ETL_STATIC_ASSERT(etl::is_integral<T>::value,              "Only integral types are supported");
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
       ETL_STATIC_ASSERT(Length <= etl::integral_limits<T>::bits, "Length is larger that the required type");
-      ETL_STATIC_ASSERT((Position + Length) <= Active_Bits,      "Position/Length overflows bitset");
+      ETL_STATIC_ASSERT((Position + Length) <= Active_Bits, "Position/Length overflows bitset");
 
       return implementation::template extract<T, Position, Length>(buffer);
     }
@@ -2354,7 +2238,7 @@ namespace etl
 
       return implementation::test(buffer, position);
     }
- 
+
     //*************************************************************************
     /// Tests a bit at a position.
     /// Positions greater than the number of configured bits will not compile.
@@ -2484,7 +2368,7 @@ namespace etl
     {
       return implementation::any(buffer, Number_Of_Elements);
     }
- 
+
     //*************************************************************************
     /// Are any of the mask bits set?
     //*************************************************************************
@@ -2520,7 +2404,7 @@ namespace etl
     //*************************************************************************
     /// Read [] operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 bool operator[] (size_t position) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bool operator[](size_t position) const ETL_NOEXCEPT
     {
       return implementation::test(buffer, position);
     }
@@ -2528,7 +2412,7 @@ namespace etl
     //*************************************************************************
     /// Write [] operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 bit_reference operator [] (size_t position) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bit_reference operator[](size_t position) ETL_NOEXCEPT
     {
       return bit_reference(*this, position);
     }
@@ -2571,7 +2455,7 @@ namespace etl
     //*************************************************************************
     /// operator &
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator &(const bitset<Active_Bits, TElement>& other) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator&(const bitset<Active_Bits, TElement>& other) const ETL_NOEXCEPT
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
@@ -2583,7 +2467,7 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator &=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator&=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_and(buffer, other.buffer, Number_Of_Elements);
 
@@ -2593,7 +2477,7 @@ namespace etl
     //*************************************************************************
     /// operator |
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator |(const bitset<Active_Bits, TElement>& other) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator|(const bitset<Active_Bits, TElement>& other) const ETL_NOEXCEPT
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
@@ -2605,7 +2489,7 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator |=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator|=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_or(&buffer[0], &other.buffer[0], Number_Of_Elements);
 
@@ -2615,7 +2499,7 @@ namespace etl
     //*************************************************************************
     /// operator ^
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator ^(const bitset<Active_Bits, TElement>& other) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator^(const bitset<Active_Bits, TElement>& other) const ETL_NOEXCEPT
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
@@ -2627,7 +2511,7 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator ^=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator^=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_xor(buffer, other.buffer, Number_Of_Elements);
 
@@ -2637,7 +2521,7 @@ namespace etl
     //*************************************************************************
     /// operator ~
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator ~() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator~() const ETL_NOEXCEPT
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
@@ -2649,7 +2533,7 @@ namespace etl
     //*************************************************************************
     /// operator <<
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator <<(size_t shift) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator<<(size_t shift) const ETL_NOEXCEPT
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
@@ -2661,7 +2545,7 @@ namespace etl
     //*************************************************************************
     /// operator <<=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator <<=(size_t shift) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator<<=(size_t shift) ETL_NOEXCEPT
     {
       if (shift >= Active_Bits)
       {
@@ -2671,14 +2555,14 @@ namespace etl
       {
         implementation::operator_shift_left(buffer, Number_Of_Elements, Active_Bits, shift);
       }
-      
+
       return *this;
     }
 
     //*************************************************************************
     /// operator >>
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator >>(size_t shift) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement> operator>>(size_t shift) const ETL_NOEXCEPT
     {
       bitset<Active_Bits, TElement> temp(*this);
 
@@ -2690,7 +2574,7 @@ namespace etl
     //*************************************************************************
     /// operator >>=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator >>=(size_t shift) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& operator>>=(size_t shift) ETL_NOEXCEPT
     {
       if (shift >= Active_Bits)
       {
@@ -2707,7 +2591,7 @@ namespace etl
     //*************************************************************************
     /// operator ==
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator ==(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR14 bool operator==(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
     {
       return implementation::operator_equality(lhs.buffer, rhs.buffer, lhs.Number_Of_Elements);
     }
@@ -2715,7 +2599,7 @@ namespace etl
     //*************************************************************************
     /// operator !=
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator !=(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR14 bool operator!=(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
     {
       return !(lhs == rhs);
     }
@@ -2760,7 +2644,7 @@ namespace etl
   ///\ingroup bitset
   //***************************************************************************
   template <size_t Active_Bits, typename TElement>
-  ETL_CONSTEXPR14 bitset<Active_Bits> operator & (const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bitset<Active_Bits> operator&(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
   {
     bitset<Active_Bits> temp(lhs);
     temp &= rhs;
@@ -2771,8 +2655,8 @@ namespace etl
   /// operator |
   ///\ingroup bitset
   //***************************************************************************
-  template<size_t Active_Bits, typename TElement>
-  ETL_CONSTEXPR14 bitset<Active_Bits> operator | (const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bitset<Active_Bits> operator|(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
   {
     bitset<Active_Bits> temp(lhs);
     temp |= rhs;
@@ -2783,21 +2667,21 @@ namespace etl
   /// operator ^
   ///\ingroup bitset
   //***************************************************************************
-  template<size_t Active_Bits, typename TElement>
-  ETL_CONSTEXPR14 bitset<Active_Bits> operator ^ (const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bitset<Active_Bits> operator^(const bitset<Active_Bits, TElement>& lhs, const bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
   {
     bitset<Active_Bits> temp(lhs);
     temp ^= rhs;
     return temp;
   }
-}
+} // namespace etl
 
 //***************************************************************************
 /// operator !=
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator != (const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+template <size_t Active_Bits, typename TElement>
+ETL_CONSTEXPR14 bool operator!=(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
@@ -2818,7 +2702,7 @@ namespace etl
 {
   //***************************************************************************
   template <size_t Active_Bits = 0U,
-            typename TElement = unsigned char>
+            typename TElement  = unsigned char>
   class bitset_ext;
 
   //***************************************************************************
@@ -2860,7 +2744,7 @@ namespace etl
     typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::element_type    element_type;
     typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::span_type       span_type;
     typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::const_span_type const_span_type;
-    
+
     using etl::private_bitset::bitset_common<Active_Bits, TElement>::Bits_Per_Element;
     using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Set_Element;
     using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Clear_Element;
@@ -2901,7 +2785,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      ETL_CONSTEXPR14 bit_reference& operator = (bool b) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 bit_reference& operator=(bool b) ETL_NOEXCEPT
       {
         p_bitset->set(position, b);
         return *this;
@@ -2910,7 +2794,7 @@ namespace etl
       //*******************************
       /// Assignment operator.
       //*******************************
-      ETL_CONSTEXPR14 bit_reference& operator = (const bit_reference& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 bit_reference& operator=(const bit_reference& r) ETL_NOEXCEPT
       {
         p_bitset->set(position, bool(r));
         return *this;
@@ -2954,7 +2838,7 @@ namespace etl
       }
 
       bitset_ext<Active_Bits, TElement>* p_bitset; ///< The bitset.
-      size_t position; ///< The position in the bitset.
+      size_t                             position; ///< The position in the bitset.
     };
 
     //*************************************************************************
@@ -3108,7 +2992,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext& operator =(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext& operator=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_assignment(pbuffer, other.pbuffer, Number_Of_Elements);
 
@@ -3129,7 +3013,7 @@ namespace etl
     /// Set the bit at the position.
     //*************************************************************************
     ETL_CONSTEXPR14
-      bitset_ext<Active_Bits, TElement>& set(size_t position, bool value = true)
+    bitset_ext<Active_Bits, TElement>& set(size_t position, bool value = true)
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
 
@@ -3169,7 +3053,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const char*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const char*>::value, bitset_ext<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3182,7 +3066,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const wchar_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const wchar_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3195,7 +3079,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const char16_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const char16_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3208,7 +3092,7 @@ namespace etl
     //*************************************************************************
     template <typename TPString>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_same<TPString, const char32_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      typename etl::enable_if<etl::is_same<TPString, const char32_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
       set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3261,7 +3145,8 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-    T value() const ETL_NOEXCEPT
+      T
+      value() const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
       ETL_STATIC_ASSERT(etl::integral_limits<T>::bits >= (Number_Of_Elements * Bits_Per_Element), "Type too small");
@@ -3275,12 +3160,13 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-      T extract(size_t position, size_t length = etl::integral_limits<T>::bits)
+      T
+      extract(size_t position, size_t length = etl::integral_limits<T>::bits)
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
 
       ETL_ASSERT_OR_RETURN_VALUE(length <= etl::integral_limits<T>::bits, ETL_ERROR(bitset_overflow), 0);
-      ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits,      ETL_ERROR(bitset_overflow), 0);
+      ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits, ETL_ERROR(bitset_overflow), 0);
 
       return implementation::template extract<T>(pbuffer, position, length);
     }
@@ -3295,11 +3181,12 @@ namespace etl
     template <typename T, size_t Position, size_t Length>
 #endif
     ETL_CONSTEXPR14
-    T extract() const
+      T
+      extract() const
     {
-      ETL_STATIC_ASSERT(etl::is_integral<T>::value,              "Only integral types are supported");
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
       ETL_STATIC_ASSERT(Length <= etl::integral_limits<T>::bits, "Length is larger that the required type");
-      ETL_STATIC_ASSERT((Position + Length) <= Active_Bits,      "Position/Length overflows bitset");
+      ETL_STATIC_ASSERT((Position + Length) <= Active_Bits, "Position/Length overflows bitset");
 
       return implementation::template extract<T, Position, Length>(pbuffer);
     }
@@ -3353,7 +3240,7 @@ namespace etl
     ETL_CONSTEXPR14 bool test(size_t position) const
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), false);
-      
+
       return implementation::test(pbuffer, position);
     }
 
@@ -3513,7 +3400,7 @@ namespace etl
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& flip(size_t position)
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
-      
+
       implementation::flip_position(pbuffer, position);
 
       return *this;
@@ -3522,7 +3409,7 @@ namespace etl
     //*************************************************************************
     /// Read [] operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 bool operator[] (size_t position) const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bool operator[](size_t position) const ETL_NOEXCEPT
     {
       return implementation::test(pbuffer, position);
     }
@@ -3530,7 +3417,7 @@ namespace etl
     //*************************************************************************
     /// Write [] operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 bit_reference operator [] (size_t position) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bit_reference operator[](size_t position) ETL_NOEXCEPT
     {
       return bit_reference(*this, position);
     }
@@ -3573,7 +3460,7 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator &=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator&=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_and(&pbuffer[0], &other.pbuffer[0], Number_Of_Elements);
 
@@ -3583,7 +3470,7 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator |=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator|=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_or(&pbuffer[0], &other.pbuffer[0], Number_Of_Elements);
 
@@ -3593,7 +3480,7 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator ^=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator^=(const bitset_ext<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_xor(&pbuffer[0], &other.pbuffer[0], Number_Of_Elements);
 
@@ -3603,7 +3490,7 @@ namespace etl
     //*************************************************************************
     /// operator <<=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator <<=(size_t shift) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator<<=(size_t shift) ETL_NOEXCEPT
     {
       implementation::operator_shift_left(pbuffer, Number_Of_Elements, Active_Bits, shift);
 
@@ -3613,7 +3500,7 @@ namespace etl
     //*************************************************************************
     /// operator >>=
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator >>=(size_t shift) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator>>=(size_t shift) ETL_NOEXCEPT
     {
       implementation::operator_shift_right(pbuffer, Number_Of_Elements, Active_Bits, shift);
 
@@ -3623,7 +3510,7 @@ namespace etl
     //*************************************************************************
     /// operator ==
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator ==(const bitset_ext<Active_Bits, TElement>& lhs, const bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR14 bool operator==(const bitset_ext<Active_Bits, TElement>& lhs, const bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
     {
       return implementation::operator_equality(lhs.pbuffer, rhs.pbuffer, lhs.Number_Of_Elements);
     }
@@ -3631,7 +3518,7 @@ namespace etl
     //*************************************************************************
     /// operator !=
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator !=(const bitset_ext<Active_Bits, TElement>& lhs, const bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR14 bool operator!=(const bitset_ext<Active_Bits, TElement>& lhs, const bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
     {
       return !(lhs == rhs);
     }
@@ -3670,14 +3557,14 @@ namespace etl
     // Pointer to the storage for the bitset.
     element_type* pbuffer;
   };
-}
+} // namespace etl
 
 //***************************************************************************
 /// operator !=
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator != (const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+template <size_t Active_Bits, typename TElement>
+ETL_CONSTEXPR14 bool operator!=(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
@@ -3718,7 +3605,7 @@ namespace etl
         lhs_element_t rhs_value = 0;
 
         const int shift_step = etl::integral_limits<rhs_element_t>::bits;
-        int shift = 0;
+        int       shift      = 0;
 
         for (int i = 0; i < steps; ++i)
         {
@@ -3737,26 +3624,26 @@ namespace etl
 
       return true;
     }
-  }
-}
+  } // namespace private_bitset
+} // namespace etl
 
 //***************************************************************************
 /// operator ==
-/// bitset 
+/// bitset
 /// Different element types
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator == (const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator==(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   // Get a span of each type.
   typename etl::bitset<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
   typename etl::bitset<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
 
   // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR(sizeof(TLhsElement) > sizeof(TRhsElement))
+  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
   {
     return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
   }
@@ -3768,14 +3655,14 @@ typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::t
 
 //***************************************************************************
 /// operator !=
-/// bitset 
+/// bitset
 /// Different element types
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator != (const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator!=(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
@@ -3786,17 +3673,17 @@ typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::t
 /// Different element types
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator == (const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator==(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   // Get a span of each type.
   typename etl::bitset_ext<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
   typename etl::bitset_ext<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
 
   // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR(sizeof(TLhsElement) > sizeof(TRhsElement))
+  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
   {
     return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
   }
@@ -3812,10 +3699,10 @@ typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::t
 /// Different element types
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator != (const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator!=(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
@@ -3825,9 +3712,8 @@ typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::t
 /// bitset compared with bitset_ext, same element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14
-bool operator == (const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+template <size_t Active_Bits, typename TElement>
+ETL_CONSTEXPR14 bool operator==(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
 {
   const char   Storage_Model      = etl::bitset<Active_Bits, TElement>::Storage_Model;
   const size_t Number_Of_Elements = etl::bitset<Active_Bits, TElement>::Number_Of_Elements;
@@ -3845,9 +3731,8 @@ bool operator == (const etl::bitset<Active_Bits, TElement>& lhs, const etl::bits
 /// bitset compared with bitset_ext, same element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14
-bool operator != (const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+template <size_t Active_Bits, typename TElement>
+ETL_CONSTEXPR14 bool operator!=(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
@@ -3857,9 +3742,8 @@ bool operator != (const etl::bitset<Active_Bits, TElement>& lhs, const etl::bits
 /// bitset_ext compared with bitset, same element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14
-bool operator == (const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+template <size_t Active_Bits, typename TElement>
+ETL_CONSTEXPR14 bool operator==(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
 {
   const char   Storage_Model      = etl::bitset<Active_Bits, TElement>::Storage_Model;
   const size_t Number_Of_Elements = etl::bitset<Active_Bits, TElement>::Number_Of_Elements;
@@ -3877,29 +3761,28 @@ bool operator == (const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::
 /// bitset_ext compared with bitset, same element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14
-bool operator != (const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+template <size_t Active_Bits, typename TElement>
+ETL_CONSTEXPR14 bool operator!=(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
 
 //***************************************************************************
 /// operator ==
-/// bitset compared with bitset_ext, different element types. 
+/// bitset compared with bitset_ext, different element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-operator == (const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator==(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   // Get a span of each type.
   typename etl::bitset<Active_Bits, TLhsElement>::const_span_type     lhs_span = lhs.span();
   typename etl::bitset_ext<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
 
   // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR(sizeof(TLhsElement) > sizeof(TRhsElement))
+  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
   {
     return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
   }
@@ -3911,33 +3794,33 @@ operator == (const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset
 
 //***************************************************************************
 /// operator !=
-/// bitset compared with bitset_ext, different element types. 
+/// bitset compared with bitset_ext, different element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator != (const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator!=(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }
 
 //***************************************************************************
 /// operator ==
-/// bitset_ext compared with bitset, different element types. 
+/// bitset_ext compared with bitset, different element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator == (const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator==(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   // Get a span of each type.
   typename etl::bitset_ext<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
   typename etl::bitset<Active_Bits, TRhsElement>::const_span_type     rhs_span = rhs.span();
 
   // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR(sizeof(TLhsElement) > sizeof(TRhsElement))
+  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
   {
     return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
   }
@@ -3949,13 +3832,13 @@ typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::t
 
 //***************************************************************************
 /// operator !=
-/// bitset_ext compared with bitset, different element types. 
+/// bitset_ext compared with bitset, different element types.
 ///\ingroup bitset
 //***************************************************************************
-template<size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
 ETL_CONSTEXPR14
-typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator != (const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+  operator!=(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
 {
   return !(lhs == rhs);
 }

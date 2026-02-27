@@ -3,32 +3,38 @@
 
 #include "TestReporter.h"
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   class UNITTEST_LINKAGE CompositeTestReporter : public TestReporter
-   {
-   public:
-      CompositeTestReporter();
+  class UNITTEST_LINKAGE CompositeTestReporter : public TestReporter
+  {
+  public:
 
-      int GetReporterCount() const;
-      bool AddReporter(TestReporter* reporter);
-      bool RemoveReporter(TestReporter* reporter);
+    CompositeTestReporter();
 
-      virtual void ReportTestStart(TestDetails const& test);
-      virtual void ReportFailure(TestDetails const& test, char const* failure);
-      virtual void ReportTestFinish(TestDetails const& test, float secondsElapsed);
-      virtual void ReportSummary(int totalTestCount, int failedTestCount, int failureCount, float secondsElapsed);
+    int  GetReporterCount() const;
+    bool AddReporter(TestReporter* reporter);
+    bool RemoveReporter(TestReporter* reporter);
 
-   private:
-      enum { kMaxReporters = 16 };
-      TestReporter* m_reporters[kMaxReporters];
-      int m_reporterCount;
+    virtual void ReportTestStart(TestDetails const& test);
+    virtual void ReportFailure(TestDetails const& test, char const* failure);
+    virtual void ReportTestFinish(TestDetails const& test, float secondsElapsed);
+    virtual void ReportSummary(int totalTestCount, int failedTestCount, int failureCount, float secondsElapsed);
 
-      // revoked
-      CompositeTestReporter(const CompositeTestReporter&);
-      CompositeTestReporter& operator =(const CompositeTestReporter&);
-   };
+  private:
 
-}
+    enum
+    {
+      kMaxReporters = 16
+    };
+    TestReporter* m_reporters[kMaxReporters];
+    int           m_reporterCount;
+
+    // revoked
+    CompositeTestReporter(const CompositeTestReporter&);
+    CompositeTestReporter& operator=(const CompositeTestReporter&);
+  };
+
+} // namespace UnitTest
 
 #endif

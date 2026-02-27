@@ -34,10 +34,10 @@ SOFTWARE.
 #include "algorithm.h"
 #include "index_of_type.h"
 #include "integral_limits.h"
+#include "largest.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
-#include "largest.h"
 
 #if ETL_USING_CPP11
 namespace etl
@@ -57,15 +57,19 @@ namespace etl
   /// Check if a type is an etl::type_list.
   //***************************************************************************
   template <typename T>
-  struct is_type_list : etl::false_type {};
+  struct is_type_list : etl::false_type
+  {
+  };
 
   template <typename... TTypes>
-  struct is_type_list<etl::type_list<TTypes...>> : etl::true_type {};
+  struct is_type_list<etl::type_list<TTypes...>> : etl::true_type
+  {
+  };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_type_list_v = is_type_list<T>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// The empty type list.
@@ -82,7 +86,7 @@ namespace etl
     // A type_list cannot be instantiated, so delete the constructor and assignment operators.
     type_list() ETL_DELETE;
     type_list(const type_list&) ETL_DELETE;
-    type_list& operator =(const type_list&) ETL_DELETE;
+    type_list& operator=(const type_list&) ETL_DELETE;
   };
 
   namespace private_type_list
@@ -93,7 +97,7 @@ namespace etl
     {
       using type = type_list<TTypes...>;
     };
-  }
+  } // namespace private_type_list
 
   //***************************************************************************
   /// Recursive type list implementation for multiple types.
@@ -113,7 +117,7 @@ namespace etl
     // A type_list cannot be instantiated, so delete the constructor and assignment operators.
     type_list() ETL_DELETE;
     type_list(const type_list&) ETL_DELETE;
-    type_list& operator =(const type_list&) ETL_DELETE;
+    type_list& operator=(const type_list&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -133,7 +137,7 @@ namespace etl
 
     type_list() ETL_DELETE;
     type_list(const type_list&) ETL_DELETE;
-    type_list& operator =(const type_list&) ETL_DELETE;
+    type_list& operator=(const type_list&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -147,10 +151,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename... TTypes>
   inline constexpr size_t type_list_size_v = type_list_size<etl::type_list<TTypes...>>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines type as the type found at Index in the type_list.
@@ -159,7 +163,7 @@ namespace etl
   template <typename TTypeList, size_t Index>
   struct type_list_type_at_index
   {
-    ETL_STATIC_ASSERT(Index < TTypeList::size,               "etl::type_list_type_at_index out of range");
+    ETL_STATIC_ASSERT(Index < TTypeList::size, "etl::type_list_type_at_index out of range");
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
 
     using type = typename type_list_type_at_index<typename TTypeList::tail, Index - 1>::type;
@@ -184,11 +188,9 @@ namespace etl
   //***************************************************************************
   template <typename TTypeList, typename T>
   struct type_list_index_of_type
-    : public etl::integral_constant<size_t, etl::is_same<typename TTypeList::head, T>::value ? 0 :
-                                            (type_list_index_of_type<typename TTypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos :
-                                                                                                                                  type_list_index_of_type<typename TTypeList::tail, T>::value + 1)>
+    : public etl::integral_constant<size_t, etl::is_same<typename TTypeList::head, T>::value ? 0 : (type_list_index_of_type<typename TTypeList::tail, T>::value == etl::type_list_npos ? etl::type_list_npos : type_list_index_of_type<typename TTypeList::tail, T>::value + 1)>
   {
-    ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value),    "TTypeList must be an etl::type_list");
+    ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
   };
 
   template <typename T>
@@ -197,10 +199,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, typename T>
   inline constexpr size_t type_list_index_of_v = etl::type_list_index_of_type<TTypeList, T>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines an index_sequence of indices where T appears in the type_list.
@@ -237,7 +239,7 @@ namespace etl
     {
       using type = TResult;
     };
-  }
+  } // namespace private_type_list
 
   template <typename TTypeList, typename T>
   struct type_list_indices_of_type
@@ -247,10 +249,10 @@ namespace etl
     using type = typename private_type_list::type_list_indices_of_type_impl<TTypeList, T, 0U, etl::index_sequence<>>::type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList, typename T>
   using type_list_indices_of_type_t = typename type_list_indices_of_type<TTypeList, T>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines a bool constant that is true if the type_list contains the specified type, otherwise false.
@@ -270,10 +272,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, typename T>
   inline constexpr bool type_list_contains_v = etl::type_list_contains<TTypeList, T>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines a bool constant that is true if the type_list has duplicates of the specified type, otherwise false.
@@ -293,10 +295,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, typename T>
   inline constexpr bool type_list_has_duplicates_of_v = etl::type_list_has_duplicates_of<TTypeList, T>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines an integral constant that is the count of the number of times a type is in the type list.
@@ -316,10 +318,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, typename T>
   inline constexpr size_t type_list_count_of_v = etl::type_list_count_of<TTypeList, T>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines an integral constant that is maximum sizeof all types in the type_list.
@@ -340,10 +342,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList>
   inline constexpr size_t type_list_max_size_v = etl::type_list_max_size<TTypeList>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Defines an integral constant that is maximum alignment all types in the type_list.
@@ -364,10 +366,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList>
   inline constexpr size_t type_list_max_alignment_v = etl::type_list_max_alignment<TTypeList>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Declares a new type_list by selecting types from a given type_list, according to a list if indices.
@@ -460,7 +462,7 @@ namespace etl
   private:
 
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
-    ETL_STATIC_ASSERT(Index <= TTypeList::size,              "Index out of range");
+    ETL_STATIC_ASSERT(Index <= TTypeList::size, "Index out of range");
 
     using index_sequence_for_prefix = etl::make_index_sequence<Index>;
     using index_sequence_for_suffix = etl::make_index_sequence_with_offset<Index, TTypeList::size - Index>;
@@ -474,10 +476,10 @@ namespace etl
     using type = etl::type_list_cat_t<prefix, etl::type_list<T>, suffix>;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList, typename T, size_t Index>
   using type_list_insert_t = typename etl::type_list_insert<TTypeList, T, Index>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Remove a type at an index in a type_list.
@@ -488,7 +490,7 @@ namespace etl
   private:
 
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
-    ETL_STATIC_ASSERT(Index < TTypeList::size,               "Index out of range");
+    ETL_STATIC_ASSERT(Index < TTypeList::size, "Index out of range");
 
     using index_sequence_for_prefix = etl::make_index_sequence<Index>;
     using index_sequence_for_suffix = etl::make_index_sequence_with_offset<Index + 1, TTypeList::size - Index - 1>;
@@ -502,10 +504,10 @@ namespace etl
     using type = etl::type_list_cat_t<prefix, suffix>;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList, size_t Index>
   using type_list_remove_t = typename etl::type_list_remove<TTypeList, Index>::type;
-#endif
+  #endif
 
   //***************************************************************************
   // Remove types that satisfy a predicate from a type_list.
@@ -534,7 +536,7 @@ namespace etl
                                              rest,
                                              etl::type_list_push_front_t<rest, Head>>::type;
     };
-  }
+  } // namespace private_type_list
 
   //***************************************************************************
   /// Remove types that satisfy a predicate from a type_list.
@@ -552,10 +554,10 @@ namespace etl
     using type = typename private_type_list::type_list_remove_if_impl<TTypeList, TPredicate>::type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList, template <typename> class TPredicate>
   using type_list_remove_if_t = typename etl::type_list_remove_if<TTypeList, TPredicate>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Removes the first type from a type_list.
@@ -566,17 +568,17 @@ namespace etl
   private:
 
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
-    ETL_STATIC_ASSERT(TTypeList::size > 0U,                  "Cannot pop_front from an empty type_list");
+    ETL_STATIC_ASSERT(TTypeList::size > 0U, "Cannot pop_front from an empty type_list");
 
   public:
 
     using type = typename TTypeList::tail;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList>
   using type_list_pop_front_t = typename etl::type_list_pop_front<TTypeList>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Removes the last type from a type_list.
@@ -587,17 +589,17 @@ namespace etl
   private:
 
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
-    ETL_STATIC_ASSERT(TTypeList::size > 0U,                  "Cannot pop_back from an empty type_list");
+    ETL_STATIC_ASSERT(TTypeList::size > 0U, "Cannot pop_back from an empty type_list");
 
   public:
 
     using type = typename etl::type_list_remove<TTypeList, TTypeList::size - 1U>::type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList>
   using type_list_pop_back_t = typename etl::type_list_pop_back<TTypeList>::type;
-#endif
+  #endif
 
   //***************************************************************************
   // Remove duplicate types from a type_list, preserving the first occurrence.
@@ -628,7 +630,7 @@ namespace etl
 
       using type = typename type_list_unique_impl<etl::type_list<Tail...>, next_result>::type;
     };
-  }
+  } // namespace private_type_list
 
   //***************************************************************************
   /// Defines a new type_list by removing duplicate types from a given type_list, preserving the first occurrence.
@@ -641,10 +643,10 @@ namespace etl
     using type = typename private_type_list::type_list_unique_impl<TTypeList, etl::type_list<>>::type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList>
   using type_list_unique_t = typename etl::type_list_unique<TTypeList>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks that all of the types in a type_list are unique.
@@ -658,10 +660,10 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList>
   inline constexpr bool type_list_is_unique_v = etl::type_list_is_unique<TTypeList>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Check if the type_list is empty.
@@ -681,10 +683,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename... TTypes>
   inline constexpr bool type_list_is_empty_v = type_list_is_empty<TTypes...>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks that all types in a type_list satisfy a unary predicate.
@@ -705,10 +707,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, template <typename> class TPredicate>
   inline constexpr bool type_list_all_of_v = type_list_all_of<TTypeList, TPredicate>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks that any type in a type_list satisfies a unary predicate.
@@ -729,10 +731,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, template <typename> class TPredicate>
   inline constexpr bool type_list_any_of_v = type_list_any_of<TTypeList, TPredicate>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks that no types in a type_list satisfy a unary predicate.
@@ -753,10 +755,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, template <typename> class TPredicate>
   inline constexpr bool type_list_none_of_v = type_list_none_of<TTypeList, TPredicate>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks that two type lists are convertible.
@@ -776,16 +778,15 @@ namespace etl
   // Recursive case: check head types, then recurse
   template <typename TFromHead, typename... TFromTail, typename TToHead, typename... TToTail>
   struct type_lists_are_convertible<etl::type_list<TFromHead, TFromTail...>, etl::type_list<TToHead, TToTail...>>
-    : public etl::bool_constant<etl::is_convertible<TFromHead, TToHead>::value &&
-                                etl::type_lists_are_convertible<etl::type_list<TFromTail...>, etl::type_list<TToTail...>>::value>
+    : public etl::bool_constant<etl::is_convertible<TFromHead, TToHead>::value && etl::type_lists_are_convertible<etl::type_list<TFromTail...>, etl::type_list<TToTail...>>::value>
   {
     static_assert(sizeof...(TFromTail) == sizeof...(TToTail), "Type lists are not the same length");
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TFromList, typename TToList>
   inline constexpr bool type_lists_are_convertible_v = etl::type_lists_are_convertible<TFromList, TToList>::value;
-#endif
+  #endif
 
   namespace private_type_list
   {
@@ -814,11 +815,10 @@ namespace etl
     // Recursively compare the head to the next element to ensure that the list is sorted.
     template <typename Head, typename Next, typename... Tail, template <typename, typename> class TCompare>
     struct type_list_is_sorted_impl<etl::type_list<Head, Next, Tail...>, TCompare>
-      : etl::bool_constant<!TCompare<Next, Head>::value &&
-                           type_list_is_sorted_impl<etl::type_list<Next, Tail...>, TCompare>::value>
+      : etl::bool_constant<!TCompare<Next, Head>::value && type_list_is_sorted_impl<etl::type_list<Next, Tail...>, TCompare>::value>
     {
     };
-  }
+  } // namespace private_type_list
 
   //*****************************************************************************
   /// Checks if a type_list is sorted according to TCompare
@@ -831,10 +831,10 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TTypeList, template <typename, typename> class TCompare>
   inline constexpr bool type_list_is_sorted_v = etl::type_list_is_sorted<TTypeList, TCompare>::value;
-#endif
+  #endif
 
   //*****************************************************************************
   namespace private_type_list
@@ -883,7 +883,7 @@ namespace etl
     {
       using type = etl::type_list_push_front_t<typename type_list_insert_sorted_impl<etl::type_list<Tail...>, T, TCompare>::type, Head>;
     };
-  }
+  } // namespace private_type_list
 
   //*****************************************************************************
   /// Insert T into the correct position in the sorted list, as determined by TCompare
@@ -893,14 +893,14 @@ namespace etl
   template <typename TTypeList, typename T, template <typename, typename> class TCompare>
   struct type_list_insert_sorted : public private_type_list::type_list_insert_sorted_impl<TTypeList, T, TCompare>
   {
-    ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value),                  "TTypeList must be an etl::type_list");
+    ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
     ETL_STATIC_ASSERT((etl::type_list_is_sorted<TTypeList, TCompare>::value), "Cannot insert into a non-sorted type list");
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList, typename T, template <typename, typename> class TCompare>
   using type_list_insert_sorted_t = typename etl::type_list_insert_sorted<TTypeList, T, TCompare>::type;
-#endif
+  #endif
 
   //***************************************************************************
   namespace private_type_list
@@ -939,7 +939,7 @@ namespace etl
 
       using type = typename etl::type_list_insert_sorted<sorted_tail, Head, TCompare>::type;
     };
-  }
+  } // namespace private_type_list
 
   //*****************************************************************************
   /// etl::type_list sorting by a user-supplied type comparator
@@ -951,11 +951,11 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TTypeList, template <typename, typename> class TCompare>
   using type_list_sort_t = typename etl::type_list_sort<TTypeList, TCompare>::type;
-#endif
-}
+  #endif
+} // namespace etl
 #endif
 
 #endif

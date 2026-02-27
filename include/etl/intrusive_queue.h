@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_INTRUSIVE_QUEUE_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
+#include "type_traits.h"
 
 #include <stddef.h>
 
@@ -112,7 +112,7 @@ namespace etl
         p_back->etl_next = &value;
       }
 
-      p_back = &value;
+      p_back         = &value;
       value.etl_next = &terminator;
 
       ++current_size;
@@ -128,7 +128,7 @@ namespace etl
 
       link_type* p_front = terminator.etl_next;
 
-      link_type* p_next = p_front->etl_next;
+      link_type* p_next   = p_front->etl_next;
       terminator.etl_next = p_next;
 
       p_front->clear();
@@ -189,7 +189,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_queue_base()
-      : p_back (&terminator)
+      : p_back(&terminator)
       , current_size(0)
     {
       terminator.etl_next = &terminator;
@@ -283,8 +283,8 @@ namespace etl
 
     // Disable copy construction and assignment.
     intrusive_queue(const intrusive_queue&);
-    intrusive_queue& operator = (const intrusive_queue& rhs);
+    intrusive_queue& operator=(const intrusive_queue& rhs);
   };
-}
+} // namespace etl
 
 #endif

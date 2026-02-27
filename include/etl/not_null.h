@@ -34,11 +34,11 @@ SOFTWARE.
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "static_assert.h"
 #include "memory.h"
+#include "static_assert.h"
 #include "type_traits.h"
 
-namespace etl 
+namespace etl
 {
   //***************************************************************************
   /// The base class for not_null exceptions.
@@ -78,7 +78,7 @@ namespace etl
   // A container for pointers that are not allowed to be null.
   //***************************************************************************
   template <typename T>
-  class not_null<T*> 
+  class not_null<T*>
   {
   public:
 
@@ -94,7 +94,7 @@ namespace etl
     /// Asserts if the pointer is null.
     //*********************************
     ETL_CONSTEXPR14 explicit not_null(underlying_type ptr_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
-      : ptr(ptr_) 
+      : ptr(ptr_)
     {
       ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
     }
@@ -103,7 +103,7 @@ namespace etl
     /// Copy construct from a not_null pointer.
     //*********************************
     ETL_CONSTEXPR14 not_null(const etl::not_null<T*>& other) ETL_NOEXCEPT
-      : ptr(other.get()) 
+      : ptr(other.get())
     {
     }
 
@@ -111,7 +111,7 @@ namespace etl
     /// Assignment from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    ETL_CONSTEXPR14 not_null& operator =(underlying_type rhs) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 not_null& operator=(underlying_type rhs) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
 
@@ -123,7 +123,7 @@ namespace etl
     //*********************************
     /// Assignment from a not_null.
     //*********************************
-    ETL_CONSTEXPR14 not_null& operator =(const etl::not_null<T*>& rhs) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 not_null& operator=(const etl::not_null<T*>& rhs) ETL_NOEXCEPT
     {
       ptr = rhs.get();
 
@@ -134,32 +134,32 @@ namespace etl
     /// Gets the underlying pointer.
     //*********************************
     ETL_CONSTEXPR14 pointer get() const ETL_NOEXCEPT
-    { 
-      return ptr; 
+    {
+      return ptr;
     }
 
     //*********************************
     /// Implicit conversion to pointer.
     //*********************************
     ETL_CONSTEXPR14 operator pointer() const ETL_NOEXCEPT
-    { 
-      return ptr; 
+    {
+      return ptr;
     }
 
     //*********************************
     /// Dereference operator.
     //*********************************
     ETL_CONSTEXPR14 reference operator*() const ETL_NOEXCEPT
-    { 
-      return *ptr; 
+    {
+      return *ptr;
     }
 
     //*********************************
     /// Arrow operator.
     //*********************************
     ETL_CONSTEXPR14 pointer operator->() const ETL_NOEXCEPT
-    { 
-      return ptr; 
+    {
+      return ptr;
     }
 
   private:
@@ -173,12 +173,12 @@ namespace etl
   // A container for unique_ptr that are not allowed to be null.
   //***************************************************************************
   template <typename T, typename TDeleter>
-  class not_null<etl::unique_ptr<T, TDeleter> > 
+  class not_null<etl::unique_ptr<T, TDeleter> >
   {
   private:
 
     typedef etl::not_null<etl::unique_ptr<T, TDeleter> > this_type;
-    typedef etl::unique_ptr<T, TDeleter> underlying_type;
+    typedef etl::unique_ptr<T, TDeleter>                 underlying_type;
 
   public:
 
@@ -195,7 +195,7 @@ namespace etl
     /// Moves from the unique_ptr.
     //*********************************
     ETL_CONSTEXPR14 explicit not_null(underlying_type&& u_ptr_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
-      : u_ptr(etl::move(u_ptr_)) 
+      : u_ptr(etl::move(u_ptr_))
     {
       ETL_ASSERT(u_ptr.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
     }
@@ -205,7 +205,7 @@ namespace etl
     /// Asserts if the unique_ptr contains null.
     /// Moves from the unique_ptr.
     //*********************************
-    ETL_CONSTEXPR14 not_null& operator =(underlying_type&& rhs) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 not_null& operator=(underlying_type&& rhs) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
 
@@ -219,47 +219,47 @@ namespace etl
     /// Gets the underlying ptr.
     //*********************************
     ETL_CONSTEXPR14 pointer get() const ETL_NOEXCEPT
-    { 
-      return u_ptr.get(); 
+    {
+      return u_ptr.get();
     }
 
     //*********************************
     /// Implicit conversion to pointer.
     //*********************************
     ETL_CONSTEXPR14 operator pointer() const ETL_NOEXCEPT
-    { 
-      return u_ptr.get(); 
+    {
+      return u_ptr.get();
     }
-  
+
     //*********************************
     /// Dereference operator.
     //*********************************
     ETL_CONSTEXPR14 reference operator*() const ETL_NOEXCEPT
-    { 
-      return *u_ptr; 
+    {
+      return *u_ptr;
     }
-  
+
     //*********************************
     /// Arrow operator.
     //*********************************
     ETL_CONSTEXPR14 pointer operator->() const ETL_NOEXCEPT
-    { 
-      return u_ptr.get(); 
+    {
+      return u_ptr.get();
     }
 
   private:
-  
+
     ETL_CONSTEXPR14 explicit not_null(const this_type& u_ptr_) ETL_NOEXCEPT ETL_DELETE;
-    ETL_CONSTEXPR14 not_null& operator=(const this_type& rhs) ETL_NOEXCEPT  ETL_DELETE;
+    ETL_CONSTEXPR14 not_null& operator=(const this_type& rhs) ETL_NOEXCEPT ETL_DELETE;
 
 #if ETL_USING_CPP11
     ETL_CONSTEXPR14 explicit not_null(this_type&& u_ptr_) ETL_NOEXCEPT = delete;
-    ETL_CONSTEXPR14 not_null& operator=(this_type&& rhs) ETL_NOEXCEPT = delete;
+    ETL_CONSTEXPR14 not_null& operator=(this_type&& rhs) ETL_NOEXCEPT  = delete;
 #endif
 
     /// The underlying unique_ptr.
     underlying_type u_ptr;
   };
-}
+} // namespace etl
 
 #endif

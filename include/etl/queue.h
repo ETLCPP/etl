@@ -33,15 +33,15 @@ SOFTWARE.
 
 #include "platform.h"
 #include "alignment.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "debug_count.h"
-#include "type_traits.h"
-#include "parameter_type.h"
-#include "memory_model.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "integral_limits.h"
-#include "utility.h"
+#include "memory_model.h"
+#include "parameter_type.h"
 #include "placement_new.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -166,10 +166,10 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     queue_base(size_type max_size_)
-      : in(0),
-        out(0),
-        current_size(0),
-        CAPACITY(max_size_)
+      : in(0)
+      , out(0)
+      , current_size(0)
+      , CAPACITY(max_size_)
     {
     }
 
@@ -185,10 +185,11 @@ namespace etl
     //*************************************************************************
     void add_in()
     {
-      if (++in == CAPACITY) ETL_UNLIKELY
-      {
-        in = 0;
-      }
+      if (++in == CAPACITY)
+        ETL_UNLIKELY
+        {
+          in = 0;
+        }
 
       ++current_size;
       ETL_INCREMENT_DEBUG_COUNT;
@@ -199,10 +200,11 @@ namespace etl
     //*************************************************************************
     void del_out()
     {
-      if (++out == CAPACITY) ETL_UNLIKELY
-      {
-        out = 0;
-      }
+      if (++out == CAPACITY)
+        ETL_UNLIKELY
+        {
+          out = 0;
+        }
       --current_size;
       ETL_DECREMENT_DEBUG_COUNT;
     }
@@ -212,18 +214,17 @@ namespace etl
     //*************************************************************************
     void index_clear()
     {
-      in = 0;
-      out = 0;
+      in           = 0;
+      out          = 0;
       current_size = 0;
       ETL_RESET_DEBUG_COUNT;
     }
 
-    size_type in;            ///< Where to input new data.
-    size_type out;           ///< Where to get the oldest data.
-    size_type current_size;   ///< The number of items in the queue.
-    const size_type CAPACITY; ///< The maximum number of items in the queue.
-    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
-
+    size_type       in;           ///< Where to input new data.
+    size_type       out;          ///< Where to get the oldest data.
+    size_type       current_size; ///< The number of items in the queue.
+    const size_type CAPACITY;     ///< The maximum number of items in the queue.
+    ETL_DECLARE_DEBUG_COUNT;      ///< For internal debugging purposes.
   };
 
   //***************************************************************************
@@ -246,24 +247,24 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;      ///< The type stored in the queue.
-    typedef T&                         reference;       ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef T        value_type;      ///< The type stored in the queue.
+    typedef T&       reference;       ///< A reference to the type used in the queue.
+    typedef const T& const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef T*                         pointer;         ///< A pointer to the type used in the queue.
-    typedef const T*                   const_pointer;   ///< A const pointer to the type used in the queue.
-    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+    typedef T*                         pointer;       ///< A pointer to the type used in the queue.
+    typedef const T*                   const_pointer; ///< A const pointer to the type used in the queue.
+    typedef typename base_t::size_type size_type;     ///< The type used for determining the size of the queue.
 
-    using base_t::in;
-    using base_t::out;
+    using base_t::add_in;
     using base_t::CAPACITY;
     using base_t::current_size;
-    using base_t::full;
-    using base_t::empty;
-    using base_t::add_in;
     using base_t::del_out;
+    using base_t::empty;
+    using base_t::full;
+    using base_t::in;
+    using base_t::out;
 
     //*************************************************************************
     /// Gets a reference to the value at the front of the queue.<br>
@@ -335,8 +336,8 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param args The arguments to the constructor for the new item to push to the queue.
     //*************************************************************************
-    template <typename ... Args>
-    reference emplace(Args && ... args)
+    template <typename... Args>
+    reference emplace(Args&&... args)
     {
       ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
 
@@ -436,7 +437,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         base_t::index_clear();
       }
@@ -448,7 +449,7 @@ namespace etl
           del_out();
         }
 
-        in = 0;
+        in  = 0;
         out = 0;
       }
     }
@@ -492,7 +493,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iqueue& operator = (const iqueue& rhs)
+    iqueue& operator=(const iqueue& rhs)
     {
       if (&rhs != this)
       {
@@ -507,7 +508,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iqueue& operator = (iqueue&& rhs)
+    iqueue& operator=(iqueue&& rhs)
     {
       if (&rhs != this)
       {
@@ -559,8 +560,8 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue(T* p_buffer_, size_type max_size_)
-      : base_t(max_size_),
-        p_buffer(p_buffer_)
+      : base_t(max_size_)
+      , p_buffer(p_buffer_)
     {
     }
 
@@ -575,12 +576,16 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_QUEUE) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~iqueue()
     {
     }
 #else
+
   protected:
+
     ~iqueue()
     {
     }
@@ -650,7 +655,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    queue& operator = (const queue& rhs)
+    queue& operator=(const queue& rhs)
     {
       if (&rhs != this)
       {
@@ -664,7 +669,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    queue& operator = (queue&& rhs)
+    queue& operator=(queue&& rhs)
     {
       if (&rhs != this)
       {
@@ -683,6 +688,6 @@ namespace etl
 
   template <typename T, const size_t SIZE, const size_t MEMORY_MODEL>
   ETL_CONSTANT typename queue<T, SIZE, MEMORY_MODEL>::size_type queue<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

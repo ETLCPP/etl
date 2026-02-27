@@ -41,7 +41,7 @@ namespace
     //*************************************************************************
     TEST(test_stl_style_container)
     {
-      const size_t SIZE = 10UL;
+      const size_t   SIZE = 10UL;
       std::list<int> data(SIZE);
 
       std::list<int>::iterator iBegin = etl::begin(data);
@@ -54,7 +54,7 @@ namespace
     //*************************************************************************
     TEST(test_const_stl_style_container)
     {
-      const size_t SIZE = 10UL;
+      const size_t         SIZE = 10UL;
       const std::list<int> data(SIZE);
 
       std::list<int>::const_iterator iBegin = etl::begin(data);
@@ -68,7 +68,7 @@ namespace
     TEST(test_c_array)
     {
       const size_t SIZE = 10UL;
-      int data[SIZE];
+      int          data[SIZE];
 
       int* iBegin = etl::begin(data);
       CHECK(&data[0] == iBegin);
@@ -80,8 +80,8 @@ namespace
     //*************************************************************************
     TEST(test_const_c_array)
     {
-      const size_t SIZE = 10UL;
-      const int data[SIZE] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const size_t SIZE       = 10UL;
+      const int    data[SIZE] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       const int* const iBegin = etl::begin(data);
       CHECK(&data[0] == iBegin);
@@ -90,11 +90,10 @@ namespace
       CHECK((data + SIZE) == iEnd);
     }
 
-
     //*************************************************************************
     TEST(test_next)
     {
-      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const int  data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       const int* p;
 
       p = etl::next(std::begin(data));
@@ -110,7 +109,7 @@ namespace
     //*************************************************************************
     TEST(test_prev)
     {
-      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const int  data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       const int* p;
 
       p = etl::prev(std::end(data));
@@ -126,7 +125,7 @@ namespace
     //*************************************************************************
     TEST(test_stl_style_container_size)
     {
-      const size_t SIZE = 10UL;
+      const size_t   SIZE = 10UL;
       std::list<int> data(SIZE);
 
       size_t runtime_size = ETL_OR_STD17::size(data);
@@ -137,7 +136,7 @@ namespace
     TEST(test_c_array_size)
     {
       const size_t SIZE = 10UL;
-      int data[SIZE];
+      int          data[SIZE];
 
       size_t runtime_size = ETL_OR_STD17::size(data);
       CHECK_EQUAL(SIZE, runtime_size);
@@ -146,6 +145,6 @@ namespace
       CHECK_EQUAL(SIZE, compiletime_size);
     }
   }
-}
+} // namespace
 
 #endif

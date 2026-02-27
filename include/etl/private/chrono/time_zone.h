@@ -36,9 +36,9 @@ namespace etl
 {
   namespace chrono
   {
-    //class time_zone
+    // class time_zone
     //{
-    //public:
+    // public:
 
     //  /// Obtains the name of this time_zone.
     //  etl::string_view name() const ETL_NOEXCEPT
@@ -65,16 +65,16 @@ namespace etl
     //  }
 
     //  template <typename TDuration>
-    //  etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>> to_sys(const etl::chrono::local_time<TDuration>& tp, 
+    //  etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>> to_sys(const etl::chrono::local_time<TDuration>& tp,
     //                                                                                    etl::chrono::choose z) const
     //  {
     //    etl::chrono::sys_time<etl::common_type_t<TDuration, etl::chrono::seconds>>();
     //  }
 
-    //private:
+    // private:
 
     //  static const char *tz_name;
 
     //};
-  }
-}
+  } // namespace chrono
+} // namespace etl

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2023 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -59,7 +59,7 @@ namespace
     i = i % 12;
 
     if (i < 0)
-    { 
+    {
       i = 12 + i;
     }
 
@@ -76,7 +76,7 @@ namespace
       return (month.ok() == false);
     }
     else
-    { 
+    {
       return (month.ok() == true);
     }
   }
@@ -166,7 +166,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month  month(m);
           Chrono::months months(ms);
           month += months;
 
@@ -183,7 +183,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month  month(m);
           Chrono::months months(ms);
           month = month + months;
 
@@ -200,7 +200,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month  month(m);
           Chrono::months months(ms);
           month = months + month;
 
@@ -217,7 +217,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month  month(m);
           Chrono::months months(ms);
           month -= months;
 
@@ -234,7 +234,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month  month(m);
           Chrono::months months(ms);
           month = month - months;
 
@@ -261,8 +261,8 @@ namespace
         int difference12 = expected_month(m1) - expected_month(m2);
         int difference21 = expected_month(m2) - expected_month(m1);
 
-        difference12 = (difference12 < 0) ? 12 + difference12: difference12;
-        difference21 = (difference21 < 0) ? 12 + difference21: difference21;
+        difference12 = (difference12 < 0) ? 12 + difference12 : difference12;
+        difference21 = (difference21 < 0) ? 12 + difference21 : difference21;
 
         CHECK_EQUAL(difference12, months12.count());
         CHECK_EQUAL(difference21, months21.count());
@@ -276,37 +276,37 @@ namespace
       Chrono::month month1(Chrono::January);
       Chrono::month month2(Chrono::February);
 
-      CHECK_EQUAL(0,  month1.compare(month1));
+      CHECK_EQUAL(0, month1.compare(month1));
       CHECK_EQUAL(-1, month1.compare(month2));
-      CHECK_EQUAL(1,  month2.compare(month1));
+      CHECK_EQUAL(1, month2.compare(month1));
     }
 #endif
 
     //*************************************************************************
     TEST(test_month_comparison_operators)
     {
-        Chrono::month month1(1);
-        Chrono::month month2(2);
+      Chrono::month month1(1);
+      Chrono::month month2(2);
 
-        CHECK_TRUE(month1  == month1);
-        CHECK_FALSE(month1 != month1);
-        CHECK_TRUE(month1   < month2);
-        CHECK_FALSE(month1  < month1);
-        CHECK_FALSE(month2  < month1);
-        CHECK_TRUE(month1  <= month2);
-        CHECK_TRUE(month1  <= month1);
-        CHECK_FALSE(month2 <= month1);
-        CHECK_FALSE(month1  > month2);
-        CHECK_FALSE(month1  > month1);
-        CHECK_TRUE(month2   > month1);
-        CHECK_FALSE(month1 >= month2);
-        CHECK_TRUE(month1  >= month1);
-        CHECK_TRUE(month2  >= month1);
+      CHECK_TRUE(month1 == month1);
+      CHECK_FALSE(month1 != month1);
+      CHECK_TRUE(month1 < month2);
+      CHECK_FALSE(month1 < month1);
+      CHECK_FALSE(month2 < month1);
+      CHECK_TRUE(month1 <= month2);
+      CHECK_TRUE(month1 <= month1);
+      CHECK_FALSE(month2 <= month1);
+      CHECK_FALSE(month1 > month2);
+      CHECK_FALSE(month1 > month1);
+      CHECK_TRUE(month2 > month1);
+      CHECK_FALSE(month1 >= month2);
+      CHECK_TRUE(month1 >= month1);
+      CHECK_TRUE(month2 >= month1);
 
 #if ETL_USING_CPP20
-        CHECK_TRUE((month1 <=> month1) == 0);
-        CHECK_TRUE((month1 <=> month2)  < 0);
-        CHECK_TRUE((month2 <=> month1)  > 0);
+      CHECK_TRUE((month1 <=> month1) == 0);
+      CHECK_TRUE((month1 <=> month2) < 0);
+      CHECK_TRUE((month2 <=> month1) > 0);
 #endif
     }
 
@@ -330,18 +330,18 @@ namespace
     //*************************************************************************
     TEST(test_month_types)
     {
-      CHECK_EQUAL(1U,  static_cast<unsigned>(Chrono::January));
-      CHECK_EQUAL(2U,  static_cast<unsigned>(Chrono::February));
-      CHECK_EQUAL(3U,  static_cast<unsigned>(Chrono::March));
-      CHECK_EQUAL(4U,  static_cast<unsigned>(Chrono::April));
-      CHECK_EQUAL(5U,  static_cast<unsigned>(Chrono::May));
-      CHECK_EQUAL(6U,  static_cast<unsigned>(Chrono::June));
-      CHECK_EQUAL(7U,  static_cast<unsigned>(Chrono::July));
-      CHECK_EQUAL(8U,  static_cast<unsigned>(Chrono::August));
-      CHECK_EQUAL(9U,  static_cast<unsigned>(Chrono::September));
+      CHECK_EQUAL(1U, static_cast<unsigned>(Chrono::January));
+      CHECK_EQUAL(2U, static_cast<unsigned>(Chrono::February));
+      CHECK_EQUAL(3U, static_cast<unsigned>(Chrono::March));
+      CHECK_EQUAL(4U, static_cast<unsigned>(Chrono::April));
+      CHECK_EQUAL(5U, static_cast<unsigned>(Chrono::May));
+      CHECK_EQUAL(6U, static_cast<unsigned>(Chrono::June));
+      CHECK_EQUAL(7U, static_cast<unsigned>(Chrono::July));
+      CHECK_EQUAL(8U, static_cast<unsigned>(Chrono::August));
+      CHECK_EQUAL(9U, static_cast<unsigned>(Chrono::September));
       CHECK_EQUAL(10U, static_cast<unsigned>(Chrono::October));
       CHECK_EQUAL(11U, static_cast<unsigned>(Chrono::November));
       CHECK_EQUAL(12U, static_cast<unsigned>(Chrono::December));
     }
   }
-}
+} // namespace

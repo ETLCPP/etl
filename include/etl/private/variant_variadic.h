@@ -29,22 +29,22 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "../platform.h"
-#include "../utility.h"
-#include "../largest.h"
-#include "../nth_type.h"
-#include "../exception.h"
-#include "../type_traits.h"
-#include "../integral_limits.h"
-#include "../static_assert.h"
 #include "../alignment.h"
-#include "../error_handler.h"
-#include "../type_list.h"
-#include "../placement_new.h"
-#include "../visitor.h"
-#include "../memory.h"
 #include "../compare.h"
+#include "../error_handler.h"
+#include "../exception.h"
 #include "../initializer_list.h"
+#include "../integral_limits.h"
+#include "../largest.h"
+#include "../memory.h"
 #include "../monostate.h"
+#include "../nth_type.h"
+#include "../placement_new.h"
+#include "../static_assert.h"
+#include "../type_list.h"
+#include "../type_traits.h"
+#include "../utility.h"
+#include "../visitor.h"
 
 #include <stdint.h>
 
@@ -71,16 +71,16 @@ namespace etl
     //*******************************************
     // The traits an object may have.
     //*******************************************
-    static constexpr bool Copyable = true;
+    static constexpr bool Copyable     = true;
     static constexpr bool Non_Copyable = false;
-    static constexpr bool Moveable = true;
+    static constexpr bool Moveable     = true;
     static constexpr bool Non_Moveable = false;
 
     //*******************************************
     // The types of operations we can perform.
     //*******************************************
-    static constexpr int Copy = 0;
-    static constexpr int Move = 1;
+    static constexpr int Copy    = 0;
+    static constexpr int Move    = 1;
     static constexpr int Destroy = 2;
 
     //*******************************************
@@ -97,9 +97,9 @@ namespace etl
       static void do_operation(int, char*, const char*)
       {
         // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
+  #if defined(ETL_IN_UNIT_TEST)
         assert(false);
-#endif
+  #endif
       }
     };
 
@@ -113,19 +113,19 @@ namespace etl
         switch (operation)
         {
           case Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
+            {
+              reinterpret_cast<const T*>(pstorage)->~T();
+              break;
+            }
 
           default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
+            {
+              // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+              assert(false);
+  #endif
+              break;
+            }
         }
       }
     };
@@ -140,25 +140,25 @@ namespace etl
         switch (operation)
         {
           case Move:
-          {
-            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
-            break;
-          }
+            {
+              ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
+              break;
+            }
 
           case Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
+            {
+              reinterpret_cast<const T*>(pstorage)->~T();
+              break;
+            }
 
           default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
+            {
+              // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+              assert(false);
+  #endif
+              break;
+            }
         }
       }
     };
@@ -173,25 +173,25 @@ namespace etl
         switch (operation)
         {
           case Copy:
-          {
-            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
-            break;
-          }
+            {
+              ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
+              break;
+            }
 
           case Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
+            {
+              reinterpret_cast<const T*>(pstorage)->~T();
+              break;
+            }
 
           default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
+            {
+              // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+              assert(false);
+  #endif
+              break;
+            }
         }
       }
     };
@@ -206,35 +206,35 @@ namespace etl
         switch (operation)
         {
           case Copy:
-          {
-            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
-            break;
-          }
+            {
+              ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
+              break;
+            }
 
           case Move:
-          {
-            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
-            break;
-          }
+            {
+              ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
+              break;
+            }
 
           case Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
+            {
+              reinterpret_cast<const T*>(pstorage)->~T();
+              break;
+            }
 
           default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
+            {
+              // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+              assert(false);
+  #endif
+              break;
+            }
         }
       }
     };
-  }
+  } // namespace private_variant
 
   /// Definition of variant_npos.
   constexpr size_t variant_npos = etl::integral_limits<size_t>::max;
@@ -246,12 +246,12 @@ namespace etl
 
   //***************************************************************************
   /// variant_alternative
-  //*************************************************************************** 
+  //***************************************************************************
   template <size_t Index, typename T>
   struct variant_alternative;
 
   template <size_t Index, typename... TTypes>
-  struct variant_alternative<Index, etl::variant<TTypes...>>
+  struct variant_alternative<Index, etl::variant<TTypes...> >
   {
     using type = etl::nth_type_t<Index, TTypes...>;
   };
@@ -273,20 +273,20 @@ namespace etl
   //***********************************
   // get. Forward declarations
   template <size_t Index, typename... VTypes>
-  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&
-    get(etl::variant<VTypes...>& v);
+  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...> >&
+                  get(etl::variant<VTypes...>& v);
 
   template <size_t Index, typename... VTypes>
-  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&&
-    get(etl::variant<VTypes...>&& v);
+  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...> >&&
+                  get(etl::variant<VTypes...>&& v);
 
   template <size_t Index, typename... VTypes>
-  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&
-    get(const etl::variant<VTypes...>& v);
+  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...> >&
+                        get(const etl::variant<VTypes...>& v);
 
   template <size_t Index, typename... VTypes>
-  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&&
-    get(const etl::variant<VTypes...>&& v);
+  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...> >&&
+                        get(const etl::variant<VTypes...>&& v);
 
   template <typename T, typename... VTypes>
   ETL_CONSTEXPR14 T& get(etl::variant<VTypes...>& v);
@@ -300,25 +300,43 @@ namespace etl
   template <typename T, typename... VTypes>
   ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
 
-#if ETL_NOT_USING_CPP17
-  #include "variant_select_do_visitor.h"
-  #include "variant_select_do_operator.h"
-#endif
+  #if ETL_NOT_USING_CPP17
+    #include "variant_select_do_operator.h"
+    #include "variant_select_do_visitor.h"
+  #endif
 
-  constexpr bool operator >(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
-	constexpr bool operator <(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
-	constexpr bool operator !=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
-	constexpr bool operator <=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
-	constexpr bool operator >=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
-	constexpr bool operator ==(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
-#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+  constexpr bool operator>(etl::monostate, etl::monostate) ETL_NOEXCEPT
+  {
+    return false;
+  }
+  constexpr bool operator<(etl::monostate, etl::monostate) ETL_NOEXCEPT
+  {
+    return false;
+  }
+  constexpr bool operator!=(etl::monostate, etl::monostate) ETL_NOEXCEPT
+  {
+    return false;
+  }
+  constexpr bool operator<=(etl::monostate, etl::monostate) ETL_NOEXCEPT
+  {
+    return true;
+  }
+  constexpr bool operator>=(etl::monostate, etl::monostate) ETL_NOEXCEPT
+  {
+    return true;
+  }
+  constexpr bool operator==(etl::monostate, etl::monostate) ETL_NOEXCEPT
+  {
+    return true;
+  }
+  #if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
   constexpr std::strong_ordering operator<=>(monostate, monostate) ETL_NOEXCEPT
   {
     return std::strong_ordering::equal;
   }
-#endif
+  #endif
 
-#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+  #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
   template <>
   struct is_copy_constructible<etl::monostate> : public etl::true_type
   {
@@ -328,7 +346,7 @@ namespace etl
   struct is_move_constructible<etl::monostate> : public etl::true_type
   {
   };
-#endif
+  #endif
 
   //***************************************************************************
   /// Base exception for the variant class.
@@ -337,6 +355,7 @@ namespace etl
   class variant_exception : public exception
   {
   public:
+
     variant_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
@@ -350,6 +369,7 @@ namespace etl
   class variant_incorrect_type_exception : public variant_exception
   {
   public:
+
     variant_incorrect_type_exception(string_type file_name_, numeric_type line_number_)
       : variant_exception(ETL_ERROR_TEXT("variant:unsupported type", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
     {
@@ -363,9 +383,11 @@ namespace etl
   class bad_variant_access : public variant_exception
   {
   public:
+
     bad_variant_access(string_type file_name_, numeric_type line_number_)
-    : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"B"), file_name_, line_number_)
-    {}
+      : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
   };
 
   //***************************************************************************
@@ -383,20 +405,20 @@ namespace etl
     /// get() is a friend function.
     //***************************************************************************
     template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&
-      get(etl::variant<VTypes...>& v);
+    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...> >&
+                           get(etl::variant<VTypes...>& v);
 
     template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&&
-      get(etl::variant<VTypes...>&& v);
+    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...> >&&
+                           get(etl::variant<VTypes...>&& v);
 
     template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&
-      get(const etl::variant<VTypes...>& v);
+    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...> >&
+                                 get(const etl::variant<VTypes...>& v);
 
     template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&&
-      get(const etl::variant<VTypes...>&& v);
+    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...> >&&
+                                 get(const etl::variant<VTypes...>&& v);
 
     template <typename T, typename... VTypes>
     friend ETL_CONSTEXPR14 T& get(etl::variant<VTypes...>& v);
@@ -410,10 +432,10 @@ namespace etl
     template <typename T, typename... VTypes>
     friend ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
 
-    template< class T, typename... VTypes >
+    template < class T, typename... VTypes >
     friend ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<VTypes...>* pv) ETL_NOEXCEPT;
 
-    template< class T, typename... VTypes >
+    template < class T, typename... VTypes >
     friend ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<VTypes...>* pv) ETL_NOEXCEPT;
 
   private:
@@ -454,7 +476,7 @@ namespace etl
     // Get the index of a type.
     //*******************************************
     template <typename T>
-    using index_of_type = etl::type_list_index_of_type<etl::type_list<TTypes...>, etl::remove_cvref_t<T>>;
+    using index_of_type = etl::type_list_index_of_type<etl::type_list<TTypes...>, etl::remove_cvref_t<T> >;
 
     //*******************************************
     // Get the type from the index.
@@ -466,9 +488,9 @@ namespace etl
 
     //***************************************************************************
     /// Default constructor.
-    /// Constructs a variant holding the value-initialized value of the first alternative (index() is zero). 
+    /// Constructs a variant holding the value-initialized value of the first alternative (index() is zero).
     //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant()
     {
       using type = type_from_index<0U>;
@@ -477,94 +499,94 @@ namespace etl
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
       type_id   = 0U;
     }
-#include "diagnostic_pop.h"
+  #include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from a value.
     //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #include "diagnostic_uninitialized_push.h"
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
-      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T> >::value, etl::is_move_constructible<etl::remove_cvref_t<T> >::value>::do_operation)
       , type_id(index_of_type<T>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
-      construct_in_place<etl::remove_cvref_t<T>>(data, etl::forward<T>(value));
+      construct_in_place<etl::remove_cvref_t<T> >(data, etl::forward<T>(value));
     }
-#include "diagnostic_pop.h"
+  #include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from arguments.
     //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #include "diagnostic_uninitialized_push.h"
     template <typename T, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
-      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T> >::value, etl::is_move_constructible<etl::remove_cvref_t<T> >::value>::do_operation)
       , type_id(index_of_type<T>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
-      construct_in_place_args<etl::remove_cvref_t<T>>(data, etl::forward<TArgs>(args)...);
+      construct_in_place_args<etl::remove_cvref_t<T> >(data, etl::forward<TArgs>(args)...);
     }
-#include "diagnostic_pop.h"
+  #include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from arguments.
     //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #include "diagnostic_uninitialized_push.h"
     template <size_t Index, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
       : type_id(Index)
     {
       using type = type_from_index<Index>;
-      static_assert(etl::is_one_of<type, TTypes...> ::value, "Unsupported type");
+      static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
 
       construct_in_place_args<type>(data, etl::forward<TArgs>(args)...);
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
-#include "diagnostic_pop.h"
+  #include "diagnostic_pop.h"
 
-#if ETL_HAS_INITIALIZER_LIST
-    //***************************************************************************
-    /// Construct from type, initializer_list and arguments.
-    //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #if ETL_HAS_INITIALIZER_LIST
+      //***************************************************************************
+      /// Construct from type, initializer_list and arguments.
+      //***************************************************************************
+    #include "diagnostic_uninitialized_push.h"
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
-      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T> >::value, etl::is_move_constructible<etl::remove_cvref_t<T> >::value>::do_operation)
       , type_id(index_of_type<T>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...> ::value, "Unsupported type");
+      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
-      construct_in_place_args<etl::remove_cvref_t<T>>(data, init, etl::forward<TArgs>(args)...);
+      construct_in_place_args<etl::remove_cvref_t<T> >(data, init, etl::forward<TArgs>(args)...);
     }
-#include "diagnostic_pop.h"
+    #include "diagnostic_pop.h"
 
-    //***************************************************************************
-    /// Construct from index, initializer_list and arguments.
-    //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+      //***************************************************************************
+      /// Construct from index, initializer_list and arguments.
+      //***************************************************************************
+    #include "diagnostic_uninitialized_push.h"
     template <size_t Index, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
       : type_id(Index)
     {
       using type = type_from_index<Index>;
-      static_assert(etl::is_one_of<type, TTypes...> ::value, "Unsupported type");
+      static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
 
       construct_in_place_args<type>(data, init, etl::forward<TArgs>(args)...);
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
-#include "diagnostic_pop.h"
-#endif
+    #include "diagnostic_pop.h"
+  #endif
 
     //***************************************************************************
     /// Copy constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant(const variant& other)
       : operation(other.operation)
       , type_id(other.type_id)
@@ -581,13 +603,13 @@ namespace etl
         }
       }
     }
-#include "diagnostic_pop.h"
+  #include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Move constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-#include "diagnostic_uninitialized_push.h"
+  #include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant(variant&& other)
       : operation(other.operation)
       , type_id(other.type_id)
@@ -608,7 +630,7 @@ namespace etl
         type_id = variant_npos;
       }
     }
-#include "diagnostic_pop.h"
+  #include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Destructor.
@@ -621,7 +643,7 @@ namespace etl
       }
 
       operation = operation_type<void, false, false>::do_operation; // Null operation.
-      type_id = variant_npos;
+      type_id   = variant_npos;
     }
 
     //***************************************************************************
@@ -645,7 +667,7 @@ namespace etl
       return *static_cast<T*>(data);
     }
 
-#if ETL_HAS_INITIALIZER_LIST
+  #if ETL_HAS_INITIALIZER_LIST
     //***************************************************************************
     /// Emplace by type with variadic constructor parameters.
     //***************************************************************************
@@ -666,13 +688,13 @@ namespace etl
 
       return *static_cast<T*>(data);
     }
-#endif
+  #endif
 
     //***************************************************************************
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
     template <size_t Index, typename... TArgs>
-    typename etl::variant_alternative_t<Index, variant<TTypes...>>& emplace(TArgs&&... args)
+    typename etl::variant_alternative_t<Index, variant<TTypes...> >& emplace(TArgs&&... args)
     {
       static_assert(Index < sizeof...(TTypes), "Index out of range");
 
@@ -689,12 +711,12 @@ namespace etl
       return *static_cast<type*>(data);
     }
 
-#if ETL_HAS_INITIALIZER_LIST
+  #if ETL_HAS_INITIALIZER_LIST
     //***************************************************************************
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
     template <size_t Index, typename U, typename... TArgs>
-    typename etl::variant_alternative_t<Index, variant<TTypes...>>& emplace(std::initializer_list<U> il, TArgs&&... args)
+    typename etl::variant_alternative_t<Index, variant<TTypes...> >& emplace(std::initializer_list<U> il, TArgs&&... args)
     {
       static_assert(Index < sizeof...(TTypes), "Index out of range");
 
@@ -710,14 +732,14 @@ namespace etl
 
       return *static_cast<type*>(data);
     }
-#endif
+  #endif
 
     //***************************************************************************
     /// Move assignment operator for type.
     ///\param value The value to assign.
     //***************************************************************************
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
-    variant& operator =(T&& value)
+    variant& operator=(T&& value)
     {
       using type = etl::remove_cvref_t<T>;
 
@@ -737,7 +759,7 @@ namespace etl
     /// Assignment operator for variant type.
     ///\param other The variant to assign.
     //***************************************************************************
-    variant& operator =(const variant& other)
+    variant& operator=(const variant& other)
     {
       if (this != &other)
       {
@@ -763,7 +785,7 @@ namespace etl
     /// Assignment operator for variant type.
     ///\param other The variant to assign.
     //***************************************************************************
-    variant& operator =(variant&& other)
+    variant& operator=(variant&& other)
     {
       if (this != &other)
       {
@@ -849,7 +871,7 @@ namespace etl
     {
       variant temp(etl::move(*this));
       *this = etl::move(rhs);
-      rhs = etl::move(temp);
+      rhs   = etl::move(temp);
     }
 
     //***************************************************************************
@@ -859,11 +881,11 @@ namespace etl
     etl::enable_if_t<etl::is_visitor<TVisitor>::value, void>
       accept(TVisitor& v)
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_visitor<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -873,11 +895,11 @@ namespace etl
     etl::enable_if_t<etl::is_visitor<TVisitor>::value, void>
       accept(TVisitor& v) const
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_visitor<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -887,11 +909,11 @@ namespace etl
     etl::enable_if_t<!etl::is_visitor<TVisitor>::value, void>
       accept(TVisitor& v)
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_operator<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -901,11 +923,11 @@ namespace etl
     etl::enable_if_t<!etl::is_visitor<TVisitor>::value, void>
       accept(TVisitor& v) const
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_operator<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -913,16 +935,16 @@ namespace etl
     /// Deprecated.
     //***************************************************************************
     template <typename TVisitor>
-#if !defined(ETL_IN_UNIT_TEST)
+  #if !defined(ETL_IN_UNIT_TEST)
     ETL_DEPRECATED_REASON("Replace with accept()")
-#endif
+  #endif
     void accept_visitor(TVisitor& v)
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_visitor<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -930,16 +952,16 @@ namespace etl
     /// Deprecated.
     //***************************************************************************
     template <typename TVisitor>
-#if !defined(ETL_IN_UNIT_TEST)
+  #if !defined(ETL_IN_UNIT_TEST)
     ETL_DEPRECATED_REASON("Replace with accept()")
-#endif
+  #endif
     void accept_visitor(TVisitor& v) const
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_visitor<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -947,16 +969,16 @@ namespace etl
     /// Deprecated.
     //***************************************************************************
     template <typename TVisitor>
-#if !defined(ETL_IN_UNIT_TEST)
+  #if !defined(ETL_IN_UNIT_TEST)
     ETL_DEPRECATED_REASON("Replace with accept()")
-#endif
+  #endif
     void accept_functor(TVisitor& v)
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_operator<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
     //***************************************************************************
@@ -964,22 +986,22 @@ namespace etl
     /// Deprecated.
     //***************************************************************************
     template <typename TVisitor>
-#if !defined(ETL_IN_UNIT_TEST)
+  #if !defined(ETL_IN_UNIT_TEST)
     ETL_DEPRECATED_REASON("Replace with accept()")
-#endif
+  #endif
     void accept_functor(TVisitor& v) const
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
-#else
+  #else
       do_operator<sizeof...(TTypes)>(v);
-#endif
+  #endif
     }
 
   private:
 
     /// The operation function type.
-    using operation_function = void(*)(int, char*, const char*);
+    using operation_function = void (*)(int, char*, const char*);
 
     //***************************************************************************
     /// Construct the type in-place. lvalue reference.
@@ -1025,7 +1047,7 @@ namespace etl
       ::new (pstorage) type();
     }
 
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
     /// Call the relevant visitor by attempting each one.
     //***************************************************************************
@@ -1043,7 +1065,7 @@ namespace etl
     {
       (attempt_visitor<I>(visitor) || ...);
     }
-#else
+  #else
     //***************************************************************************
     /// Call the relevant visitor.
     //***************************************************************************
@@ -1061,7 +1083,7 @@ namespace etl
     {
       etl::private_variant::select_do_visitor<NTypes>::do_visitor(*this, visitor);
     }
-#endif
+  #endif
 
     //***************************************************************************
     /// Attempt to call a visitor.
@@ -1105,7 +1127,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
     /// Call the relevant visitor by attempting each one.
     //***************************************************************************
@@ -1123,24 +1145,24 @@ namespace etl
     {
       (attempt_operator<I>(visitor) || ...);
     }
-#else
+  #else
     //***************************************************************************
     /// Call the relevant operator.
     //***************************************************************************
     template <size_t NTypes, typename TVisitor>
     void do_operator(TVisitor& visitor)
     {
-#if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
+    #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "ETL_VARIANT_CPP11_MAX_8_TYPES - Only a maximum of 8 types are allowed in this variant");
-#endif
+    #endif
 
-#if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
+    #if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "ETL_VARIANT_CPP11_MAX_16_TYPES - Only a maximum of 16 types are allowed in this variant");
-#endif
+    #endif
 
-#if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
+    #if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "ETL_VARIANT_CPP11_MAX_24_TYPES - Only a maximum of 24 types are allowed in this variant");
-#endif
+    #endif
 
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
 
@@ -1153,23 +1175,23 @@ namespace etl
     template <size_t NTypes, typename TVisitor>
     void do_operator(TVisitor& visitor) const
     {
-#if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
+    #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "ETL_VARIANT_CPP11_MAX_8_TYPES - Only a maximum of 8 types are allowed in this variant");
-#endif
+    #endif
 
-#if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
+    #if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "ETL_VARIANT_CPP11_MAX_16_TYPES - Only a maximum of 16 types are allowed in this variant");
-#endif
+    #endif
 
-#if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
+    #if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "ETL_VARIANT_CPP11_MAX_24_TYPES - Only a maximum of 24 types are allowed in this variant");
-#endif
+    #endif
 
       ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
 
       etl::private_variant::select_do_operator<NTypes>::do_operator(*this, visitor);
     }
-#endif
+  #endif
 
     //***************************************************************************
     /// Attempt to call a visitor.
@@ -1230,25 +1252,25 @@ namespace etl
     /// is_same_type_in.
     /// Checks if specified type T is at specified index in given type list
     //***************************************************************************
-    template<typename T, typename T0, typename T1, typename... Ts>
+    template <typename T, typename T0, typename T1, typename... Ts>
     typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
 
-    template<typename T, typename T0>
+    template <typename T, typename T0>
     typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
 
-    template<typename T, typename T0, typename T1, typename... Ts>
+    template <typename T, typename T0, typename T1, typename... Ts>
     typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
 
-    template<typename T, typename T0>
+    template <typename T, typename T0>
     typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT;
 
-    template<typename T, typename T0, typename T1, typename... Ts>
+    template <typename T, typename T0, typename T1, typename... Ts>
     typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
     {
       if (index == 0)
       {
@@ -1260,16 +1282,16 @@ namespace etl
       }
     }
 
-    template<typename T, typename T0>
+    template <typename T, typename T0>
     typename etl::enable_if_t<etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
     {
       return index == 0;
     }
 
-    template<typename T, typename T0, typename T1, typename... Ts>
+    template <typename T, typename T0, typename T1, typename... Ts>
     typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 is_same_type_in(size_t index) ETL_NOEXCEPT
     {
       if (index == 0)
       {
@@ -1281,22 +1303,22 @@ namespace etl
       }
     }
 
-    template<typename T, typename T0>
+    template <typename T, typename T0>
     typename etl::enable_if_t<!etl::is_same<T, T0>::value, bool>
-    ETL_CONSTEXPR14 is_same_type_in(size_t) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 is_same_type_in(size_t) ETL_NOEXCEPT
     {
       return false;
     }
-  }
+  } // namespace private_variant
 
   //***************************************************************************
   /// Checks if the variant v holds the alternative T.
   //***************************************************************************
-	template <typename T, typename... TTypes>
-	ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT
-	{
+  template <typename T, typename... TTypes>
+  ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) ETL_NOEXCEPT
+  {
     return private_variant::is_same_type_in<T, TTypes...>(v.index());
-	}
+  }
 
   //***************************************************************************
   /// Checks if the variant v holds the alternative Index.
@@ -1320,64 +1342,64 @@ namespace etl
   /// get
   //***************************************************************************
   template <size_t Index, typename... TTypes>
-  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<TTypes...>>&
-    get(etl::variant<TTypes...>& v)
+  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<TTypes...> >&
+                  get(etl::variant<TTypes...>& v)
   {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
-#endif
+  #endif
 
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+    using type = etl::variant_alternative_t<Index, etl::variant<TTypes...> >;
 
     return *static_cast<type*>(v.data);
   }
 
   //***********************************
   template <size_t Index, typename... TTypes>
-  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<TTypes...>>&&
-    get(etl::variant<TTypes...>&& v)
+  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<TTypes...> >&&
+                  get(etl::variant<TTypes...>&& v)
   {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
-#endif
+  #endif
 
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+    using type = etl::variant_alternative_t<Index, etl::variant<TTypes...> >;
 
     return etl::move(*static_cast<type*>(v.data));
   }
 
   //***********************************
   template <size_t Index, typename... TTypes>
-  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&
-    get(const etl::variant<TTypes...>& v)
+  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...> >&
+                        get(const etl::variant<TTypes...>& v)
   {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
-#endif
+  #endif
 
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+    using type = etl::variant_alternative_t<Index, etl::variant<TTypes...> >;
 
     return *static_cast<const type*>(v.data);
   }
 
   //***********************************
   template <size_t Index, typename... TTypes>
-  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&&
-    get(const etl::variant<TTypes...>&& v)
+  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...> >&&
+                        get(const etl::variant<TTypes...>&& v)
   {
-#if ETL_USING_CPP17 & !defined(ETL_VARIANT_FORCE_CPP11)
+  #if ETL_USING_CPP17 & !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
-#endif
+  #endif
 
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
-		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+    using type = etl::variant_alternative_t<Index, etl::variant<TTypes...> >;
 
     return etl::move(*static_cast<const type*>(v.data));
   }
@@ -1421,9 +1443,9 @@ namespace etl
   //***************************************************************************
   /// get_if
   //***************************************************************************
-  template< size_t Index, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(etl::variant<TTypes...>* pv) ETL_NOEXCEPT
+  template < size_t Index, typename... TTypes >
+  ETL_CONSTEXPR14 etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...> > >
+                  get_if(etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     if ((pv != nullptr) && (pv->index() == Index))
     {
@@ -1436,9 +1458,9 @@ namespace etl
   }
 
   //***********************************
-  template< size_t Index, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(const etl::variant<TTypes...>* pv) ETL_NOEXCEPT
+  template < size_t Index, typename... TTypes >
+  ETL_CONSTEXPR14 etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<TTypes...> > >
+                  get_if(const etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     if ((pv != nullptr) && (pv->index() == Index))
     {
@@ -1451,7 +1473,7 @@ namespace etl
   }
 
   //***********************************
-  template< class T, typename... TTypes >
+  template < class T, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     if ((pv != nullptr) && (private_variant::is_same_type_in<T, TTypes...>(pv->index())))
@@ -1465,7 +1487,7 @@ namespace etl
   }
 
   //***********************************
-  template< typename T, typename... TTypes >
+  template < typename T, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>* pv) ETL_NOEXCEPT
   {
     if ((pv != nullptr) && (private_variant::is_same_type_in<T, TTypes...>(pv->index())))
@@ -1494,7 +1516,7 @@ namespace etl
   struct variant_size;
 
   template <typename... TTypes>
-  struct variant_size<etl::variant<TTypes...>>
+  struct variant_size<etl::variant<TTypes...> >
     : etl::integral_constant<size_t, sizeof...(TTypes)>
   {
   };
@@ -1505,10 +1527,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename... TTypes>
   inline constexpr size_t variant_size_v = variant_size<TTypes...>::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// visit
@@ -1578,7 +1600,7 @@ namespace etl
       struct next_inject_wrap
       {
         template <typename... TNextInj>
-        using next_inject = TToInject<var_type<tIndex>, TNextInj...>;
+        using next_inject      = TToInject<var_type<tIndex>, TNextInj...>;
         using recursive_result = typename visit_result_helper<next_inject, make_index_sequence<variant_size<remove_reference_t<TNext> >::value>, TNext, TVs...>::type;
       };
 
@@ -1602,7 +1624,7 @@ namespace etl
       // bind TCallable to the first argument in this variadic alias.
       template <typename... Ts2>
       using single_res = single_visit_result_type_t<TCallable, Ts2...>;
-      using type = typename visit_result_helper<single_res, make_index_sequence<variant_size<remove_reference_t<T1> >::value>, T1, Ts...>::type;
+      using type       = typename visit_result_helper<single_res, make_index_sequence<variant_size<remove_reference_t<T1> >::value>, T1, Ts...>::type;
     };
 
     template <typename... Ts>
@@ -1646,10 +1668,8 @@ namespace etl
       using helper_t = do_visit_helper<TRet, TCallable, TVariant, TVarRest...>;
       using func_ptr = typename helper_t::function_pointer;
 
-      constexpr func_ptr jmp_table[]
-      {
-        helper_t::template fptr<tIndices>()...
-      };
+      constexpr func_ptr jmp_table[]{
+        helper_t::template fptr<tIndices>()...};
 
       return jmp_table[v.index()](static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), static_cast<TVarRest&&>(variants)...);
     }
@@ -1675,8 +1695,10 @@ namespace etl
       add_pointer_t<TVariant>  variant_;
 
     public:
+
       constexpr constexpr_visit_closure(TCallable&& c, TVariant&& v)
-        : callable_(&c), variant_(&v)
+        : callable_(&c)
+        , variant_(&v)
       {
       }
 
@@ -1694,7 +1716,7 @@ namespace etl
                                           static_cast<TNext&&>(next), static_cast<TVariants&&>(vs)...);
     }
 
-  }  // namespace private_variant
+  } // namespace private_variant
 
   //***************************************************************************
   /// C++11/14 compatible etl::visit for etl::variant. Supports both c++17
@@ -1749,14 +1771,14 @@ namespace etl
 
       const TVariant& rhs;
     };
-  }
+  } // namespace private_variant
 
   //***************************************************************************
   /// Checks if the variants are equal.
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool operator ==(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14 bool operator==(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
     // If both variants are valueless, they are considered equal
     if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
@@ -1777,7 +1799,7 @@ namespace etl
     }
 
     // Variants have the same type, apply the equality operator for the contained values
-    private_variant::equality_visitor<etl::variant<TTypes...>> visitor(rhs);
+    private_variant::equality_visitor<etl::variant<TTypes...> > visitor(rhs);
 
     return etl::visit(visitor, lhs);
   }
@@ -1787,7 +1809,7 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool operator !=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14 bool operator!=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -1797,7 +1819,7 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool operator <(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14 bool operator<(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
     // If both variants are valueless, they are considered equal, so not less than
     if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
@@ -1824,7 +1846,7 @@ namespace etl
     }
 
     // Variants have the same type, apply the less than operator for the contained values
-    private_variant::less_than_visitor<etl::variant<TTypes...>> visitor(rhs);
+    private_variant::less_than_visitor<etl::variant<TTypes...> > visitor(rhs);
 
     return etl::visit(visitor, lhs);
   }
@@ -1834,7 +1856,7 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool operator >(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14 bool operator>(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
     return (rhs < lhs);
   }
@@ -1844,9 +1866,9 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool operator <=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14 bool operator<=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
-    return  !(lhs > rhs);
+    return !(lhs > rhs);
   }
 
   //***************************************************************************
@@ -1854,14 +1876,14 @@ namespace etl
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
   template <typename... TTypes>
-  ETL_CONSTEXPR14 bool operator >=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14 bool operator>=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
     return !(lhs < rhs);
   }
 
   namespace private_variant
   {
-#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+  #if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
     //***************************************************************************
     /// C++20 compatible visitor function for testing variant '<=>'.
     /// Assumes that the two variants are already known to contain the same type.
@@ -1882,19 +1904,19 @@ namespace etl
 
       const TVariant& rhs;
     };
-#endif
-  }
+  #endif
+  } // namespace private_variant
 
   //***************************************************************************
   /// Defines the 'spaceship' <=> operator for comparing variants.
   /// Only defined if using C++20 and STL.
   /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
   //***************************************************************************
-#if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
+  #if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
   template <typename... TTypes>
-  ETL_CONSTEXPR14 
-  std::common_comparison_category_t<std::compare_three_way_result_t<TTypes>...>
-    operator <=>(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  ETL_CONSTEXPR14
+    std::common_comparison_category_t<std::compare_three_way_result_t<TTypes>...>
+    operator<=>(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
   {
     if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
     {
@@ -1915,12 +1937,12 @@ namespace etl
     else
     {
       // Variants have the same type, apply the equality operator for the contained values
-      private_variant::compare_visitor<etl::variant<TTypes...>> visitor(rhs);
+      private_variant::compare_visitor<etl::variant<TTypes...> > visitor(rhs);
 
       return etl::visit(visitor, lhs);
     }
   }
-#endif
+  #endif
 
   //***************************************************************************
   /// Helper to turn etl::type_list<TTypes...> into etl::variant<TTypes...>
@@ -1928,12 +1950,12 @@ namespace etl
   struct variant_from_type_list;
 
   template <typename... TTypes>
-  struct variant_from_type_list<etl::type_list<TTypes...>>
+  struct variant_from_type_list<etl::type_list<TTypes...> >
   {
     using type = etl::variant<TTypes...>;
   };
 
   template <typename TTypeList>
   using variant_from_type_list_t = typename variant_from_type_list<TTypeList>::type;
-}
+} // namespace etl
 #endif

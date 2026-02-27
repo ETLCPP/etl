@@ -28,14 +28,14 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/format_spec.h"
 #include "etl/to_u8string.h"
 #include "etl/u8string.h"
-#include "etl/format_spec.h"
 
 #if ETL_USING_CPP20
 
-#undef STR
-#define STR(x) u8##x
+  #undef STR
+  #define STR(x) u8##x
 
 namespace
 {
@@ -355,7 +355,7 @@ namespace
     TEST(test_integer_denominator_default_format)
     {
       etl::u8string<20> result;
-      int value = -1234567;
+      int               value = -1234567;
 
       etl::to_string(value, 6U, result);
 
@@ -366,7 +366,7 @@ namespace
     TEST(test_integer_denominator_huge_precision)
     {
       etl::u8string<20> result;
-      int value = -1234560;
+      int               value = -1234560;
 
       Format format = Format().precision(100);
 
@@ -379,7 +379,7 @@ namespace
     TEST(test_integer_denominator_huge_precision_64bit)
     {
       etl::u8string<20> result;
-      int64_t value = INT64_MIN;
+      int64_t           value = INT64_MIN;
 
       Format format = Format().precision(100);
 
@@ -392,10 +392,10 @@ namespace
     TEST(test_integer_denominator_zero_fractional)
     {
       etl::u8string<20> result_i;
-      int value_i = -1000000;
+      int               value_i = -1000000;
 
       etl::u8string<20> result_d;
-      double value_d = -1.000000;
+      double            value_d = -1.000000;
 
       Format format = Format().precision(4);
 
@@ -410,10 +410,10 @@ namespace
     TEST(test_integer_denominator_zero_value)
     {
       etl::u8string<20> result_i;
-      int value_i = 0;
+      int               value_i = 0;
 
       etl::u8string<20> result_d;
-      double value_d = -0.000000;
+      double            value_d = -0.000000;
 
       Format format = Format().precision(4);
 
@@ -428,10 +428,10 @@ namespace
     TEST(test_integer_denominator_zero_integral_small_fractional)
     {
       etl::u8string<20> result_i;
-      int value_i = -400;
+      int               value_i = -400;
 
       etl::u8string<20> result_d;
-      double value_d = -0.000400;
+      double            value_d = -0.000400;
 
       Format format = Format().precision(4);
 
@@ -446,10 +446,10 @@ namespace
     TEST(test_integer_denominator_small_fractional)
     {
       etl::u8string<20> result_i;
-      int value_i = -123000400;
+      int               value_i = -123000400;
 
       etl::u8string<20> result_d;
-      double value_d = -123.000400;
+      double            value_d = -123.000400;
 
       Format format = Format().precision(4);
 
@@ -464,10 +464,10 @@ namespace
     TEST(test_integer_denominator_very_small_fractional)
     {
       etl::u8string<20> result_i;
-      int value_i = -123000004;
+      int               value_i = -123000004;
 
       etl::u8string<20> result_d;
-      double value_d = -123.000004;
+      double            value_d = -123.000004;
 
       Format format = Format().precision(4);
 
@@ -482,10 +482,10 @@ namespace
     TEST(test_integer_denominator_very_small_fractional_rounded_up)
     {
       etl::u8string<20> result_i;
-      int value_i = -123000050;
+      int               value_i = -123000050;
 
       etl::u8string<20> result_d;
-      double value_d = -123.000050;
+      double            value_d = -123.000050;
 
       Format format = Format().precision(4);
 
@@ -500,10 +500,10 @@ namespace
     TEST(test_integer_denominator_shorter_width)
     {
       etl::u8string<20> result_i;
-      int value_i = -123456780;
+      int               value_i = -123456780;
 
       etl::u8string<20> result_d;
-      double value_d = -123.456780;
+      double            value_d = -123.456780;
 
       Format format = Format().precision(4).width(6).right();
 
@@ -518,10 +518,10 @@ namespace
     TEST(test_integer_denominator_larger_width)
     {
       etl::u8string<20> result_i;
-      int value_i = -123456780;
+      int               value_i = -123456780;
 
       etl::u8string<20> result_d;
-      double value_d = -123.456780;
+      double            value_d = -123.456780;
 
       Format format = Format().precision(4).width(15).right();
 
@@ -536,10 +536,10 @@ namespace
     TEST(test_integer_denominator_positive_rollover)
     {
       etl::u8string<20> result_i;
-      int value_i = 123999990;
+      int               value_i = 123999990;
 
       etl::u8string<20> result_d;
-      double value_d = 123.999990;
+      double            value_d = 123.999990;
 
       Format format = Format().precision(4).right();
 
@@ -554,10 +554,10 @@ namespace
     TEST(test_integer_denominator_negative_rollover)
     {
       etl::u8string<20> result_i;
-      int value_i = -123999990;
+      int               value_i = -123999990;
 
       etl::u8string<20> result_d;
-      double value_d = -123.999990;
+      double            value_d = -123.999990;
 
       Format format = Format().precision(4).right();
 
@@ -568,6 +568,6 @@ namespace
       CHECK(result_d == result_i);
     }
   }
-}
+} // namespace
 
 #endif

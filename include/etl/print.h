@@ -51,9 +51,11 @@ namespace etl
     class print_iterator
     {
     public:
+
       class print_to
       {
       public:
+
         print_to& operator=(char_type c)
         {
           etl_putchar(static_cast<int>(c));
@@ -89,7 +91,7 @@ namespace etl
         return *this;
       }
     };
-  }  // namespace private_print
+  } // namespace private_print
 
   template <class... Args>
   void print(etl::format_string<Args...> fmt, Args&&... args)
@@ -110,7 +112,7 @@ namespace etl
     (void)format_to(it, etl::move(fmt), etl::forward<Args>(args)...);
     println();
   }
-}  // namespace etl
+} // namespace etl
 
 #endif
 

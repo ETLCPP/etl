@@ -30,13 +30,13 @@ SOFTWARE.
 #define ETL_MESSAGE_ROUTER_REGISTRY_INCLUDED
 
 #include "platform.h"
-#include "file_error_numbers.h"
-#include "message_router.h"
-#include "flat_multimap.h"
-#include "exception.h"
 #include "error_handler.h"
+#include "exception.h"
+#include "file_error_numbers.h"
+#include "flat_multimap.h"
 #include "iterator.h"
 #include "memory.h"
+#include "message_router.h"
 
 #include <stdint.h>
 
@@ -103,45 +103,45 @@ namespace etl
       }
 
       //********************************************
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
         itr = other.itr;
         return *this;
       }
 
       //********************************************
-      etl::imessage_router& operator *()
+      etl::imessage_router& operator*()
       {
         return *(itr->second);
       }
 
       //********************************************
-      const etl::imessage_router& operator *() const
+      const etl::imessage_router& operator*() const
       {
         return *(itr->second);
       }
 
       //********************************************
-      etl::imessage_router* operator ->()
+      etl::imessage_router* operator->()
       {
         return itr->second;
       }
 
       //********************************************
-      const etl::imessage_router* operator ->() const
+      const etl::imessage_router* operator->() const
       {
         return itr->second;
       }
 
       //********************************************
-      iterator& operator ++()
+      iterator& operator++()
       {
         ++itr;
         return *this;
       }
 
       //********************************************
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         ++itr;
@@ -149,13 +149,13 @@ namespace etl
       }
 
       //********************************************
-      friend bool operator ==(const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.itr == rhs.itr;
       }
 
       //********************************************
-      friend bool operator !=(const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -198,33 +198,33 @@ namespace etl
       }
 
       //********************************************
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         itr = other.itr;
         return *this;
       }
 
       //********************************************
-      const etl::imessage_router& operator *() const
+      const etl::imessage_router& operator*() const
       {
         return *(itr->second);
       }
 
       //********************************************
-      const etl::imessage_router* operator ->() const
+      const etl::imessage_router* operator->() const
       {
         return itr->second;
       }
 
       //********************************************
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         ++itr;
         return *this;
       }
 
       //********************************************
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         ++itr;
@@ -232,13 +232,13 @@ namespace etl
       }
 
       //********************************************
-      friend bool operator ==(const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.itr == rhs.itr;
       }
 
       //********************************************
-      friend bool operator !=(const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -407,8 +407,7 @@ namespace etl
     {
       return find(id) != ETL_NULLPTR;
 
-
-      //return registry.find(id) != registry.end();
+      // return registry.find(id) != registry.end();
     }
 
     //********************************************
@@ -424,7 +423,7 @@ namespace etl
 
       IRegistry::const_iterator irouter = registry.find(p_router->get_message_router_id());
 
-      return  (irouter != registry.cend()) && (irouter->second == p_router);
+      return (irouter != registry.cend()) && (irouter->second == p_router);
     }
 
     //********************************************
@@ -435,7 +434,7 @@ namespace etl
     {
       IRegistry::const_iterator irouter = registry.find(router.get_message_router_id());
 
-      return  (irouter != registry.cend()) && (irouter->second == &router);
+      return (irouter != registry.cend()) && (irouter->second == &router);
     }
 
     //********************************************
@@ -523,7 +522,7 @@ namespace etl
     //********************************************
     template <typename TIterator>
     message_router_registry(TIterator first, const TIterator& last)
-       : imessage_router_registry(registry)
+      : imessage_router_registry(registry)
     {
       while (first != last)
       {
@@ -561,7 +560,7 @@ namespace etl
     //********************************************
     // Assignment operator.
     //********************************************
-    message_router_registry& operator =(const message_router_registry& rhs)
+    message_router_registry& operator=(const message_router_registry& rhs)
     {
       registry = rhs.registry;
 
@@ -571,8 +570,8 @@ namespace etl
   private:
 
     typedef etl::flat_multimap<etl::message_router_id_t, etl::imessage_router*, MaxRouters> Registry;
-    Registry registry;
+    Registry                                                                                registry;
   };
-}
+} // namespace etl
 
 #endif

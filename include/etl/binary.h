@@ -36,16 +36,16 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include "platform.h"
-#include "type_traits.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "functional.h"
 #include "integral_limits.h"
 #include "limits.h"
-#include "static_assert.h"
 #include "log.h"
 #include "power.h"
 #include "smallest.h"
-#include "exception.h"
-#include "error_handler.h"
-#include "functional.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>
@@ -90,7 +90,7 @@ namespace etl
   struct max_value_for_nbits
   {
     typedef typename etl::smallest_uint_for_bits<NBits>::type value_type;
-    static ETL_CONSTANT value_type value = (value_type(1) << (NBits - 1)) | max_value_for_nbits<NBits - 1>::value;
+    static ETL_CONSTANT value_type                            value = (value_type(1) << (NBits - 1)) | max_value_for_nbits<NBits - 1>::value;
   };
 
   /// Specialisation for when NBits == 0.
@@ -98,7 +98,7 @@ namespace etl
   struct max_value_for_nbits<0>
   {
     typedef etl::smallest_uint_for_bits<0>::type value_type;
-    static ETL_CONSTANT value_type value = 0;
+    static ETL_CONSTANT value_type               value = 0;
   };
 
   template <size_t NBits>
@@ -271,7 +271,7 @@ namespace etl
   template <typename TReturn, size_t NBits, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
     ETL_STATIC_ASSERT(NBits <= etl::integral_limits<TReturn>::bits, "NBits too large for return type");
 
@@ -292,7 +292,7 @@ namespace etl
   template <typename TReturn, size_t NBits, size_t SHIFT, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
     ETL_STATIC_ASSERT(NBits <= etl::integral_limits<TReturn>::bits, "NBits too large for return type");
     ETL_STATIC_ASSERT(SHIFT <= etl::integral_limits<TReturn>::bits, "SHIFT too large");
@@ -313,13 +313,13 @@ namespace etl
   template <typename TReturn, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBits)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
 
     ETL_ASSERT((NBits <= etl::integral_limits<TReturn>::bits), ETL_ERROR(binary_out_of_range));
 
     TReturn mask = TReturn(1) << (NBits - 1);
-    value = value & TValue((TValue(1) << NBits) - 1);
+    value        = value & TValue((TValue(1) << NBits) - 1);
 
     return TReturn((value ^ mask) - mask);
   }
@@ -333,13 +333,13 @@ namespace etl
   template <typename TReturn, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBits, size_t SHIFT)
   {
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
+    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value, "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
 
     ETL_ASSERT((NBits <= etl::integral_limits<TReturn>::bits), ETL_ERROR(binary_out_of_range));
 
     TReturn mask = TReturn(1) << (NBits - 1);
-    value = (value >> SHIFT) & TValue((TValue(1) << NBits) - 1);
+    value        = (value >> SHIFT) & TValue((TValue(1) << NBits) - 1);
 
     return TReturn((value ^ mask) - mask);
   }
@@ -353,7 +353,7 @@ namespace etl
   struct bit
   {
     typedef typename etl::smallest_uint_for_bits<POSITION + 1U>::type value_type;
-    static ETL_CONSTANT value_type value = value_type(1) << POSITION;
+    static ETL_CONSTANT value_type                                    value = value_type(1) << POSITION;
   };
 
   template <size_t POSITION>
@@ -408,8 +408,8 @@ namespace etl
   ETL_CONSTEXPR14 bool has_zero_byte(TValue value)
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
-    ETL_CONSTEXPR14 const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
-    const unsigned_t temp = unsigned_t(~((((unsigned_t(value) & mask) + mask) | unsigned_t(value)) | mask));
+    ETL_CONSTEXPR14 const unsigned_t                  mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
+    const unsigned_t                                  temp = unsigned_t(~((((unsigned_t(value) & mask) + mask) | unsigned_t(value)) | mask));
 
     return (temp != 0U);
   }
@@ -422,8 +422,8 @@ namespace etl
   ETL_CONSTEXPR14 bool has_zero_byte()
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
-    ETL_CONSTEXPR14 const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
-    const unsigned_t temp = unsigned_t(~((((unsigned_t(Value) & mask) + mask) | unsigned_t(Value)) | mask));
+    ETL_CONSTEXPR14 const unsigned_t                  mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
+    const unsigned_t                                  temp = unsigned_t(~((((unsigned_t(Value) & mask) + mask) | unsigned_t(Value)) | mask));
 
     return (temp != 0U);
   }
@@ -503,7 +503,7 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint8_t value1 = uint8_t(((Value  & 0xAAU) >> 1U) | ((Value  & 0x55U) << 1U));
+    static ETL_CONSTANT uint8_t value1 = uint8_t(((Value & 0xAAU) >> 1U) | ((Value & 0x55U) << 1U));
     static ETL_CONSTANT uint8_t value2 = uint8_t(((value1 & 0xCCU) >> 2U) | ((value1 & 0x33U) << 2U));
 
   public:
@@ -520,7 +520,7 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int8_t value1 = int8_t(((Value  & 0xAAU) >> 1U) | ((Value  & 0x55U) << 1U));
+    static ETL_CONSTANT int8_t value1 = int8_t(((Value & 0xAAU) >> 1U) | ((Value & 0x55U) << 1U));
     static ETL_CONSTANT int8_t value2 = int8_t(((value1 & 0xCCU) >> 2U) | ((value1 & 0x33U) << 2U));
 
   public:
@@ -555,7 +555,7 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint16_t value1 = uint16_t(((Value  & 0xAAAAU) >> 1U) | ((Value  & 0x5555U) << 1U));
+    static ETL_CONSTANT uint16_t value1 = uint16_t(((Value & 0xAAAAU) >> 1U) | ((Value & 0x5555U) << 1U));
     static ETL_CONSTANT uint16_t value2 = uint16_t(((value1 & 0xCCCCU) >> 2U) | ((value1 & 0x3333U) << 2U));
     static ETL_CONSTANT uint16_t value3 = uint16_t(((value2 & 0xF0F0U) >> 4U) | ((value2 & 0x0F0FU) << 4U));
 
@@ -573,7 +573,7 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int16_t value1 = int16_t(((Value  & 0xAAAAU) >> 1U) | ((Value  & 0x5555U) << 1U));
+    static ETL_CONSTANT int16_t value1 = int16_t(((Value & 0xAAAAU) >> 1U) | ((Value & 0x5555U) << 1U));
     static ETL_CONSTANT int16_t value2 = int16_t(((value1 & 0xCCCCU) >> 2U) | ((value1 & 0x3333U) << 2U));
     static ETL_CONSTANT int16_t value3 = int16_t(((value2 & 0xF0F0U) >> 4U) | ((value2 & 0x0F0FU) << 4U));
 
@@ -594,10 +594,10 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), T>::type
     reverse_bits(T value)
   {
-    value = ((value & 0xAAAAAAAAUL) >>  1U) | ((value & 0x55555555UL) <<  1U);
-    value = ((value & 0xCCCCCCCCUL) >>  2U) | ((value & 0x33333333UL) <<  2U);
-    value = ((value & 0xF0F0F0F0UL) >>  4U) | ((value & 0x0F0F0F0FUL) <<  4U);
-    value = ((value & 0xFF00FF00UL) >>  8U) | ((value & 0x00FF00FFUL) <<  8U);
+    value = ((value & 0xAAAAAAAAUL) >> 1U) | ((value & 0x55555555UL) << 1U);
+    value = ((value & 0xCCCCCCCCUL) >> 2U) | ((value & 0x33333333UL) << 2U);
+    value = ((value & 0xF0F0F0F0UL) >> 4U) | ((value & 0x0F0F0F0FUL) << 4U);
+    value = ((value & 0xFF00FF00UL) >> 8U) | ((value & 0x00FF00FFUL) << 8U);
     value = (value >> 16U) | ((value & 0xFFFFU) << 16U);
 
     return value;
@@ -609,10 +609,10 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint32_t value1 = uint32_t(((Value  & 0xAAAAAAAAUL) >>  1U) | ((Value  & 0x55555555UL) <<  1U));
-    static ETL_CONSTANT uint32_t value2 = uint32_t(((value1 & 0xCCCCCCCCUL) >>  2U) | ((value1 & 0x33333333UL) <<  2U));
-    static ETL_CONSTANT uint32_t value3 = uint32_t(((value2 & 0xF0F0F0F0UL) >>  4U) | ((value2 & 0x0F0F0F0FUL) <<  4U));
-    static ETL_CONSTANT uint32_t value4 = uint32_t(((value3 & 0xFF00FF00UL) >>  8U) | ((value3 & 0x00FF00FFUL) <<  8U));
+    static ETL_CONSTANT uint32_t value1 = uint32_t(((Value & 0xAAAAAAAAUL) >> 1U) | ((Value & 0x55555555UL) << 1U));
+    static ETL_CONSTANT uint32_t value2 = uint32_t(((value1 & 0xCCCCCCCCUL) >> 2U) | ((value1 & 0x33333333UL) << 2U));
+    static ETL_CONSTANT uint32_t value3 = uint32_t(((value2 & 0xF0F0F0F0UL) >> 4U) | ((value2 & 0x0F0F0F0FUL) << 4U));
+    static ETL_CONSTANT uint32_t value4 = uint32_t(((value3 & 0xFF00FF00UL) >> 8U) | ((value3 & 0x00FF00FFUL) << 8U));
 
   public:
 
@@ -628,10 +628,10 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int32_t value1 = int32_t(((Value  & 0xAAAAAAAAUL) >>  1U) | ((Value  & 0x55555555UL) <<  1U));
-    static ETL_CONSTANT int32_t value2 = int32_t(((value1 & 0xCCCCCCCCUL) >>  2U) | ((value1 & 0x33333333UL) <<  2U));
-    static ETL_CONSTANT int32_t value3 = int32_t(((value2 & 0xF0F0F0F0UL) >>  4U) | ((value2 & 0x0F0F0F0FUL) <<  4U));
-    static ETL_CONSTANT int32_t value4 = int32_t(((value3 & 0xFF00FF00UL) >>  8U) | ((value3 & 0x00FF00FFUL) <<  8U));
+    static ETL_CONSTANT int32_t value1 = int32_t(((Value & 0xAAAAAAAAUL) >> 1U) | ((Value & 0x55555555UL) << 1U));
+    static ETL_CONSTANT int32_t value2 = int32_t(((value1 & 0xCCCCCCCCUL) >> 2U) | ((value1 & 0x33333333UL) << 2U));
+    static ETL_CONSTANT int32_t value3 = int32_t(((value2 & 0xF0F0F0F0UL) >> 4U) | ((value2 & 0x0F0F0F0FUL) << 4U));
+    static ETL_CONSTANT int32_t value4 = int32_t(((value3 & 0xFF00FF00UL) >> 8U) | ((value3 & 0x00FF00FFUL) << 8U));
 
   public:
 
@@ -651,10 +651,10 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), T>::type
     reverse_bits(T value)
   {
-    value = ((value & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((value & 0x5555555555555555ULL) <<  1U);
-    value = ((value & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value & 0x3333333333333333ULL) <<  2U);
-    value = ((value & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value & 0x0F0F0F0F0F0F0F0FULL) <<  4U);
-    value = ((value & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value & 0x00FF00FF00FF00FFULL) <<  8U);
+    value = ((value & 0xAAAAAAAAAAAAAAAAULL) >> 1U) | ((value & 0x5555555555555555ULL) << 1U);
+    value = ((value & 0xCCCCCCCCCCCCCCCCULL) >> 2U) | ((value & 0x3333333333333333ULL) << 2U);
+    value = ((value & 0xF0F0F0F0F0F0F0F0ULL) >> 4U) | ((value & 0x0F0F0F0F0F0F0F0FULL) << 4U);
+    value = ((value & 0xFF00FF00FF00FF00ULL) >> 8U) | ((value & 0x00FF00FF00FF00FFULL) << 8U);
     value = ((value & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value & 0x0000FFFF0000FFFFULL) << 16U);
     value = (value >> 32U) | ((value & 0xFFFFFFFFULL) << 32U);
 
@@ -667,10 +667,10 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint64_t value1 = uint64_t(((Value  & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((Value  & 0x5555555555555555ULL) <<  1U));
-    static ETL_CONSTANT uint64_t value2 = uint64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value1 & 0x3333333333333333ULL) <<  2U));
-    static ETL_CONSTANT uint64_t value3 = uint64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) <<  4U));
-    static ETL_CONSTANT uint64_t value4 = uint64_t(((value3 & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value3 & 0x00FF00FF00FF00FFULL) <<  8U));
+    static ETL_CONSTANT uint64_t value1 = uint64_t(((Value & 0xAAAAAAAAAAAAAAAAULL) >> 1U) | ((Value & 0x5555555555555555ULL) << 1U));
+    static ETL_CONSTANT uint64_t value2 = uint64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >> 2U) | ((value1 & 0x3333333333333333ULL) << 2U));
+    static ETL_CONSTANT uint64_t value3 = uint64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >> 4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) << 4U));
+    static ETL_CONSTANT uint64_t value4 = uint64_t(((value3 & 0xFF00FF00FF00FF00ULL) >> 8U) | ((value3 & 0x00FF00FF00FF00FFULL) << 8U));
     static ETL_CONSTANT uint64_t value5 = uint64_t(((value4 & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value4 & 0x0000FFFF0000FFFFULL) << 16U));
 
   public:
@@ -687,10 +687,10 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int64_t value1 = int64_t(((Value  & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((Value  & 0x5555555555555555ULL) <<  1U));
-    static ETL_CONSTANT int64_t value2 = int64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value1 & 0x3333333333333333ULL) <<  2U));
-    static ETL_CONSTANT int64_t value3 = int64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) <<  4U));
-    static ETL_CONSTANT int64_t value4 = int64_t(((value3 & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value3 & 0x00FF00FF00FF00FFULL) <<  8U));
+    static ETL_CONSTANT int64_t value1 = int64_t(((Value & 0xAAAAAAAAAAAAAAAAULL) >> 1U) | ((Value & 0x5555555555555555ULL) << 1U));
+    static ETL_CONSTANT int64_t value2 = int64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >> 2U) | ((value1 & 0x3333333333333333ULL) << 2U));
+    static ETL_CONSTANT int64_t value3 = int64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >> 4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) << 4U));
+    static ETL_CONSTANT int64_t value4 = int64_t(((value3 & 0xFF00FF00FF00FF00ULL) >> 8U) | ((value3 & 0x00FF00FF00FF00FFULL) << 8U));
     static ETL_CONSTANT int64_t value5 = int64_t(((value4 & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value4 & 0x0000FFFF0000FFFFULL) << 16U));
 
   public:
@@ -751,7 +751,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 
+  ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), T>::type
     reverse_bytes(T value)
   {
@@ -775,15 +775,15 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), T>::type
     reverse_bytes(T value)
   {
-#if ETL_CPP23_SUPPORTED && ETL_USING_STL && ETL_HAS_STD_BYTESWAP
+  #if ETL_CPP23_SUPPORTED && ETL_USING_STL && ETL_HAS_STD_BYTESWAP
     return std::byteswap(value);
-#else
-    value = ((value & 0xFF00FF00FF00FF00ULL) >> 8U)  | ((value & 0x00FF00FF00FF00FFULL) << 8U);
+  #else
+    value = ((value & 0xFF00FF00FF00FF00ULL) >> 8U) | ((value & 0x00FF00FF00FF00FFULL) << 8U);
     value = ((value & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value & 0x0000FFFF0000FFFFULL) << 16U);
     value = (value >> 32U) | (value << 32U);
 
     return value;
-#endif
+  #endif
   }
 #endif
 
@@ -899,9 +899,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_bits(T value)
   {
-#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+  #if ETL_CPP23_SUPPORTED && ETL_USING_STL
     return std::popcount(value);
-#else
+  #else
     uint32_t count = 0U;
 
     count = value - ((value >> 1U) & 0x55U);
@@ -909,7 +909,7 @@ namespace etl
     count = ((count >> 4U) + count) & 0x0FU;
 
     return uint_least8_t(count);
-#endif
+  #endif
   }
 #endif
 
@@ -952,8 +952,8 @@ namespace etl
 
     count = value - ((value >> 1U) & 0x55555555UL);
     count = ((count >> 2U) & 0x33333333UL) + (count & 0x33333333UL);
-    count = ((count >> 4U)  + count) & 0x0F0F0F0FUL;
-    count = ((count >> 8U)  + count) & 0x00FF00FFUL;
+    count = ((count >> 4U) + count) & 0x0F0F0F0FUL;
+    count = ((count >> 8U) + count) & 0x00FF00FFUL;
     count = ((count >> 16U) + count) & 0x0000FFUL;
 
     return static_cast<uint_least8_t>(count);
@@ -970,20 +970,20 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_bits(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::popcount(value);
-#else
+  #else
     uint64_t count = 0U;
 
     count = value - ((value >> 1U) & 0x5555555555555555ULL);
     count = ((count >> 2U) & 0x3333333333333333ULL) + (count & 0x3333333333333333ULL);
-    count = ((count >> 4U)  + count) & 0x0F0F0F0F0F0F0F0FULL;
-    count = ((count >> 8U)  + count) & 0x00FF00FF00FF00FFULL;
+    count = ((count >> 4U) + count) & 0x0F0F0F0F0F0F0F0FULL;
+    count = ((count >> 8U) + count) & 0x00FF00FF00FF00FFULL;
     count = ((count >> 16U) + count) & 0x0000FFFF0000FFFFULL;
     count = ((count >> 32U) + count) & 0x00000000FFFFFFFFULL;
 
     return static_cast<uint_least8_t>(count);
-#endif
+  #endif
   }
 #endif
 
@@ -1092,9 +1092,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_trailing_zeros(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_zero(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if (value & 0x1U)
@@ -1127,7 +1127,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -1256,60 +1256,60 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_trailing_zeros(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_zero(value);
-#else
-      uint_least8_t count = 0U;
+  #else
+    uint_least8_t count = 0U;
 
-      if (value & 0x1ULL)
+    if (value & 0x1ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFFFFFULL) == 0ULL)
       {
-        count = 0U;
-      }
-      else
-      {
-        count = 1U;
-
-        if ((value & 0xFFFFFFFFULL) == 0ULL)
-        {
-          value >>= 32U;
-          count += 32U;
-        }
-
-        if ((value & 0xFFFFULL) == 0ULL)
-        {
-          value >>= 16U;
-          count += 16U;
-        }
-
-        if ((value & 0xFFULL) == 0ULL)
-        {
-          value >>= 8U;
-          count += 8U;
-        }
-
-        if ((value & 0xFULL) == 0ULL)
-        {
-          value >>= 4U;
-          count += 4U;
-        }
-
-        if ((value & 0x3ULL) == 0ULL)
-        {
-          value >>= 2U;
-          count += 2U;
-        }
-
-        if ((value & 0x1U) == 0U)
-        {
-          value >>= 1U;
-          count += 1U;
-        }
-
-        count -= value & 0x1ULL;
+        value >>= 32U;
+        count += 32U;
       }
 
-      return count;
-#endif
+      if ((value & 0xFFFFULL) == 0ULL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFULL) == 0ULL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFULL) == 0ULL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3ULL) == 0ULL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= value & 0x1ULL;
+    }
+
+    return count;
+  #endif
   }
 #endif
 
@@ -1338,9 +1338,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_trailing_ones(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_one(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if ((value & 0x1U) == 0x0U)
@@ -1373,7 +1373,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -1502,9 +1502,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_trailing_ones(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_one(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if ((value & 0x1ULL) == 0x0ULL)
@@ -1549,7 +1549,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -1559,7 +1559,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_integral<T>::value&& etl::is_signed<T>::value, uint_least8_t>::type
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, uint_least8_t>::type
     count_trailing_ones(T value)
   {
     typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -1578,9 +1578,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_leading_zeros(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_zero(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if (value & 0x80U)
@@ -1613,7 +1613,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -1742,9 +1742,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_leading_zeros(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_zero(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if (value & 0x8000000000000000ULL)
@@ -1795,7 +1795,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -1824,9 +1824,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_leading_ones(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_one(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if ((value & 0x80U) == 0U)
@@ -1859,7 +1859,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -1988,9 +1988,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_leading_ones(T value)
   {
-#if ETL_USING_CPP20 && ETL_USING_STL
+  #if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_one(value);
-#else
+  #else
     uint_least8_t count = 0U;
 
     if ((value & 0x8000000000000000ULL) == 0ULL)
@@ -2041,7 +2041,7 @@ namespace etl
     }
 
     return count;
-#endif
+  #endif
   }
 #endif
 
@@ -2105,21 +2105,21 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_integral<T>::value&& etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint16_t>::type
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint16_t>::type
     binary_interleave(T first, T second)
   {
-	  uint16_t f = uint16_t(first);
-	  uint16_t s = uint16_t(second);
+    uint16_t f = uint16_t(first);
+    uint16_t s = uint16_t(second);
 
-	  f = (f | (f << 4U)) & 0x0F0FU;
-	  f = (f | (f << 2U)) & 0x3333U;
-	  f = (f | (f << 1U)) & 0x5555U;
+    f = (f | (f << 4U)) & 0x0F0FU;
+    f = (f | (f << 2U)) & 0x3333U;
+    f = (f | (f << 1U)) & 0x5555U;
 
-	  s = (s | (s << 4U)) & 0x0F0FU;
-	  s = (s | (s << 2U)) & 0x3333U;
-	  s = (s | (s << 1U)) & 0x5555U;
+    s = (s | (s << 4U)) & 0x0F0FU;
+    s = (s | (s << 2U)) & 0x3333U;
+    s = (s | (s << 1U)) & 0x5555U;
 
-	  return (f | (s << 1U));
+    return (f | (s << 1U));
   }
 #endif
 
@@ -2132,20 +2132,20 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint32_t>::type
     binary_interleave(T first, T second)
   {
-	  uint32_t f = uint32_t(first);
-	  uint32_t s = uint32_t(second);
+    uint32_t f = uint32_t(first);
+    uint32_t s = uint32_t(second);
 
-	  f = (f | (f << 8U)) & 0x00FF00FFUL;
-	  f = (f | (f << 4U)) & 0x0F0F0F0FUL;
-	  f = (f | (f << 2U)) & 0x33333333UL;
-	  f = (f | (f << 1U)) & 0x55555555UL;
+    f = (f | (f << 8U)) & 0x00FF00FFUL;
+    f = (f | (f << 4U)) & 0x0F0F0F0FUL;
+    f = (f | (f << 2U)) & 0x33333333UL;
+    f = (f | (f << 1U)) & 0x55555555UL;
 
-	  s = (s | (s << 8U)) & 0x00FF00FFUL;
-	  s = (s | (s << 4U)) & 0x0F0F0F0FUL;
-	  s = (s | (s << 2U)) & 0x33333333UL;
-	  s = (s | (s << 1U)) & 0x55555555UL;
+    s = (s | (s << 8U)) & 0x00FF00FFUL;
+    s = (s | (s << 4U)) & 0x0F0F0F0FUL;
+    s = (s | (s << 2U)) & 0x33333333UL;
+    s = (s | (s << 1U)) & 0x55555555UL;
 
-	  return (f | (s << 1U));
+    return (f | (s << 1U));
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -2158,22 +2158,22 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint64_t>::type
     binary_interleave(T first, T second)
   {
-	  uint64_t f = uint64_t(first);
-	  uint64_t s = uint64_t(second);
+    uint64_t f = uint64_t(first);
+    uint64_t s = uint64_t(second);
 
-	  f = (f | (f << 16U)) & 0x0000FFFF0000FFFFULL;
-	  f = (f | (f << 8U))  & 0x00FF00FF00FF00FFULL;
-	  f = (f | (f << 4U))  & 0x0F0F0F0F0F0F0F0FULL;
-	  f = (f | (f << 2U))  & 0x3333333333333333ULL;
-	  f = (f | (f << 1U))  & 0x5555555555555555ULL;
+    f = (f | (f << 16U)) & 0x0000FFFF0000FFFFULL;
+    f = (f | (f << 8U)) & 0x00FF00FF00FF00FFULL;
+    f = (f | (f << 4U)) & 0x0F0F0F0F0F0F0F0FULL;
+    f = (f | (f << 2U)) & 0x3333333333333333ULL;
+    f = (f | (f << 1U)) & 0x5555555555555555ULL;
 
-	  s = (s | (s << 16U)) & 0x0000FFFF0000FFFFULL;
-	  s = (s | (s << 8U))  & 0x00FF00FF00FF00FFULL;
-	  s = (s | (s << 4U))  & 0x0F0F0F0F0F0F0F0FULL;
-	  s = (s | (s << 2U))  & 0x3333333333333333ULL;
-	  s = (s | (s << 1U))  & 0x5555555555555555ULL;
+    s = (s | (s << 16U)) & 0x0000FFFF0000FFFFULL;
+    s = (s | (s << 8U)) & 0x00FF00FF00FF00FFULL;
+    s = (s | (s << 4U)) & 0x0F0F0F0F0F0F0F0FULL;
+    s = (s | (s << 2U)) & 0x3333333333333333ULL;
+    s = (s | (s << 1U)) & 0x5555555555555555ULL;
 
-	  return (f | (s << 1U));
+    return (f | (s << 1U));
   }
 #endif
 
@@ -2183,7 +2183,7 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type  
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type
     binary_interleave(T first, T second)
   {
     return int64_t(binary_interleave(uint16_t(first), uint16_t(second)));
@@ -2195,9 +2195,9 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-   is_odd(T value)
+    is_odd(T value)
   {
-	  return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) != 0U);
+    return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) != 0U);
   }
 
   //***************************************************************************
@@ -2241,7 +2241,7 @@ namespace etl
     typedef typename etl::make_unsigned<T>::type type;
 
     return (nbits == 0U) ? static_cast<T>(0)
-      : static_cast<T>(static_cast<type>(~0) >> (etl::integral_limits<type>::bits - nbits));
+                         : static_cast<T>(static_cast<type>(~0) >> (etl::integral_limits<type>::bits - nbits));
   }
 
   //***********************************
@@ -2287,7 +2287,8 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR
-    T operator ()(T value) const ETL_NOEXCEPT
+      T
+      operator()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2303,7 +2304,7 @@ namespace etl
   struct binary_and : public etl::unary_function<T, T>
   {
     //***********************************
-    ETL_CONSTEXPR 
+    ETL_CONSTEXPR
     explicit binary_and(T parameter_) ETL_NOEXCEPT
       : parameter(parameter_)
     {
@@ -2311,8 +2312,9 @@ namespace etl
 
     //***********************************
     ETL_NODISCARD
-    ETL_CONSTEXPR 
-    T operator ()(T value) const ETL_NOEXCEPT
+    ETL_CONSTEXPR
+      T
+      operator()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2341,7 +2343,8 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR
-    T operator ()(T value) const ETL_NOEXCEPT
+      T
+      operator()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2370,7 +2373,8 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR
-    T operator ()(T value) const ETL_NOEXCEPT
+      T
+      operator()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2685,6 +2689,6 @@ namespace etl
     b30 = 0x40000000UL,
     b31 = 0x80000000UL
   };
-}
+} // namespace etl
 
 #endif

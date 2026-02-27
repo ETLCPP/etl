@@ -32,10 +32,9 @@ SOFTWARE.
 #define ETL_BIT_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "binary.h"
-#include "integral_limits.h"
 #include "endianness.h"
+#include "integral_limits.h"
 #include "type_traits.h"
 
 #include <string.h>
@@ -51,10 +50,7 @@ namespace etl
   //***************************************************************************
   template <typename TDestination, typename TSource>
   ETL_NODISCARD
-  typename etl::enable_if<!(etl::is_integral<TDestination>::value&& etl::is_integral<TSource>::value) &&
-                          (sizeof(TDestination) == sizeof(TSource)) &&
-                          etl::is_trivially_copyable<TSource>::value &&
-                          etl::is_trivially_copyable<TDestination>::value, TDestination>::type
+  typename etl::enable_if<!(etl::is_integral<TDestination>::value && etl::is_integral<TSource>::value) && (sizeof(TDestination) == sizeof(TSource)) && etl::is_trivially_copyable<TSource>::value && etl::is_trivially_copyable<TDestination>::value, TDestination>::type
     bit_cast(const TSource& source) ETL_NOEXCEPT
   {
     TDestination destination;
@@ -70,8 +66,7 @@ namespace etl
   template <typename TDestination, typename TSource>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<(etl::is_integral<TDestination>::value && etl::is_integral<TSource>::value) && 
-                          (sizeof(TDestination) == sizeof(TSource)), TDestination>::type
+    typename etl::enable_if<(etl::is_integral<TDestination>::value && etl::is_integral<TSource>::value) && (sizeof(TDestination) == sizeof(TSource)), TDestination>::type
     bit_cast(const TSource& source) ETL_NOEXCEPT
   {
     return static_cast<TDestination>(source);
@@ -93,7 +88,8 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_NODISCARD ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_unsigned<T>::value, bool>::type has_single_bit(T value) ETL_NOEXCEPT
+    typename etl::enable_if<etl::is_unsigned<T>::value, bool>::type
+    has_single_bit(T value) ETL_NOEXCEPT
   {
     return (value & (value - 1)) == 0;
   }
@@ -140,7 +136,6 @@ namespace etl
   {
     return etl::count_trailing_ones(value);
   }
-
 
   //***************************************************************************
   /// bit_width
@@ -224,7 +219,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_NODISCARD ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type 
+    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     rotr(T value, int n) ETL_NOEXCEPT
   {
     if (n < 0)
@@ -236,7 +231,7 @@ namespace etl
       return etl::rotate_right(value, n);
     }
   }
- 
+
   //***************************************************************************
   /// popcount
   //***************************************************************************
@@ -247,6 +242,6 @@ namespace etl
   {
     return etl::count_bits(value);
   }
-}
+} // namespace etl
 
 #endif

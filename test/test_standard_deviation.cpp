@@ -34,22 +34,16 @@ SOFTWARE.
 
 namespace
 {
-  std::array<char, 10> input_c
-  {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-  };
+  std::array<char, 10> input_c{
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
   //*********************************
-  std::array<float, 10> input_f
-  {
-    0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f
-  };
+  std::array<float, 10> input_f{
+    0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
 
   //*********************************
-  std::array<double, 10> input_d
-  {
-    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
-  };
+  std::array<double, 10> input_d{
+    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 
   SUITE(test_standard_deviation)
   {
@@ -161,4 +155,4 @@ namespace
       CHECK_CLOSE(9.17, variance_result, 0.1);
     }
   }
-}
+} // namespace

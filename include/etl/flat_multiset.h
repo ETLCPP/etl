@@ -32,12 +32,12 @@ SOFTWARE.
 #define ETL_FLAT_MULTISET_INCLUDED
 
 #include "platform.h"
-#include "reference_flat_multiset.h"
-#include "pool.h"
-#include "placement_new.h"
-#include "nth_type.h"
-#include "type_traits.h"
 #include "initializer_list.h"
+#include "nth_type.h"
+#include "placement_new.h"
+#include "pool.h"
+#include "reference_flat_multiset.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -62,8 +62,8 @@ namespace etl
   private:
 
     typedef etl::ireference_flat_multiset<T, TKeyCompare> refset_t;
-    typedef typename refset_t::lookup_t lookup_t;
-    typedef etl::ipool storage_t;
+    typedef typename refset_t::lookup_t                   lookup_t;
+    typedef etl::ipool                                    storage_t;
 
     typedef const T& key_parameter_t;
 
@@ -72,20 +72,20 @@ namespace etl
     typedef T                 key_type;
     typedef T                 value_type;
     typedef TKeyCompare       key_compare;
-    typedef value_type& reference;
+    typedef value_type&       reference;
     typedef const value_type& const_reference;
 #if ETL_USING_CPP11
     typedef value_type&& rvalue_reference;
 #endif
-    typedef value_type* pointer;
+    typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
     typedef typename refset_t::iterator       iterator;
     typedef typename refset_t::const_iterator const_iterator;
 
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   public:
@@ -238,7 +238,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
       ETL_INCREMENT_DEBUG_COUNT;
-        result = refset_t::insert_at(i_element, *pvalue);
+      result = refset_t::insert_at(i_element, *pvalue);
 
       return result;
     }
@@ -260,7 +260,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT;
-        result = refset_t::insert_at(i_element, *pvalue);
+      result = refset_t::insert_at(i_element, *pvalue);
 
       return result;
     }
@@ -320,8 +320,8 @@ namespace etl
     /// Emplaces a value to the set.
     //*************************************************************************
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_FLAT_MULTISET_FORCE_CPP03_IMPLEMENTATION)
-    template <typename ... Args>
-    ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
@@ -517,7 +517,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<value_type>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<value_type>::value)
       {
         storage.release_all();
       }
@@ -534,7 +534,7 @@ namespace etl
       }
 
       ETL_RESET_DEBUG_COUNT;
-        refset_t::clear();
+      refset_t::clear();
     }
 
     //*********************************************************************
@@ -728,7 +728,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iflat_multiset& operator = (const iflat_multiset& rhs)
+    iflat_multiset& operator=(const iflat_multiset& rhs)
     {
       if (&rhs != this)
       {
@@ -742,7 +742,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    iflat_multiset& operator = (iflat_multiset&& rhs)
+    iflat_multiset& operator=(iflat_multiset&& rhs)
     {
       move_container(etl::move(rhs));
 
@@ -810,8 +810,8 @@ namespace etl
     /// Constructor.
     //*********************************************************************
     iflat_multiset(lookup_t& lookup_, storage_t& storage_)
-      : refset_t(lookup_),
-      storage(storage_)
+      : refset_t(lookup_)
+      , storage(storage_)
     {
     }
 
@@ -827,7 +827,7 @@ namespace etl
         this->clear();
 
         etl::iflat_multiset<T, TKeyCompare>::iterator first = rhs.begin();
-        etl::iflat_multiset<T, TKeyCompare>::iterator last = rhs.end();
+        etl::iflat_multiset<T, TKeyCompare>::iterator last  = rhs.end();
 
         // Move all of the elements.
         while (first != last)
@@ -854,16 +854,20 @@ namespace etl
     /// Internal debugging.
     ETL_DECLARE_DEBUG_COUNT;
 
-      //*************************************************************************
-      /// Destructor.
-      //*************************************************************************
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
 #if defined(ETL_POLYMORPHIC_FLAT_MULTISET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
+
     virtual ~iflat_multiset()
     {
     }
 #else
+
   protected:
+
     ~iflat_multiset()
     {
     }
@@ -878,7 +882,7 @@ namespace etl
   ///\ingroup flat_multiset
   //***************************************************************************
   template <typename T, typename TKeyCompare>
-  bool operator ==(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
+  bool operator==(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -891,7 +895,7 @@ namespace etl
   ///\ingroup flat_multiset
   //***************************************************************************
   template <typename T, typename TKeyCompare>
-  bool operator !=(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
+  bool operator!=(const etl::iflat_multiset<T, TKeyCompare>& lhs, const etl::iflat_multiset<T, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -976,7 +980,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    flat_multiset& operator = (const flat_multiset& rhs)
+    flat_multiset& operator=(const flat_multiset& rhs)
     {
       if (&rhs != this)
       {
@@ -990,7 +994,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    flat_multiset& operator = (flat_multiset&& rhs)
+    flat_multiset& operator=(flat_multiset&& rhs)
     {
       if (&rhs != this)
       {
@@ -1012,7 +1016,7 @@ namespace etl
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
 
-  template <typename T,const size_t MAX_SIZE_, typename TCompare>
+  template <typename T, const size_t MAX_SIZE_, typename TCompare>
   ETL_CONSTANT size_t flat_multiset<T, MAX_SIZE_, TCompare>::MAX_SIZE;
 
   //*************************************************************************
@@ -1030,9 +1034,9 @@ namespace etl
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_flat_multiset(T&&... keys) -> etl::flat_multiset<TKey, sizeof...(T), TKeyCompare>
   {
-    return { etl::forward<T>(keys)... };
+    return {etl::forward<T>(keys)...};
   }
 #endif
-}
+} // namespace etl
 
 #endif

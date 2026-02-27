@@ -2,18 +2,18 @@
 // Shared message example
 //*****************************************************************************
 
-#include "etl/shared_message.h"
-#include "etl/message.h"
-#include "etl/reference_counted_message_pool.h"
-#include "etl/message_router.h"
-#include "etl/message_bus.h"
 #include "etl/fixed_sized_memory_block_allocator.h"
+#include "etl/message.h"
+#include "etl/message_bus.h"
+#include "etl/message_router.h"
 #include "etl/queue.h"
+#include "etl/reference_counted_message_pool.h"
+#include "etl/shared_message.h"
 
-#include <iostream>
 #include <atomic>
-#include <string>
+#include <iostream>
 #include <mutex>
+#include <string>
 
 constexpr etl::message_router_id_t RouterId1 = 1U;
 constexpr etl::message_router_id_t RouterId2 = 2U;
@@ -26,9 +26,8 @@ struct Message1 : public etl::message<1>
   Message1(std::string s_)
     : s(s_)
   {
-    
   }
-  
+
   std::string s;
 };
 
@@ -40,11 +39,10 @@ struct Message2 : public etl::message<2>
   Message2(std::string s_)
     : s(s_)
   {
-    
   }
-  
+
   std::string s;
-  char data[100];
+  char        data[100];
 };
 
 //*****************************************************************************
@@ -55,7 +53,6 @@ struct Message3 : public etl::message<3>
   Message3(std::string s_)
     : s(s_)
   {
-
   }
 
   std::string s;
@@ -199,7 +196,7 @@ struct Bus : public etl::message_bus<2U>
 //*****************************************************************************
 MessageRouter1 router1;
 MessageRouter2 router2;
-Bus bus;
+Bus            bus;
 
 //*****************************************************************************
 // The thread safe message pool. Uses atomic uint32_t for counting.
@@ -230,8 +227,8 @@ private:
 };
 
 //*****************************************************************************
-// The memory block allocator that supplies the pool with memory 
-// to store reference counted messages in. 
+// The memory block allocator that supplies the pool with memory
+// to store reference counted messages in.
 
 // The reference counted message parameters type for the messages we will use.
 using message_parameters_small = MessagePool::pool_message_parameters<Message1, Message3>;
@@ -269,7 +266,7 @@ int main()
 
   Message1 m1("One");
   Message2 m2("Two");
-  
+
   etl::shared_message sm1(message_pool, m1); // Created a shared message by allocating a reference counted message from message_pool containing a copy of m1.
   etl::shared_message sm2(message_pool, m2); // Created a shared message by allocating a reference counted message from message_pool containing a copy of m2.
   etl::shared_message sm3(pm3);              // Created a shared message from a statically allocated persistent message.

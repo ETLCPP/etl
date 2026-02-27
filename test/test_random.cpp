@@ -30,12 +30,12 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "etl/random.h"
 #include "etl/crc32.h"
+#include "etl/random.h"
 
-#include <vector>
 #include <algorithm>
 #include <fstream>
+#include <vector>
 
 namespace
 {
@@ -45,7 +45,7 @@ namespace
     TEST(test_random_xorshift_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_xorshift r;
+      etl::random_xorshift  r;
 
       struct generator
       {
@@ -98,7 +98,7 @@ namespace
     TEST(test_random_lcg_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_lcg r;
+      etl::random_lcg       r;
 
       struct generator
       {
@@ -151,7 +151,7 @@ namespace
     TEST(test_random_clcg_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_clcg r;
+      etl::random_clcg      r;
 
       struct generator
       {
@@ -188,7 +188,7 @@ namespace
     {
       etl::random_clcg r;
 
-      uint32_t low = 1234UL;
+      uint32_t low  = 1234UL;
       uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
@@ -204,7 +204,7 @@ namespace
     TEST(test_random_lsfr_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_lsfr r;
+      etl::random_lsfr      r;
 
       struct generator
       {
@@ -257,7 +257,7 @@ namespace
     TEST(test_random_mwc_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_mwc r;
+      etl::random_mwc       r;
 
       struct generator
       {
@@ -294,7 +294,7 @@ namespace
     {
       etl::random_mwc r;
 
-      uint32_t low = 1234UL;
+      uint32_t low  = 1234UL;
       uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
@@ -310,7 +310,7 @@ namespace
     TEST(test_random_pcg_sequence)
     {
       std::vector<uint32_t> out1(10000);
-      etl::random_pcg r;
+      etl::random_pcg       r;
 
       struct generator
       {
@@ -347,7 +347,7 @@ namespace
     {
       etl::random_pcg r;
 
-      uint32_t low = 1234UL;
+      uint32_t low  = 1234UL;
       uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
@@ -362,7 +362,7 @@ namespace
     //*************************************************************************
     TEST(test_random_hash_sequence)
     {
-      std::vector<uint32_t> out1(10000);
+      std::vector<uint32_t>        out1(10000);
       etl::random_hash<etl::crc32> r;
 
       struct generator
@@ -412,4 +412,4 @@ namespace
       }
     }
   }
-}
+} // namespace

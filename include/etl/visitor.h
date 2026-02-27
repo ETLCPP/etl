@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_VISITOR_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "type_list.h"
+#include "type_traits.h"
 
 //*****************************************************************************
 ///\defgroup visitor visitor
@@ -59,7 +59,8 @@ namespace etl
   ///\ingroup visitor
   //*****************************************************************
   template <typename T1, typename... Types>
-  class visitable : public visitable<T1>, public visitable<Types...>
+  class visitable : public visitable<T1>
+    , public visitable<Types...>
   {
   public:
 
@@ -183,7 +184,8 @@ namespace etl
   ///\ingroup visitor
   //*****************************************************************
   template <typename T1, typename... Types>
-  class visitor : public visitor<T1>, public visitor<Types...>
+  class visitor : public visitor<T1>
+    , public visitor<Types...>
   {
   public:
 
@@ -226,9 +228,9 @@ namespace etl
   /// Derive visitors from this.
   ///\ingroup visitor
   //*****************************************************************
-  template <typename T1,         typename T2  = void, typename T3  = void, typename T4  = void,
-            typename T5  = void, typename T6  = void, typename T7  = void, typename T8  = void,
-            typename T9  = void, typename T10 = void, typename T11 = void, typename T12 = void,
+  template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class visitor : public visitor_tag
   {
@@ -236,15 +238,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
     virtual void visit(T11) = 0;
     virtual void visit(T12) = 0;
@@ -259,9 +261,9 @@ namespace etl
   /// Derive visitors from this.
   ///\ingroup visitor
   //*****************************************************************
-  template <typename T1,  typename T2,  typename T3,  typename T4,
-            typename T5,  typename T6,  typename T7,  typename T8,
-            typename T9,  typename T10, typename T11, typename T12,
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14, typename T15>
   class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> : public visitor_tag
   {
@@ -269,15 +271,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
     virtual void visit(T11) = 0;
     virtual void visit(T12) = 0;
@@ -291,9 +293,9 @@ namespace etl
   /// Derive visitors from this.
   ///\ingroup visitor
   //*****************************************************************
-  template <typename T1,  typename T2,  typename T3,  typename T4,
-            typename T5,  typename T6,  typename T7,  typename T8,
-            typename T9,  typename T10, typename T11, typename T12,
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14>
   class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> : public visitor_tag
   {
@@ -301,15 +303,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
     virtual void visit(T11) = 0;
     virtual void visit(T12) = 0;
@@ -322,8 +324,8 @@ namespace etl
   /// Derive visitors from this.
   ///\ingroup visitor
   //*****************************************************************
-  template <typename T1, typename T2,  typename T3,  typename T4,
-            typename T5, typename T6,  typename T7,  typename T8,
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11, typename T12,
             typename T13>
   class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> : public visitor_tag
@@ -332,15 +334,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
     virtual void visit(T11) = 0;
     virtual void visit(T12) = 0;
@@ -352,8 +354,8 @@ namespace etl
   /// Derive visitors from this.
   ///\ingroup visitor
   //*****************************************************************
-  template <typename T1, typename T2,  typename T3,  typename T4,
-            typename T5, typename T6,  typename T7,  typename T8,
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11, typename T12>
   class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> : public visitor_tag
   {
@@ -361,15 +363,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
     virtual void visit(T11) = 0;
     virtual void visit(T12) = 0;
@@ -380,8 +382,8 @@ namespace etl
   /// Derive visitors from this.
   ///\ingroup visitor
   //*****************************************************************
-  template <typename T1, typename T2,  typename T3, typename T4,
-            typename T5, typename T6,  typename T7, typename T8,
+  template <typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11>
   class visitor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : public visitor_tag
   {
@@ -389,15 +391,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
     virtual void visit(T11) = 0;
   };
@@ -416,15 +418,15 @@ namespace etl
 
     virtual ~visitor() {}
 
-    virtual void visit(T1) = 0;
-    virtual void visit(T2) = 0;
-    virtual void visit(T3) = 0;
-    virtual void visit(T4) = 0;
-    virtual void visit(T5) = 0;
-    virtual void visit(T6) = 0;
-    virtual void visit(T7) = 0;
-    virtual void visit(T8) = 0;
-    virtual void visit(T9) = 0;
+    virtual void visit(T1)  = 0;
+    virtual void visit(T2)  = 0;
+    virtual void visit(T3)  = 0;
+    virtual void visit(T4)  = 0;
+    virtual void visit(T5)  = 0;
+    virtual void visit(T6)  = 0;
+    virtual void visit(T7)  = 0;
+    virtual void visit(T8)  = 0;
+    virtual void visit(T9)  = 0;
     virtual void visit(T10) = 0;
   };
 
@@ -624,6 +626,6 @@ namespace etl
   template <typename T>
   constexpr bool is_visitor_v = etl::is_visitor<T>::value;
 #endif
-}
+} // namespace etl
 
 #endif

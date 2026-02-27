@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/type_select.h"
 #include "etl/null_type.h"
+#include "etl/type_select.h"
 
 #include <type_traits>
 
@@ -38,12 +38,14 @@ namespace
   typedef etl::type_select<etl::null_type<0>> Types1;
 
   typedef etl::type_select<etl::null_type<0>, etl::null_type<1>, etl::null_type<2>, etl::null_type<3>,
-                           etl::null_type<4>, etl::null_type<5>, etl::null_type<6>, etl::null_type<7>> Types8;
+                           etl::null_type<4>, etl::null_type<5>, etl::null_type<6>, etl::null_type<7>>
+    Types8;
 
-  typedef etl::type_select<etl::null_type<0>,  etl::null_type<1>,  etl::null_type<2>,  etl::null_type<3>,
-                           etl::null_type<4>,  etl::null_type<5>,  etl::null_type<6>,  etl::null_type<7>,
-                           etl::null_type<8>,  etl::null_type<9>,  etl::null_type<10>, etl::null_type<11>,
-                           etl::null_type<12>, etl::null_type<13>, etl::null_type<14>, etl::null_type<15>> Types16;
+  typedef etl::type_select<etl::null_type<0>, etl::null_type<1>, etl::null_type<2>, etl::null_type<3>,
+                           etl::null_type<4>, etl::null_type<5>, etl::null_type<6>, etl::null_type<7>,
+                           etl::null_type<8>, etl::null_type<9>, etl::null_type<10>, etl::null_type<11>,
+                           etl::null_type<12>, etl::null_type<13>, etl::null_type<14>, etl::null_type<15>>
+    Types16;
 
   SUITE(test_type_lookup)
   {
@@ -66,21 +68,21 @@ namespace
     //*************************************************************************
     TEST(test_type_select_8)
     {
-      CHECK((etl::is_same<etl::null_type<0>,   typename Types8::select<0>::type>::value));
+      CHECK((etl::is_same<etl::null_type<0>, typename Types8::select<0>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<0>::type>::value));
-      CHECK((etl::is_same<etl::null_type<1>,   typename Types8::select<1>::type>::value));
+      CHECK((etl::is_same<etl::null_type<1>, typename Types8::select<1>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<1>::type>::value));
-      CHECK((etl::is_same<etl::null_type<2>,   typename Types8::select<2>::type>::value));
+      CHECK((etl::is_same<etl::null_type<2>, typename Types8::select<2>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<2>::type>::value));
-      CHECK((etl::is_same<etl::null_type<3>,   typename Types8::select<3>::type>::value));
+      CHECK((etl::is_same<etl::null_type<3>, typename Types8::select<3>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<3>::type>::value));
-      CHECK((etl::is_same<etl::null_type<4>,   typename Types8::select<4>::type>::value));
+      CHECK((etl::is_same<etl::null_type<4>, typename Types8::select<4>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<4>::type>::value));
-      CHECK((etl::is_same<etl::null_type<5>,   typename Types8::select<5>::type>::value));
+      CHECK((etl::is_same<etl::null_type<5>, typename Types8::select<5>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<5>::type>::value));
-      CHECK((etl::is_same<etl::null_type<6>,   typename Types8::select<6>::type>::value));
+      CHECK((etl::is_same<etl::null_type<6>, typename Types8::select<6>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<6>::type>::value));
-      CHECK((etl::is_same<etl::null_type<7>,   typename Types8::select<7>::type>::value));
+      CHECK((etl::is_same<etl::null_type<7>, typename Types8::select<7>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<7>::type>::value));
     }
 
@@ -110,37 +112,37 @@ namespace
     //*************************************************************************
     TEST(test_type_select_16)
     {
-      CHECK((etl::is_same<etl::null_type<0>,   typename Types16::select<0>::type>::value));
+      CHECK((etl::is_same<etl::null_type<0>, typename Types16::select<0>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<0>::type>::value));
-      CHECK((etl::is_same<etl::null_type<1>,   typename Types16::select<1>::type>::value));
+      CHECK((etl::is_same<etl::null_type<1>, typename Types16::select<1>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<1>::type>::value));
-      CHECK((etl::is_same<etl::null_type<2>,   typename Types16::select<2>::type>::value));
+      CHECK((etl::is_same<etl::null_type<2>, typename Types16::select<2>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<2>::type>::value));
-      CHECK((etl::is_same<etl::null_type<3>,   typename Types16::select<3>::type>::value));
+      CHECK((etl::is_same<etl::null_type<3>, typename Types16::select<3>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<3>::type>::value));
-      CHECK((etl::is_same<etl::null_type<4>,   typename Types16::select<4>::type>::value));
+      CHECK((etl::is_same<etl::null_type<4>, typename Types16::select<4>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<4>::type>::value));
-      CHECK((etl::is_same<etl::null_type<5>,   typename Types16::select<5>::type>::value));
+      CHECK((etl::is_same<etl::null_type<5>, typename Types16::select<5>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<5>::type>::value));
-      CHECK((etl::is_same<etl::null_type<6>,   typename Types16::select<6>::type>::value));
+      CHECK((etl::is_same<etl::null_type<6>, typename Types16::select<6>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<6>::type>::value));
-      CHECK((etl::is_same<etl::null_type<7>,   typename Types16::select<7>::type>::value));
+      CHECK((etl::is_same<etl::null_type<7>, typename Types16::select<7>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<7>::type>::value));
-      CHECK((etl::is_same<etl::null_type<8>,   typename Types16::select<8>::type>::value));
+      CHECK((etl::is_same<etl::null_type<8>, typename Types16::select<8>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<8>::type>::value));
-      CHECK((etl::is_same<etl::null_type<9>,   typename Types16::select<9>::type>::value));
+      CHECK((etl::is_same<etl::null_type<9>, typename Types16::select<9>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<9>::type>::value));
-      CHECK((etl::is_same<etl::null_type<10>,  typename Types16::select<10>::type>::value));
+      CHECK((etl::is_same<etl::null_type<10>, typename Types16::select<10>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<10>::type>::value));
-      CHECK((etl::is_same<etl::null_type<11>,  typename Types16::select<11>::type>::value));
+      CHECK((etl::is_same<etl::null_type<11>, typename Types16::select<11>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<11>::type>::value));
-      CHECK((etl::is_same<etl::null_type<12>,  typename Types16::select<12>::type>::value));
+      CHECK((etl::is_same<etl::null_type<12>, typename Types16::select<12>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<12>::type>::value));
-      CHECK((etl::is_same<etl::null_type<13>,  typename Types16::select<13>::type>::value));
+      CHECK((etl::is_same<etl::null_type<13>, typename Types16::select<13>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<13>::type>::value));
-      CHECK((etl::is_same<etl::null_type<14>,  typename Types16::select<14>::type>::value));
+      CHECK((etl::is_same<etl::null_type<14>, typename Types16::select<14>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<14>::type>::value));
-      CHECK((etl::is_same<etl::null_type<15>,  typename Types16::select<15>::type>::value));
+      CHECK((etl::is_same<etl::null_type<15>, typename Types16::select<15>::type>::value));
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<15>::type>::value));
     }
 
@@ -183,4 +185,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

@@ -11,8 +11,8 @@ enum VectorId
   USART1_IRQ_HANDLER  = 52,
   USART2_IRQ_HANDLER  = 53,
   VECTOR_ID_END,
-  VECTOR_ID_OFFSET    = TIM1_CC_IRQ_HANDLER,
-  VECTOR_ID_RANGE     = VECTOR_ID_END - VECTOR_ID_OFFSET
+  VECTOR_ID_OFFSET = TIM1_CC_IRQ_HANDLER,
+  VECTOR_ID_RANGE  = VECTOR_ID_END - VECTOR_ID_OFFSET
 };
 
 typedef etl::delegate_service<VECTOR_ID_RANGE, VECTOR_ID_OFFSET> InterruptVectors;
@@ -91,8 +91,8 @@ public:
 
   // Constructor.
   Uart(int port_id, size_t interruptId)
-    : port_id(port_id),
-      callback(etl::delegate<void(size_t)>::create<Uart, &Uart::InterruptHandler>(*this))
+    : port_id(port_id)
+    , callback(etl::delegate<void(size_t)>::create<Uart, &Uart::InterruptHandler>(*this))
   {
     GetInterruptVectorsInstance().register_delegate(interruptId, callback);
   }

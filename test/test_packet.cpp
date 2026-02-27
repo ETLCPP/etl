@@ -28,10 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/packet.h"
 #include "etl/largest.h"
-#include "etl/queue.h"
+#include "etl/packet.h"
 #include "etl/pool.h"
+#include "etl/queue.h"
 
 namespace
 {
@@ -55,7 +55,6 @@ namespace
   protected:
 
     const int v;
-    
   };
 
   struct not_base
@@ -118,7 +117,7 @@ namespace
   typedef etl::largest<derived_1, derived_2> types;
   //
   //// Test packet types.
-  typedef etl::packet<base, types::size, types::alignment> packet1_t;
+  typedef etl::packet<base, types::size, types::alignment>     packet1_t;
   typedef etl::packet<not_base, types::size, types::alignment> packet2_t;
 
   SUITE(test_packet)
@@ -129,10 +128,10 @@ namespace
       derived_1 d1(1);
       derived_2 d2(2);
 
-      packet1_t p11(d1);            // Uses copy constructor
+      packet1_t p11(d1); // Uses copy constructor
       CHECK(p11.get().was_moved == false);
 
-      packet1_t p12(derived_2(2));  // Uses move constructor
+      packet1_t p12(derived_2(2)); // Uses move constructor
       CHECK(p12.get().was_moved == true);
 
       base* b;
@@ -143,9 +142,9 @@ namespace
       CHECK_EQUAL(d2.value(), b->value());
 
       // These lines should fail to compile.
-      //p11 = p12;
-      //packet2_t p21(d1);
-      //packet2_t p22(d1);
+      // p11 = p12;
+      // packet2_t p21(d1);
+      // packet2_t p22(d1);
     }
 
     //*************************************************************************
@@ -156,7 +155,7 @@ namespace
       derived_1 d3(3);
 
       packet1_t p(d1);
-      base* b;
+      base*     b;
       b = &p.get();
       CHECK_EQUAL(d1.value(), b->value());
 
@@ -202,13 +201,13 @@ namespace
 
       // Non-const.
       packet1_t p1(da);
-      base& rb = p1.get();
+      base&     rb = p1.get();
       CHECK_EQUAL(da.value(), rb.value());
 
       // Const.
       const packet1_t p2(da);
-      const base& crb = p2.get();
+      const base&     crb = p2.get();
       CHECK_EQUAL(da.value(), crb.value());
     }
   }
-}
+} // namespace

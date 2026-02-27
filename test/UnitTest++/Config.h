@@ -4,32 +4,30 @@
 // Standard defines documented here: http://predef.sourceforge.net
 
 #if defined(_MSC_VER)
-   #pragma warning(disable:4702)// unreachable code
-   #pragma warning(disable:4722)// destructor never returns, potential memory leak
+  #pragma warning(disable : 4702) // unreachable code
+  #pragma warning(disable : 4722) // destructor never returns, potential memory leak
 
-   #if (_MSC_VER == 1200)  // VC6
-      #define UNITTEST_COMPILER_IS_MSVC6
-      #pragma warning(disable:4786)
-      #pragma warning(disable:4290)
-   #endif
+  #if (_MSC_VER == 1200) // VC6
+    #define UNITTEST_COMPILER_IS_MSVC6
+    #pragma warning(disable : 4786)
+    #pragma warning(disable : 4290)
+  #endif
 
-   #ifdef _USRDLL
-      #define UNITTEST_WIN32_DLL
-   #endif
+  #ifdef _USRDLL
+    #define UNITTEST_WIN32_DLL
+  #endif
 
-   #define UNITTEST_WIN32
+  #define UNITTEST_WIN32
 #endif
 
-#if defined(unix) || defined(__unix__) || defined(__unix) || defined(linux) || \
-   defined(__APPLE__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) \
-   || defined (__HAIKU__) || defined(_AIX)
-   #define UNITTEST_POSIX
+#if defined(unix) || defined(__unix__) || defined(__unix) || defined(linux) || defined(__APPLE__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) \
+  || defined(__HAIKU__) || defined(_AIX)
+  #define UNITTEST_POSIX
 #endif
 
 #if defined(__MINGW32__)
-   #define UNITTEST_MINGW
+  #define UNITTEST_MINGW
 #endif
-
 
 // By default, MemoryOutStream is implemented in terms of std::ostringstream.
 // This is useful if you are using the CHECK macros on objects that have something like this defined:
@@ -45,15 +43,14 @@
 // well as Google Code HEAD users that may have used or defined
 // UNITTEST_MEMORYOUTSTREAM_IS_STD_OSTRINGSTREAM outside of this configuration file.
 #ifndef UNITTEST_USE_CUSTOM_STREAMS
-   #define UNITTEST_MEMORYOUTSTREAM_IS_STD_OSTRINGSTREAM
+  #define UNITTEST_MEMORYOUTSTREAM_IS_STD_OSTRINGSTREAM
 #endif
 
 // DeferredTestReporter uses the STL to collect test results for subsequent export by reporters like
 // XmlTestReporter.  If you don't want to use this functionality, uncomment this line and no STL
 // headers or code will be compiled into UnitTest++
 
-//#define UNITTEST_NO_DEFERRED_REPORTER
-
+// #define UNITTEST_NO_DEFERRED_REPORTER
 
 // By default, asserts that you report via UnitTest::ReportAssert() abort the current test and
 // continue to the next one by throwing an exception, which unwinds the stack naturally, destroying
@@ -61,15 +58,14 @@
 // platform/compiler, uncomment this line.  All exception code will be removed from UnitTest++,
 // assert recovery will be done via setjmp/longjmp, and NO correct stack unwinding will happen!
 
-//#define UNITTEST_NO_EXCEPTIONS
-
+// #define UNITTEST_NO_EXCEPTIONS
 
 // std namespace qualification: used for functions like strcpy that
 // may live in std:: namespace (cstring header).
-#if defined( UNITTEST_COMPILER_IS_MSVC6 )
-   #define UNIITEST_NS_QUAL_STD(x) x
+#if defined(UNITTEST_COMPILER_IS_MSVC6)
+  #define UNIITEST_NS_QUAL_STD(x) x
 #else
-   #define UNIITEST_NS_QUAL_STD(x) ::std::x
+  #define UNIITEST_NS_QUAL_STD(x) ::std::x
 #endif
 
 // By default, UnitTest++ will attempt to define "short" macro names like CHECK and  CHECK_EQUAL

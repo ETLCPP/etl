@@ -2,11 +2,11 @@
 //
 
 #include "stdafx.h"
-#include <windows.h>
 #include <iostream>
+#include <windows.h>
 
-#include <unordered_map>
 #include "../../../../src/unordered_map.h"
+#include <unordered_map>
 
 LARGE_INTEGER frequency;
 LARGE_INTEGER begin;
@@ -28,10 +28,10 @@ uint64_t StopTimer()
   return (end.QuadPart - begin.QuadPart) / frequency.QuadPart;
 }
 
-const size_t TESTSIZE = 10000000UL;
+const size_t TESTSIZE        = 10000000UL;
 const size_t TESTINTERATIONS = 16UL;
 
-typedef std::unordered_map<uint64_t, uint16_t> Stdmap;
+typedef std::unordered_map<uint64_t, uint16_t>           Stdmap;
 typedef etl::unordered_map<uint64_t, uint16_t, TESTSIZE> Etlmap;
 
 Stdmap stdmap;
@@ -79,4 +79,3 @@ int main()
 
   return 0;
 }
-

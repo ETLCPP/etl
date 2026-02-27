@@ -31,12 +31,12 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "nullptr.h"
 #include "delegate.h"
+#include "error_handler.h"
+#include "nullptr.h"
+#include "placement_new.h"
 #include "static_assert.h"
 #include "timer.h"
-#include "error_handler.h"
-#include "placement_new.h"
 
 #include <stdint.h>
 
@@ -355,15 +355,17 @@ namespace etl
 
   protected:
 
-    class callback_node 
+    class callback_node
     {
     public:
 
-      callback_node(callback_type &callback_,uint_least8_t priority_) : callback(callback_), priority(priority_) 
+      callback_node(callback_type& callback_, uint_least8_t priority_)
+        : callback(callback_)
+        , priority(priority_)
       {
       }
 
-      bool operator < (const callback_node& p) const
+      bool operator<(const callback_node& p) const
       {
         return this->priority > p.priority; // comparison was inverted here to easy the code design
       }
@@ -433,18 +435,18 @@ namespace etl
 
       // Disabled.
       timer_data(const timer_data& other) ETL_DELETE;
-      timer_data& operator =(const timer_data& other) ETL_DELETE;
+      timer_data& operator=(const timer_data& other) ETL_DELETE;
     };
 
     //*******************************************
     /// Constructor.
     //*******************************************
-    icallback_timer_locked(timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
-      : timer_array(timer_array_),
-        active_list(timer_array_),
-        enabled(false),
-        number_of_registered_timers(0U),
-        Max_Timers(Max_Timers_)
+    icallback_timer_locked(timer_data* const timer_array_, const uint_least8_t Max_Timers_)
+      : timer_array(timer_array_)
+      , active_list(timer_array_)
+      , enabled(false)
+      , number_of_registered_timers(0U)
+      , Max_Timers(Max_Timers_)
     {
     }
 
@@ -482,10 +484,10 @@ namespace etl
         if (head == etl::timer::id::NO_TIMER)
         {
           // No entries yet.
-          head = id_;
-          tail = id_;
+          head           = id_;
+          tail           = id_;
           timer.previous = etl::timer::id::NO_TIMER;
-          timer.next = etl::timer::id::NO_TIMER;
+          timer.next     = etl::timer::id::NO_TIMER;
         }
         else
         {
@@ -506,8 +508,8 @@ namespace etl
 
               // Insert before test.
               timer.previous = test.previous;
-              test.previous = timer.id;
-              timer.next = test.id;
+              test.previous  = timer.id;
+              timer.next     = test.id;
 
               // Adjust the next delta to compensate.
               test.delta -= timer.delta;
@@ -531,9 +533,9 @@ namespace etl
           {
             // Tag on to the tail.
             ptimers[tail].next = timer.id;
-            timer.previous = tail;
-            timer.next = etl::timer::id::NO_TIMER;
-            tail = timer.id;
+            timer.previous     = tail;
+            timer.next         = etl::timer::id::NO_TIMER;
+            tail               = timer.id;
           }
         }
       }
@@ -571,8 +573,8 @@ namespace etl
         }
 
         timer.previous = etl::timer::id::NO_TIMER;
-        timer.next = etl::timer::id::NO_TIMER;
-        timer.delta = etl::timer::state::Inactive;
+        timer.next     = etl::timer::id::NO_TIMER;
+        timer.delta    = etl::timer::state::Inactive;
       }
 
       //*******************************
@@ -616,12 +618,12 @@ namespace etl
         while (id != etl::timer::id::NO_TIMER)
         {
           timer_data& timer = ptimers[id];
-          id = next(id);
-          timer.next = etl::timer::id::NO_TIMER;
+          id                = next(id);
+          timer.next        = etl::timer::id::NO_TIMER;
         }
 
-        head = etl::timer::id::NO_TIMER;
-        tail = etl::timer::id::NO_TIMER;
+        head    = etl::timer::id::NO_TIMER;
+        tail    = etl::timer::id::NO_TIMER;
         current = etl::timer::id::NO_TIMER;
       }
 
@@ -648,7 +650,7 @@ namespace etl
     // The list of active timers.
     timer_list active_list;
 
-    bool enabled;
+    bool          enabled;
     uint_least8_t number_of_registered_timers;
 
     try_lock_type try_lock; ///< The callback that tries to lock.
@@ -766,6 +768,6 @@ namespace etl
 
     timer_data timer_array[Max_Timers_];
   };
-}
+} // namespace etl
 
 #endif

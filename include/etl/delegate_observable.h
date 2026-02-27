@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_DELEGATE_OBSERVABLE_INCLUDED
 
 #include "platform.h"
-#include "delegate.h"
 #include "array.h"
+#include "delegate.h"
 
 namespace etl
 {
@@ -47,7 +47,7 @@ namespace etl
   class delegate_observable
   {
   public:
-    
+
     /// The type of the observers.
     typedef etl::delegate<void(TNotification)> delegate_type;
 
@@ -58,8 +58,8 @@ namespace etl
   public:
 
     /// The type for sizes.
-    typedef size_t        size_type;
-    
+    typedef size_t size_type;
+
     /// The type of the notification.
     typedef TNotification notification_type;
 
@@ -78,7 +78,7 @@ namespace etl
     //*****************************************************************
     template <typename... TDelegate>
     ETL_CONSTEXPR14 delegate_observable(TDelegate&&... delegates)
-      : delegate_list{ etl::forward<TDelegate>(delegates)... }
+      : delegate_list{etl::forward<TDelegate>(delegates)...}
       , delegate_count(sizeof...(delegates))
     {
       ETL_STATIC_ASSERT(Max_Observers >= sizeof...(delegates), "Number of delegates exceeds maximum observers");
@@ -88,7 +88,7 @@ namespace etl
     //*****************************************************************
     /// Construct from notification type and a list of observers.
     /// Variant for template deduction guide.
-    /// The notification value is ignored. It is just here to allow deduction 
+    /// The notification value is ignored. It is just here to allow deduction
     /// of the notification type for the template deduction guide.
     //*****************************************************************
     template <typename... TDelegate>
@@ -146,7 +146,7 @@ namespace etl
           return true;
         }
       }
-       
+
       return false;
     }
 
@@ -191,7 +191,7 @@ namespace etl
 
     /// The list of observers.
     DelegateList delegate_list;
-    
+
     /// The number of active delegates.
     size_t delegate_count;
   };
@@ -203,6 +203,6 @@ namespace etl
   template <typename TNotification, typename... TDelegates>
   delegate_observable(TNotification, TDelegates...) -> delegate_observable<TNotification, sizeof...(TDelegates)>;
 #endif
-}
+} // namespace etl
 
 #endif

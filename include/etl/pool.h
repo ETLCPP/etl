@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_POOL_INCLUDED
 
 #include "platform.h"
-#include "ipool.h"
 #include "generic_pool.h"
+#include "ipool.h"
 
 #define ETL_POOL_CPP03_CODE 0
 
@@ -58,8 +58,8 @@ namespace etl
 
   public:
 
-    using base_t::SIZE;
     using base_t::ALIGNMENT;
+    using base_t::SIZE;
     using base_t::TYPE_SIZE;
 
     //*************************************************************************
@@ -175,7 +175,7 @@ namespace etl
 
     // Should not be copied.
     pool(const pool&) ETL_DELETE;
-    pool& operator =(const pool&) ETL_DELETE;
+    pool& operator=(const pool&) ETL_DELETE;
   };
 
   //*************************************************************************
@@ -184,20 +184,22 @@ namespace etl
   ///\ingroup pool
   //*************************************************************************
   template <typename T>
-  class pool_ext : public etl::generic_pool_ext<sizeof(T), etl::alignment_of<T>::value> 
+  class pool_ext : public etl::generic_pool_ext<sizeof(T), etl::alignment_of<T>::value>
   {
   private:
+
     typedef etl::generic_pool_ext<sizeof(T), etl::alignment_of<T>::value> base_t;
 
   public:
+
     using base_t::ALIGNMENT;
     using base_t::TYPE_SIZE;
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    pool_ext(typename base_t::element* buffer, size_t size) 
-      : base_t(buffer, size) 
+    pool_ext(typename base_t::element* buffer, size_t size)
+      : base_t(buffer, size)
     {
     }
 
@@ -208,9 +210,9 @@ namespace etl
     /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
     /// Static asserts if the specified type is too large for the pool.
     //*************************************************************************
-    T* allocate() 
-    { 
-      return base_t::template allocate<T>(); 
+    T* allocate()
+    {
+      return base_t::template allocate<T>();
     }
 
 #if ETL_CPP11_NOT_SUPPORTED || ETL_POOL_CPP03_CODE || ETL_USING_STLPORT
@@ -219,9 +221,9 @@ namespace etl
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
     //*************************************************************************
-    T* create() 
-    { 
-      return base_t::template create<T>(); 
+    T* create()
+    {
+      return base_t::template create<T>();
     }
 
     //*************************************************************************
@@ -305,11 +307,11 @@ namespace etl
     }
 
   private:
+
     // Should not be copied.
     pool_ext(const pool_ext&) ETL_DELETE;
     pool_ext& operator=(const pool_ext&) ETL_DELETE;
   };
-}
+} // namespace etl
 
 #endif
-

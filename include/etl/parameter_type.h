@@ -44,14 +44,14 @@ namespace etl
   {
     /// By default fundamental and pointer types are passed by value.
     typedef typename etl::conditional<etl::is_fundamental<T>::value || etl::is_pointer<T>::value,
-                                         T,
-                                         const T&>::type type;
+                                      T,
+                                      const T&>::type type;
   };
 
 #if ETL_USING_CPP11
   template <typename T>
   using parameter_type_t = typename etl::parameter_type<T>::type;
 #endif
-}
+} // namespace etl
 
 #endif

@@ -50,8 +50,8 @@ namespace etl
     {
     }
 
-    virtual void initialise(uint32_t seed) = 0;
-    virtual uint32_t operator()() = 0;
+    virtual void     initialise(uint32_t seed)          = 0;
+    virtual uint32_t operator()()                       = 0;
     virtual uint32_t range(uint32_t low, uint32_t high) = 0;
   };
 #else
@@ -62,6 +62,7 @@ namespace etl
   class random
   {
   protected:
+
     random()
     {
     }
@@ -79,77 +80,77 @@ namespace etl
   //***************************************************************************
   class random_xorshift : public random
   {
-    public:
+  public:
 
-      //***************************************************************************
-      /// Default constructor.
-      /// Attempts to come up with a unique non-zero seed.
-      //***************************************************************************
-      random_xorshift()
-      {
-        // An attempt to come up with a unique non-zero seed,
-        // based on the address of the instance.
-        uintptr_t n    = reinterpret_cast<uintptr_t>(this);
-        uint32_t  seed = static_cast<uint32_t>(n);
-        initialise(seed);
-      }
+    //***************************************************************************
+    /// Default constructor.
+    /// Attempts to come up with a unique non-zero seed.
+    //***************************************************************************
+    random_xorshift()
+    {
+      // An attempt to come up with a unique non-zero seed,
+      // based on the address of the instance.
+      uintptr_t n    = reinterpret_cast<uintptr_t>(this);
+      uint32_t  seed = static_cast<uint32_t>(n);
+      initialise(seed);
+    }
 
-      //***************************************************************************
-      /// Constructor with seed value.
-      ///\param seed The new seed value.
-      //***************************************************************************
-      random_xorshift(uint32_t seed)
-      {
-        initialise(seed);
-      }
+    //***************************************************************************
+    /// Constructor with seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    random_xorshift(uint32_t seed)
+    {
+      initialise(seed);
+    }
 
-      //***************************************************************************
-      /// Initialises the sequence with a new seed value.
-      ///\param seed The new seed value.
-      //***************************************************************************
-      void initialise(uint32_t seed)
-      {
-        // Add the first four primes to ensure that the seed isn't zero.
-        state[0] = seed + 3;
-        state[1] = seed + 5;
-        state[2] = seed + 7;
-        state[3] = seed + 11;
-      }
+    //***************************************************************************
+    /// Initialises the sequence with a new seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    void initialise(uint32_t seed)
+    {
+      // Add the first four primes to ensure that the seed isn't zero.
+      state[0] = seed + 3;
+      state[1] = seed + 5;
+      state[2] = seed + 7;
+      state[3] = seed + 11;
+    }
 
-      //***************************************************************************
-      /// Get the next random_xorshift number.
-      //***************************************************************************
-      uint32_t operator()()
-      {
-        uint32_t n = state[3];
-        n ^= n << 11U;
-        n ^= n >> 8U;
-        state[3] = state[2];
-        state[2] = state[1];
-        state[1] = state[0];
-        n ^= state[0];
-        n ^= state[0] >> 19U;
-        state[0] = n;
+    //***************************************************************************
+    /// Get the next random_xorshift number.
+    //***************************************************************************
+    uint32_t operator()()
+    {
+      uint32_t n = state[3];
+      n ^= n << 11U;
+      n ^= n >> 8U;
+      state[3] = state[2];
+      state[2] = state[1];
+      state[1] = state[0];
+      n ^= state[0];
+      n ^= state[0] >> 19U;
+      state[0] = n;
 
-        return n;
-      }
+      return n;
+    }
 
-      //***************************************************************************
-      /// Get the next random_xorshift number in a specified inclusive range.
-      //***************************************************************************
-      uint32_t range(uint32_t low, uint32_t high)
-      {
-        uint32_t r = high - low + 1UL;
-        uint32_t n = operator()();
-        n %= r;
-        n += low;
+    //***************************************************************************
+    /// Get the next random_xorshift number in a specified inclusive range.
+    //***************************************************************************
+    uint32_t range(uint32_t low, uint32_t high)
+    {
+      uint32_t r = high - low + 1UL;
+      uint32_t n = operator()();
+      n %= r;
+      n += low;
 
-        return n;
-      }
+      return n;
+    }
 
-    private:
+  private:
 
-      uint32_t state[4];
+    uint32_t state[4];
   };
 
   //***************************************************************************
@@ -189,7 +190,7 @@ namespace etl
     //***************************************************************************
     void initialise(uint32_t seed)
     {
-      seed = (seed == 0) ? 1 : seed;
+      seed  = (seed == 0) ? 1 : seed;
       value = (seed > m) ? m : seed;
     }
 
@@ -231,77 +232,77 @@ namespace etl
   //***************************************************************************
   class random_clcg : public random
   {
-    public:
+  public:
 
-      //***************************************************************************
-      /// Default constructor.
-      /// Attempts to come up with a unique non-zero seed.
-      //***************************************************************************
-      random_clcg()
-      {
-        // An attempt to come up with a unique non-zero seed,
-        // based on the address of the instance.
-        uintptr_t n = reinterpret_cast<uintptr_t>(this);
-        uint32_t  seed = static_cast<uint32_t>(n);
-        initialise(seed);
-      }
+    //***************************************************************************
+    /// Default constructor.
+    /// Attempts to come up with a unique non-zero seed.
+    //***************************************************************************
+    random_clcg()
+    {
+      // An attempt to come up with a unique non-zero seed,
+      // based on the address of the instance.
+      uintptr_t n    = reinterpret_cast<uintptr_t>(this);
+      uint32_t  seed = static_cast<uint32_t>(n);
+      initialise(seed);
+    }
 
-      //***************************************************************************
-      /// Constructor with seed value.
-      ///\param seed The new seed value.
-      //***************************************************************************
-      random_clcg(uint32_t seed)
-      {
-        initialise(seed);
-      }
+    //***************************************************************************
+    /// Constructor with seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    random_clcg(uint32_t seed)
+    {
+      initialise(seed);
+    }
 
-      //***************************************************************************
-      /// Initialises the sequence with a new seed value.
-      ///\param seed The new seed value.
-      //***************************************************************************
-      void initialise(uint32_t seed)
-      {
-        seed = (seed == 0) ? 1 : seed;
-        value1 = (seed > m1) ? m1 : seed;
-        value2 = (seed > m1) ? m1 : seed;
-      }
+    //***************************************************************************
+    /// Initialises the sequence with a new seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    void initialise(uint32_t seed)
+    {
+      seed   = (seed == 0) ? 1 : seed;
+      value1 = (seed > m1) ? m1 : seed;
+      value2 = (seed > m1) ? m1 : seed;
+    }
 
-      //***************************************************************************
-      /// Get the next random_clcg number.
-      //***************************************************************************
-      uint32_t operator()()
-      {
-        static ETL_CONSTANT uint32_t m = ((m1 > m2) ? m1 : m2);
+    //***************************************************************************
+    /// Get the next random_clcg number.
+    //***************************************************************************
+    uint32_t operator()()
+    {
+      static ETL_CONSTANT uint32_t m = ((m1 > m2) ? m1 : m2);
 
-        value1 = (a1 * value1) % m1;
-        value2 = (a2 * value2) % m2;
+      value1 = (a1 * value1) % m1;
+      value2 = (a2 * value2) % m2;
 
-        return (value1 + value2) % m;
-      }
+      return (value1 + value2) % m;
+    }
 
-      //***************************************************************************
-      /// Get the next random_clcg number in a specified inclusive range.
-      //***************************************************************************
-      uint32_t range(uint32_t low, uint32_t high)
-      {
-        uint32_t r = high - low + 1UL;
-        uint32_t n = operator()();
-        n %= r;
-        n += low;
+    //***************************************************************************
+    /// Get the next random_clcg number in a specified inclusive range.
+    //***************************************************************************
+    uint32_t range(uint32_t low, uint32_t high)
+    {
+      uint32_t r = high - low + 1UL;
+      uint32_t n = operator()();
+      n %= r;
+      n += low;
 
-        return n;
-      }
+      return n;
+    }
 
-    private:
+  private:
 
-      static ETL_CONSTANT uint32_t a1 = 40014U;
-      static ETL_CONSTANT uint32_t m1 = 2147483563UL;
+    static ETL_CONSTANT uint32_t a1 = 40014U;
+    static ETL_CONSTANT uint32_t m1 = 2147483563UL;
 
-      static ETL_CONSTANT uint32_t a2 = 40692U;
-      static ETL_CONSTANT uint32_t m2 = 2147483399UL;
+    static ETL_CONSTANT uint32_t a2 = 40692U;
+    static ETL_CONSTANT uint32_t m2 = 2147483399UL;
 
-      uint32_t value1;
-      uint32_t value2;
+    uint32_t value1;
+    uint32_t value2;
   };
 
   //***************************************************************************
@@ -312,72 +313,72 @@ namespace etl
   //***************************************************************************
   class random_lsfr : public random
   {
-    public:
+  public:
 
-      //***************************************************************************
-      /// Default constructor.
-      /// Attempts to come up with a unique non-zero seed.
-      //***************************************************************************
-      random_lsfr()
+    //***************************************************************************
+    /// Default constructor.
+    /// Attempts to come up with a unique non-zero seed.
+    //***************************************************************************
+    random_lsfr()
+    {
+      // An attempt to come up with a unique non-zero seed,
+      // based on the address of the instance.
+      uintptr_t n    = reinterpret_cast<uintptr_t>(this);
+      uint32_t  seed = static_cast<uint32_t>(n);
+      initialise(seed);
+    }
+
+    //***************************************************************************
+    /// Constructor with seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    random_lsfr(uint32_t seed)
+    {
+      initialise(seed);
+    }
+
+    //***************************************************************************
+    /// Initialises the sequence with a new seed value.
+    ///\param seed The new seed value.
+    //***************************************************************************
+    void initialise(uint32_t seed)
+    {
+      value = seed;
+    }
+
+    //***************************************************************************
+    /// Get the next random_lsfr number.
+    //***************************************************************************
+    uint32_t operator()()
+    {
+      static ETL_CONSTANT uint32_t polynomial = 0x80200003UL;
+
+      value >>= 1U;
+
+      if ((value & 1UL) == 1UL)
       {
-        // An attempt to come up with a unique non-zero seed,
-        // based on the address of the instance.
-        uintptr_t n    = reinterpret_cast<uintptr_t>(this);
-        uint32_t  seed = static_cast<uint32_t>(n);
-        initialise(seed);
+        value ^= polynomial;
       }
 
-      //***************************************************************************
-      /// Constructor with seed value.
-      ///\param seed The new seed value.
-      //***************************************************************************
-      random_lsfr(uint32_t seed)
-      {
-        initialise(seed);
-      }
+      return value;
+    }
 
-      //***************************************************************************
-      /// Initialises the sequence with a new seed value.
-      ///\param seed The new seed value.
-      //***************************************************************************
-      void initialise(uint32_t seed)
-      {
-        value = seed;
-      }
+    //***************************************************************************
+    /// Get the next random_lsfr number in a specified inclusive range.
+    //***************************************************************************
+    uint32_t range(uint32_t low, uint32_t high)
+    {
+      uint32_t r = high - low + 1UL;
+      uint32_t n = operator()();
+      n %= r;
+      n += low;
 
-      //***************************************************************************
-      /// Get the next random_lsfr number.
-      //***************************************************************************
-      uint32_t operator()()
-      {
-        static ETL_CONSTANT uint32_t polynomial = 0x80200003UL;
+      return n;
+    }
 
-        value >>= 1U;
+  private:
 
-        if ((value & 1UL) == 1UL)
-        {
-          value ^= polynomial;
-        }
-
-        return value;
-      }
-
-      //***************************************************************************
-      /// Get the next random_lsfr number in a specified inclusive range.
-      //***************************************************************************
-      uint32_t range(uint32_t low, uint32_t high)
-      {
-        uint32_t r = high - low + 1UL;
-        uint32_t n = operator()();
-        n %= r;
-        n += low;
-
-        return n;
-      }
-
-    private:
-
-      uint32_t value;
+    uint32_t value;
   };
 
   //***************************************************************************
@@ -396,7 +397,7 @@ namespace etl
     {
       // An attempt to come up with a unique non-zero seed,
       // based on the address of the instance.
-      uintptr_t n = reinterpret_cast<uintptr_t>(this);
+      uintptr_t n    = reinterpret_cast<uintptr_t>(this);
       uint32_t  seed = static_cast<uint32_t>(n);
       initialise(seed);
     }
@@ -462,12 +463,12 @@ namespace etl
 
     random_pcg()
     {
-#include "private/diagnostic_useless_cast_push.h"
+  #include "private/diagnostic_useless_cast_push.h"
       // An attempt to come up with a unique non-zero seed,
       // based on the address of the instance.
       uintptr_t n = reinterpret_cast<uintptr_t>(this);
-      value = static_cast<uint64_t>(n);
-#include "private/diagnostic_pop.h"
+      value       = static_cast<uint64_t>(n);
+  #include "private/diagnostic_pop.h"
     }
 
     //***************************************************************************
@@ -493,7 +494,7 @@ namespace etl
     //***************************************************************************
     uint32_t operator()()
     {
-      uint64_t x = value;
+      uint64_t x     = value;
       unsigned count = (unsigned)(value >> 59U);
 
       value = (x * multiplier) + increment;
@@ -539,7 +540,7 @@ namespace etl
       // An attempt to come up with a unique non-zero seed,
       // based on the address of the instance.
       uintptr_t n = reinterpret_cast<uintptr_t>(this);
-      value = static_cast<uint32_t>(n);
+      value       = static_cast<uint32_t>(n);
     }
 
     //***************************************************************************
@@ -589,6 +590,6 @@ namespace etl
     uint8_t value;
   };
 #endif
-}
+} // namespace etl
 
 #endif

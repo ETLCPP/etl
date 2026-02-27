@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2022 John Wellbelove
 
@@ -103,7 +103,7 @@ namespace
       CHECK_TRUE(etl::strcmp(s1, s2) == 0);
       CHECK_TRUE(etl::strcmp(s2, s1) == 0);
       CHECK_TRUE(etl::strcmp(s1, s3) < 0);
-      CHECK_TRUE(etl::strcmp(s3, s1) > 0 );
+      CHECK_TRUE(etl::strcmp(s3, s1) > 0);
       CHECK_TRUE(etl::strcmp(s1, s4) > 0);
       CHECK_TRUE(etl::strcmp(s4, s1) < 0);
     }
@@ -404,7 +404,7 @@ namespace
     TEST(test_strcpy_char)
     {
       const char src[] = "ABCDEF";
-      char dst[7U];
+      char       dst[7U];
 
       auto result = etl::strcpy(dst, src);
 
@@ -417,7 +417,7 @@ namespace
     TEST(test_strcpy_char8_t)
     {
       const char8_t src[] = u8"ABCDEF";
-      char8_t dst[7U];
+      char8_t       dst[7U];
 
       auto result = etl::strcpy(dst, src);
 
@@ -430,7 +430,7 @@ namespace
     TEST(test_strcpy_wchar_t)
     {
       const wchar_t src[] = L"ABCDEF";
-      wchar_t dst[7U];
+      wchar_t       dst[7U];
 
       auto result = etl::strcpy(dst, src);
 
@@ -442,7 +442,7 @@ namespace
     TEST(test_strcpy_char16_t)
     {
       const char16_t src[] = u"ABCDEF";
-      char16_t dst[7U];
+      char16_t       dst[7U];
 
       auto result = etl::strcpy(dst, src);
 
@@ -454,7 +454,7 @@ namespace
     TEST(test_strcpy_char32_t)
     {
       const char32_t src[] = U"ABCDEF";
-      char32_t dst[7U];
+      char32_t       dst[7U];
 
       auto result = etl::strcpy(dst, src);
 
@@ -465,9 +465,9 @@ namespace
     //*************************************************************************
     TEST(test_strncpy_char)
     {
-      const char src[] = "ABCDEF";
+      const char src[]      = "ABCDEF";
       const char expected[] = "ABCDE";
-      char dst[7U];
+      char       dst[7U];
 
       auto result = etl::strncpy(dst, src, 5);
 
@@ -479,9 +479,9 @@ namespace
     //*************************************************************************
     TEST(test_strncpy_char8_t)
     {
-      const char8_t src[] = u8"ABCDEF";
+      const char8_t src[]      = u8"ABCDEF";
       const char8_t expected[] = u8"ABCDE";
-      char8_t dst[7U];
+      char8_t       dst[7U];
 
       auto result = etl::strncpy(dst, src, 5);
 
@@ -493,9 +493,9 @@ namespace
     //*************************************************************************
     TEST(test_strncpy_wchar_t)
     {
-      const wchar_t src[] = L"ABCDEF";
+      const wchar_t src[]      = L"ABCDEF";
       const wchar_t expected[] = L"ABCDE";
-      wchar_t dst[7U];
+      wchar_t       dst[7U];
 
       auto result = etl::strncpy(dst, src, 5);
 
@@ -506,9 +506,9 @@ namespace
     //*************************************************************************
     TEST(test_strncpy_char16_t)
     {
-      const char16_t src[] = u"ABCDEF";
+      const char16_t src[]      = u"ABCDEF";
       const char16_t expected[] = u"ABCDE";
-      char16_t dst[7U];
+      char16_t       dst[7U];
 
       auto result = etl::strncpy(dst, src, 5);
 
@@ -519,9 +519,9 @@ namespace
     //*************************************************************************
     TEST(test_strncpy_char32_t)
     {
-      const char32_t src[] = U"ABCDEF";
+      const char32_t src[]      = U"ABCDEF";
       const char32_t expected[] = U"ABCDE";
-      char32_t dst[7U];
+      char32_t       dst[7U];
 
       auto result = etl::strncpy(dst, src, 5);
 
@@ -536,13 +536,13 @@ namespace
       using char_type   = char_traits::char_type;
       using int_type    = char_traits::int_type;
 
-      char_type r = 'A';
-      char_type c = 'B';
-      char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[ETL_OR_STD17::size(src)];
-      char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
+      char_type        r     = 'A';
+      char_type        c     = 'B';
+      char_type        src[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      char_type        dst[ETL_OR_STD17::size(src)];
+      char_type        filled[] = {9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
       const char_type* p_src;
-      char_type* p_dst;
+      char_type*       p_dst;
 
       char_traits::assign(r, c);
       CHECK_EQUAL(r, 'B');
@@ -557,9 +557,9 @@ namespace
 
       CHECK_EQUAL(length<char_type>("ABCDEF"), char_traits::length("ABCDEF"));
 
-      CHECK_EQUAL(0,  char_traits::compare("ABCDEF", "ABCDEF", 6U));
+      CHECK_EQUAL(0, char_traits::compare("ABCDEF", "ABCDEF", 6U));
       CHECK_EQUAL(-1, char_traits::compare("ABCDEE", "ABCDEF", 6U));
-      CHECK_EQUAL(1,  char_traits::compare("ABCDEF", "ABCDEE", 6U));
+      CHECK_EQUAL(1, char_traits::compare("ABCDEF", "ABCDEE", 6U));
 
       p_dst = char_traits::assign(dst, ETL_OR_STD17::size(dst), 9);
       CHECK_ARRAY_EQUAL(filled, p_dst, ETL_OR_STD17::size(filled));
@@ -567,7 +567,7 @@ namespace
       std::fill_n(dst, ETL_OR_STD17::size(dst), 0);
       p_dst = char_traits::copy(dst, src, ETL_OR_STD17::size(src));
       CHECK_ARRAY_EQUAL(src, p_dst, ETL_OR_STD17::size(src));
-      
+
       std::fill_n(dst, ETL_OR_STD17::size(dst), 0);
       p_dst = char_traits::move(dst, src, ETL_OR_STD17::size(src));
       CHECK_ARRAY_EQUAL(src, p_dst, ETL_OR_STD17::size(src));
@@ -581,7 +581,7 @@ namespace
       CHECK(!char_traits::eq_int_type(0, 1));
       CHECK(char_traits::eq_int_type(1, 1));
 
-      CHECK(int_type(char_traits::eof())     != char_traits::not_eof(char_traits::eof()));
+      CHECK(int_type(char_traits::eof()) != char_traits::not_eof(char_traits::eof()));
       CHECK(int_type(char_traits::eof() + 1) == char_traits::not_eof(char_traits::eof() + 1));
     }
 
@@ -592,13 +592,13 @@ namespace
       using char_type   = char_traits::char_type;
       using int_type    = char_traits::int_type;
 
-      char_type r = L'A';
-      char_type c = L'B';
-      char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[ETL_OR_STD17::size(src)];
-      char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
+      char_type        r     = L'A';
+      char_type        c     = L'B';
+      char_type        src[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      char_type        dst[ETL_OR_STD17::size(src)];
+      char_type        filled[] = {9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
       const char_type* p_src;
-      char_type* p_dst;
+      char_type*       p_dst;
 
       char_traits::assign(r, c);
       CHECK_EQUAL(r, L'B');
@@ -637,8 +637,8 @@ namespace
       CHECK(!char_traits::eq_int_type(0, 1));
       CHECK(char_traits::eq_int_type(1, 1));
 
-      CHECK(int_type(char_traits::eof())     != int_type(char_traits::not_eof(char_traits::eof())));
-//      CHECK(int_type(char_traits::eof() + 1) == int_type(char_traits::not_eof(char_traits::eof() + 1)));
+      CHECK(int_type(char_traits::eof()) != int_type(char_traits::not_eof(char_traits::eof())));
+      //      CHECK(int_type(char_traits::eof() + 1) == int_type(char_traits::not_eof(char_traits::eof() + 1)));
     }
 
     //*************************************************************************
@@ -648,13 +648,13 @@ namespace
       using char_type   = char_traits::char_type;
       using int_type    = char_traits::int_type;
 
-      char_type r = u'A';
-      char_type c = u'B';
-      char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[ETL_OR_STD17::size(src)];
-      char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
+      char_type        r     = u'A';
+      char_type        c     = u'B';
+      char_type        src[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      char_type        dst[ETL_OR_STD17::size(src)];
+      char_type        filled[] = {9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
       const char_type* p_src;
-      char_type* p_dst;
+      char_type*       p_dst;
 
       char_traits::assign(r, c);
       CHECK_EQUAL(r, 'B');
@@ -692,8 +692,8 @@ namespace
       CHECK(!char_traits::eq_int_type(0, 1));
       CHECK(char_traits::eq_int_type(1, 1));
 
-      CHECK(int_type(char_traits::eof())     != char_traits::not_eof(char_traits::eof()));
-//      CHECK(int_type(char_traits::eof() + 1) == char_traits::not_eof(char_traits::eof() + 1));
+      CHECK(int_type(char_traits::eof()) != char_traits::not_eof(char_traits::eof()));
+      //      CHECK(int_type(char_traits::eof() + 1) == char_traits::not_eof(char_traits::eof() + 1));
     }
 
     //*************************************************************************
@@ -703,13 +703,13 @@ namespace
       using char_type   = char_traits::char_type;
       using int_type    = char_traits::int_type;
 
-      char_type r = U'A';
-      char_type c = U'B';
-      char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[ETL_OR_STD17::size(src)];
-      char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
+      char_type        r     = U'A';
+      char_type        c     = U'B';
+      char_type        src[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      char_type        dst[ETL_OR_STD17::size(src)];
+      char_type        filled[] = {9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
       const char_type* p_src;
-      char_type* p_dst;
+      char_type*       p_dst;
 
       char_traits::assign(r, c);
       CHECK_EQUAL(r, 'B');
@@ -747,10 +747,10 @@ namespace
       CHECK(!char_traits::eq_int_type(0, 1));
       CHECK(char_traits::eq_int_type(1, 1));
 
-      CHECK(int_type(char_traits::eof())     != char_traits::not_eof(char_traits::eof()));
+      CHECK(int_type(char_traits::eof()) != char_traits::not_eof(char_traits::eof()));
       CHECK(int_type(char_traits::eof() + 1) == char_traits::not_eof(char_traits::eof() + 1));
     }
   }
-}
+} // namespace
 
 #include "etl/private/diagnostic_pop.h"

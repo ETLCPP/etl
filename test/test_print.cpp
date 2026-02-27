@@ -32,11 +32,12 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
-namespace {
+namespace
+{
   using iterator = etl::back_insert_iterator<etl::istring>;
 
   etl::string<100> output;
-}
+} // namespace
 
 // to be implemented in a concrete project, typically printing to a serial console
 extern "C" void etl_putchar(int c)
@@ -77,6 +78,6 @@ namespace
       CHECK_EQUAL("\n", output);
     }
   }
-}
+} // namespace
 
 #endif

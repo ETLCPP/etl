@@ -75,13 +75,13 @@ namespace
       return a1 * 3 + a2 * a3 + a4 * a5;
     }
 
-    etl::delegate<int(int)> df1 = etl::delegate<int(int)>::create<&f1>();
-    etl::delegate<int(int)> df1_throwing = etl::delegate<int(int)>::create<&f1_throwing>();
-    etl::delegate<void(int)> df1_void = etl::delegate<void(int)>::create<&f1_void>();
-    etl::delegate<int(int, int)> df2 = etl::delegate<int(int, int)>::create<&f2>();
-    etl::delegate<int(int, int, int)> df3 = etl::delegate<int(int, int, int)>::create<&f3>();
-    etl::delegate<int(int, int, int, int)> df4 = etl::delegate<int(int, int, int, int)>::create<&f4>();
-    etl::delegate<int(int, int, int, int, int)> df5 = etl::delegate<int(int, int, int, int, int)>::create<&f5>();
+    etl::delegate<int(int)>                     df1          = etl::delegate<int(int)>::create<&f1>();
+    etl::delegate<int(int)>                     df1_throwing = etl::delegate<int(int)>::create<&f1_throwing>();
+    etl::delegate<void(int)>                    df1_void     = etl::delegate<void(int)>::create<&f1_void>();
+    etl::delegate<int(int, int)>                df2          = etl::delegate<int(int, int)>::create<&f2>();
+    etl::delegate<int(int, int, int)>           df3          = etl::delegate<int(int, int, int)>::create<&f3>();
+    etl::delegate<int(int, int, int, int)>      df4          = etl::delegate<int(int, int, int, int)>::create<&f4>();
+    etl::delegate<int(int, int, int, int, int)> df5          = etl::delegate<int(int, int, int, int, int)>::create<&f5>();
 
     etl::delegate<int(int&)> df1_ref = etl::delegate<int(int&)>::create<&f1_ref>();
 
@@ -95,7 +95,7 @@ namespace
     //*************************************************************************
     TEST(test_1_arg_reference)
     {
-      int v1 = 4;
+      int                     v1 = 4;
       etl::closure<int(int&)> c1_ref(df1_ref, v1);
       CHECK_EQUAL(12, c1_ref());
       v1 = 5;
@@ -105,7 +105,10 @@ namespace
     //*************************************************************************
     TEST(test_1_arg_lambda)
     {
-      auto l = [](int a){ return a + 11; };
+      auto l = [](int a)
+      {
+        return a + 11;
+      };
       etl::delegate<int(int)> df1_lambda(l);
 
       etl::closure<int(int)> c1_lambda(df1_lambda, 5);
@@ -183,9 +186,9 @@ namespace
       etl::closure<int(int, int)> c(df2, 1, 2);
 
       // Uncomment to generate static_assert errors.
-      //c.bind(1);                // Argument count mismatch
-      //c.bind(1, 2, 3);          // Argument count mismatch
-      //c.bind(1, std::string()); // Argument is not convertible
+      // c.bind(1);                // Argument count mismatch
+      // c.bind(1, 2, 3);          // Argument count mismatch
+      // c.bind(1, std::string()); // Argument is not convertible
     }
   }
-}
+} // namespace

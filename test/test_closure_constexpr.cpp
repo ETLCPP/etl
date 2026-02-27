@@ -66,10 +66,10 @@ namespace
       return a1 * 3 + a2 * a3 + a4 * a5;
     }
 
-    static constexpr etl::delegate<int(int)> df1                     = etl::delegate<int(int)>::create<&f1>();
-    static constexpr etl::delegate<int(int, int)> df2                = etl::delegate<int(int, int)>::create<&f2>();
-    static constexpr etl::delegate<int(int, int, int)> df3           = etl::delegate<int(int, int, int)>::create<&f3>();
-    static constexpr etl::delegate<int(int, int, int, int)> df4      = etl::delegate<int(int, int, int, int)>::create<&f4>();
+    static constexpr etl::delegate<int(int)>                     df1 = etl::delegate<int(int)>::create<&f1>();
+    static constexpr etl::delegate<int(int, int)>                df2 = etl::delegate<int(int, int)>::create<&f2>();
+    static constexpr etl::delegate<int(int, int, int)>           df3 = etl::delegate<int(int, int, int)>::create<&f3>();
+    static constexpr etl::delegate<int(int, int, int, int)>      df4 = etl::delegate<int(int, int, int, int)>::create<&f4>();
     static constexpr etl::delegate<int(int, int, int, int, int)> df5 = etl::delegate<int(int, int, int, int, int)>::create<&f5>();
 
     static constexpr etl::delegate<int(const int&)> df1_ref = etl::delegate<int(const int&)>::create<&f1_ref>();
@@ -78,7 +78,7 @@ namespace
     constexpr etl::closure<int(int, int)> make_closure_2_args_bind(const etl::delegate<int(int, int)>& f, int arg0, int arg1)
     {
       etl::closure<int(int, int)> c(f, arg0, arg1);
-      
+
       c.bind<0>(7);
       c.bind<1>(8);
 
@@ -89,7 +89,7 @@ namespace
     constexpr etl::closure<int(int, int)> make_closure_2_args_bind_all(const etl::delegate<int(int, int)>& f, int arg0, int arg1)
     {
       etl::closure<int(int, int)> c(f, arg0, arg1);
-      
+
       c.bind(7, 8);
 
       return c;
@@ -99,14 +99,14 @@ namespace
     TEST(test_1_arg)
     {
       static constexpr etl::closure<int(int)> c1(df1, 4);
-      static constexpr int result = c1();
+      static constexpr int                    result = c1();
       CHECK_EQUAL(12, result);
     }
 
     //*************************************************************************
     TEST(test_1_arg_reference)
     {
-      static constexpr int v1 = 4;
+      static constexpr int                           v1 = 4;
       static constexpr etl::closure<int(const int&)> c1_ref(df1_ref, v1);
       CHECK_EQUAL(12, c1_ref());
     }
@@ -115,23 +115,23 @@ namespace
     TEST(test_2_args)
     {
       static constexpr etl::closure<int(int, int)> c2(df2, 4, 3);
-      static constexpr int result = c2();
+      static constexpr int                         result = c2();
       CHECK_EQUAL(15, result);
     }
 
     //*************************************************************************
     TEST(test_2_args_bind)
     {
-      static constexpr etl::closure<int(int, int)> c2 = make_closure_2_args_bind(df2, 4, 3);
-      static constexpr int result = c2();
+      static constexpr etl::closure<int(int, int)> c2     = make_closure_2_args_bind(df2, 4, 3);
+      static constexpr int                         result = c2();
       CHECK_EQUAL(29, result);
     }
 
     //*************************************************************************
     TEST(test_2_args_bind_all)
     {
-      static constexpr etl::closure<int(int, int)> c2 = make_closure_2_args_bind_all(df2, 4, 3);
-      static constexpr int result = c2();
+      static constexpr etl::closure<int(int, int)> c2     = make_closure_2_args_bind_all(df2, 4, 3);
+      static constexpr int                         result = c2();
       CHECK_EQUAL(29, result);
     }
 
@@ -139,7 +139,7 @@ namespace
     TEST(test_3_args)
     {
       static constexpr etl::closure<int(int, int, int)> c3(df3, 4, 3, 2);
-      static constexpr int result = c3();
+      static constexpr int                              result = c3();
       CHECK_EQUAL(18, result);
     }
 
@@ -147,7 +147,7 @@ namespace
     TEST(test_4_args)
     {
       static constexpr etl::closure<int(int, int, int, int)> c4(df4, 4, 3, 2, 1);
-      static constexpr int result = c4();
+      static constexpr int                                   result = c4();
       CHECK_EQUAL(19, result);
     }
 
@@ -155,10 +155,10 @@ namespace
     TEST(test_5_args)
     {
       static constexpr etl::closure<int(int, int, int, int, int)> c5(df5, 4, 3, 2, 1, 5);
-      static constexpr int result = c5();
+      static constexpr int                                        result = c5();
       CHECK_EQUAL(23, result);
     }
   }
-}
+} // namespace
 
 #endif

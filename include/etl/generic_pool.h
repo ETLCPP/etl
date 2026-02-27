@@ -32,10 +32,10 @@ SOFTWARE.
 #define ETL_GENERIC_POOL_INCLUDED
 
 #include "platform.h"
-#include "ipool.h"
-#include "type_traits.h"
-#include "static_assert.h"
 #include "alignment.h"
+#include "ipool.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #define ETL_POOL_CPP03_CODE 0
 
@@ -178,9 +178,9 @@ namespace etl
     // The pool element.
     union Element
     {
-      char* next;              ///< Pointer to the next free element.
-      char      value[VTypeSize]; ///< Storage for value type.
-      typename  etl::type_with_alignment<VAlignment>::type dummy; ///< Dummy item to get correct alignment.
+      char*                                               next;             ///< Pointer to the next free element.
+      char                                                value[VTypeSize]; ///< Storage for value type.
+      typename etl::type_with_alignment<VAlignment>::type dummy;            ///< Dummy item to get correct alignment.
     };
 
     ///< The memory for the pool of objects.
@@ -190,15 +190,15 @@ namespace etl
 
     // Should not be copied.
     generic_pool(const generic_pool&) ETL_DELETE;
-    generic_pool& operator =(const generic_pool&) ETL_DELETE;
+    generic_pool& operator=(const generic_pool&) ETL_DELETE;
   };
 
   template <size_t VTypeSize, size_t VAlignment, size_t VSize>
   ETL_CONSTANT size_t generic_pool<VTypeSize, VAlignment, VSize>::SIZE;
-  
+
   template <size_t VTypeSize, size_t VAlignment, size_t VSize>
   ETL_CONSTANT size_t generic_pool<VTypeSize, VAlignment, VSize>::ALIGNMENT;
-  
+
   template <size_t VTypeSize, size_t VAlignment, size_t VSize>
   ETL_CONSTANT size_t generic_pool<VTypeSize, VAlignment, VSize>::TYPE_SIZE;
 
@@ -208,20 +208,22 @@ namespace etl
   ///\ingroup pool
   //*************************************************************************
   template <size_t VTypeSize, size_t VAlignment>
-  class generic_pool_ext : public etl::ipool 
+  class generic_pool_ext : public etl::ipool
   {
   private:
+
     // The pool element.
-    union element_internal 
+    union element_internal
     {
-      char* next;                                                 ///< Pointer to the next free element.
-      char value[VTypeSize];                                      ///< Storage for value type.
-      typename etl::type_with_alignment<VAlignment>::type dummy;  ///< Dummy item to get correct alignment.
+      char*                                               next;             ///< Pointer to the next free element.
+      char                                                value[VTypeSize]; ///< Storage for value type.
+      typename etl::type_with_alignment<VAlignment>::type dummy;            ///< Dummy item to get correct alignment.
     };
 
     static const size_t ELEMENT_INTERNAL_SIZE = sizeof(element_internal);
 
   public:
+
     static ETL_CONSTANT size_t ALIGNMENT = VAlignment;
     static ETL_CONSTANT size_t TYPE_SIZE = VTypeSize;
 
@@ -230,8 +232,8 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    generic_pool_ext(element* buffer, size_t size) 
-      : etl::ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_INTERNAL_SIZE, size) 
+    generic_pool_ext(element* buffer, size_t size)
+      : etl::ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_INTERNAL_SIZE, size)
     {
     }
 
@@ -341,6 +343,7 @@ namespace etl
     }
 
   private:
+
     // Should not be copied.
     generic_pool_ext(const generic_pool_ext&) ETL_DELETE;
     generic_pool_ext& operator=(const generic_pool_ext&) ETL_DELETE;
@@ -351,7 +354,6 @@ namespace etl
 
   template <size_t VTypeSize, size_t VAlignment>
   ETL_CONSTANT size_t generic_pool_ext<VTypeSize, VAlignment>::TYPE_SIZE;
-}
+} // namespace etl
 
 #endif
-

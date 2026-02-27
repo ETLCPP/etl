@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_IVECTOR_POINTER_INCLUDED
 
 #ifndef ETL_IN_VECTOR_H
-#error  This header is a private element of etl::ivector
+  #error This header is a private element of etl::ivector
 #endif
 
 #include "pvoidvector.h"
@@ -49,16 +49,16 @@ namespace etl
   {
   public:
 
-    typedef T*                                    value_type;
-    typedef value_type&                           reference;
-    typedef const value_type&                     const_reference;
-    typedef value_type*                           pointer;
-    typedef const value_type*                     const_pointer;
-    typedef value_type*                           iterator;
-    typedef const value_type*                     const_iterator;
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef size_t                                size_type;
+    typedef T*                                                       value_type;
+    typedef value_type&                                              reference;
+    typedef const value_type&                                        const_reference;
+    typedef value_type*                                              pointer;
+    typedef const value_type*                                        const_pointer;
+    typedef value_type*                                              iterator;
+    typedef const value_type*                                        const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
+    typedef size_t                                                   size_type;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
@@ -216,7 +216,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator[](size_t i)
     {
       return reference(base_t::operator[](i));
     }
@@ -226,7 +226,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator[](size_t i) const
     {
       return const_reference(base_t::operator[](i));
     }
@@ -481,7 +481,7 @@ namespace etl
       ETL_ASSERT_OR_RETURN(this->max_size() >= other.size() && other.max_size() >= this->size(), ETL_ERROR(vector_full));
 
       ivector<T*>& smaller = other.size() > this->size() ? *this : other;
-      ivector<T*>& larger = other.size() > this->size() ? other : *this;
+      ivector<T*>& larger  = other.size() > this->size() ? other : *this;
 
       etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
@@ -495,9 +495,9 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ivector& operator = (const ivector& rhs)
+    ivector& operator=(const ivector& rhs)
     {
-      base_t::operator = (rhs);
+      base_t::operator=(rhs);
 
       return *this;
     }
@@ -506,9 +506,9 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ivector& operator = (ivector&& rhs)
+    ivector& operator=(ivector&& rhs)
     {
-      (void)base_t::operator = (etl::move(rhs));
+      (void)base_t::operator=(etl::move(rhs));
 
       return *this;
     }
@@ -537,16 +537,16 @@ namespace etl
   {
   public:
 
-    typedef const T*                              value_type;
-    typedef value_type&                           reference;
-    typedef const value_type&                     const_reference;
-    typedef value_type*                           pointer;
-    typedef const value_type*                     const_pointer;
-    typedef value_type*                           iterator;
-    typedef const value_type*                     const_iterator;
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef size_t                                size_type;
+    typedef const T*                                                 value_type;
+    typedef value_type&                                              reference;
+    typedef const value_type&                                        const_reference;
+    typedef value_type*                                              pointer;
+    typedef const value_type*                                        const_pointer;
+    typedef value_type*                                              iterator;
+    typedef const value_type*                                        const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
+    typedef size_t                                                   size_type;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
@@ -704,7 +704,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator[](size_t i)
     {
       return reference(base_t::operator[](i));
     }
@@ -714,7 +714,7 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator[](size_t i) const
     {
       return const_reference(base_t::operator[](i));
     }
@@ -929,7 +929,7 @@ namespace etl
       ETL_ASSERT_OR_RETURN(this->max_size() >= other.size() && other.max_size() >= this->size(), ETL_ERROR(vector_full));
 
       ivector<const T*>& smaller = other.size() > this->size() ? *this : other;
-      ivector<const T*>& larger = other.size() > this->size() ? other : *this;
+      ivector<const T*>& larger  = other.size() > this->size() ? other : *this;
 
       etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
@@ -943,9 +943,9 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ivector& operator = (const ivector& rhs)
+    ivector& operator=(const ivector& rhs)
     {
-      base_t::operator = (rhs);
+      base_t::operator=(rhs);
 
       return *this;
     }
@@ -954,9 +954,9 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ivector& operator = (ivector&& rhs)
+    ivector& operator=(ivector&& rhs)
     {
-      (void)base_t::operator = (etl::move(rhs));
+      (void)base_t::operator=(etl::move(rhs));
 
       return *this;
     }
@@ -988,7 +988,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator==(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_equal(lhs, rhs);
   }
@@ -1001,7 +1001,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator!=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_not_equal(lhs, rhs);
   }
@@ -1014,7 +1014,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator<(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_less_than(lhs, rhs);
   }
@@ -1027,7 +1027,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator>(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_greater_than(lhs, rhs);
   }
@@ -1040,7 +1040,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator<=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_less_than_equal(lhs, rhs);
   }
@@ -1053,7 +1053,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator>=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_greater_than_equal(lhs, rhs);
   }
@@ -1063,33 +1063,33 @@ namespace etl
   //***************************************************************************
   inline bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator ==(lhs, rhs);
+    return operator==(lhs, rhs);
   }
 
   inline bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator !=(lhs, rhs);
+    return operator!=(lhs, rhs);
   }
 
   inline bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator <(lhs, rhs);
+    return operator<(lhs, rhs);
   }
 
   inline bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator >(lhs, rhs);
+    return operator>(lhs, rhs);
   }
 
   inline bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator <=(lhs, rhs);
+    return operator<=(lhs, rhs);
   }
 
   inline bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator >=(lhs, rhs);
+    return operator>=(lhs, rhs);
   }
-}
+} // namespace etl
 
 #endif

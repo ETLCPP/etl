@@ -39,8 +39,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "error_handler.h"
-#include "nullptr.h"
 #include "file_error_numbers.h"
+#include "nullptr.h"
 
 namespace etl
 {
@@ -131,9 +131,9 @@ namespace etl
     //***********************************************************************
     /// Returns whether an instance has been attached to singleton<T> or not.
     //***********************************************************************
-    static bool is_valid() 
-    { 
-      return (m_self != ETL_NULLPTR); 
+    static bool is_valid()
+    {
+      return (m_self != ETL_NULLPTR);
     }
 
   protected:
@@ -152,9 +152,9 @@ namespace etl
     //***********************************************************************
     /// Removes the internal reference to the instance passed in the constructor.
     //***********************************************************************
-    ~singleton_base() 
-    { 
-      m_self = ETL_NULLPTR; 
+    ~singleton_base()
+    {
+      m_self = ETL_NULLPTR;
     }
 
   private:
@@ -165,8 +165,8 @@ namespace etl
   //***********************************************************************
   /// No violation of one definition rule as this is a class template
   //***********************************************************************
-  template<class T>
+  template <class T>
   T* singleton_base<T>::m_self = ETL_NULLPTR;
-}
+} // namespace etl
 
 #endif

@@ -86,7 +86,7 @@ namespace
   // The observer base type that does not take a notification type.
   //*****************************************************************************
   using ObserverVoidIntType = etl::observer<void, int>;
-}
+} // namespace
 
 //*****************************************************************************
 // The concrete observable 1 class.
@@ -95,18 +95,18 @@ class Observable1 : public etl::observable<ObserverType, 2>
 {
 public:
 
-	Notification1 data1;
-	Notification2 data2;
+  Notification1  data1;
+  Notification2  data2;
   Notification1& data3 = data1;
 
   //*********************************
   // Notify all of the observers.
   //*********************************
-	void send_notifications()
-	{
-		notify_observers(data3);
+  void send_notifications()
+  {
+    notify_observers(data3);
     notify_observers(data2);
-	}
+  }
 };
 
 //*****************************************************************************
@@ -116,15 +116,15 @@ class Observable2 : public etl::observable<ObserverType, 2>
 {
 public:
 
-	Notification3 data3;
+  Notification3 data3;
 
   //*********************************
   // Notify all of the observers.
   //*********************************
-	void send_notifications()
-	{
+  void send_notifications()
+  {
     notify_observers(data3);
-	}
+  }
 };
 
 #if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
@@ -135,8 +135,8 @@ class Observable3 : public etl::observable<ObserverFromTypeList, 2>
 {
 public:
 
-  Notification1 data1;
-  Notification2 data2;
+  Notification1  data1;
+  Notification2  data2;
   Notification1& data3 = data1;
 
   //*********************************
@@ -194,25 +194,25 @@ public:
   // Notification1 is passed by value.
   //*******************************************
   void notification(Notification1 /*data1*/)
-	{
+  {
     ++data1_count;
-	}
+  }
 
   //*******************************************
   // Notification2 is passed by reference.
   //*******************************************
   void notification(Notification2& /*data2*/)
-	{
+  {
     ++data2_count;
-	}
+  }
 
   //*******************************************
-	// Notification3 is passed by const reference.
+  // Notification3 is passed by const reference.
   //*******************************************
   void notification(const Notification3& /*data3*/)
-	{
+  {
     ++data3_count;
-	}
+  }
 
   int data1_count;
   int data2_count;
@@ -239,25 +239,25 @@ public:
   // Notification1 is passed by value.
   //*******************************************
   void notification(Notification1 /*data1*/)
-	{
+  {
     ++data1_count;
-	}
+  }
 
   //*******************************************
   // Notification2 is passed by reference.
   //*******************************************
   void notification(Notification2& /*data2*/)
-	{
+  {
     ++data2_count;
-	}
+  }
 
   //*******************************************
   // Notification3 is passed by const reference.
   //*******************************************
   void notification(const Notification3& /*data3*/)
-	{
+  {
     ++data3_count;
-	}
+  }
 
   int data1_count;
   int data2_count;
@@ -337,7 +337,7 @@ public:
   //*******************************************
   // Notification2
   //*******************************************
-  void notification(int)  override
+  void notification(int) override
   {
     ++data2_count;
   }
@@ -675,5 +675,4 @@ namespace
       CHECK_EQUAL(1U, observer.data2_count);
     }
   }
-}
-
+} // namespace

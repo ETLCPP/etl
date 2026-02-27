@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include "etl/invert.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <math.h>
 
 namespace
@@ -43,7 +43,7 @@ namespace
 
   struct Compare
   {
-    bool operator ()(double lhs, double rhs) const
+    bool operator()(double lhs, double rhs) const
     {
       return fabs(lhs - rhs) < 0.1;
     }
@@ -51,37 +51,31 @@ namespace
 
   //***********************************
   const std::array<int, Size> input1 =
-  {
-    10, 11, 12, 13, 14, 15, 16, 17, 18, 19
-  };
+    {
+      10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 
   const std::array<int, Size> result1a =
-  {
-    90, 89, 88, 87, 86, 85, 84, 83, 82, 81
-  };
+    {
+      90, 89, 88, 87, 86, 85, 84, 83, 82, 81};
 
   const std::array<int, Size> result1b =
-  {
-    100, 99, 98, 97, 96, 95, 94, 93, 92, 91
-  };
+    {
+      100, 99, 98, 97, 96, 95, 94, 93, 92, 91};
 
   std::array<int, Size> output1;
 
   //***********************************
   const std::array<double, Size> input2 =
-  {
-    10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0
-  };
+    {
+      10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0};
 
   const std::array<double, Size> result2a =
-  {
-    90.0, 89.0, 88.0, 87.0, 86.0, 85.0, 84.0, 83.0, 82.0, 81.0
-  };
+    {
+      90.0, 89.0, 88.0, 87.0, 86.0, 85.0, 84.0, 83.0, 82.0, 81.0};
 
   const std::array<double, Size> result2b =
-  {
-    100.0, 99.0, 98.0, 97.0, 96.0, 95.0, 94.0, 93.0, 92.0, 91.0
-  };
+    {
+      100.0, 99.0, 98.0, 97.0, 96.0, 95.0, 94.0, 93.0, 92.0, 91.0};
 
   std::array<double, Size> output2;
 
@@ -131,4 +125,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

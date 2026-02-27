@@ -71,7 +71,7 @@ namespace etl
         if (call_on_enter_state)
         {
           do_enters_result result = do_enters(ETL_NULLPTR, p_first_state, true);
-          
+
           if (result.active_state_id != ifsm_state::No_State_Change)
           {
             // If the active_state_id is not No_State_Change, it means that an on_enter changed the target state.
@@ -208,7 +208,7 @@ namespace etl
       }
 
       etl::fsm_state_id_t next_state = p_target->on_enter_state();
-      
+
       // Short circuit the activation of any child states if the target state changed
       if (next_state != ifsm_state::No_State_Change)
       {
@@ -220,9 +220,9 @@ namespace etl
       {
         while (p_target->p_default_child != ETL_NULLPTR)
         {
-          p_target = p_target->p_default_child;
+          p_target                           = p_target->p_default_child;
           p_target->p_parent->p_active_child = p_target;
-          next_state = p_target->on_enter_state();
+          next_state                         = p_target->on_enter_state();
 
           // Short circuit the activation of any child states if the target state changed
           if (next_state != ifsm_state::No_State_Change)
@@ -268,7 +268,7 @@ namespace etl
       {
         p_state->on_exit_state();
         next_state_id = p_state->on_enter_state();
-      } 
+      }
 
       while (have_changed_state(next_state_id))
       {
@@ -280,7 +280,7 @@ namespace etl
         do_exits(p_root, p_state);
 
         do_enters_result result = do_enters(p_root, p_next_state, true);
-        next_state_id = result.next_state_id;
+        next_state_id           = result.next_state_id;
 
         if (result.active_state_id != ifsm_state::No_State_Change)
         {
@@ -297,7 +297,7 @@ namespace etl
           // If the next state is different, means that default children were activated.
           // Assign both p_state and p_next_state to get out of the loop.
           ETL_ASSERT(result.next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-          p_state = state_list[result.next_state_id];
+          p_state      = state_list[result.next_state_id];
           p_next_state = state_list[result.next_state_id];
         }
         else
@@ -305,9 +305,9 @@ namespace etl
           p_state = p_next_state;
         }
       }
-      
+
       return p_state->get_state_id();
     }
   };
-}
+} // namespace etl
 #endif

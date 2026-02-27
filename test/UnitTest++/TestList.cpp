@@ -3,36 +3,38 @@
 
 #include <cassert>
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   TestList::TestList()
-      : m_head(0)
-      , m_tail(0)
-   {}
+  TestList::TestList()
+    : m_head(0)
+    , m_tail(0)
+  {
+  }
 
-   void TestList::Add(Test* test)
-   {
-      if (m_tail == 0)
-      {
-         assert(m_head == 0);
-         m_head = test;
-         m_tail = test;
-      }
-      else
-      {
-         m_tail->m_nextTest = test;
-         m_tail = test;
-      }
-   }
+  void TestList::Add(Test* test)
+  {
+    if (m_tail == 0)
+    {
+      assert(m_head == 0);
+      m_head = test;
+      m_tail = test;
+    }
+    else
+    {
+      m_tail->m_nextTest = test;
+      m_tail             = test;
+    }
+  }
 
-   Test* TestList::GetHead() const
-   {
-      return m_head;
-   }
+  Test* TestList::GetHead() const
+  {
+    return m_head;
+  }
 
-   ListAdder::ListAdder(TestList& list, Test* test)
-   {
-      list.Add(test);
-   }
+  ListAdder::ListAdder(TestList& list, Test* test)
+  {
+    list.Add(test);
+  }
 
-}
+} // namespace UnitTest

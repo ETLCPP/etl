@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_COMPARE_INCLUDED
 
 #include "platform.h"
-#include "parameter_type.h"
 #include "functional.h"
+#include "parameter_type.h"
 
 //*****************************************************************************
 ///\defgroup compare compare
@@ -91,7 +91,8 @@ namespace etl
 
     static ETL_CONSTEXPR cmp_result cmp(first_argument_type lhs, second_argument_type rhs)
     {
-      return lt(lhs, rhs) ? Less : gt(lhs, rhs) ? Greater : Equal;
+      return lt(lhs, rhs) ? Less : gt(lhs, rhs) ? Greater
+                                                : Equal;
     }
   };
 
@@ -107,6 +108,6 @@ namespace etl
   {
     return etl::compare<T>::cmp(lhs, rhs);
   }
-}
+} // namespace etl
 
 #endif

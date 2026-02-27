@@ -32,7 +32,7 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
-#include <iostream>
+  #include <iostream>
 
 namespace
 {
@@ -61,9 +61,18 @@ namespace
 
   struct Visitor
   {
-    void operator ()(int) { result.bi = true; }
-    void operator ()(double) { result.bd = true; }
-    void operator ()(const std::string&) { result.bs = true; }
+    void operator()(int)
+    {
+      result.bi = true;
+    }
+    void operator()(double)
+    {
+      result.bd = true;
+    }
+    void operator()(const std::string&)
+    {
+      result.bs = true;
+    }
   };
 
   template <typename T, typename TOverload>
@@ -77,9 +86,12 @@ namespace
     //*************************************************************************
     TEST(test_overload_lambdas_make_overload)
     {
-      auto overload = etl::make_overload([](int) { result.bi = true; },
-                                         [](double) { result.bd = true; },
-                                         [](const std::string&) { result.bs = true; });
+      auto overload = etl::make_overload([](int)
+                                         { result.bi = true; },
+                                         [](double)
+                                         { result.bd = true; },
+                                         [](const std::string&)
+                                         { result.bs = true; });
 
       result.clear();
       Function(1, overload);
@@ -100,44 +112,50 @@ namespace
       CHECK(result.bs == true);
     }
 
-#if ETL_USING_CPP_17
+  #if ETL_USING_CPP_17
     //*************************************************************************
     TEST(test_overload_lambdas_initializer_list)
     {
       result.clear();
-      Function(1, etl::overload
-                       {
-                         [](int) { result.bi = true; },
-                         [](double) { result.bd = true; },
-                         [](const std::string&) { result.bs = true; }
-                       });
+      Function(1, etl::overload{[](int)
+                                { result.bi = true; },
+                                [](double)
+                                { result.bd = true; },
+                                [](const std::string&)
+                                {
+                                  result.bs = true;
+                                }});
       CHECK(result.bi == true);
       CHECK(result.bd == false);
       CHECK(result.bs == false);
 
       result.clear();
-      Function(2.0, etl::overload
-                            {
-                              [](int) { result.bi = true; },
-                              [](double) { result.bd = true; },
-                              [](const std::string&) { result.bs = true; }
-                            });
+      Function(2.0, etl::overload{[](int)
+                                  { result.bi = true; },
+                                  [](double)
+                                  { result.bd = true; },
+                                  [](const std::string&)
+                                  {
+                                    result.bs = true;
+                                  }});
       CHECK(result.bi == false);
       CHECK(result.bd == true);
       CHECK(result.bs == false);
 
       result.clear();
-      Function(std::string("3"), etl::overload
-                                 {
-                                   [](int) { result.bi = true; },
-                                   [](double) { result.bd = true; },
-                                   [](const std::string&) { result.bs = true; }
-                                 });
+      Function(std::string("3"), etl::overload{[](int)
+                                               { result.bi = true; },
+                                               [](double)
+                                               { result.bd = true; },
+                                               [](const std::string&)
+                                               {
+                                                 result.bs = true;
+                                               }});
       CHECK(result.bi == false);
       CHECK(result.bd == false);
       CHECK(result.bs == true);
     }
-#endif
+  #endif
 
     //*************************************************************************
     TEST(test_visitor_overload)
@@ -163,6 +181,6 @@ namespace
       CHECK(result.bs == true);
     }
   }
-}
+} // namespace
 
 #endif

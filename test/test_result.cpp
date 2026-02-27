@@ -46,16 +46,16 @@ namespace
     {
     }
 
-    ValueM(const std::string& v_) 
+    ValueM(const std::string& v_)
       : v(v_)
     {
     }
 
-    ValueM(ValueM&&) = default;
-    ValueM& operator =(ValueM&&) = default;
+    ValueM(ValueM&&)            = default;
+    ValueM& operator=(ValueM&&) = default;
 
-    ValueM(const ValueM&) = delete;
-    ValueM& operator =(const ValueM&) = delete;
+    ValueM(const ValueM&)            = delete;
+    ValueM& operator=(const ValueM&) = delete;
 
     std::string v;
   };
@@ -76,20 +76,20 @@ namespace
     {
     }
 
-    ErrorM(ErrorM&& other) = default;
-    ErrorM& operator =(ErrorM&& rhs) = default;
+    ErrorM(ErrorM&& other)          = default;
+    ErrorM& operator=(ErrorM&& rhs) = default;
 
-    ErrorM(const ErrorM& other) = delete;
-    ErrorM& operator =(const ErrorM& rhs) = delete;
+    ErrorM(const ErrorM& other)          = delete;
+    ErrorM& operator=(const ErrorM& rhs) = delete;
 
     std::string e;
   };
 
-  using ResultValueError = etl::result<Value,  Error>;
-  using ResultVoidError  = etl::result<void,   Error>;
-  using ResultValueVoid  = etl::result<Value,  void>;
+  using ResultValueError = etl::result<Value, Error>;
+  using ResultVoidError  = etl::result<void, Error>;
+  using ResultValueVoid  = etl::result<Value, void>;
   using ResultM          = etl::result<ValueM, ErrorM>;
-}
+} // namespace
 
 namespace
 {
@@ -98,7 +98,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_result_value_error_type_with_value)
     {
-      Value input = { "value 1" };
+      Value            input = {"value 1"};
       ResultValueError result(input);
 
       Value output = result.value();
@@ -111,7 +111,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_const_result_value_error_type_with_value)
     {
-      Value input = { "value 1" };
+      Value                  input = {"value 1"};
       const ResultValueError result(input);
 
       const Value& output = result.value();
@@ -124,7 +124,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_moveable_result_value_error_type_with_value)
     {
-      ValueM input = { "value 1" };
+      ValueM  input = {"value 1"};
       ResultM result(etl::move(input));
 
       ValueM output = etl::move(result.value());
@@ -137,7 +137,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_result_value_error_type_with_error)
     {
-      Error input = { "error 1" };
+      Error            input = {"error 1"};
       ResultValueError result(input);
 
       Error output = result.error();
@@ -150,7 +150,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_const_result_value_error_type_with_error)
     {
-      Error input = { "error 1" };
+      Error                  input = {"error 1"};
       const ResultValueError result(input);
 
       const Error& output = result.error();
@@ -163,7 +163,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_moveable_result_value_error_type_with_error)
     {
-      ErrorM input = { "error 1" };
+      ErrorM  input = {"error 1"};
       ResultM result(etl::move(input));
 
       ErrorM output = etl::move(result.error());
@@ -176,25 +176,25 @@ namespace
     //*************************************************************************
     TEST(test_default_construct_result_void_error_type)
     {
-       ResultVoidError result;
+      ResultVoidError result;
 
-       CHECK(result.is_value());
-       CHECK(!result.is_error());
+      CHECK(result.is_value());
+      CHECK(!result.is_error());
     }
 
     //*************************************************************************
     TEST(test_default_construct_const_result_void_error_type)
     {
-       const ResultVoidError result;
+      const ResultVoidError result;
 
-       CHECK(result.is_value());
-       CHECK(!result.is_error());
+      CHECK(result.is_value());
+      CHECK(!result.is_error());
     }
 
     //*************************************************************************
     TEST(test_construct_result_void_error_type_with_error)
     {
-      Error input = { "error 1" };
+      Error           input = {"error 1"};
       ResultVoidError result(input);
 
       Error output = result.error();
@@ -207,7 +207,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_const_result_void_error_type_with_error)
     {
-      Error input = { "error 1" };
+      Error                 input = {"error 1"};
       const ResultVoidError result(input);
 
       const Error& output = result.error();
@@ -220,7 +220,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_moveable_result_void_error_type_with_error)
     {
-      Error input = { "error 1" };
+      Error           input = {"error 1"};
       ResultVoidError result(etl::move(input));
 
       Error output = etl::move(result.error());
@@ -233,7 +233,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_moveable_const_result_void_error_type_with_error)
     {
-      Error input = { "error 1" };
+      Error                 input = {"error 1"};
       const ResultVoidError result(etl::move(input));
 
       Error output = etl::move(result.error());
@@ -264,7 +264,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_result_value_void_type_with_value)
     {
-      Value input = { "value 1" };
+      Value           input = {"value 1"};
       ResultValueVoid result(input);
 
       Value output = result.value();
@@ -277,7 +277,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_const_result_value_void_type_with_value)
     {
-      Value input = { "value 1" };
+      Value                 input = {"value 1"};
       const ResultValueVoid result(input);
 
       const Value output = result.value();
@@ -290,7 +290,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_moveable_result_value_void_type_with_value)
     {
-      Value input = { "value 1" };
+      Value           input = {"value 1"};
       ResultValueVoid result(etl::move(input));
 
       Value output = etl::move(result.value());
@@ -303,7 +303,7 @@ namespace
     //*************************************************************************
     TEST(test_construct_moveable_const_result_value_void_type_with_value)
     {
-      Value input = { "value 1" };
+      Value                 input = {"value 1"};
       const ResultValueVoid result(etl::move(input));
 
       Value output = etl::move(result.value());
@@ -316,7 +316,7 @@ namespace
     //*************************************************************************
     TEST(test_copy_construct_result)
     {
-      Value input = { "value 1" };
+      Value            input = {"value 1"};
       ResultValueError result(input);
 
       ResultValueError result2(result);
@@ -333,12 +333,12 @@ namespace
     //*************************************************************************
     TEST(test_move_construct_result)
     {
-      Value input = { "value 1" };
+      Value            input = {"value 1"};
       ResultValueError result(input);
 
       ResultValueError result2(etl::move(result));
 
-      Value output = result.value();
+      Value output  = result.value();
       Value output2 = result2.value();
 
       CHECK(result.is_value());
@@ -352,10 +352,10 @@ namespace
     //*************************************************************************
     TEST(test_move_assign_result)
     {
-      Value input = { "value 1" };
+      Value            input = {"value 1"};
       ResultValueError result(input);
 
-      Value input2 = { "value 2" };
+      Value            input2 = {"value 2"};
       ResultValueError result2(result);
 
       result2 = etl::move(result);
@@ -371,4 +371,4 @@ namespace
       CHECK(output2.v == input.v);
     }
   }
-}
+} // namespace

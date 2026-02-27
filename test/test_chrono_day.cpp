@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2023 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -63,7 +63,7 @@ namespace
       return (day.ok() == false);
     }
     else
-    { 
+    {
       return (day.ok() == true);
     }
   }
@@ -97,7 +97,7 @@ namespace
 
       for (int expected = 0; expected < 256; ++expected, ++day)
       {
-        CHECK_TRUE(expected_day_ok(day));       
+        CHECK_TRUE(expected_day_ok(day));
         CHECK_EQUAL(expected, unsigned(day));
       }
     }
@@ -141,7 +141,7 @@ namespace
     //*************************************************************************
     TEST(test_plus_equal_days)
     {
-      Chrono::day day(0);
+      Chrono::day  day(0);
       Chrono::days days(2);
 
       for (int expected = 2; expected < 256; expected += 2)
@@ -160,7 +160,7 @@ namespace
       {
         for (int ds = 0; ds < 256; ++ds)
         {
-          Chrono::day day(d);
+          Chrono::day  day(d);
           Chrono::days days(ds);
 
           day = day + days;
@@ -180,7 +180,7 @@ namespace
       {
         for (int ds = 0; ds < d; ++ds)
         {
-          Chrono::day day(d);
+          Chrono::day  day(d);
           Chrono::days days(ds);
 
           day = days + day;
@@ -196,7 +196,7 @@ namespace
     //*************************************************************************
     TEST(test_minus_equal_days)
     {
-      Chrono::day day(255);
+      Chrono::day  day(255);
       Chrono::days days(2);
 
       for (int expected = 253; expected > 0; expected -= 2)
@@ -211,7 +211,7 @@ namespace
     //*************************************************************************
     TEST(test_day_minus_days)
     {
-      Chrono::day day(255);
+      Chrono::day  day(255);
       Chrono::days days(2);
 
       for (int expected = 253; expected > 0; expected -= 2)
@@ -233,8 +233,8 @@ namespace
           Chrono::day day1(d1);
           Chrono::day day2(d2);
 
-          Chrono::days result_days = day1 - day2;
-          int expected_days = d1 - d2;
+          Chrono::days result_days   = day1 - day2;
+          int          expected_days = d1 - d2;
           CHECK_EQUAL(expected_days, result_days.count());
         }
       }
@@ -246,11 +246,11 @@ namespace
     {
       using namespace etl::literals::chrono_literals;
 
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
       Chrono::day day = 25_day;
-#else
+  #else
       Chrono::day day = 25_d;
-#endif
+  #endif
 
       CHECK_TRUE(day.ok());
       CHECK_EQUAL(25, unsigned(day));
@@ -260,28 +260,28 @@ namespace
     //*************************************************************************
     TEST(test_day_comparison_operators)
     {
-        Chrono::day day10(10);
-        Chrono::day day20(20);
+      Chrono::day day10(10);
+      Chrono::day day20(20);
 
-        CHECK_TRUE(day10  == day10);
-        CHECK_FALSE(day10 != day10);
-        CHECK_TRUE(day10   < day20);
-        CHECK_FALSE(day10  < day10);
-        CHECK_FALSE(day20  < day10);
-        CHECK_TRUE(day10  <= day20);
-        CHECK_TRUE(day10  <= day10);
-        CHECK_FALSE(day20 <= day10);
-        CHECK_FALSE(day10  > day20);
-        CHECK_FALSE(day10  > day10);
-        CHECK_TRUE(day20   > day10);
-        CHECK_FALSE(day10 >= day20);
-        CHECK_TRUE(day10  >= day10);
-        CHECK_TRUE(day20  >= day10);
+      CHECK_TRUE(day10 == day10);
+      CHECK_FALSE(day10 != day10);
+      CHECK_TRUE(day10 < day20);
+      CHECK_FALSE(day10 < day10);
+      CHECK_FALSE(day20 < day10);
+      CHECK_TRUE(day10 <= day20);
+      CHECK_TRUE(day10 <= day10);
+      CHECK_FALSE(day20 <= day10);
+      CHECK_FALSE(day10 > day20);
+      CHECK_FALSE(day10 > day10);
+      CHECK_TRUE(day20 > day10);
+      CHECK_FALSE(day10 >= day20);
+      CHECK_TRUE(day10 >= day10);
+      CHECK_TRUE(day20 >= day10);
 
 #if ETL_USING_CPP20
-        CHECK_TRUE((day10 <=> day10) == 0);
-        CHECK_TRUE((day10 <=> day20)  < 0);
-        CHECK_TRUE((day20 <=> day10)  > 0);
+      CHECK_TRUE((day10 <=> day10) == 0);
+      CHECK_TRUE((day10 <=> day20) < 0);
+      CHECK_TRUE((day20 <=> day10) > 0);
 #endif
     }
 
@@ -292,9 +292,9 @@ namespace
       Chrono::day day10(10);
       Chrono::day day20(20);
 
-      CHECK_EQUAL(0,  day10.compare(day10));
+      CHECK_EQUAL(0, day10.compare(day10));
       CHECK_EQUAL(-1, day10.compare(day20));
-      CHECK_EQUAL(1,  day20.compare(day10));
+      CHECK_EQUAL(1, day20.compare(day10));
     }
 #endif
 
@@ -315,4 +315,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

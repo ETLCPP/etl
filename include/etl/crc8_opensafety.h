@@ -58,7 +58,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc8_opensafety_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -71,6 +71,6 @@ namespace etl
   typedef crc8_opensafety_t<16U>  crc8_opensafety_t16;
   typedef crc8_opensafety_t<4U>   crc8_opensafety_t4;
   typedef crc8_opensafety_t256    crc8_opensafety;
-}
+} // namespace etl
 
 #endif

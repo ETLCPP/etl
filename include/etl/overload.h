@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_OVERLOAD_INCLUDED
 
 #include "platform.h"
-#include "utility.h"
 #include "type_traits.h"
+#include "utility.h"
 
 namespace etl
 {
@@ -41,7 +41,7 @@ namespace etl
   //*************************************************************************
   /// Variadic template definition of overload for C++17 and above.
   //*************************************************************************
-  template<typename... TOverloads>
+  template <typename... TOverloads>
   struct overload : TOverloads...
   {
     using TOverloads::operator()...;
@@ -50,7 +50,8 @@ namespace etl
   //*************************************************************************
   /// Template deduction guide.
   //*************************************************************************
-  template<typename... TOverloads> overload(TOverloads...)->overload<TOverloads...>;
+  template <typename... TOverloads>
+  overload(TOverloads...) -> overload<TOverloads...>;
 
   //*************************************************************************
   /// Make an overload.
@@ -58,7 +59,7 @@ namespace etl
   template <typename... TOverloads>
   constexpr overload<TOverloads...> make_overload(TOverloads&&... overloads)
   {
-    return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
+    return overload<TOverloads...>{etl::forward<TOverloads>(overloads)...};
   }
 #elif ETL_USING_CPP11
   //*************************************************************************
@@ -71,9 +72,12 @@ namespace etl
   /// Specialisation for multiple overloads.
   //*************************************************************************
   template <typename TOverload, typename... TRest>
-  struct overload<TOverload, TRest...> : TOverload, overload<TRest...>
+  struct overload<TOverload, TRest...> : TOverload
+    , overload<TRest...>
   {
-    overload(TOverload first, TRest... rest) : TOverload(first), overload<TRest...>(rest...) 
+    overload(TOverload first, TRest... rest)
+      : TOverload(first)
+      , overload<TRest...>(rest...)
     {
     }
 
@@ -87,7 +91,8 @@ namespace etl
   template <typename TOverload>
   struct overload<TOverload> : TOverload
   {
-    overload(TOverload first) : TOverload(first) 
+    overload(TOverload first)
+      : TOverload(first)
     {
     }
 
@@ -103,6 +108,6 @@ namespace etl
     return overload<TRest...>(overloads...);
   }
 #endif
-}
+} // namespace etl
 
 #endif

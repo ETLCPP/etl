@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <thread>
-#include <chrono>
-#include <vector>
-#include <mutex>
-#include <atomic>
 #include <algorithm>
+#include <atomic>
+#include <chrono>
+#include <mutex>
+#include <thread>
+#include <vector>
 
 #include "etl/queue_mpmc_mutex.h"
 
@@ -41,29 +41,29 @@ SOFTWARE.
 
 #if ETL_HAS_MUTEX
 
-#if defined(ETL_TARGET_OS_WINDOWS)
-  #include <Windows.h>
-#endif
+  #if defined(ETL_TARGET_OS_WINDOWS)
+    #include <Windows.h>
+  #endif
 
-#define REALTIME_TEST 0
+  #define REALTIME_TEST 0
 
 namespace
 {
   struct Data
   {
     Data(int a_, int b_ = 2, int c_ = 3, int d_ = 4)
-      : a(a_),
-        b(b_),
-        c(c_),
-        d(d_)
+      : a(a_)
+      , b(b_)
+      , c(c_)
+      , d(d_)
     {
     }
 
     Data()
-      : a(0),
-        b(0),
-        c(0),
-        d(0)
+      : a(0)
+      , b(0)
+      , c(0)
+      , d(0)
     {
     }
 
@@ -73,7 +73,7 @@ namespace
     int d;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
+  bool operator==(const Data& lhs, const Data& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
@@ -153,7 +153,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
-#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+  #if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -188,7 +188,7 @@ namespace
       queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
-#endif
+  #endif
 
     //*************************************************************************
     TEST(test_multiple_emplace)
@@ -398,9 +398,9 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
+  #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
     #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
-      #define SET_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL)
+      #define SET_THREAD_PRIORITY     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL)
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);
       #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2);
       #define FIX_PROCESSOR_AFFINITY3 SetThreadAffinityMask(GetCurrentThread(), 4);
@@ -427,7 +427,7 @@ namespace
       SET_THREAD_PRIORITY;
 
       size_t count = 0UL;
-      int value = 0;
+      int    value = 0;
 
       while (!start.load());
 
@@ -448,7 +448,7 @@ namespace
       SET_THREAD_PRIORITY;
 
       size_t count = 0UL;
-      int value = LENGTH / 2;
+      int    value = LENGTH / 2;
 
       while (!start.load());
 
@@ -549,8 +549,8 @@ namespace
         CHECK_EQUAL(i, pop[i]);
       }
     }
-#endif
+  #endif
   }
-}
+} // namespace
 
 #endif

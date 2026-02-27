@@ -72,23 +72,23 @@ namespace
     {
     }
 
-    Message1& operator =(const Message1& other)
+    Message1& operator=(const Message1& other)
     {
-      x = other.x;
-      moved = false;
+      x      = other.x;
+      moved  = false;
       copied = true;
       return *this;
     }
 
-    Message1& operator =(Message1&& other)
+    Message1& operator=(Message1&& other)
     {
-      x = std::move(other.x);
-      moved = true;
+      x      = std::move(other.x);
+      moved  = true;
       copied = false;
       return *this;
     }
 
-    int x;
+    int  x;
     bool moved;
     bool copied;
   };
@@ -119,25 +119,25 @@ namespace
     {
     }
 
-    Message2& operator =(const Message2& other)
+    Message2& operator=(const Message2& other)
     {
-      x = other.x;
-      moved = false;
+      x      = other.x;
+      moved  = false;
       copied = true;
       return *this;
     }
 
-    Message2& operator =(Message2&& other)
+    Message2& operator=(Message2&& other)
     {
-      x = std::move(other.x);
-      moved = true;
+      x      = std::move(other.x);
+      moved  = true;
       copied = false;
       return *this;
     }
 
     double x;
-    bool moved;
-    bool copied;
+    bool   moved;
+    bool   copied;
   };
 
   struct Message3 : public etl::message<MESSAGE3>
@@ -174,25 +174,25 @@ namespace
     {
     }
 
-    Message3& operator =(const Message3& other)
+    Message3& operator=(const Message3& other)
     {
-      x = other.x;
-      moved = false;
+      x      = other.x;
+      moved  = false;
       copied = true;
       return *this;
     }
 
-    Message3& operator =(Message3&& other)
+    Message3& operator=(Message3&& other)
     {
-      x = std::move(other.x);
-      moved = true;
+      x      = std::move(other.x);
+      moved  = true;
       copied = false;
       return *this;
     }
 
     std::string x;
-    bool moved;
-    bool copied;
+    bool        moved;
+    bool        copied;
   };
 
   struct Message4 : public etl::message<MESSAGE4>
@@ -223,10 +223,10 @@ namespace
     //*************************************************************************
     TEST(message_packet_construction)
     {
-      Message1 message1(1);
-      Message2 message2(2.2);
+      Message1       message1(1);
+      Message2       message2(2.2);
       const Message3 message3("3");
-      Message4 message4;
+      Message4       message4;
 
       Packet packet1(message1);
       Packet packet2(message2);
@@ -237,8 +237,8 @@ namespace
 #endif
 
       // Should cause a static assert.
-      //Packet packet4(message4);
-      //Packet packet4((Message4()));
+      // Packet packet4(message4);
+      // Packet packet4((Message4()));
 
       CHECK_TRUE((std::is_same<etl::type_list<Message1, Message2, Message3>, typename Packet::message_types>::value));
 #if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
@@ -258,7 +258,7 @@ namespace
       CHECK(static_cast<Message2&>(packet2.get()).copied);
       CHECK(static_cast<Message3&>(packet3.get()).copied);
 
-      CHECK_EQUAL(1,   static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
       CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
     }
@@ -303,7 +303,7 @@ namespace
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
       CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
 
-      CHECK_EQUAL(1,   static_cast<const Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<const Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<const Message2&>(packet2.get()).x);
       CHECK_EQUAL("3", static_cast<const Message3&>(packet3.get()).x);
     }
@@ -326,7 +326,7 @@ namespace
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
       CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
 
-      CHECK_EQUAL(1,   static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
       CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
     }
@@ -385,9 +385,9 @@ namespace
 
       Packet packet1(message1);
 
-#include "etl/private/diagnostic_pessimizing_move_push.h"
+  #include "etl/private/diagnostic_pessimizing_move_push.h"
       Packet packet2(std::move(Packet(message1)));
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());
@@ -480,7 +480,7 @@ namespace
       CHECK(Packet::accepts<Message2>());
       CHECK(Packet::accepts<Message3>());
       CHECK(!Packet::accepts<Message4>());
-       
+
       // From static message id.
       CHECK(Packet::accepts<MESSAGE1>());
       CHECK(Packet::accepts<MESSAGE2>());
@@ -497,11 +497,11 @@ namespace
 
       Message1 message1(1);
       Message2 message2(1.2);
-      Packet packet1(message1);
-      Packet packet2(message2);
+      Packet   packet1(message1);
+      Packet   packet2(message2);
 
       obj.Push(packet1);
       obj.Push(packet2);
     }
   }
-}
+} // namespace

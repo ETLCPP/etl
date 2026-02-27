@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_INTRUSIVE_STACK_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
+#include "type_traits.h"
 
 #include <stddef.h>
 
@@ -93,7 +93,7 @@ namespace etl
   public:
 
     // Node typedef.
-    typedef TLink  link_type;
+    typedef TLink link_type;
 
     //*************************************************************************
     /// Adds a value to the stack.
@@ -104,8 +104,8 @@ namespace etl
       ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_stack_value_is_already_linked));
 
       value.etl_next = p_top;
-      p_top = &value;
-      
+      p_top          = &value;
+
       ++current_size;
     }
 
@@ -142,15 +142,15 @@ namespace etl
     void reverse()
     {
       link_type* previous = &terminator;
-      link_type* current = p_top;
+      link_type* current  = p_top;
       link_type* next;
 
       while (current != &terminator)
       {
-        next = current->etl_next;
+        next              = current->etl_next;
         current->etl_next = previous;
-        previous = current;
-        current = next;
+        previous          = current;
+        current           = next;
       }
 
       p_top = previous;
@@ -193,7 +193,7 @@ namespace etl
     intrusive_stack_base()
       : p_top(&terminator)
       , current_size(0)
-    {      
+    {
     }
 
     //*************************************************************************
@@ -236,7 +236,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_stack()
-    : intrusive_stack_base<TLink>()
+      : intrusive_stack_base<TLink>()
     {
     }
 
@@ -263,8 +263,8 @@ namespace etl
 
     // Disable copy construction and assignment.
     intrusive_stack(const intrusive_stack&);
-    intrusive_stack& operator = (const intrusive_stack& rhs);
+    intrusive_stack& operator=(const intrusive_stack& rhs);
   };
-}
+} // namespace etl
 
 #endif

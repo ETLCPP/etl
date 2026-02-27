@@ -3,24 +3,27 @@
 
 #include "TestReporter.h"
 
-namespace UnitTest {
+namespace UnitTest
+{
 
-   // A TestReporter that throws when ReportFailure is called. Otherwise it
-   // forwards the calls to a decorated TestReporter
-   class ThrowingTestReporter : public TestReporter
-   {
-   public:
-      explicit ThrowingTestReporter(TestReporter* reporter);
+  // A TestReporter that throws when ReportFailure is called. Otherwise it
+  // forwards the calls to a decorated TestReporter
+  class ThrowingTestReporter : public TestReporter
+  {
+  public:
 
-      virtual ~ThrowingTestReporter();
-      virtual void ReportTestStart(TestDetails const& test);
-      virtual void ReportFailure(TestDetails const& test, char const* failure);
-      virtual void ReportTestFinish(TestDetails const& test, float secondsElapsed);
-      virtual void ReportSummary(int totalTestCount, int failedTestCount, int failureCount, float secondsElapsed);
+    explicit ThrowingTestReporter(TestReporter* reporter);
 
-   private:
-      TestReporter* m_decoratedReporter;
-   };
-}
+    virtual ~ThrowingTestReporter();
+    virtual void ReportTestStart(TestDetails const& test);
+    virtual void ReportFailure(TestDetails const& test, char const* failure);
+    virtual void ReportTestFinish(TestDetails const& test, float secondsElapsed);
+    virtual void ReportSummary(int totalTestCount, int failedTestCount, int failureCount, float secondsElapsed);
+
+  private:
+
+    TestReporter* m_decoratedReporter;
+  };
+} // namespace UnitTest
 
 #endif

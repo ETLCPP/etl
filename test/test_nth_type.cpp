@@ -54,4 +54,4 @@ namespace
       CHECK((std::is_same<etl::nth_type_t<2, types>, double>::value));
     }
   }
-}
+} // namespace
