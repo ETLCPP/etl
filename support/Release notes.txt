@@ -1,4 +1,37 @@
 ﻿===============================================================================
+20.46.0
+
+#1257 Fix year_month arithmetic and correct chrono API behavior
+#1259 Suppress warnings from std in optimized builds
+#1261 Fix incorrect namespace for iter_swap calls
+#1262 Document how to implement platform specifics
+#1264 Add template deduction guide for span from vector
+#1265 Fix etl::tuple template signature error in pair assignment operator
+#1266 Fix etl::as_bytes for etl::span<const T>
+#1267 Update C++26 deprecated constructs to ensure future standard compliance
+#1268 Remove some UB in test_vector_non_trivial.cpp
+#1269 Deduce underlying storage size when constructing string_ext from char[].
+#1271 Fix return value of get_token_list
+#1275 Add etl::type_list API to more classes.
+#1277 Fix for issue 1276 "Data corruption in the etl::bip_buffer_spsc_atomic"
+#1281 Remove advance() on static spans
+#1285 Manchester coding
+#1286 Add missing includes
+#1287 Move comparison operators of etl::expected to namespace etl
+#1288 Add basic_format_arg constructor for ibasic_string
+#1290 Add support for size_t and unsigned long to etl::format
+#1291 Make typed_storage constructor constexpr
+#1292 Add ref-qualifiers to basic_format_spec
+#1299 Fix link rotations for etl::tree_node
+#1303 Add constexpr to array comparison operators
+#1304 Fix etl::variant get() for ambiguous types
+#1307 Add more features to etl::type_list
+#1308 Fix comparison and swap operators not in etl namespace
+#1309 Reduce string flash usage
+#1312 Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up
+#1315 Add get endianness to byte stream reader
+
+===============================================================================
 20.45.0
 
 Issues:
@@ -18,8 +51,8 @@ Pull requests:
 #1238 Various cleanup
 #1239 Indirect vector checks
 #1244 Fix no check macros
-#1245 Fix discrepancy with STL in max_element and minmax_element 
-#1246 Implement .begin() and .end() for etl::optional 
+#1245 Fix discrepancy with STL in max_element and minmax_element
+#1246 Implement .begin() and .end() for etl::optional
 #1251 Add etl::inplace_function
 #1252 Add ThreadX mutex support
 #1254 Make code base with tests compile under gcc-14
@@ -149,7 +182,7 @@ Fix gamma tests (removed integral tests)
 #1151 test failure in i386 in 20.42.1: test_replace_strings in test_string_utilities.c fails
 #1152 Patch: use "python3 -m cogapp" instead of "cog" in generate.bat
 #1153 ROM size increase after algorithm_exception introduction
-#1156 Name conflict between template parameter and status register macro on MSP430 devices 
+#1156 Name conflict between template parameter and status register macro on MSP430 devices
 #1158 Bug: Inverted logic in ! __has_include(<version>) check causes compilation failure on compilers without <version> header
 
 Pull Requests:
@@ -209,7 +242,7 @@ Pull Requests:
 
 Fixes:
 Fixed std::string_view include warning for < C++17
-#1123 Bug: Possible NULL Pointer Dereference in set.h 
+#1123 Bug: Possible NULL Pointer Dereference in set.h
 #1124 alignment.h won't compile as C++03
 #1125 For cogapp, use cog instead of python
 
@@ -267,7 +300,7 @@ Fixes:
 
 Pull Requests:
 #1109 Add detection of C++23
-#1108 Add unit tests for bit_stream 
+#1108 Add unit tests for bit_stream
 
 ===============================================================================
 20.41.1
@@ -289,21 +322,21 @@ Added etl::tuple
 Added get_token_list to string_utilities to retrieve multiple tokens
 #757  Add etl::chrono time/date classes
 #962  Allow (overload) string append a string_view
-#966  A constructor for delegate with a freestanding function 
-#1047 Deprecate etl::parameter_pack and replace with etl::type_list 
-#1068 Add swap(circular_buffer_ext&&) for circular_buffer_ext 
+#966  A constructor for delegate with a freestanding function
+#1047 Deprecate etl::parameter_pack and replace with etl::type_list
+#1068 Add swap(circular_buffer_ext&&) for circular_buffer_ext
 #1084 Add 'type' Alias to Strong Types
 #1085 Add The Remaining Math Operators To ETL_TYPEDEF
 
 Fixes:
 #1041 Incorrect rounding of scaled natural numbers in scaled_rounding
-#1042 Incorrect rounding in scaled_rounding with scale of 1 
+#1042 Incorrect rounding in scaled_rounding with scale of 1
 #1056 variadic_variant doesn't use the type_id_t type to store type_id
-#1057 ETL_DECLARE_DEBUG_COUNT increases RAM usage even when ETL_DEBUG_COUNT NOT defined 
-#1064 v20.40.0 error: has no member named ‘is_secure’ 
-#1070 MacOs Circlular buffer type conversion error (-Werror) 
+#1057 ETL_DECLARE_DEBUG_COUNT increases RAM usage even when ETL_DEBUG_COUNT NOT defined
+#1064 v20.40.0 error: has no member named ‘is_secure’
+#1070 MacOs Circlular buffer type conversion error (-Werror)
 #1073 Test failure on 32-bit x86 arches
-#1076 circular_buffer::pop(N) when holding trivially destructible items 
+#1076 circular_buffer::pop(N) when holding trivially destructible items
 #1077 Builds on i386 trigger -Werror=useless-cast
 #1078 Have etl::make_array Check for noexcept Condition
 #1079 Compilation errors in algorithm.h in C++03
@@ -313,30 +346,30 @@ Fixes:
 #1102 Optimise clear of sequence containers for trivially destructible types
 
 Pull Requests:
-#1033 Add newline to end of parameter_pack.h 
-#1036 Add contains() and contains_node() to etl::intrusive_forward_list 
-#1039 Minor cleanup 
-#1040 Implement << operator for std basic_ostream and etl string_view 
-#1043 Added iterator and const_iterator to etl::ipool 
-#1044 Add traits to type_list 
-#1045 Support etl::underlying_type with compiler builtin 
-#1049 Various cleanup changes 
-#1052 Returning const ref of member from const member function 
+#1033 Add newline to end of parameter_pack.h
+#1036 Add contains() and contains_node() to etl::intrusive_forward_list
+#1039 Minor cleanup
+#1040 Implement << operator for std basic_ostream and etl string_view
+#1043 Added iterator and const_iterator to etl::ipool
+#1044 Add traits to type_list
+#1045 Support etl::underlying_type with compiler builtin
+#1049 Various cleanup changes
+#1052 Returning const ref of member from const member function
 #1055 Add enable_if restriction for span constructor from c array
-#1065 Fix cmake helper functions collision 
-#1067 Fix missing is_secure function 
+#1065 Fix cmake helper functions collision
+#1067 Fix missing is_secure function
 #1069 Support C++23
-#1072 Add swap(circular_buffer_ext&&) (#1068) 
-#1074 Add Zephyr build system module.yml 
-#1075 Add full West support for ETL in Zephyr builds 
+#1072 Add swap(circular_buffer_ext&&) (#1068)
+#1074 Add Zephyr build system module.yml
+#1075 Add full West support for ETL in Zephyr builds
 #1080 Fixed compilation errors in algorithm.h in C++03 and compiler warning
-#1082 Support const pointers in etl::is_aligned() 
-#1083 Add take() to etl::span 
-#1088 Fix numeric overflow in bip buffer's get_write_reserve 
-#1089 Cleanup fixes for C++03 
-#1090 Fix copy_s() for C++03 
-#1103 Add IWYU pragmas to private headers which provide library symbols 
-#1104 Use etl::clamp for setting value in cyclic_value 
+#1082 Support const pointers in etl::is_aligned()
+#1083 Add take() to etl::span
+#1088 Fix numeric overflow in bip buffer's get_write_reserve
+#1089 Cleanup fixes for C++03
+#1090 Fix copy_s() for C++03
+#1103 Add IWYU pragmas to private headers which provide library symbols
+#1104 Use etl::clamp for setting value in cyclic_value
 
 ===============================================================================
 20.40.0
@@ -366,7 +399,7 @@ Fixes:
 #957  Support heterogenous lookup for maps
 #959  Treat bitset with size_type
 #972  Template not allowed warning in parameter pack
-#979  QueuedMessageRouter does not work : message are not sent to queue 
+#979  QueuedMessageRouter does not work : message are not sent to queue
 #980  Documentation clarification: Add link from endianess to unaligned_type
 #982  Added return to etl::optional emplace, fixed typo
 #984  Update Base64 Documentation
@@ -452,13 +485,13 @@ Modified io_port classes so that they are not derived from iterator types.
 
 Fixes:
 #921 unique_ptr reset
-#923 Missing equality operator for class expected 
+#923 Missing equality operator for class expected
 #930 Unused parameter warnings
 #931 Using etl::make_vector to make a vector of two pairs causes a compile error
 
 Features:
 #918 Request for additional operator support for etl::io_port_*
-#919 callback_timer: expose callback_timer_data::is_active() as icallback_timer public method 
+#919 callback_timer: expose callback_timer_data::is_active() as icallback_timer public method
 #920 Define ETL_USING_LEGACY_VARIANT as a convenience macro for code that tries to support both new and legacy variants
 #940 Allow etl::observer notification without argument
 
@@ -645,7 +678,7 @@ Refactored etl::itr_swap for maximum efficiency.
 
 ===============================================================================
 20.38.3
-#767 etl::pool silently produces unaligned allocations for types with stricter alignment requirements than built in types 
+#767 etl::pool silently produces unaligned allocations for types with stricter alignment requirements than built in types
 
 ===============================================================================
 20.38.2
@@ -657,7 +690,7 @@ Refactored etl::itr_swap for maximum efficiency.
 #758 Move assignment not working for non-empty containers
 #761 Make "private" includes relative
 #765 etl::optional cannot be constexpr
-#766 etl::unique_ptr::reset() can call deleter with nullptr argument 
+#766 etl::unique_ptr::reset() can call deleter with nullptr argument
 Re-enabled bit_stream_writer tests
 
 ===============================================================================
@@ -729,7 +762,7 @@ Re-enabled memcast tests.
 #663 Make unit tests compile for C++20
 #675 Compilation error in optional.h
 #684 Added sanitization fix for MinGW
-#687 Build failure. constexpr keyword before template keyword 
+#687 Build failure. constexpr keyword before template keyword
 #689 Add as_bytes and as_writable_bytes
 #690 Add rvalue accessors to expected and optional and update constructors
 #692 operator [] for flat_map always calls default constructor for mapped_type
@@ -780,7 +813,7 @@ Convert the Visual Studio project to VS2022
 20.35.13
 #649 Fixed the false positive 'array-bounds' errors for ETL unit tests.
 #652 Fixed false positives 'maybe-uninitialized' errors for ETL unit tests.
-Moved virtual functions in etl::fixed_sized_memory_block_allocator from 'private' to 'protected'. 
+Moved virtual functions in etl::fixed_sized_memory_block_allocator from 'private' to 'protected'.
 
 ===============================================================================
 20.35.12
@@ -821,7 +854,7 @@ Added Ubuntu 22.04 to Github Actions
 
 ===============================================================================
 20.35.8
-#648 Improve is_constructible, is_copy_constructible, is_move_constructible for type traits with default definitions 
+#648 Improve is_constructible, is_copy_constructible, is_move_constructible for type traits with default definitions
 #645 Avoid 'missing return statement at end of non-void function' in `etl::visit<>()`.
 Removed unused ETL_USE_MEM_BUILTINS option
 
@@ -939,7 +972,7 @@ Added tests for error handler macros
 
 ===============================================================================
 20.31.2
-#567 error-handler: only return when the condition is false 
+#567 error-handler: only return when the condition is false
 
 ===============================================================================
 20.31.1
@@ -1012,7 +1045,7 @@ Updates to etl::successor and derived classes.
 
 ===============================================================================
 20.27.3
-#531 Fixed: Compilation of etl::reference_counted_message_pool with ETL_LOG_ERROR 
+#531 Fixed: Compilation of etl::reference_counted_message_pool with ETL_LOG_ERROR
 enabled due to non-public inheritance.
 
 ===============================================================================
@@ -1103,7 +1136,7 @@ Updated C++ standard detection.
 Split callback and message timer to atomic and locked interrupt versions.
 #480 Fixed: Double formatting with precision > 9
 #481 Fixed: etl::span const data cannot be created from non const c array of data.
-#482 Fixed: Two or more etl::span/array_view of different types create ambiguous overloading set 
+#482 Fixed: Two or more etl::span/array_view of different types create ambiguous overloading set
 #483 Fixed: Added Green Hills compiler to minmax push and pop.
 #484 Fixed: etl::vector test_uninitialized_resize_excess not calling uninitialized_resize.
 #485 Fixed: etl::message_packet takes message types that are not in its list.
@@ -1182,7 +1215,7 @@ Improved compliance with MISRA rules
 Extended 'successor' handling for all derived message router types
 
 ===============================================================================
-20.16.2 
+20.16.2
 Fixed incomplete template specialisations in type_traits.h for C++11
 
 ===============================================================================
@@ -1238,7 +1271,7 @@ Added Arduino examples.
 
 ===============================================================================
 20.11.4
-Fixed etl::circular_buffer copy and move assignment bug where the destination 
+Fixed etl::circular_buffer copy and move assignment bug where the destination
 buffer was not cleared before assignment.
 
 ===============================================================================
@@ -1392,7 +1425,7 @@ Added ETL_CONSTANT to numeric_limits member functions.
 Added initialize_free_space(), trim_to_terminator() and data_end() functions to
 strings for easier integration with C APIs.
 
-=============================================================================== 
+===============================================================================
 20.2.3
 Fixed indexing error in find_next() for etl::bitset.
 
@@ -1679,9 +1712,9 @@ Fixed etl::stack top level assignment operator not clearing before copy.
 
 ===============================================================================
 18.12.5
-Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when 
+Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when
 the terminating iterator was end() for etl::unordered_map, etl::unordered_multimap,
-etl::unordered_set and etl::unordered_multiset. 
+etl::unordered_set and etl::unordered_multiset.
 
 ===============================================================================
 18.12.4
@@ -1786,7 +1819,7 @@ C++03 compatibility fix for type_traits.h
 
 ===============================================================================
 18.3.0
-Added etl::parameter_pack to easily extract information about the types in a 
+Added etl::parameter_pack to easily extract information about the types in a
 template parameter pack.
 
 ===============================================================================
