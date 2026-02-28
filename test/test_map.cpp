@@ -366,9 +366,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       Data other_data(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -1633,6 +1633,34 @@ namespace
 
       CHECK(!data.contains(std::string("99")));
       CHECK(!data.contains(Key("99")));
+    }
+
+    //*************************************************************************
+    TEST(test_if_issue_1298_multiset_iterator_invalidation_during_erase_is_also_in_map)
+    {
+      using element = std::pair<int, int>;
+
+      std::vector<element> permutation{ {1, 11}, {2, 12}, {3, 13}, {4, 14} };
+      const std::vector<element> expected{ {1, 11}, {3, 13}, {4, 14} };
+
+      do
+      {
+        etl::map<int, int, 8> data;
+
+        for (auto i : permutation)
+        {
+          data.insert(i);
+        }
+
+        auto it = data.find(2);
+        data.erase(it);
+
+        const std::vector<element> actual(data.begin(), data.end());
+
+        CHECK_TRUE(std::is_sorted(data.begin(), data.end()));
+        CHECK_TRUE((std::equal(data.begin(), data.end(), expected.begin())));
+
+      } while (std::next_permutation(permutation.begin(), permutation.end()));
     }
   }
 }

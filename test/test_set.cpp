@@ -332,9 +332,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       Data otherData(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       data = data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -1298,14 +1298,14 @@ namespace
                 ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
                 CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
-                
+
                 if((stlret.first != compare.end()) && (etlret.first != data.end()))
                 {
                     CHECK_EQUAL(*stlret.first, *etlret.first);
                 }
-                
+
                 CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
-                
+
                 if((stlret.second != compare.end()) && (etlret.second != data.end()))
                 {
                     CHECK_EQUAL(*stlret.second, *etlret.second);
@@ -1365,14 +1365,14 @@ namespace
           ETL_OR_STD::pair<EMap::const_iterator, EMap::const_iterator> etlret = data.equal_range(Key(i));
 
           CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
-          
+
           if ((stlret.first != compare.end()) && (etlret.first != data.end()))
           {
             CHECK_EQUAL(*stlret.first, *etlret.first);
           }
-          
+
           CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
-          
+
           if ((stlret.second != compare.end()) && (etlret.second != data.end()))
           {
             CHECK_EQUAL(*stlret.second, *etlret.second);
@@ -1467,6 +1467,30 @@ namespace
 
       CHECK(!data.contains(99));
       CHECK(!data.contains(Key(99)));
+    }
+
+    //*************************************************************************
+    TEST(test_if_issue_1298_multiset_iterator_invalidation_during_erase_is_also_in_set)
+    {
+      std::vector<int> permutation{1, 2, 3, 4};
+      const std::vector<int> expected{1, 3, 4};
+
+      do
+      {
+        etl::set<int, 8> data;
+
+        for (auto i : permutation)
+        {
+          data.insert(i);
+        }
+
+        auto it = data.find(2);
+        data.erase(it);
+
+        CHECK_TRUE(std::is_sorted(data.begin(), data.end()));
+        CHECK_TRUE((std::equal(data.begin(), data.end(), expected.begin())));
+
+      } while (std::next_permutation(permutation.begin(), permutation.end()));
     }
   }
 }
