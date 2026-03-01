@@ -536,16 +536,16 @@ namespace
 
       // Check that elements in multiset are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(data_result, 1);
       compare_data.insert(compare_result, 1);
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
       CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
@@ -615,8 +615,8 @@ namespace
       compare_data.insert(random_data.begin(), random_data.end());
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
       CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
@@ -799,8 +799,8 @@ namespace
       CHECK_EQUAL(*i_compare1, *i_data1);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
       CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
@@ -844,8 +844,8 @@ namespace
       data.erase(data.cbegin(), data.cend());
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));

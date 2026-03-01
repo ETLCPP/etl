@@ -204,6 +204,7 @@ namespace
       CHECK_EQUAL(10U, data.capacity());
       CHECK_EQUAL(10U, data.max_size());
       CHECK(data == check);
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 #endif
 
@@ -228,6 +229,8 @@ namespace
                             data2.end(),
                             compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.key_comp()));
     }
 
     //*************************************************************************
@@ -252,6 +255,8 @@ namespace
       CHECK(data2.find(ItemM(2)) != data2.end());
       CHECK(data2.find(ItemM(3)) != data2.end());
       CHECK(data2.find(ItemM(4)) != data2.end());
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.key_comp()));
     }
 
     //*************************************************************************
@@ -275,6 +280,8 @@ namespace
 
       bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
 #if ETL_HAS_INITIALIZER_LIST
@@ -290,6 +297,8 @@ namespace
 
       bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 #endif
 
@@ -306,6 +315,8 @@ namespace
                                  otherData.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(otherData.begin(), otherData.end(), otherData.key_comp()));
     }
 
     //*************************************************************************
@@ -324,6 +335,8 @@ namespace
                                  data2.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.key_comp()));
     }
 
     //*************************************************************************
@@ -341,6 +354,8 @@ namespace
                                  otherData.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -363,6 +378,8 @@ namespace
       data2 = std::move(data1);
 
       CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.key_comp()));
     }
 
     //*************************************************************************
@@ -418,6 +435,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -464,6 +483,8 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -480,18 +501,20 @@ namespace
 
       // Check that elements in set are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(data_result.first, 1);
       compare_data.insert(compare_result.first, 1);
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -510,18 +533,20 @@ namespace
 
       // Check that elements in set are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(data_result.first, 1);
       compare_data.insert(compare_result.first, 1);
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -546,6 +571,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -558,10 +585,12 @@ namespace
       compare_data.insert(random_data.begin(), random_data.end());
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -594,6 +623,8 @@ namespace
       CHECK_EQUAL(2, data.find(ItemM(2))->value);
       CHECK_EQUAL(3, data.find(ItemM(3))->value);
       CHECK_EQUAL(4, data.find(ItemM(4))->value);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -634,45 +665,8 @@ namespace
                                  compare_data.begin());
       CHECK(isEqual);
 
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
-
-    ////*************************************************************************
-    //TEST_FIXTURE(SetupFixture, test_emplace_value)
-    //{
-    //  Compare_Data compare_data;
-    //  Data data;
-
-    //  ETL_OR_STD::pair<Data::iterator, bool> data_result = data.emplace(0);
-    //  ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result = compare_data.emplace(0);
-
-    //  // Check that both return successful return results
-    //  CHECK_EQUAL(*data_result.first, *compare_result.first);
-
-    //  // Try adding a duplicate (should return iterator pointing to duplicate)
-    //  data_result = data.insert(0);
-    //  compare_result = compare_data.insert(0);
-
-    //  // Check that both return successful return results
-    //  CHECK_EQUAL(*data_result.first, *compare_result.first);
-
-    //  // Check that elements in set are the same
-    //  bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-    //  CHECK(isEqual);
-
-    //  data.insert(2);
-    //  compare_data.insert(2);
-
-    //  isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-
-    //  CHECK(isEqual);
-
-    //  data.insert(1);
-    //  compare_data.insert(1);
-
-    //  isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-
-    //  CHECK(isEqual);
-    //}
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
@@ -693,6 +687,8 @@ namespace
       bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -711,10 +707,12 @@ namespace
       CHECK_EQUAL(*data_result.second, *compare_result.second);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -729,6 +727,8 @@ namespace
       bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -746,6 +746,8 @@ namespace
       bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -770,6 +772,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -790,10 +794,12 @@ namespace
       CHECK_EQUAL(*i_compare1, *i_data1);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -821,6 +827,8 @@ namespace
                                  data.end(),
                                  compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -845,9 +853,11 @@ namespace
       data.erase(i_data, i_data_end);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 
     //*************************************************************************
@@ -1417,6 +1427,8 @@ namespace
       CHECK_EQUAL("E", *itr);
       ++itr;
       CHECK_EQUAL("F", *itr);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 #endif
 
@@ -1443,6 +1455,8 @@ namespace
       CHECK_EQUAL("E", *itr);
       ++itr;
       CHECK_EQUAL("F", *itr);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
     }
 #endif
 
@@ -1487,7 +1501,7 @@ namespace
         auto it = data.find(2);
         data.erase(it);
 
-        CHECK_TRUE(std::is_sorted(data.begin(), data.end()));
+        CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
         CHECK_TRUE((std::equal(data.begin(), data.end(), expected.begin())));
 
       } while (std::next_permutation(permutation.begin(), permutation.end()));
