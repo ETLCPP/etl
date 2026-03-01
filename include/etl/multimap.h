@@ -761,7 +761,7 @@ namespace etl
       friend class imultimap;
       friend class const_iterator;
 
-      iterator() 
+      iterator()
         : p_multimap(ETL_NULLPTR)
         , p_node(ETL_NULLPTR)
       {
@@ -2181,7 +2181,7 @@ namespace etl
           else
           {
             // Update the direction to the replace node
-            node->dir = node->children[(uint_least8_t) kLeft] ? (uint_least8_t) kLeft : (uint_least8_t) kRight;
+            node->dir = 1 - found->dir;
           }
         } // while(node)
 
@@ -2506,8 +2506,8 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator <(const etl::imultimap<TKey, TMapped, TKeyCompare>& lhs, const etl::imultimap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return etl::lexicographical_compare(lhs.begin(), lhs.end(), 
-                                        rhs.begin(), rhs.end(), 
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(),
+                                        rhs.begin(), rhs.end(),
                                         lhs.value_comp());
   }
 

@@ -1089,8 +1089,8 @@ namespace etl
     size_type count(key_parameter_t key) const
     {
       return count_nodes(key);
-    } 
-    
+    }
+
 #if ETL_USING_CPP11
     //*********************************************************************
     template <typename K, typename KC = TCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
@@ -2167,7 +2167,7 @@ namespace etl
           else
           {
             // Update the direction to the replace node
-            node->dir = node->children[kLeft] ? kLeft : kRight;
+            node->dir = 1 - found->dir;
           }
         } // while(node)
 
@@ -2487,7 +2487,7 @@ namespace etl
   bool operator <(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return ETL_OR_STD::lexicographical_compare(lhs.begin(), lhs.end(),
-                                               rhs.begin(), rhs.end(), 
+                                               rhs.begin(), rhs.end(),
                                                etl::imultiset<TKey, TCompare>::value_compare());
   }
 
