@@ -1278,9 +1278,6 @@
     <ClInclude Include="..\..\include\etl\shared_message.h">
       <Filter>ETL\Messaging</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
-      <Filter>ETL\Messaging\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
       <Filter>ETL\Messaging\Generators</Filter>
     </ClInclude>
@@ -1538,6 +1535,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\inplace_function.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
+      <Filter>ETL\Messaging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

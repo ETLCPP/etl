@@ -49,8 +49,8 @@ using Data         = etl::map<std::string, int, MAX_SIZE, std::greater<std::stri
 using IData        = etl::imap<std::string, int, std::greater<std::string>>;
 using Compare_Data = std::map<std::string, int, std::greater<std::string>>;
 #else
-using Data = etl::map<std::string, int, MAX_SIZE, std::less<std::string>>;
-using IData = etl::imap<std::string, int, std::less<std::string>>;
+using Data         = etl::map<std::string, int, MAX_SIZE, std::less<std::string>>;
+using IData        = etl::imap<std::string, int, std::less<std::string>>;
 using Compare_Data = std::map<std::string, int, std::less<std::string>>;
 #endif
 
@@ -233,6 +233,8 @@ namespace
       CHECK_EQUAL(10U, data.capacity());
       CHECK_EQUAL(10U, data.max_size());
       CHECK(data == check);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 #endif
 
@@ -257,6 +259,8 @@ namespace
                             data2.end(),
                             compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.value_comp()));
     }
 
     //*************************************************************************
@@ -281,6 +285,8 @@ namespace
       CHECK(2 == data2.at("2").value);
       CHECK(3 == data2.at("3").value);
       CHECK(4 == data2.at("4").value);
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.value_comp()));
     }
 
     //*************************************************************************
@@ -304,6 +310,7 @@ namespace
       CHECK(d == MAX_SIZE);
       CHECK(data.size() == MAX_SIZE);
       CHECK(!data.empty());
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
 #if ETL_HAS_INITIALIZER_LIST
@@ -324,6 +331,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 #endif
 
@@ -340,6 +349,8 @@ namespace
                                  otherData.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(otherData.begin(), otherData.end(), otherData.value_comp()));
     }
 
     //*************************************************************************
@@ -358,6 +369,8 @@ namespace
                                 data2.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.value_comp()));
     }
 
     //*************************************************************************
@@ -366,9 +379,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       Data other_data(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -399,6 +412,8 @@ namespace
       CHECK(2 == data2.at("2").value);
       CHECK(3 == data2.at("3").value);
       CHECK(4 == data2.at("4").value);
+
+      CHECK_TRUE(std::is_sorted(data2.begin(), data2.end(), data2.value_comp()));
     }
 
     //*************************************************************************
@@ -633,6 +648,8 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -655,6 +672,8 @@ namespace
                                  data.end(),
                                  compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -679,6 +698,8 @@ namespace
       CHECK(2 == data.at("2").value);
       CHECK(3 == data.at("3").value);
       CHECK(4 == data.at("4").value);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -704,6 +725,8 @@ namespace
                             compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -723,18 +746,20 @@ namespace
 
       // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(data_result.first, ETL_OR_STD::make_pair(std::string("1"), 1));
       compare_data.insert(compare_result.first, ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -754,8 +779,8 @@ namespace
 
       // Check that elements in map are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(Data::const_iterator(data_result.first),
@@ -764,10 +789,12 @@ namespace
         ETL_OR_STD::make_pair(std::string("1"), 1));
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -792,6 +819,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -804,10 +833,12 @@ namespace
       compare_data.insert(random_data.begin(), random_data.end());
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -887,8 +918,8 @@ namespace
       CHECK(data_result.second->second == compare_result.second->second);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -932,6 +963,8 @@ namespace
       bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -949,6 +982,8 @@ namespace
       bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -973,6 +1008,8 @@ namespace
                                  compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -993,10 +1030,12 @@ namespace
       CHECK(i_compare1->second == i_data1->second);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
 
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -1024,6 +1063,8 @@ namespace
                                  data.end(),
                                  compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -1048,9 +1089,11 @@ namespace
       data.erase(i_data, i_data_end);
 
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 
     //*************************************************************************
@@ -1576,7 +1619,7 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST_FIXTURE(SetupFixture, test_map_template_deduction)
     {
-      using Pair = std::pair<const etl::string<1>, int>;
+      using Pair = std::pair<const std::string, int>;
 
       etl::map data { Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5} };
 
@@ -1590,6 +1633,8 @@ namespace
       CHECK_EQUAL(3, data.at("3"));
       CHECK_EQUAL(4, data.at("4"));
       CHECK_EQUAL(5, data.at("5"));
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 #endif
 
@@ -1597,9 +1642,9 @@ namespace
 #if ETL_HAS_INITIALIZER_LIST
     TEST_FIXTURE(SetupFixture, test_make_map)
     {
-      using Pair = ETL_OR_STD::pair<const etl::string<1>, int>;
+      using Pair = ETL_OR_STD::pair<const std::string, int>;
 
-      auto data = etl::make_map<const etl::string<1>, int, std::less<etl::string<1>>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
+      auto data = etl::make_map<const std::string, int, std::less<std::string>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
 
       auto v = *data.begin();
       using Type = decltype(v);
@@ -1611,6 +1656,8 @@ namespace
       CHECK_EQUAL(3, data.at("3"));
       CHECK_EQUAL(4, data.at("4"));
       CHECK_EQUAL(5, data.at("5"));
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
 #endif
 
@@ -1633,6 +1680,35 @@ namespace
 
       CHECK(!data.contains(std::string("99")));
       CHECK(!data.contains(Key("99")));
+    }
+
+    //*************************************************************************
+    TEST(test_if_issue_1298_multiset_iterator_invalidation_during_erase_is_also_in_map)
+    {
+      using element = std::pair<int, int>;
+
+      std::vector<element> permutation{ {1, 11}, {2, 12}, {3, 13}, {4, 14} };
+      const std::vector<element> expected{ {1, 11}, {3, 13}, {4, 14} };
+
+      do
+      {
+        etl::map<int, int, 8> data;
+
+        for (auto i : permutation)
+        {
+          data.insert(i);
+        }
+
+        auto it = data.find(2);
+        data.erase(it);
+
+        const std::vector<element> actual(data.begin(), data.end());
+
+        CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
+        CHECK_EQUAL(expected.size(), actual.size());
+        CHECK_TRUE(actual == expected);
+
+      } while (std::next_permutation(permutation.begin(), permutation.end()));
     }
   }
 }
