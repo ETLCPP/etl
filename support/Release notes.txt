@@ -1,4 +1,10 @@
 ﻿===============================================================================
+20.46.1
+
+#1317 etl multiset iterator invalidation during erase leads to incorrect sorted order in depth first traversal
+      Also fixed multimap erase and added tests for both.
+
+===============================================================================
 20.46.0
 
 #1257 Fix year_month arithmetic and correct chrono API behavior
