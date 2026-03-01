@@ -1742,13 +1742,8 @@ namespace
         const std::vector<element> actual(data.begin(), data.end());
 
         CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
-
-        auto compare = [](const etl::multimap<int, int, 8>::value_type& lhs, const etl::multimap<int, int, 8>::value_type& rhs)
-          {
-            return (lhs.first == rhs.first) && (lhs.second == rhs.second);
-          };
-
-        CHECK_TRUE((std::equal(data.begin(), data.end(), expected.begin(), compare)));
+        CHECK_EQUAL(expected.size(), actual.size());
+        CHECK_TRUE(actual == expected);
 
       } while (std::next_permutation(permutation.begin(), permutation.end()));
     }

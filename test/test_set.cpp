@@ -1502,6 +1502,7 @@ namespace
         data.erase(it);
 
         CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
+        CHECK_EQUAL(expected.size(), data.size());
         CHECK_TRUE((std::equal(data.begin(), data.end(), expected.begin())));
 
       } while (std::next_permutation(permutation.begin(), permutation.end()));
