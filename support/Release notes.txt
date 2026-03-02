@@ -1,4 +1,9 @@
 ﻿===============================================================================
+20.46.2
+
+#1320 Changed std::is_same to etl::is_same in struct type_list_is_unique
+
+===============================================================================
 20.46.1
 
 #1317 etl multiset iterator invalidation during erase leads to incorrect sorted order in depth first traversal
