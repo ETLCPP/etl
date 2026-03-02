@@ -653,7 +653,7 @@ namespace etl
   struct type_list_is_unique
     // Create a unique version of the type list, and check if it is the same as the original list.
     // If they are the same, then all types in the original list are unique.
-    : etl::bool_constant<std::is_same<TTypeList, typename type_list_unique<TTypeList>::type>::value>
+    : etl::bool_constant<etl::is_same<TTypeList, typename type_list_unique<TTypeList>::type>::value>
   {
     ETL_STATIC_ASSERT((etl::is_type_list<TTypeList>::value), "TTypeList must be an etl::type_list");
   };
