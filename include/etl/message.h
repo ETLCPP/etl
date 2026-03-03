@@ -263,6 +263,106 @@ namespace etl
   template <typename T>
   inline constexpr bool is_user_message_base_v = is_user_message_base<T>::value;
 #endif
+
+  //***************************************************************************
+  /// Detects presence of a static ID member.
+  //***************************************************************************
+  template <typename T>
+  struct has_message_id
+  {
+  private:
+
+    ETL_STATIC_ASSERT(etl::is_message<T>::value, "T is not an ETL message");
+
+    typedef char yes;
+    struct no { char value[2]; };
+
+    template <typename U>
+    static yes test(char (*)[sizeof(&U::ID)]);
+
+    template <typename>
+    static no test(...);
+
+  public:
+
+    static const bool value = sizeof(test<typename etl::remove_cv<T>::type>(0)) == sizeof(yes);
+  };
+
+  template <typename T>
+  const bool has_message_id<T>::value;
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_message_id_v = has_message_id<T>::value;
+#endif
+
+#if ETL_USING_CPP11
+  namespace private_message
+  {
+    template <typename TMsg1, typename TMsg2, bool HasIDs>
+    struct compare_message_id_less_impl;
+
+    //**********************************************
+    // Compare the message ID of two messages.
+    // \tparam TMsg1 The first message type.
+    // \tparam TMsg2 The second message type.
+    // Only selected if both TMsg1 or TMsg2 don't have an ID.
+    //**********************************************
+    template <typename TMsg1, typename TMsg2>
+    struct compare_message_id_less_impl<TMsg1, TMsg2, false>
+    {
+      ETL_STATIC_ASSERT(etl::has_message_id<TMsg1>::value, "TMsg1 does not have an ID");
+      ETL_STATIC_ASSERT(etl::has_message_id<TMsg2>::value, "TMsg2 does not have an ID");
+      ETL_STATIC_ASSERT(etl::is_message_type<TMsg1>::value, "TMsg1 is not derived from etl::message<>");
+      ETL_STATIC_ASSERT(etl::is_message_type<TMsg2>::value, "TMsg2 is not derived from etl::message<>");
+    };
+
+    //**********************************************
+    // Compare the message ID of two messages.
+    // \tparam TMsg1 The first message type.
+    // \tparam TMsg2 The second message type.
+    // value is true if TMsg1::ID < TMsg2::ID.
+    // Only selected if both TMsg1 and TMsg2 have an ID.
+    //***********************************************
+    template <typename TMsg1, typename TMsg2>
+    struct compare_message_id_less_impl<TMsg1, TMsg2, true>
+      : etl::bool_constant < TMsg1::ID < TMsg2::ID>
+    {
+      ETL_STATIC_ASSERT(etl::is_message_type<TMsg1>::value, "TMsg1 is not derived from etl::message<>");
+      ETL_STATIC_ASSERT(etl::is_message_type<TMsg2>::value, "TMsg2 is not derived from etl::message<>");
+    };
+  }
+
+  //**********************************************
+  /// Compare the message ID of two messages.
+  /// \tparam TMsg1 The first message type.
+  /// \tparam TMsg2 The second message type.
+  /// value is true if TMsg1::ID < TMsg2::ID.
+  //**********************************************
+  template <typename TMsg1, typename TMsg2>
+  struct compare_message_id_less : public private_message::compare_message_id_less_impl<TMsg1, TMsg2, has_message_id<TMsg1>::value && has_message_id<TMsg2>::value>
+  {
+  };
+#else
+  //**********************************************
+  /// Compare the message ID of two messages.
+  /// \tparam TMsg1 The first message type.
+  /// \tparam TMsg2 The second message type.
+  /// value is true if TMsg1::ID < TMsg2::ID.
+  //**********************************************
+  template <typename TMsg1, typename TMsg2>
+  struct compare_message_id_less
+    : etl::bool_constant<TMsg1::ID < TMsg2::ID>
+  {
+    ETL_STATIC_ASSERT(etl::is_message_type<TMsg1>::value, "TMsg1 is not derived from etl::message<>");
+    ETL_STATIC_ASSERT(etl::is_message_type<TMsg2>::value, "TMsg2 is not derived from etl::message<>");
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename TMsg1, typename TMsg2>
+  inline constexpr bool compare_message_id_less_v = compare_message_id_less<TMsg1, TMsg2>::value;
+#endif
 }
 
 #endif

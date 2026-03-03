@@ -48,7 +48,7 @@ Its design goals include:
 
 -	Offering APIs that closely resemble those of the STL, enabling familiar and consistent usage.
 
--	Maintaining compatibility with C++98 while implementing many features introduced in later standards 
+-	Maintaining compatibility with C++98 while implementing many features introduced in later standards
 (C++11/14/17/20/23) where possible.
 
 -	Ensuring deterministic behavior, which is critical in real-time and resource-constrained environments.
@@ -181,6 +181,84 @@ FetchContent_MakeAvailable(etl)
 add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl::etl)
 ```
+
+## Profile definition
+
+When using ETL in a project, there is typically an `etl_profile.h` defined to
+adjust ETL to the project needs. ETL will automatically find `etl_profile.h`
+if it is available in the include path(s). If it's not available, ETL will
+work with default values.
+
+### Example
+
+```
+#ifndef __ETL_PROFILE_H__
+#define __ETL_PROFILE_H__
+
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+
+#define ETL_NO_STL
+
+#endif
+```
+
+## Platform specific implementation
+
+Although ETL is generally a self-contained header-only library, some interfaces need to be
+implemented in every project or platform, at least if those interfaces are actually being
+used, due to project specifics:
+
+| ETL header | Platform specific API to be implemented | Needed when using                   |
+|------------|-----------------------------------------|-------------------------------------|
+| `chrono.h` | `etl_get_high_resolution_clock()`       | `etl::high_resolution_clock::now()` |
+|            | `etl_get_system_clock()`                | `etl::system_clock::now()`          |
+|            | `etl_get_steady_clock()`                | `etl::steady_clock::now()`          |
+| `print.h`  | `etl_putchar()`                         | `etl::print()`                      |
+|            |                                         | `etl::println()`                    |
+
+### Example
+
+```
+#include <etl/chrono.h>
+#include <etl/print.h>
+
+extern "C"
+{
+
+etl::chrono::high_resolution_clock::rep etl_get_high_resolution_clock()
+{
+  return etl::chrono::high_resolution_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+etl::chrono::system_clock::rep etl_get_system_clock()
+{
+  return etl::chrono::system_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+etl::chrono::system_clock::rep etl_get_steady_clock()
+{
+  return etl::chrono::system_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+void etl_putchar(int c)
+{
+  putByteToStdout(static_cast<uint8_t>(c));
+}
+
+}
+```
+
+The following default values apply if the respective macros are not defined
+(e.g. in `etl_profile.h`):
+
+| Macro                                         | Default                    |
+|-----------------------------------------------|----------------------------|
+| `ETL_CHRONO_SYSTEM_CLOCK_DURATION`            | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY`           | `true`                     |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION`   | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY`  | `true`                     |
+| `ETL_CHRONO_STEADY_CLOCK_DURATION`            | `etl::chrono::nanoseconds` |
 
 ## Arduino library
 

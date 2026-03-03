@@ -143,7 +143,7 @@ namespace etl
       {
         write_unchecked(value);
       }
- 
+
       return success;
     }
 
@@ -168,7 +168,7 @@ namespace etl
 
       if (success)
       {
-        write_unchecked(value);        
+        write_unchecked(value);
       }
 
       return success;
@@ -810,6 +810,14 @@ namespace etl
     size_t available_bytes() const
     {
       return available<char>();
+    }
+
+    //***************************************************************************
+    /// Gets the endianness of the stream.
+    //***************************************************************************
+    etl::endian get_endianness() const
+    {
+      return stream_endianness;
     }
 
   private:

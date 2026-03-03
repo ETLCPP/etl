@@ -606,16 +606,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Moves the pointer to the first element of the span further by a specified number of elements.
-    ///\tparam elements Number of elements to move forward
-    //*************************************************************************
-    void advance(size_t elements) ETL_NOEXCEPT
-    {
-      elements = etl::min(elements, size());
-      pbegin += elements;
-    }
-
-    //*************************************************************************
     /// Reinterpret the span as a span with different element type.
     //*************************************************************************
     template<typename TNew>
@@ -1258,6 +1248,18 @@ namespace etl
   span(const etl::array<T, Size>&)
     -> span<const T, Size>;
 
+  // Forward declaration of etl::ivector
+  template <typename T>
+  class ivector;
+
+  template<typename T>
+  span(etl::ivector<T>&)
+    -> span<T>;
+  
+  template<typename T>
+  span(const etl::ivector<T>&)
+    -> span<const T>;
+
 #if ETL_USING_STL && ETL_USING_CPP11
   template <typename T, size_t Size>
   span(std::array<T, Size>&)
@@ -1291,7 +1293,7 @@ namespace etl
   span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))> 
     as_bytes(span<T, Size> s) ETL_NOEXCEPT
   {
-    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<byte*>(s.data()), s.size_bytes());
+    return span<const byte, (Size == etl::dynamic_extent) ? (etl::dynamic_extent) : (Size * sizeof(T))>(reinterpret_cast<const byte*>(s.data()), s.size_bytes());
   }
 
   //*************************************************************************

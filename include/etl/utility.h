@@ -532,13 +532,13 @@ namespace etl
   class integer_sequence
   {
   public:
-  
+
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral types only");
 
     typedef T value_type;
-  
-    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT 
-    { 
+
+    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT
+    {
       return sizeof...(Integers);
     }
   };
@@ -559,21 +559,315 @@ namespace etl
     {
       using type = etl::integer_sequence<size_t, Indices...>;
     };
+
+    template <size_t Offset, typename IndexSeq>
+    struct offset_index_sequence;
+
+    template <size_t Offset, size_t... Indices>
+    struct offset_index_sequence<Offset, etl::integer_sequence<size_t, Indices...>>
+    {
+      using type = etl::integer_sequence<size_t, (Offset + Indices)...>;
+    };
   }
 
+  //***********************************
+  /// Make an integer sequence.
   //***********************************
   template <size_t Count>
   using make_index_sequence = typename private_integer_sequence::make_index_sequence<Count, etl::integer_sequence<size_t>>::type;
 
-  template <typename... TTypes>
-  using make_index_sequence_for = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
+  //***********************************
+  /// Make an integer sequence with an offset.
+  //***********************************
+  template <size_t Offset, size_t Count>
+  using make_index_sequence_with_offset = typename private_integer_sequence::offset_index_sequence<Offset, etl::make_index_sequence<Count>>::type;
 
+  //***********************************
+  // Helper to support both parameter packs and etl::type_list<T...>
+  // Forward declare etl::type_list to allow use without including type_list.h
+  template <typename... TTypes>
+  struct type_list;
+
+  namespace private_make_index_sequence_for
+  {
+    // Generic pack form
+    template <typename... TTypes>
+    struct impl
+    {
+      using type = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
+    };
+
+    // etl::type_list form
+    template <typename... TTypes>
+    struct impl<etl::type_list<TTypes...>> : impl<TTypes...>
+    {
+    };
+  }
+
+  //***********************************
+  /// Make an index sequence for a parameter pack of types or an etl::type_list<T...>.
+  /// Accepts either a parameter pack of types or a single etl::type_list<T...>
+  //***********************************
+  template <typename... TTypes>
+  using make_index_sequence_for = typename private_make_index_sequence_for::impl<TTypes...>::type;
+
+  //***********************************
+  /// An index sequence.
   //***********************************
   template <size_t... Indices>
   using index_sequence = etl::integer_sequence<size_t, Indices...>;
 
+  //************************************
+  /// Alias for make_index_sequence_for.
+  //************************************
   template <typename... TTypes>
   using index_sequence_for = typename etl::make_index_sequence_for<TTypes...>;
+
+  //************************************
+  /// Concatenates two index_sequences.
+  //************************************
+  template <typename TIndexSequence1, typename TIndexSequence2>
+  struct index_sequence_cat;
+
+  template <size_t... Indices1, size_t... Indices2>
+  struct index_sequence_cat<etl::index_sequence<Indices1...>, etl::index_sequence<Indices2...>>
+  {
+    using type = etl::index_sequence<Indices1..., Indices2...>;
+  };
+
+  template <typename TIndexSequence1, typename TIndexSequence2>
+  using index_sequence_cat_t = typename index_sequence_cat<TIndexSequence1, TIndexSequence2>::type;
+
+  //************************************
+  /// Pushes an index to the front of an index_sequence.
+  //************************************
+  template <typename TIndexSequence, size_t Index>
+  struct index_sequence_push_front;
+
+  template <size_t... Indices, size_t Index>
+  struct index_sequence_push_front<etl::index_sequence<Indices...>, Index>
+  {
+    // Adds the new index to the front of the sequence.
+    using type = etl::index_sequence<Index, Indices...>;
+  };
+
+  template <typename TIndexSequence, size_t Index>
+  using index_sequence_push_front_t = typename index_sequence_push_front<TIndexSequence, Index>::type;
+
+  //************************************
+  /// Pop an index from the front of an index_sequence.
+  //************************************
+  template <typename TIndexSequence>
+  struct index_sequence_pop_front;
+
+  template <>
+  struct index_sequence_pop_front<etl::index_sequence<>>
+  {
+    using type = etl::index_sequence<>;
+  };
+
+  template <size_t Index, size_t... Indices>
+  struct index_sequence_pop_front<etl::index_sequence<Index, Indices...>>
+  {
+    // Removes the front index by declaring the type to be the tail of the sequence.
+    using type = etl::index_sequence<Indices...>;
+  };
+
+  template <typename TIndexSequence>
+  using index_sequence_pop_front_t = typename index_sequence_pop_front<TIndexSequence>::type;
+
+  //************************************
+  /// Pushes an index to the back of an index_sequence.
+  //************************************
+  template <typename TIndexSequence, size_t Index>
+  struct index_sequence_push_back;
+
+  template <size_t... Indices, size_t Index>
+  struct index_sequence_push_back<etl::index_sequence<Indices...>, Index>
+  {
+    // Adds the new index to the back of the sequence by concatenating the new index with the sequence.
+    using type = etl::index_sequence<Indices..., Index>;
+  };
+
+  template <typename TIndexSequence, size_t Index>
+  using index_sequence_push_back_t = typename index_sequence_push_back<TIndexSequence, Index>::type;
+
+  //************************************
+  /// Pop an index from the back of an index_sequence.
+  //************************************
+  template <typename TIndexSequence>
+  struct index_sequence_pop_back;
+
+  // Pop back of and empty sequence is an empty sequence.
+  template <>
+  struct index_sequence_pop_back<etl::index_sequence<>>
+  {
+    using type = etl::index_sequence<>;
+  };
+
+  // Pop back of a single element sequence is an empty sequence.
+  // The single element is never added to the result, so is effectively removed.
+  // This is the terminating specialisation for the general case.
+  template <size_t Index>
+  struct index_sequence_pop_back<etl::index_sequence<Index>>
+  {
+    using type = etl::index_sequence<>;
+  };
+
+  // Multi element sequence. Pop back is the front element concatenated with the pop back of the tail.
+  template <size_t Index, size_t... Indices>
+  struct index_sequence_pop_back<etl::index_sequence<Index, Indices...>>
+  {
+    // Removes the last index by concatenating the front index with the pop back of the tail.
+    // The last index is never added to the result, so is effectively removed.
+    using type = etl::index_sequence_cat_t<etl::index_sequence<Index>,
+                                           typename index_sequence_pop_back<etl::index_sequence<Indices...>>::type>;
+  };
+
+  template <typename TIndexSequence>
+  using index_sequence_pop_back_t = typename index_sequence_pop_back<TIndexSequence>::type;
+
+  //************************************
+  /// Gets the index at the Nth position in an index_sequence.
+  //************************************
+  template <typename TIndexSequence, size_t Nth>
+  struct index_sequence_at;
+
+  template <size_t Nth>
+  struct index_sequence_at<etl::index_sequence<>, Nth>
+  {
+    template <size_t>
+    struct dependent_false : etl::false_type {};
+
+    static_assert(dependent_false<Nth>::value, "Nth out of range for index_sequence_at");
+  };
+
+  // When Nth is 0, the index at the Nth position is the front index of the sequence.
+  template <size_t Index, size_t... Indices>
+  struct index_sequence_at<etl::index_sequence<Index, Indices...>, 0>
+  {
+    static constexpr size_t value = Index;
+  };
+
+  // When Nth is greater than 0, recurse with the tail of the sequence and Nth - 1.
+  template <size_t Index, size_t... Indices, size_t Nth>
+  struct index_sequence_at<etl::index_sequence<Index, Indices...>, Nth>
+  {
+    static_assert(Nth < sizeof...(Indices) + 1U, "Nth out of range for index_sequence_at");
+
+    static constexpr size_t value = index_sequence_at<etl::index_sequence<Indices...>, Nth - 1U>::value;
+  };
+
+#if ETL_USING_CPP17
+  template <typename TIndexSequence, size_t Nth>
+  inline constexpr size_t index_sequence_at_v = index_sequence_at<TIndexSequence, Nth>::value;
+#endif
+
+  //************************************
+  /// Checks if an index_sequence contains a value.
+  //************************************
+  template <typename TIndexSequence, size_t Value>
+  struct index_sequence_contains;
+
+  // An empty sequence does not contain any value.
+  template <size_t Value>
+  struct index_sequence_contains<etl::index_sequence<>, Value> : etl::false_type
+  {
+  };
+
+  // When the front index of the sequence is the value, the sequence contains the value.
+  // When the front index of the sequence is not the value, recurse with the tail of the sequence.
+  template <size_t Index, size_t... Indices, size_t Value>
+  struct index_sequence_contains<etl::index_sequence<Index, Indices...>, Value>
+    : etl::integral_constant<bool, (Index == Value) || index_sequence_contains<etl::index_sequence<Indices...>, Value>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TIndexSequence, size_t Value>
+  inline constexpr bool index_sequence_contains_v = index_sequence_contains<TIndexSequence, Value>::value;
+#endif
+
+  //***************************************************************************
+  /// Defines a new index_sequence by removing duplicate indexes from a given index_sequence, preserving the first occurrence.
+  //***************************************************************************
+  namespace private_index_sequence
+  {
+    template <typename TIndexSequence, typename TUniqueIndices>
+    struct type_index_sequence_impl;
+
+    // When the front index of the sequence is not in the unique sequence, add it to the back of the unique sequence and recurse with the tail of the sequence.
+    template <size_t Index, size_t... Indices, size_t... UniqueIndices>
+    struct type_index_sequence_impl<etl::index_sequence<Index, Indices...>, etl::index_sequence<UniqueIndices...>>
+    {
+      // If the index is already in the unique sequence, do not add it again. Otherwise, add it to the back of the unique sequence.
+      using type = typename etl::conditional_t<etl::index_sequence_contains<etl::index_sequence<UniqueIndices...>, Index>::value,
+                                              type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<UniqueIndices...>>,
+                                              type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence_push_back_t<etl::index_sequence<UniqueIndices...>, Index>>>::type;
+    };
+
+    // When the sequence is empty, the unique sequence is the result.
+    template <size_t... UniqueIndices>
+    struct type_index_sequence_impl<etl::index_sequence<>, etl::index_sequence<UniqueIndices...>>
+    {
+      using type = etl::index_sequence<UniqueIndices...>;
+    };
+  }
+
+  template <typename T>
+  struct index_sequence_unique;
+
+  template <size_t... Indices>
+  struct index_sequence_unique<etl::index_sequence<Indices...>>
+  {
+    using type = typename private_index_sequence::type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<>>::type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename TIndexSequence>
+  using index_sequence_unique_t = typename etl::index_sequence_unique<TIndexSequence>::type;
+#endif
+
+  //***************************************************************************
+  /// Checks that all of the indices in an index_sequence are unique.
+  //***************************************************************************
+  template <typename T>
+  struct index_sequence_is_unique;
+
+  template <size_t... Indices>
+  struct index_sequence_is_unique<etl::index_sequence<Indices...>>
+    : etl::bool_constant<etl::is_same<etl::index_sequence<Indices...>,
+                                      etl::index_sequence_unique_t<etl::index_sequence<Indices...>>>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename TIndexSequence>
+  inline constexpr bool index_sequence_is_unique_v = index_sequence_is_unique<TIndexSequence>::type::value;
+#endif
+
+  //***************************************************************************
+  /// Checks if the index_sequence is empty.
+  //***************************************************************************
+  template <typename T>
+  struct index_sequence_is_empty;
+
+  template <>
+  struct index_sequence_is_empty<etl::index_sequence<>>
+    : etl::true_type
+  {
+  };
+
+  template <size_t... Indices>
+  struct index_sequence_is_empty<etl::index_sequence<Indices...>>
+    : etl::false_type
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename... TTypes>
+  inline constexpr bool index_sequence_is_empty_v = index_sequence_is_empty<TTypes...>::value;
+#endif
 #endif
 
   //***************************************************************************
@@ -611,9 +905,9 @@ namespace etl
   //***************************************************************************
   /// in_place disambiguation tags.
   //***************************************************************************
-  
+
   //*************************
-  struct in_place_t 
+  struct in_place_t
   {
     explicit ETL_CONSTEXPR in_place_t() {}
   };
@@ -621,9 +915,9 @@ namespace etl
 #if ETL_USING_CPP17
   inline constexpr in_place_t in_place{};
 #endif
-  
+
   //*************************
-  template <typename T> struct in_place_type_t 
+  template <typename T> struct in_place_type_t
   {
     explicit ETL_CONSTEXPR in_place_type_t() {}
   };
@@ -634,7 +928,7 @@ namespace etl
 #endif
 
   //*************************
-  template <size_t Index> struct in_place_index_t 
+  template <size_t Index> struct in_place_index_t
   {
     explicit ETL_CONSTEXPR in_place_index_t() {}
   };
@@ -727,7 +1021,7 @@ namespace etl
   // Creates a static member 'call' that calls the specified functor.
   //*****************************************************************************
   template <auto& Instance>
-  struct functor_as_static 
+  struct functor_as_static
   {
     template <typename... TArgs>
     static constexpr auto call(TArgs&&... args)
@@ -741,7 +1035,7 @@ namespace etl
   // Creates a static member 'call' that calls the specified member function.
   //*****************************************************************************
   template <auto Method, auto& Instance>
-  struct member_function_as_static 
+  struct member_function_as_static
   {
     template <typename... TArgs>
     static constexpr auto call(TArgs&&... args)

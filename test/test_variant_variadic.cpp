@@ -427,10 +427,10 @@ namespace
   {
     TEST(test_alignment)
     {
-      typedef etl::variant<char, unsigned char> test_variant_a;
-      typedef etl::variant<char, short>         test_variant_b;
-      typedef etl::variant<char, int>           test_variant_c;
-      typedef etl::variant<char, double>        test_variant_d;
+      using test_variant_a = etl::variant<char, unsigned char>;
+      using test_variant_b = etl::variant<char, short>;
+      using test_variant_c = etl::variant<char, int>;
+      using test_variant_d = etl::variant<char, double>;
 
       static test_variant_a a(char('1'));
       static test_variant_b b(short(2));
@@ -441,6 +441,48 @@ namespace
       CHECK((uintptr_t(&etl::get<short>(b)) % uintptr_t(etl::alignment_of<short>::value)) == 0);
       CHECK((uintptr_t(&etl::get<int>(c)) % uintptr_t(etl::alignment_of<int>::value)) == 0);
       CHECK((uintptr_t(&etl::get<double>(d)) % uintptr_t(etl::alignment_of<double>::value)) == 0);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_from_type_list)
+    {
+      struct DefaultConstructible
+      {
+        DefaultConstructible()
+          : value(1)
+        {
+        }
+
+        int value = 0;
+      };
+
+      using type_list        = etl::type_list<DefaultConstructible, int, std::string>;
+      using test_variant_t   = etl::variant_from_type_list_t<type_list>;
+      using normal_variant_t = etl::variant<DefaultConstructible, int, std::string>;
+
+      CHECK_NO_THROW(test_variant_t variant_etl);
+
+      test_variant_t variant_etl;
+
+      // Are the type lists the same?
+      CHECK_TRUE((std::is_same<test_variant_t::type_list, type_list>::value));
+
+      // Are the variants the same?
+      CHECK_TRUE((std::is_same<test_variant_t, normal_variant_t>::value));
+
+      CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<std::string>(variant_etl));
+      CHECK_EQUAL(1, etl::get<0U>(variant_etl).value);
+
+      CHECK_TRUE(etl::holds_alternative<0U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<1U>(variant_etl));
+      CHECK_FALSE(etl::holds_alternative<2U>(variant_etl));
+
+      CHECK_TRUE(etl::holds_alternative(0U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(1U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(2U, variant_etl));
+      CHECK_FALSE(etl::holds_alternative(99U, variant_etl));
     }
 
     //*************************************************************************
@@ -461,6 +503,8 @@ namespace
       CHECK_NO_THROW(test_variant_t variant_etl);
 
       test_variant_t variant_etl;
+
+      CHECK_TRUE((std::is_same<test_variant_t::type_list, etl::type_list<DefaultConstructible, int, std::string>>::value));
 
       CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
       CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
@@ -2137,6 +2181,49 @@ namespace
       CHECK_TRUE(variant1.is_supported_type<int>());
       CHECK_TRUE(variant1.is_supported_type<std::string>());
       CHECK_FALSE(variant1.is_supported_type<double>());
+    }
+
+    //*************************************************************************
+    TEST(test_variant_same_types_get)
+    {
+      etl::variant<int, int> v1;
+      etl::variant<int, int> v2;
+
+      v1.emplace<0>(1);
+      v2.emplace<0>(1);
+
+      CHECK(v1 == v2);
+
+      v1.emplace<0>(1);
+      v2.emplace<1>(1);
+
+      CHECK(v1 != v2);
+
+      v1.emplace<0>(0);
+      v2.emplace<0>(1);
+
+      CHECK(v1 != v2);
+
+      v1.emplace<1>(0);
+      v2.emplace<1>(1);
+
+      CHECK(v1 != v2);
+
+      v1.emplace<1>(1);
+      v2.emplace<1>(1);
+
+      CHECK(v1 == v2);
+
+      v1.emplace<0>(42);
+      CHECK_EQUAL(42, etl::get<0>(v1));
+      CHECK_EQUAL(0U, v1.index());
+
+      v1.emplace<1>(99);
+      CHECK_EQUAL(99, etl::get<1>(v1));
+      CHECK_EQUAL(1U, v1.index());
+
+      CHECK(etl::holds_alternative<int>(v1));
+      CHECK(etl::get_if<int>(&v1) != nullptr);
     }
   }
 }

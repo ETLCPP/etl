@@ -863,5 +863,171 @@ namespace
       CHECK_TRUE(E::B == (etl::nontype_t<E, E::B>::value));
     }
 #endif
+
+    //*********************************
+    TEST(test_make_index_sequence_matches_expected)
+    {
+      using seq0    = etl::make_index_sequence<0U>;
+      using seq1    = etl::make_index_sequence<1U>;
+      using seq4    = etl::make_index_sequence<4U>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<0U>;
+      using expect4 = etl::index_sequence<0U, 1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<seq0, expect0>::value));
+      CHECK_TRUE((std::is_same<seq1, expect1>::value));
+      CHECK_TRUE((std::is_same<seq4, expect4>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_for_pack_matches_expected)
+    {
+      struct T1 {};
+      struct T2 {};
+      struct T3 {};
+
+      using seq12     = etl::make_index_sequence_for<T1, T2>;
+      using seq123    = etl::make_index_sequence_for<T1, T2, T3>;
+      using expect12  = etl::index_sequence<0U, 1U>;
+      using expect123 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<seq12,  expect12>::value));
+      CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_for_type_list_matches_expected)
+    {
+      struct T1 {};
+      struct T2 {};
+      struct T3 {};
+
+      using list12    = etl::type_list<T1, T2>;
+      using list123   = etl::type_list<T1, T2, T3>;
+      using seq12     = etl::make_index_sequence_for<list12>;
+      using seq123    = etl::make_index_sequence_for<list123>;
+      using expect12  = etl::index_sequence<0U, 1U>;
+      using expect123 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<seq12,  expect12>::value));
+      CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_with_offset_matches_expected)
+    {
+      using seq0    = etl::make_index_sequence_with_offset<5U, 0U>;
+      using seq2    = etl::make_index_sequence_with_offset<3U, 2U>;
+      using seq4    = etl::make_index_sequence_with_offset<7U, 4U>;
+      using expect0 = etl::index_sequence<>;
+      using expect2 = etl::index_sequence<3U, 4U>;
+      using expect4 = etl::index_sequence<7U, 8U, 9U, 10U>;
+
+      CHECK_TRUE((std::is_same<seq0, expect0>::value));
+      CHECK_TRUE((std::is_same<seq2, expect2>::value));
+      CHECK_TRUE((std::is_same<seq4, expect4>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_push_front_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_push_front_t<seq0, 5U>;
+      using result1 = etl::index_sequence_push_front_t<seq1, 0U>;
+      using expect0 = etl::index_sequence<5U>;
+      using expect1 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_pop_front_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_pop_front_t<seq0>;
+      using result1 = etl::index_sequence_pop_front_t<seq1>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<2U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_push_back_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_push_back_t<seq0, 5U>;
+      using result1 = etl::index_sequence_push_back_t<seq1, 3U>;
+      using expect0 = etl::index_sequence<5U>;
+      using expect1 = etl::index_sequence<1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_pop_back_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_pop_back_t<seq0>;
+      using result1 = etl::index_sequence_pop_back_t<seq1>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<1U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_cat_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<0U, 1U>;
+      using seq2    = etl::index_sequence<2U, 3U>;
+      using result0 = etl::index_sequence_cat_t<seq0, seq1>;
+      using result1 = etl::index_sequence_cat_t<seq1, seq2>;
+      using expect0 = etl::index_sequence<0U, 1U>;
+      using expect1 = etl::index_sequence<0U, 1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_at_matches_expected)
+    {
+      // using seq0    = etl::index_sequence<>;          // This should fail to compile as seq0 is empty
+      using seq1    = etl::index_sequence<1U, 2U, 3U>;
+      //using result0 = etl::index_sequence_at<seq0, 0>; // This should fail to compile as seq0 is empty
+      //auto  ignore0 = result0;                         // Uses result0
+      size_t result1a = etl::index_sequence_at<seq1, 0>::value;
+      size_t result1b = etl::index_sequence_at<seq1, 1>::value;
+      size_t result1c = etl::index_sequence_at<seq1, 2>::value;
+      //size_t result1d = etl::index_sequence_at<seq1, 3>::value;  // This should fail to compile as seq1 only has 3 elements
+      //auto   ignore1d = result1d;                                // Uses result1d
+      size_t expect1a = 1U;
+      size_t expect1b = 2U;
+      size_t expect1c = 3U;
+
+      CHECK_EQUAL(expect1a, result1a);
+      CHECK_EQUAL(expect1b, result1b);
+      CHECK_EQUAL(expect1c, result1c);
+
+#if ETL_USING_CPP17
+      size_t result1e = etl::index_sequence_at_v<seq1, 0>;
+      size_t result1f = etl::index_sequence_at_v<seq1, 1>;
+      size_t result1g = etl::index_sequence_at_v<seq1, 2>;
+
+      CHECK_EQUAL(expect1a, result1e);
+      CHECK_EQUAL(expect1b, result1f);
+      CHECK_EQUAL(expect1c, result1g);
+#endif
+    }
   }
 }

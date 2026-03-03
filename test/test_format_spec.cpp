@@ -91,6 +91,93 @@ namespace
       CHECK_EQUAL(true,  format.is_upper_case());
     }
 
+        //*************************************************************************
+#if ETL_USING_CPP11
+    TEST(test_format_rvalue_ref_qualifiers)
+    {
+      // Test chaining on temporary (rvalue)
+      auto format = etl::format_spec()
+                      .base(16)
+                      .boolalpha(true)
+                      .fill('*')
+                      .left()
+                      .precision(3)
+                      .show_base(true)
+                      .upper_case(true)
+                      .width(8);
+
+      CHECK_EQUAL(16,    format.get_base());
+      CHECK_EQUAL('*',   format.get_fill());
+      CHECK_EQUAL(3,     format.get_precision());
+      CHECK_EQUAL(8,     format.get_width());
+      CHECK_EQUAL(true,  format.is_boolalpha());
+      CHECK_EQUAL(true,  format.is_left());
+      CHECK_EQUAL(false, format.is_right());
+      CHECK_EQUAL(true,  format.is_show_base());
+      CHECK_EQUAL(true,  format.is_upper_case());
+    }
+
+    //*************************************************************************
+    TEST(test_format_lvalue_ref_qualifiers)
+    {
+      // Test chaining on lvalue
+      etl::format_spec format;
+      
+      format.hex().boolalpha(true).fill('#').right().precision(5).show_base(false).upper_case(false).width(12);
+
+      CHECK_EQUAL(16,    format.get_base());
+      CHECK_EQUAL('#',   format.get_fill());
+      CHECK_EQUAL(5,     format.get_precision());
+      CHECK_EQUAL(12,    format.get_width());
+      CHECK_EQUAL(true,  format.is_boolalpha());
+      CHECK_EQUAL(false, format.is_left());
+      CHECK_EQUAL(true,  format.is_right());
+      CHECK_EQUAL(false, format.is_show_base());
+      CHECK_EQUAL(false, format.is_upper_case());
+    }
+
+    //*************************************************************************
+    TEST(test_format_base_methods)
+    {
+      // Test binary
+      auto format_bin = etl::format_spec().binary().width(8).fill('0');
+      CHECK_EQUAL(2, format_bin.get_base());
+      CHECK_EQUAL(8, format_bin.get_width());
+      CHECK_EQUAL('0', format_bin.get_fill());
+
+      // Test octal
+      auto format_oct = etl::format_spec().octal().width(6);
+      CHECK_EQUAL(8, format_oct.get_base());
+      CHECK_EQUAL(6, format_oct.get_width());
+
+      // Test decimal
+      auto format_dec = etl::format_spec().decimal().precision(2);
+      CHECK_EQUAL(10, format_dec.get_base());
+      CHECK_EQUAL(2, format_dec.get_precision());
+
+      // Test hex
+      auto format_hex = etl::format_spec().hex().upper_case(true);
+      CHECK_EQUAL(16, format_hex.get_base());
+      CHECK_EQUAL(true, format_hex.is_upper_case());
+    }
+
+    //*************************************************************************
+    TEST(test_format_mixed_lvalue_rvalue)
+    {
+      // Create as rvalue, then use as lvalue
+      auto format = etl::format_spec().hex().width(8);
+      
+      // Continue chaining on lvalue
+      format.fill('0').upper_case(true).show_base(true);
+
+      CHECK_EQUAL(16,   format.get_base());
+      CHECK_EQUAL('0',  format.get_fill());
+      CHECK_EQUAL(8,    format.get_width());
+      CHECK_EQUAL(true, format.is_upper_case());
+      CHECK_EQUAL(true, format.is_show_base());
+    }
+#endif
+
     //*************************************************************************
 #if ETL_USING_CPP14
     TEST(test_format_constexpr)

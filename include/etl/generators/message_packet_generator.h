@@ -71,6 +71,7 @@ cog.outl("//********************************************************************
 #include "largest.h"
 #include "alignment.h"
 #include "utility.h"
+#include "type_list.h"
 
 #include <stdint.h>
 
@@ -87,19 +88,21 @@ namespace etl
   private:
 
     template <typename T>
-    static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
+    static constexpr bool IsMessagePacket = etl::is_same_v<etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
 
     template <typename T>
     static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<T>>, TMessageTypes...>;
 
     template <typename T>
-    static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
+    static constexpr bool IsIMessage = etl::is_same_v<etl::remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
 
   public:
 
+    using message_types = etl::type_list<TMessageTypes...>;
+
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    message_packet()
+    constexpr message_packet() noexcept
       : valid(false)
     {
     }
@@ -260,7 +263,7 @@ namespace etl
     //**********************************************
     template <typename TMessage>
     static ETL_CONSTEXPR
-      typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
+    typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
       return accepts<TMessage::ID>();
@@ -392,6 +395,132 @@ namespace etl
     bool valid;
   };
 
+  //***************************************************************************
+  // The definition for no message types.
+  //***************************************************************************
+  template <>
+  class message_packet<>
+  {
+  private:
+
+    template <typename T>
+    static constexpr bool IsMessagePacket = etl::is_same_v<etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<>>;
+
+    template <typename T>
+    static constexpr bool IsInMessageList = false;
+
+    template <typename T>
+    static constexpr bool IsIMessage = etl::is_same_v<etl::remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
+
+  public:
+
+    using message_types = etl::type_list<>;
+
+    //********************************************
+#include "private/diagnostic_uninitialized_push.h"
+    constexpr message_packet() noexcept
+    {
+    }
+#include "private/diagnostic_pop.h"
+
+    //**********************************************
+    message_packet(const message_packet& /*other*/)
+    {
+    }
+
+#if ETL_USING_CPP11
+    //**********************************************
+    message_packet(message_packet&& /*other*/)
+    {
+    }
+#endif
+
+    //**********************************************
+    void copy(const message_packet& /*other*/)
+    {
+    }
+
+    //**********************************************
+    void copy(message_packet&& /*other*/)
+    {
+    }
+
+    //**********************************************
+#include "private/diagnostic_uninitialized_push.h"
+    message_packet& operator =(const message_packet& /*rhs*/)
+    {
+      return *this;
+    }
+#include "private/diagnostic_pop.h"
+
+    //**********************************************
+#include "private/diagnostic_uninitialized_push.h"
+    message_packet& operator =(message_packet&& /*rhs*/)
+    {
+      return *this;
+    }
+#include "private/diagnostic_pop.h"
+
+    //********************************************
+    ~message_packet()
+    {
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return false;
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(etl::message_id_t /*id*/)
+    {
+      return false;
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& /*msg*/)
+    {
+      return false;
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return false;
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+      typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
+      accepts()
+    {
+      return false;
+    }
+
+    enum
+    {
+      SIZE = 0,
+      ALIGNMENT = 1
+    };
+  };
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::message_packet<TTypes...>
+  template <typename TList>
+  struct message_packet_from_type_list;
+
+  template <typename... TTypes>
+  struct message_packet_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::message_packet<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using message_packet_from_type_list_t = typename message_packet_from_type_list<TTypeList>::type;
+
 #else
 
   /*[[[cog
@@ -470,8 +599,7 @@ namespace etl
     cog.outl("// The definition for all %s message types." % Handlers)
     cog.outl("//***************************************************************************")
     cog.out("template <")
-    cog.out("typename T1, ")
-    for n in range(2, int(Handlers)):
+    for n in range(1, int(Handlers)):
         cog.out("typename T%s = void, " % n)
         if n % 4 == 0:
             cog.outl("")
@@ -481,9 +609,18 @@ namespace etl
     cog.outl("{")
     cog.outl("public:")
     cog.outl("")
+    
+    cog.outl("#if ETL_USING_CPP11")
+    cog.out("  using message_types = etl::type_list<")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>;" % int(Handlers))
+    cog.outl("#endif")
+    cog.outl("")
+
     cog.outl("  //********************************************")
     cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
-    cog.outl("  message_packet()")
+    cog.outl("  ETL_CONSTEXPR message_packet() ETL_NOEXCEPT")
     cog.outl("    : valid(false)")
     cog.outl("  {")
     cog.outl("  }")
@@ -785,9 +922,19 @@ namespace etl
         cog.outl("{")
         cog.outl("public:")
         cog.outl("")
+
+        cog.out("#if ETL_USING_CPP11")
+        cog.outl("")
+        cog.out("  using message_types = etl::type_list<")
+        for t in range(1, int(n)):
+          cog.out("T%s, " % t)
+        cog.outl("T%s>;" % int(n))
+        cog.outl("#endif")
+        cog.outl("")
+
         cog.outl("  //********************************************")
         cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
-        cog.outl("  message_packet()")
+        cog.outl("  ETL_CONSTEXPR message_packet() ETL_NOEXCEPT")
         cog.outl("    : valid(false)")
         cog.outl("  {")
         cog.outl("  }")
@@ -1058,6 +1205,62 @@ namespace etl
         cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+
+  //***************************************************************************
+  // Specialisation for 0 message types.
+  //***************************************************************************
+  template <>
+  class message_packet<void, void, void, void, void, void, void, void,
+                       void, void, void, void, void, void, void, void>
+  {
+  public:
+
+#if ETL_USING_CPP11
+    using message_types = etl::type_list<>;
+#endif
+
+    ETL_CONSTEXPR message_packet() ETL_NOEXCEPT
+      : valid(false)
+    {
+    }
+
+    static ETL_CONSTEXPR bool accepts(etl::message_id_t)
+    {
+      return false;
+    }
+
+    static ETL_CONSTEXPR bool accepts(const etl::imessage&)
+    {
+      return false;
+    }
+
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return false;
+    }
+
+    template <typename TMessage>
+    static ETL_CONSTEXPR typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type accepts()
+    {
+      return false;
+    }
+
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    enum
+    {
+      SIZE = 0U,
+      ALIGNMENT = 1U
+    };
+
+  private:
+
+    bool valid;
+  };
 #endif
 }
 
