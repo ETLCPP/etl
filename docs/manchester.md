@@ -12,13 +12,13 @@ Efficient Manchester encoding and decoding of data. The Manchester code represen
 
 - Normal and inverted Manchester encoding
 - Support for multiple encoding chunk sizes: 8-bit, 16-bit and 32-bit
-- Span-based operations or chunk based operations
+- Span-based operations or chunk-based operations
 - Constexpr functions for compile-time encoding/decoding (8-bit chunk size only)
 - Validation of encoded data
 
 ## Algorithm background
 
-To encode the value `0b11001100` we must first duplicate all bits to create the value `0b1111000011110000`. We then perform an XOR of this value with the constant `0b1010101010101010` (`0xAAAA`) to obtain the Manchester coded value of `0b1010010110100101`. We have now replace each `1` bit with the sequence `10` and each `0` bit with the sequence `01`.
+To encode the value `0b11001100` we must first duplicate all bits to create the value `0b1111000011110000`. We then perform an XOR of this value with the constant `0b1010101010101010` (`0xAAAA`) to obtain the Manchester coded value of `0b1010010110100101`. We have now replaced each `1` bit with the sequence `10` and each `0` bit with the sequence `01`.
 
 ### 2. Bit duplication
 
@@ -29,8 +29,8 @@ Bit duplication is achieved with the following steps. This is also called binary
 | 0    | `_ _ _ _ _ _ _ _`  | `A B C D E F G H`  | input value (i)            |
 | 1    | `_ _ _ _ A B C D`  | `_ _ _ _ E F G H`  | `(i \| (i << 4)) & 0x0F0F` |
 | 2    | `_ _ A B _ _ C D`  | `_ _ E F _ _ G H`  | `(i \| (i << 2)) & 0x3333` |
-| 3    | `_ A _ B _ C _ D`  | `_ A _ B _ C _ D`  | `(i \| (i << 1)) & 0x5555` |
-| 4    | `A A B B C C D D`  | `A A B B C C D D`  | `(i \| (i << 1))`          |
+| 3    | `_ A _ B _ C _ D`  | `_ E _ F _ G _ H`  | `(i \| (i << 1)) & 0x5555` |
+| 4    | `A A B B C C D D`  | `E E F F G G H H`  | `(i \| (i << 1))`          |
 
 This process can be easily extended to 16-bit or 32-bit values by adding additional steps to the bit duplication.
 
@@ -43,7 +43,7 @@ Manchester decoding is done in a similar, but reversed way.
 Error detection in Manchester coded data is done by comparing 2 neighboring bits. If they are
 equal, then there is an error in the encoded input data.
 
-Comparing all 8 bit-pairs in a 16-bit word is done as follows.
+Comparing all 8 bit pairs in a 16-bit word is done as follows.
 
 | Step | Binary Value | Operation         | Description                                                                                   |
 |------|--------------|-------------------|-----------------------------------------------------------------------------------------------|
@@ -55,7 +55,7 @@ Comparing all 8 bit-pairs in a 16-bit word is done as follows.
 
 ## Analysis
 
-Most traditional ways to Manchester encode data consist of a loop over all bits and a nested if-statement to check the value of the current bit. This approach does not scale well to increasing number of bits. The algorithm implemented here contains no conditional code and scales well. Doubling the number of processed bit per step (the chunk size) adds a single row to the bit duplication table. Because of the lack of loops and conditional code, this algorithm is likely to perform better than traditional ones on simple processors or when compiler optimization is disabled. On modern, powerful processors with caches and advanced optimization possibilities this algorithm may not show much benefit. In any case, the performance of the algorithm depends heavily on the processor type, compiler and compiler (optimization) settings.
+Most traditional ways to Manchester encode data consist of a loop over all bits and a nested if-statement to check the value of the current bit. This approach does not scale well to increasing number of bits. The algorithm implemented here contains no conditional code and scales well. Doubling the number of processed bits per step (the chunk size) adds a single row to the bit duplication table. Because of the lack of loops and conditional code, this algorithm is likely to perform better than traditional ones on simple processors or when compiler optimization is disabled. On modern, powerful processors with caches and advanced optimization possibilities this algorithm may not show much benefit. In any case, the performance of the algorithm depends heavily on the processor type, compiler and compiler (optimization) settings.
 
 ## API Reference
 
