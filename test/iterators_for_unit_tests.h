@@ -114,6 +114,12 @@ struct non_random_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iter
 };
 
 template <typename T>
+bool operator ==(const non_random_iterator<T>& lhs, const non_random_iterator<T>& rhs)
+{
+  return lhs.ptr == rhs.ptr;
+}
+
+template <typename T>
 bool operator !=(const non_random_iterator<T>& lhs, const non_random_iterator<T>& rhs)
 {
   return lhs.ptr != rhs.ptr;
