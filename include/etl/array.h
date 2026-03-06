@@ -46,7 +46,7 @@ SOFTWARE.
 #include <stddef.h>
 
 ///\defgroup array array
-/// A replacement for std::array if you haven't got C++0x11.
+/// A replacement for std::array if you haven't got C++11.
 ///\ingroup containers
 
 namespace etl
@@ -81,7 +81,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup array
-  /// A replacement for std::array if you haven't got C++0x11.
+  /// A replacement for std::array if you haven't got C++11.
   //***************************************************************************
   template <typename T, size_t SIZE_>
   class array
@@ -646,7 +646,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup array
-  /// A replacement for std::array if you haven't got C++0x11.
+  /// A replacement for std::array if you haven't got C++11.
   /// Specialisation for zero sized array.
   //***************************************************************************
   template <typename T>
