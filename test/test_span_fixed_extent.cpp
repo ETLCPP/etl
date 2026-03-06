@@ -664,7 +664,7 @@ namespace
       CHECK_EQUAL(sub1.size(), cspan1.extent);
       CHECK_EQUAL(sub1.size(), cspan1.size());
 
-      auto span2 = view.subspan<2>();     
+      auto span2 = view.subspan<2>();
       isEqual = std::equal(sub2.begin(), sub2.end(), span2.begin());
       CHECK(isEqual);
       CHECK_EQUAL(span2.size(), span2.extent);
@@ -804,7 +804,7 @@ namespace
 
     //*************************************************************************
 #include "etl/private/diagnostic_unused_function_push.h"
-    
+
     struct C_issue_482 {};
 
     void f_issue_482(etl::span<char>)
@@ -1220,7 +1220,7 @@ namespace
       etl::span<int, 5> span2(span1);
       //etl::span<int, 10> span3(span1); // This line should fail to compile.
     }
-    
+
     //*************************************************************************
     TEST(test_reinterpret_as)
     {
