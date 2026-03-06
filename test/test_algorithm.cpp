@@ -1237,6 +1237,93 @@ namespace
     }
 
     //*************************************************************************
+    TEST(rotate_return_value)
+    {
+      // Verify that etl::rotate returns the same iterator as std::rotate
+      // in all cases, including the degenerate first==middle and middle==last cases.
+      std::vector<int> initial_data = { 1, 2, 3, 4, 5 };
+
+      for (size_t i = 0UL; i <= initial_data.size(); ++i)
+      {
+        std::vector<int> data1(initial_data);
+        std::vector<int> data2(initial_data);
+
+        auto std_result = std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+        auto etl_result = etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
+
+        // Check that the return value offset matches
+        ptrdiff_t std_offset = std_result - data1.data();
+        ptrdiff_t etl_offset = etl_result - data2.data();
+        CHECK_EQUAL(std_offset, etl_offset);
+      }
+
+      // Explicitly test first == middle (empty left half): should return last
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        auto result = etl::rotate(data.data(), data.data(), data.data() + data.size());
+        CHECK(result == data.data() + data.size());
+      }
+
+      // Explicitly test middle == last (empty right half): should return first
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        auto result = etl::rotate(data.data(), data.data() + data.size(), data.data() + data.size());
+        CHECK(result == data.data());
+      }
+    }
+
+    //*************************************************************************
+    TEST(rotate_return_value_non_random_iterator)
+    {
+      // Verify that etl::rotate returns the correct iterator when called with
+      // non-random (bidirectional) iterators, exercising rotate_general for
+      // bidirectional iterators rather than the random-access overload.
+      std::vector<int> initial_data = { 1, 2, 3, 4, 5 };
+
+      for (size_t i = 0UL; i <= initial_data.size(); ++i)
+      {
+        std::vector<int> data1(initial_data);
+        std::vector<int> data2(initial_data);
+
+        auto std_result = std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+
+        non_random_iterator<int> nr_first(data2.data());
+        non_random_iterator<int> nr_middle(data2.data() + i);
+        non_random_iterator<int> nr_last(data2.data() + data2.size());
+        auto etl_result = etl::rotate(nr_first, nr_middle, nr_last);
+
+        // Check that the data was rotated correctly
+        bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+        CHECK(isEqual);
+
+        // Check that the return value offset matches
+        ptrdiff_t std_offset = std_result - data1.data();
+        ptrdiff_t etl_offset = etl_result.ptr - data2.data();
+        CHECK_EQUAL(std_offset, etl_offset);
+      }
+
+      // Explicitly test first == middle (empty left half): should return last
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        non_random_iterator<int> nr_first(data.data());
+        non_random_iterator<int> nr_middle(data.data());
+        non_random_iterator<int> nr_last(data.data() + data.size());
+        auto result = etl::rotate(nr_first, nr_middle, nr_last);
+        CHECK(result.ptr == data.data() + data.size());
+      }
+
+      // Explicitly test middle == last (empty right half): should return first
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        non_random_iterator<int> nr_first(data.data());
+        non_random_iterator<int> nr_middle(data.data() + data.size());
+        non_random_iterator<int> nr_last(data.data() + data.size());
+        auto result = etl::rotate(nr_first, nr_middle, nr_last);
+        CHECK(result.ptr == data.data());
+      }
+    }
+
+    //*************************************************************************
     TEST(any_of)
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
