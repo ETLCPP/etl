@@ -43,7 +43,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// A definition of reference_wrapper for those that don't have C++ 0x11 support.
+  /// A definition of reference_wrapper for those that don't have C++11 support.
   ///\ingroup reference
   //***************************************************************************
   template <typename T>
