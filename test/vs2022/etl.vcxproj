@@ -3552,6 +3552,7 @@
     <ClInclude Include="..\..\include\etl\monostate.h" />
     <ClInclude Include="..\..\include\etl\not_null.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
+    <ClInclude Include="..\..\include\etl\print.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\day.h" />
@@ -10362,6 +10363,7 @@
     <ClCompile Include="..\test_not_null_unique_pointer.cpp" />
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp" />
     <ClCompile Include="..\test_poly_span_fixed_extent.cpp" />
+    <ClCompile Include="..\test_print.cpp" />
     <ClCompile Include="..\test_pseudo_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_cpp03.cpp" />
