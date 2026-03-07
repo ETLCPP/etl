@@ -3281,7 +3281,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Returns the maximum value.
+  /// Returns the minimum value.
   //***************************************************************************
 #if ETL_USING_CPP11
   template <typename T>
