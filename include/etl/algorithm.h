@@ -2053,14 +2053,22 @@ namespace etl
                             TIterator       end,
                             TUnaryPredicate predicate)
   {
-    while (begin != end)
-    {
-      if (!predicate(*begin))
-      {
-        return begin;
-      }
+    typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
 
-      ++begin;
+    // binary search on a partitioned range
+    for (difference_t length = etl::distance(begin, end); 0 < length; )
+    {
+      difference_t half   = length / 2;
+      TIterator    middle = etl::next(begin, half);
+      if (predicate(*middle))
+      {
+        begin = etl::next(middle);
+        length -= (half + 1);
+      }
+      else
+      {
+        length = half;
+      }
     }
 
     return begin;
