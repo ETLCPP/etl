@@ -507,6 +507,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename T, typename Compare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool binary_search(TIterator first, TIterator last, const T& value, Compare compare)
   {
     first = etl::lower_bound(first, last, value, compare);
@@ -516,6 +517,7 @@ namespace etl
 
   template <typename TIterator, typename T>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool binary_search(TIterator first, TIterator last, const T& value)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -949,7 +951,7 @@ namespace etl
   {
     // Push Heap Helper
     template <typename TIterator, typename TDistance, typename TValue, typename TCompare>
-    void push_heap(TIterator first, TDistance value_index, TDistance top_index, TValue value, TCompare compare)
+    ETL_CONSTEXPR14 void push_heap(TIterator first, TDistance value_index, TDistance top_index, TValue value, TCompare compare)
     {
       TDistance parent = (value_index - 1) / 2;
 
@@ -965,7 +967,7 @@ namespace etl
 
     // Adjust Heap Helper
     template <typename TIterator, typename TDistance, typename TValue, typename TCompare>
-    void adjust_heap(TIterator first, TDistance value_index, TDistance length, TValue value, TCompare compare)
+    ETL_CONSTEXPR14 void adjust_heap(TIterator first, TDistance value_index, TDistance length, TValue value, TCompare compare)
     {
       TDistance top_index = value_index;
       TDistance child2nd = (2 * value_index) + 2;
@@ -993,7 +995,7 @@ namespace etl
 
     // Is Heap Helper
     template <typename TIterator, typename TDistance, typename TCompare>
-    bool is_heap(const TIterator first, const TDistance n, TCompare compare)
+    ETL_CONSTEXPR14 bool is_heap(const TIterator first, const TDistance n, TCompare compare)
     {
       TDistance parent = 0;
 
@@ -1016,6 +1018,7 @@ namespace etl
 
   // Pop Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void pop_heap(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::value_type value_t;
@@ -1029,6 +1032,7 @@ namespace etl
 
   // Pop Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void pop_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1038,6 +1042,7 @@ namespace etl
 
   // Push Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void push_heap(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
@@ -1048,6 +1053,7 @@ namespace etl
 
   // Push Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void push_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1057,6 +1063,7 @@ namespace etl
 
   // Make Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void make_heap(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
@@ -1084,6 +1091,7 @@ namespace etl
 
   // Make Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void make_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1094,6 +1102,7 @@ namespace etl
   // Is Heap
   template <typename TIterator>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
     bool is_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1104,6 +1113,7 @@ namespace etl
   // Is Heap
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_heap(TIterator first, TIterator last, TCompare compare)
   {
     return private_heap::is_heap(first, last - first, compare);
@@ -1111,6 +1121,7 @@ namespace etl
 
   // Sort Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void sort_heap(TIterator first, TIterator last)
   {
     while (first != last)
@@ -1122,6 +1133,7 @@ namespace etl
 
   // Sort Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void sort_heap(TIterator first, TIterator last, TCompare compare)
   {
     while (first != last)
@@ -1968,6 +1980,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator1, typename TIterator2, typename TBinaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_permutation(TIterator1       begin1,
                       TIterator1       end1,
                       TIterator2       begin2,
