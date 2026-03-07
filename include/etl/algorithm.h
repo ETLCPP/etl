@@ -1211,21 +1211,21 @@ namespace etl
       }
 
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+      typedef typename etl::iterator_traits<TIterator>::difference_type difference_type;
 
-      int n = last - first;
-      int m = middle - first;
-      int gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
-
+      difference_type n = last - first;
+      difference_type m = middle - first;
+      difference_type gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
       TIterator result = first + (last - middle);
 
-      for (int i = 0; i < gcd_nm; i++) 
+      for (difference_type i = 0; i < gcd_nm; i++)
       {
         value_type temp = ETL_MOVE(*(first + i));
-        int j = i;
+        difference_type j = i;
         
         while (true) 
         {
-          int k = j + m;
+          difference_type k = j + m;
           
           if (k >= n)
           {
@@ -1260,22 +1260,21 @@ namespace etl
       }
 
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+      typedef typename etl::iterator_traits<TIterator>::difference_type difference_type;
 
-      int n = last - first;
-      int m = middle - first;
-      int gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
-
+      difference_type n = last - first;
+      difference_type m = middle - first;
+      difference_type gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
       TIterator result = first + (last - middle);
 
-      for (int i = 0; i < gcd_nm; i++)
+      for (difference_type i = 0; i < gcd_nm; i++)
       {
         value_type temp = *(first + i);
-        int j = i;
+        difference_type j = i;
 
         while (true)
         {
-          int k = j + m;
-
+          difference_type k = j + m;
           if (k >= n)
           {
             k = k - n;
