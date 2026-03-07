@@ -1928,9 +1928,9 @@ namespace etl
       {
         if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
         {
-          size_t n = etl::count(begin2, end2, *i);
+          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
 
-          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
           {
             return false;
           }
@@ -1954,6 +1954,11 @@ namespace etl
                       TIterator2 begin2,
                       TIterator2 end2)
   {
+    if (etl::distance(begin1, end1) != etl::distance(begin2, end2))
+    {
+      return false;
+    }
+
     if (begin1 != end1)
     {
       for (TIterator1 i = begin1; i != end1; ++i)
@@ -1987,15 +1992,20 @@ namespace etl
                       TIterator2       end2,
                       TBinaryPredicate predicate)
   {
+    if (etl::distance(begin1, end1) != etl::distance(begin2, end2))
+    {
+      return false;
+    }
+
     if (begin1 != end1)
     {
       for (TIterator1 i = begin1; i != end1; ++i)
       {
         if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
         {
-          size_t n = etl::count(begin2, end2, *i);
+          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
 
-          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
           {
             return false;
           }
