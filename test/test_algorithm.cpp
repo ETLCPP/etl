@@ -1319,6 +1319,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST(is_permutation_different_lengths)
+    {
+      int shorter[] = { 1, 2 };
+      int longer[]  = { 1, 2, 3 };
+
+      // Four-iterator: range2 longer than range1 (extra elements only in range2)
+      bool result = etl::is_permutation(std::begin(shorter), std::end(shorter), std::begin(longer), std::end(longer));
+      CHECK(!result);
+
+      // Four-iterator: range1 longer than range2
+      result = etl::is_permutation(std::begin(longer), std::end(longer), std::begin(shorter), std::end(shorter));
+      CHECK(!result);
+
+      // Four-iterator with predicate: range2 longer than range1
+      result = etl::is_permutation(std::begin(shorter), std::end(shorter), std::begin(longer), std::end(longer), etl::equal_to<int>());
+      CHECK(!result);
+
+      // Four-iterator with predicate: range1 longer than range2
+      result = etl::is_permutation(std::begin(longer), std::end(longer), std::begin(shorter), std::end(shorter), etl::equal_to<int>());
+      CHECK(!result);
+    }
+
+    //*************************************************************************
     TEST(is_partitioned)
     {
       int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
