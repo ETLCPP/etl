@@ -3191,7 +3191,10 @@ namespace etl
       }
 
       using ETL_OR_STD::swap; // Allow ADL
-      swap(*i, *min);
+      if (min != i)
+      {
+        swap(*i, *min);
+      }
     }
   }
 
