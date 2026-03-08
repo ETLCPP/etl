@@ -1204,7 +1204,11 @@ namespace etl
     typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last) 
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+      if (middle == last)
       {
         return first;
       }
@@ -1253,7 +1257,11 @@ namespace etl
     typename etl::enable_if<etl::is_bidirectional_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+      if (middle == last)
       {
         return first;
       }
@@ -1275,7 +1283,11 @@ namespace etl
     typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+      if (middle == last)
       {
         return first;
       }
@@ -1351,6 +1363,15 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator rotate(TIterator first, TIterator middle, TIterator last)
   {
+    if (first == middle)
+    {
+      return last;
+    }
+    if (middle == last)
+    {
+      return first;
+    }
+
     if (etl::next(first) == middle)
     {
       return private_algorithm::rotate_left_by_one(first, last);
@@ -1359,7 +1380,7 @@ namespace etl
 #if ETL_USING_CPP20
     if (etl::next(middle) == last)
     {
-      if ETL_IF_CONSTEXPR(!etl::is_forward_iterator<TIterator>::value)
+      if ETL_IF_CONSTEXPR(etl::is_bidirectional_iterator_concept<TIterator>::value)
       {
         return private_algorithm::rotate_right_by_one(first, last);
       }
