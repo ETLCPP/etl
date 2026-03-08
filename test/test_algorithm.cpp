@@ -1378,6 +1378,227 @@ namespace
     }
 
     //*************************************************************************
+    TEST(is_heap_default_true)
+    {
+      std::vector<int> data = { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      std::make_heap(data.begin(), data.end());
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_default_false)
+    {
+      std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(!result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_compare_true)
+    {
+      std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::make_heap(data.begin(), data.end(), Greater());
+
+      bool expected = std::is_heap(data.begin(), data.end(), Greater());
+      bool result   = etl::is_heap(data.begin(), data.end(), Greater());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_compare_false)
+    {
+      std::vector<int> data = { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      bool expected = std::is_heap(data.begin(), data.end(), Greater());
+      bool result   = etl::is_heap(data.begin(), data.end(), Greater());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(!result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_empty)
+    {
+      std::vector<int> data;
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_single_element)
+    {
+      std::vector<int> data = { 42 };
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_two_elements)
+    {
+      std::vector<int> data1 = { 5, 3 };
+      std::vector<int> data2 = { 3, 5 };
+
+      CHECK_EQUAL(std::is_heap(data1.begin(), data1.end()), etl::is_heap(data1.begin(), data1.end()));
+      CHECK_EQUAL(std::is_heap(data2.begin(), data2.end()), etl::is_heap(data2.begin(), data2.end()));
+    }
+
+    //*************************************************************************
+    TEST(is_heap_pointer)
+    {
+      int data[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      bool expected = std::is_heap(std::begin(data), std::end(data));
+      bool result   = etl::is_heap(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_after_make_heap)
+    {
+      // Test all permutations of a small dataset
+      std::vector<int> data = { 1, 2, 3, 4, 5 };
+
+      do
+      {
+        std::vector<int> test_data(data);
+        etl::make_heap(test_data.begin(), test_data.end());
+        CHECK(etl::is_heap(test_data.begin(), test_data.end()));
+      } while (std::next_permutation(data.begin(), data.end()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_default)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::make_heap(data1.begin(), data1.end());
+      etl::make_heap(data2.begin(), data2.end());
+
+      std::sort_heap(data1.begin(), data1.end());
+      etl::sort_heap(data2.begin(), data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted ascending
+      CHECK(std::is_sorted(data2.begin(), data2.end()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_compare)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::make_heap(data1.begin(), data1.end(), Greater());
+      etl::make_heap(data2.begin(), data2.end(), Greater());
+
+      std::sort_heap(data1.begin(), data1.end(), Greater());
+      etl::sort_heap(data2.begin(), data2.end(), Greater());
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted descending
+      CHECK(std::is_sorted(data2.begin(), data2.end(), Greater()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_empty)
+    {
+      std::vector<int> data;
+
+      etl::sort_heap(data.begin(), data.end());
+
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_single_element)
+    {
+      std::vector<int> data = { 42 };
+
+      etl::sort_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(1U, data.size());
+      CHECK_EQUAL(42, data[0]);
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_pointer)
+    {
+      int data1[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      int data2[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+
+      std::make_heap(std::begin(data1), std::end(data1));
+      etl::make_heap(std::begin(data2), std::end(data2));
+
+      std::sort_heap(std::begin(data1), std::end(data1));
+      etl::sort_heap(std::begin(data2), std::end(data2));
+
+      bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_all_permutations)
+    {
+      std::vector<int> initial = { 1, 2, 3, 4, 5 };
+
+      do
+      {
+        std::vector<int> data1(initial);
+        std::vector<int> data2(initial);
+
+        std::make_heap(data1.begin(), data1.end());
+        etl::make_heap(data2.begin(), data2.end());
+
+        std::sort_heap(data1.begin(), data1.end());
+        etl::sort_heap(data2.begin(), data2.end());
+
+        bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(isEqual);
+      } while (std::next_permutation(initial.begin(), initial.end()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_duplicates)
+    {
+      std::vector<int> data1 = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5 };
+      std::vector<int> data2(data1);
+
+      std::make_heap(data1.begin(), data1.end());
+      etl::make_heap(data2.begin(), data2.end());
+
+      std::sort_heap(data1.begin(), data1.end());
+      etl::sort_heap(data2.begin(), data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(find)
     {
       int* itr1 = std::find(std::begin(dataA), std::end(dataA), 5);
