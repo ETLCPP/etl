@@ -1556,6 +1556,216 @@ namespace
     }
 
     //*************************************************************************
+    TEST(move_s_random_iterator_same_size)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+      CHECK_EQUAL(4U, *(data2[3]));
+      CHECK_EQUAL(5U, *(data2[4]));
+    }
+
+    //*************************************************************************
+    TEST(move_s_random_iterator_destination_smaller)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(3);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+    }
+
+    //*************************************************************************
+    TEST(move_s_random_iterator_source_smaller)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.begin() + 3 == result);
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+    }
+
+    //*************************************************************************
+    TEST(move_s_non_random_iterator_same_size)
+    {
+      typedef std::list<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      Data::iterator itr = data2.begin();
+      CHECK_EQUAL(1U, **(itr++));
+      CHECK_EQUAL(2U, **(itr++));
+      CHECK_EQUAL(3U, **(itr++));
+      CHECK_EQUAL(4U, **(itr++));
+      CHECK_EQUAL(5U, **(itr++));
+    }
+
+    //*************************************************************************
+    TEST(move_s_non_random_iterator_destination_smaller)
+    {
+      typedef std::list<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(3);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      Data::iterator itr = data2.begin();
+      CHECK_EQUAL(1U, **(itr++));
+      CHECK_EQUAL(2U, **(itr++));
+      CHECK_EQUAL(3U, **(itr++));
+    }
+
+    //*************************************************************************
+    TEST(move_s_non_random_iterator_source_smaller)
+    {
+      typedef std::list<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      Data::iterator expected_pos = data2.begin();
+      std::advance(expected_pos, 3);
+      CHECK(expected_pos == result);
+
+      Data::iterator itr = data2.begin();
+      CHECK_EQUAL(1U, **(itr++));
+      CHECK_EQUAL(2U, **(itr++));
+      CHECK_EQUAL(3U, **(itr++));
+    }
+
+    //*************************************************************************
+    TEST(move_s_empty_source)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      Data data2(3);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.begin() == result);
+    }
+
+    //*************************************************************************
+    TEST(move_s_empty_destination)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+
+      Data data2;
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.begin() == result);
+    }
+
+    //*************************************************************************
+    TEST(move_s_pod_random_iterator)
+    {
+      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2[] = { 1, 2, 3, 4, 5 };
+
+      int out1[10];
+      int out2[5];
+
+      int check1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int check2[] = { 1, 2, 3, 4, 5 };
+      int check3[] = { 1, 2, 3, 4, 5, 0, 0, 0, 0, 0 };
+
+      int* result;
+
+      // Same size.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::move_s(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::end(out1), result);
+      bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+      CHECK(is_same);
+
+      // Destination smaller.
+      std::fill(std::begin(out2), std::end(out2), 0);
+      result = etl::move_s(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2));
+      CHECK_EQUAL(std::end(out2), result);
+      is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+      CHECK(is_same);
+
+      // Source smaller.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::move_s(std::begin(data2), std::end(data2), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::begin(out1) + 5, result);
+      is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
     TEST(rotate_pod)
     {
       std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
