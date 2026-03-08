@@ -1877,18 +1877,15 @@ namespace etl
       return false;
     }
 
-    if (begin1 != end1)
+    for (TIterator1 i = begin1; i != end1; ++i)
     {
-      for (TIterator1 i = begin1; i != end1; ++i)
+      if (i == etl::find(begin1, i, *i))
       {
-        if (i == etl::find(begin1, i, *i))
-        {
-          size_t n = etl::count(begin2, end2, *i);
+        size_t n = etl::count(begin2, end2, *i);
 
-          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
-          {
-            return false;
-          }
+        if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+        {
+          return false;
         }
       }
     }
@@ -1915,18 +1912,15 @@ namespace etl
       return false;
     }
 
-    if (begin1 != end1)
+    for (TIterator1 i = begin1; i != end1; ++i)
     {
-      for (TIterator1 i = begin1; i != end1; ++i)
+      if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
       {
-        if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
-        {
-          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
+        size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
 
-          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
-          {
-            return false;
-          }
+        if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
+        {
+          return false;
         }
       }
     }
