@@ -2251,6 +2251,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST(selection_sort_empty_range)
+    {
+      // Forward iterators
+      std::forward_list<int> fwd_data;
+      etl::selection_sort(fwd_data.begin(), fwd_data.end());
+      CHECK(fwd_data.empty());
+
+      // Bidirectional iterators
+      std::list<int> bidir_data;
+      etl::selection_sort(bidir_data.begin(), bidir_data.end());
+      CHECK(bidir_data.empty());
+
+      // Random access iterators
+      std::vector<int> ra_data;
+      etl::selection_sort(ra_data.begin(), ra_data.end());
+      CHECK(ra_data.empty());
+
+      // With comparator
+      std::forward_list<int> fwd_data2;
+      etl::selection_sort(fwd_data2.begin(), fwd_data2.end(), std::greater<int>());
+      CHECK(fwd_data2.empty());
+    }
+
+    //*************************************************************************
     TEST(heap_sort_default)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };

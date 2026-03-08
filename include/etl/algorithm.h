@@ -3112,6 +3112,11 @@ namespace etl
   ETL_CONSTEXPR20
   void selection_sort(TIterator first, TIterator last, TCompare compare)
   {
+    if (first == last)
+    {
+      return;
+    }
+
     TIterator min;
     const TIterator ilast = private_algorithm::get_before_last(first, last);
     const TIterator jlast = last;
