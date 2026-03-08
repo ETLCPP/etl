@@ -2873,6 +2873,116 @@ namespace
     }
 
     //*************************************************************************
+    TEST(accumulate_default)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 0);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_with_initial_value)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 100);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 100);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_custom_operation)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 1, std::multiplies<int>());
+      int result   = etl::accumulate(std::begin(data), std::end(data), 1, std::multiplies<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_empty_range)
+    {
+      int data[] = { 1 };
+
+      int expected = std::accumulate(std::begin(data), std::begin(data), 42);
+      int result   = etl::accumulate(std::begin(data), std::begin(data), 42);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_single_element)
+    {
+      int data[] = { 7 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 0);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_negative_values)
+    {
+      int data[] = { -3, -2, -1, 0, 1, 2, 3 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 0);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_custom_operation_subtraction)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 100, std::minus<int>());
+      int result   = etl::accumulate(std::begin(data), std::end(data), 100, std::minus<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_non_random_iterator)
+    {
+      List data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int expected = std::accumulate(data.begin(), data.end(), 0);
+      int result   = etl::accumulate(data.begin(), data.end(), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_non_random_iterator_custom_operation)
+    {
+      List data = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(data.begin(), data.end(), 1, std::multiplies<int>());
+      int result   = etl::accumulate(data.begin(), data.end(), 1, std::multiplies<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_double)
+    {
+      double data[] = { 1.5, 2.5, 3.5, 4.5, 5.5 };
+
+      double expected = std::accumulate(std::begin(data), std::end(data), 0.0);
+      double result   = etl::accumulate(std::begin(data), std::end(data), 0.0);
+
+      CHECK_CLOSE(expected, result, 1e-10);
+    }
+
+    //*************************************************************************
     TEST(clamp_run_time)
     {
       CHECK_EQUAL(5, etl::clamp(5, 0, 10));
