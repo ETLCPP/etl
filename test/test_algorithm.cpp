@@ -748,6 +748,62 @@ namespace
     }
 
     //*************************************************************************
+    TEST(binary_search_random_iterator)
+    {
+      for (int i = 0; i < 11; ++i)
+      {
+        bool expected = std::binary_search(std::begin(dataS), std::end(dataS), i);
+        bool result   = etl::binary_search(std::begin(dataS), std::end(dataS), i);
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(binary_search_with_compare)
+    {
+      for (int i = 0; i < 11; ++i)
+      {
+        bool expected = std::binary_search(std::begin(dataS), std::end(dataS), i, etl::less<int>());
+        bool result   = etl::binary_search(std::begin(dataS), std::end(dataS), i, etl::less<int>());
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(binary_search_duplicates)
+    {
+      for (int i = 0; i < 11; ++i)
+      {
+        bool expected = std::binary_search(std::begin(dataEQ), std::end(dataEQ), i);
+        bool result   = etl::binary_search(std::begin(dataEQ), std::end(dataEQ), i);
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(binary_search_empty_range)
+    {
+      int empty[] = { 0 };
+
+      bool result = etl::binary_search(std::begin(empty), std::begin(empty), 1);
+
+      CHECK_EQUAL(false, result);
+    }
+
+    //*************************************************************************
+    TEST(binary_search_single_element)
+    {
+      int single[] = { 5 };
+
+      CHECK_EQUAL(true,  etl::binary_search(std::begin(single), std::end(single), 5));
+      CHECK_EQUAL(false, etl::binary_search(std::begin(single), std::end(single), 3));
+      CHECK_EQUAL(false, etl::binary_search(std::begin(single), std::end(single), 7));
+    }
+
+    //*************************************************************************
     TEST(fill_non_char)
     {
       int data1[10];
