@@ -1197,7 +1197,6 @@ namespace etl
   //***************************************************************************
   namespace private_algorithm
   {
-#if ETL_USING_CPP11
     //*********************************
     // For random access iterators
     template <typename TIterator>
@@ -1251,60 +1250,6 @@ namespace etl
 
       return result;
     }
-#else
-    //*********************************
-    // For random access iterators
-    template <typename TIterator>
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
-      rotate_general(TIterator first, TIterator middle, TIterator last)
-    {
-      if (first == middle)
-      {
-        return last;
-      }
-
-      if (middle == last)
-      {
-        return first;
-      }
-
-      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
-      typedef typename etl::iterator_traits<TIterator>::difference_type difference_type;
-
-      difference_type n = last - first;
-      difference_type m = middle - first;
-      difference_type gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
-      TIterator result = first + (last - middle);
-
-      for (difference_type i = 0; i < gcd_nm; i++)
-      {
-        value_type temp = *(first + i);
-        difference_type j = i;
-
-        while (true)
-        {
-          difference_type k = j + m;
-          if (k >= n)
-          {
-            k = k - n;
-          }
-
-          if (k == i)
-          {
-            break;
-          }
-
-          *(first + j) = *(first + k);
-          j = k;
-        }
-
-        *(first + j) = temp;
-      }
-
-      return result;
-    }
-#endif
 
     //*********************************
     // For bidirectional iterators
@@ -1426,21 +1371,15 @@ namespace etl
       return private_algorithm::rotate_left_by_one(first, last);
     }
 
+#if ETL_USING_CPP20
     if (etl::next(middle) == last)
     {
-#if ETL_USING_CPP20
-      if ETL_IF_CONSTEXPR(etl::is_forward_iterator<TIterator>::value)
-      {
-        return private_algorithm::rotate_general(first, middle, last);
-      }
-      else
+      if ETL_IF_CONSTEXPR(!etl::is_forward_iterator<TIterator>::value)
       {
         return private_algorithm::rotate_right_by_one(first, last);
       }
-#else
-      return private_algorithm::rotate_general(first, middle, last);
-#endif
     }
+#endif
 
     return private_algorithm::rotate_general(first, middle, last);
   }
@@ -1677,35 +1616,6 @@ namespace etl
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
   //***************************************************************************
-  template <typename TIterator>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  TIterator is_sorted_until(TIterator begin,
-                            TIterator end)
-  {
-    if (begin != end)
-    {
-      TIterator next = begin;
-
-      while (++next != end)
-      {
-        if (*next < *begin)
-        {
-          return next;
-        }
-
-        ++begin;
-      }
-    }
-
-    return end;
-  }
-
-  //***************************************************************************
-  /// is_sorted_until
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
-  //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
   ETL_CONSTEXPR14
@@ -1729,6 +1639,22 @@ namespace etl
     }
 
     return end;
+  }
+
+  //***************************************************************************
+  /// is_sorted_until
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator is_sorted_until(TIterator begin,
+                            TIterator end)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+
+    return etl::is_sorted_until(begin, end, compare());
   }
 
   //***************************************************************************
@@ -1799,22 +1725,9 @@ namespace etl
   TIterator is_unique_sorted_until(TIterator begin,
                                    TIterator end)
   {
-    if (begin != end)
-    {
-      TIterator next = begin;
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
 
-      while (++next != end)
-      {
-        if (!(*begin < *next))
-        {
-          return next;
-        }
-
-        ++begin;
-      }
-    }
-
-    return end;
+    return etl::is_unique_sorted_until(begin, end, compare());
   }
 
   //***************************************************************************
@@ -3237,11 +3150,7 @@ namespace etl
   ETL_CONSTEXPR14
   void heap_sort(TIterator first, TIterator last, TCompare compare)
   {
-    if (!etl::is_heap(first, last, compare))
-    {
-      etl::make_heap(first, last, compare);
-    }
-
+    etl::make_heap(first, last, compare);
     etl::sort_heap(first, last, compare);
   }
 
@@ -3253,11 +3162,7 @@ namespace etl
   ETL_CONSTEXPR14
   void heap_sort(TIterator first, TIterator last)
   {
-    if (!etl::is_heap(first, last))
-    {
-      etl::make_heap(first, last);
-    }
-
+    etl::make_heap(first, last);
     etl::sort_heap(first, last);
   }
 
@@ -3497,14 +3402,7 @@ namespace etl
     {
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
 
-      TIterator  pivot = last; // Maybe find a better pivot choice?
-      value_type pivot_value = *pivot;
-
-      // Swap the pivot with the last, if necessary.
-      if (pivot != last)
-      {
-        swap(*pivot, *last);
-      }
+      value_type pivot_value = ETL_MOVE(*last);
 
       TIterator i = first;
 
