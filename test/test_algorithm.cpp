@@ -796,6 +796,144 @@ namespace
     }
 
     //*************************************************************************
+    TEST(swap_ranges_pod_pointer)
+    {
+      int data1[] = { 1, 2, 3, 4, 5 };
+      int data2[] = { 6, 7, 8, 9, 10 };
+
+      int expected1[] = { 6, 7, 8, 9, 10 };
+      int expected2[] = { 1, 2, 3, 4, 5 };
+
+      int* result = etl::swap_ranges(std::begin(data1), std::end(data1), std::begin(data2));
+
+      CHECK_EQUAL(std::end(data2), result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_non_pod_pointer)
+    {
+      Data data1[] = { Data(1, 2), Data(3, 4), Data(5, 6) };
+      Data data2[] = { Data(7, 8), Data(9, 10), Data(11, 12) };
+
+      Data expected1[] = { Data(7, 8), Data(9, 10), Data(11, 12) };
+      Data expected2[] = { Data(1, 2), Data(3, 4), Data(5, 6) };
+
+      Data* result = etl::swap_ranges(std::begin(data1), std::end(data1), std::begin(data2));
+
+      CHECK_EQUAL(std::end(data2), result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_non_random_iterator)
+    {
+      List data1 = { 1, 2, 3, 4, 5 };
+      List data2 = { 6, 7, 8, 9, 10 };
+
+      List expected1 = { 6, 7, 8, 9, 10 };
+      List expected2 = { 1, 2, 3, 4, 5 };
+
+      List::iterator result = etl::swap_ranges(data1.begin(), data1.end(), data2.begin());
+
+      CHECK(data2.end() == result);
+
+      bool isEqual1 = std::equal(data1.begin(), data1.end(), expected1.begin());
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(data2.begin(), data2.end(), expected2.begin());
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_empty_range)
+    {
+      int data1[] = { 1, 2, 3 };
+      int data2[] = { 4, 5, 6 };
+
+      int expected1[] = { 1, 2, 3 };
+      int expected2[] = { 4, 5, 6 };
+
+      int* result = etl::swap_ranges(std::begin(data1), std::begin(data1), std::begin(data2));
+
+      CHECK_EQUAL(std::begin(data2), result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_partial_range)
+    {
+      int data1[] = { 1, 2, 3, 4, 5 };
+      int data2[] = { 6, 7, 8, 9, 10 };
+
+      int expected1[] = { 6, 7, 8, 4, 5 };
+      int expected2[] = { 1, 2, 3, 9, 10 };
+
+      int* result = etl::swap_ranges(std::begin(data1), std::begin(data1) + 3, std::begin(data2));
+
+      CHECK_EQUAL(std::begin(data2) + 3, result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_same_data)
+    {
+      int data1[] = { 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::swap_ranges(std::begin(data1), std::end(data1), std::begin(data1));
+
+      bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(expected));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_matches_std)
+    {
+      int data1_std[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2_std[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+      int data1_etl[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2_etl[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+      int* pstl = std::swap_ranges(std::begin(data1_std), std::end(data1_std), std::begin(data2_std));
+      int* petl = etl::swap_ranges(std::begin(data1_etl), std::end(data1_etl), std::begin(data2_etl));
+
+      using difference_type_t = std::iterator_traits<int*>::difference_type;
+
+      difference_type_t dstl = std::distance(data2_std, pstl);
+      difference_type_t detl = std::distance(data2_etl, petl);
+
+      CHECK_EQUAL(dstl, detl);
+
+      bool isEqual1 = std::equal(std::begin(data1_std), std::end(data1_std), std::begin(data1_etl));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2_std), std::end(data2_std), std::begin(data2_etl));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
     TEST(equal)
     {
       CHECK(etl::equal(std::begin(dataV), std::end(dataV), std::begin(dataL)));
