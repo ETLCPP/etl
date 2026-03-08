@@ -1049,6 +1049,168 @@ namespace
     }
 
     //*************************************************************************
+    TEST(find_end_default)
+    {
+      int data[]      = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern[]   = { 1, 2, 3 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_predicate)
+    {
+      int data[]    = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern[] = { 1, 2, 3 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern), std::equal_to<int>());
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern), std::equal_to<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_single_occurrence)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int pattern[] = { 5, 6, 7 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_no_match)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int pattern[] = { 11, 12 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_empty_sequence)
+    {
+      int data[]    = { 1, 2, 3, 4, 5 };
+      int pattern[] = { 0 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::begin(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::begin(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_pattern_at_end)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7 };
+      int pattern[] = { 5, 6, 7 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_pattern_at_start)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7 };
+      int pattern[] = { 1, 2, 3 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_entire_range_matches)
+    {
+      int data[]    = { 1, 2, 3, 4, 5 };
+      int pattern[] = { 1, 2, 3, 4, 5 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_overlapping_occurrences)
+    {
+      int data[]    = { 1, 1, 1, 1, 1 };
+      int pattern[] = { 1, 1 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_single_element_pattern)
+    {
+      int data[]    = { 1, 2, 3, 2, 5, 2, 7 };
+      int pattern[] = { 2 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_non_random_iterator)
+    {
+      int data_array[]    = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern_array[] = { 1, 2, 3 };
+
+      List data(std::begin(data_array), std::end(data_array));
+      List pattern(std::begin(pattern_array), std::end(pattern_array));
+
+      List::iterator expected = std::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+      List::iterator result   = etl::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_non_random_iterator_predicate)
+    {
+      int data_array[]    = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern_array[] = { 1, 2, 3 };
+
+      List data(std::begin(data_array), std::end(data_array));
+      List pattern(std::begin(pattern_array), std::end(pattern_array));
+
+      List::iterator expected = std::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+      List::iterator result   = etl::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_pattern_longer_than_data)
+    {
+      int data[]    = { 1, 2, 3 };
+      int pattern[] = { 1, 2, 3, 4, 5 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
     TEST(heap)
     {
       using Vector = std::vector<std::string>;
