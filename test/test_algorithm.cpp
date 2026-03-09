@@ -3388,6 +3388,152 @@ namespace
     }
 
     //*************************************************************************
+    TEST(unique_copy)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+      std::array<int, 10> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(5, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_empty_range)
+    {
+      std::array<int, 0> data   = {};
+      std::array<int, 1> result = { 99 };
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK(end == result.begin());
+      CHECK_EQUAL(99, result[0]); // output unchanged
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_single_element)
+    {
+      std::array<int, 1> data     = { 42 };
+      std::array<int, 1> expected = { 42 };
+      std::array<int, 1> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(1, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_no_duplicates)
+    {
+      std::array<int, 5> data     = { 1, 2, 3, 4, 5 };
+      std::array<int, 5> expected = { 1, 2, 3, 4, 5 };
+      std::array<int, 5> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(5, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_all_same)
+    {
+      std::array<int, 5> data     = { 7, 7, 7, 7, 7 };
+      std::array<int, 1> expected = { 7 };
+      std::array<int, 5> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(1, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_source_unchanged)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 10> original = data;
+      std::array<int, 10> result   = {};
+
+      etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      bool is_same = std::equal(original.begin(), original.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_with_predicate)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+      std::array<int, 10> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin(), std::equal_to<int>());
+
+      CHECK_EQUAL(5, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_with_predicate_custom)
+    {
+      // Group elements that are close to each other (differ by less than 3)
+      std::array<int, 8> data     = { 1, 2, 3, 7, 8, 9, 20, 21 };
+      std::array<int, 3> expected = { 1, 7, 20 };
+      std::array<int, 8> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin(), [](int a, int b) { return (b - a) < 3; });
+
+      CHECK_EQUAL(3, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_matches_std)
+    {
+      std::array<int, 12> data       = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> std_result = {};
+      std::array<int, 12> etl_result = {};
+
+      auto std_end = std::unique_copy(data.begin(), data.end(), std_result.begin());
+      auto etl_end = etl::unique_copy(data.begin(), data.end(), etl_result.begin());
+
+      size_t std_size = std::distance(std_result.begin(), std_end);
+      size_t etl_size = std::distance(etl_result.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(std_result.begin(), std_end, etl_result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_with_predicate_matches_std)
+    {
+      std::array<int, 12> data       = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> std_result = {};
+      std::array<int, 12> etl_result = {};
+
+      auto std_end = std::unique_copy(data.begin(), data.end(), std_result.begin(), std::equal_to<int>());
+      auto etl_end = etl::unique_copy(data.begin(), data.end(), etl_result.begin(), std::equal_to<int>());
+
+      size_t std_size = std::distance(std_result.begin(), std_end);
+      size_t etl_size = std::distance(etl_result.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(std_result.begin(), std_end, etl_result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
     struct generator
     {
       generator(int value_)
