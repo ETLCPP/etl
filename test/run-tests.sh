@@ -38,9 +38,10 @@ PrintHeader()
 	echo " Configuration   : $configuration_name" | tee -a log.txt
 	echo " Compiler        : $compiler          " | tee -a log.txt
 	echo " Language        : C++$cxx_standard   " | tee -a log.txt
-    echo " Optimisation    : $opt               " | tee -a log.txt
+	echo " Optimisation    : $opt               " | tee -a log.txt
 	echo " Sanitizer       : $sanitize          " | tee -a log.txt
 	echo " Compiler select : $compiler_enabled  " | tee -a log.txt
+	echo " Verbose         : $verbose           " | tee -a log.txt
 	echo " ETL version     : $etl_version       " | tee -a log.txt
 	echo " Git branch      : $(ParseGitBranch)  " | tee -a log.txt
 	echo " Processes       : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
@@ -51,14 +52,15 @@ PrintHeader()
 PrintHelp()
 {
 	echo "$HelpColour"
-	echo "------------------------------------------------------------------------------------------------"
-	echo " Syntax          : ./run-tests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> <Compiler>"
-	echo " C++ Standard    : 11, 14, 17, 20 or 23                                                         "
-	echo " Optimisation    : 0, 1, 2 or 3. Default = 0                                                    "
-	echo " Threads         : Number of threads to use. Default = 4                                        "
-	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled                     "
-	echo " Compiler select : gcc or clang. Default All compilers                                          "
-	echo "------------------------------------------------------------------------------------------------"
+	echo "----------------------------------------------------------------------------------------------------------"
+	echo " Syntax          : ./run-tests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> <Compiler> <Verbose>"
+	echo " C++ Standard    : 11, 14, 17, 20 or 23                                                                   "
+	echo " Optimisation    : 0, 1, 2 or 3. Default = 0                                                              "
+	echo " Threads         : Number of threads to use. Default = 4                                                  "
+	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled                               "
+	echo " Compiler select : gcc or clang. Default All compilers                                                    "
+	echo " Verbose         : v enables verbose log, n disables. Default disabled                                    "
+	echo "----------------------------------------------------------------------------------------------------------"
 	echo "$NoColour"
 }
 
@@ -174,6 +176,17 @@ else
 fi
 
 #******************************************************************************
+# Set the verbose enable. Default OFF
+#******************************************************************************
+if [ "$6" = "v" ]; then
+  verbose="On"
+  verbose_flag="-v"
+else
+  verbose="Off"
+  verbose_flag=""
+fi
+
+#******************************************************************************
 # Get the ETL version
 #******************************************************************************
 etl_version_raw=$(cat ../version.txt)
@@ -210,7 +223,7 @@ while read i ; do
       FailedCompilation
       exit $?
     fi
-    ./etl_tests
+    ./etl_tests $verbose_flag
     if [ $? -eq 0 ]; then
       PassedTests
     else
