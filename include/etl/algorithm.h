@@ -2355,6 +2355,61 @@ namespace etl
 
     return first; 
   }
+
+  //***************************************************************************
+  /// unique
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  TIterator unique(TIterator first, TIterator last)
+  {
+    if (first == last)
+    {
+      return last;
+    }
+
+    TIterator result = first;
+
+    while (++first != last)
+    {
+      if (!(*result == *first) && (++result != first))
+      {
+        *result = ETL_MOVE(*first);
+      }
+    }
+
+    return ++result;
+  }
+
+  //***************************************************************************
+  /// unique
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique
+  /// predicate overload to determine equality.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TBinaryPredicate>
+  ETL_CONSTEXPR14
+  TIterator unique(TIterator first, TIterator last, TBinaryPredicate predicate)
+  {
+    if (first == last)
+    {
+      return last;
+    }
+
+    TIterator result = first;
+
+    while (++first != last)
+    {
+      if (!predicate(*result, *first) && (++result != first))
+      {
+        *result = ETL_MOVE(*first);
+      }
+    }
+
+    return ++result;
+  }
 }
 
 //*****************************************************************************
