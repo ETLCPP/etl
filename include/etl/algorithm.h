@@ -2474,6 +2474,58 @@ namespace etl
 
     return ++d_first;
   }
+
+  //***************************************************************************
+  /// merge
+  /// Merges two sorted ranges into one sorted range.
+  /// see https://en.cppreference.com/w/cpp/algorithm/merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator1, typename TInputIterator2, typename TOutputIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  TOutputIterator merge(TInputIterator1 first1, TInputIterator1 last1,
+                        TInputIterator2 first2, TInputIterator2 last2,
+                        TOutputIterator d_first,
+                        TCompare        compare)
+  {
+    while ((first1 != last1) && (first2 != last2))
+    {
+      if (compare(*first2, *first1))
+      {
+        *d_first = *first2;
+        ++first2;
+      }
+      else
+      {
+        *d_first = *first1;
+        ++first1;
+      }
+      ++d_first;
+    }
+
+    d_first = etl::copy(first1, last1, d_first);
+    d_first = etl::copy(first2, last2, d_first);
+
+    return d_first;
+  }
+
+  //***************************************************************************
+  /// merge
+  /// Merges two sorted ranges into one sorted range.
+  /// Uses operator< for comparison.
+  /// see https://en.cppreference.com/w/cpp/algorithm/merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator1, typename TInputIterator2, typename TOutputIterator>
+  ETL_CONSTEXPR14
+  TOutputIterator merge(TInputIterator1 first1, TInputIterator1 last1,
+                        TInputIterator2 first2, TInputIterator2 last2,
+                        TOutputIterator d_first)
+  {
+    typedef etl::less<typename etl::iterator_traits<TInputIterator1>::value_type> compare;
+
+    return etl::merge(first1, last1, first2, last2, d_first, compare());
+  }
 }
 
 //*****************************************************************************

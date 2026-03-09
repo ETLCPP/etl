@@ -3950,5 +3950,212 @@ namespace
       CHECK_EQUAL(0, result5);
       CHECK_EQUAL(10, result6);
     }
+
+    //*************************************************************************
+    TEST(merge_default_comparator)
+    {
+      int input1[] = { 1, 3, 5, 7, 9 };
+      int input2[] = { 2, 4, 6, 8, 10 };
+      int output[10];
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_custom_comparator)
+    {
+      int input1[] = { 9, 7, 5, 3, 1 };
+      int input2[] = { 10, 8, 6, 4, 2 };
+      int output[10];
+      int expected[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output),
+                               Greater());
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_first_range_empty)
+    {
+      int input1[] = { 0 };  // dummy, won't be used
+      int input2[] = { 1, 2, 3 };
+      int output[3];
+      int expected[] = { 1, 2, 3 };
+
+      int* result = etl::merge(input1, input1,  // empty range
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 3);
+    }
+
+    //*************************************************************************
+    TEST(merge_second_range_empty)
+    {
+      int input1[] = { 1, 2, 3 };
+      int input2[] = { 0 };  // dummy, won't be used
+      int output[3];
+      int expected[] = { 1, 2, 3 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               input2, input2,  // empty range
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 3);
+    }
+
+    //*************************************************************************
+    TEST(merge_both_ranges_empty)
+    {
+      int input1[] = { 0 };
+      int output[] = { 99 };
+
+      int* result = etl::merge(input1, input1,
+                               input1, input1,
+                               std::begin(output));
+
+      CHECK_EQUAL(std::begin(output), result);
+      CHECK_EQUAL(99, output[0]); // output should be unchanged
+    }
+
+    //*************************************************************************
+    TEST(merge_with_duplicates)
+    {
+      int input1[] = { 1, 3, 3, 5 };
+      int input2[] = { 2, 3, 4, 5 };
+      int output[8];
+      int expected[] = { 1, 2, 3, 3, 3, 4, 5, 5 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 8);
+    }
+
+    //*************************************************************************
+    TEST(merge_different_sizes)
+    {
+      int input1[] = { 1, 5 };
+      int input2[] = { 2, 3, 4, 6, 7, 8 };
+      int output[8];
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 8);
+    }
+
+    //*************************************************************************
+    TEST(merge_single_elements)
+    {
+      int input1[] = { 1 };
+      int input2[] = { 2 };
+      int output[2];
+      int expected[] = { 1, 2 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 2);
+    }
+
+    //*************************************************************************
+    TEST(merge_with_list_iterators)
+    {
+      std::list<int> input1 = { 1, 3, 5, 7 };
+      std::list<int> input2 = { 2, 4, 6, 8 };
+      std::vector<int> output(8);
+      std::vector<int> expected = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      std::vector<int>::iterator result = etl::merge(input1.begin(), input1.end(),
+                                                     input2.begin(), input2.end(),
+                                                     output.begin());
+
+      CHECK(output.end() == result);
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), 8);
+    }
+
+    //*************************************************************************
+    TEST(merge_matches_std)
+    {
+      int input1[] = { 1, 4, 7, 8, 10 };
+      int input2[] = { 2, 3, 5, 6, 9 };
+      int etl_output[10];
+      int std_output[10];
+
+      etl::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(etl_output));
+
+      std::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(std_output));
+
+      CHECK_ARRAY_EQUAL(std_output, etl_output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_matches_std_with_comparator)
+    {
+      int input1[] = { 10, 8, 7, 4, 1 };
+      int input2[] = { 9, 6, 5, 3, 2 };
+      int etl_output[10];
+      int std_output[10];
+
+      etl::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(etl_output),
+                 Greater());
+
+      std::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(std_output),
+                 Greater());
+
+      CHECK_ARRAY_EQUAL(std_output, etl_output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_stability)
+    {
+      // Test that merge is stable: equivalent elements from the first range
+      // come before those from the second range.
+      Data input1[] = { Data(1, 1), Data(3, 1), Data(5, 1) };
+      Data input2[] = { Data(1, 2), Data(3, 2), Data(5, 2) };
+      Data output[6];
+
+      etl::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(output),
+                 DataPredicate());
+
+      // Elements from input1 (b==1) should come before elements from input2 (b==2)
+      // for equivalent keys.
+      CHECK_EQUAL(1, output[0].a); CHECK_EQUAL(1, output[0].b);  // from input1
+      CHECK_EQUAL(1, output[1].a); CHECK_EQUAL(2, output[1].b);  // from input2
+      CHECK_EQUAL(3, output[2].a); CHECK_EQUAL(1, output[2].b);  // from input1
+      CHECK_EQUAL(3, output[3].a); CHECK_EQUAL(2, output[3].b);  // from input2
+      CHECK_EQUAL(5, output[4].a); CHECK_EQUAL(1, output[4].b);  // from input1
+      CHECK_EQUAL(5, output[5].a); CHECK_EQUAL(2, output[5].b);  // from input2
+    }
   }
 }
