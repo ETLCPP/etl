@@ -1144,6 +1144,53 @@ namespace etl
   }
 
   //***************************************************************************
+  /// partial_sort
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort"></a>
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  void partial_sort(TIterator first, TIterator middle, TIterator last, TCompare compare)
+  {
+    if (first == middle)
+    {
+      return;
+    }
+
+    typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator>::difference_type  difference_t;
+
+    etl::make_heap(first, middle, compare);
+
+    for (TIterator i = middle; i != last; ++i)
+    {
+      if (compare(*i, *first))
+      {
+        value_t value = ETL_MOVE(*i);
+        *i = ETL_MOVE(*first);
+
+        private_heap::adjust_heap(first, difference_t(0), difference_t(middle - first), ETL_MOVE(value), compare);
+      }
+    }
+
+    etl::sort_heap(first, middle, compare);
+  }
+
+  //***************************************************************************
+  /// partial_sort
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  void partial_sort(TIterator first, TIterator middle, TIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+
+    etl::partial_sort(first, middle, last, compare());
+  }
+
+  //***************************************************************************
   // Search
   //***************************************************************************
   template<typename TIterator1, typename TIterator2, typename TCompare>

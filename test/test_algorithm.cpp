@@ -1745,6 +1745,195 @@ namespace
     }
 
     //*************************************************************************
+    TEST(partial_sort_default)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end());
+
+      // The first 5 elements should be sorted and match std
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted range
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_compare)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end(), Greater());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end(), Greater());
+
+      // The first 5 elements should be sorted descending and match std
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted range (descending)
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5, Greater()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_empty)
+    {
+      std::vector<int> data;
+
+      etl::partial_sort(data.begin(), data.begin(), data.end());
+
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_middle_equals_first)
+    {
+      std::vector<int> data = { 5, 3, 8, 1, 9 };
+      std::vector<int> original(data);
+
+      etl::partial_sort(data.begin(), data.begin(), data.end());
+
+      // Nothing should change when middle == first
+      bool isEqual = std::equal(data.begin(), data.end(), original.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_middle_equals_last)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.end(), data1.end());
+      etl::partial_sort(data2.begin(), data2.end(), data2.end());
+
+      // Full sort
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_single_element)
+    {
+      std::vector<int> data = { 42 };
+
+      etl::partial_sort(data.begin(), data.end(), data.end());
+
+      CHECK_EQUAL(1U, data.size());
+      CHECK_EQUAL(42, data[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_first_one)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 1, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 1, data2.end());
+
+      // The first element should be the minimum
+      CHECK_EQUAL(data1[0], data2[0]);
+      CHECK_EQUAL(1, data2[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_duplicates)
+    {
+      std::vector<int> data1 = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 6, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 6, data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 6, data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 6));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_already_sorted)
+    {
+      std::vector<int> data1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_reverse_sorted)
+    {
+      std::vector<int> data1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_pointer)
+    {
+      int data1[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      int data2[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+
+      std::partial_sort(std::begin(data1), std::begin(data1) + 5, std::end(data1));
+      etl::partial_sort(std::begin(data2), std::begin(data2) + 5, std::end(data2));
+
+      bool isEqual = std::equal(std::begin(data1), std::begin(data1) + 5, std::begin(data2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_all_permutations)
+    {
+      std::vector<int> initial = { 1, 2, 3, 4, 5 };
+
+      do
+      {
+        std::vector<int> data1(initial);
+        std::vector<int> data2(initial);
+
+        std::partial_sort(data1.begin(), data1.begin() + 3, data1.end());
+        etl::partial_sort(data2.begin(), data2.begin() + 3, data2.end());
+
+        bool isEqual = std::equal(data1.begin(), data1.begin() + 3, data2.begin());
+        CHECK(isEqual);
+      } while (std::next_permutation(initial.begin(), initial.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_all_equal)
+    {
+      std::vector<int> data = { 5, 5, 5, 5, 5, 5 };
+
+      etl::partial_sort(data.begin(), data.begin() + 3, data.end());
+
+      CHECK(std::is_sorted(data.begin(), data.begin() + 3));
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(5, data[i]);
+      }
+    }
+
+    //*************************************************************************
     TEST(find)
     {
       int* itr1 = std::find(std::begin(dataA), std::end(dataA), 5);
