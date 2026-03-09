@@ -84,7 +84,7 @@ namespace etl
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++11 and above
   template <typename, typename, etl::fsm_state_id_t, typename...>
   class fsm_state;
 #else
@@ -342,7 +342,7 @@ namespace etl
     using private_fsm::ifsm_state_helper<>::Pass_To_Parent;
     using private_fsm::ifsm_state_helper<>::Self_Transition;
 
-#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++11 and above
     template <typename, typename, etl::fsm_state_id_t, typename...>
     friend class fsm_state;
 #else
@@ -784,9 +784,11 @@ namespace etl
     template <size_t Index>
     struct contiguous_impl<Index, false>
       : etl::bool_constant<(etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U ==
-                            etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) &&
-                            contiguous_impl<Index + 1U>::value>
+                              etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) &&
+                              contiguous_impl<Index + 1U>::value>
     {
+
+
     };
 
     // The message ids are contiguous if there are 0 or 1 message types, or if each message id is one greater than the previous message id.
@@ -993,7 +995,7 @@ namespace etl
 
 #else
 //*************************************************************************************************
-// For C++14 and below.
+// For C++03 and below.
 //*************************************************************************************************
   //***************************************************************************
   // The definition for all 16 message types.
@@ -1759,7 +1761,7 @@ namespace etl
   //***************************************************************************
   template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
             typename T1, typename T2>
-  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -1876,10 +1878,10 @@ namespace etl
     }
   };
 
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
-            typename T1, typename T2, typename T3, typename T4,
-            typename T5, typename T6, typename T7, typename T8,
-            typename T9, typename T10, typename T11, typename T12,
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11, typename T12, 
             typename T13, typename T14, typename T15, typename T16>
   ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::STATE_ID;
 #endif
