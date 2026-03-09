@@ -293,7 +293,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
-      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(array_view_empty));
       return *mbegin;
     }
 
@@ -303,7 +303,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(array_view_empty));
       return *mbegin;
     }
 
@@ -313,7 +313,7 @@ namespace etl
     //*************************************************************************
     reference back()
     {
-      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(array_view_empty));
       return *(mend - 1);
     }
 
@@ -323,7 +323,7 @@ namespace etl
     //*************************************************************************
     const_reference back() const
     {
-      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(array_view_empty));
       return *(mend - 1);
     }
 

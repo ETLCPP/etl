@@ -480,6 +480,20 @@ namespace
       }
     }
 
+#ifdef ETL_CHECK_INDEX_OPERATOR
+
+    //*************************************************************************
+    TEST(test_index_operator_bounds_check)
+    {
+      View  view(etldata.begin(), etldata.end());
+      CView cview(etldata.begin(), etldata.end());
+
+      CHECK_THROW(view[view.size()], etl::array_view_bounds);
+      CHECK_THROW(cview[cview.size()], etl::array_view_bounds);
+    }
+  
+#endif
+
     //*************************************************************************
     TEST(test_at)
     {

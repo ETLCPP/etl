@@ -505,7 +505,7 @@ namespace
 
       etl::queue_spsc_locked<int, 4> queue(lock, unlock);
 
-      CHECK_EQUAL(0U, queue.size());
+      CHECK_EQUAL(0U, queue.size_from_unlocked());
       CHECK_THROW(queue.front(), etl::queue_spsc_locked_empty);
     }
 
@@ -517,7 +517,7 @@ namespace
       etl::queue_spsc_locked<int, 4> queue(lock, unlock);
       const etl::queue_spsc_locked<int, 4>& constQueue = queue;
 
-      CHECK_EQUAL(0U, constQueue.size());
+      CHECK_EQUAL(0U, constQueue.size_from_unlocked());
       CHECK_THROW(constQueue.front(), etl::queue_spsc_locked_empty);
     }
 

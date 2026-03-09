@@ -568,6 +568,8 @@ namespace
       CHECK_EQUAL(compare_hash, hash);
     }
 
+#ifdef ETL_CHECK_INDEX_OPERATOR
+
     TEST(test_bounds_check)
     {
       Data5 aw5;
@@ -577,6 +579,9 @@ namespace
       CHECK_THROW(aw5[6], etl::array_wrapper_bounds);
       CHECK_THROW(aw5.at(6), etl::array_wrapper_bounds);
     }
+
+#endif
+
   }
 }
 

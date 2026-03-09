@@ -500,7 +500,7 @@ namespace
 
       etl::queue_spsc_isr<int, 4, Access> queue;
 
-      CHECK_EQUAL(0U, queue.size());
+      CHECK_EQUAL(0U, queue.size_from_isr());
       CHECK_THROW(queue.front(), etl::queue_spsc_isr_empty);
     }
 
@@ -512,7 +512,7 @@ namespace
       etl::queue_spsc_isr<int, 4, Access> queue;
       const etl::queue_spsc_isr<int, 4, Access>& constQueue = queue;
 
-      CHECK_EQUAL(0U, constQueue.size());
+      CHECK_EQUAL(0U, constQueue.size_from_isr());
       CHECK_THROW(constQueue.front(), etl::queue_spsc_isr_empty);
     }
 
