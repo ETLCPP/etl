@@ -3265,6 +3265,129 @@ namespace
     }
 
     //*************************************************************************
+    TEST(unique)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(5, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_empty_range)
+    {
+      std::array<int, 0> data = {};
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK(end == data.end());
+    }
+
+    //*************************************************************************
+    TEST(unique_single_element)
+    {
+      std::array<int, 1> data     = { 42 };
+      std::array<int, 1> expected = { 42 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(1, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_no_duplicates)
+    {
+      std::array<int, 5> data     = { 1, 2, 3, 4, 5 };
+      std::array<int, 5> expected = { 1, 2, 3, 4, 5 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(5, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_all_same)
+    {
+      std::array<int, 5> data     = { 7, 7, 7, 7, 7 };
+      std::array<int, 1> expected = { 7 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(1, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_with_predicate)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+
+      auto end = etl::unique(data.begin(), data.end(), std::equal_to<int>());
+
+      CHECK_EQUAL(5, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_with_predicate_custom)
+    {
+      // Group elements that are close to each other (differ by less than 3)
+      std::array<int, 8> data     = { 1, 2, 3, 7, 8, 9, 20, 21 };
+      std::array<int, 3> expected = { 1, 7, 20 };
+
+      auto end = etl::unique(data.begin(), data.end(), [](int a, int b) { return (b - a) < 3; });
+
+      CHECK_EQUAL(3, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_matches_std)
+    {
+      std::array<int, 12> data1 = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> data2 = data1;
+
+      auto std_end = std::unique(data1.begin(), data1.end());
+      auto etl_end = etl::unique(data2.begin(), data2.end());
+
+      size_t std_size = std::distance(data1.begin(), std_end);
+      size_t etl_size = std::distance(data2.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(data1.begin(), std_end, data2.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_with_predicate_matches_std)
+    {
+      std::array<int, 12> data1 = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> data2 = data1;
+
+      auto std_end = std::unique(data1.begin(), data1.end(), std::equal_to<int>());
+      auto etl_end = etl::unique(data2.begin(), data2.end(), std::equal_to<int>());
+
+      size_t std_size = std::distance(data1.begin(), std_end);
+      size_t etl_size = std::distance(data2.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(data1.begin(), std_end, data2.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
     struct generator
     {
       generator(int value_)
