@@ -1191,6 +1191,72 @@ namespace etl
   }
 
   //***************************************************************************
+  /// partial_sort_copy
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort_copy"></a>
+  //***************************************************************************
+  template <typename TInputIterator, typename TRandomAccessIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  TRandomAccessIterator partial_sort_copy(TInputIterator  first,
+                                          TInputIterator  last,
+                                          TRandomAccessIterator d_first,
+                                          TRandomAccessIterator d_last,
+                                          TCompare compare)
+  {
+    typedef typename etl::iterator_traits<TRandomAccessIterator>::value_type      value_t;
+    typedef typename etl::iterator_traits<TRandomAccessIterator>::difference_type  difference_t;
+
+    TRandomAccessIterator result = d_first;
+
+    // Fill the destination range
+    while ((first != last) && (result != d_last))
+    {
+      *result = *first;
+      ++result;
+      ++first;
+    }
+
+    if (result == d_first)
+    {
+      return result;
+    }
+
+    // Build a max-heap over the destination range
+    etl::make_heap(d_first, result, compare);
+
+    // Process remaining input elements
+    for (TInputIterator i = first; i != last; ++i)
+    {
+      if (compare(*i, *d_first))
+      {
+        value_t value = *i;
+        private_heap::adjust_heap(d_first, difference_t(0), difference_t(result - d_first), ETL_MOVE(value), compare);
+      }
+    }
+
+    etl::sort_heap(d_first, result, compare);
+
+    return result;
+  }
+
+  //***************************************************************************
+  /// partial_sort_copy
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort_copy"></a>
+  //***************************************************************************
+  template <typename TInputIterator, typename TRandomAccessIterator>
+  ETL_CONSTEXPR14
+  TRandomAccessIterator partial_sort_copy(TInputIterator  first,
+                                          TInputIterator  last,
+                                          TRandomAccessIterator d_first,
+                                          TRandomAccessIterator d_last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TRandomAccessIterator>::value_type> compare;
+
+    return etl::partial_sort_copy(first, last, d_first, d_last, compare());
+  }
+
+  //***************************************************************************
   // Search
   //***************************************************************************
   template<typename TIterator1, typename TIterator2, typename TCompare>
