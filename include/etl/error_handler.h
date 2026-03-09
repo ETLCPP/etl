@@ -379,11 +379,13 @@ namespace etl
   #define ETL_NOT_CHECKING_INDEX_OPERATOR 0
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b,e)
   #define ETL_NOEXCEPT_INDEX_OPERATOR
+  #define ETL_CONSTEXPR_INDEX_OPERATOR ETL_CONSTEXPR14
 #else
   #define ETL_CHECKING_INDEX_OPERATOR 0
   #define ETL_NOT_CHECKING_INDEX_OPERATOR 1
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
   #define ETL_NOEXCEPT_INDEX_OPERATOR ETL_NOEXCEPT
+  #define ETL_CONSTEXPR_INDEX_OPERATOR ETL_CONSTEXPR
 #endif
 
 //*************************************
@@ -391,10 +393,12 @@ namespace etl
     #define ETL_CHECKING_EXTRA 1
     #define ETL_NOT_CHECKING_EXTRA 0
     #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b,e)
+    #define ETL_CONSTEXPR_CHECK_EXTRA ETL_CONSTEXPR14
 #else
     #define ETL_CHECKING_EXTRA 0
     #define ETL_NOT_CHECKING_EXTRA 1
     #define ETL_ASSERT_CHECK_EXTRA(b, e)
+    #define ETL_CONSTEXPR_CHECK_EXTRA ETL_CONSTEXPR
 #endif
 
 //*************************************
