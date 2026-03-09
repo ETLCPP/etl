@@ -1934,6 +1934,253 @@ namespace
     }
 
     //*************************************************************************
+    TEST(partial_sort_copy_default)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_compare)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end(), Greater());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end(), Greater());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end(), Greater()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_empty_input)
+    {
+      std::vector<int> input;
+      std::vector<int> output(5, 99);
+
+      auto result = etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result == output.begin());
+
+      // Output should be unchanged
+      for (size_t i = 0; i < output.size(); ++i)
+      {
+        CHECK_EQUAL(99, output[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_empty_output)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9 };
+      std::vector<int> output;
+
+      auto result = etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result == output.begin());
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_output_larger_than_input)
+    {
+      std::vector<int> input = { 5, 3, 1 };
+      std::vector<int> output1(6, 99);
+      std::vector<int> output2(6, 99);
+
+      auto result1 = std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      auto result2 = etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      CHECK_EQUAL(std::distance(output1.begin(), result1), std::distance(output2.begin(), result2));
+
+      bool isEqual = std::equal(output1.begin(), result1, output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), result2));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_output_smaller_than_input)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(3);
+      std::vector<int> output2(3);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_output_same_size_as_input)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      auto result1 = std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      auto result2 = etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      CHECK(result1 == output1.end());
+      CHECK(result2 == output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_single_element_input)
+    {
+      std::vector<int> input = { 42 };
+      std::vector<int> output(3, 0);
+
+      auto result = etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result == output.begin() + 1);
+      CHECK_EQUAL(42, output[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_single_element_output)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9 };
+      std::vector<int> output1(1);
+      std::vector<int> output2(1);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      CHECK_EQUAL(output1[0], output2[0]);
+      CHECK_EQUAL(1, output2[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_duplicates)
+    {
+      std::vector<int> input = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5 };
+      std::vector<int> output1(6);
+      std::vector<int> output2(6);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_already_sorted)
+    {
+      std::vector<int> input = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_reverse_sorted)
+    {
+      std::vector<int> input = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_pointer)
+    {
+      int input[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      int output1[5] = {};
+      int output2[5] = {};
+
+      std::partial_sort_copy(std::begin(input), std::end(input), std::begin(output1), std::end(output1));
+      etl::partial_sort_copy(std::begin(input), std::end(input), std::begin(output2), std::end(output2));
+
+      bool isEqual = std::equal(std::begin(output1), std::end(output1), std::begin(output2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_all_equal)
+    {
+      std::vector<int> input = { 5, 5, 5, 5, 5, 5 };
+      std::vector<int> output(3);
+
+      etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(std::is_sorted(output.begin(), output.end()));
+
+      for (size_t i = 0; i < output.size(); ++i)
+      {
+        CHECK_EQUAL(5, output[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_input_not_modified)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> original(input);
+      std::vector<int> output(5);
+
+      etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      // Input should not be modified
+      bool isEqual = std::equal(input.begin(), input.end(), original.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_from_list)
+    {
+      std::list<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
     TEST(find)
     {
       int* itr1 = std::find(std::begin(dataA), std::end(dataA), 5);
