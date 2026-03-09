@@ -494,6 +494,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_bounds_exception)
+    {
+      Access::clear();
+
+      etl::queue_spsc_isr<int, 4, Access> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+      CHECK_THROW(queue.front(), etl::queue_spsc_isr_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const_bounds_exception)
+    {
+      Access::clear();
+
+      etl::queue_spsc_isr<int, 4, Access> queue;
+      const etl::queue_spsc_isr<int, 4, Access>& constQueue = queue;
+
+      CHECK_EQUAL(0U, constQueue.size());
+      CHECK_THROW(constQueue.front(), etl::queue_spsc_isr_empty);
+    }
+
+    //*************************************************************************
     TEST(test_multiple_emplace)
     {
       etl::queue_spsc_isr<Data, 5, Access> queue;

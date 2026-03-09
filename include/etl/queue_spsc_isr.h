@@ -44,6 +44,34 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_spsc_isr_exception : public exception
+  {
+  public:
+
+    queue_spsc_isr_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_spsc_isr_empty : public queue_spsc_isr_exception
+  {
+  public:
+
+    queue_spsc_isr_empty(string_type file_name_, numeric_type line_number_)
+      : queue_spsc_isr_exception(ETL_ERROR_TEXT("queue:empty", ETL_QUEUE_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_isr_base
   {
@@ -108,17 +136,23 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue from an ISR
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     reference front_from_isr()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty_from_isr(), ETL_ERROR(queue_spsc_isr_empty));
+
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue from an ISR
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     const_reference front_from_isr() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty_from_isr(), ETL_ERROR(queue_spsc_isr_empty));
+
       return front_implementation();
     }
 
@@ -659,9 +693,12 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_from_isr(), ETL_ERROR(queue_spsc_isr_empty));
+
       TAccess::lock();
 
       reference result = this->front_implementation();
@@ -673,9 +710,12 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_from_isr(), ETL_ERROR(queue_spsc_isr_empty));
+
       TAccess::lock();
 
       const_reference result = this->front_implementation();

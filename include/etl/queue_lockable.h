@@ -45,6 +45,34 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_lockable_exception : public exception
+  {
+  public:
+
+    queue_lockable_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_lockable_empty : public queue_lockable_exception
+  {
+  public:
+
+    queue_lockable_empty(string_type file_name_, numeric_type line_number_)
+      : queue_lockable_exception(ETL_ERROR_TEXT("queue:empty", ETL_QUEUE_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_lockable_base
   {
@@ -491,25 +519,32 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue without locking.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     reference front_unlocked()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue without locking.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     const_reference front_unlocked() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
+
       this->lock();
 
       reference result = front_implementation();
@@ -521,9 +556,12 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
+      
       this->lock();
 
       const_reference result = front_implementation();

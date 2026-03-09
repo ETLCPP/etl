@@ -499,6 +499,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_bounds_exception)
+    {
+      access.clear();
+
+      etl::queue_spsc_locked<int, 4> queue(lock, unlock);
+
+      CHECK_EQUAL(0U, queue.size());
+      CHECK_THROW(queue.front(), etl::queue_spsc_locked_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const_bounds_exception)
+    {
+      access.clear();
+
+      etl::queue_spsc_locked<int, 4> queue(lock, unlock);
+      const etl::queue_spsc_locked<int, 4>& constQueue = queue;
+
+      CHECK_EQUAL(0U, constQueue.size());
+      CHECK_THROW(constQueue.front(), etl::queue_spsc_locked_empty);
+    }
+
+    //*************************************************************************
     TEST(test_multiple_emplace)
     {
       etl::queue_spsc_locked<Data, 5> queue(lock, unlock);

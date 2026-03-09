@@ -94,6 +94,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// The exception thrown when the view is empty.
+  //***************************************************************************
+  class array_view_empty : public array_view_exception
+  {
+  public:
+
+    array_view_empty(string_type file_name_, numeric_type line_number_)
+      : array_view_exception(ETL_ERROR_TEXT("array_view:empty", ETL_ARRAY_VIEW_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Array view.
   //***************************************************************************
   template <typename T>
@@ -276,33 +289,41 @@ namespace etl
 
     //*************************************************************************
     /// Returns a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
       return *mbegin;
     }
 
     //*************************************************************************
     /// Returns a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
       return *mbegin;
     }
 
     //*************************************************************************
     /// Returns a reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
       return *(mend - 1);
     }
 
     //*************************************************************************
     /// Returns a const reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(array_view_empty));
       return *(mend - 1);
     }
 
@@ -476,18 +497,24 @@ namespace etl
 #if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
     //*************************************************************************
     /// Returns a reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_bounds if the index is out of bounds.
     //*************************************************************************
-    reference operator[](const size_t i) ETL_NOEXCEPT
+    reference operator[](const size_t i) ETL_NOEXCEPT_INDEX_OPERATOR
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(array_view_bounds));
+
       return mbegin[i];
     }
 #endif
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_bounds if the index is out of bounds.
     //*************************************************************************
-    const_reference operator[](const size_t i) const ETL_NOEXCEPT
+    const_reference operator[](const size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(array_view_bounds));
+
       return mbegin[i];
     }
 

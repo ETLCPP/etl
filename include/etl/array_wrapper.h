@@ -268,17 +268,21 @@ namespace etl
 
     //*************************************************************************
     /// Returns a reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an etl::array_wrapper_bounds if the index is out of bounds.
     //*************************************************************************
-    reference operator[](size_t i) ETL_NOEXCEPT
+    reference operator[](size_t i) ETL_NOEXCEPT_INDEX_OPERATOR
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
     }
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an etl::array_wrapper_bounds if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
     }
 

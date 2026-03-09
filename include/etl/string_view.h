@@ -97,6 +97,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// The exception thrown when the view is empty.
+  //***************************************************************************
+  class string_view_empty : public string_view_exception
+  {
+  public:
+
+    string_view_empty(string_type file_name_, numeric_type line_number_)
+      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:empty", ETL_STRING_VIEW_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// String view.
   //***************************************************************************
   template <typename T, typename TTraits = etl::char_traits<T> >
@@ -176,17 +189,21 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::string_view_empty if the view is empty.
     //*************************************************************************
     ETL_CONSTEXPR const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_view_empty));
       return *mbegin;
     }
 
     //*************************************************************************
     /// Returns a const reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::string_view_empty if the view is empty.
     //*************************************************************************
     ETL_CONSTEXPR const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(size() > 0, ETL_ERROR(string_view_empty));
       return *(mend - 1);
     }
 
@@ -328,9 +345,11 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an etl::string_view_bounds if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_view_bounds));
       return mbegin[i];
     }
 

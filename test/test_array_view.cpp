@@ -732,6 +732,18 @@ namespace
       CHECK_EQUAL(hashdata, hashcview);
     }
 
+    TEST(test_bounds_check)
+    {
+      View view;
+
+      CHECK_EQUAL(0U, view.size());
+      CHECK_EQUAL(0U, view.max_size());
+      CHECK(view.empty());
+
+      CHECK_THROW(view.front(), etl::array_view_empty);
+      CHECK_THROW(view.back(), etl::array_view_empty);
+    }
+
     //*************************************************************************
 #include "etl/private/diagnostic_unused_function_push.h"
 

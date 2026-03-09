@@ -937,6 +937,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_exception)
+    {
+      DataNDC0 data0;
+
+      CHECK(data0.empty());
+      CHECK_THROW(data0.front(), etl::intrusive_forward_list_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_unique)
     {
       DataNDC0 data0(non_unique_data.begin(), non_unique_data.end());

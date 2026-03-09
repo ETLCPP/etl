@@ -567,6 +567,16 @@ namespace
 
       CHECK_EQUAL(compare_hash, hash);
     }
+
+    TEST(test_bounds_check)
+    {
+      Data5 aw5;
+      CHECK_EQUAL(5 , aw5.SIZE);
+      CHECK_EQUAL(5U, aw5.size());
+
+      CHECK_THROW(aw5[6], etl::array_wrapper_bounds);
+      CHECK_THROW(aw5.at(6), etl::array_wrapper_bounds);
+    }
   }
 }
 
