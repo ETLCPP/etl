@@ -2523,6 +2523,94 @@ namespace etl
 
     return etl::merge(first1, last1, first2, last2, d_first, compare());
   }
+
+  //***************************************************************************
+  /// inplace_merge
+  /// Merges two consecutive sorted ranges [first, middle) and [middle, last)
+  /// into one sorted range [first, last) in-place.
+  /// Uses a rotate-based algorithm that requires no additional memory.
+  /// see https://en.cppreference.com/w/cpp/algorithm/inplace_merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TBidirectionalIterator, typename TCompare>
+  void inplace_merge(TBidirectionalIterator first,
+                     TBidirectionalIterator middle,
+                     TBidirectionalIterator last,
+                     TCompare              compare)
+  {
+    typedef typename etl::iterator_traits<TBidirectionalIterator>::difference_type difference_type;
+
+    const difference_type len1 = etl::distance(first, middle);
+    const difference_type len2 = etl::distance(middle, last);
+
+    if ((len1 == 0) || (len2 == 0))
+    {
+      return;
+    }
+
+    if ((len1 + len2) == 2)
+    {
+      if (compare(*middle, *first))
+      {
+        using ETL_OR_STD::swap;
+        swap(*first, *middle);
+      }
+      return;
+    }
+
+    TBidirectionalIterator cut1;
+    TBidirectionalIterator cut2;
+    difference_type len_cut1;  // distance(first, cut1)
+    difference_type len_cut2;  // distance(middle, cut2)
+
+    if (len1 > len2)
+    {
+      // Split the first (longer) half
+      len_cut1 = len1 / 2;
+      cut1 = first;
+      etl::advance(cut1, len_cut1);
+      cut2 = etl::lower_bound(middle, last, *cut1, compare);
+      len_cut2 = etl::distance(middle, cut2);
+    }
+    else
+    {
+      // Split the second (longer or equal) half
+      len_cut2 = len2 / 2;
+      cut2 = middle;
+      etl::advance(cut2, len_cut2);
+      cut1 = etl::upper_bound(first, middle, *cut2, compare);
+      len_cut1 = etl::distance(first, cut1);
+    }
+
+    // Rotate [cut1, middle, cut2) so that the two cut points meet
+    etl::rotate(cut1, middle, cut2);
+
+    // new_middle = cut1 + (cut2 - middle) = cut1 + len_cut2
+    TBidirectionalIterator new_middle = cut1;
+    etl::advance(new_middle, len_cut2);
+
+    // Recursively merge both halves
+    etl::inplace_merge(first, cut1, new_middle, compare);
+    etl::inplace_merge(new_middle, cut2, last, compare);
+  }
+
+  //***************************************************************************
+  /// inplace_merge
+  /// Merges two consecutive sorted ranges [first, middle) and [middle, last)
+  /// into one sorted range [first, last) in-place.
+  /// Uses operator< for comparison.
+  /// see https://en.cppreference.com/w/cpp/algorithm/inplace_merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TBidirectionalIterator>
+  void inplace_merge(TBidirectionalIterator first,
+                     TBidirectionalIterator middle,
+                     TBidirectionalIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TBidirectionalIterator>::value_type> compare;
+
+    etl::inplace_merge(first, middle, last, compare());
+  }
 }
 
 //*****************************************************************************

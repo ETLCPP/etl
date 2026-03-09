@@ -4070,5 +4070,225 @@ namespace
       CHECK_EQUAL(5, output[4].a); CHECK_EQUAL(1, output[4].b);  // from input1
       CHECK_EQUAL(5, output[5].a); CHECK_EQUAL(2, output[5].b);  // from input2
     }
+
+    //*************************************************************************
+    TEST(inplace_merge_default_comparator)
+    {
+      int data[] = { 1, 3, 5, 7, 9, 2, 4, 6, 8, 10 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_custom_comparator)
+    {
+      int data[] = { 9, 7, 5, 3, 1, 10, 8, 6, 4, 2 };
+      int expected[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data), Greater());
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_first_range_empty)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data), std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 5);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_second_range_empty)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::end(data), std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 5);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_both_ranges_empty)
+    {
+      int data[] = { 99 };
+
+      etl::inplace_merge(data, data, data);  // empty range
+
+      CHECK_EQUAL(99, data[0]); // unchanged
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_with_duplicates)
+    {
+      int data[] = { 1, 3, 3, 5, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 3, 3, 4, 5, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 4, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 8);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_different_sizes)
+    {
+      int data[] = { 1, 5, 2, 3, 4, 6, 7, 8 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 2, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 8);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_elements)
+    {
+      int data[] = { 2, 1 };
+      int expected[] = { 1, 2 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 1, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 2);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_element_halves_already_sorted)
+    {
+      int data[] = { 1, 2 };
+      int expected[] = { 1, 2 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 1, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 2);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_already_sorted)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_reverse_halves)
+    {
+      // Second half all less than first half
+      int data[] = { 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_with_list_iterators)
+    {
+      std::vector<int> data = { 1, 3, 5, 7, 2, 4, 6, 8 };
+      std::vector<int> expected = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      etl::inplace_merge(data.begin(), data.begin() + 4, data.end());
+
+      CHECK(expected == data);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_matches_std)
+    {
+      int etl_data[] = { 1, 4, 7, 8, 10, 2, 3, 5, 6, 9 };
+      int std_data[] = { 1, 4, 7, 8, 10, 2, 3, 5, 6, 9 };
+
+      etl::inplace_merge(std::begin(etl_data), std::begin(etl_data) + 5, std::end(etl_data));
+      std::inplace_merge(std::begin(std_data), std::begin(std_data) + 5, std::end(std_data));
+
+      CHECK_ARRAY_EQUAL(std_data, etl_data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_matches_std_with_comparator)
+    {
+      int etl_data[] = { 10, 8, 7, 4, 1, 9, 6, 5, 3, 2 };
+      int std_data[] = { 10, 8, 7, 4, 1, 9, 6, 5, 3, 2 };
+
+      etl::inplace_merge(std::begin(etl_data), std::begin(etl_data) + 5, std::end(etl_data), Greater());
+      std::inplace_merge(std::begin(std_data), std::begin(std_data) + 5, std::end(std_data), Greater());
+
+      CHECK_ARRAY_EQUAL(std_data, etl_data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_stability)
+    {
+      // Test that inplace_merge is stable: equivalent elements from the first
+      // range come before those from the second range.
+      Data data[] = { Data(1, 1), Data(3, 1), Data(5, 1),
+                      Data(1, 2), Data(3, 2), Data(5, 2) };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 3, std::end(data), DataPredicate());
+
+      // Elements from first half (b==1) should come before elements from second half (b==2)
+      // for equivalent keys.
+      CHECK_EQUAL(1, data[0].a); CHECK_EQUAL(1, data[0].b);  // from first half
+      CHECK_EQUAL(1, data[1].a); CHECK_EQUAL(2, data[1].b);  // from second half
+      CHECK_EQUAL(3, data[2].a); CHECK_EQUAL(1, data[2].b);  // from first half
+      CHECK_EQUAL(3, data[3].a); CHECK_EQUAL(2, data[3].b);  // from second half
+      CHECK_EQUAL(5, data[4].a); CHECK_EQUAL(1, data[4].b);  // from first half
+      CHECK_EQUAL(5, data[5].a); CHECK_EQUAL(2, data[5].b);  // from second half
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_element_first_half)
+    {
+      int data[] = { 5, 1, 2, 3, 4 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 1, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 5);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_element_second_half)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 3 };
+      int expected[] = { 1, 2, 3, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 6);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_all_equal)
+    {
+      int data[] = { 5, 5, 5, 5, 5, 5 };
+      int expected[] = { 5, 5, 5, 5, 5, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 3, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 6);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_interleaved)
+    {
+      int data[] = { 1, 3, 5, 7, 9, 11, 2, 4, 6, 8, 10, 12 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 6, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 12);
+    }
   }
 }
