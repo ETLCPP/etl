@@ -2410,6 +2410,70 @@ namespace etl
 
     return ++result;
   }
+
+  //***************************************************************************
+  /// unique_copy
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique_copy
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  ETL_CONSTEXPR14
+  TOutputIterator unique_copy(TInputIterator  first,
+                              TInputIterator  last,
+                              TOutputIterator d_first)
+  {
+    if (first == last)
+    {
+      return d_first;
+    }
+
+    typename etl::iterator_traits<TInputIterator>::value_type prev = *first;
+    *d_first = prev;
+
+    while (++first != last)
+    {
+      if (!(prev == *first))
+      {
+        prev = *first;
+        *(++d_first) = prev;
+      }
+    }
+
+    return ++d_first;
+  }
+
+  //***************************************************************************
+  /// unique_copy
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique_copy
+  /// predicate overload to determine equality.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TBinaryPredicate>
+  ETL_CONSTEXPR14
+  TOutputIterator unique_copy(TInputIterator   first,
+                              TInputIterator   last,
+                              TOutputIterator  d_first,
+                              TBinaryPredicate predicate)
+  {
+    if (first == last)
+    {
+      return d_first;
+    }
+
+    typename etl::iterator_traits<TInputIterator>::value_type prev = *first;
+    *d_first = prev;
+
+    while (++first != last)
+    {
+      if (!predicate(prev, *first))
+      {
+        prev = *first;
+        *(++d_first) = prev;
+      }
+    }
+
+    return ++d_first;
+  }
 }
 
 //*****************************************************************************
