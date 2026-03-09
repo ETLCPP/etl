@@ -2526,6 +2526,82 @@ namespace etl
 
     return etl::merge(first1, last1, first2, last2, d_first, compare());
   }
+
+  //***************************************************************************
+  /// inplace_merge
+  /// Merges two consecutive sorted ranges [first, middle) and [middle, last)
+  /// into one sorted range [first, last) in-place.
+  /// Uses an iterative rotate-based algorithm that requires no additional
+  /// memory, no recursion and no explicit stack, making it safe for deeply
+  /// embedded targets with constrained stack sizes.
+  /// Complexity: O(N log N) comparisons, O(N log N) element moves.
+  /// see https://en.cppreference.com/w/cpp/algorithm/inplace_merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TBidirectionalIterator, typename TCompare>
+  void inplace_merge(TBidirectionalIterator first,
+                     TBidirectionalIterator middle,
+                     TBidirectionalIterator last,
+                     TCompare              compare)
+  {
+    typedef typename etl::iterator_traits<TBidirectionalIterator>::difference_type difference_type;
+
+    difference_type len1 = etl::distance(first, middle);
+    difference_type len2 = etl::distance(middle, last);
+
+    while ((len1 != 0) && (len2 != 0))
+    {
+      // Find where the first element of the right half belongs in the left half.
+      // All elements in [first, cut1) are <= *middle, so they are already in place.
+      TBidirectionalIterator cut1 = etl::upper_bound(first, middle, *middle, compare);
+      difference_type prefix = etl::distance(first, cut1);
+      len1 -= prefix;
+
+      // If the entire left half is <= *middle, we are done.
+      if (len1 == 0)
+      {
+        return;
+      }
+
+      // Advance first past the already-placed prefix.
+      first = cut1;
+
+      // Find where the first element of the (remaining) left half belongs in
+      // the right half.  All elements in [middle, cut2) are < *first, so they
+      // need to be moved before *first.
+      TBidirectionalIterator cut2 = etl::lower_bound(middle, last, *first, compare);
+      difference_type run = etl::distance(middle, cut2);
+      len2 -= run;
+
+      // Rotate the block [first, middle, cut2) so that [middle, cut2) moves
+      // before [first, middle).  After the rotate the elements from
+      // [middle, cut2) (length = run) now occupy [first, first + run) and
+      // are in their final position.
+      etl::rotate(first, middle, cut2);
+
+      // Advance past the block we just placed.
+      etl::advance(first, run);
+      middle = cut2;
+    }
+  }
+
+  //***************************************************************************
+  /// inplace_merge
+  /// Merges two consecutive sorted ranges [first, middle) and [middle, last)
+  /// into one sorted range [first, last) in-place.
+  /// Uses operator< for comparison.
+  /// see https://en.cppreference.com/w/cpp/algorithm/inplace_merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TBidirectionalIterator>
+  void inplace_merge(TBidirectionalIterator first,
+                     TBidirectionalIterator middle,
+                     TBidirectionalIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TBidirectionalIterator>::value_type> compare;
+
+    etl::inplace_merge(first, middle, last, compare());
+  }
 }
 
 //*****************************************************************************
