@@ -1211,6 +1211,152 @@ namespace
     }
 
     //*************************************************************************
+    TEST(adjacent_find_default)
+    {
+      int data[] = { 1, 2, 3, 3, 4, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_predicate)
+    {
+      int data[] = { 1, 2, 3, 3, 4, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data), std::equal_to<int>());
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data), std::equal_to<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_no_match)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_at_beginning)
+    {
+      int data[] = { 1, 1, 2, 3, 4, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_at_end)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_multiple_pairs)
+    {
+      int data[] = { 1, 1, 2, 2, 3, 3 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_single_element)
+    {
+      int data[] = { 1 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_empty_range)
+    {
+      int data[] = { 1 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::begin(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::begin(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_all_same)
+    {
+      int data[] = { 5, 5, 5, 5, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_predicate_less)
+    {
+      int data[] = { 5, 4, 3, 2, 1 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data), std::greater<int>());
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data), std::greater<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_non_random_iterator)
+    {
+      int data_array[] = { 1, 2, 3, 3, 4, 5 };
+      List data(std::begin(data_array), std::end(data_array));
+
+      List::iterator expected = std::adjacent_find(data.begin(), data.end());
+      List::iterator result   = etl::adjacent_find(data.begin(), data.end());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_non_random_iterator_predicate)
+    {
+      int data_array[] = { 1, 2, 3, 3, 4, 5 };
+      List data(std::begin(data_array), std::end(data_array));
+
+      List::iterator expected = std::adjacent_find(data.begin(), data.end(), std::equal_to<int>());
+      List::iterator result   = etl::adjacent_find(data.begin(), data.end(), std::equal_to<int>());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_non_random_iterator_no_match)
+    {
+      int data_array[] = { 1, 2, 3, 4, 5, 6 };
+      List data(std::begin(data_array), std::end(data_array));
+
+      List::iterator expected = std::adjacent_find(data.begin(), data.end());
+      List::iterator result   = etl::adjacent_find(data.begin(), data.end());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
     TEST(heap)
     {
       using Vector = std::vector<std::string>;

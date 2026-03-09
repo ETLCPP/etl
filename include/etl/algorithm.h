@@ -1792,6 +1792,51 @@ namespace etl
   }
 
   //***************************************************************************
+  /// adjacent_find
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/adjacent_find"></a>
+  //***************************************************************************
+  template <typename TIterator, typename TBinaryPredicate>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator adjacent_find(TIterator first, TIterator last, TBinaryPredicate predicate)
+  {
+    if (first != last)
+    {
+      TIterator next = first;
+      ++next;
+
+      while (next != last)
+      {
+        if (predicate(*first, *next))
+        {
+          return first;
+        }
+
+        ++first;
+        ++next;
+      }
+    }
+
+    return last;
+  }
+
+  //***************************************************************************
+  /// adjacent_find
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/adjacent_find"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator adjacent_find(TIterator first, TIterator last)
+  {
+    typedef etl::equal_to<typename etl::iterator_traits<TIterator>::value_type> predicate;
+
+    return etl::adjacent_find(first, last, predicate());
+  }
+
+  //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_permutation"></a>
