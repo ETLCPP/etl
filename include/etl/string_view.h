@@ -191,7 +191,7 @@ namespace etl
     /// Returns a const reference to the first element.
     /// If asserts or exceptions are enabled, throws an etl::string_view_empty if the view is empty.
     //*************************************************************************
-    ETL_CONSTEXPR_CHECK_EXTRA const_reference front() const
+    ETL_CONSTEXPR_OR_ASSERT const_reference front() const
     {
       ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(string_view_empty));
       return *mbegin;
@@ -201,7 +201,7 @@ namespace etl
     /// Returns a const reference to the last element.
     /// If asserts or exceptions are enabled, throws an etl::string_view_empty if the view is empty.
     //*************************************************************************
-    ETL_CONSTEXPR_CHECK_EXTRA const_reference back() const
+    ETL_CONSTEXPR_OR_ASSERT const_reference back() const
     {
       ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(string_view_empty));
       return *(mend - 1);
@@ -347,7 +347,7 @@ namespace etl
     /// Returns a const reference to the indexed value.
     /// If asserts or exceptions are enabled, throws an etl::string_view_bounds if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR_INDEX_OPERATOR const_reference operator[](size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
+    ETL_CONSTEXPR_OR_ASSERT const_reference operator[](size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_view_bounds));
       return mbegin[i];
