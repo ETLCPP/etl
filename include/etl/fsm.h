@@ -62,6 +62,7 @@ SOFTWARE.
 #include "largest.h"
 #if ETL_USING_CPP11
   #include "tuple.h"
+  #include "type_list.h"
 #endif
 
 #include <stdint.h>
@@ -83,14 +84,14 @@ namespace etl
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-#if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   template <typename, typename, etl::fsm_state_id_t, typename...>
   class fsm_state;
 #else
   template <typename, typename, etl::fsm_state_id_t,
-            typename, typename, typename, typename, 
-            typename, typename, typename, typename, 
-            typename, typename, typename, typename, 
+            typename, typename, typename, typename,
+            typename, typename, typename, typename,
+            typename, typename, typename, typename,
             typename, typename, typename, typename>
   class fsm_state;
 #endif
@@ -195,7 +196,7 @@ namespace etl
       // Pass this whenever no state change is desired.
       // The highest unsigned value of fsm_state_id_t.
       static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
-      
+
       // Pass this when this event also needs to be passed to the parent.
       static ETL_CONSTANT fsm_state_id_t Pass_To_Parent = No_State_Change - 1U;
 
@@ -213,15 +214,15 @@ namespace etl
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
 
     // Compile-time: TState::ID must equal its index in the type list (0..N-1)
-    template <size_t Id, typename...> struct check_ids : etl::true_type 
+    template <size_t Id, typename...> struct check_ids : etl::true_type
     {
     };
 
     template <size_t Id, typename TState0, typename... TRest>
     struct check_ids<Id, TState0, TRest...>
-      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value> 
+      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value>
     {
-    };   
+    };
 
     //***************************************************************************
     /// RAII detection mechanism to catch reentrant calls to methods that might
@@ -250,11 +251,11 @@ namespace etl
       {
         is_locked = false;
       }
-      
+
     private:
       // Reference to the flag signifying a lock on the state machine.
       bool& is_locked;
-      
+
       // Copy & move semantics disabled since this is a guard.
       fsm_reentrancy_guard(fsm_reentrancy_guard const&) ETL_DELETE;
       fsm_reentrancy_guard& operator= (fsm_reentrancy_guard const&) ETL_DELETE;
@@ -272,7 +273,7 @@ namespace etl
   /// A class to store FSM states.
   //***************************************************************************
   template <typename... TStates>
-  class fsm_state_pack 
+  class fsm_state_pack
   {
   public:
 
@@ -294,18 +295,18 @@ namespace etl
     /// Gets a reference to the state.
     //*********************************
     template <typename TState>
-    TState& get() 
-    { 
-      return etl::get<TState>(storage); 
+    TState& get()
+    {
+      return etl::get<TState>(storage);
     }
 
     //*********************************
     /// Gets a const reference to the state.
     //*********************************
     template <typename TState>
-    const TState& get() const 
-    { 
-      return etl::get<TState>(storage); 
+    const TState& get() const
+    {
+      return etl::get<TState>(storage);
     }
 
   private:
@@ -341,14 +342,14 @@ namespace etl
     using private_fsm::ifsm_state_helper<>::Pass_To_Parent;
     using private_fsm::ifsm_state_helper<>::Self_Transition;
 
-#if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
     template <typename, typename, etl::fsm_state_id_t, typename...>
     friend class fsm_state;
 #else
     template <typename, typename, etl::fsm_state_id_t,
-              typename, typename, typename, typename, 
-              typename, typename, typename, typename, 
-              typename, typename, typename, typename, 
+              typename, typename, typename, typename,
+              typename, typename, typename, typename,
+              typename, typename, typename, typename,
               typename, typename, typename, typename>
     friend class etl::fsm_state;
 #endif
@@ -560,7 +561,7 @@ namespace etl
       {
         etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-        process_state_change(next_state_id); 
+        process_state_change(next_state_id);
       }
       else
       {
@@ -691,7 +692,7 @@ namespace etl
         p_state->on_exit_state();
         next_state_id = p_state->on_enter_state();
       }
-      
+
       if (have_changed_state(next_state_id))
       {
         ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
@@ -722,16 +723,246 @@ namespace etl
   };
 
   //*************************************************************************************************
-  // For C++17 and above.
+  // For C++11 and above.
   //*************************************************************************************************
-#if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
+#if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++11 and above
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************
   template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
   class fsm_state : public ifsm_state
   {
+  private:
+
+    using message_id_sequence = etl::index_sequence<TMessageTypes::ID...>;
+
   public:
+
+    using message_types        = etl::type_list<TMessageTypes...>;
+    using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
+
+    static_assert(etl::type_list_is_unique<message_types>::value,                    "All TMessageTypes must be unique");
+    static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value, "All TMessageTypes must satisfy the condition etl::is_message_type");
+    static_assert(etl::index_sequence_is_unique<message_id_sequence>::value,         "All message IDs must be unique");
+
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
+
+    fsm_state()
+      : ifsm_state(STATE_ID)
+    {
+    }
+
+  protected:
+
+    ~fsm_state()
+    {
+    }
+
+    TContext& get_fsm_context() const
+    {
+      return static_cast<TContext&>(ifsm_state::get_fsm_context());
+    }
+
+  private:
+
+    static constexpr size_t            Number_Of_Messages = sizeof...(TMessageTypes);
+    static constexpr etl::message_id_t Message_Id_Start   = etl::type_list_type_at_index_t<sorted_message_types, 0>::ID;
+
+    static_assert(Number_Of_Messages > 0, "Zero messages");
+
+    //**********************************************
+    // Checks that the message ids are contiguous.
+    //**********************************************
+    template <size_t Index, bool Last = (Index + 1U >= Number_Of_Messages)>
+    struct contiguous_impl;
+
+    template <size_t Index>
+    struct contiguous_impl<Index, true> : etl::true_type
+    {
+    };
+
+    template <size_t Index>
+    struct contiguous_impl<Index, false>
+      : etl::bool_constant<(etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U ==
+                            etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) &&
+                            contiguous_impl<Index + 1U>::value>
+    {
+    };
+
+    // The message ids are contiguous if there are 0 or 1 message types, or if each message id is one greater than the previous message id.
+    static constexpr bool Message_Ids_Are_Contiguous = (Number_Of_Messages <= 1U) ? true : contiguous_impl<0U>::value;
+
+    using handler_ptr              = etl::fsm_state_id_t (*)(TDerived&, const etl::imessage&); ///< Pointer to a handler function that takes a reference to the derived class and a reference to the message.
+    using message_dispatch_table_t = etl::array<handler_ptr, Number_Of_Messages>;              ///< The dispatch table type. An array of handler pointers, one for each message type.
+    using message_id_table_t       = etl::array<etl::message_id_t, Number_Of_Messages>;        ///< The message id table type. An array of message ids, one for each message type.
+
+    //********************************************
+    etl::fsm_state_id_t process_event(const etl::imessage& message)
+    {
+      const etl::message_id_t id = message.get_message_id();
+
+      // The IDs are sorted, so an ID less than the first is not handled by this router.
+      if (id >= Message_Id_Start)
+      {
+        const size_t index = get_dispatch_index_from_message_id(id);
+
+        // If the index is less than Number_Of_Messages, then we have a handler for this message type, so dispatch it.
+        if (index < Number_Of_Messages)
+        {
+          const etl::fsm_state_id_t new_state_id = dispatch(message, index);
+
+          if (new_state_id != Pass_To_Parent)
+          {
+            return new_state_id;
+          }
+        }
+      }
+
+#include "etl/private/diagnostic_array_bounds_push.h"
+      // If we get here, then we don't have a handler for this message type, so pass it to the parent if we have one, otherwise call on_event_unknown.
+      return (p_parent != nullptr) ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
+#include "etl/private/diagnostic_pop.h"
+    }
+
+    //**********************************************
+    // Call for a single message type
+    //**********************************************
+    template <typename TMessage>
+    static etl::fsm_state_id_t call_on_event(TDerived& derived, const imessage& msg)
+    {
+      return derived.on_event(static_cast<const TMessage&>(msg));
+    }
+
+    //**********************************************
+    // Get the handler for a single message type at the index in the sorted type_list.
+    // This will be called for each message type to generate the dispatch table.
+    //**********************************************
+    template <size_t Index>
+    static constexpr handler_ptr get_message_handler()
+    {
+      return &call_on_event<etl::type_list_type_at_index_t<sorted_message_types, Index>>;
+    }
+
+    //**********************************************
+    // Generate the dispatch table at compile time.
+    // This will create an array of handler pointers, one for each message type.
+    //**********************************************
+    template <size_t... Indices>
+    static constexpr message_dispatch_table_t make_message_dispatch_table(etl::index_sequence<Indices...>)
+    {
+      return message_dispatch_table_t{ { get_message_handler<Indices>()... } };
+    }
+
+    //**********************************************
+    // Get the message id for a single message type at an index in the sorted type_list.
+    // This will be called for each message type to generate the message id table.
+    //**********************************************
+    template <size_t Index>
+    static constexpr etl::message_id_t get_message_id_from_index()
+    {
+      return etl::type_list_type_at_index_t<sorted_message_types, Index>::ID;
+    }
+
+    //**********************************************
+    // Generate the message id table at compile time.
+    // This will create an array of message ids, one for each message type.
+    //**********************************************
+    template <size_t... Indices>
+    static constexpr message_id_table_t make_message_id_table(etl::index_sequence<Indices...>)
+    {
+      return message_id_table_t{ { get_message_id_from_index<Indices>()... } };
+    }
+
+    //**********************************************
+    // Get the dispatch index for a message id.
+    // This will be used at runtime to find the handler for a message id.
+    // If the message ids are contiguous, we can calculate the index directly. If they are not contiguous, we need to do a binary search.
+    // This will return Number_Of_Messages if the message id is not found, which indicates that the message should be passed to the successor.
+    //**********************************************
+    static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
+    {
+      if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
+      {
+        // The IDs are contiguous, so we can calculate the index directly.
+        return static_cast<size_t>(id - Message_Id_Start);
+      }
+      else
+      {
+        // The IDs are not contiguous, so we need to do a binary search.
+        size_t left  = 0;
+        size_t right = Number_Of_Messages;
+
+        while (left < right)
+        {
+          size_t mid = (left + right) / 2;
+
+          if (message_id_table[mid] == id)
+          {
+            return mid;
+          }
+          else if (message_id_table[mid] < id)
+          {
+            left = mid + 1;
+          }
+          else
+          {
+            right = mid;
+          }
+        }
+      }
+
+      return Number_Of_Messages; // Not found
+    }
+
+    //**********************************************
+    // Dispatch the message to the appropriate handler based on the index in the dispatch table.
+    //**********************************************
+    etl::message_id_t dispatch(const etl::imessage& msg, size_t index)
+    {
+      return message_dispatch_table[index](static_cast<TDerived&>(*this), msg);
+    }
+
+    //**********************************************
+    // The dispatch table is generated at compile time. The dispatch table contains pointers to the on_receive handlers for each message type.
+    //**********************************************
+    static ETL_INLINE_VAR constexpr message_dispatch_table_t message_dispatch_table =
+      etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::make_message_dispatch_table(etl::make_index_sequence<etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::Number_Of_Messages>{});
+
+    //**********************************************
+    // The message id table is generated at compile time. The message id table contains the corresponding message ids for each message type.
+    //**********************************************
+    static ETL_INLINE_VAR constexpr message_id_table_t message_id_table =
+      etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::make_message_id_table(etl::make_index_sequence<etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::Number_Of_Messages>{});
+  };
+
+#if ETL_USING_CPP11 && !ETL_USING_CPP17
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
+  constexpr const typename etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_dispatch_table_t
+    etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_dispatch_table;
+
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
+  constexpr const typename etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_id_table_t
+    etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_id_table;
+#endif
+
+  /// Definition of STATE_ID
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
+  ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::STATE_ID;
+
+  //***************************************************************************
+  // The definition for no messages.
+  //***************************************************************************
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_>
+  class fsm_state<TContext, TDerived, STATE_ID_> : public ifsm_state
+  {
+  private:
+
+    using message_id_sequence = etl::index_sequence<>;
+
+  public:
+
+    using message_types        = etl::type_list<>;
+    using sorted_message_types = etl::type_list<>;
 
     static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
@@ -754,46 +985,11 @@ namespace etl
   private:
 
     //********************************************
-    struct result_t
-    {
-      bool was_handled;
-      etl::fsm_state_id_t state_id;
-    };
-
-    //********************************************
     etl::fsm_state_id_t process_event(const etl::imessage& message)
     {
-      etl::fsm_state_id_t new_state_id;
-
-      const bool was_handled = (process_event_type<TMessageTypes>(message, new_state_id) || ...);
-
-      if (!was_handled || (new_state_id == Pass_To_Parent))
-      {
-        new_state_id = (p_parent != nullptr) ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
-      }
-
-      return new_state_id;
-    }
-
-    //********************************************
-    template <typename TMessage>
-    bool process_event_type(const etl::imessage& msg, etl::fsm_state_id_t& new_state_id)
-    {
-      if (TMessage::ID == msg.get_message_id())
-      {
-        new_state_id = static_cast<TDerived*>(this)->on_event(static_cast<const TMessage&>(msg));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      return (p_parent != nullptr) ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
     }
   };
-
-  /// Definition of STATE_ID
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
-  ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::STATE_ID;
 
 #else
 //*************************************************************************************************
@@ -802,10 +998,10 @@ namespace etl
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void,
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
             typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class fsm_state : public ifsm_state
   {
@@ -864,10 +1060,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 15 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14, typename T15>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, void> : public ifsm_state
   {
@@ -925,10 +1121,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 14 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, void, void> : public ifsm_state
   {
@@ -985,10 +1181,10 @@ namespace etl
   //***************************************************************************
   // Specialisation for 13 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, void, void, void> : public ifsm_state
   {
@@ -1044,9 +1240,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 12 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11, typename T12>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void> : public ifsm_state
   {
@@ -1101,9 +1297,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 11 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10, typename T11>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void> : public ifsm_state
   {
@@ -1157,9 +1353,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 10 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9, typename T10>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1212,9 +1408,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 9 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
             typename T9>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1266,8 +1462,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 8 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6, typename T7, typename T8>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1318,8 +1514,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 7 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6, typename T7>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1369,8 +1565,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 6 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5, typename T6>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1419,8 +1615,8 @@ namespace etl
   //***************************************************************************
   // Specialisation for 5 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
             typename T5>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1468,7 +1664,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 4 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
             typename T1, typename T2, typename T3, typename T4>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1515,7 +1711,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 3 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
             typename T1, typename T2, typename T3>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1561,9 +1757,9 @@ namespace etl
   //***************************************************************************
   // Specialisation for 2 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
             typename T1, typename T2>
-  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
+  class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:
 
@@ -1606,7 +1802,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 1 message type.
   //***************************************************************************
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
             typename T1>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1680,10 +1876,10 @@ namespace etl
     }
   };
 
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14, typename T15, typename T16>
   ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::STATE_ID;
 #endif
