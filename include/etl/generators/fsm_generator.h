@@ -905,7 +905,7 @@ namespace etl
     // Get the dispatch index for a message id.
     // This will be used at runtime to find the handler for a message id.
     // If the message ids are contiguous, we can calculate the index directly. If they are not contiguous, we need to do a binary search.
-    // This will return Number_Of_Messages if the message id is not found, which indicates that the message should be passed to the successor.
+    // This will return Number_Of_Messages if the message id is not found.
     //**********************************************
     static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
     {
