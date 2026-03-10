@@ -166,13 +166,14 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;      ///< The type stored in the queue.
-    typedef T&                         reference;       ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef T                          value_type;       ///< The type stored in the queue.
+    typedef const T                    const_value_type; ///< A const value of the type used in the queue.
+    typedef T&                         reference;        ///< A reference to the type used in the queue.
+    typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+    typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
 
     using base_t::write_index;
     using base_t::read_index;
@@ -339,16 +340,26 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if the queue is empty.
     //*************************************************************************
-    reference front()
+    value_type front()
     {
-      ETL_ASSERT_CHECK_EXTRA((current_size != 0), ETL_ERROR(queue_mpmc_empty));
-
+#if ETL_CHECKING_EXTRA
       access.lock();
-
-      reference result = front_implementation();
-
+      if (current_size != 0)
+      {
+        value_type innerResult = front_implementation();
+        access.unlock();
+        return innerResult;
+      }
+      else
+      {
+        access.unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // This falls through in case asserts do not throw.
+      }
+#endif
+      access.lock();
+      value_type result = front_implementation();
       access.unlock();
-
       return result;
     }
 
@@ -356,16 +367,26 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if the queue is empty.
     //*************************************************************************
-    const_reference front() const
+    const_value_type front() const
     {
-      ETL_ASSERT_CHECK_EXTRA((current_size != 0), ETL_ERROR(queue_mpmc_empty));
-      
+#if ETL_CHECKING_EXTRA
       access.lock();
-
-      const_reference result = front_implementation();
-
+      if (current_size != 0)
+      {
+        const_value_type innerResult = front_implementation();
+        access.unlock();
+        return innerResult;
+      }
+      else
+      {
+        access.unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // This falls through in case asserts do not throw.
+      }
+#endif
+      access.lock();
+      const_value_type result = front_implementation();
       access.unlock();
-
       return result;
     }
 

@@ -68,7 +68,7 @@ namespace etl
   public:
 
     queue_lockable_empty(string_type file_name_, numeric_type line_number_)
-      : queue_lockable_exception(ETL_ERROR_TEXT("queue_lockable:empty", ETL_QUEUE_LOCKABLE_FILE_ID"A"), file_name_, line_number_)
+      : queue_lockable_exception(ETL_ERROR_TEXT("queue_lockable:empty", ETL_QUEUE_SPSC_LOCKABLE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -283,6 +283,7 @@ namespace etl
   public:
 
     typedef T                          value_type;       ///< The type stored in the queue.
+    typedef const T                    const_value_type; ///< A const value of the type used in the queue.
     typedef T&                         reference;        ///< A reference to the type used in the queue.
     typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
@@ -541,16 +542,26 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
-    reference front()
+    value_type front()
     {
-      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
-
+#if ETL_CHECKING_EXTRA
       this->lock();
-
-      reference result = front_implementation();
-
+      if (!this->empty_unlocked())
+      {
+        value_type innerResult = front_implementation();
+        this->unlock();
+        return innerResult;
+      }
+      else
+      {
+        this->unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // This falls through in case asserts do not throw.
+      }
+#endif
+      this->lock();
+      value_type result = front_implementation();
       this->unlock();
-
       return result;
     }
 
@@ -558,16 +569,26 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
-    const_reference front() const
+    const_value_type front() const
     {
-      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
-      
+#if ETL_CHECKING_EXTRA
       this->lock();
-
-      const_reference result = front_implementation();
-
+      if (!this->empty_unlocked())
+      {
+        const_value_type innerResult = front_implementation();
+        this->unlock();
+        return innerResult;
+      }
+      else
+      {
+        this->unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // This falls through in case asserts do not throw.
+      }
+#endif
+      this->lock();
+      const_value_type result = front_implementation();
       this->unlock();
-
       return result;
     }
 
