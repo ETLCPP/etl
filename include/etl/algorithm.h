@@ -34,7 +34,7 @@ SOFTWARE.
 #define ETL_ALGORITHM_INCLUDED
 
 ///\defgroup algorithm algorithm
-/// Including reverse engineered algorithms from C++ 0x11, 0x14, 0x17
+/// Including reverse engineered algorithms from C++11, 14, 17
 /// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
@@ -1193,7 +1193,12 @@ namespace etl
     typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last) 
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
@@ -1242,7 +1247,12 @@ namespace etl
     typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
@@ -1292,7 +1302,12 @@ namespace etl
     typename etl::enable_if<etl::is_bidirectional_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
@@ -1314,7 +1329,12 @@ namespace etl
     typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
