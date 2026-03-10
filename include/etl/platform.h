@@ -155,6 +155,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Helper macro for ETL_FORMAT_NO_FLOATING_POINT.
+#if defined(ETL_FORMAT_NO_FLOATING_POINT)
+  #define ETL_USING_FORMAT_FLOATING_POINT     0
+  #define ETL_NOT_USING_FORMAT_FLOATING_POINT 1
+#else
+  #define ETL_USING_FORMAT_FLOATING_POINT     1
+  #define ETL_NOT_USING_FORMAT_FLOATING_POINT 0
+#endif
+
+//*************************************
 // Figure out things about the compiler, if haven't already done so in etl_profile.h
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
@@ -651,6 +661,7 @@ namespace etl
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
     static ETL_CONSTANT bool using_libc_wchar_h               = (ETL_USING_LIBC_WCHAR_H == 1);
     static ETL_CONSTANT bool using_std_exception              = (ETL_USING_STD_EXCEPTION == 1);
+    static ETL_CONSTANT bool using_format_floating_point      = (ETL_USING_FORMAT_FLOATING_POINT == 1);
     
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);

@@ -34,7 +34,7 @@ SOFTWARE.
 #define ETL_ALGORITHM_INCLUDED
 
 ///\defgroup algorithm algorithm
-/// Including reverse engineered algorithms from C++ 0x11, 0x14, 0x17
+/// Including reverse engineered algorithms from C++11, 14, 17
 /// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
@@ -1321,6 +1321,7 @@ namespace etl
       {
         return last;
       }
+      
       if (middle == last)
       {
         return first;
@@ -1374,6 +1375,7 @@ namespace etl
       {
         return last;
       }
+      
       if (middle == last)
       {
         return first;
@@ -1400,6 +1402,7 @@ namespace etl
       {
         return last;
       }
+      
       if (middle == last)
       {
         return first;
