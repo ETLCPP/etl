@@ -879,7 +879,7 @@ namespace etl
     // Get the dispatch index for a message id.
     // This will be used at runtime to find the handler for a message id.
     // If the message ids are contiguous, we can calculate the index directly. If they are not contiguous, we need to do a binary search.
-    // This will return Number_Of_Messages if the message id is not found, which indicates that the message should be passed to the successor.
+    // This will return Number_Of_Messages if the message id is not found.
     //**********************************************
     static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
     {
@@ -1878,10 +1878,10 @@ namespace etl
     }
   };
 
-  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,
+            typename T1, typename T2, typename T3, typename T4,
+            typename T5, typename T6, typename T7, typename T8,
+            typename T9, typename T10, typename T11, typename T12,
             typename T13, typename T14, typename T15, typename T16>
   ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::STATE_ID;
 #endif

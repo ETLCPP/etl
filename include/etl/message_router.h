@@ -587,29 +587,17 @@ namespace etl
     //***********************************************
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      size_t index = Number_Of_Messages;
-
-      // The IDs are sorted, so an ID less than the first is not handled by this router.
       if (id >= Message_Id_Start)
       {
-        index = get_dispatch_index_from_message_id(id);
+        const size_t index = get_dispatch_index_from_message_id(id);
+
+        if (index < Number_Of_Messages)
+        {
+          return true;
+        }
       }
 
-      if (index < Number_Of_Messages)
-      {
-        return true;
-      }
-      else
-      {
-        if (has_successor())
-        {
-          return get_successor().accepts(id);
-        }
-        else
-        {
-          return false;
-        }
-      }
+      return has_successor() ? get_successor().accepts(id) : false;
     }
 
     //********************************************
