@@ -945,7 +945,7 @@ namespace etl
     //**********************************************
     // Dispatch the message to the appropriate handler based on the index in the dispatch table.
     //**********************************************
-    etl::message_id_t dispatch(const etl::imessage& msg, size_t index)
+    etl::fsm_state_id_t dispatch(const etl::imessage& msg, size_t index)
     {
       return message_dispatch_table[index](static_cast<TDerived&>(*this), msg);
     }
@@ -1102,18 +1102,18 @@ namespace etl
               cog.outl("")
               cog.out("         ")
       cog.outl(" typename T%d>" % n)
-      cog.out("class fsm_state<TContext, TDerived, STATE_ID_, ")
+      cog.out("class fsm_state<TContext, TDerived, STATE_ID_,")
       for t in range(1, n + 1):
-          cog.out("T%d, " % t)
+          cog.out(" T%d," % t)
       if t % 16 == 0:
           cog.outl("")
           cog.out("               ")
       for t in range(n + 1, int(Handlers)):
-          cog.out("void, ")
+          cog.out(" void,")
       if t % 16 == 0:
           cog.outl("")
           cog.out("               ")
-      cog.outl("void> : public ifsm_state")
+      cog.outl(" void> : public ifsm_state")
       cog.outl("{")
       cog.outl("public:")
       cog.outl("")
@@ -1164,13 +1164,13 @@ namespace etl
   cog.outl("// Specialisation for 0 message types.")
   cog.outl("//***************************************************************************")
   cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_>")
-  cog.out("class fsm_state<TContext, TDerived, STATE_ID_, ")
+  cog.out("class fsm_state<TContext, TDerived, STATE_ID_,")
   for t in range(1, int(Handlers)):
-      cog.out("void, ")
+      cog.out(" void,")
   if t % 16 == 0:
       cog.outl("")
       cog.out("               ")
-  cog.outl("void> : public ifsm_state")
+  cog.outl(" void> : public ifsm_state")
   cog.outl("{")
   cog.outl("public:")
   cog.outl("")
@@ -1200,18 +1200,18 @@ namespace etl
   cog.outl("};")
 
   cog.outl("")
-  cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, ")
-  cog.out("          ")
+  cog.outl("template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_,")
+  cog.out("         ")
   for n in range(1, int(Handlers)):
-      cog.out("typename T%s, " % n)
+      cog.out(" typename T%s," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s>" % Handlers)
-  cog.out("ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, ")
+          cog.out("         ")
+  cog.outl(" typename T%s>" % Handlers)
+  cog.out("ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_,")
   for n in range(1, int(Handlers)):
-      cog.out("T%s, " % n)
-  cog.outl("T%s>::STATE_ID;" % Handlers)
+      cog.out(" T%s," % n)
+  cog.outl(" T%s>::STATE_ID;" % Handlers)
   ]]]*/
   /*[[[end]]]*/
 #endif

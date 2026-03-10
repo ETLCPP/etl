@@ -919,7 +919,7 @@ namespace etl
     //**********************************************
     // Dispatch the message to the appropriate handler based on the index in the dispatch table.
     //**********************************************
-    etl::message_id_t dispatch(const etl::imessage& msg, size_t index)
+    etl::fsm_state_id_t dispatch(const etl::imessage& msg, size_t index)
     {
       return message_dispatch_table[index](static_cast<TDerived&>(*this), msg);
     }
