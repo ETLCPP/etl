@@ -365,16 +365,6 @@ namespace etl
 #endif
 
 //*************************************
-// ETL_CONSTEXPR_INDEX_OPERATOR: constexpr if asserts are no-ops, constexpr14 when they contain statements.
-#if defined(ETL_NO_CHECKS)
-  #define ETL_CONSTEXPR_OR_ASSERT ETL_CONSTEXPR
-#elif defined(ETL_USE_ASSERT_FUNCTION) || ETL_USING_EXCEPTIONS || defined(ETL_LOG_ERRORS) || ETL_IS_DEBUG_BUILD
-  #define ETL_CONSTEXPR_OR_ASSERT ETL_CONSTEXPR14
-#else
-  #define ETL_CONSTEXPR_OR_ASSERT ETL_CONSTEXPR
-#endif
-
-//*************************************
 #if defined(ETL_CHECK_PUSH_POP)
     #define ETL_ASSERT_CHECK_PUSH_POP(b, e)           ETL_ASSERT(b, e)
     #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e) ETL_ASSERT_OR_RETURN(b, e)
@@ -388,12 +378,10 @@ namespace etl
   #define ETL_CHECKING_INDEX_OPERATOR 1
   #define ETL_NOT_CHECKING_INDEX_OPERATOR 0
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b,e)
-  #define ETL_NOEXCEPT_INDEX_OPERATOR
 #else
   #define ETL_CHECKING_INDEX_OPERATOR 0
   #define ETL_NOT_CHECKING_INDEX_OPERATOR 1
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
-  #define ETL_NOEXCEPT_INDEX_OPERATOR ETL_NOEXCEPT
 #endif
 
 //*************************************

@@ -499,7 +499,7 @@ namespace etl
     /// Returns a reference to the indexed value.
     /// If asserts or exceptions are enabled, throws an etl::array_view_bounds if the index is out of bounds.
     //*************************************************************************
-    reference operator[](const size_t i) ETL_NOEXCEPT_INDEX_OPERATOR
+    reference operator[](const size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(array_view_bounds));
 
@@ -511,7 +511,7 @@ namespace etl
     /// Returns a const reference to the indexed value.
     /// If asserts or exceptions are enabled, throws an etl::array_view_bounds if the index is out of bounds.
     //*************************************************************************
-    const_reference operator[](const size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
+    const_reference operator[](const size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(array_view_bounds));
 

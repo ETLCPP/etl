@@ -191,20 +191,28 @@ namespace etl
     /// Returns a const reference to the first element.
     /// If asserts or exceptions are enabled, throws an etl::string_view_empty if the view is empty.
     //*************************************************************************
-    ETL_CONSTEXPR_OR_ASSERT const_reference front() const
+    ETL_CONSTEXPR const_reference front() const
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA 
+      return !empty() ? *mbegin : throw(ETL_ERROR(string_view_empty)); 
+#else 
       ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(string_view_empty));
       return *mbegin;
+#endif
     }
 
     //*************************************************************************
     /// Returns a const reference to the last element.
     /// If asserts or exceptions are enabled, throws an etl::string_view_empty if the view is empty.
     //*************************************************************************
-    ETL_CONSTEXPR_OR_ASSERT const_reference back() const
+    ETL_CONSTEXPR const_reference back() const
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA 
+      return !empty() ? *(mend - 1) : throw(ETL_ERROR(string_view_empty)); 
+#else 
       ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(string_view_empty));
       return *(mend - 1);
+#endif
     }
 
     //*************************************************************************
@@ -347,10 +355,14 @@ namespace etl
     /// Returns a const reference to the indexed value.
     /// If asserts or exceptions are enabled, throws an etl::string_view_bounds if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR_OR_ASSERT const_reference operator[](size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR 
+      return i < size() ? mbegin[i] : throw(ETL_ERROR(string_view_bounds)); 
+#else
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_view_bounds));
       return mbegin[i];
+#endif
     }
 
     //*************************************************************************

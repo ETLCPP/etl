@@ -270,7 +270,7 @@ namespace etl
     /// Returns a reference to the indexed value.
     /// If asserts or exceptions are enabled, throws an etl::array_wrapper_bounds if the index is out of bounds.
     //*************************************************************************
-    reference operator[](size_t i) ETL_NOEXCEPT_INDEX_OPERATOR
+    reference operator[](size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
@@ -280,10 +280,15 @@ namespace etl
     /// Returns a const reference to the indexed value.
     /// If asserts or exceptions are enabled, throws an etl::array_wrapper_bounds if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR_OR_ASSERT const_reference operator[](size_t i) const ETL_NOEXCEPT_INDEX_OPERATOR
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
+      // Throwing from c++11 constexpr requires special syntax 
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR 
+       return i < SIZE ? ARRAY_[i] : throw(ETL_ERROR(etl::array_wrapper_bounds)); 
+#else 
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
+#endif
     }
 
     //*************************************************************************
