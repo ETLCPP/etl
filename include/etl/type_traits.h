@@ -3099,6 +3099,60 @@ typedef integral_constant<bool, true>  true_type;
   };
 
 #endif
+
+#if ETL_USING_CPP11
+  template <typename, typename = void>
+  struct has_size : etl::false_type {};
+
+  template <typename T>
+  struct has_size<T, void_t<decltype(etl::declval<T>().size())> >
+    : etl::true_type {};
+#else
+  template <typename T>
+  struct has_size
+  {
+  private:
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename U>
+    static yes test_size(char (*)[sizeof(&U::size)]);
+
+    template <typename U>
+    static no test_size(...);
+
+  public:
+
+    static const bool value = (sizeof(test_size<T>(0)) == sizeof(yes));
+  };
+#endif
+
+#if ETL_USING_CPP11
+  template <typename, typename = void>
+  struct has_data : etl::false_type {};
+
+  template <typename T>
+  struct has_data<T, void_t<decltype(etl::declval<T>().data())> >
+    : etl::true_type {};
+#else
+  template <typename T>
+  struct has_data
+  {
+  private:
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename U>
+    static yes test_data(char (*)[sizeof(&U::data)]);
+
+    template <typename U>
+    static no test_data(...);
+
+  public:
+
+    static const bool value = (sizeof(test_data<T>(0)) == sizeof(yes));
+  };
+#endif
 }
 
 // Helper macros
