@@ -401,6 +401,7 @@ SOFTWARE.
   #define ETL_NORETURN
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(...)
+  #define ETL_NOEXCEPT_IF(b)
   #define ETL_NOEXCEPT_FROM(x)
   #define ETL_MOVE(x) x
   #define ETL_ENUM_CLASS(name)            enum name
