@@ -496,11 +496,17 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      View view1(etldata.begin(), etldata.begin());
-      CHECK(!view1.empty());
-
       EView view2(etldata.begin(), etldata.begin());
       CHECK(view2.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_construction_from_mismatched_size)
+    {
+      CHECK_THROW((View(etldata.begin(), etldata.begin())),    etl::span_size_mismatch);
+      CHECK_THROW((View(etldata.begin(), 1)),                  etl::span_size_mismatch);
+      CHECK_THROW((View(etldata.begin(), etldata.size() - 1)), etl::span_size_mismatch);
+      CHECK_THROW((View(etldata.begin(), etldata.size() + 1)), etl::span_size_mismatch);
     }
 
     //*************************************************************************
