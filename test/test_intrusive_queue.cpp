@@ -440,12 +440,31 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_front_const_empty_exception)
+    TEST(test_front_empty_exception)
     {
       etl::intrusive_queue<Data, link_fwd> queueD;
 
       CHECK_EQUAL(0U, queueD.size());
       CHECK_THROW(queueD.front(), etl::intrusive_queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_back_empty_exception)
+    {
+      etl::intrusive_queue<Data, link_fwd> queueD;
+
+      CHECK_EQUAL(0U, queueD.size());
+      CHECK_THROW(queueD.back(), etl::intrusive_queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const_empty_exception)
+    {
+      etl::intrusive_queue<Data, link_fwd> queueD;
+      const etl::intrusive_queue<Data, link_fwd>& queueDR = queueD;
+
+      CHECK_EQUAL(0U, queueDR.size());
+      CHECK_THROW(queueDR.front(), etl::intrusive_queue_empty);
     }
 
     //*************************************************************************
