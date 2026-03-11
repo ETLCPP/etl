@@ -75,41 +75,6 @@ namespace etl
   template <typename T> struct is_etl_array<volatile T> : is_etl_array<T> {};
   template <typename T> struct is_etl_array<const volatile T> : is_etl_array<T> {};
 
-#if ETL_USING_CPP11
-  template <typename, typename = void>
-  struct has_size_and_data : etl::false_type {};
-
-  template <typename T>
-  struct has_size_and_data<T, void_t<decltype(ETL_OR_STD17::size(etl::declval<T>())),
-                                     decltype(ETL_OR_STD17::data(etl::declval<T>()))> >
-    : etl::true_type {};
-#else
-  template <typename T>
-  struct has_size_and_data
-  {
-  private:
-    typedef char yes;
-    struct no { char dummy[2]; };
-
-    template <typename U>
-    static yes test_size(char (*)[sizeof(&U::size)]);
-
-    template <typename U>
-    static no test_size(...);
-
-    template <typename U>
-    static yes test_data(char (*)[sizeof(&U::data)]);
-
-    template <typename U>
-    static no test_data(...);
-
-  public:
-
-    static const bool value = (sizeof(test_size<T>(0)) == sizeof(yes)) &&
-                              (sizeof(test_data<T>(0)) == sizeof(yes));
-  };
-#endif
-
   //***************************************************************************
   // Tag to indicate a class is a span.
   //***************************************************************************
@@ -193,10 +158,16 @@ namespace etl
   };
 
   //***************************************************************************
+  ///\ingroup span
+  /// Tag to indicate a class is a span.
+  /// Deprecated, use is_span trait instead.
+  class span_tag {};
+
+  //***************************************************************************
   /// Span - Fixed Extent
   //***************************************************************************
   template <typename T, size_t Extent = etl::dynamic_extent>
-  class span
+  class span : public span_tag
   {
   public:
 
@@ -240,19 +211,23 @@ namespace etl
     /// Construct from iterator + size
     //*************************************************************************
     template <typename TIterator>
-    explicit ETL_CONSTEXPR span(const TIterator begin_, const size_t /*size_*/) ETL_NOEXCEPT
+    explicit ETL_CONSTEXPR span(const TIterator begin_, const size_t size_) ETL_NOEXCEPT_FROM(ETL_NOT_USING_EXCEPTIONS)
       : pbegin(etl::to_address(begin_))
     {
+      ETL_ASSERT(size == Extent, ETL_ERROR(span_size_mismatch));
+      (void)size_;
     }
 
     //*************************************************************************
     /// Construct from iterators
     //*************************************************************************
     template <typename TIteratorBegin, typename TIteratorEnd>
-    ETL_CONSTEXPR span(const TIteratorBegin begin_, const TIteratorEnd /*end_*/,
-                       typename etl::enable_if<!etl::is_integral<TIteratorEnd>::value, void>::type* = 0) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const TIteratorBegin begin_, const TIteratorEnd end_,
+                       typename etl::enable_if<!etl::is_integral<TIteratorEnd>::value, void>::type* = 0) ETL_NOEXCEPT_FROM(ETL_NOT_USING_EXCEPTIONS)
       : pbegin(etl::to_address(begin_))
     {
+      ETL_ASSERT(etl::distance(begin_, end_) == Extent, ETL_ERROR(span_size_mismatch));
+      (void)end_;
     }
 
     //*************************************************************************
@@ -274,7 +249,8 @@ namespace etl
                                                                 !etl::is_etl_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                                 !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                                 !etl::is_array<TContainer>::value &&
-                                                                has_size_and_data<TContainer>::value &&
+                                                                has_size<TContainer>::value &&
+                                                                has_data<TContainer>::value &&
                                                                 etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0)
       : pbegin(a.data())
     {
@@ -290,8 +266,8 @@ namespace etl
                                                                       !etl::is_std_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                                       !etl::is_etl_array<typename etl::remove_reference<TContainer>::type>::value &&
                                                                       !etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
-                                                                      !etl::is_array<TContainer>::value&&
-                                                                      has_size_and_data<TContainer>::value &&
+                                                                      has_size<TContainer>::value &&
+                                                                      has_data<TContainer>::value &&
                                                                       etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0)
       : pbegin(a.data())
     {
@@ -720,7 +696,7 @@ namespace etl
   /// Span - Dynamic Extent
   //***************************************************************************
   template <typename T>
-  class  span<T, etl::dynamic_extent>
+  class span<T, etl::dynamic_extent> : public span_tag
   {
   public:
 
