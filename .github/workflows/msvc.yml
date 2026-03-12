@@ -27,7 +27,7 @@ jobs:
         MSBuild.exe .\etl.sln
         
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
 
   build-windows-msvc-no-stl:
     name: Windows - No STL
@@ -48,7 +48,7 @@ jobs:
         MSBuild.exe .\etl.sln
         
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
 
   build-windows-msvc-stl-force-cpp03:
     name: Windows - STL - Force C++03
@@ -70,7 +70,7 @@ jobs:
         MSBuild.exe .\etl.sln
 
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
         
   build-windows-msvc-no-stl-force-cpp03:
     name: Windows - No STL - Force C++03
@@ -92,5 +92,5 @@ jobs:
         MSBuild.exe .\etl.sln
 
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
 
