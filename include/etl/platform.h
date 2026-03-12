@@ -382,11 +382,13 @@ SOFTWARE.
   #if ETL_USING_EXCEPTIONS
     #define ETL_NOEXCEPT                  noexcept
     #define ETL_NOEXCEPT_EXPR(...)        noexcept(__VA_ARGS__)
+    #define ETL_NOEXCEPT_IF(b)            noexcept((b))
     #define ETL_NOEXCEPT_FROM(x)          noexcept(noexcept(x))
   #else
     #define ETL_NOEXCEPT
     #define ETL_NOEXCEPT_EXPR(...)
-    #define ETL_NOEXCEPT_FROM(x) 
+    #define ETL_NOEXCEPT_IF(b)
+    #define ETL_NOEXCEPT_FROM(x)
   #endif
 #else
   #define ETL_CONSTEXPR
@@ -399,7 +401,8 @@ SOFTWARE.
   #define ETL_NORETURN
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(...)
-  #define ETL_NOEXCEPT_FROM(x) 
+  #define ETL_NOEXCEPT_IF(b)
+  #define ETL_NOEXCEPT_FROM(x)
   #define ETL_MOVE(x) x
   #define ETL_ENUM_CLASS(name)            enum name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum name
@@ -412,7 +415,7 @@ SOFTWARE.
 #if ETL_USING_CPP14
   #define ETL_CONSTEXPR14  constexpr
 
-  #if !defined(ETL_IN_UNIT_TEST)   
+  #if !defined(ETL_IN_UNIT_TEST)
     #define ETL_DEPRECATED                [[deprecated]]
     #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
   #else
@@ -611,7 +614,7 @@ SOFTWARE.
 #elif defined(ETL_COMPILER_MICROSOFT)
   #define ETL_PACKED_CLASS(class_type)   __pragma(pack(push, 1)) class  class_type
   #define ETL_PACKED_STRUCT(struct_type) __pragma(pack(push, 1)) struct struct_type
-  #define ETL_PACKED     
+  #define ETL_PACKED
   #define ETL_END_PACKED __pragma(pack(pop))
   #define ETL_HAS_PACKED 1
 #else
@@ -662,7 +665,7 @@ namespace etl
     static ETL_CONSTANT bool using_libc_wchar_h               = (ETL_USING_LIBC_WCHAR_H == 1);
     static ETL_CONSTANT bool using_std_exception              = (ETL_USING_STD_EXCEPTION == 1);
     static ETL_CONSTANT bool using_format_floating_point      = (ETL_USING_FORMAT_FLOATING_POINT == 1);
-    
+
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
