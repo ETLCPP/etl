@@ -156,6 +156,7 @@ namespace etl
   ///\endcode
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_mpmc_mutex holds.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_mpmc_mutex : public queue_mpmc_mutex_base<MEMORY_MODEL>
@@ -342,25 +343,15 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
+      etl::lock_guard<etl::mutex> guard(access);
+
 #if ETL_CHECKING_EXTRA
-      access.lock();
-      if (current_size != 0)
+      if (current_size == 0)
       {
-        value_type innerResult = front_implementation();
-        access.unlock();
-        return innerResult;
-      }
-      else
-      {
-        access.unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      access.lock();
-      value_type result = front_implementation();
-      access.unlock();
-      return result;
+      return front_implementation();
     }
 
     //*************************************************************************
@@ -369,25 +360,15 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
+      etl::lock_guard<etl::mutex> guard(access);
+
 #if ETL_CHECKING_EXTRA
-      access.lock();
-      if (current_size != 0)
+      if (current_size == 0)
       {
-        const_value_type innerResult = front_implementation();
-        access.unlock();
-        return innerResult;
-      }
-      else
-      {
-        access.unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      access.lock();
-      const_value_type result = front_implementation();
-      access.unlock();
-      return result;
+      return front_implementation();
     }
 
     //*************************************************************************
@@ -728,6 +709,7 @@ namespace etl
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_mpmc_mutex : public etl::iqueue_mpmc_mutex<T, MEMORY_MODEL>

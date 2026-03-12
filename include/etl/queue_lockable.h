@@ -39,6 +39,7 @@ SOFTWARE.
 #include "function.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "mutex.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -272,6 +273,7 @@ namespace etl
   ///\details Normally a reference to this type will be taken from a derived queue_lockable.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_lockable holds.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, const size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_lockable : public etl::queue_lockable_base<VMemory_Model>
@@ -544,25 +546,16 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
+      lock_adapter adapter(*this);
+      etl::lock_guard<lock_adapter> guard(adapter);
+
 #if ETL_CHECKING_EXTRA
-      this->lock();
-      if (!this->empty_unlocked())
+      if (this->empty_unlocked())
       {
-        value_type innerResult = front_implementation();
-        this->unlock();
-        return innerResult;
-      }
-      else
-      {
-        this->unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      this->lock();
-      value_type result = front_implementation();
-      this->unlock();
-      return result;
+      return front_implementation();
     }
 
     //*************************************************************************
@@ -571,25 +564,16 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
+      lock_adapter adapter(*this);
+      etl::lock_guard<lock_adapter> guard(adapter);
+
 #if ETL_CHECKING_EXTRA
-      this->lock();
-      if (!this->empty_unlocked())
+      if (this->empty_unlocked())
       {
-        const_value_type innerResult = front_implementation();
-        this->unlock();
-        return innerResult;
-      }
-      else
-      {
-        this->unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      this->lock();
-      const_value_type result = front_implementation();
-      this->unlock();
-      return result;
+      return front_implementation();
     }
 
     //*************************************************************************
@@ -639,6 +623,22 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Mutex-compatible adapter that bridges the virtual lock/unlock methods
+    /// to the interface expected by etl::lock_guard.
+    //*************************************************************************
+    class lock_adapter
+    {
+    public:
+      explicit lock_adapter(const iqueue_lockable& q_) : q(q_) {}
+      void lock()   { q.lock();   }
+      void unlock() { q.unlock(); }
+    private:
+      lock_adapter(const lock_adapter&) ETL_DELETE;
+      lock_adapter& operator=(const lock_adapter&) ETL_DELETE;
+      const iqueue_lockable& q;
+    };
 
     //*************************************************************************
     /// Push a value to the queue without locking.
@@ -869,6 +869,7 @@ namespace etl
   /// \tparam T             The type this queue should support.
   /// \tparam VSize         The maximum capacity of the queue.
   /// \tparam VMemory_Model The memory model for the queue. Determines the type of the internal counter variables.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t VSize, size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_lockable : public etl::iqueue_lockable<T, VMemory_Model>

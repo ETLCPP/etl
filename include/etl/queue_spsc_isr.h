@@ -38,6 +38,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "mutex.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -519,6 +520,7 @@ namespace etl
   ///\endcode
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_isr holds.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_isr : public queue_spsc_isr_base<T, MEMORY_MODEL>
@@ -699,25 +701,16 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
+      isr_lock_adapter adapter;
+      etl::lock_guard<isr_lock_adapter> guard(adapter);
+
 #if ETL_CHECKING_EXTRA
-      TAccess::lock();
-      if (!this->empty_from_isr())
+      if (this->empty_from_isr())
       {
-        value_type innerResult = this->front_implementation();
-        TAccess::unlock();
-        return innerResult;
-      }
-      else
-      {
-        TAccess::unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_isr_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      TAccess::lock();
-      value_type result = this->front_implementation();
-      TAccess::unlock();
-      return result;
+      return this->front_implementation();
     }
 
     //*************************************************************************
@@ -726,25 +719,16 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
+      isr_lock_adapter adapter;
+      etl::lock_guard<isr_lock_adapter> guard(adapter);
+
 #if ETL_CHECKING_EXTRA
-      TAccess::lock();
-      if (!this->empty_from_isr())
+      if (this->empty_from_isr())
       {
-        const_value_type innerResult = this->front_implementation();
-        TAccess::unlock();
-        return innerResult;
-      }
-      else
-      {
-        TAccess::unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_isr_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      TAccess::lock();
-      const_value_type result = this->front_implementation();
-      TAccess::unlock();
-      return result;
+      return this->front_implementation();
     }
 
     //*************************************************************************
@@ -839,6 +823,21 @@ namespace etl
 
   private:
 
+    //*************************************************************************
+    /// Mutex-compatible adapter that bridges the static TAccess lock/unlock
+    /// methods to the interface expected by etl::lock_guard.
+    //*************************************************************************
+    class isr_lock_adapter
+    {
+    public:
+      isr_lock_adapter() {}
+      void lock()   { TAccess::lock();   }
+      void unlock() { TAccess::unlock(); }
+    private:
+      isr_lock_adapter(const isr_lock_adapter&) ETL_DELETE;
+      isr_lock_adapter& operator=(const isr_lock_adapter&) ETL_DELETE;
+    };
+
     // Disable copy construction and assignment.
     iqueue_spsc_isr(const iqueue_spsc_isr&) ETL_DELETE;
     iqueue_spsc_isr& operator =(const iqueue_spsc_isr&) ETL_DELETE;
@@ -859,6 +858,7 @@ namespace etl
   /// \tparam SIZE         The maximum capacity of the queue.
   /// \tparam TAccess      The type that will lock and unlock interrupts.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL>

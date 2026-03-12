@@ -39,6 +39,7 @@ SOFTWARE.
 #include "function.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "mutex.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -215,6 +216,7 @@ namespace etl
   ///\details Normally a reference to this type will be taken from a derived queue_spsc_locked.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_locked holds.
+  /// \note All types used must have a copy constructor.
   //***************************************************************************
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_locked : public iqueue_spsc_locked_base<MEMORY_MODEL>
@@ -499,25 +501,16 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
+      lock_adapter adapter(lock, unlock);
+      etl::lock_guard<lock_adapter> guard(adapter);
+
 #if ETL_CHECKING_EXTRA
-      lock();
-      if (!this->empty_from_unlocked())
+      if (this->empty_from_unlocked())
       {
-        value_type innerResult = front_implementation();
-        unlock();
-        return innerResult;
-      }
-      else
-      {
-        unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_locked_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      lock();
-      value_type result = front_implementation();
-      unlock();
-      return result;
+      return front_implementation();
     }
 
     //*************************************************************************
@@ -526,25 +519,16 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
+      lock_adapter adapter(lock, unlock);
+      etl::lock_guard<lock_adapter> guard(adapter);
+
 #if ETL_CHECKING_EXTRA
-      lock();
-      if (!this->empty_from_unlocked())
+      if (this->empty_from_unlocked())
       {
-        const_value_type innerResult = front_implementation();
-        unlock();
-        return innerResult;
-      }
-      else
-      {
-        unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_locked_empty));
-        // This falls through in case asserts do not throw.
       }
 #endif
-      lock();
-      const_value_type result = front_implementation();
-      unlock();
-      return result;
+      return front_implementation();
     }
 
     //*************************************************************************
@@ -652,6 +636,30 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Mutex-compatible adapter that bridges the lock/unlock ifunction
+    /// callbacks to the interface expected by etl::lock_guard.
+    //*************************************************************************
+    class lock_adapter
+    {
+    public:
+      lock_adapter(const etl::ifunction<void>& lock_, const etl::ifunction<void>& unlock_)
+        : m_lock(lock_)
+        , m_unlock(unlock_)
+      {
+      }
+
+      void lock()   { m_lock();   }
+      void unlock() { m_unlock(); }
+
+    private:
+      lock_adapter(const lock_adapter&) ETL_DELETE;
+      lock_adapter& operator=(const lock_adapter&) ETL_DELETE;
+
+      const etl::ifunction<void>& m_lock;
+      const etl::ifunction<void>& m_unlock;
+    };
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -912,6 +920,7 @@ namespace etl
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_locked : public etl::iqueue_spsc_locked<T, MEMORY_MODEL>
