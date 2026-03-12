@@ -1312,5 +1312,23 @@ namespace
     }
 
 #include "etl/private/diagnostic_pop.h"
+
+    //*************************************************************************
+    TEST(test_not_constructible_from_rvalue_container)
+    {
+#if ETL_USING_CPP17
+      CHECK(!(etl::is_constructible_v<View,  StlVData&&>));
+      CHECK(!(etl::is_constructible_v<CView, StlVData&&>));
+
+      CHECK(!(etl::is_constructible_v<View,  EtlData&&>));
+      CHECK(!(etl::is_constructible_v<View,  StlData&&>));
+#else
+      CHECK(!(etl::is_constructible<View,  StlVData&&>::value));
+      CHECK(!(etl::is_constructible<CView, StlVData&&>::value));
+
+      CHECK(!(etl::is_constructible<View,  EtlData&&>::value));
+      CHECK(!(etl::is_constructible<View,  StlData&&>::value));
+#endif
+    }
   }
 }
