@@ -28,7 +28,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-gcc-cpp20-linux-no-stl:
     name: GCC C++20 Linux - No STL
@@ -50,7 +50,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-gcc-cpp20-linux-stl-force-cpp03:
     name: GCC C++20 Linux - STL - Force C++03
@@ -72,7 +72,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-gcc-cpp20-linux-no-stl-force-cpp03:
     name: GCC C++20 Linux - No STL - Force C++03
@@ -94,4 +94,4 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v

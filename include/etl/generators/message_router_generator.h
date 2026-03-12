@@ -525,33 +525,31 @@ namespace etl
     //***********************************************
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-      etl::message_id_t id = msg.get_message_id();
-      size_t index = Number_Of_Messages;
+      const etl::message_id_t id = msg.get_message_id();
 
       // The IDs are sorted, so an ID less than the first is not handled by this router.
       if (id >= Message_Id_Start)
       {
-        index = get_dispatch_index_from_message_id(id);
+        const size_t index = get_dispatch_index_from_message_id(id);
+
+        // If the index is less than Number_Of_Messages, then we have a handler for this message type, so dispatch it.
+        if (index < Number_Of_Messages)
+        {
+          dispatch(msg, index);
+          return;
+        }
       }
 
-      // If the index is less than Number_Of_Messages, then we have a handler for this message type, so dispatch it.
-      if (index < Number_Of_Messages)
+      // We don't have a handler for this message type, so pass it to a successor if there is one, or call on_receive_unknown() if there isn't.
+      if (has_successor())
       {
-        dispatch(msg, index);
+        get_successor().receive(msg);
       }
       else
       {
-        // We don't have a handler for this message type, so pass it to a successor if there is one, or call on_receive_unknown() if there isn't.
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
 #include "etl/private/diagnostic_array_bounds_push.h"
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
 #include "etl/private/diagnostic_pop.h"
-        }
       }
     }
 
@@ -601,29 +599,17 @@ namespace etl
     //***********************************************
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      size_t index = Number_Of_Messages;
-
-      // The IDs are sorted, so an ID less than the first is not handled by this router.
       if (id >= Message_Id_Start)
       {
-        index = get_dispatch_index_from_message_id(id);
+        const size_t index = get_dispatch_index_from_message_id(id);
+
+        if (index < Number_Of_Messages)
+        {
+          return true;
+        }
       }
 
-      if (index < Number_Of_Messages)
-      {
-        return true;
-      }
-      else
-      {
-        if (has_successor())
-        {
-          return get_successor().accepts(id);
-        }
-        else
-        {
-          return false;
-        }
-      }
+      return has_successor() ? get_successor().accepts(id) : false;
     }
 
     //********************************************
