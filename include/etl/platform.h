@@ -461,7 +461,13 @@ SOFTWARE.
   #define ETL_UNLIKELY
   #define ETL_CONSTEXPR20
   #define ETL_CONSTEVAL
-  #define ETL_CONSTINIT
+  #if ETL_USING_CLANG_COMPILER && ETL_COMPILER_FULL_VERSION >= 40000
+    #define ETL_CONSTINIT __attribute__((require_constant_initialization))
+  #elif ETL_USING_GCC_COMPILER && ETL_COMPILER_FULL_VERSION >= 100000
+    #define ETL_CONSTINIT __constinit
+  #else
+    #define ETL_CONSTINIT
+  #endif
   #define ETL_NO_UNIQUE_ADDRESS
   #define ETL_EXPLICIT_EXPR(...) explicit
 #endif
