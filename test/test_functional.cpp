@@ -85,6 +85,24 @@ namespace
     mutable std::string result;
   };
 
+#if ETL_USING_CPP11
+  // Lightweight type used to verify transparent heterogeneous comparison.
+  // Only operator<(int, Wrapper) is defined; operator<(Wrapper, int) is
+  // intentionally absent.  less_equal<void> is implemented as
+  // !(rhs < lhs), so less_equal<void>{}(Wrapper, int) needs
+  // operator<(int, Wrapper) which IS provided.
+  struct Wrapper
+  {
+    int value;
+    constexpr explicit Wrapper(int v) : value(v) {}
+  };
+
+  // int < Wrapper  -- defined
+  constexpr bool operator<(int lhs, const Wrapper& rhs) { return lhs < rhs.value; }
+
+  // Wrapper < int  -- intentionally NOT defined
+#endif
+
   SUITE(test_functional)
   {
     //*************************************************************************
@@ -101,6 +119,32 @@ namespace
       CHECK((compare<etl::less_equal<int>>(1, 2)));
       CHECK(!(compare<etl::less_equal<int>>(2, 1)));
       CHECK((compare<etl::less_equal<int>>(1, 1)));
+
+#if ETL_USING_CPP11
+      CHECK((compare<etl::less_equal<void>>(1, 2)));
+      CHECK(!(compare<etl::less_equal<void>>(2, 1)));
+      CHECK((compare<etl::less_equal<void>>(1, 1)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_less_equal_void_heterogeneous)
+    {
+#if ETL_USING_CPP11
+      // less_equal<void>{}(lhs, rhs) is !(rhs < lhs).
+      // With only operator<(int, Wrapper) defined, we can call
+      // less_equal<void>{}(Wrapper, int) because the implementation
+      // evaluates !(int < Wrapper).
+
+      // Wrapper(1) <= 2  →  !(2 < Wrapper(1))  →  !(2 < 1) → !false → true
+      CHECK((etl::less_equal<void>{}(Wrapper(1), 2)));
+
+      // Wrapper(2) <= 1  →  !(1 < Wrapper(2))  →  !(1 < 2) → !true → false
+      CHECK(!(etl::less_equal<void>{}(Wrapper(2), 1)));
+
+      // Wrapper(3) <= 3  →  !(3 < Wrapper(3))  →  !(3 < 3) → !false → true
+      CHECK((etl::less_equal<void>{}(Wrapper(3), 3)));
+#endif
     }
 
     //*************************************************************************
@@ -117,6 +161,32 @@ namespace
       CHECK(!(compare<etl::greater_equal<int>>(1, 2)));
       CHECK((compare<etl::greater_equal<int>>(2, 1)));
       CHECK((compare<etl::greater_equal<int>>(1, 1)));
+
+#if ETL_USING_CPP11
+      CHECK(!(compare<etl::greater_equal<void>>(1, 2)));
+      CHECK((compare<etl::greater_equal<void>>(2, 1)));
+      CHECK((compare<etl::greater_equal<void>>(1, 1)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_greater_equal_void_heterogeneous)
+    {
+#if ETL_USING_CPP11
+      // greater_equal<void>{}(lhs, rhs) is !(lhs < rhs).
+      // With only operator<(int, Wrapper) defined, we can call
+      // greater_equal<void>{}(int, Wrapper) because the implementation
+      // evaluates !(int < Wrapper).
+
+      // 2 >= Wrapper(1)  →  !(2 < Wrapper(1))  →  !(2 < 1) → !false → true
+      CHECK((etl::greater_equal<void>{}(2, Wrapper(1))));
+
+      // 1 >= Wrapper(2)  →  !(1 < Wrapper(2))  →  !(1 < 2) → !true → false
+      CHECK(!(etl::greater_equal<void>{}(1, Wrapper(2))));
+
+      // 3 >= Wrapper(3)  →  !(3 < Wrapper(3))  →  !(3 < 3) → !false → true
+      CHECK((etl::greater_equal<void>{}(3, Wrapper(3))));
+#endif
     }
 
     //*************************************************************************
