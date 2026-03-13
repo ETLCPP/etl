@@ -1920,6 +1920,27 @@ namespace etl
   {
     return first.count();
   }
+#endif
+
+#if ETL_USING_CPP14
+  template <class T, typename = void>
+  struct is_range: etl::false_type
+  {
+  };
+
+  template <class T>
+  struct is_range<T,
+    etl::void_t<decltype(ETL_OR_STD::begin(etl::declval<T&>())),
+                decltype(ETL_OR_STD::end(etl::declval<T&>()))>>: etl::true_type
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_range_v = is_range<T>::value;
+#endif
+#endif
+
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //**************************************************************************
   /// Returns a pointer to the block of memory containing the elements of the range.
@@ -1960,28 +1981,6 @@ namespace etl
   {
     return a;
   }
-#endif
-}
-
-#endif
-
-#if ETL_USING_CPP14
-  template <class T, typename = void>
-  struct is_range: etl::false_type
-  {
-  };
-
-  template <class T>
-  struct is_range<T,
-    etl::void_t<decltype(ETL_OR_STD::begin(etl::declval<T&>())),
-                decltype(ETL_OR_STD::end(etl::declval<T&>()))>>: etl::true_type
-  {
-  };
-
-#if ETL_USING_CPP17
-  template <typename T>
-  inline constexpr bool is_range_v = is_range<T>::value;
-#endif
 #endif
 }
 
