@@ -82,7 +82,6 @@ namespace etl
     typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
 
     typedef T        value_type;       ///< The type stored in the queue.
-    typedef const T  const_value_type; ///< A const value of the type used in the queue.
     typedef T&       reference;        ///< A reference to the type used in the queue.
     typedef const T& const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
@@ -520,7 +519,6 @@ namespace etl
   ///\endcode
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_isr holds.
-  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_isr : public queue_spsc_isr_base<T, MEMORY_MODEL>
@@ -532,7 +530,6 @@ namespace etl
   public:
 
     typedef typename base_t::value_type       value_type;       ///< The type stored in the queue.
-    typedef typename base_t::const_value_type const_value_type; ///< A const value of the type used in the queue.
     typedef typename base_t::reference        reference;        ///< A reference to the type used in the queue.
     typedef typename base_t::const_reference  const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
@@ -699,7 +696,7 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
-    value_type front()
+    reference front()
     {
 #if ETL_CHECKING_EXTRA
       TAccess::lock();
@@ -727,7 +724,7 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
-    const_value_type front() const
+    const_reference front() const
     {
 #if ETL_CHECKING_EXTRA
       TAccess::lock();
@@ -843,21 +840,6 @@ namespace etl
 
   private:
 
-    //*************************************************************************
-    /// Mutex-compatible adapter that bridges the static TAccess lock/unlock
-    /// methods to the interface expected by etl::lock_guard.
-    //*************************************************************************
-    class isr_lock_adapter
-    {
-    public:
-      isr_lock_adapter() {}
-      void lock()   { TAccess::lock();   }
-      void unlock() { TAccess::unlock(); }
-    private:
-      isr_lock_adapter(const isr_lock_adapter&) ETL_DELETE;
-      isr_lock_adapter& operator=(const isr_lock_adapter&) ETL_DELETE;
-    };
-
     // Disable copy construction and assignment.
     iqueue_spsc_isr(const iqueue_spsc_isr&) ETL_DELETE;
     iqueue_spsc_isr& operator =(const iqueue_spsc_isr&) ETL_DELETE;
@@ -878,7 +860,6 @@ namespace etl
   /// \tparam SIZE         The maximum capacity of the queue.
   /// \tparam TAccess      The type that will lock and unlock interrupts.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
-  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, typename TAccess, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_isr : public etl::iqueue_spsc_isr<T, TAccess, MEMORY_MODEL>

@@ -156,7 +156,6 @@ namespace etl
   ///\endcode
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_mpmc_mutex holds.
-  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_mpmc_mutex : public queue_mpmc_mutex_base<MEMORY_MODEL>
@@ -168,7 +167,6 @@ namespace etl
   public:
 
     typedef T                          value_type;       ///< The type stored in the queue.
-    typedef const T                    const_value_type; ///< A const value of the type used in the queue.
     typedef T&                         reference;        ///< A reference to the type used in the queue.
     typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
@@ -341,7 +339,7 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if the queue is empty.
     //*************************************************************************
-    value_type front()
+    reference front()
     {
 #if ETL_CHECKING_EXTRA
       access.lock();
@@ -369,7 +367,7 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if the queue is empty.
     //*************************************************************************
-    const_value_type front() const
+    const_reference front() const
     {
 #if ETL_CHECKING_EXTRA
       access.lock();
@@ -731,7 +729,6 @@ namespace etl
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
-  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_mpmc_mutex : public etl::iqueue_mpmc_mutex<T, MEMORY_MODEL>

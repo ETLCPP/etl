@@ -228,7 +228,6 @@ namespace etl
   public:
 
     typedef T                          value_type;       ///< The type stored in the queue.
-    typedef const T                    const_value_type; ///< A const value of the type used in the queue.
     typedef T&                         reference;        ///< A reference to the type used in the queue.
     typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
@@ -499,7 +498,7 @@ namespace etl
     /// Peek a value from the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_spsc_locked_empty if the queue is empty.
     //*************************************************************************
-    value_type front()
+    reference front()
     {
 #if ETL_CHECKING_EXTRA
       lock();
@@ -527,7 +526,7 @@ namespace etl
     /// Peek a value from the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_spsc_locked_empty if the queue is empty.
     //*************************************************************************
-    const_value_type front() const
+    const_reference front() const
     {
 #if ETL_CHECKING_EXTRA
       lock();
@@ -656,30 +655,6 @@ namespace etl
     }
 
   private:
-
-    //*************************************************************************
-    /// Mutex-compatible adapter that bridges the lock/unlock ifunction
-    /// callbacks to the interface expected by etl::lock_guard.
-    //*************************************************************************
-    class lock_adapter
-    {
-    public:
-      lock_adapter(const etl::ifunction<void>& lock_, const etl::ifunction<void>& unlock_)
-        : m_lock(lock_)
-        , m_unlock(unlock_)
-      {
-      }
-
-      void lock()   { m_lock();   }
-      void unlock() { m_unlock(); }
-
-    private:
-      lock_adapter(const lock_adapter&) ETL_DELETE;
-      lock_adapter& operator=(const lock_adapter&) ETL_DELETE;
-
-      const etl::ifunction<void>& m_lock;
-      const etl::ifunction<void>& m_unlock;
-    };
 
     //*************************************************************************
     /// Push a value to the queue.

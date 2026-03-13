@@ -273,7 +273,6 @@ namespace etl
   ///\details Normally a reference to this type will be taken from a derived queue_lockable.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_lockable holds.
-  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, const size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_lockable : public etl::queue_lockable_base<VMemory_Model>
@@ -285,7 +284,6 @@ namespace etl
   public:
 
     typedef T                          value_type;       ///< The type stored in the queue.
-    typedef const T                    const_value_type; ///< A const value of the type used in the queue.
     typedef T&                         reference;        ///< A reference to the type used in the queue.
     typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
@@ -544,7 +542,7 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
-    value_type front()
+    reference front()
     {
 #if ETL_CHECKING_EXTRA
       this->lock();
@@ -572,7 +570,7 @@ namespace etl
     /// Peek a value at the front of the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
-    const_value_type front() const
+    const_reference front() const
     {
 #if ETL_CHECKING_EXTRA
       this->lock();
@@ -643,22 +641,6 @@ namespace etl
     }
 
   private:
-
-    //*************************************************************************
-    /// Mutex-compatible adapter that bridges the virtual lock/unlock methods
-    /// to the interface expected by etl::lock_guard.
-    //*************************************************************************
-    class lock_adapter
-    {
-    public:
-      explicit lock_adapter(const iqueue_lockable& q_) : q(q_) {}
-      void lock()   { q.lock();   }
-      void unlock() { q.unlock(); }
-    private:
-      lock_adapter(const lock_adapter&) ETL_DELETE;
-      lock_adapter& operator=(const lock_adapter&) ETL_DELETE;
-      const iqueue_lockable& q;
-    };
 
     //*************************************************************************
     /// Push a value to the queue without locking.
@@ -889,7 +871,6 @@ namespace etl
   /// \tparam T             The type this queue should support.
   /// \tparam VSize         The maximum capacity of the queue.
   /// \tparam VMemory_Model The memory model for the queue. Determines the type of the internal counter variables.
-  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t VSize, size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_lockable : public etl::iqueue_lockable<T, VMemory_Model>
