@@ -872,6 +872,42 @@ namespace etl
   public:
     static ETL_CONSTANT bool value = decltype(test<TFrom>(0))::value;
   };
+#else
+  namespace private_type_traits
+  {
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename TFrom, typename TTo>
+    struct is_convertible_impl
+    {
+      static yes test(TTo);
+      static no test(...);
+      static TFrom make();
+      static const bool value = (sizeof(test(make())) == sizeof(yes));
+    };
+
+    template <typename TTo>
+    struct is_convertible_impl<void, TTo>
+    {
+      static const bool value = false;
+    };
+
+    template <typename TFrom>
+    struct is_convertible_impl<TFrom, void>
+    {
+      static const bool value = false;
+    };
+
+    template <>
+    struct is_convertible_impl<void, void>
+    {
+      static const bool value = true;
+    };
+  }
+
+  template <typename TFrom, typename TTo>
+  struct is_convertible : etl::bool_constant<private_type_traits::is_convertible_impl<TFrom, TTo>::value> {};
 #endif
 
 #if ETL_USING_CPP17
@@ -1420,6 +1456,42 @@ typedef integral_constant<bool, true>  true_type;
   public:
     static ETL_CONSTANT bool value = decltype(test<TFrom>(0))::value;
   };
+#else
+  namespace private_type_traits
+  {
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename TFrom, typename TTo>
+    struct is_convertible_impl
+    {
+      static yes test(TTo);
+      static no test(...);
+      static TFrom make();
+      static const bool value = (sizeof(test(make())) == sizeof(yes));
+    };
+
+    template <typename TTo>
+    struct is_convertible_impl<void, TTo>
+    {
+      static const bool value = false;
+    };
+
+    template <typename TFrom>
+    struct is_convertible_impl<TFrom, void>
+    {
+      static const bool value = false;
+    };
+
+    template <>
+    struct is_convertible_impl<void, void>
+    {
+      static const bool value = true;
+    };
+  }
+
+  template <typename TFrom, typename TTo>
+  struct is_convertible : etl::bool_constant<private_type_traits::is_convertible_impl<TFrom, TTo>::value> {};
 #endif
 
 #if ETL_USING_CPP17
@@ -1556,17 +1628,17 @@ typedef integral_constant<bool, true>  true_type;
   cog.outl("/// Template to determine if a type is one of a specified list.")
   cog.outl("///\\ingroup types")
   cog.outl("template <typename T,")
-  cog.out("          ")
-  cog.out("typename T1, ")
+  cog.out("         ")
+  cog.out(" typename T1,")
   for n in range(2, int(IsOneOf)):
-      cog.out("typename T%s = void, " % n)
+      cog.out(" typename T%s = void," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s = void>" % IsOneOf)
+          cog.out("         ")
+  cog.outl(" typename T%s = void>" % IsOneOf)
   cog.outl("struct is_one_of")
   cog.outl("{")
-  cog.outl("  static const bool value = ")
+  cog.outl("  static const bool value =")
   for n in range(1, int(IsOneOf)):
       cog.outl("      etl::is_same<T, T%s>::value ||" % n)
   cog.outl("      etl::is_same<T, T%s>::value;" % IsOneOf)
