@@ -701,16 +701,26 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
-      isr_lock_adapter adapter;
-      etl::lock_guard<isr_lock_adapter> guard(adapter);
-
 #if ETL_CHECKING_EXTRA
-      if (this->empty_from_isr())
+      TAccess::lock();
+      if (!this->empty_from_isr())
       {
+        reference inner_result = this->front_implementation();
+        TAccess::unlock();
+        return inner_result;
+      }
+      else
+      {
+        TAccess::unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_isr_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
       }
 #endif
-      return this->front_implementation();
+      TAccess::lock();
+      reference result = this->front_implementation();
+      TAccess::unlock();
+      return result;
     }
 
     //*************************************************************************
@@ -719,16 +729,26 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
-      isr_lock_adapter adapter;
-      etl::lock_guard<isr_lock_adapter> guard(adapter);
-
 #if ETL_CHECKING_EXTRA
-      if (this->empty_from_isr())
+      TAccess::lock();
+      if (!this->empty_from_isr())
       {
+        const_reference inner_result = this->front_implementation();
+        TAccess::unlock();
+        return inner_result;
+      }
+      else
+      {
+        TAccess::unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_isr_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
       }
 #endif
-      return this->front_implementation();
+      TAccess::lock();
+      const_reference result = this->front_implementation();
+      TAccess::unlock();
+      return result;
     }
 
     //*************************************************************************

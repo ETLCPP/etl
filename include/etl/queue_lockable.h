@@ -546,16 +546,26 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
-      lock_adapter adapter(*this);
-      etl::lock_guard<lock_adapter> guard(adapter);
-
 #if ETL_CHECKING_EXTRA
-      if (this->empty_unlocked())
+      this->lock();
+      if (!this->empty_unlocked())
       {
+        reference inner_result = front_implementation();
+        this->unlock();
+        return inner_result;
+      }
+      else
+      {
+        this->unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
       }
 #endif
-      return front_implementation();
+      this->lock();
+      reference result = front_implementation();
+      this->unlock();
+      return result;
     }
 
     //*************************************************************************
@@ -564,16 +574,26 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
-      lock_adapter adapter(*this);
-      etl::lock_guard<lock_adapter> guard(adapter);
-
 #if ETL_CHECKING_EXTRA
-      if (this->empty_unlocked())
+      this->lock();
+      if (!this->empty_unlocked())
       {
+        const_reference inner_result = front_implementation();
+        this->unlock();
+        return inner_result;
+      }
+      else
+      {
+        this->unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
       }
 #endif
-      return front_implementation();
+      this->lock();
+      const_reference result = front_implementation();
+      this->unlock();
+      return result;
     }
 
     //*************************************************************************

@@ -343,15 +343,26 @@ namespace etl
     //*************************************************************************
     value_type front()
     {
-      etl::lock_guard<etl::mutex> guard(access);
-
 #if ETL_CHECKING_EXTRA
-      if (current_size == 0)
+      access.lock();
+      if (current_size != 0)
       {
+        reference inner_result = front_implementation();
+        access.unlock();
+        return inner_result;
+      }
+      else
+      {
+        access.unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
       }
 #endif
-      return front_implementation();
+      access.lock();
+      reference result = front_implementation();
+      access.unlock();
+      return result;
     }
 
     //*************************************************************************
@@ -360,15 +371,26 @@ namespace etl
     //*************************************************************************
     const_value_type front() const
     {
-      etl::lock_guard<etl::mutex> guard(access);
-
 #if ETL_CHECKING_EXTRA
-      if (current_size == 0)
+      access.lock();
+      if (current_size != 0)
       {
+        const_reference inner_result = front_implementation();
+        access.unlock();
+        return inner_result;
+      }
+      else
+      {
+        access.unlock();
         ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
       }
 #endif
-      return front_implementation();
+      access.lock();
+      const_reference result = front_implementation();
+      access.unlock();
+      return result;
     }
 
     //*************************************************************************
