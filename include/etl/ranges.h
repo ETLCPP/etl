@@ -1192,7 +1192,7 @@ namespace etl
 
         value_type operator*()
         {
-          return _f(*_it);
+          return static_cast<value_type>(_f(*_it));
         }
 
         bool operator==(const transform_iterator& other) const
