@@ -68,7 +68,7 @@ namespace etl
     typedef typename TIterator::pointer           pointer;
     typedef typename TIterator::reference         reference;
   };
- 
+
   // For pointers.
   template <typename T>
   struct iterator_traits<T*, void>
@@ -616,7 +616,7 @@ namespace etl
     ETL_CONSTEXPR14 back_insert_iterator& operator =(const typename TContainer::value_type& value)
     {
       container->push_back(value);
-      
+
       return (*this);
     }
 
@@ -627,7 +627,7 @@ namespace etl
     ETL_CONSTEXPR14 back_insert_iterator& operator =(typename TContainer::value_type&& value)
     {
       container->push_back(etl::move(value));
-      
+
       return (*this);
     }
 #endif  // ETL_USING_CPP11
@@ -665,8 +665,8 @@ namespace etl
   /// Creates a back_insert_iterator from a container.
   //***************************************************************************
   template <typename TContainer>
-  ETL_NODISCARD 
-  ETL_CONSTEXPR14 
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
   etl::back_insert_iterator<TContainer> back_inserter(TContainer& container)
   {
     return etl::back_insert_iterator<TContainer>(container);
@@ -1223,7 +1223,6 @@ namespace etl
 #define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))
 
 #if ETL_USING_CPP17
-
   template<class T>
   using iter_value_t = typename etl::iterator_traits<etl::remove_cvref_t<T>>::value_type;
 
@@ -1921,6 +1920,48 @@ namespace etl
   {
     return first.count();
   }
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
+  //**************************************************************************
+  /// Returns a pointer to the block of memory containing the elements of the range.
+  ///\ingroup container
+  //**************************************************************************
+  template<typename TContainer>
+  ETL_CONSTEXPR typename TContainer::pointer data(TContainer& container)
+  {
+    return container.data();
+  }
+
+  //**************************************************************************
+  /// Returns a const_pointer to the block of memory containing the elements of the range.
+  ///\ingroup container
+  //**************************************************************************
+  template<typename TContainer>
+  ETL_CONSTEXPR typename TContainer::const_pointer data(const TContainer& container)
+  {
+    return container.data();
+  }
+
+  ///**************************************************************************
+  /// Returns a pointer to the block of memory containing the elements of the range.
+  ///\ingroup container
+  ///**************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR TValue* data(TValue(&a)[Array_Size])
+  {
+    return a;
+  }
+
+  ///**************************************************************************
+  /// Returns a const pointer to the block of memory containing the elements of the range.
+  ///\ingroup container
+  ///**************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* data(const TValue(&a)[Array_Size])
+  {
+    return a;
+  }
+#endif
+}
 
 #endif
 
