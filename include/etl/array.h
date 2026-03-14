@@ -1105,7 +1105,7 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename... T>
   array(T...) -> array<typename etl::common_type<T...>::type, sizeof...(T)>;
-#endif  
+#endif
 
   //*************************************************************************
   /// Make
