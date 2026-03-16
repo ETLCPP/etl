@@ -1,0 +1,117 @@
+.book-page {
+  background-color: white;
+}
+
+.highlight {
+  background-color: white;
+}
+
+html body h1 {
+  font-family: Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  margin-top: 0em;
+  margin-bottom: 0.5em;
+  color: coral;
+}
+
+html body h2 {
+  font-family: Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 150%;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  color: royalblue;
+}
+
+html body h3 {
+  font-family: Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 130%;
+  color: green;
+}
+
+html body h4 {
+  font-family: Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 110%;
+  color: green;
+}
+
+html body dl {
+  font-family: Consolas, monospace;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  color: black;
+  background-color: #e7e7e7 !important;
+}
+
+html body dl dt code {
+  font-family: Consolas, monospace;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  color: black;
+  background-color: #e7e7e7 !important;
+  border-style: none
+}
+
+html body dl dd {
+  font-family: Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  color: black;
+  background-color: #e7e7e7 !important;
+}
+
+code{
+  font-family: Consolas, monospace;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  color: black;
+  background-color: #e7e7e7 !important;
+    border: 0 none !important;
+}
+
+pre,
+pre code {
+  font-family: Consolas, monospace;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  color: black;
+  background-color: #e7e7e7 !important;
+    border: 0 none !important;
+}
+
+.markdown pre code {
+  line-height: 1.5 !important;
+}
+
+.markdown pre {
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
+}
+
+html body hr {
+  height: 2px;
+  background-color: grey;
+  border: 0 none;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+}
+
+html body p {
+  font-family: Tahoma, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 110%;
+  color: black;
+  background-color: white !important;
+}

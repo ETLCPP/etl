@@ -4,4 +4,4 @@ title: ETL documentation
 
 ## Pages
 
-* [Manchester](manchester.md)
+* [inplace_function](inplace_function.md)
