@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ETL s390x Big-Endian Build and Test Script
-# This script verifies the environment is big-endian, builds the ETL tests, and runs them
+# Cross-compiles for s390x and runs tests under QEMU emulation
 
 set -e  # Exit on error
 
@@ -10,22 +10,20 @@ echo "ETL s390x Big-Endian Test Environment"
 echo "=========================================="
 echo ""
 
-# Verify architecture
-echo "=== System Architecture ==="
-uname -m
+# Verify host architecture
+echo "=== Host Architecture ==="
+echo "Host: $(uname -m)"
 echo ""
 
-# Verify endianness - this is critical for Manchester encoding tests
-echo "=== Endianness Verification ==="
-BYTE_ORDER=$(lscpu | grep "Byte Order" | awk '{print $3, $4}')
-echo "Byte Order: $BYTE_ORDER"
+# Verify cross-compilation tools
+echo "=== Cross-Compilation Tools ==="
+s390x-linux-gnu-gcc --version | head -n1
+s390x-linux-gnu-g++ --version | head -n1
+echo ""
 
-if [[ "$BYTE_ORDER" != "Big Endian" ]]; then
-    echo "ERROR: Expected Big Endian but found: $BYTE_ORDER"
-    echo "Manchester encoding tests require big-endian architecture!"
-    exit 1
-fi
-echo "✓ Big-endian confirmed"
+# Verify QEMU availability
+echo "=== QEMU s390x Emulator ==="
+qemu-s390x-static --version | head -n1
 echo ""
 
 # Navigate to project root
@@ -38,24 +36,50 @@ mkdir -p build-s390x
 cd build-s390x
 echo ""
 
-# Configure with CMake
-echo "=== Configuring CMake ==="
-cmake -DBUILD_TESTS=ON \
+# Configure with CMake using s390x toolchain
+echo "=== Configuring CMake for s390x Cross-Compilation ==="
+cmake -DCMAKE_TOOLCHAIN_FILE=/workspaces/etl/.devcontainer/s390x/toolchain-s390x.cmake \
+      -DBUILD_TESTS=ON \
       -DNO_STL=OFF \
       -DETL_CXX_STANDARD=17 \
       /workspaces/etl/test
 echo ""
 
 # Build tests
-echo "=== Building Tests ==="
+echo "=== Building Tests for s390x ==="
 make -j$(nproc)
 echo ""
 
-# Run all tests
-echo "=== Running ETL Test Suite ==="
-echo "This includes Manchester encoding tests which verify big-endian handling"
+# Verify the binary is s390x
+echo "=== Verifying Binary Architecture ==="
+TEST_BINARY="./etl_tests"
+if [ -f "$TEST_BINARY" ]; then
+    FILE_OUTPUT=$(file "$TEST_BINARY")
+    echo "$FILE_OUTPUT"
+    
+    if echo "$FILE_OUTPUT" | grep -q "s390x"; then
+        echo "✓ Binary is s390x architecture"
+    else
+        echo "✗ ERROR: Binary is not s390x!"
+        exit 1
+    fi
+    
+    if echo "$FILE_OUTPUT" | grep -q "MSB"; then
+        echo "✓ Binary is big-endian (MSB)"
+    else
+        echo "⚠ Warning: Could not confirm big-endian from file output"
+    fi
+else
+    echo "✗ ERROR: Test binary not found!"
+    exit 1
+fi
 echo ""
-./etl_tests
+
+# Run all tests using QEMU
+echo "=== Running ETL Test Suite under QEMU s390x Emulation ==="
+echo "This runs s390x big-endian binaries, testing Manchester encoding"
+echo ""
+qemu-s390x-static "$TEST_BINARY"
 
 # Capture test result
 TEST_RESULT=$?
@@ -64,9 +88,12 @@ echo ""
 echo "=========================================="
 if [ $TEST_RESULT -eq 0 ]; then
     echo "✓ All tests PASSED on s390x big-endian!"
+    echo "✓ Manchester encoding verified on big-endian architecture"
 else
     echo "✗ Tests FAILED with exit code: $TEST_RESULT"
 fi
 echo "=========================================="
+
+exit $TEST_RESULT
 
 exit $TEST_RESULT
