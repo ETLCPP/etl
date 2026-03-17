@@ -807,6 +807,13 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT((etl::is_trivially_copyable<T>::value), "atomic<T> requires that T is trivially copyable");
+    ETL_STATIC_ASSERT((etl::is_copy_constructible<T>::value), "atomic<T> requires that T is copy constructible");
+    ETL_STATIC_ASSERT((etl::is_copy_assignable<T>::value), "atomic<T> requires that T is copy assignable");
+    ETL_STATIC_ASSERT((etl::is_move_constructible<T>::value), "atomic<T> requires that T is move constructible");
+    ETL_STATIC_ASSERT((etl::is_move_assignable<T>::value), "atomic<T> requires that T is move assignable");
+    ETL_STATIC_ASSERT((etl::is_same<T, typename etl::remove_cv<T>::type>::value), "atomic<T> requires that T is not const or volatile");
+
     atomic()
       : flag(0)
       , value(T())
@@ -1994,6 +2001,13 @@ namespace etl
   class atomic<T, false> : public atomic_traits<false>
   {
   public:
+
+    ETL_STATIC_ASSERT((etl::is_trivially_copyable<T>::value), "atomic<T> requires that T is trivially copyable");
+    ETL_STATIC_ASSERT((etl::is_copy_constructible<T>::value), "atomic<T> requires that T is copy constructible");
+    ETL_STATIC_ASSERT((etl::is_copy_assignable<T>::value), "atomic<T> requires that T is copy assignable");
+    ETL_STATIC_ASSERT((etl::is_move_constructible<T>::value), "atomic<T> requires that T is move constructible");
+    ETL_STATIC_ASSERT((etl::is_move_assignable<T>::value), "atomic<T> requires that T is move assignable");
+    ETL_STATIC_ASSERT((etl::is_same<T, typename etl::remove_cv<T>::type>::value), "atomic<T> requires that T is not const or volatile");
 
     atomic()
       : flag(0)
