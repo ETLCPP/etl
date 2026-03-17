@@ -35,7 +35,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-clang-cpp23-linux-stl-force-cpp03:
     name: Clang C++23 Linux - STL - Force C++03
@@ -64,7 +64,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-clang-cpp2-linux-no-stl-force-cpp03:
     name: Clang C++23 Linux - No STL - Force C++03
@@ -93,7 +93,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-clang-cpp23-osx-stl:
     name: Clang C++23 OSX - STL
@@ -115,7 +115,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-clang-cpp23-osx-no-stl:
     name: Clang C++23 OSX - No STL
@@ -137,7 +137,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-clang-cpp23-osx-stl-force-cpp03:
     name: Clang C++23 OSX - STL - Force C++03
@@ -159,7 +159,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-clang-cpp23-osx-no-stl-force-cpp03:
     name: Clang C++23 OSX - No STL - Force C++03
@@ -181,5 +181,5 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
