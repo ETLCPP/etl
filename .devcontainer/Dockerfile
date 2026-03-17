@@ -11,7 +11,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         git \
         wget \
-        python3-cogapp \
     && rm -rf /var/lib/apt/lists/*
 
 RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
