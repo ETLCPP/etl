@@ -57,7 +57,7 @@ if [ -f "$TEST_BINARY" ]; then
     FILE_OUTPUT=$(file "$TEST_BINARY")
     echo "$FILE_OUTPUT"
     
-    if echo "$FILE_OUTPUT" | grep -q "s390x"; then
+    if echo "$FILE_OUTPUT" | grep -qi "S/390\|s390"; then
         echo "✓ Binary is s390x architecture"
     else
         echo "✗ ERROR: Binary is not s390x!"
@@ -77,7 +77,6 @@ echo ""
 
 # Run all tests using QEMU
 echo "=== Running ETL Test Suite under QEMU s390x Emulation ==="
-echo "This runs s390x big-endian binaries, testing Manchester encoding"
 echo ""
 qemu-s390x-static "$TEST_BINARY"
 
@@ -88,7 +87,6 @@ echo ""
 echo "=========================================="
 if [ $TEST_RESULT -eq 0 ]; then
     echo "✓ All tests PASSED on s390x big-endian!"
-    echo "✓ Manchester encoding verified on big-endian architecture"
 else
     echo "✗ Tests FAILED with exit code: $TEST_RESULT"
 fi

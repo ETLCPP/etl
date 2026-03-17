@@ -4,6 +4,7 @@
 #include <etl/algorithm.h>
 #include <etl/array.h>
 #include <etl/span.h>
+#include <iostream>
 #include <utility>
 
 SUITE(test_manchester)
@@ -71,10 +72,24 @@ SUITE(test_manchester)
   }
 
 #if ETL_USING_CPP14
-  constexpr etl::array<uint8_t, 8> manchester_encoded(etl::span<const uint_least8_t> decoded)
+  constexpr etl::array<uint8_t, 8> manchester_encoded_uint8(etl::span<const uint_least8_t> decoded)
   {
     etl::array<uint8_t, 8> encoded{0, 0, 0, 0, 0, 0, 0, 0};
     etl::manchester::encode(decoded, encoded);
+    return encoded;
+  }
+
+  constexpr etl::array<uint8_t, 8> manchester_encoded_uint16(etl::span<const uint_least8_t> decoded)
+  {
+    etl::array<uint8_t, 8> encoded{0, 0, 0, 0, 0, 0, 0, 0};
+    etl::manchester::encode<uint16_t>(decoded, encoded);
+    return encoded;
+  }
+
+  constexpr etl::array<uint8_t, 8> manchester_encoded_uint32(etl::span<const uint_least8_t> decoded)
+  {
+    etl::array<uint8_t, 8> encoded{0, 0, 0, 0, 0, 0, 0, 0};
+    etl::manchester::encode<uint32_t>(decoded, encoded);
     return encoded;
   }
 #endif
@@ -105,18 +120,41 @@ SUITE(test_manchester)
     CHECK_TRUE(encoded0 == encoded1);
     CHECK_TRUE(encoded0 == encoded2);
     CHECK_TRUE(encoded0 == encoded3);
+  }
 
 #if ETL_USING_CPP14
-    static_assert(manchester_encoded(decoded)[0] == 0xAA, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[1] == 0xAA, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[2] == 0x55, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[3] == 0x55, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[4] == 0xA9, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[5] == 0xAA, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[6] == 0xAA, "Compile time encoding on range failed");
-    static_assert(manchester_encoded(decoded)[7] == 0x6A, "Compile time encoding on range failed");
-#endif
+  TEST(encode_span_constexpr)
+  {
+    constexpr etl::array<const uint8_t, 4> decoded{0x00, 0xFF, 0x01, 0x80};
+
+    static_assert(manchester_encoded_uint8(decoded)[0] == 0xAA, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[1] == 0xAA, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[2] == 0x55, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[3] == 0x55, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[4] == 0xA9, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[5] == 0xAA, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[6] == 0xAA, "Compile time encoding with uint8_t failed");
+    static_assert(manchester_encoded_uint8(decoded)[7] == 0x6A, "Compile time encoding with uint8_t failed");
+
+    static_assert(manchester_encoded_uint16(decoded)[0] == 0xAA, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[1] == 0xAA, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[2] == 0x55, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[3] == 0x55, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[4] == 0xA9, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[5] == 0xAA, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[6] == 0xAA, "Compile time encoding with uint16_t failed");
+    static_assert(manchester_encoded_uint16(decoded)[7] == 0x6A, "Compile time encoding with uint16_t failed");
+
+    static_assert(manchester_encoded_uint32(decoded)[0] == 0xAA, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[1] == 0xAA, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[2] == 0x55, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[3] == 0x55, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[4] == 0xA9, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[5] == 0xAA, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[6] == 0xAA, "Compile time encoding with uint32_t failed");
+    static_assert(manchester_encoded_uint32(decoded)[7] == 0x6A, "Compile time encoding with uint32_t failed");
   }
+#endif
 
   TEST(encode_span_inverted)
   {
@@ -233,10 +271,24 @@ SUITE(test_manchester)
   }
 
 #if ETL_USING_CPP14
-  constexpr etl::array<uint8_t, 4> manchester_decoded(etl::span<const uint_least8_t> encoded)
+  constexpr etl::array<uint8_t, 4> manchester_decoded_uint16(etl::span<const uint_least8_t> encoded)
   {
     etl::array<uint8_t, 4> decoded{0, 0, 0, 0};
     etl::manchester::decode(encoded, decoded);
+    return decoded;
+  }
+
+  constexpr etl::array<uint8_t, 4> manchester_decoded_uint32(etl::span<const uint_least8_t> encoded)
+  {
+    etl::array<uint8_t, 4> decoded{0, 0, 0, 0};
+    etl::manchester::decode<uint32_t>(encoded, decoded);
+    return decoded;
+  }
+
+  constexpr etl::array<uint8_t, 4> manchester_decoded_uint64(etl::span<const uint_least8_t> encoded)
+  {
+    etl::array<uint8_t, 4> decoded{0, 0, 0, 0};
+    etl::manchester::decode<uint64_t>(encoded, decoded);
     return decoded;
   }
 #endif
@@ -260,17 +312,32 @@ SUITE(test_manchester)
     CHECK_EQUAL(0x01, decoded0[2]);
     CHECK_EQUAL(0x80, decoded0[3]);
 
-#if ETL_USING_CPP14
-    static_assert(manchester_decoded(encoded)[0] == 0x00, "Compile time decoding on range failed");
-    static_assert(manchester_decoded(encoded)[1] == 0xFF, "Compile time decoding on range failed");
-    static_assert(manchester_decoded(encoded)[2] == 0x01, "Compile time decoding on range failed");
-    static_assert(manchester_decoded(encoded)[3] == 0x80, "Compile time decoding on range failed");
-#endif
-
     CHECK_TRUE(decoded0 == decoded1);
     CHECK_TRUE(decoded0 == decoded2);
     CHECK_TRUE(decoded0 == decoded3);
   }
+
+#if ETL_USING_CPP14
+  TEST(decode_span_constexpr)
+  {
+    constexpr etl::array<const uint8_t, 8> encoded{0xAA, 0xAA, 0x55, 0x55, 0xA9, 0xAA, 0xAA, 0x6A};
+
+    static_assert(manchester_decoded_uint16(encoded)[0] == 0x00, "Compile time decoding with uint16_t failed");
+    static_assert(manchester_decoded_uint16(encoded)[1] == 0xFF, "Compile time decoding with uint16_t failed");
+    static_assert(manchester_decoded_uint16(encoded)[2] == 0x01, "Compile time decoding with uint16_t failed");
+    static_assert(manchester_decoded_uint16(encoded)[3] == 0x80, "Compile time decoding with uint16_t failed");
+
+    static_assert(manchester_decoded_uint32(encoded)[0] == 0x00, "Compile time decoding with uint32_t failed");
+    static_assert(manchester_decoded_uint32(encoded)[1] == 0xFF, "Compile time decoding with uint32_t failed");
+    static_assert(manchester_decoded_uint32(encoded)[2] == 0x01, "Compile time decoding with uint32_t failed");
+    static_assert(manchester_decoded_uint32(encoded)[3] == 0x80, "Compile time decoding with uint32_t failed");
+
+    static_assert(manchester_decoded_uint64(encoded)[0] == 0x00, "Compile time decoding with uint64_t failed");
+    static_assert(manchester_decoded_uint64(encoded)[1] == 0xFF, "Compile time decoding with uint64_t failed");
+    static_assert(manchester_decoded_uint64(encoded)[2] == 0x01, "Compile time decoding with uint64_t failed");
+    static_assert(manchester_decoded_uint64(encoded)[3] == 0x80, "Compile time decoding with uint64_t failed");
+  }
+#endif
 
   TEST(decode_span_inverted)
   {
