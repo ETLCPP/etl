@@ -1988,56 +1988,6 @@ namespace etl
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/next_permutation"></a>
   //***************************************************************************
-  template <typename TIterator>
-  ETL_CONSTEXPR14
-  bool next_permutation(TIterator first, TIterator last)
-  {
-    if (first == last)
-    {
-      return false;
-    }
-
-    TIterator i = last;
-    --i;
-
-    if (first == i)
-    {
-      return false;
-    }
-
-    while (true)
-    {
-      TIterator i1 = i;
-      --i;
-
-      if (*i < *i1)
-      {
-        TIterator j = last;
-        --j;
-
-        while (!(*i < *j))
-        {
-          --j;
-        }
-
-        etl::iter_swap(i, j);
-        etl::reverse(i1, last);
-        return true;
-      }
-
-      if (i == first)
-      {
-        etl::reverse(first, last);
-        return false;
-      }
-    }
-  }
-
-  //***************************************************************************
-  /// next_permutation
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/next_permutation"></a>
-  //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_CONSTEXPR14
   bool next_permutation(TIterator first, TIterator last, TCompare compare)
@@ -2084,53 +2034,16 @@ namespace etl
   }
 
   //***************************************************************************
-  /// prev_permutation
+  /// next_permutation
   ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/prev_permutation"></a>
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/next_permutation"></a>
   //***************************************************************************
   template <typename TIterator>
   ETL_CONSTEXPR14
-  bool prev_permutation(TIterator first, TIterator last)
+  bool next_permutation(TIterator first, TIterator last)
   {
-    if (first == last)
-    {
-      return false;
-    }
-
-    TIterator i = last;
-    --i;
-
-    if (first == i)
-    {
-      return false;
-    }
-
-    while (true)
-    {
-      TIterator i1 = i;
-      --i;
-
-      if (*i1 < *i)
-      {
-        TIterator j = last;
-        --j;
-
-        while (!(*j < *i))
-        {
-          --j;
-        }
-
-        etl::iter_swap(i, j);
-        etl::reverse(i1, last);
-        return true;
-      }
-
-      if (i == first)
-      {
-        etl::reverse(first, last);
-        return false;
-      }
-    }
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+    return etl::next_permutation(first, last, compare());
   }
 
   //***************************************************************************
@@ -2181,6 +2094,19 @@ namespace etl
         return false;
       }
     }
+  }
+
+  //***************************************************************************
+  /// prev_permutation
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/prev_permutation"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  bool prev_permutation(TIterator first, TIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+    return etl::prev_permutation(first, last, compare());
   }
 
   //***************************************************************************
