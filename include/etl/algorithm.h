@@ -34,7 +34,7 @@ SOFTWARE.
 #define ETL_ALGORITHM_INCLUDED
 
 ///\defgroup algorithm algorithm
-/// Including reverse engineered algorithms from C++ 0x11, 0x14, 0x17
+/// Including reverse engineered algorithms from C++11, 14, 17
 /// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
@@ -507,6 +507,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename T, typename Compare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool binary_search(TIterator first, TIterator last, const T& value, Compare compare)
   {
     first = etl::lower_bound(first, last, value, compare);
@@ -516,6 +517,7 @@ namespace etl
 
   template <typename TIterator, typename T>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool binary_search(TIterator first, TIterator last, const T& value)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -949,7 +951,7 @@ namespace etl
   {
     // Push Heap Helper
     template <typename TIterator, typename TDistance, typename TValue, typename TCompare>
-    void push_heap(TIterator first, TDistance value_index, TDistance top_index, TValue value, TCompare compare)
+    ETL_CONSTEXPR14 void push_heap(TIterator first, TDistance value_index, TDistance top_index, TValue value, TCompare compare)
     {
       TDistance parent = (value_index - 1) / 2;
 
@@ -965,7 +967,7 @@ namespace etl
 
     // Adjust Heap Helper
     template <typename TIterator, typename TDistance, typename TValue, typename TCompare>
-    void adjust_heap(TIterator first, TDistance value_index, TDistance length, TValue value, TCompare compare)
+    ETL_CONSTEXPR14 void adjust_heap(TIterator first, TDistance value_index, TDistance length, TValue value, TCompare compare)
     {
       TDistance top_index = value_index;
       TDistance child2nd = (2 * value_index) + 2;
@@ -993,7 +995,7 @@ namespace etl
 
     // Is Heap Helper
     template <typename TIterator, typename TDistance, typename TCompare>
-    bool is_heap(const TIterator first, const TDistance n, TCompare compare)
+    ETL_CONSTEXPR14 bool is_heap(const TIterator first, const TDistance n, TCompare compare)
     {
       TDistance parent = 0;
 
@@ -1016,6 +1018,7 @@ namespace etl
 
   // Pop Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void pop_heap(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::value_type value_t;
@@ -1029,6 +1032,7 @@ namespace etl
 
   // Pop Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void pop_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1038,6 +1042,7 @@ namespace etl
 
   // Push Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void push_heap(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
@@ -1048,6 +1053,7 @@ namespace etl
 
   // Push Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void push_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1057,6 +1063,7 @@ namespace etl
 
   // Make Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void make_heap(TIterator first, TIterator last, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
@@ -1084,6 +1091,7 @@ namespace etl
 
   // Make Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void make_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1094,6 +1102,7 @@ namespace etl
   // Is Heap
   template <typename TIterator>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
     bool is_heap(TIterator first, TIterator last)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
@@ -1104,6 +1113,7 @@ namespace etl
   // Is Heap
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_heap(TIterator first, TIterator last, TCompare compare)
   {
     return private_heap::is_heap(first, last - first, compare);
@@ -1111,6 +1121,7 @@ namespace etl
 
   // Sort Heap
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void sort_heap(TIterator first, TIterator last)
   {
     while (first != last)
@@ -1122,6 +1133,7 @@ namespace etl
 
   // Sort Heap
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void sort_heap(TIterator first, TIterator last, TCompare compare)
   {
     while (first != last)
@@ -1129,6 +1141,119 @@ namespace etl
       etl::pop_heap(first, last, compare);
       --last;
     }
+  }
+
+  //***************************************************************************
+  /// partial_sort
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort"></a>
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  void partial_sort(TIterator first, TIterator middle, TIterator last, TCompare compare)
+  {
+    if (first == middle)
+    {
+      return;
+    }
+
+    typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator>::difference_type  difference_t;
+
+    etl::make_heap(first, middle, compare);
+
+    for (TIterator i = middle; i != last; ++i)
+    {
+      if (compare(*i, *first))
+      {
+        value_t value = ETL_MOVE(*i);
+        *i = ETL_MOVE(*first);
+
+        private_heap::adjust_heap(first, difference_t(0), difference_t(middle - first), ETL_MOVE(value), compare);
+      }
+    }
+
+    etl::sort_heap(first, middle, compare);
+  }
+
+  //***************************************************************************
+  /// partial_sort
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  void partial_sort(TIterator first, TIterator middle, TIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+
+    etl::partial_sort(first, middle, last, compare());
+  }
+
+  //***************************************************************************
+  /// partial_sort_copy
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort_copy"></a>
+  //***************************************************************************
+  template <typename TInputIterator, typename TRandomAccessIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  TRandomAccessIterator partial_sort_copy(TInputIterator  first,
+                                          TInputIterator  last,
+                                          TRandomAccessIterator d_first,
+                                          TRandomAccessIterator d_last,
+                                          TCompare compare)
+  {
+    typedef typename etl::iterator_traits<TRandomAccessIterator>::value_type      value_t;
+    typedef typename etl::iterator_traits<TRandomAccessIterator>::difference_type  difference_t;
+
+    TRandomAccessIterator result = d_first;
+
+    // Fill the destination range
+    while ((first != last) && (result != d_last))
+    {
+      *result = *first;
+      ++result;
+      ++first;
+    }
+
+    if (result == d_first)
+    {
+      return result;
+    }
+
+    // Build a max-heap over the destination range
+    etl::make_heap(d_first, result, compare);
+
+    // Process remaining input elements
+    for (TInputIterator i = first; i != last; ++i)
+    {
+      if (compare(*i, *d_first))
+      {
+        value_t value = *i;
+        private_heap::adjust_heap(d_first, difference_t(0), difference_t(result - d_first), ETL_MOVE(value), compare);
+      }
+    }
+
+    etl::sort_heap(d_first, result, compare);
+
+    return result;
+  }
+
+  //***************************************************************************
+  /// partial_sort_copy
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partial_sort_copy"></a>
+  //***************************************************************************
+  template <typename TInputIterator, typename TRandomAccessIterator>
+  ETL_CONSTEXPR14
+  TRandomAccessIterator partial_sort_copy(TInputIterator  first,
+                                          TInputIterator  last,
+                                          TRandomAccessIterator d_first,
+                                          TRandomAccessIterator d_last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TRandomAccessIterator>::value_type> compare;
+
+    return etl::partial_sort_copy(first, last, d_first, d_last, compare());
   }
 
   //***************************************************************************
@@ -1185,7 +1310,6 @@ namespace etl
   //***************************************************************************
   namespace private_algorithm
   {
-#if ETL_USING_CPP11
     //*********************************
     // For random access iterators
     template <typename TIterator>
@@ -1193,27 +1317,32 @@ namespace etl
     typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last) 
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
 
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+      typedef typename etl::iterator_traits<TIterator>::difference_type difference_type;
 
-      int n = last - first;
-      int m = middle - first;
-      int gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
-
+      difference_type n = last - first;
+      difference_type m = middle - first;
+      difference_type gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
       TIterator result = first + (last - middle);
 
-      for (int i = 0; i < gcd_nm; i++) 
+      for (difference_type i = 0; i < gcd_nm; i++)
       {
         value_type temp = ETL_MOVE(*(first + i));
-        int j = i;
+        difference_type j = i;
         
         while (true) 
         {
-          int k = j + m;
+          difference_type k = j + m;
           
           if (k >= n)
           {
@@ -1234,56 +1363,6 @@ namespace etl
 
       return result;
     }
-#else
-    //*********************************
-    // For random access iterators
-    template <typename TIterator>
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
-      rotate_general(TIterator first, TIterator middle, TIterator last)
-    {
-      if (first == middle || middle == last)
-      {
-        return first;
-      }
-
-      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
-
-      int n = last - first;
-      int m = middle - first;
-      int gcd_nm = (n == 0 || m == 0) ? n + m : etl::gcd(n, m);
-
-      TIterator result = first + (last - middle);
-
-      for (int i = 0; i < gcd_nm; i++)
-      {
-        value_type temp = *(first + i);
-        int j = i;
-
-        while (true)
-        {
-          int k = j + m;
-
-          if (k >= n)
-          {
-            k = k - n;
-          }
-
-          if (k == i)
-          {
-            break;
-          }
-
-          *(first + j) = *(first + k);
-          j = k;
-        }
-
-        *(first + j) = temp;
-      }
-
-      return result;
-    }
-#endif
 
     //*********************************
     // For bidirectional iterators
@@ -1292,7 +1371,12 @@ namespace etl
     typename etl::enable_if<etl::is_bidirectional_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
@@ -1314,7 +1398,12 @@ namespace etl
     typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
       rotate_general(TIterator first, TIterator middle, TIterator last)
     {
-      if (first == middle || middle == last)
+      if (first == middle)
+      {
+        return last;
+      }
+
+      if (middle == last)
       {
         return first;
       }
@@ -1390,26 +1479,29 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator rotate(TIterator first, TIterator middle, TIterator last)
   {
+    if (first == middle)
+    {
+      return last;
+    }
+    if (middle == last)
+    {
+      return first;
+    }
+
     if (etl::next(first) == middle)
     {
       return private_algorithm::rotate_left_by_one(first, last);
     }
 
+#if ETL_USING_CPP20
     if (etl::next(middle) == last)
     {
-#if ETL_USING_CPP20
-      if ETL_IF_CONSTEXPR(etl::is_forward_iterator<TIterator>::value)
-      {
-        return private_algorithm::rotate_general(first, middle, last);
-      }
-      else
+      if ETL_IF_CONSTEXPR(etl::is_bidirectional_iterator_concept<TIterator>::value)
       {
         return private_algorithm::rotate_right_by_one(first, last);
       }
-#else
-      return private_algorithm::rotate_general(first, middle, last);
-#endif
     }
+#endif
 
     return private_algorithm::rotate_general(first, middle, last);
   }
@@ -1646,35 +1738,6 @@ namespace etl
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
   //***************************************************************************
-  template <typename TIterator>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  TIterator is_sorted_until(TIterator begin,
-                            TIterator end)
-  {
-    if (begin != end)
-    {
-      TIterator next = begin;
-
-      while (++next != end)
-      {
-        if (*next < *begin)
-        {
-          return next;
-        }
-
-        ++begin;
-      }
-    }
-
-    return end;
-  }
-
-  //***************************************************************************
-  /// is_sorted_until
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
-  //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
   ETL_CONSTEXPR14
@@ -1698,6 +1761,22 @@ namespace etl
     }
 
     return end;
+  }
+
+  //***************************************************************************
+  /// is_sorted_until
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator is_sorted_until(TIterator begin,
+                            TIterator end)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+
+    return etl::is_sorted_until(begin, end, compare());
   }
 
   //***************************************************************************
@@ -1768,22 +1847,9 @@ namespace etl
   TIterator is_unique_sorted_until(TIterator begin,
                                    TIterator end)
   {
-    if (begin != end)
-    {
-      TIterator next = begin;
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
 
-      while (++next != end)
-      {
-        if (!(*begin < *next))
-        {
-          return next;
-        }
-
-        ++begin;
-      }
-    }
-
-    return end;
+    return etl::is_unique_sorted_until(begin, end, compare());
   }
 
   //***************************************************************************
@@ -1836,6 +1902,51 @@ namespace etl
     }
 
     return end;
+  }
+
+  //***************************************************************************
+  /// adjacent_find
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/adjacent_find"></a>
+  //***************************************************************************
+  template <typename TIterator, typename TBinaryPredicate>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator adjacent_find(TIterator first, TIterator last, TBinaryPredicate predicate)
+  {
+    if (first != last)
+    {
+      TIterator next = first;
+      ++next;
+
+      while (next != last)
+      {
+        if (predicate(*first, *next))
+        {
+          return first;
+        }
+
+        ++first;
+        ++next;
+      }
+    }
+
+    return last;
+  }
+
+  //***************************************************************************
+  /// adjacent_find
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/adjacent_find"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  TIterator adjacent_find(TIterator first, TIterator last)
+  {
+    typedef etl::equal_to<typename etl::iterator_traits<TIterator>::value_type> predicate;
+
+    return etl::adjacent_find(first, last, predicate());
   }
 
   //***************************************************************************
@@ -1896,9 +2007,9 @@ namespace etl
       {
         if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
         {
-          size_t n = etl::count(begin2, end2, *i);
+          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
 
-          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
           {
             return false;
           }
@@ -1922,18 +2033,20 @@ namespace etl
                       TIterator2 begin2,
                       TIterator2 end2)
   {
-    if (begin1 != end1)
+    if (etl::distance(begin1, end1) != etl::distance(begin2, end2))
     {
-      for (TIterator1 i = begin1; i != end1; ++i)
-      {
-        if (i == etl::find(begin1, i, *i))
-        {
-          size_t n = etl::count(begin2, end2, *i);
+      return false;
+    }
 
-          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
-          {
-            return false;
-          }
+    for (TIterator1 i = begin1; i != end1; ++i)
+    {
+      if (i == etl::find(begin1, i, *i))
+      {
+        size_t n = etl::count(begin2, end2, *i);
+
+        if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+        {
+          return false;
         }
       }
     }
@@ -1948,24 +2061,27 @@ namespace etl
   //***************************************************************************
   template <typename TIterator1, typename TIterator2, typename TBinaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_permutation(TIterator1       begin1,
                       TIterator1       end1,
                       TIterator2       begin2,
                       TIterator2       end2,
                       TBinaryPredicate predicate)
   {
-    if (begin1 != end1)
+    if (etl::distance(begin1, end1) != etl::distance(begin2, end2))
     {
-      for (TIterator1 i = begin1; i != end1; ++i)
-      {
-        if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
-        {
-          size_t n = etl::count(begin2, end2, *i);
+      return false;
+    }
 
-          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
-          {
-            return false;
-          }
+    for (TIterator1 i = begin1; i != end1; ++i)
+    {
+      if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
+      {
+        size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
+
+        if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
+        {
+          return false;
         }
       }
     }
@@ -2020,14 +2136,22 @@ namespace etl
                             TIterator       end,
                             TUnaryPredicate predicate)
   {
-    while (begin != end)
-    {
-      if (!predicate(*begin))
-      {
-        return begin;
-      }
+    typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
 
-      ++begin;
+    // binary search on a partitioned range
+    for (difference_t length = etl::distance(begin, end); 0 < length; )
+    {
+      difference_t half   = length / 2;
+      TIterator    middle = etl::next(begin, half);
+      if (predicate(*middle))
+      {
+        begin = etl::next(middle);
+        length -= (half + 1);
+      }
+      else
+      {
+        length = half;
+      }
     }
 
     return begin;
@@ -2343,6 +2467,253 @@ namespace etl
     }
 
     return first; 
+  }
+
+  //***************************************************************************
+  /// unique
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  TIterator unique(TIterator first, TIterator last)
+  {
+    if (first == last)
+    {
+      return last;
+    }
+
+    TIterator result = first;
+
+    while (++first != last)
+    {
+      if (!(*result == *first) && (++result != first))
+      {
+        *result = ETL_MOVE(*first);
+      }
+    }
+
+    return ++result;
+  }
+
+  //***************************************************************************
+  /// unique
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique
+  /// predicate overload to determine equality.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TBinaryPredicate>
+  ETL_CONSTEXPR14
+  TIterator unique(TIterator first, TIterator last, TBinaryPredicate predicate)
+  {
+    if (first == last)
+    {
+      return last;
+    }
+
+    TIterator result = first;
+
+    while (++first != last)
+    {
+      if (!predicate(*result, *first) && (++result != first))
+      {
+        *result = ETL_MOVE(*first);
+      }
+    }
+
+    return ++result;
+  }
+
+  //***************************************************************************
+  /// unique_copy
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique_copy
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator>
+  ETL_CONSTEXPR14
+  TOutputIterator unique_copy(TInputIterator  first,
+                              TInputIterator  last,
+                              TOutputIterator d_first)
+  {
+    if (first == last)
+    {
+      return d_first;
+    }
+
+    typename etl::iterator_traits<TInputIterator>::value_type prev = *first;
+    *d_first = prev;
+
+    while (++first != last)
+    {
+      if (!(prev == *first))
+      {
+        prev = *first;
+        *(++d_first) = prev;
+      }
+    }
+
+    return ++d_first;
+  }
+
+  //***************************************************************************
+  /// unique_copy
+  /// see https://en.cppreference.com/w/cpp/algorithm/unique_copy
+  /// predicate overload to determine equality.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator, typename TOutputIterator, typename TBinaryPredicate>
+  ETL_CONSTEXPR14
+  TOutputIterator unique_copy(TInputIterator   first,
+                              TInputIterator   last,
+                              TOutputIterator  d_first,
+                              TBinaryPredicate predicate)
+  {
+    if (first == last)
+    {
+      return d_first;
+    }
+
+    typename etl::iterator_traits<TInputIterator>::value_type prev = *first;
+    *d_first = prev;
+
+    while (++first != last)
+    {
+      if (!predicate(prev, *first))
+      {
+        prev = *first;
+        *(++d_first) = prev;
+      }
+    }
+
+    return ++d_first;
+  }
+
+  //***************************************************************************
+  /// merge
+  /// Merges two sorted ranges into one sorted range.
+  /// see https://en.cppreference.com/w/cpp/algorithm/merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator1, typename TInputIterator2, typename TOutputIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  TOutputIterator merge(TInputIterator1 first1, TInputIterator1 last1,
+                        TInputIterator2 first2, TInputIterator2 last2,
+                        TOutputIterator d_first,
+                        TCompare        compare)
+  {
+    while ((first1 != last1) && (first2 != last2))
+    {
+      if (compare(*first2, *first1))
+      {
+        *d_first = *first2;
+        ++first2;
+      }
+      else
+      {
+        *d_first = *first1;
+        ++first1;
+      }
+      ++d_first;
+    }
+
+    d_first = etl::copy(first1, last1, d_first);
+    d_first = etl::copy(first2, last2, d_first);
+
+    return d_first;
+  }
+
+  //***************************************************************************
+  /// merge
+  /// Merges two sorted ranges into one sorted range.
+  /// Uses operator< for comparison.
+  /// see https://en.cppreference.com/w/cpp/algorithm/merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TInputIterator1, typename TInputIterator2, typename TOutputIterator>
+  ETL_CONSTEXPR14
+  TOutputIterator merge(TInputIterator1 first1, TInputIterator1 last1,
+                        TInputIterator2 first2, TInputIterator2 last2,
+                        TOutputIterator d_first)
+  {
+    typedef etl::less<typename etl::iterator_traits<TInputIterator1>::value_type> compare;
+
+    return etl::merge(first1, last1, first2, last2, d_first, compare());
+  }
+
+  //***************************************************************************
+  /// inplace_merge
+  /// Merges two consecutive sorted ranges [first, middle) and [middle, last)
+  /// into one sorted range [first, last) in-place.
+  /// Uses an iterative rotate-based algorithm that requires no additional
+  /// memory, no recursion and no explicit stack, making it safe for deeply
+  /// embedded targets with constrained stack sizes.
+  /// Complexity: O(N log N) comparisons, O(N log N) element moves.
+  /// see https://en.cppreference.com/w/cpp/algorithm/inplace_merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TBidirectionalIterator, typename TCompare>
+  void inplace_merge(TBidirectionalIterator first,
+                     TBidirectionalIterator middle,
+                     TBidirectionalIterator last,
+                     TCompare              compare)
+  {
+    typedef typename etl::iterator_traits<TBidirectionalIterator>::difference_type difference_type;
+
+    difference_type len1 = etl::distance(first, middle);
+    difference_type len2 = etl::distance(middle, last);
+
+    while ((len1 != 0) && (len2 != 0))
+    {
+      // Find where the first element of the right half belongs in the left half.
+      // All elements in [first, cut1) are <= *middle, so they are already in place.
+      TBidirectionalIterator cut1 = etl::upper_bound(first, middle, *middle, compare);
+      difference_type prefix = etl::distance(first, cut1);
+      len1 -= prefix;
+
+      // If the entire left half is <= *middle, we are done.
+      if (len1 == 0)
+      {
+        return;
+      }
+
+      // Advance first past the already-placed prefix.
+      first = cut1;
+
+      // Find where the first element of the (remaining) left half belongs in
+      // the right half.  All elements in [middle, cut2) are < *first, so they
+      // need to be moved before *first.
+      TBidirectionalIterator cut2 = etl::lower_bound(middle, last, *first, compare);
+      difference_type run = etl::distance(middle, cut2);
+      len2 -= run;
+
+      // Rotate the block [first, middle, cut2) so that [middle, cut2) moves
+      // before [first, middle).  After the rotate the elements from
+      // [middle, cut2) (length = run) now occupy [first, first + run) and
+      // are in their final position.
+      etl::rotate(first, middle, cut2);
+
+      // Advance past the block we just placed.
+      etl::advance(first, run);
+      middle = cut2;
+    }
+  }
+
+  //***************************************************************************
+  /// inplace_merge
+  /// Merges two consecutive sorted ranges [first, middle) and [middle, last)
+  /// into one sorted range [first, last) in-place.
+  /// Uses operator< for comparison.
+  /// see https://en.cppreference.com/w/cpp/algorithm/inplace_merge
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TBidirectionalIterator>
+  void inplace_merge(TBidirectionalIterator first,
+                     TBidirectionalIterator middle,
+                     TBidirectionalIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TBidirectionalIterator>::value_type> compare;
+
+    etl::inplace_merge(first, middle, last, compare());
   }
 }
 
@@ -3140,6 +3511,11 @@ namespace etl
   ETL_CONSTEXPR20
   void selection_sort(TIterator first, TIterator last, TCompare compare)
   {
+    if (first == last)
+    {
+      return;
+    }
+
     TIterator min;
     const TIterator ilast = private_algorithm::get_before_last(first, last);
     const TIterator jlast = last;
@@ -3160,7 +3536,10 @@ namespace etl
       }
 
       using ETL_OR_STD::swap; // Allow ADL
-      swap(*i, *min);
+      if (min != i)
+      {
+        swap(*i, *min);
+      }
     }
   }
 
@@ -3184,11 +3563,7 @@ namespace etl
   ETL_CONSTEXPR14
   void heap_sort(TIterator first, TIterator last, TCompare compare)
   {
-    if (!etl::is_heap(first, last, compare))
-    {
-      etl::make_heap(first, last, compare);
-    }
-
+    etl::make_heap(first, last, compare);
     etl::sort_heap(first, last, compare);
   }
 
@@ -3200,11 +3575,7 @@ namespace etl
   ETL_CONSTEXPR14
   void heap_sort(TIterator first, TIterator last)
   {
-    if (!etl::is_heap(first, last))
-    {
-      etl::make_heap(first, last);
-    }
-
+    etl::make_heap(first, last);
     etl::sort_heap(first, last);
   }
 
@@ -3248,7 +3619,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// Returns the maximum value.
+  /// Returns the minimum value.
   //***************************************************************************
 #if ETL_USING_CPP11
   template <typename T>
@@ -3444,14 +3815,7 @@ namespace etl
     {
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
 
-      TIterator  pivot = last; // Maybe find a better pivot choice?
-      value_type pivot_value = *pivot;
-
-      // Swap the pivot with the last, if necessary.
-      if (pivot != last)
-      {
-        swap(*pivot, *last);
-      }
+      value_type pivot_value = ETL_MOVE(*last);
 
       TIterator i = first;
 
@@ -3550,7 +3914,7 @@ namespace etl
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare_t;
 
-    nth_element(first, last, compare_t());
+    nth_element(first, nth, last, compare_t());
   }
 #endif
 }
