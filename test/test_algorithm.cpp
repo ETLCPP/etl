@@ -1341,14 +1341,26 @@ namespace
         CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
       }
 
+      // Check one past the end.
+      bool expected_has_next = std::next_permutation(expected.begin(), expected.end());
+      bool result_has_next = etl::next_permutation(result.begin(), result.end());
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
       int single_expected[] = { 1 };
       int single_result[] = { 1 };
 
-      bool expected_has_next = std::next_permutation(std::begin(single_expected), std::end(single_expected));
-      bool result_has_next = etl::next_permutation(std::begin(single_result), std::end(single_result));
+      expected_has_next = std::next_permutation(std::begin(single_expected), std::end(single_expected));
+      result_has_next = etl::next_permutation(std::begin(single_result), std::end(single_result));
 
       CHECK_EQUAL(expected_has_next, result_has_next);
       CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_next = std::next_permutation(std::begin(single_expected), std::begin(single_expected));
+      result_has_next = etl::next_permutation(std::begin(single_result), std::begin(single_result));
+
+      CHECK_EQUAL(expected_has_next, result_has_next);
     }
 
     //*************************************************************************
@@ -1365,6 +1377,22 @@ namespace
         CHECK_EQUAL(expected_has_next, result_has_next);
         CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
       }
+
+      // Check one past the end.
+      bool expected_has_next = std::next_permutation(expected.begin(), expected.end(), std::greater<int>());
+      bool result_has_next = etl::next_permutation(result.begin(), result.end(), std::greater<int>());
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
+      int single_expected[] = { 1 };
+      int single_result[] = { 1 };
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_next = std::next_permutation(std::begin(single_expected), std::begin(single_expected), std::greater<int>());
+      result_has_next = etl::next_permutation(std::begin(single_result), std::begin(single_result), std::greater<int>());
+
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
     }
 
     //*************************************************************************
@@ -1382,14 +1410,26 @@ namespace
         CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
       }
 
+      // Check one past the end.
+      bool expected_has_prev = std::prev_permutation(expected.begin(), expected.end());
+      bool result_has_prev = etl::prev_permutation(result.begin(), result.end());
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
       int single_expected[] = { 1 };
       int single_result[] = { 1 };
 
-      bool expected_has_prev = std::prev_permutation(std::begin(single_expected), std::end(single_expected));
-      bool result_has_prev = etl::prev_permutation(std::begin(single_result), std::end(single_result));
+      expected_has_prev = std::prev_permutation(std::begin(single_expected), std::end(single_expected));
+      result_has_prev = etl::prev_permutation(std::begin(single_result), std::end(single_result));
 
       CHECK_EQUAL(expected_has_prev, result_has_prev);
       CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_prev = std::prev_permutation(std::begin(single_expected), std::begin(single_expected));
+      result_has_prev = etl::prev_permutation(std::begin(single_result), std::begin(single_result));
+
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
     }
 
     //*************************************************************************
@@ -1406,6 +1446,22 @@ namespace
         CHECK_EQUAL(expected_has_prev, result_has_prev);
         CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
       }
+
+      // Check one past the end.
+      bool expected_has_prev = std::prev_permutation(expected.begin(), expected.end(), std::greater<int>());
+      bool result_has_prev = etl::prev_permutation(result.begin(), result.end(), std::greater<int>());
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
+      int single_expected[] = { 1 };
+      int single_result[] = { 1 };
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_prev = std::prev_permutation(std::begin(single_expected), std::begin(single_expected), std::greater<int>());
+      result_has_prev = etl::prev_permutation(std::begin(single_result), std::begin(single_result), std::greater<int>());
+
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
     }
 
     //*************************************************************************
