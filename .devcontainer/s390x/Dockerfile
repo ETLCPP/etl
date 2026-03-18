@@ -1,20 +1,6 @@
 # s390x Big-Endian Test Environment for ETL
-# Based on Debian 12 (Bookworm) for s390x architecture
-FROM s390x/debian:bookworm
-
-# Avoid prompts from apt
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    g++ \
-    make \
-    git \
-    wget \# s390x Big-Endian Test Environment for ETL
 # Uses QEMU user-mode emulation to run s390x binaries on x64 host
-FROM debian:bookworm
+FROM debian:trixie
 
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,21 +15,13 @@ RUN dpkg --add-architecture s390x && \
     g++-s390x-linux-gnu \
     cmake \
     make \
+    ninja-build \
     git \
     wget \
     file \
     libc6:s390x \
     libstdc++6:s390x \
     && rm -rf /var/lib/apt/lists/*
-
-# Set up s390x as default cross-compilation target
-ENV CROSS_COMPILE=s390x-linux-gnu-
-ENV CC=s390x-linux-gnu-gcc
-ENV CXX=s390x-linux-gnu-g++
-ENV AR=s390x-linux-gnu-ar
-ENV AS=s390x-linux-gnu-as
-ENV LD=s390x-linux-gnu-ld
-ENV STRIP=s390x-linux-gnu-strip
 
 # Set working directory
 WORKDIR /workspaces/etl
@@ -57,21 +35,6 @@ RUN echo "=== Host Architecture ===" && \
     echo "" && \
     echo "=== QEMU s390x ===" && \
     qemu-s390x-static --version | head -n1
-
-# Default command
-CMD ["/bin/bash"]
-
-util-linux \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set working directory
-WORKDIR /workspaces/etl
-
-# Verify architecture and endianness
-RUN echo "=== System Information ===" && \
-    uname -m && \
-    lscpu | grep -E "Architecture|Byte Order" && \
-    echo "=========================="
 
 # Default command
 CMD ["/bin/bash"]

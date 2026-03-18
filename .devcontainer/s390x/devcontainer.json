@@ -11,9 +11,18 @@
       "extensions": [
         "ms-vscode.cpptools",
         "ms-vscode.cmake-tools"
-      ]
+      ],
+      "settings": {
+        "cmake.configureArgs": [
+          "-DCMAKE_TOOLCHAIN_FILE=/workspaces/etl/.devcontainer/s390x/toolchain-s390x.cmake",
+          "-DBUILD_TESTS=ON",
+          "-DNO_STL=OFF",
+          "-DETL_CXX_STANDARD=17"
+        ],
+        "cmake.buildDirectory": "${workspaceFolder}/build-s390x",
+        "cmake.generator": "Ninja"
+      }
     }
   },
-  "postCreateCommand": "chmod +x /workspaces/etl/.devcontainer/s390x/build-and-test.sh",
   "remoteUser": "root"
 }
