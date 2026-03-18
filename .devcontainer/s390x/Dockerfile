@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install QEMU user-mode emulation and s390x cross-compilation tools
 RUN dpkg --add-architecture s390x && \
-    apt-get update && apt-get install -y \
+    apt-get update && apt-get install -y --no-install-recommends\
     qemu-user-static \
     qemu-user \
     binfmt-support \
