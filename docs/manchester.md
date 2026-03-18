@@ -15,7 +15,7 @@ Efficient Manchester encoding and decoding of data. The Manchester code represen
 - Span-based operations or chunk-based operations
 - Constexpr functions for compile-time encoding/decoding
 - Validation of encoded data
-- Support for little-endian and big-endian platforms
+- Chunked span I/O uses little-endian byte order for multi-byte chunks, independent of host platform endianness
 
 ## Algorithm background
 

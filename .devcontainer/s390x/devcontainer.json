@@ -15,7 +15,7 @@
       "settings": {
         "cmake.sourceDirectory": "${workspaceFolder}/test",
         "cmake.configureArgs": [
-          "-DCMAKE_TOOLCHAIN_FILE=/workspaces/etl/.devcontainer/s390x/toolchain-s390x.cmake",
+          "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/s390x/toolchain-s390x.cmake",
           "-DBUILD_TESTS=ON",
           "-DNO_STL=OFF",
           "-DETL_CXX_STANDARD=17"

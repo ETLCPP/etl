@@ -4,7 +4,6 @@
 #include <etl/algorithm.h>
 #include <etl/array.h>
 #include <etl/span.h>
-#include <iostream>
 #include <utility>
 
 SUITE(test_manchester)
