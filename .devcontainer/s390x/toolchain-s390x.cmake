@@ -18,4 +18,4 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 # Set QEMU for running tests
-set(CMAKE_CROSSCOMPILING_EMULATOR /usr/bin/qemu-s390x-static)
+set(CMAKE_CROSSCOMPILING_EMULATOR /usr/bin/qemu-s390x-static CACHE FILEPATH "Path to the emulator for cross-compiled binaries")
