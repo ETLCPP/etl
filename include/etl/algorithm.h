@@ -1894,11 +1894,12 @@ namespace etl
 
       for (TIterator1 i = begin1; i != end1; ++i)
       {
-        if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
+        const typename etl::binder1st<TBinaryPredicate> predicate_is_i = etl::bind1st(predicate, *i);
+        if (i == etl::find_if(begin1, i, predicate_is_i))
         {
-          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
+          size_t n = etl::count_if(begin2, end2, predicate_is_i);
 
-          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
+          if (n == 0 || size_t(etl::count_if(i, end1, predicate_is_i)) != n)
           {
             return false;
           }
@@ -1968,11 +1969,12 @@ namespace etl
     {
       for (TIterator1 i = begin1; i != end1; ++i)
       {
-        if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
+        const typename etl::binder1st<TBinaryPredicate> predicate_is_i = etl::bind1st(predicate, *i);
+        if (i == etl::find_if(begin1, i, predicate_is_i))
         {
-          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
+          size_t n = etl::count_if(begin2, end2, predicate_is_i);
 
-          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
+          if (n == 0 || size_t(etl::count_if(i, end1, predicate_is_i)) != n)
           {
             return false;
           }
