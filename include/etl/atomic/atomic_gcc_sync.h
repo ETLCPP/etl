@@ -854,7 +854,8 @@ namespace etl
     operator T() volatile const
     {
       ETL_BUILTIN_LOCK;
-      T result = value;
+      T result;
+      memcpy(&result, const_cast<const T*>(&value), sizeof(T));
       ETL_BUILTIN_UNLOCK;
 
       return result;
@@ -884,7 +885,7 @@ namespace etl
     {
       (void)order;
       ETL_BUILTIN_LOCK;
-      value = v;
+      memcpy(const_cast<T*>(&value), &v, sizeof(T));
       ETL_BUILTIN_UNLOCK;
     }
 
@@ -893,7 +894,8 @@ namespace etl
     {
       (void)order;
       ETL_BUILTIN_LOCK;
-      T result = value;
+      T result;
+      memcpy(&result, const_cast<const T*>(&value), sizeof(T));
       ETL_BUILTIN_UNLOCK;
 
       return result;
@@ -926,8 +928,9 @@ namespace etl
     {
       (void)order;
       ETL_BUILTIN_LOCK;
-      T result = value;
-      value = v;
+      T result;
+      memcpy(&result, const_cast<const T*>(&value), sizeof(T));
+      memcpy(const_cast<T*>(&value), &v, sizeof(T));
       ETL_BUILTIN_UNLOCK;
 
       return result;
@@ -960,9 +963,9 @@ namespace etl
 
       (void)order;
       ETL_BUILTIN_LOCK;
-      if (memcmp(&value, &expected, sizeof(T)) == 0)
+      if (memcmp(const_cast<const T*>(&value), &expected, sizeof(T)) == 0)
       {
-        value = desired;
+        memcpy(const_cast<T*>(&value), &desired, sizeof(T));
         result = true;
       }
       else
@@ -985,7 +988,7 @@ namespace etl
     {
       (void)success;
       (void)failure;
-      return compare_exchange_weak(expected, desired);
+      return compare_exchange_weak(expected, desired, etl::memory_order_seq_cst);
     }
 
     // Compare exchange strong
@@ -998,7 +1001,7 @@ namespace etl
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
       (void)order;
-      return compare_exchange_weak(expected, desired);
+      return compare_exchange_weak(expected, desired, etl::memory_order_seq_cst);
     }
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
@@ -1012,7 +1015,7 @@ namespace etl
     {
       (void)success;
       (void)failure;
-      return compare_exchange_weak(expected, desired);
+      return compare_exchange_weak(expected, desired, etl::memory_order_seq_cst);
     }
 
   private:
