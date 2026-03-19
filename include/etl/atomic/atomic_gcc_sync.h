@@ -834,28 +834,11 @@ namespace etl
       return v;
     }
 
-    T operator =(T v) volatile
-    {
-      store(v);
-
-      return v;
-    }
-
     // Conversion operator
     operator T () const
     {
       ETL_BUILTIN_LOCK;
       T result = value;
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
-    }
-
-    operator T() volatile const
-    {
-      ETL_BUILTIN_LOCK;
-      T result;
-      memcpy(&result, const_cast<const T*>(&value), sizeof(T));
       ETL_BUILTIN_UNLOCK;
 
       return result;
@@ -867,11 +850,6 @@ namespace etl
       return false;
     }
 
-    bool is_lock_free() const volatile
-    {
-      return false;
-    }
-
     // Store
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
@@ -879,26 +857,6 @@ namespace etl
       ETL_BUILTIN_LOCK;
       value = v;
       ETL_BUILTIN_UNLOCK;
-    }
-
-    void store(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      (void)order;
-      ETL_BUILTIN_LOCK;
-      memcpy(const_cast<T*>(&value), &v, sizeof(T));
-      ETL_BUILTIN_UNLOCK;
-    }
-
-    // Load
-    T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
-    {
-      (void)order;
-      ETL_BUILTIN_LOCK;
-      T result;
-      memcpy(&result, const_cast<const T*>(&value), sizeof(T));
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
     }
 
     // Load
@@ -919,18 +877,6 @@ namespace etl
       ETL_BUILTIN_LOCK;
       T result = value;
       value = v;
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
-    }
-
-    T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      (void)order;
-      ETL_BUILTIN_LOCK;
-      T result;
-      memcpy(&result, const_cast<const T*>(&value), sizeof(T));
-      memcpy(const_cast<T*>(&value), &v, sizeof(T));
       ETL_BUILTIN_UNLOCK;
 
       return result;
@@ -957,38 +903,11 @@ namespace etl
       return result;
     }
 
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      bool result;
-
-      (void)order;
-      ETL_BUILTIN_LOCK;
-      if (memcmp(const_cast<const T*>(&value), &expected, sizeof(T)) == 0)
-      {
-        memcpy(const_cast<T*>(&value), &desired, sizeof(T));
-        result = true;
-      }
-      else
-      {
-        result = false;
-      }
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
-    }
-
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
       (void)success;
       (void)failure;
       return compare_exchange_weak(expected, desired);
-    }
-
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      (void)success;
-      (void)failure;
-      return compare_exchange_weak(expected, desired, etl::memory_order_seq_cst);
     }
 
     // Compare exchange strong
@@ -998,12 +917,6 @@ namespace etl
       return compare_exchange_weak(expected, desired);
     }
 
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      (void)order;
-      return compare_exchange_weak(expected, desired, etl::memory_order_seq_cst);
-    }
-
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
       (void)success;
@@ -1011,14 +924,10 @@ namespace etl
       return compare_exchange_weak(expected, desired);
     }
 
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      (void)success;
-      (void)failure;
-      return compare_exchange_weak(expected, desired, etl::memory_order_seq_cst);
-    }
-
   private:
+
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     mutable char flag;
     mutable T value;
@@ -2032,24 +1941,8 @@ namespace etl
       return v;
     }
 
-    T operator =(T v) volatile
-    {
-      store(v);
-
-      return v;
-    }
-
     // Conversion operator
     operator T () const
-    {
-      ETL_BUILTIN_LOCK;
-      T result = value;
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
-    }
-
-    operator T() volatile const
     {
       ETL_BUILTIN_LOCK;
       T result = value;
@@ -2064,34 +1957,12 @@ namespace etl
       return false;
     }
 
-    bool is_lock_free() const volatile
-    {
-      return false;
-    }
-
     // Store
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
       ETL_BUILTIN_LOCK;
       value = v;
       ETL_BUILTIN_UNLOCK;
-    }
-
-    void store(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      ETL_BUILTIN_LOCK;
-      value = v;
-      ETL_BUILTIN_UNLOCK;
-    }
-
-    // Load
-    T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
-    {
-      ETL_BUILTIN_LOCK;
-      T result = value;
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
     }
 
     // Load
@@ -2106,16 +1977,6 @@ namespace etl
 
     // Exchange
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      ETL_BUILTIN_LOCK;
-      T result = value;
-      value = v;
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
-    }
-
-    T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
       ETL_BUILTIN_LOCK;
       T result = value;
@@ -2145,31 +2006,7 @@ namespace etl
       return result;
     }
 
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      bool result;
-
-      ETL_BUILTIN_LOCK;
-      if (memcmp(&value, &expected, sizeof(T)) == 0)
-      {
-        value = desired;
-        result = true;
-      }
-      else
-      {
-        result = false;
-      }
-      ETL_BUILTIN_UNLOCK;
-
-      return result;
-    }
-
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
-    {
-      return compare_exchange_weak(expected, desired);
-    }
-
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
     {
       return compare_exchange_weak(expected, desired);
     }
@@ -2180,22 +2017,15 @@ namespace etl
       return compare_exchange_weak(expected, desired);
     }
 
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return compare_exchange_weak(expected, desired);
-    }
-
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
       return compare_exchange_weak(expected, desired);
     }
 
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      return compare_exchange_weak(expected, desired);
-    }
-
   private:
+
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     mutable char flag;
     mutable T value;

@@ -712,7 +712,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_atomic_non_scalar_trivially_copyable_struct_volatile)
+    TEST(test_atomic_non_scalar_trivially_copyable_struct)
     {
       struct Data
       {
@@ -726,34 +726,31 @@ namespace
       };
 
       // Default construction
-      volatile etl::atomic<Data> test;
+      etl::atomic<Data> test;
 
       Data d1 = { 1, 2 };
       Data d2 = { 3, 4 };
       Data d3 = { 5, 6 };
 
-      // is_lock_free (non-scalar types are not lock free)
-      CHECK_FALSE(test.is_lock_free());
-
-      // Store and load via volatile
+      // Store and load
       test.store(d1);
       Data loaded = test.load();
       CHECK_EQUAL(d1.x, loaded.x);
       CHECK_EQUAL(d1.y, loaded.y);
 
-      // Assignment operator via volatile
+      // Assignment operator
       test = d2;
       loaded = test.load();
       CHECK_EQUAL(d2.x, loaded.x);
       CHECK_EQUAL(d2.y, loaded.y);
 
-      // Conversion operator via volatile
+      // Conversion operator
       test.store(d1);
       Data converted = static_cast<Data>(test);
       CHECK_EQUAL(d1.x, converted.x);
       CHECK_EQUAL(d1.y, converted.y);
 
-      // Exchange via volatile
+      // Exchange
       test.store(d1);
       Data old_val = test.exchange(d2);
       CHECK_EQUAL(d1.x, old_val.x);
@@ -832,7 +829,7 @@ namespace
       CHECK_EQUAL(d2.y, loaded.y);
 
       // Value construction
-      volatile etl::atomic<Data> test2(d1);
+      etl::atomic<Data> test2(d1);
       loaded = test2.load();
       CHECK_EQUAL(d1.x, loaded.x);
       CHECK_EQUAL(d1.y, loaded.y);
