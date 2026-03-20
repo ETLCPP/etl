@@ -18,8 +18,8 @@ RUN set -eux \
     && export DEBIAN_FRONTEND=noninteractive \
     && if [[ "${DEBIAN_SNAPSHOT}" != "none" ]]; then \
         test -f /etc/apt/sources.list.d/debian.sources; \
-        sed -ri "s|^URIs: http://deb.debian.org/debian$|URIs: http://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}|g" /etc/apt/sources.list.d/debian.sources; \
-        sed -ri "s|^URIs: http://deb.debian.org/debian-security$|URIs: http://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}|g" /etc/apt/sources.list.d/debian.sources; \
+        sed -ri "s|^URIs: https://deb.debian.org/debian$|URIs: http://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}|g" /etc/apt/sources.list.d/debian.sources; \
+        sed -ri "s|^URIs: https://deb.debian.org/debian-security$|URIs: http://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}|g" /etc/apt/sources.list.d/debian.sources; \
         printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99snapshot; \
     fi \
     && apt-get update \
