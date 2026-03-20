@@ -32,10 +32,8 @@ SOFTWARE.
 #define ETL_MANCHESTER_INCLUDED
 
 #include "platform.h"
-#include "endianness.h"
 #include "span.h"
 #include "static_assert.h"
-#include <cstring>
 
 ///\defgroup manchester manchester
 /// Manchester encoding and decoding

@@ -524,8 +524,9 @@ target_include_directories(etl_tests
 add_subdirectory(UnitTest++)
 target_link_libraries(etl_tests PRIVATE UnitTestpp)
 
+enable_testing()
 # Enable the 'make test' CMake target using the executable defined above
-add_test(etl_unit_tests etl_tests)
+add_test(NAME etl_unit_tests COMMAND etl_tests)
 
 # Since ctest will only show you the results of the single executable
 # define a target that will output all of the failing or passing tests
