@@ -17,8 +17,8 @@ COPY ./reinstall-cmake.sh /usr/local/share/reinstall-cmake.sh
 RUN set -eux \
     && export DEBIAN_FRONTEND=noninteractive \
     && if [[ "${DEBIAN_SNAPSHOT}" != "none" ]]; then \
-        snapshot_main="https://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}"; \
-        snapshot_security="https://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}"; \
+        snapshot_main="http://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}"; \
+        snapshot_security="http://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}"; \
         if [[ -f /etc/apt/sources.list.d/debian.sources ]]; then \
             sed -ri "s|^URIs: https?://deb.debian.org/debian$|URIs: ${snapshot_main}|g" /etc/apt/sources.list.d/debian.sources; \
             sed -ri "s|^URIs: https?://deb.debian.org/debian-security$|URIs: ${snapshot_security}|g" /etc/apt/sources.list.d/debian.sources; \
