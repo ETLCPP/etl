@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_NAME="clang:latest"
+ARG BASE_IMAGE_NAME="silkeh/clang:20-bullseye"
 
 FROM ${BASE_IMAGE_NAME}
 
@@ -11,8 +11,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
         git \
         wget \
-        python3-pip \
-    && pip3 install --no-cache-dir cogapp \
+        python3-cogapp \
     && rm -rf /var/lib/apt/lists/*
 
 RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
