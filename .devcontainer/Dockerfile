@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_NAME="mcr.microsoft.com/devcontainers/cpp:2"
+ARG BASE_IMAGE_NAME="mcr.microsoft.com/devcontainers/cpp:2@sha256:a5eb5a1e9109af88bf82ebb0f71903608a68144851ed1e4b852e31b251ac59c6"
 
 FROM ${BASE_IMAGE_NAME}
 
