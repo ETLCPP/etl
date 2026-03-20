@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_NAME="silkeh/clang:20-bullseye"
+ARG BASE_IMAGE_NAME="mcr.microsoft.com/devcontainers/cpp:2"
 
 FROM ${BASE_IMAGE_NAME}
 

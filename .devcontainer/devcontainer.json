@@ -5,7 +5,7 @@
 	"build": {
 		"dockerfile": "./Dockerfile",
 		"args": {
-			"BASE_IMAGE_NAME": "mcr.microsoft.com/devcontainers/cpp:debian-12"
+			"BASE_IMAGE_NAME": "mcr.microsoft.com/devcontainers/cpp:2"
 		},
 		"context": "./context"
 	}
