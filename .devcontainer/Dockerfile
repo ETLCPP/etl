@@ -11,9 +11,6 @@ ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     TZ=UTC
 
-# Optionally install the cmake for vcpkg
-COPY ./reinstall-cmake.sh /usr/local/share/reinstall-cmake.sh
-
 RUN set -eux \
     && export DEBIAN_FRONTEND=noninteractive \
     && if [[ "${DEBIAN_SNAPSHOT}" != "none" ]]; then \
@@ -41,12 +38,5 @@ RUN set -eux \
         git \
         wget \
         python3-cogapp \
+        cmake \
     && rm -rf /var/lib/apt/lists/*
-
-RUN set -eux \
-    && if [[ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]]; then \
-        chmod +x /usr/local/share/reinstall-cmake.sh \
-        && \
-        /usr/local/share/reinstall-cmake.sh "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}"; \
-    fi \
-    && rm -f /usr/local/share/reinstall-cmake.sh
