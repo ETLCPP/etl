@@ -17,9 +17,23 @@ COPY ./reinstall-cmake.sh /usr/local/share/reinstall-cmake.sh
 RUN set -eux \
     && export DEBIAN_FRONTEND=noninteractive \
     && if [[ "${DEBIAN_SNAPSHOT}" != "none" ]]; then \
-        test -f /etc/apt/sources.list.d/debian.sources; \
-        sed -ri "s|^URIs: https://deb.debian.org/debian$|URIs: http://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}|g" /etc/apt/sources.list.d/debian.sources; \
-        sed -ri "s|^URIs: https://deb.debian.org/debian-security$|URIs: http://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}|g" /etc/apt/sources.list.d/debian.sources; \
+        snapshot_main="https://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}"; \
+        snapshot_security="https://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}"; \
+        if [[ -f /etc/apt/sources.list.d/debian.sources ]]; then \
+            sed -ri "s|^URIs: https?://deb.debian.org/debian$|URIs: ${snapshot_main}|g" /etc/apt/sources.list.d/debian.sources; \
+            sed -ri "s|^URIs: https?://deb.debian.org/debian-security$|URIs: ${snapshot_security}|g" /etc/apt/sources.list.d/debian.sources; \
+        elif [[ -f /etc/apt/sources.list ]] || compgen -G "/etc/apt/sources.list.d/*.list" > /dev/null; then \
+            for list_file in /etc/apt/sources.list /etc/apt/sources.list.d/*.list; do \
+                [[ -f "${list_file}" ]] || continue; \
+                sed -ri "s|https?://deb.debian.org/debian|${snapshot_main}|g" "${list_file}"; \
+                sed -ri "s|https?://security.debian.org/debian-security|${snapshot_security}|g" "${list_file}"; \
+                sed -ri "s|https?://deb.debian.org/debian-security|${snapshot_security}|g" "${list_file}"; \
+            done; \
+        else \
+            echo "ERROR: DEBIAN_SNAPSHOT='${DEBIAN_SNAPSHOT}' is set, but no supported apt source files were found."; \
+            echo "Expected /etc/apt/sources.list.d/debian.sources or one or more .list files under /etc/apt/."; \
+            exit 1; \
+        fi; \
         printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99snapshot; \
     fi \
     && apt-get update \
