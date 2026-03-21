@@ -116,32 +116,4 @@ html body p {
   background-color: white !important;
 }
 
-/* The list itself */
-ul {
-    list-style-type: disc; /* bullet style: disc | circle | square | none */
-    padding-left: 1.5rem; /* indent from the left */
-    margin: 1rem 0; /* vertical spacing around the list */
-    line-height: 1.6; /* breathing room between lines */
-}
 
-/* Each list item */
-ul li {
-    margin-bottom: 0.5rem; /* space between items */
-    color: grey;
-}
-
-/* The bold labels */
-ul li strong {
-    font-weight: 600;
-    color: #111; /* slightly darker than body text */
-}
-
-/* The inline code snippets */
-ul li code {
-    font-family: Consolas, monospace;
-    font-size: 1rem;
-    background-color: #e7e7e7;
-    color: black;
-    padding: 0.1em 0.35em;
-    border: none;
-}
