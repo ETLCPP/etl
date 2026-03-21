@@ -1,4 +1,5 @@
 baseURL = 'http://localhost'
+#baseURL = 'https://www.etlcpp.com/hugo/'
 languageCode = 'en-gb'
 title = 'Documentation for the ETL'
 theme = "etl_theme"
