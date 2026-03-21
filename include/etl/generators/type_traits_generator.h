@@ -765,11 +765,11 @@ namespace etl
   ///\ingroup type_traits
   /// Implemented by checking if type is convertible to an integer through static_cast
 
-  namespace private_type_traits 
+  namespace private_type_traits
   {
     // Base case
     template <typename T, typename = int>
-    struct is_convertible_to_int 
+    struct is_convertible_to_int
       : false_type
     {
     };
@@ -778,7 +778,7 @@ namespace etl
     // 2nd template argument of base case defaults to int to ensure that this partial specialization is always tried first
     template <typename T>
     struct is_convertible_to_int<T, decltype(static_cast<int>(declval<T>()))>
-      : true_type 
+      : true_type
     {
     };
   }
@@ -788,7 +788,7 @@ namespace etl
     : integral_constant<bool, private_type_traits::is_convertible_to_int<T>::value &&
                               !is_class<T>::value &&
                               !is_arithmetic<T>::value &&
-                              !is_reference<T>::value> 
+                              !is_reference<T>::value>
   {
   };
 
@@ -872,6 +872,42 @@ namespace etl
   public:
     static ETL_CONSTANT bool value = decltype(test<TFrom>(0))::value;
   };
+#else
+  namespace private_type_traits
+  {
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename TFrom, typename TTo>
+    struct is_convertible_impl
+    {
+      static yes test(TTo);
+      static no test(...);
+      static TFrom make();
+      static const bool value = (sizeof(test(make())) == sizeof(yes));
+    };
+
+    template <typename TTo>
+    struct is_convertible_impl<void, TTo>
+    {
+      static const bool value = false;
+    };
+
+    template <typename TFrom>
+    struct is_convertible_impl<TFrom, void>
+    {
+      static const bool value = false;
+    };
+
+    template <>
+    struct is_convertible_impl<void, void>
+    {
+      static const bool value = true;
+    };
+  }
+
+  template <typename TFrom, typename TTo>
+  struct is_convertible : etl::bool_constant<private_type_traits::is_convertible_impl<TFrom, TTo>::value> {};
 #endif
 
 #if ETL_USING_CPP17
@@ -1420,6 +1456,42 @@ typedef integral_constant<bool, true>  true_type;
   public:
     static ETL_CONSTANT bool value = decltype(test<TFrom>(0))::value;
   };
+#else
+  namespace private_type_traits
+  {
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename TFrom, typename TTo>
+    struct is_convertible_impl
+    {
+      static yes test(TTo);
+      static no test(...);
+      static TFrom make();
+      static const bool value = (sizeof(test(make())) == sizeof(yes));
+    };
+
+    template <typename TTo>
+    struct is_convertible_impl<void, TTo>
+    {
+      static const bool value = false;
+    };
+
+    template <typename TFrom>
+    struct is_convertible_impl<TFrom, void>
+    {
+      static const bool value = false;
+    };
+
+    template <>
+    struct is_convertible_impl<void, void>
+    {
+      static const bool value = true;
+    };
+  }
+
+  template <typename TFrom, typename TTo>
+  struct is_convertible : etl::bool_constant<private_type_traits::is_convertible_impl<TFrom, TTo>::value> {};
 #endif
 
 #if ETL_USING_CPP17
@@ -1556,17 +1628,17 @@ typedef integral_constant<bool, true>  true_type;
   cog.outl("/// Template to determine if a type is one of a specified list.")
   cog.outl("///\\ingroup types")
   cog.outl("template <typename T,")
-  cog.out("          ")
-  cog.out("typename T1, ")
+  cog.out("         ")
+  cog.out(" typename T1,")
   for n in range(2, int(IsOneOf)):
-      cog.out("typename T%s = void, " % n)
+      cog.out(" typename T%s = void," % n)
       if n % 4 == 0:
           cog.outl("")
-          cog.out("          ")
-  cog.outl("typename T%s = void>" % IsOneOf)
+          cog.out("         ")
+  cog.outl(" typename T%s = void>" % IsOneOf)
   cog.outl("struct is_one_of")
   cog.outl("{")
-  cog.outl("  static const bool value = ")
+  cog.outl("  static const bool value =")
   for n in range(1, int(IsOneOf)):
       cog.outl("      etl::is_same<T, T%s>::value ||" % n)
   cog.outl("      etl::is_same<T, T%s>::value;" % IsOneOf)
@@ -1647,7 +1719,7 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   /// Get the Nth base of a recursively inherited type.
   /// Requires that the class has defined 'base_type'.
-  //*************************************************************************** 
+  //***************************************************************************
   // Recursive definition of the type.
   template <size_t Index, typename TType>
   struct nth_base
@@ -2254,7 +2326,7 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP11
   //***************************************************************************
   /// is_constructible
-  namespace private_type_traits 
+  namespace private_type_traits
   {
     template <class, class T, class... TArgs>
     struct is_constructible_ : etl::false_type {};
@@ -2468,7 +2540,7 @@ typedef integral_constant<bool, true>  true_type;
     };
 
     template <typename T1, typename T2, typename = void>
-    struct common_type_2_impl 
+    struct common_type_2_impl
       : decay_conditional_result<const T1&, const T2&>
     {
     };
@@ -2813,7 +2885,7 @@ typedef integral_constant<bool, true>  true_type;
     struct is_member_pointer_helper<T TObject::*> : etl::true_type {};
   }
 
-  template<typename T> 
+  template<typename T>
   struct is_member_pointer : private_type_traits::is_member_pointer_helper<typename etl::remove_cv<T>::type> {};
 
 #if ETL_USING_CPP17
@@ -2906,10 +2978,10 @@ typedef integral_constant<bool, true>  true_type;
   //***************************************************************************
   namespace private_type_traits
   {
-    template<typename> 
+    template<typename>
     struct is_member_object_pointer_helper : public etl::false_type {};
 
-    template<typename T, typename TObject> 
+    template<typename T, typename TObject>
     struct is_member_object_pointer_helper<T TObject::*> : public etl::negation<etl::is_function<T>> {};
   }
 
@@ -3130,6 +3202,60 @@ typedef integral_constant<bool, true>  true_type;
   {
   };
 
+#endif
+
+#if ETL_USING_CPP11
+  template <typename, typename = void>
+  struct has_size : etl::false_type {};
+
+  template <typename T>
+  struct has_size<T, void_t<decltype(etl::declval<T>().size())> >
+    : etl::true_type {};
+#else
+  template <typename T>
+  struct has_size
+  {
+  private:
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename U>
+    static yes test_size(char (*)[sizeof(&U::size)]);
+
+    template <typename U>
+    static no test_size(...);
+
+  public:
+
+    static const bool value = (sizeof(test_size<T>(0)) == sizeof(yes));
+  };
+#endif
+
+#if ETL_USING_CPP11
+  template <typename, typename = void>
+  struct has_data : etl::false_type {};
+
+  template <typename T>
+  struct has_data<T, void_t<decltype(etl::declval<T>().data())> >
+    : etl::true_type {};
+#else
+  template <typename T>
+  struct has_data
+  {
+  private:
+    typedef char yes;
+    struct no { char dummy[2]; };
+
+    template <typename U>
+    static yes test_data(char (*)[sizeof(&U::data)]);
+
+    template <typename U>
+    static no test_data(...);
+
+  public:
+
+    static const bool value = (sizeof(test_data<T>(0)) == sizeof(yes));
+  };
 #endif
 }
 
