@@ -1,15 +1,12 @@
 ---
-title: "inplace_function"
+title: "delegate"
+weight: 1
 ---
-
-<link rel="stylesheet" href="custom.css">
-
-# inplace_function
 
 A small, in-place function wrapper that stores callable objects inside a fixed-size buffer (no dynamic allocation). It supports free functions, member functions, functors, and lambdas, with both runtime and compile-time bindings.
 
 #### Supported: 20.45.0
-#### Header: `inplace_function.h`
+#### Header: `delegate.h`
 
 ```C++
 template <typename TSignature,

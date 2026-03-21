@@ -1,0 +1,111 @@
+h1 {
+  font-family: Tahoma, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  margin-top: 0em !important;
+  margin-bottom: 0.5em !important;
+  color: coral !important;
+}
+
+h2 {
+  font-family: Tahoma, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 150% !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  color: royalblue !important;
+}
+
+h3 {
+  font-family: Tahoma, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 130% !important;
+  color: green !important;
+}
+
+h4 {
+  font-family: Tahoma, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 110% !important;
+  color: green !important;
+}
+
+dl {
+  font-family: Consolas, monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  color: black !important;
+  background-color: #e7e7e7 !important;
+}
+
+dl dt code {
+  font-family: Consolas, monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  color: black;
+  background-color: #e7e7e7 !important;
+  border-style: none !important
+}
+
+dl dd {
+  font-family: Tahoma, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  color: black !important;
+  background-color: #e7e7e7 !important;
+}
+
+code {
+  font-family: Consolas, monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  color: black !important;
+  background-color: #e7e7e7 !important;
+    border: 0 none !important;
+}
+
+pre,
+pre code {
+  font-family: Consolas, monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  color: black !important;
+  background-color: #e7e7e7 !important;
+  border: none !important;
+}
+
+.markdown pre code {
+  line-height: 1.5 !important;
+}
+
+.markdown pre {
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
+}
+
+hr {
+    height: 2px !important;
+    background-color: midnightblue !important;
+    border: none !important;
+    margin-top: 10px !important;
+    margin-bottom: 1px !important;
+}
+
+p {
+  font-family: Tahoma, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 110% !important;
+  color: black !important;
+  background-color: white !important;
+}
+
+

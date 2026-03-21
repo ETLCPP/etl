@@ -1,3 +1,8 @@
+---
+title: Ranges
+weight: 1
+---
+
 # ETL C++17 Ranges Implementation
 
 ## Overview

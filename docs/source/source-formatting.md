@@ -1,4 +1,7 @@
-# Source Formatting
+---
+title: Source code formatting
+weight: 1
+---
 
 This project uses **clang-format** (version 18) to enforce a consistent coding style
 for C and C++ source files. For convenience, **treefmt** is also configured as a
