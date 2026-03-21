@@ -1,6 +1,3 @@
-[submodule "hugo/themes/hugo-theme-relearn"]
-	path = hugo/themes/hugo-theme-relearn
-	url = https://github.com/McShelby/hugo-theme-relearn.git
-[submodule "hugo3/themes/hextra"]
+[submodule "hugo/themes/hextra"]
 	path = hugo3/themes/hextra
 	url = https://github.com/imfing/hextra.git
