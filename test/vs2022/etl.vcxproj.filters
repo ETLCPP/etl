@@ -223,6 +223,9 @@
     <Filter Include="Tests\Error Handler\Assert Function">
       <UniqueIdentifier>{f51cb264-5376-47db-89d9-a515e1ac4af7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{5b809d95-b37c-4011-af5e-b5ea6dcb354e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1538,6 +1541,15 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
       <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\print.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\ranges_mini_variant.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ranges.h">
+      <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3773,6 +3785,9 @@
     <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_print.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3951,6 +3966,27 @@
     </None>
     <None Include="..\..\.github\workflows\gcc-c++23.yml">
       <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\docs\_config.yml">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\docs\_index.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\docs\custom.css">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\docs\inplace_function.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\docs\manchester.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\docs\ranges.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\docs\source-formatting.md">
+      <Filter>Documentation</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

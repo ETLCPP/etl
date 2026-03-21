@@ -12,13 +12,13 @@ A small, in-place function wrapper that stores callable objects inside a fixed-s
 #### Header: `inplace_function.h`
 
 ```C++
-template <typename TSignature, 
-          size_t Object_Size      = ETL_DEFAULT_INPLACE_FUNCTION_SIE, 
+template <typename TSignature,
+          size_t Object_Size      = ETL_DEFAULT_INPLACE_FUNCTION_SIE,
           size_t Object_Alignment = ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT>
 class inplace_function;
 ```
 
-The defaults are defined as follows:-  
+The defaults are defined as follows:-
 
 ```C++
 #if !defined(ETL_DEFAULT_INPLACE_FUNCTION_SIE)
@@ -40,26 +40,26 @@ Set your own definitions if you require different defaults.
 
 ```C++
 TSignature
-```  
-The function signature.  
+```
+The function signature.
 e.g. `int(char, float)`
 
 ```C++
 Object_Size
 ```
-Size of the internal storage buffer.  
+Size of the internal storage buffer.
 Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_SIE`.
 
 ```C++
 Object_Alignment
 ```
-Alignment of the internal storage buffer.  
+Alignment of the internal storage buffer.
 Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT`.
 
 ---
 
 ## Exceptions
- 
+
 ```C++
 etl::inplace_function_exception
 ```
@@ -102,7 +102,7 @@ Construction from a lambda/functor (const or non-const).
 
 ---
 
-## Assignment  
+## Assignment
 
 Copy/move assignment.
 
@@ -124,7 +124,7 @@ Invokes the bound callable and asserts if uninitialised.
 ```C++
 call_if(...)
 ```
-For `void` return bool indicating whether it executed.  
+For `void` return bool indicating whether it executed.
 For non-void returns etl::optional<TReturn>.
 
 ```C++
@@ -153,7 +153,7 @@ Returns the result of `is_valid()`
 ```C++
 void clear()
 ```
-Clears any stored callable
+Clears any stored callable.
 
 ```C++
 void swap(inplace_function& other)
@@ -178,13 +178,14 @@ Returns the alignment of the internal storage.
 ---
 
 ## Compile-Time Binding (No Payload)
- 
+
 ### Free function
+
 ```C++
 template <TReturn(*Function)(TArgs...)>
 void set()
 ```
-kvbklfalkbflk  
+Sets the callable to `Function`.
 
 ```C++
 template <TReturn(*Function)(TArgs...)>
@@ -192,7 +193,7 @@ inplace_function<TReturn(TArgs...),
                          Object_Size,
                          Object_Alignment> create()
 ```
-kvbklfalkbflk
+Creates an `etl::inplace_function` using `Function`.
 
 ### Member function + instance (external linkage)
 
@@ -200,6 +201,7 @@ kvbklfalkbflk
 template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instance>
 set<TObject, &TMethod, Instance>()
 ```
+Sets the callable to the member function `Method` for the object `Instance`.
 
 ```C++
 create<TObject, &TMethod, Instance>()
@@ -230,7 +232,7 @@ etl::inplace_function_for_any<TSignature, T0, ...>
 ---
 
 ## Helper Factories
- 
+
 ```C++
 make_inplace_function(function_ptr)
 ```
@@ -252,7 +254,7 @@ C++17-only overloads also exist for compile-time binding.
 ---
 
 ## Example
- 
+
 ```C++
 #include "etl/inplace_function.h"
 
@@ -290,23 +292,23 @@ If the callable object is larger than `Object_Size` or requires stricter alignme
 
 Prefer `inplace_function_for`, `inplace_function_for_any` or `make_inplace_function` to deduce storage sizes safely.
 
- 
 
- 
 
- 
 
- 
 
- 
 
- 
 
- 
 
- 
 
- 
 
- 
+
+
+
+
+
+
+
+
+
+
 

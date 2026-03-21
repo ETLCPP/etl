@@ -1,3 +1,4 @@
+
 .book-page {
   background-color: white;
 }
@@ -100,11 +101,11 @@ pre code {
 }
 
 html body hr {
-  height: 2px;
-  background-color: grey;
-  border: 0 none;
-  margin-top: 0rem;
-  margin-bottom: 0rem;
+    height: 2px !important;
+    background-color: darkblue !important;
+    border: none !important;
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
 }
 
 html body p {

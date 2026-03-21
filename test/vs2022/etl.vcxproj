@@ -11491,6 +11491,13 @@
     <None Include="..\..\cmake\GetGitRevisionDescription.cmake.in" />
     <None Include="..\..\cmake\helpers.cmake" />
     <None Include="..\..\CONTRIBUTING.md" />
+    <None Include="..\..\docs\custom.css" />
+    <None Include="..\..\docs\inplace_function.md" />
+    <None Include="..\..\docs\manchester.md" />
+    <None Include="..\..\docs\ranges.md" />
+    <None Include="..\..\docs\source-formatting.md" />
+    <None Include="..\..\docs\_config.yml" />
+    <None Include="..\..\docs\_index.md" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />
