@@ -1,0 +1,49 @@
+name: gcc-c++23-i386
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  build-gcc-cpp23-linux-no-stl-i386:
+    name: GCC C++23 Linux - No STL - i386
+    runs-on: ubuntu-24.04
+    container:
+      image: debian:trixie
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        dpkg --add-architecture i386
+        apt-get update
+        apt-get install -y \
+          binfmt-support \
+          build-essential \
+          cmake \
+          make \
+          ninja-build \
+          git \
+          wget \
+          file \
+          gcc-i686-linux-gnu \
+          g++-i686-linux-gnu \
+          libc6:i386 \
+          libstdc++6:i386 \
+          qemu-user-static \
+          qemu-user
+
+    - name: Build
+      run: |
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
+         -DETL_CXX_STANDARD=23 -DCMAKE_TOOLCHAIN_FILE=.devcontainer/i386/toolchain-i386.cmake \
+         -DEXTRA_TESTING_FLAGS=-v \
+         ./
+        cmake --build . -- -j "$(getconf _NPROCESSORS_ONLN)"
+
+    - name: Run tests
+      run: ctest -V

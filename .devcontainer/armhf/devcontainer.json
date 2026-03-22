@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/cpp
 {
-  "name": "s390x Big Endian (Debian)",
+  "name": "armhf (Debian)",
   "build": {
     "dockerfile": "./Dockerfile",
     "context": "."
@@ -15,12 +15,12 @@
       "settings": {
         "cmake.sourceDirectory": "${workspaceFolder}/test",
         "cmake.configureArgs": [
-          "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/s390x/toolchain-s390x.cmake",
+          "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/armhf/toolchain-armhf.cmake",
           "-DBUILD_TESTS=ON",
           "-DNO_STL=OFF",
           "-DETL_CXX_STANDARD=23"
         ],
-        "cmake.buildDirectory": "${workspaceFolder}/build-s390x",
+        "cmake.buildDirectory": "${workspaceFolder}/build-armhf",
         "cmake.generator": "Ninja"
       }
     }
