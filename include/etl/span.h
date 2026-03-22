@@ -889,7 +889,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
-      return (pend - pbegin);
+      return static_cast<size_t>(pend - pbegin);
     }
 
     //*************************************************************************
@@ -897,7 +897,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
     {
-      return sizeof(element_type) * (pend - pbegin);
+      return sizeof(element_type) * static_cast<size_t>(pend - pbegin);
     }
 
     //*************************************************************************
@@ -1083,7 +1083,7 @@ namespace etl
       ETL_ASSERT(etl::is_aligned<etl::alignment_of<TNew>::value>(pbegin), ETL_ERROR(span_alignment_exception));
 
       return etl::span<TNew, etl::dynamic_extent>(reinterpret_cast<TNew*>(pbegin),
-                                                  (pend - pbegin) * sizeof(element_type) / sizeof(TNew));
+                                                  static_cast<size_t>(pend - pbegin) * sizeof(element_type) / sizeof(TNew));
     }
 
     //*************************************************************************
