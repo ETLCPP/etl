@@ -1,4 +1,3 @@
 ---
 title: "Codecs"
-alwaysopen: false
 ---

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="refresh" content="0; url=/docs/">
-  <script>window.location.replace("/docs/");</script>
+  <meta http-equiv="refresh" content="0; url={{ .Site.BaseURL }}docs/">
+  <script>window.location.replace("{{ .Site.BaseURL }}docs/");</script>
 </head>
 <body>
-  <a href="/docs/">Click here</a>
+  <a href="{{ .Site.BaseURL }}docs/">Click here</a>
 </body>
 </html>

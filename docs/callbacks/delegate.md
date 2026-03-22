@@ -3,10 +3,13 @@ title: "delegate"
 weight: 1
 ---
 
-A small, in-place function wrapper that stores callable objects inside a fixed-size buffer (no dynamic allocation). It supports free functions, member functions, functors, and lambdas, with both runtime and compile-time bindings.
+---
 
-#### Supported: 20.45.0
 #### Header: `delegate.h`
+#### Support: `20.45.0`
+#### Similar to: `std::function`
+
+A small, in-place function wrapper that stores callable objects inside a fixed-size buffer (no dynamic allocation). It supports free functions, member functions, functors, and lambdas, with both runtime and compile-time bindings.
 
 ```C++
 template <typename TSignature,
@@ -31,8 +34,6 @@ The defaults are defined as follows:-
 
 Set your own definitions if you require different defaults.
 
----
-
 ## Template Parameters
 
 ```C++
@@ -53,8 +54,6 @@ Object_Alignment
 Alignment of the internal storage buffer.
 Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT`.
 
----
-
 ## Exceptions
 
 ```C++
@@ -66,8 +65,6 @@ Base exception.
 etl::inplace_function_uninitialized
 ```
 Thrown (via `ETL_ASSERT`) when invoked without a target.
-
----
 
 ## Member Types
 
@@ -83,8 +80,6 @@ return_type
 argument_types
 ```
 
----
-
 ## Constructors
 
 Default constructor.
@@ -97,8 +92,6 @@ Construction from an object + member function pointer (const or non-const).
 
 Construction from a lambda/functor (const or non-const).
 
----
-
 ## Assignment
 
 Copy/move assignment.
@@ -108,8 +101,6 @@ Assignment from nullptr clears the target.
 Assignment from function pointer.
 
 Assignment from lambda/functor.
-
----
 
 ## Invocation
 
@@ -129,8 +120,6 @@ call_or(...)
 ```
 Invokes the target or a fallback callable.
 
----
-
 ## Observers
 
 ```C++
@@ -142,8 +131,6 @@ Returns `true` if there is a valid callable.
 explicit operator bool() const
 ```
 Returns the result of `is_valid()`
-
----
 
 ## Modifiers
 
@@ -157,8 +144,6 @@ void swap(inplace_function& other)
 ```
 Swaps with another inplace_function.
 
----
-
 ## Storage Introspection
 
 ```C++
@@ -166,13 +151,10 @@ static constexpr size_t size()
 ```
 Returns the size of the internal storage.
 
-
 ```C++
 static constexpr size_t alignment()
 ```
 Returns the alignment of the internal storage.
-
----
 
 ## Compile-Time Binding (No Payload)
 
@@ -214,8 +196,6 @@ set<T, Instance>()
 create<T, Instance>()
 ```
 
----
-
 ## Helper Aliases
 
 ```C++
@@ -225,8 +205,6 @@ etl::inplace_function_for<TSignature, TStorage>
 ```C++
 etl::inplace_function_for_any<TSignature, T0, ...>
 ```
-
----
 
 ## Helper Factories
 
@@ -247,8 +225,6 @@ make_inplace_function<TSignature>(function_like)
 ```
 
 C++17-only overloads also exist for compile-time binding.
-
----
 
 ## Example
 
@@ -277,15 +253,12 @@ void example()
 }
 ```
 
----
-
 ## Notes
 
 If the callable object is larger than `Object_Size` or requires stricter alignment than `Object_Alignment`, compilation fails with a `static_assert`.
 
 
 `operator()` asserts when called without a target; use `call_if` or `call_or` to avoid this.
-
 
 Prefer `inplace_function_for`, `inplace_function_for_any` or `make_inplace_function` to deduce storage sizes safely.
 

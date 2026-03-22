@@ -1,11 +1,12 @@
 baseURL = 'http://localhost/'
+#baseURL = 'https://www.etlcpp.com/hugo/'
 languageCode = 'en-gb'
 title = 'Embedded Template Library'
 theme = 'hextra'
 
 [markup]
   [markup.highlight]
-    style = "perldoc"
+    style = "github"
 
   [markup.goldmark.renderer]
     unsafe = true
@@ -20,3 +21,9 @@ theme = 'hextra'
     customCSS = ["css/custom.css"]
 
   contentDir = "content/docs"
+
+  [params.navbar]
+    displayTitle = true
+    [params.navbar.logo]
+      path = "images/logo.png"
+      link = "/"

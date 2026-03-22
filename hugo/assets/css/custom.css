@@ -1,9 +1,15 @@
+.hx\:font-extrabold {
+  font-family: Tahoma, sans-serif !important;
+  font-size: 1.5rem !important;
+  color: #315887 !important;
+}
+
 h1 {
   font-family: Tahoma, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  margin-top: 0em !important;
-  margin-bottom: 0.5em !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.0em !important;
   color: coral !important;
 }
 
@@ -12,9 +18,10 @@ h2 {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 150% !important;
-  margin-top: 0.5em !important;
+  margin-top: 1.0em !important;
   margin-bottom: 0.5em !important;
-  color: royalblue !important;
+  border-bottom: 2px solid #333333 !important;
+  color: #4884cc !important;
 }
 
 h3 {
@@ -22,6 +29,8 @@ h3 {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 130% !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
   color: green !important;
 }
 
@@ -30,6 +39,8 @@ h4 {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 110% !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
   color: green !important;
 }
 
@@ -39,7 +50,7 @@ dl {
   font-weight: normal !important;
   font-size: 1rem !important;
   color: black !important;
-  background-color: #e7e7e7 !important;
+  background-color: #f0f0f0 !important;
 }
 
 dl dt code {
@@ -48,7 +59,7 @@ dl dt code {
   font-weight: normal !important;
   font-size: 1rem !important;
   color: black;
-  background-color: #e7e7e7 !important;
+  background-color: #f0f0f0 !important;
   border-style: none !important
 }
 
@@ -58,7 +69,7 @@ dl dd {
   font-weight: normal !important;
   font-size: 1rem !important;
   color: black !important;
-  background-color: #e7e7e7 !important;
+  background-color: #f0f0f0 !important;
 }
 
 code {
@@ -67,7 +78,7 @@ code {
   font-weight: normal !important;
   font-size: 1rem !important;
   color: black !important;
-  background-color: #e7e7e7 !important;
+  background-color: #f0f0f0 !important;
     border: 0 none !important;
 }
 
@@ -78,7 +89,7 @@ pre code {
   font-weight: normal !important;
   font-size: 1rem !important;
   color: black !important;
-  background-color: #e7e7e7 !important;
+  background-color: #f0f0f0 !important;
   border: none !important;
 }
 
@@ -93,7 +104,7 @@ pre code {
 
 hr {
     height: 2px !important;
-    background-color: midnightblue !important;
+    background-color: #333333 !important;
     border: none !important;
     margin-top: 10px !important;
     margin-bottom: 1px !important;

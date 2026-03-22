@@ -1,4 +1,3 @@
 ---
 title: "Callbacks"
-alwaysopen: false
 ---

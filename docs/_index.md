@@ -3,9 +3,6 @@ title: "Embedded Template Library"
 alwaysopen: true
 ---
 
- 
----
-
 ## Motivation
  
 
@@ -14,8 +11,6 @@ C++ is a powerful language for embedded systems development, with templates offe
 In many embedded applications, dynamic memory allocation is discouraged or outright prohibited, making standard STL containers and many other components impractical or unusable.  
 
 What’s needed is a template library specifically designed for embedded systems — one that allows developers to define fixed or maximum sizes for containers and other objects at compile time. Additionally, since many embedded toolchains still lack full support for standards beyond C++03, it's valuable to have access to a library that backports select features from later versions of the C++ Standard Library.  
-
----
 
 ## About the ETL
  
@@ -35,8 +30,6 @@ The Embedded Template Library (ETL) is not intended as a full replacement for th
 The library is compatible with any compiler that supports C++03 or later.
 
 Help on integrating the ETL with your project may be found here.
-
----
 
 ## Key Features of the ETL
  
@@ -73,8 +66,6 @@ Continuous integration via GitHub Actions.
 - Readable and Well-Documented: Clean, maintainable source code with clear documentation.
 - Support: Free email support available. A Slack group is available. Paid support on request.
 - Archived: A snapshot of the ETL is preserved in the Arctic Code Vault for long-term digital preservation.
-
----
 
 ## Support the ETL
 ### Is the ETL free?
