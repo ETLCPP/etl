@@ -39,8 +39,9 @@ Set your own definitions if you require different defaults.
 ```C++
 TSignature
 ```
-The function signature.
-e.g. `int(char, float)`
+The function signature. e.g. `int(char, float)`  
+
+---
 
 ```C++
 Object_Size
@@ -48,10 +49,12 @@ Object_Size
 Size of the internal storage buffer.
 Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_SIE`.
 
+---
+
 ```C++
 Object_Alignment
 ```
-Alignment of the internal storage buffer.
+Alignment of the internal storage buffer.  
 Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT`.
 
 ## Exceptions
@@ -61,10 +64,14 @@ etl::inplace_function_exception
 ```
 Base exception.
 
+---
+
 ```C++
 etl::inplace_function_uninitialized
 ```
 Thrown (via `ETL_ASSERT`) when invoked without a target.
+
+---
 
 ## Member Types
 
@@ -109,11 +116,15 @@ operator()
 ```
 Invokes the bound callable and asserts if uninitialised.
 
+---
+
 ```C++
 call_if(...)
 ```
 For `void` return bool indicating whether it executed.
 For non-void returns etl::optional<TReturn>.
+
+---
 
 ```C++
 call_or(...)
@@ -127,6 +138,8 @@ bool is_valid() const
 ```
 Returns `true` if there is a valid callable.
 
+---
+
 ```C++
 explicit operator bool() const
 ```
@@ -139,10 +152,14 @@ void clear()
 ```
 Clears any stored callable.
 
+---
+
 ```C++
 void swap(inplace_function& other)
 ```
 Swaps with another inplace_function.
+
+---
 
 ## Storage Introspection
 
@@ -150,6 +167,8 @@ Swaps with another inplace_function.
 static constexpr size_t size()
 ```
 Returns the size of the internal storage.
+
+---
 
 ```C++
 static constexpr size_t alignment()
@@ -166,6 +185,8 @@ void set()
 ```
 Sets the callable to `Function`.
 
+---
+
 ```C++
 template <TReturn(*Function)(TArgs...)>
 inplace_function<TReturn(TArgs...),
@@ -181,6 +202,8 @@ template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instan
 set<TObject, &TMethod, Instance>()
 ```
 Sets the callable to the member function `Method` for the object `Instance`.
+
+---
 
 ```C++
 create<TObject, &TMethod, Instance>()

@@ -6,7 +6,9 @@ theme = 'hextra'
 
 [markup]
   [markup.highlight]
-    style = "github"
+    noClasses = false
+    style = "plaintext"
+    codeFences = false
 
   [markup.goldmark.renderer]
     unsafe = true
@@ -17,10 +19,10 @@ theme = 'hextra'
     target = "content/docs"
 
 [params]
+  contentDir = "content/docs"
+  
   [params.theme]
     customCSS = ["css/custom.css"]
-
-  contentDir = "content/docs"
 
   [params.navbar]
     displayTitle = true

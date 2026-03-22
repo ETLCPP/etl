@@ -1,8 +1,141 @@
-.hx\:font-extrabold {
-  font-family: Tahoma, sans-serif !important;
-  font-size: 1.5rem !important;
-  color: #315887 !important;
+
+html:not(.dark) h1 { 
+  color: coral !important; 
 }
+
+html:not(.dark) h2 { 
+  color: #4884cc !important;
+  border-bottom: 2px solid black !important; 
+}
+
+html:not(.dark) h3, 
+html:not(.dark) h4 
+{ 
+  color: green !important; 
+}
+
+html:not(.dark) h4 code {
+  color: black !important;
+}
+
+html:not(.dark) p { 
+  color: black !important; 
+}
+
+html:not(.dark) dl,
+html:not(.dark) dl dt code,
+html:not(.dark) dl dd {
+  color: black !important;
+  background-color: dddddd !important;
+}
+
+html:not(.dark) code,
+html:not(.dark) pre,
+html:not(.dark) pre code {
+  color: darkslategrey !important;
+  background-color: #dddddd !important;
+}
+
+html:not(.dark) hr {
+  background-color: darkgrey !important;
+}
+
+html:not(.dark) .hx\:font-extrabold {
+  font-family: Tahoma, sans-serif !important;
+  font-size: 1.6rem !important;
+  color: black !important;
+}
+
+/* inactive */
+html:not(.dark) .hx\:text-gray-500 {
+  color: rgb(30, 30, 30) !important;
+}
+
+/* active */
+html:not(.dark) .hextra-sidebar-active-item {
+  color: black !important;
+}
+
+
+
+html.dark body {
+  background-color: #1e1e1e !important;
+}
+
+html.dark main {
+  background-color: #1e1e1e !important;
+}
+
+html.dark .hx\:dark\:shadow-\[0_-12px_16px_\#111\] {
+  box-shadow: 0 -12px 16px #1e1e1e !important;
+}
+
+html.dark .hx\:dark\:bg-dark {
+  background-color: #1e1e1e !important;
+}
+
+html.dark #backToTop {
+  color: #e0e0e0 !important;
+}
+
+html.dark #backToTop:hover {
+  color: white !important;
+}
+
+html.dark h1 
+{ 
+  color: coral !important; 
+}
+
+html.dark h2 { 
+  color: skyblue !important; 
+  border-bottom: 2px solid #f0f0f0 !important; 
+}
+
+html.dark h3, 
+html.dark h4 { 
+  color: lightgreen !important; 
+}
+
+html.dark p { 
+  color: #f0f0f0 !important; 
+}
+
+html.dark dl,
+html.dark dl dt code,
+html.dark dl dd {
+  color: white !important;
+  background-color: #444444 !important;
+}
+
+html.dark code, 
+html.dark pre,
+html.dark pre code {
+  color: lightyellow !important;
+  background-color: #444444 !important;
+}
+
+html.dark hr {
+  background-color: #505050 !important;
+}
+
+html.dark .hx\:font-extrabold {
+  font-family: Tahoma, sans-serif !important;
+  font-size: 1.6rem !important;
+  color: #7099c7 !important;
+}
+
+/* inactive */
+html.dark .hx\:text-gray-500 {
+  color: lightgrey !important;
+}
+
+/* active */
+html.dark .hextra-sidebar-active-item {
+  color: white !important;
+}
+
+
 
 h1 {
   font-family: Tahoma, sans-serif !important;
@@ -10,7 +143,6 @@ h1 {
   font-weight: normal !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.0em !important;
-  color: coral !important;
 }
 
 h2 {
@@ -20,8 +152,6 @@ h2 {
   font-size: 150% !important;
   margin-top: 1.0em !important;
   margin-bottom: 0.5em !important;
-  border-bottom: 2px solid #333333 !important;
-  color: #4884cc !important;
 }
 
 h3 {
@@ -31,7 +161,6 @@ h3 {
   font-size: 130% !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.5em !important;
-  color: green !important;
 }
 
 h4 {
@@ -41,7 +170,6 @@ h4 {
   font-size: 110% !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.5em !important;
-  color: green !important;
 }
 
 dl {
@@ -49,8 +177,6 @@ dl {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
-  color: black !important;
-  background-color: #f0f0f0 !important;
 }
 
 dl dt code {
@@ -58,9 +184,6 @@ dl dt code {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
-  color: black;
-  background-color: #f0f0f0 !important;
-  border-style: none !important
 }
 
 dl dd {
@@ -68,8 +191,6 @@ dl dd {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
-  color: black !important;
-  background-color: #f0f0f0 !important;
 }
 
 code {
@@ -77,34 +198,34 @@ code {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
-  color: black !important;
-  background-color: #f0f0f0 !important;
-    border: 0 none !important;
+  border: none !important;
+  border-radius: 2px !important;
 }
 
-pre,
 pre code {
   font-family: Consolas, monospace !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
-  color: black !important;
-  background-color: #f0f0f0 !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
   border: none !important;
 }
 
-.markdown pre code {
-  line-height: 1.5 !important;
-}
-
-.markdown pre {
-  padding-top: 0.3rem !important;
-  padding-bottom: 0.3rem !important;
+pre {
+  font-family: Consolas, monospace !important;
+  font-size: 1rem !important;
+  margin-top: 2em !important;
+  margin-bottom: 0em !important;
+  padding-top: 0.5em !important;
+  padding-bottom: 0.5em !important;
+  padding-left: 0.5em !important;
+  border: none !important;
+  border-radius: 2px !important;
 }
 
 hr {
     height: 2px !important;
-    background-color: #333333 !important;
     border: none !important;
     margin-top: 10px !important;
     margin-bottom: 1px !important;
@@ -115,8 +236,7 @@ p {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 110% !important;
-  color: black !important;
-  background-color: white !important;
+   margin-top: 1em !important;
 }
 
 
