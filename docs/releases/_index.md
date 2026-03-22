@@ -2,20 +2,27 @@
 title: "Releases"
 ---
 
+---
+
+Click on the links to see the original Github page.
+
 ## 20.46.2
 
-#1320 Changed std::is_same to etl::is_same in `struct type_list_is_unique`
+**Pull requests:**  
+[#1320](https://github.com/ETLCPP/etl/pull/1320) Changed `std::is_same` to `etl::is_same` in `struct type_list_is_unique`
 
 ## 20.46.1
 
-#1317 `etl` `multiset` `iterator` invalidation during erase leads to incorrect sorted order in depth first traversal  
+**Pull requests:**  
+[#1317](https://github.com/ETLCPP/etl/pull/1317) `etl` `multiset` `iterator` invalidation during erase leads to incorrect sorted order in depth first traversal  
 &emsp;Also fixed `multimap` `erase` and added tests for both.
 
 ## 20.46.0
 
+**Pull requests:**  
 #1257 Fix `year_month` arithmetic and correct `chrono` API behavior  
 [#1259](https://github.com/ETLCPP/etl/pull/1259) Suppress warnings from std in optimized builds  
-#1261 Fix incorrect namespace for `iter_swap` calls  
+[#1261](https://github.com/ETLCPP/etl/pull/1261) Fix incorrect namespace for `iter_swap` calls  
 #1262 Document how to implement platform specifics  
 #1264 Add template deduction guide for `span` from `vector`   
 #1265 Fix etl::tuple template signature error in pair assignment operator  
