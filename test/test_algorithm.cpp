@@ -748,6 +748,62 @@ namespace
     }
 
     //*************************************************************************
+    TEST(binary_search_random_iterator)
+    {
+      for (int i = 0; i < 11; ++i)
+      {
+        bool expected = std::binary_search(std::begin(dataS), std::end(dataS), i);
+        bool result   = etl::binary_search(std::begin(dataS), std::end(dataS), i);
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(binary_search_with_compare)
+    {
+      for (int i = 0; i < 11; ++i)
+      {
+        bool expected = std::binary_search(std::begin(dataS), std::end(dataS), i, etl::less<int>());
+        bool result   = etl::binary_search(std::begin(dataS), std::end(dataS), i, etl::less<int>());
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(binary_search_duplicates)
+    {
+      for (int i = 0; i < 11; ++i)
+      {
+        bool expected = std::binary_search(std::begin(dataEQ), std::end(dataEQ), i);
+        bool result   = etl::binary_search(std::begin(dataEQ), std::end(dataEQ), i);
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
+    TEST(binary_search_empty_range)
+    {
+      int empty[] = { 0 };
+
+      bool result = etl::binary_search(std::begin(empty), std::begin(empty), 1);
+
+      CHECK_EQUAL(false, result);
+    }
+
+    //*************************************************************************
+    TEST(binary_search_single_element)
+    {
+      int single[] = { 5 };
+
+      CHECK_EQUAL(true,  etl::binary_search(std::begin(single), std::end(single), 5));
+      CHECK_EQUAL(false, etl::binary_search(std::begin(single), std::end(single), 3));
+      CHECK_EQUAL(false, etl::binary_search(std::begin(single), std::end(single), 7));
+    }
+
+    //*************************************************************************
     TEST(fill_non_char)
     {
       int data1[10];
@@ -793,6 +849,144 @@ namespace
       etl::iter_swap(&a, &b);
       CHECK_EQUAL(2, a);
       CHECK_EQUAL(1, b);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_pod_pointer)
+    {
+      int data1[] = { 1, 2, 3, 4, 5 };
+      int data2[] = { 6, 7, 8, 9, 10 };
+
+      int expected1[] = { 6, 7, 8, 9, 10 };
+      int expected2[] = { 1, 2, 3, 4, 5 };
+
+      int* result = etl::swap_ranges(std::begin(data1), std::end(data1), std::begin(data2));
+
+      CHECK_EQUAL(std::end(data2), result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_non_pod_pointer)
+    {
+      Data data1[] = { Data(1, 2), Data(3, 4), Data(5, 6) };
+      Data data2[] = { Data(7, 8), Data(9, 10), Data(11, 12) };
+
+      Data expected1[] = { Data(7, 8), Data(9, 10), Data(11, 12) };
+      Data expected2[] = { Data(1, 2), Data(3, 4), Data(5, 6) };
+
+      Data* result = etl::swap_ranges(std::begin(data1), std::end(data1), std::begin(data2));
+
+      CHECK_EQUAL(std::end(data2), result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_non_random_iterator)
+    {
+      List data1 = { 1, 2, 3, 4, 5 };
+      List data2 = { 6, 7, 8, 9, 10 };
+
+      List expected1 = { 6, 7, 8, 9, 10 };
+      List expected2 = { 1, 2, 3, 4, 5 };
+
+      List::iterator result = etl::swap_ranges(data1.begin(), data1.end(), data2.begin());
+
+      CHECK(data2.end() == result);
+
+      bool isEqual1 = std::equal(data1.begin(), data1.end(), expected1.begin());
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(data2.begin(), data2.end(), expected2.begin());
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_empty_range)
+    {
+      int data1[] = { 1, 2, 3 };
+      int data2[] = { 4, 5, 6 };
+
+      int expected1[] = { 1, 2, 3 };
+      int expected2[] = { 4, 5, 6 };
+
+      int* result = etl::swap_ranges(std::begin(data1), std::begin(data1), std::begin(data2));
+
+      CHECK_EQUAL(std::begin(data2), result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_partial_range)
+    {
+      int data1[] = { 1, 2, 3, 4, 5 };
+      int data2[] = { 6, 7, 8, 9, 10 };
+
+      int expected1[] = { 6, 7, 8, 4, 5 };
+      int expected2[] = { 1, 2, 3, 9, 10 };
+
+      int* result = etl::swap_ranges(std::begin(data1), std::begin(data1) + 3, std::begin(data2));
+
+      CHECK_EQUAL(std::begin(data2) + 3, result);
+
+      bool isEqual1 = std::equal(std::begin(data1), std::end(data1), std::begin(expected1));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2), std::end(data2), std::begin(expected2));
+      CHECK(isEqual2);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_same_data)
+    {
+      int data1[] = { 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::swap_ranges(std::begin(data1), std::end(data1), std::begin(data1));
+
+      bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(expected));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(swap_ranges_matches_std)
+    {
+      int data1_std[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2_std[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+      int data1_etl[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2_etl[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+      int* pstl = std::swap_ranges(std::begin(data1_std), std::end(data1_std), std::begin(data2_std));
+      int* petl = etl::swap_ranges(std::begin(data1_etl), std::end(data1_etl), std::begin(data2_etl));
+
+      using difference_type_t = std::iterator_traits<int*>::difference_type;
+
+      difference_type_t dstl = std::distance(data2_std, pstl);
+      difference_type_t detl = std::distance(data2_etl, petl);
+
+      CHECK_EQUAL(dstl, detl);
+
+      bool isEqual1 = std::equal(std::begin(data1_std), std::end(data1_std), std::begin(data1_etl));
+      CHECK(isEqual1);
+
+      bool isEqual2 = std::equal(std::begin(data2_std), std::end(data2_std), std::begin(data2_etl));
+      CHECK(isEqual2);
     }
 
     //*************************************************************************
@@ -852,6 +1046,314 @@ namespace
       std::string::iterator itr2 = etl::search(haystack.begin(), haystack.end(), needle.begin(), needle.begin(), std::equal_to<char>());
 
       CHECK(itr1 == itr2);
+    }
+
+    //*************************************************************************
+    TEST(find_end_default)
+    {
+      int data[]      = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern[]   = { 1, 2, 3 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_predicate)
+    {
+      int data[]    = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern[] = { 1, 2, 3 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern), std::equal_to<int>());
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern), std::equal_to<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_single_occurrence)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int pattern[] = { 5, 6, 7 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_no_match)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int pattern[] = { 11, 12 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_empty_sequence)
+    {
+      int data[]    = { 1, 2, 3, 4, 5 };
+      int pattern[] = { 0 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::begin(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::begin(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_pattern_at_end)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7 };
+      int pattern[] = { 5, 6, 7 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_pattern_at_start)
+    {
+      int data[]    = { 1, 2, 3, 4, 5, 6, 7 };
+      int pattern[] = { 1, 2, 3 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_entire_range_matches)
+    {
+      int data[]    = { 1, 2, 3, 4, 5 };
+      int pattern[] = { 1, 2, 3, 4, 5 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_overlapping_occurrences)
+    {
+      int data[]    = { 1, 1, 1, 1, 1 };
+      int pattern[] = { 1, 1 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_single_element_pattern)
+    {
+      int data[]    = { 1, 2, 3, 2, 5, 2, 7 };
+      int pattern[] = { 2 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_non_random_iterator)
+    {
+      int data_array[]    = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern_array[] = { 1, 2, 3 };
+
+      List data(std::begin(data_array), std::end(data_array));
+      List pattern(std::begin(pattern_array), std::end(pattern_array));
+
+      List::iterator expected = std::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+      List::iterator result   = etl::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_non_random_iterator_predicate)
+    {
+      int data_array[]    = { 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 };
+      int pattern_array[] = { 1, 2, 3 };
+
+      List data(std::begin(data_array), std::end(data_array));
+      List pattern(std::begin(pattern_array), std::end(pattern_array));
+
+      List::iterator expected = std::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+      List::iterator result   = etl::find_end(data.begin(), data.end(), pattern.begin(), pattern.end(), std::equal_to<int>());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_pattern_longer_than_data)
+    {
+      int data[]    = { 1, 2, 3 };
+      int pattern[] = { 1, 2, 3, 4, 5 };
+
+      int* expected = std::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+      int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_default)
+    {
+      int data[] = { 1, 2, 3, 3, 4, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_predicate)
+    {
+      int data[] = { 1, 2, 3, 3, 4, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data), std::equal_to<int>());
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data), std::equal_to<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_no_match)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_at_beginning)
+    {
+      int data[] = { 1, 1, 2, 3, 4, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_at_end)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_multiple_pairs)
+    {
+      int data[] = { 1, 1, 2, 2, 3, 3 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_single_element)
+    {
+      int data[] = { 1 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_empty_range)
+    {
+      int data[] = { 1 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::begin(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::begin(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_all_same)
+    {
+      int data[] = { 5, 5, 5, 5, 5 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data));
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_predicate_less)
+    {
+      int data[] = { 5, 4, 3, 2, 1 };
+
+      int* expected = std::adjacent_find(std::begin(data), std::end(data), std::greater<int>());
+      int* result   = etl::adjacent_find(std::begin(data), std::end(data), std::greater<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_non_random_iterator)
+    {
+      int data_array[] = { 1, 2, 3, 3, 4, 5 };
+      List data(std::begin(data_array), std::end(data_array));
+
+      List::iterator expected = std::adjacent_find(data.begin(), data.end());
+      List::iterator result   = etl::adjacent_find(data.begin(), data.end());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_non_random_iterator_predicate)
+    {
+      int data_array[] = { 1, 2, 3, 3, 4, 5 };
+      List data(std::begin(data_array), std::end(data_array));
+
+      List::iterator expected = std::adjacent_find(data.begin(), data.end(), std::equal_to<int>());
+      List::iterator result   = etl::adjacent_find(data.begin(), data.end(), std::equal_to<int>());
+
+      CHECK(expected == result);
+    }
+
+    //*************************************************************************
+    TEST(adjacent_find_non_random_iterator_no_match)
+    {
+      int data_array[] = { 1, 2, 3, 4, 5, 6 };
+      List data(std::begin(data_array), std::end(data_array));
+
+      List::iterator expected = std::adjacent_find(data.begin(), data.end());
+      List::iterator result   = etl::adjacent_find(data.begin(), data.end());
+
+      CHECK(expected == result);
     }
 
     //*************************************************************************
@@ -1019,6 +1521,663 @@ namespace
 
       isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_default_true)
+    {
+      std::vector<int> data = { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      std::make_heap(data.begin(), data.end());
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_default_false)
+    {
+      std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(!result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_compare_true)
+    {
+      std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::make_heap(data.begin(), data.end(), Greater());
+
+      bool expected = std::is_heap(data.begin(), data.end(), Greater());
+      bool result   = etl::is_heap(data.begin(), data.end(), Greater());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_compare_false)
+    {
+      std::vector<int> data = { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      bool expected = std::is_heap(data.begin(), data.end(), Greater());
+      bool result   = etl::is_heap(data.begin(), data.end(), Greater());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(!result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_empty)
+    {
+      std::vector<int> data;
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_single_element)
+    {
+      std::vector<int> data = { 42 };
+
+      bool expected = std::is_heap(data.begin(), data.end());
+      bool result   = etl::is_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(expected, result);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_two_elements)
+    {
+      std::vector<int> data1 = { 5, 3 };
+      std::vector<int> data2 = { 3, 5 };
+
+      CHECK_EQUAL(std::is_heap(data1.begin(), data1.end()), etl::is_heap(data1.begin(), data1.end()));
+      CHECK_EQUAL(std::is_heap(data2.begin(), data2.end()), etl::is_heap(data2.begin(), data2.end()));
+    }
+
+    //*************************************************************************
+    TEST(is_heap_pointer)
+    {
+      int data[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      bool expected = std::is_heap(std::begin(data), std::end(data));
+      bool result   = etl::is_heap(std::begin(data), std::end(data));
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(is_heap_after_make_heap)
+    {
+      // Test all permutations of a small dataset
+      std::vector<int> data = { 1, 2, 3, 4, 5 };
+
+      do
+      {
+        std::vector<int> test_data(data);
+        etl::make_heap(test_data.begin(), test_data.end());
+        CHECK(etl::is_heap(test_data.begin(), test_data.end()));
+      } while (std::next_permutation(data.begin(), data.end()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_default)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::make_heap(data1.begin(), data1.end());
+      etl::make_heap(data2.begin(), data2.end());
+
+      std::sort_heap(data1.begin(), data1.end());
+      etl::sort_heap(data2.begin(), data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted ascending
+      CHECK(std::is_sorted(data2.begin(), data2.end()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_compare)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::make_heap(data1.begin(), data1.end(), Greater());
+      etl::make_heap(data2.begin(), data2.end(), Greater());
+
+      std::sort_heap(data1.begin(), data1.end(), Greater());
+      etl::sort_heap(data2.begin(), data2.end(), Greater());
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted descending
+      CHECK(std::is_sorted(data2.begin(), data2.end(), Greater()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_empty)
+    {
+      std::vector<int> data;
+
+      etl::sort_heap(data.begin(), data.end());
+
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_single_element)
+    {
+      std::vector<int> data = { 42 };
+
+      etl::sort_heap(data.begin(), data.end());
+
+      CHECK_EQUAL(1U, data.size());
+      CHECK_EQUAL(42, data[0]);
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_pointer)
+    {
+      int data1[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      int data2[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+
+      std::make_heap(std::begin(data1), std::end(data1));
+      etl::make_heap(std::begin(data2), std::end(data2));
+
+      std::sort_heap(std::begin(data1), std::end(data1));
+      etl::sort_heap(std::begin(data2), std::end(data2));
+
+      bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_all_permutations)
+    {
+      std::vector<int> initial = { 1, 2, 3, 4, 5 };
+
+      do
+      {
+        std::vector<int> data1(initial);
+        std::vector<int> data2(initial);
+
+        std::make_heap(data1.begin(), data1.end());
+        etl::make_heap(data2.begin(), data2.end());
+
+        std::sort_heap(data1.begin(), data1.end());
+        etl::sort_heap(data2.begin(), data2.end());
+
+        bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(isEqual);
+      } while (std::next_permutation(initial.begin(), initial.end()));
+    }
+
+    //*************************************************************************
+    TEST(sort_heap_duplicates)
+    {
+      std::vector<int> data1 = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5 };
+      std::vector<int> data2(data1);
+
+      std::make_heap(data1.begin(), data1.end());
+      etl::make_heap(data2.begin(), data2.end());
+
+      std::sort_heap(data1.begin(), data1.end());
+      etl::sort_heap(data2.begin(), data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_default)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end());
+
+      // The first 5 elements should be sorted and match std
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted range
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_compare)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end(), Greater());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end(), Greater());
+
+      // The first 5 elements should be sorted descending and match std
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      // Verify sorted range (descending)
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5, Greater()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_empty)
+    {
+      std::vector<int> data;
+
+      etl::partial_sort(data.begin(), data.begin(), data.end());
+
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_middle_equals_first)
+    {
+      std::vector<int> data = { 5, 3, 8, 1, 9 };
+      std::vector<int> original(data);
+
+      etl::partial_sort(data.begin(), data.begin(), data.end());
+
+      // Nothing should change when middle == first
+      bool isEqual = std::equal(data.begin(), data.end(), original.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_middle_equals_last)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.end(), data1.end());
+      etl::partial_sort(data2.begin(), data2.end(), data2.end());
+
+      // Full sort
+      bool isEqual = std::equal(data1.begin(), data1.end(), data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_single_element)
+    {
+      std::vector<int> data = { 42 };
+
+      etl::partial_sort(data.begin(), data.end(), data.end());
+
+      CHECK_EQUAL(1U, data.size());
+      CHECK_EQUAL(42, data[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_first_one)
+    {
+      std::vector<int> data1 = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 1, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 1, data2.end());
+
+      // The first element should be the minimum
+      CHECK_EQUAL(data1[0], data2[0]);
+      CHECK_EQUAL(1, data2[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_duplicates)
+    {
+      std::vector<int> data1 = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 6, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 6, data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 6, data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 6));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_already_sorted)
+    {
+      std::vector<int> data1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_reverse_sorted)
+    {
+      std::vector<int> data1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      std::vector<int> data2(data1);
+
+      std::partial_sort(data1.begin(), data1.begin() + 5, data1.end());
+      etl::partial_sort(data2.begin(), data2.begin() + 5, data2.end());
+
+      bool isEqual = std::equal(data1.begin(), data1.begin() + 5, data2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data2.begin(), data2.begin() + 5));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_pointer)
+    {
+      int data1[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      int data2[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+
+      std::partial_sort(std::begin(data1), std::begin(data1) + 5, std::end(data1));
+      etl::partial_sort(std::begin(data2), std::begin(data2) + 5, std::end(data2));
+
+      bool isEqual = std::equal(std::begin(data1), std::begin(data1) + 5, std::begin(data2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_all_permutations)
+    {
+      std::vector<int> initial = { 1, 2, 3, 4, 5 };
+
+      do
+      {
+        std::vector<int> data1(initial);
+        std::vector<int> data2(initial);
+
+        std::partial_sort(data1.begin(), data1.begin() + 3, data1.end());
+        etl::partial_sort(data2.begin(), data2.begin() + 3, data2.end());
+
+        bool isEqual = std::equal(data1.begin(), data1.begin() + 3, data2.begin());
+        CHECK(isEqual);
+      } while (std::next_permutation(initial.begin(), initial.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_all_equal)
+    {
+      std::vector<int> data = { 5, 5, 5, 5, 5, 5 };
+
+      etl::partial_sort(data.begin(), data.begin() + 3, data.end());
+
+      CHECK(std::is_sorted(data.begin(), data.begin() + 3));
+
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(5, data[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_default)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_compare)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end(), Greater());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end(), Greater());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end(), Greater()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_empty_input)
+    {
+      std::vector<int> input;
+      std::vector<int> output(5, 99);
+
+      auto result = etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result == output.begin());
+
+      // Output should be unchanged
+      for (size_t i = 0; i < output.size(); ++i)
+      {
+        CHECK_EQUAL(99, output[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_empty_output)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9 };
+      std::vector<int> output;
+
+      auto result = etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result == output.begin());
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_output_larger_than_input)
+    {
+      std::vector<int> input = { 5, 3, 1 };
+      std::vector<int> output1(6, 99);
+      std::vector<int> output2(6, 99);
+
+      auto result1 = std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      auto result2 = etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      CHECK_EQUAL(std::distance(output1.begin(), result1), std::distance(output2.begin(), result2));
+
+      bool isEqual = std::equal(output1.begin(), result1, output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), result2));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_output_smaller_than_input)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(3);
+      std::vector<int> output2(3);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_output_same_size_as_input)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      auto result1 = std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      auto result2 = etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      CHECK(result1 == output1.end());
+      CHECK(result2 == output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_single_element_input)
+    {
+      std::vector<int> input = { 42 };
+      std::vector<int> output(3, 0);
+
+      auto result = etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(result == output.begin() + 1);
+      CHECK_EQUAL(42, output[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_single_element_output)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9 };
+      std::vector<int> output1(1);
+      std::vector<int> output2(1);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      CHECK_EQUAL(output1[0], output2[0]);
+      CHECK_EQUAL(1, output2[0]);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_duplicates)
+    {
+      std::vector<int> input = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5 };
+      std::vector<int> output1(6);
+      std::vector<int> output2(6);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_already_sorted)
+    {
+      std::vector<int> input = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_reverse_sorted)
+    {
+      std::vector<int> input = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_pointer)
+    {
+      int input[] = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      int output1[5] = {};
+      int output2[5] = {};
+
+      std::partial_sort_copy(std::begin(input), std::end(input), std::begin(output1), std::end(output1));
+      etl::partial_sort_copy(std::begin(input), std::end(input), std::begin(output2), std::end(output2));
+
+      bool isEqual = std::equal(std::begin(output1), std::end(output1), std::begin(output2));
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_all_equal)
+    {
+      std::vector<int> input = { 5, 5, 5, 5, 5, 5 };
+      std::vector<int> output(3);
+
+      etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      CHECK(std::is_sorted(output.begin(), output.end()));
+
+      for (size_t i = 0; i < output.size(); ++i)
+      {
+        CHECK_EQUAL(5, output[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_input_not_modified)
+    {
+      std::vector<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> original(input);
+      std::vector<int> output(5);
+
+      etl::partial_sort_copy(input.begin(), input.end(), output.begin(), output.end());
+
+      // Input should not be modified
+      bool isEqual = std::equal(input.begin(), input.end(), original.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(partial_sort_copy_from_list)
+    {
+      std::list<int> input = { 5, 3, 8, 1, 9, 2, 7, 4, 6, 10 };
+      std::vector<int> output1(5);
+      std::vector<int> output2(5);
+
+      std::partial_sort_copy(input.begin(), input.end(), output1.begin(), output1.end());
+      etl::partial_sort_copy(input.begin(), input.end(), output2.begin(), output2.end());
+
+      bool isEqual = std::equal(output1.begin(), output1.end(), output2.begin());
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(output2.begin(), output2.end()));
     }
 
     //*************************************************************************
@@ -1200,6 +2359,216 @@ namespace
     }
 
     //*************************************************************************
+    TEST(move_s_random_iterator_same_size)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+      CHECK_EQUAL(4U, *(data2[3]));
+      CHECK_EQUAL(5U, *(data2[4]));
+    }
+
+    //*************************************************************************
+    TEST(move_s_random_iterator_destination_smaller)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(3);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+    }
+
+    //*************************************************************************
+    TEST(move_s_random_iterator_source_smaller)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.begin() + 3 == result);
+
+      CHECK_EQUAL(1U, *(data2[0]));
+      CHECK_EQUAL(2U, *(data2[1]));
+      CHECK_EQUAL(3U, *(data2[2]));
+    }
+
+    //*************************************************************************
+    TEST(move_s_non_random_iterator_same_size)
+    {
+      typedef std::list<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      Data::iterator itr = data2.begin();
+      CHECK_EQUAL(1U, **(itr++));
+      CHECK_EQUAL(2U, **(itr++));
+      CHECK_EQUAL(3U, **(itr++));
+      CHECK_EQUAL(4U, **(itr++));
+      CHECK_EQUAL(5U, **(itr++));
+    }
+
+    //*************************************************************************
+    TEST(move_s_non_random_iterator_destination_smaller)
+    {
+      typedef std::list<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(4U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(5U)));
+
+      Data data2(3);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.end() == result);
+
+      Data::iterator itr = data2.begin();
+      CHECK_EQUAL(1U, **(itr++));
+      CHECK_EQUAL(2U, **(itr++));
+      CHECK_EQUAL(3U, **(itr++));
+    }
+
+    //*************************************************************************
+    TEST(move_s_non_random_iterator_source_smaller)
+    {
+      typedef std::list<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+
+      Data data2(5);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      Data::iterator expected_pos = data2.begin();
+      std::advance(expected_pos, 3);
+      CHECK(expected_pos == result);
+
+      Data::iterator itr = data2.begin();
+      CHECK_EQUAL(1U, **(itr++));
+      CHECK_EQUAL(2U, **(itr++));
+      CHECK_EQUAL(3U, **(itr++));
+    }
+
+    //*************************************************************************
+    TEST(move_s_empty_source)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      Data data2(3);
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.begin() == result);
+    }
+
+    //*************************************************************************
+    TEST(move_s_empty_destination)
+    {
+      typedef std::vector<std::unique_ptr<unsigned>> Data;
+
+      Data data1;
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(1U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(2U)));
+      data1.push_back(std::unique_ptr<uint32_t>(new uint32_t(3U)));
+
+      Data data2;
+
+      Data::iterator result = etl::move_s(data1.begin(), data1.end(), data2.begin(), data2.end());
+
+      CHECK(data2.begin() == result);
+    }
+
+    //*************************************************************************
+    TEST(move_s_pod_random_iterator)
+    {
+      int data1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int data2[] = { 1, 2, 3, 4, 5 };
+
+      int out1[10];
+      int out2[5];
+
+      int check1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int check2[] = { 1, 2, 3, 4, 5 };
+      int check3[] = { 1, 2, 3, 4, 5, 0, 0, 0, 0, 0 };
+
+      int* result;
+
+      // Same size.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::move_s(std::begin(data1), std::end(data1), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::end(out1), result);
+      bool is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check1));
+      CHECK(is_same);
+
+      // Destination smaller.
+      std::fill(std::begin(out2), std::end(out2), 0);
+      result = etl::move_s(std::begin(data1), std::end(data1), std::begin(out2), std::end(out2));
+      CHECK_EQUAL(std::end(out2), result);
+      is_same = std::equal(std::begin(out2), std::end(out2), std::begin(check2));
+      CHECK(is_same);
+
+      // Source smaller.
+      std::fill(std::begin(out1), std::end(out1), 0);
+      result = etl::move_s(std::begin(data2), std::end(data2), std::begin(out1), std::end(out1));
+      CHECK_EQUAL(std::begin(out1) + 5, result);
+      is_same = std::equal(std::begin(out1), std::end(out1), std::begin(check3));
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
     TEST(rotate_pod)
     {
       std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
@@ -1233,6 +2602,93 @@ namespace
 
         bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
         CHECK(isEqual);
+      }
+    }
+
+    //*************************************************************************
+    TEST(rotate_return_value)
+    {
+      // Verify that etl::rotate returns the same iterator as std::rotate
+      // in all cases, including the degenerate first==middle and middle==last cases.
+      std::vector<int> initial_data = { 1, 2, 3, 4, 5 };
+
+      for (size_t i = 0UL; i <= initial_data.size(); ++i)
+      {
+        std::vector<int> data1(initial_data);
+        std::vector<int> data2(initial_data);
+
+        auto std_result = std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+        auto etl_result = etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
+
+        // Check that the return value offset matches
+        ptrdiff_t std_offset = std_result - data1.data();
+        ptrdiff_t etl_offset = etl_result - data2.data();
+        CHECK_EQUAL(std_offset, etl_offset);
+      }
+
+      // Explicitly test first == middle (empty left half): should return last
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        auto result = etl::rotate(data.data(), data.data(), data.data() + data.size());
+        CHECK(result == data.data() + data.size());
+      }
+
+      // Explicitly test middle == last (empty right half): should return first
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        auto result = etl::rotate(data.data(), data.data() + data.size(), data.data() + data.size());
+        CHECK(result == data.data());
+      }
+    }
+
+    //*************************************************************************
+    TEST(rotate_return_value_non_random_iterator)
+    {
+      // Verify that etl::rotate returns the correct iterator when called with
+      // non-random (bidirectional) iterators, exercising rotate_general for
+      // bidirectional iterators rather than the random-access overload.
+      std::vector<int> initial_data = { 1, 2, 3, 4, 5 };
+
+      for (size_t i = 0UL; i <= initial_data.size(); ++i)
+      {
+        std::vector<int> data1(initial_data);
+        std::vector<int> data2(initial_data);
+
+        auto std_result = std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+
+        non_random_iterator<int> nr_first(data2.data());
+        non_random_iterator<int> nr_middle(data2.data() + i);
+        non_random_iterator<int> nr_last(data2.data() + data2.size());
+        auto etl_result = etl::rotate(nr_first, nr_middle, nr_last);
+
+        // Check that the data was rotated correctly
+        bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+        CHECK(isEqual);
+
+        // Check that the return value offset matches
+        ptrdiff_t std_offset = std_result - data1.data();
+        ptrdiff_t etl_offset = etl_result.ptr - data2.data();
+        CHECK_EQUAL(std_offset, etl_offset);
+      }
+
+      // Explicitly test first == middle (empty left half): should return last
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        non_random_iterator<int> nr_first(data.data());
+        non_random_iterator<int> nr_middle(data.data());
+        non_random_iterator<int> nr_last(data.data() + data.size());
+        auto result = etl::rotate(nr_first, nr_middle, nr_last);
+        CHECK(result.ptr == data.data() + data.size());
+      }
+
+      // Explicitly test middle == last (empty right half): should return first
+      {
+        std::vector<int> data = { 1, 2, 3 };
+        non_random_iterator<int> nr_first(data.data());
+        non_random_iterator<int> nr_middle(data.data() + data.size());
+        non_random_iterator<int> nr_last(data.data() + data.size());
+        auto result = etl::rotate(nr_first, nr_middle, nr_last);
+        CHECK(result.ptr == data.data());
       }
     }
 
@@ -1316,6 +2772,29 @@ namespace
 
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), etl::equal_to<int>());
       CHECK(!is_permutation);
+    }
+
+    //*************************************************************************
+    TEST(is_permutation_different_lengths)
+    {
+      int shorter[] = { 1, 2 };
+      int longer[]  = { 1, 2, 3 };
+
+      // Four-iterator: range2 longer than range1 (extra elements only in range2)
+      bool result = etl::is_permutation(std::begin(shorter), std::end(shorter), std::begin(longer), std::end(longer));
+      CHECK(!result);
+
+      // Four-iterator: range1 longer than range2
+      result = etl::is_permutation(std::begin(longer), std::end(longer), std::begin(shorter), std::end(shorter));
+      CHECK(!result);
+
+      // Four-iterator with predicate: range2 longer than range1
+      result = etl::is_permutation(std::begin(shorter), std::end(shorter), std::begin(longer), std::end(longer), etl::equal_to<int>());
+      CHECK(!result);
+
+      // Four-iterator with predicate: range1 longer than range2
+      result = etl::is_permutation(std::begin(longer), std::end(longer), std::begin(shorter), std::end(shorter), etl::equal_to<int>());
+      CHECK(!result);
     }
 
     //*************************************************************************
@@ -2141,6 +3620,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST(selection_sort_empty_range)
+    {
+      // Forward iterators
+      std::forward_list<int> fwd_data;
+      etl::selection_sort(fwd_data.begin(), fwd_data.end());
+      CHECK(fwd_data.empty());
+
+      // Bidirectional iterators
+      std::list<int> bidir_data;
+      etl::selection_sort(bidir_data.begin(), bidir_data.end());
+      CHECK(bidir_data.empty());
+
+      // Random access iterators
+      std::vector<int> ra_data;
+      etl::selection_sort(ra_data.begin(), ra_data.end());
+      CHECK(ra_data.empty());
+
+      // With comparator
+      std::forward_list<int> fwd_data2;
+      etl::selection_sort(fwd_data2.begin(), fwd_data2.end(), std::greater<int>());
+      CHECK(fwd_data2.empty());
+    }
+
+    //*************************************************************************
     TEST(heap_sort_default)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
@@ -2281,6 +3784,275 @@ namespace
       etl::remove_if(data.begin(), data.end(), [](int value) { return value >= 7; });
 
       bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(5, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_empty_range)
+    {
+      std::array<int, 0> data = {};
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK(end == data.end());
+    }
+
+    //*************************************************************************
+    TEST(unique_single_element)
+    {
+      std::array<int, 1> data     = { 42 };
+      std::array<int, 1> expected = { 42 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(1, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_no_duplicates)
+    {
+      std::array<int, 5> data     = { 1, 2, 3, 4, 5 };
+      std::array<int, 5> expected = { 1, 2, 3, 4, 5 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(5, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_all_same)
+    {
+      std::array<int, 5> data     = { 7, 7, 7, 7, 7 };
+      std::array<int, 1> expected = { 7 };
+
+      auto end = etl::unique(data.begin(), data.end());
+
+      CHECK_EQUAL(1, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_with_predicate)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+
+      auto end = etl::unique(data.begin(), data.end(), std::equal_to<int>());
+
+      CHECK_EQUAL(5, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_with_predicate_custom)
+    {
+      // Group elements that are close to each other (differ by less than 3)
+      std::array<int, 8> data     = { 1, 2, 3, 7, 8, 9, 20, 21 };
+      std::array<int, 3> expected = { 1, 7, 20 };
+
+      auto end = etl::unique(data.begin(), data.end(), [](int a, int b) { return (b - a) < 3; });
+
+      CHECK_EQUAL(3, std::distance(data.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_matches_std)
+    {
+      std::array<int, 12> data1 = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> data2 = data1;
+
+      auto std_end = std::unique(data1.begin(), data1.end());
+      auto etl_end = etl::unique(data2.begin(), data2.end());
+
+      size_t std_size = std::distance(data1.begin(), std_end);
+      size_t etl_size = std::distance(data2.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(data1.begin(), std_end, data2.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_with_predicate_matches_std)
+    {
+      std::array<int, 12> data1 = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> data2 = data1;
+
+      auto std_end = std::unique(data1.begin(), data1.end(), std::equal_to<int>());
+      auto etl_end = etl::unique(data2.begin(), data2.end(), std::equal_to<int>());
+
+      size_t std_size = std::distance(data1.begin(), std_end);
+      size_t etl_size = std::distance(data2.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(data1.begin(), std_end, data2.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+      std::array<int, 10> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(5, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_empty_range)
+    {
+      std::array<int, 0> data   = {};
+      std::array<int, 1> result = { 99 };
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK(end == result.begin());
+      CHECK_EQUAL(99, result[0]); // output unchanged
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_single_element)
+    {
+      std::array<int, 1> data     = { 42 };
+      std::array<int, 1> expected = { 42 };
+      std::array<int, 1> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(1, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_no_duplicates)
+    {
+      std::array<int, 5> data     = { 1, 2, 3, 4, 5 };
+      std::array<int, 5> expected = { 1, 2, 3, 4, 5 };
+      std::array<int, 5> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(5, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_all_same)
+    {
+      std::array<int, 5> data     = { 7, 7, 7, 7, 7 };
+      std::array<int, 1> expected = { 7 };
+      std::array<int, 5> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      CHECK_EQUAL(1, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_source_unchanged)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 10> original = data;
+      std::array<int, 10> result   = {};
+
+      etl::unique_copy(data.begin(), data.end(), result.begin());
+
+      bool is_same = std::equal(original.begin(), original.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_with_predicate)
+    {
+      std::array<int, 10> data     = { 1, 1, 2, 3, 3, 3, 4, 4, 5, 5 };
+      std::array<int, 5>  expected = { 1, 2, 3, 4, 5 };
+      std::array<int, 10> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin(), std::equal_to<int>());
+
+      CHECK_EQUAL(5, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_with_predicate_custom)
+    {
+      // Group elements that are close to each other (differ by less than 3)
+      std::array<int, 8> data     = { 1, 2, 3, 7, 8, 9, 20, 21 };
+      std::array<int, 3> expected = { 1, 7, 20 };
+      std::array<int, 8> result   = {};
+
+      auto end = etl::unique_copy(data.begin(), data.end(), result.begin(), [](int a, int b) { return (b - a) < 3; });
+
+      CHECK_EQUAL(3, std::distance(result.begin(), end));
+      bool is_same = std::equal(expected.begin(), expected.end(), result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_matches_std)
+    {
+      std::array<int, 12> data       = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> std_result = {};
+      std::array<int, 12> etl_result = {};
+
+      auto std_end = std::unique_copy(data.begin(), data.end(), std_result.begin());
+      auto etl_end = etl::unique_copy(data.begin(), data.end(), etl_result.begin());
+
+      size_t std_size = std::distance(std_result.begin(), std_end);
+      size_t etl_size = std::distance(etl_result.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(std_result.begin(), std_end, etl_result.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(unique_copy_with_predicate_matches_std)
+    {
+      std::array<int, 12> data       = { 1, 1, 2, 2, 2, 3, 4, 4, 5, 5, 5, 5 };
+      std::array<int, 12> std_result = {};
+      std::array<int, 12> etl_result = {};
+
+      auto std_end = std::unique_copy(data.begin(), data.end(), std_result.begin(), std::equal_to<int>());
+      auto etl_end = etl::unique_copy(data.begin(), data.end(), etl_result.begin(), std::equal_to<int>());
+
+      size_t std_size = std::distance(std_result.begin(), std_end);
+      size_t etl_size = std::distance(etl_result.begin(), etl_end);
+
+      CHECK_EQUAL(std_size, etl_size);
+      bool is_same = std::equal(std_result.begin(), std_end, etl_result.begin());
       CHECK(is_same);
     }
 
@@ -2470,6 +4242,116 @@ namespace
     }
 
     //*************************************************************************
+    TEST(accumulate_default)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 0);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_with_initial_value)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 100);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 100);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_custom_operation)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 1, std::multiplies<int>());
+      int result   = etl::accumulate(std::begin(data), std::end(data), 1, std::multiplies<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_empty_range)
+    {
+      int data[] = { 1 };
+
+      int expected = std::accumulate(std::begin(data), std::begin(data), 42);
+      int result   = etl::accumulate(std::begin(data), std::begin(data), 42);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_single_element)
+    {
+      int data[] = { 7 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 0);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_negative_values)
+    {
+      int data[] = { -3, -2, -1, 0, 1, 2, 3 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 0);
+      int result   = etl::accumulate(std::begin(data), std::end(data), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_custom_operation_subtraction)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(std::begin(data), std::end(data), 100, std::minus<int>());
+      int result   = etl::accumulate(std::begin(data), std::end(data), 100, std::minus<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_non_random_iterator)
+    {
+      List data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int expected = std::accumulate(data.begin(), data.end(), 0);
+      int result   = etl::accumulate(data.begin(), data.end(), 0);
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_non_random_iterator_custom_operation)
+    {
+      List data = { 1, 2, 3, 4, 5 };
+
+      int expected = std::accumulate(data.begin(), data.end(), 1, std::multiplies<int>());
+      int result   = etl::accumulate(data.begin(), data.end(), 1, std::multiplies<int>());
+
+      CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(accumulate_double)
+    {
+      double data[] = { 1.5, 2.5, 3.5, 4.5, 5.5 };
+
+      double expected = std::accumulate(std::begin(data), std::end(data), 0.0);
+      double result   = etl::accumulate(std::begin(data), std::end(data), 0.0);
+
+      CHECK_CLOSE(expected, result, 1e-10);
+    }
+
+    //*************************************************************************
     TEST(clamp_run_time)
     {
       CHECK_EQUAL(5, etl::clamp(5, 0, 10));
@@ -2503,6 +4385,433 @@ namespace
       CHECK_EQUAL(5, result4);
       CHECK_EQUAL(0, result5);
       CHECK_EQUAL(10, result6);
+    }
+
+    //*************************************************************************
+    TEST(merge_default_comparator)
+    {
+      int input1[] = { 1, 3, 5, 7, 9 };
+      int input2[] = { 2, 4, 6, 8, 10 };
+      int output[10];
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_custom_comparator)
+    {
+      int input1[] = { 9, 7, 5, 3, 1 };
+      int input2[] = { 10, 8, 6, 4, 2 };
+      int output[10];
+      int expected[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output),
+                               Greater());
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_first_range_empty)
+    {
+      int input1[] = { 0 };  // dummy, won't be used
+      int input2[] = { 1, 2, 3 };
+      int output[3];
+      int expected[] = { 1, 2, 3 };
+
+      int* result = etl::merge(input1, input1,  // empty range
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 3);
+    }
+
+    //*************************************************************************
+    TEST(merge_second_range_empty)
+    {
+      int input1[] = { 1, 2, 3 };
+      int input2[] = { 0 };  // dummy, won't be used
+      int output[3];
+      int expected[] = { 1, 2, 3 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               input2, input2,  // empty range
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 3);
+    }
+
+    //*************************************************************************
+    TEST(merge_both_ranges_empty)
+    {
+      int input1[] = { 0 };
+      int output[] = { 99 };
+
+      int* result = etl::merge(input1, input1,
+                               input1, input1,
+                               std::begin(output));
+
+      CHECK_EQUAL(std::begin(output), result);
+      CHECK_EQUAL(99, output[0]); // output should be unchanged
+    }
+
+    //*************************************************************************
+    TEST(merge_with_duplicates)
+    {
+      int input1[] = { 1, 3, 3, 5 };
+      int input2[] = { 2, 3, 4, 5 };
+      int output[8];
+      int expected[] = { 1, 2, 3, 3, 3, 4, 5, 5 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 8);
+    }
+
+    //*************************************************************************
+    TEST(merge_different_sizes)
+    {
+      int input1[] = { 1, 5 };
+      int input2[] = { 2, 3, 4, 6, 7, 8 };
+      int output[8];
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 8);
+    }
+
+    //*************************************************************************
+    TEST(merge_single_elements)
+    {
+      int input1[] = { 1 };
+      int input2[] = { 2 };
+      int output[2];
+      int expected[] = { 1, 2 };
+
+      int* result = etl::merge(std::begin(input1), std::end(input1),
+                               std::begin(input2), std::end(input2),
+                               std::begin(output));
+
+      CHECK_EQUAL(std::end(output), result);
+      CHECK_ARRAY_EQUAL(expected, output, 2);
+    }
+
+    //*************************************************************************
+    TEST(merge_with_list_iterators)
+    {
+      std::list<int> input1 = { 1, 3, 5, 7 };
+      std::list<int> input2 = { 2, 4, 6, 8 };
+      std::vector<int> output(8);
+      std::vector<int> expected = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      std::vector<int>::iterator result = etl::merge(input1.begin(), input1.end(),
+                                                     input2.begin(), input2.end(),
+                                                     output.begin());
+
+      CHECK(output.end() == result);
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), 8);
+    }
+
+    //*************************************************************************
+    TEST(merge_matches_std)
+    {
+      int input1[] = { 1, 4, 7, 8, 10 };
+      int input2[] = { 2, 3, 5, 6, 9 };
+      int etl_output[10];
+      int std_output[10];
+
+      etl::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(etl_output));
+
+      std::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(std_output));
+
+      CHECK_ARRAY_EQUAL(std_output, etl_output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_matches_std_with_comparator)
+    {
+      int input1[] = { 10, 8, 7, 4, 1 };
+      int input2[] = { 9, 6, 5, 3, 2 };
+      int etl_output[10];
+      int std_output[10];
+
+      etl::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(etl_output),
+                 Greater());
+
+      std::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(std_output),
+                 Greater());
+
+      CHECK_ARRAY_EQUAL(std_output, etl_output, 10);
+    }
+
+    //*************************************************************************
+    TEST(merge_stability)
+    {
+      // Test that merge is stable: equivalent elements from the first range
+      // come before those from the second range.
+      Data input1[] = { Data(1, 1), Data(3, 1), Data(5, 1) };
+      Data input2[] = { Data(1, 2), Data(3, 2), Data(5, 2) };
+      Data output[6];
+
+      etl::merge(std::begin(input1), std::end(input1),
+                 std::begin(input2), std::end(input2),
+                 std::begin(output),
+                 DataPredicate());
+
+      // Elements from input1 (b==1) should come before elements from input2 (b==2)
+      // for equivalent keys.
+      CHECK_EQUAL(1, output[0].a); CHECK_EQUAL(1, output[0].b);  // from input1
+      CHECK_EQUAL(1, output[1].a); CHECK_EQUAL(2, output[1].b);  // from input2
+      CHECK_EQUAL(3, output[2].a); CHECK_EQUAL(1, output[2].b);  // from input1
+      CHECK_EQUAL(3, output[3].a); CHECK_EQUAL(2, output[3].b);  // from input2
+      CHECK_EQUAL(5, output[4].a); CHECK_EQUAL(1, output[4].b);  // from input1
+      CHECK_EQUAL(5, output[5].a); CHECK_EQUAL(2, output[5].b);  // from input2
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_default_comparator)
+    {
+      int data[] = { 1, 3, 5, 7, 9, 2, 4, 6, 8, 10 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_custom_comparator)
+    {
+      int data[] = { 9, 7, 5, 3, 1, 10, 8, 6, 4, 2 };
+      int expected[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data), Greater());
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_first_range_empty)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data), std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 5);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_second_range_empty)
+    {
+      int data[] = { 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::end(data), std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 5);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_both_ranges_empty)
+    {
+      int data[] = { 99 };
+
+      etl::inplace_merge(data, data, data);  // empty range
+
+      CHECK_EQUAL(99, data[0]); // unchanged
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_with_duplicates)
+    {
+      int data[] = { 1, 3, 3, 5, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 3, 3, 4, 5, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 4, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 8);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_different_sizes)
+    {
+      int data[] = { 1, 5, 2, 3, 4, 6, 7, 8 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 2, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 8);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_elements)
+    {
+      int data[] = { 2, 1 };
+      int expected[] = { 1, 2 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 1, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 2);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_element_halves_already_sorted)
+    {
+      int data[] = { 1, 2 };
+      int expected[] = { 1, 2 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 1, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 2);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_already_sorted)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_reverse_halves)
+    {
+      // Second half all less than first half
+      int data[] = { 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_with_list_iterators)
+    {
+      std::vector<int> data = { 1, 3, 5, 7, 2, 4, 6, 8 };
+      std::vector<int> expected = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+      etl::inplace_merge(data.begin(), data.begin() + 4, data.end());
+
+      CHECK(expected == data);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_matches_std)
+    {
+      int etl_data[] = { 1, 4, 7, 8, 10, 2, 3, 5, 6, 9 };
+      int std_data[] = { 1, 4, 7, 8, 10, 2, 3, 5, 6, 9 };
+
+      etl::inplace_merge(std::begin(etl_data), std::begin(etl_data) + 5, std::end(etl_data));
+      std::inplace_merge(std::begin(std_data), std::begin(std_data) + 5, std::end(std_data));
+
+      CHECK_ARRAY_EQUAL(std_data, etl_data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_matches_std_with_comparator)
+    {
+      int etl_data[] = { 10, 8, 7, 4, 1, 9, 6, 5, 3, 2 };
+      int std_data[] = { 10, 8, 7, 4, 1, 9, 6, 5, 3, 2 };
+
+      etl::inplace_merge(std::begin(etl_data), std::begin(etl_data) + 5, std::end(etl_data), Greater());
+      std::inplace_merge(std::begin(std_data), std::begin(std_data) + 5, std::end(std_data), Greater());
+
+      CHECK_ARRAY_EQUAL(std_data, etl_data, 10);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_stability)
+    {
+      // Test that inplace_merge is stable: equivalent elements from the first
+      // range come before those from the second range.
+      Data data[] = { Data(1, 1), Data(3, 1), Data(5, 1),
+                      Data(1, 2), Data(3, 2), Data(5, 2) };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 3, std::end(data), DataPredicate());
+
+      // Elements from first half (b==1) should come before elements from second half (b==2)
+      // for equivalent keys.
+      CHECK_EQUAL(1, data[0].a); CHECK_EQUAL(1, data[0].b);  // from first half
+      CHECK_EQUAL(1, data[1].a); CHECK_EQUAL(2, data[1].b);  // from second half
+      CHECK_EQUAL(3, data[2].a); CHECK_EQUAL(1, data[2].b);  // from first half
+      CHECK_EQUAL(3, data[3].a); CHECK_EQUAL(2, data[3].b);  // from second half
+      CHECK_EQUAL(5, data[4].a); CHECK_EQUAL(1, data[4].b);  // from first half
+      CHECK_EQUAL(5, data[5].a); CHECK_EQUAL(2, data[5].b);  // from second half
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_element_first_half)
+    {
+      int data[] = { 5, 1, 2, 3, 4 };
+      int expected[] = { 1, 2, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 1, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 5);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_single_element_second_half)
+    {
+      int data[] = { 1, 2, 3, 4, 5, 3 };
+      int expected[] = { 1, 2, 3, 3, 4, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 5, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 6);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_all_equal)
+    {
+      int data[] = { 5, 5, 5, 5, 5, 5 };
+      int expected[] = { 5, 5, 5, 5, 5, 5 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 3, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 6);
+    }
+
+    //*************************************************************************
+    TEST(inplace_merge_interleaved)
+    {
+      int data[] = { 1, 3, 5, 7, 9, 11, 2, 4, 6, 8, 10, 12 };
+      int expected[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+      etl::inplace_merge(std::begin(data), std::begin(data) + 6, std::end(data));
+
+      CHECK_ARRAY_EQUAL(expected, data, 12);
     }
   }
 }
