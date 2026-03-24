@@ -3967,25 +3967,10 @@
     <None Include="..\..\.github\workflows\gcc-c++23.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\..\docs\_config.yml">
-      <Filter>Documentation</Filter>
-    </None>
     <None Include="..\..\docs\_index.md">
       <Filter>Documentation</Filter>
     </None>
     <None Include="..\..\docs\custom.css">
-      <Filter>Documentation</Filter>
-    </None>
-    <None Include="..\..\docs\inplace_function.md">
-      <Filter>Documentation</Filter>
-    </None>
-    <None Include="..\..\docs\manchester.md">
-      <Filter>Documentation</Filter>
-    </None>
-    <None Include="..\..\docs\ranges.md">
-      <Filter>Documentation</Filter>
-    </None>
-    <None Include="..\..\docs\source-formatting.md">
       <Filter>Documentation</Filter>
     </None>
   </ItemGroup>

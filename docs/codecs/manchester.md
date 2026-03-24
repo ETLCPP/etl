@@ -3,7 +3,14 @@ title: Manchester encoding and decoding
 weight: 1
 ---
 
-Efficient Manchester encoding and decoding of data. The Manchester code represents a data bit as a sequence of a 'high' and a 'low' value. In software this translates to a conversion from one to two bits, or in a practical situation, from `n` bytes to `n*2` bytes.
+---
+
+{{< callout type="info">}}
+  Header: `manchester.h`  
+  Support: `20.45.0`  
+{{< /callout >}}
+
+Efficient Manchester encoding and decoding of data. The Manchester code represents a data bit as a sequence of a 'high' and a 'low' values. In software this translates to a conversion from one to two bits, or in a practical situation, from `n` bytes to `n*2` bytes.
 
 ## See also
 
@@ -58,13 +65,11 @@ Comparing all 8 bit pairs in a 16-bit word is done as follows.
 
 Most traditional ways to Manchester encode data consist of a loop over all bits and a nested if-statement to check the value of the current bit. This approach does not scale well to increasing number of bits. The algorithm implemented here contains no conditional code and scales well. Doubling the number of processed bits per step (the chunk size) adds a single row to the bit duplication table. Because of the lack of loops and conditional code, this algorithm is likely to perform better than traditional ones on simple processors or when compiler optimization is disabled. On modern, powerful processors with caches and advanced optimization possibilities this algorithm may not show much benefit. In any case, the performance of the algorithm depends heavily on the processor type, compiler and compiler (optimization) settings.
 
-## API Reference
-
-### Classes
+## Classes
 
 Classes `etl::manchester` and `etl::manchester_inverted` contain static functions for encoding, decoding and validity checking. It is not necessary to instantiate objects of these classes.
 
-#### etl::manchester
+### etl::manchester
 
 ```cpp
 typedef manchester_base<private_manchester::manchester_type_normal> manchester;
@@ -72,7 +77,7 @@ typedef manchester_base<private_manchester::manchester_type_normal> manchester;
 
 Manchester encoder using normal encoding (no inversion).
 
-#### etl::manchester_inverted
+### etl::manchester_inverted
 
 ```cpp
 typedef manchester_base<private_manchester::manchester_type_inverted> manchester_inverted;
@@ -80,9 +85,9 @@ typedef manchester_base<private_manchester::manchester_type_inverted> manchester
 
 Manchester encoder using inverted encoding.
 
-### Encoding Functions
+## Encoding Functions
 
-#### Encode single value
+### Encode single value
 
 ```cpp
 template <typename TDecoded>
@@ -91,21 +96,21 @@ static ETL_CONSTEXPR14 typename encoded<TDecoded>::type encode(TDecoded decoded)
 
 Encodes a single value using Manchester encoding.
 
-**Parameters:**
+**Parameters**
 
-- `decoded`: The value to encode (`uint8_t`, `uint16_t`, or `uint32_t`)
+`decoded`: The value to encode (`uint8_t`, `uint16_t`, or `uint32_t`)
 
-**Returns:**
+**Returns**
 
-- The Manchester encoded value (twice the bit width of input)
+The Manchester encoded value (twice the bit width of input)
 
-**Example:**
+**Example**
 
 ```cpp
 uint16_t encoded = etl::manchester::encode(0x55);
 ```
 
-#### Encode range
+### Encode range
 
 ```cpp
 template <typename TChunk = uint_least8_t>
@@ -115,16 +120,16 @@ static ETL_CONSTEXPR14 void encode(etl::span<const uint_least8_t> decoded,
 
 Encodes a span of data using the specified chunk size.
 
-**Parameters:**
+**Parameters**
 
-- `decoded`: Source data to encode
-- `encoded`: Destination for encoded data (must be twice the size of `decoded`)
+`decoded`: Source data to encode  
+`encoded`: Destination for encoded data (must be twice the size of `decoded`)
 
-**Template Parameters:**
+**Template Parameters**
 
-- `TChunk`: Chunk size for encoding (`uint8_t`, `uint16_t` or `uint32_t`)
+`TChunk`: Chunk size for encoding (`uint8_t`, `uint16_t` or `uint32_t`)
 
-**Example:**
+**Example**
 
 ```cpp
 std::array<uint8_t, 4> data = {0x12, 0x34, 0x56, 0x78};
@@ -138,51 +143,56 @@ etl::manchester::encode(data, encoded_data1);
 etl::manchester::encode<uint32_t>(data, encoded_data2);
 ```
 
-### Decoding Functions
+## Decoding Functions
 
-#### Decode single value
+### Decode single value
 
 ```cpp
 template <typename TEncoded>
 static ETL_CONSTEXPR14 typename decoded<TEncoded>::type decode(TEncoded encoded)
 ```
 
+**Description**
+
 Decodes a single Manchester encoded value.
 
-**Parameters:**
+**Parameters**
 
-- `encoded`: The encoded value to decode (`uint16_t`, `uint32_t`, or `uint64_t`)
+`encoded`: The encoded value to decode (`uint16_t`, `uint32_t`, or `uint64_t`)
 
-**Returns:**
+**Returns**
 
-- The Manchester decoded value (half the bit width of input)
+The Manchester decoded value (half the bit width of input)
 
-**Example:**
+**Example**
 
 ```cpp
 uint8_t decoded = etl::manchester::decode(0x5A5A);
 ```
+---
 
-#### Decode range
+### Decode range
 
 ```cpp
-template <typename TChunk = typename private_manchester::encoded<uint_least8_t>::type>
-static ETL_CONSTEXPR14 void decode(etl::span<const uint_least8_t> encoded, 
-                                   etl::span<uint_least8_t> decoded)
+template <typename TChunk = 
+            typename private_manchester::encoded<uint_least8_t>::type>  
+static ETL_CONSTEXPR14  
+void decode(etl::span<const uint_least8_t> encoded,  
+            etl::span<uint_least8_t>       decoded)
 ```
 
 Decodes a span of Manchester encoded data.
 
-**Parameters:**
+**Parameters**
 
-- `encoded`: Source data to decode
-- `decoded`: Destination for decoded data (must be half the size of `encoded`)
+`encoded`: Source data to decode  
+`decoded`: Destination for decoded data (must be half the size of `encoded`)
 
-**Template Parameters:**
+**Template Parameters**
 
-- `TChunk`: Chunk type for decoding (`uint16_t`, `uint32_t`, or `uint64_t`)
+`TChunk`: Chunk type for decoding (`uint16_t`, `uint32_t`, or `uint64_t`)
 
-**Example:**
+**Example**
 
 ```cpp
 std::array<uint8_t, 8> encoded = {/* ... */};
@@ -196,9 +206,9 @@ etl::manchester::decode(encoded, decoded1);
 etl::manchester::decode<uint64_t>(encoded, decoded2);
 ```
 
-### Validation Functions
+## Validation Functions
 
-#### Single value
+### Single value
 
 ```cpp
 template <typename TChunk>
@@ -207,53 +217,53 @@ static ETL_CONSTEXPR14 bool is_valid(TChunk encoded)
 
 Validates that a single value contains valid Manchester encoded data.
 
-**Parameters:**
+**Parameters**
 
-- `encoded`: The encoded value to validate
+`encoded`: The encoded value to validate
 
-**Returns:**
+**Returns**
 
-- `true` if the value contains valid Manchester encoded data, `false` otherwise
+`true` if the value contains valid Manchester encoded data, `false` otherwise
 
-**Example:**
+**Example**
 
 ```cpp
 bool valid = etl::manchester::is_valid(0x5A5A);
 ```
 
-#### Range
+### Range
 
 ```cpp
-static ETL_CONSTEXPR14 bool is_valid(etl::span<const uint_least8_t> encoded)
+static  
+ETL_CONSTEXPR14  
+bool is_valid(etl::span<const uint_least8_t> encoded)
 ```
 
 Validates that a range contains valid Manchester encoded data.
 
-**Parameters:**
+**Parameters**
 
-- `encoded`: The range of encoded data to validate
+`encoded`: The range of encoded data to validate
 
-**Returns:**
+**Returns**
 
-- `true` if all data is valid Manchester encoding, `false` otherwise
+`true` if all data is valid Manchester encoding, `false` otherwise
 
-**Example:**
+**Example**
 
 ```cpp
 std::array<uint8_t, 8> encoded_data = {/* ... */};
 bool valid = etl::manchester::is_valid(encoded_data);
 ```
 
-## Supported Types
+## Input/chunk types for encoding
 
-### Input/chunk types for encoding
+`uint8_t` → `uint16_t` (if 8-bit types are supported)  
+`uint16_t` → `uint32_t`  
+`uint32_t` → `uint64_t` (if 64-bit types are supported)  
 
-- `uint8_t` → `uint16_t` (if 8-bit types are supported)
-- `uint16_t` → `uint32_t`
-- `uint32_t` → `uint64_t` (if 64-bit types are supported)
+## Input/chunk types for decoding
 
-### Input/chunk types for decoding
-
-- `uint16_t` → `uint8_t` (if 8-bit types are supported)
-- `uint32_t` → `uint16_t`
-- `uint64_t` → `uint32_t` (if 64-bit types are supported)
+`uint16_t` → `uint8_t` (if 8-bit types are supported)  
+`uint32_t` → `uint16_t`  
+`uint64_t` → `uint32_t` (if 64-bit types are supported)  

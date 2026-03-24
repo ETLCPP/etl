@@ -20,45 +20,45 @@ Click on the links to see the original Github page.
 ## 20.46.0
 
 **Pull requests:**  
-#1257 Fix `year_month` arithmetic and correct `chrono` API behavior  
+[#1257](https://github.com/ETLCPP/etl/pull/1257) Fix `year_month` arithmetic and correct `chrono` API behavior  
 [#1259](https://github.com/ETLCPP/etl/pull/1259) Suppress warnings from std in optimized builds  
 [#1261](https://github.com/ETLCPP/etl/pull/1261) Fix incorrect namespace for `iter_swap` calls  
-#1262 Document how to implement platform specifics  
-#1264 Add template deduction guide for `span` from `vector`   
-#1265 Fix etl::tuple template signature error in pair assignment operator  
-#1266 Fix etl::as_bytes for etl::span<const T>  
-#1267 Update C++26 deprecated constructs to ensure future standard compliance  
-#1268 Remove some UB in test_vector_non_trivial.cpp  
-#1269 Deduce underlying storage size when constructing string_ext from char[].  
-#1271 Fix return value of get_token_list  
-#1275 Add etl::type_list API to more classes.  
-#1277 Fix for issue 1276 "Data corruption in the etl::bip_buffer_spsc_atomic"  
-#1281 Remove advance() on static spans  
-#1285 Manchester coding  
-#1286 Add missing includes  
-#1287 Move comparison operators of etl::expected to namespace etl  
-#1288 Add basic_format_arg constructor for ibasic_string  
-#1290 Add support for size_t and unsigned long to etl::format  
-#1291 Make typed_storage constructor constexpr  
-#1292 Add ref-qualifiers to basic_format_spec  
-#1299 Fix link rotations for etl::tree_node  
-#1303 Add constexpr to array comparison operators  
-#1304 Fix etl::variant get() for ambiguous types  
-#1307 Add more features to etl::type_list  
-#1308 Fix comparison and swap operators not in etl namespace  
-#1309 Reduce string flash usage  
-#1312 Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up  
-#1315 Add get endianness to byte stream reader  
+[#1262](https://github.com/ETLCPP/etl/pull/1262) Document how to implement platform specifics  
+[#1264](https://github.com/ETLCPP/etl/pull/1264) Add template deduction guide for `span` from `vector`   
+[#1265](https://github.com/ETLCPP/etl/pull/1265) Fix etl::tuple template signature error in pair assignment operator  
+[#1266](https://github.com/ETLCPP/etl/pull/1266) Fix etl::as_bytes for etl::span<const T>  
+[#1267](https://github.com/ETLCPP/etl/pull/1267) Update C++26 deprecated constructs to ensure future standard compliance  
+[#1268](https://github.com/ETLCPP/etl/pull/1268) Remove some UB in test_vector_non_trivial.cpp  
+[#1269](https://github.com/ETLCPP/etl/pull/1269) Deduce underlying storage size when constructing string_ext from char[].  
+[#1271](https://github.com/ETLCPP/etl/pull/1271) Fix return value of get_token_list  
+[#1275](https://github.com/ETLCPP/etl/pull/1275) Add etl::type_list API to more classes.  
+[#1277](https://github.com/ETLCPP/etl/pull/1277) Fix for issue 1276 "Data corruption in the etl::bip_buffer_spsc_atomic"  
+[#1281](https://github.com/ETLCPP/etl/pull/1281) Remove advance() on static spans  
+[#1285](https://github.com/ETLCPP/etl/pull/1285) Manchester coding  
+[#1286](https://github.com/ETLCPP/etl/pull/1286) Add missing includes  
+[#1287](https://github.com/ETLCPP/etl/pull/1287) Move comparison operators of etl::expected to namespace etl  
+[#1288](https://github.com/ETLCPP/etl/pull/1288) Add basic_format_arg constructor for ibasic_string  
+[#1290](https://github.com/ETLCPP/etl/pull/1290) Add support for size_t and unsigned long to etl::format  
+[#1291](https://github.com/ETLCPP/etl/pull/1291) Make typed_storage constructor constexpr  
+[#1292](https://github.com/ETLCPP/etl/pull/1292) Add ref-qualifiers to basic_format_spec  
+[#1299](https://github.com/ETLCPP/etl/pull/1299) Fix link rotations for etl::tree_node  
+[#1303](https://github.com/ETLCPP/etl/pull/1303) Add constexpr to array comparison operators  
+[#1304](https://github.com/ETLCPP/etl/pull/1304) Fix etl::variant get() for ambiguous types  
+[#1307](https://github.com/ETLCPP/etl/pull/1307) Add more features to etl::type_list  
+[#1308](https://github.com/ETLCPP/etl/pull/1308) Fix comparison and swap operators not in etl namespace  
+[#1309](https://github.com/ETLCPP/etl/pull/1309) Reduce string flash usage  
+[#1312](https://github.com/ETLCPP/etl/pull/1312) Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up  
+[#1315](https://github.com/ETLCPP/etl/pull/1315) Add get endianness to byte stream reader  
 
 ## 20.45.0
 
 **Issues:**  
-#1184 Request: Adding a method to check whether a etl::callback_timer_atomic is currently running  
-#1189 Request: make useage of osMutexRobust in etl::mutex optional  
-#1207 Monadic Operations for etl::expected  
-#1240 Add redundant semicolon checks to CMakeLists.txt and fix issues  
-#1241 Add -pedantic-errors to unit test CMakeLists.txt and fix issues  
-#1242 Add begin() and end() to etl::optional  
+[#1184](https://github.com/ETLCPP/etl/issues/1184) Request: Adding a method to check whether a etl::callback_timer_atomic is currently running  
+[#1189](https://github.com/ETLCPP/etl/issues/1189) Request: make useage of osMutexRobust in etl::mutex optional  
+[#1207](https://github.com/ETLCPP/etl/issues/1207) Monadic Operations for etl::expected  
+[#1240](https://github.com/ETLCPP/etl/issues/1240) Add redundant semicolon checks to CMakeLists.txt and fix issues  
+[#1241](https://github.com/ETLCPP/etl/issues/1241) Add -pedantic-errors to unit test CMakeLists.txt and fix issues  
+[#1242](https://github.com/ETLCPP/etl/issues/1242) Add begin() and end() to etl::optional  
 
 **Pull requests:**  
 #1204 Add etl::format  

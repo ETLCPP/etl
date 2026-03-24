@@ -1,11 +1,12 @@
 
+/* Definitions for light mode */
 html:not(.dark) h1 { 
   color: coral !important; 
 }
 
 html:not(.dark) h2 { 
-  color: #4884cc !important;
-  border-bottom: 2px solid black !important; 
+  color: royalblue !important;
+  border-bottom: 3px solid black !important; 
 }
 
 html:not(.dark) h3, 
@@ -26,14 +27,14 @@ html:not(.dark) dl,
 html:not(.dark) dl dt code,
 html:not(.dark) dl dd {
   color: black !important;
-  background-color: dddddd !important;
+  background-color: #eeeeee !important;
 }
 
 html:not(.dark) code,
 html:not(.dark) pre,
 html:not(.dark) pre code {
-  color: darkslategrey !important;
-  background-color: #dddddd !important;
+  color: black !important;
+  background-color: #eeeeee !important;
 }
 
 html:not(.dark) hr {
@@ -41,9 +42,9 @@ html:not(.dark) hr {
 }
 
 html:not(.dark) .hx\:font-extrabold {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-size: 1.6rem !important;
-  color: black !important;
+  color: royalblue !important;
 }
 
 /* inactive */
@@ -56,8 +57,11 @@ html:not(.dark) .hextra-sidebar-active-item {
   color: black !important;
 }
 
+html:not(.dark) .content p.red-text {
+  color: red !important;
+}
 
-
+/* Definitions for dark mode */
 html.dark body {
   background-color: #1e1e1e !important;
 }
@@ -88,8 +92,8 @@ html.dark h1
 }
 
 html.dark h2 { 
-  color: skyblue !important; 
-  border-bottom: 2px solid #f0f0f0 !important; 
+  color: #7099c7 !important; 
+  border-bottom: 3px solid #f0f0f0 !important; 
 }
 
 html.dark h3, 
@@ -120,7 +124,7 @@ html.dark hr {
 }
 
 html.dark .hx\:font-extrabold {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-size: 1.6rem !important;
   color: #7099c7 !important;
 }
@@ -135,10 +139,53 @@ html.dark .hextra-sidebar-active-item {
   color: white !important;
 }
 
+html.dark .content p.red-text {
+  color: salmon !important;
+}
 
+
+
+/* Common definitions */
+
+@font-face {
+  font-family: Roboto;
+  src: url('/fonts/roboto-v51-latin-regular.woff2') format('woff2');
+  font-weight:500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('/fonts/roboto-mono-v31-latin-500.woff2') format('woff2');
+  font-weight: nornal;
+  font-style: normal;
+}
+
+/* Regular item hover */
+.hextra-sidebar-item a:hover,
+.hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
+
+/* Active item default + hover - must come AFTER regular hover */
+.hextra-sidebar-item[data-active="true"] a,
+.hextra-sidebar-item[data-active="true"] a span,
+.hextra-sidebar-item[data-active="true"] a:hover,
+.hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: coral !important;
+  color: #ffffff !important;
+}
+
+.content ul li {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 110% !important;
+}
 
 h1 {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
   margin-top: 0.5em !important;
@@ -146,7 +193,7 @@ h1 {
 }
 
 h2 {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 150% !important;
@@ -155,7 +202,7 @@ h2 {
 }
 
 h3 {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 130% !important;
@@ -164,7 +211,7 @@ h3 {
 }
 
 h4 {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 110% !important;
@@ -173,48 +220,48 @@ h4 {
 }
 
 dl {
-  font-family: Consolas, monospace !important;
+  font-family: 'Roboto Mono', monospace !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
 }
 
 dl dt code {
-  font-family: Consolas, monospace !important;
+  font-family: 'Roboto Mono', monospace !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
 }
 
 dl dd {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 1rem !important;
 }
 
 code {
-  font-family: Consolas, monospace !important;
+  font-family: 'Roboto Mono', monospace !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
   border: none !important;
   border-radius: 2px !important;
 }
 
 pre code {
-  font-family: Consolas, monospace !important;
+  font-family: 'Roboto Mono', monospace !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
   padding-left: 0 !important;
   margin-left: 0 !important;
   border: none !important;
 }
 
 pre {
-  font-family: Consolas, monospace !important;
-  font-size: 1rem !important;
+  font-family: 'Roboto Mono', monospace !important;
+  font-size: 0.9rem !important;
   margin-top: 2em !important;
   margin-bottom: 0em !important;
   padding-top: 0.5em !important;
@@ -232,7 +279,7 @@ hr {
 }
 
 p {
-  font-family: Tahoma, sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 110% !important;

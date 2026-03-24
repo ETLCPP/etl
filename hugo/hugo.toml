@@ -13,6 +13,9 @@ theme = 'hextra'
   [markup.goldmark.renderer]
     unsafe = true
 
+  [markup.goldmark.parser.attribute]
+    block = true
+
 [module]
   [[module.mounts]]
     source = "../docs"
@@ -24,8 +27,26 @@ theme = 'hextra'
   [params.theme]
     customCSS = ["css/custom.css"]
 
+  [params.page]
+    width = "wide"
+
   [params.navbar]
     displayTitle = true
     [params.navbar.logo]
       path = "images/logo.png"
       link = "/"
+
+  [params.search]
+    enable = true
+    
+  [params.sidebar]
+    # This stops the sidebar from "drilling down" into H2/H3 headers
+    levels = 1 
+    # Ensure these are also set to prevent auto-expansion
+    defaultOpen = false
+    autoCollapse = true
+
+[[menus.main]]
+  name = "Home"
+  pageRef = "/docs"
+  weight = 10

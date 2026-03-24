@@ -1,7 +1,12 @@
 ---
 title: "Embedded Template Library"
-alwaysopen: true
 ---
+
+---
+
+{{< callout emoji="❓">}}
+ ### [Is the ETL free?]({{< ref "Is the ETL free.md" >}})
+{{< /callout >}}
 
 ## Motivation
  
