@@ -35,8 +35,28 @@ RUN set -eux \
     fi \
     && apt-get update \
     && apt-get -y install --no-install-recommends \
+        python3-full \
+        python3-pip \
         git \
         wget \
-        python3-cogapp \
         cmake \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && if pip help install | grep -q '\-\-break-system-packages'; then \
+           pip install --no-cache-dir --break-system-packages cogapp; \
+       else \
+           pip install --no-cache-dir cogapp; \
+       fi
+
+RUN set -eux \
+    && echo "Pip version: " \
+    && pip --version \
+    && echo "Cogapp version: " \
+    && pip show cogapp \
+    && echo "Git version: " \
+    && git --version \
+    && echo "Wget version: " \
+    && wget --version \
+    && echo "Cmake version: " \
+    && cmake --version \
+    && echo "Make version: " \
+    && make --version
