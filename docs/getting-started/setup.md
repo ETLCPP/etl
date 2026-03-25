@@ -1,16 +1,18 @@
 ---
 title: "Setup"
+weight: 1
 ---
 
 ---
 
 This page describes the steps needed to integrate the ETL with your project.
 The ETL requires no special installation. Just copy or clone the GitHub project into an appropriate directory.
-For additional information pertaining to compilers, see this page.
+For additional information pertaining to compilers, see [this page](https://www.etlcpp.com/compilers.html).
 
 The ETL does not depend on the STL, but can use the algorithms and definitions from it, if the project does.
-This is controlled by the ETL_NO_STL macro. If this macro is defined in the profile then the ETL will use its own reverse engineered versions.
-See No STL
+
+This is controlled by the ETL_NO_STL macro. If this macro is defined in the profile then the ETL will use its own reverse engineered versions.  
+See [No STL]().
 
 ## User defined files
 The user may  create a file named `etl_profile.h` that exists in the include path for the project.
@@ -54,17 +56,18 @@ There is a WSL Ubuntu image for running unit tests on Windows Subsystem for Linu
 ## Arduino
 The ETL is available through the Arduino library manager.
 
-## Missing <new>
+**Missing `new`**  
+
 The Arduino is often not supplied with a definition of the header `<new>` causing compilation to fail.  
 One option, if you have this problem, is to define your own empty header `new`.
 
 ## STL
-The Arduino programming platform is not supplied with an implementation of the STL. Probably the best option for Arduino users to define ETL_NO_STL which will allow the ETL to be compiled without the standard library.
+The Arduino programming platform is not supplied with an implementation of the STL. Probably the best option for Arduino users to define `ETL_NO_STL` which will allow the ETL to be compiled without the standard library.
 
 If `ETL_NO_STL` is not defined then one must be acquired. 
 
-A suitable STL implementation may be downloaded from the Arduino library resource. It is called ArduinoSTL.  
-Add `#include <ArduinoSTL.h>` to the start of every file that uses the ETL.  
+A suitable STL implementation may be downloaded from the Arduino library resource. It is called **ArduinoSTL**.
+Add `#include <ArduinoSTL.h>` to the start of every file that uses the ETL.
 Remember to add the directory to the include path.
 
 ## PlatformIO

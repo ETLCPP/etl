@@ -13,10 +13,7 @@ html:not(.dark) h3,
 html:not(.dark) h4 
 { 
   color: green !important; 
-}
-
-html:not(.dark) h4 code {
-  color: black !important;
+  border-bottom: 1px solid darkgrey !important; 
 }
 
 html:not(.dark) p { 
@@ -98,7 +95,8 @@ html.dark h2 {
 
 html.dark h3, 
 html.dark h4 { 
-  color: lightgreen !important; 
+  color: lightgreen !important;
+  border-bottom: 1px solid rgb(76, 76, 76) !important; 
 }
 
 html.dark p { 
@@ -186,8 +184,8 @@ html.dark .content p.red-text {
 
 h1 {
   font-family: Roboto, sans-serif !important;
-  font-style: normal !important;
-  font-weight: normal !important;
+  font-style: i !important;
+  font-weight: 500 !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.0em !important;
 }
@@ -283,7 +281,7 @@ p {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 110% !important;
-   margin-top: 1em !important;
+  margin-top: 1em !important;
 }
 
 

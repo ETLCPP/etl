@@ -7,7 +7,7 @@ weight: 1
 
 {{< callout type="info">}}
   Header: `inplace_function.h`  
-  Support: `20.45.0`  
+  Supported: `20.45.0`  
   Similar to: [std::function](https://en.cppreference.com/w/cpp/utility/functional/function.html)
 {{< /callout >}}
 
@@ -78,8 +78,6 @@ etl::inplace_function_uninitialized
 **Description**  
 Thrown (via `ETL_ASSERT`) when invoked without a target.
 
----
-
 ## Member Types
 
 ```C++
@@ -87,10 +85,14 @@ function_type
 ```
 **Description**  
 
+---
+
 ```C++
 return_type
 ```
 **Description**  
+
+---
 
 ```C++
 argument_types
@@ -133,8 +135,6 @@ Assignment from function pointer.
 
 **Description**  
 Assignment from lambda/functor.
-
----
 
 ## Invocation
 
@@ -182,7 +182,7 @@ Invokes the target or a fallback callable.
 bool is_valid() const
 ```
 **Returns**  
-Returns `true` if there is a valid callable.
+`true` if there is a valid callable.
 
 ---
 
@@ -194,7 +194,7 @@ explicit operator bool() const
 **Parameters**  
 
 **Returns**  
-Returns the result of `is_valid()`
+The result of `is_valid()`
 
 ## Modifiers
 
@@ -208,7 +208,7 @@ Clears any stored callable.
 None  
 
 **Returns**  
-Void.
+`void`
 
 ---
 
@@ -223,9 +223,7 @@ Swaps with another inplace_function.
 None  
 
 **Returns**  
-Void.
-
----
+'void`
 
 ## Storage Introspection
 
@@ -239,7 +237,7 @@ Interogates the internal storage size.
 None  
 
 **Returns**  
-Returns the size of the internal storage.
+The size of the internal storage.
 
 ---
 
@@ -253,7 +251,7 @@ Interogates the internal storage alignment.
 None
 
 **Returns**  
-Returns the alignment of the internal storage.
+The alignment of the internal storage.
 
 ## Compile-Time Binding (No Payload)
 
@@ -409,24 +407,3 @@ If the callable object is larger than `Object_Size` or requires stricter alignme
 `operator()` asserts when called without a target; use `call_if` or `call_or` to avoid this.
 
 Prefer `inplace_function_for`, `inplace_function_for_any` or `make_inplace_function` to deduce storage sizes safely.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

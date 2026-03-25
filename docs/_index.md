@@ -4,6 +4,10 @@ title: "Embedded Template Library"
 
 ---
 
+{{< callout type="warning">}}
+**This documentation is still under development, and very much incomplete.**
+{{< /callout >}}
+
 {{< callout emoji="❓">}}
  ### [Is the ETL free?]({{< ref "Is the ETL free.md" >}})
 {{< /callout >}}

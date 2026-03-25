@@ -7,7 +7,7 @@ weight: 1
 
 {{< callout type="info">}}
   Header: `delegate.h`  
-  Support: `20.45.0`  
+  Supported: `20.45.0`  
   Similar to: [std::function](https://en.cppreference.com/w/cpp/utility/functional/function.html)
 {{< /callout >}}
 
