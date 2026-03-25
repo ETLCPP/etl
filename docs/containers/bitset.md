@@ -4,7 +4,7 @@ title: "bitset"
 
 ---
 
-{{< callout type="">}}
+{{< callout >}}
   Header: `bitset.h`  
   Supported: 20.33.0  
   Similar to: [std::bitset](https://en.cppreference.com/w/cpp/utility/bitset.html)

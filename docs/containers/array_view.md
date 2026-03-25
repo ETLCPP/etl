@@ -4,7 +4,7 @@ title: "array_view"
 
 ---
 
-{{< callout type="info">}}
+{{< callout >}}
   Header: `array_view.h`  
   Supported: All versions  
   Similar to: [gsl::array_view](https://learn.microsoft.com/en-us/previous-versions/cpp/parallel/amp/reference/array-view-class)

@@ -4,7 +4,7 @@ title: "array_wrapper"
 
 ---
 
-{{< callout type="">}}
+{{< callout >}}
   Header: `array_wrapper.h`  
   Supported: All versions  
 {{< /callout >}}

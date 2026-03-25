@@ -23,7 +23,8 @@ Define the macro `__STDC_LIMIT_MACROS` in the project properties.
 Compiled with version 5 & 6 ARM compilers.  
 No known issues.
 
-## TI Code ComposerMPS430
+## TI Code Composer
+**MPS430**  
 Define the macro `__STDC_LIMIT_MACROS` in the project properties.
 In TI projects you have the choice between EABI and COFF file formats.
 There is a known issue with the COFF format when creating static libraries that use templates. You may find that the linker will complain about 'undefined symbols'.  
