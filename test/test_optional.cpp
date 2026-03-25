@@ -1118,5 +1118,46 @@ namespace
 
       CHECK_EQUAL(42, *opt);
     }
+
+    //*************************************************************************
+    // GitHub issue #146: etl::optional doesn't compile with deleted copy constructor
+    //*************************************************************************
+#if ETL_USING_CPP11
+    struct Issue146_NonCopyable
+    {
+      Issue146_NonCopyable(int some) : _some(some) {}
+      Issue146_NonCopyable(const Issue146_NonCopyable&) = delete;
+      Issue146_NonCopyable(Issue146_NonCopyable&&) = delete;
+      Issue146_NonCopyable& operator=(const Issue146_NonCopyable&) = delete;
+
+      int _some;
+    };
+
+    struct Issue146_Container
+    {
+      Issue146_Container(int a_val) : a(a_val) {}
+      Issue146_Container() : a(etl::nullopt) {}
+
+      etl::optional<Issue146_NonCopyable> a;
+    };
+
+    TEST(test_optional_issue_146_deleted_copy_ctor)
+    {
+      // etl::optional<T> should compile when T has deleted copy/move constructors,
+      // as long as T is constructible from the given arguments.
+      Issue146_Container with_value(42);
+      Issue146_Container without_value;
+
+      CHECK_TRUE(with_value.a.has_value());
+      CHECK_EQUAL(42, with_value.a->_some);
+
+      CHECK_FALSE(without_value.a.has_value());
+
+      // in_place construction should also work
+      etl::optional<Issue146_NonCopyable> opt(etl::in_place_t{}, 99);
+      CHECK_TRUE(opt.has_value());
+      CHECK_EQUAL(99, opt->_some);
+    }
+#endif
   }
 }
