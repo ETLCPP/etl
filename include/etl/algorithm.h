@@ -2005,11 +2005,12 @@ namespace etl
 
       for (TIterator1 i = begin1; i != end1; ++i)
       {
-        if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
+        const typename etl::binder1st<TBinaryPredicate> predicate_is_i = etl::bind1st(predicate, *i);
+        if (i == etl::find_if(begin1, i, predicate_is_i))
         {
-          size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
+          size_t n = etl::count_if(begin2, end2, predicate_is_i);
 
-          if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
+          if (n == 0 || size_t(etl::count_if(i, end1, predicate_is_i)) != n)
           {
             return false;
           }
@@ -2038,15 +2039,18 @@ namespace etl
       return false;
     }
 
-    for (TIterator1 i = begin1; i != end1; ++i)
+    if (begin1 != end1)
     {
-      if (i == etl::find(begin1, i, *i))
+      for (TIterator1 i = begin1; i != end1; ++i)
       {
-        size_t n = etl::count(begin2, end2, *i);
-
-        if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+        if (i == etl::find(begin1, i, *i))
         {
-          return false;
+          size_t n = etl::count(begin2, end2, *i);
+
+          if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
+          {
+            return false;
+          }
         }
       }
     }
@@ -2073,20 +2077,150 @@ namespace etl
       return false;
     }
 
-    for (TIterator1 i = begin1; i != end1; ++i)
+    if (begin1 != end1)
     {
-      if (i == etl::find_if(begin1, i, etl::bind1st(predicate, *i)))
+      for (TIterator1 i = begin1; i != end1; ++i)
       {
-        size_t n = etl::count_if(begin2, end2, etl::bind1st(predicate, *i));
-
-        if (n == 0 || size_t(etl::count_if(i, end1, etl::bind1st(predicate, *i))) != n)
+        const typename etl::binder1st<TBinaryPredicate> predicate_is_i = etl::bind1st(predicate, *i);
+        if (i == etl::find_if(begin1, i, predicate_is_i))
         {
-          return false;
+          size_t n = etl::count_if(begin2, end2, predicate_is_i);
+
+          if (n == 0 || size_t(etl::count_if(i, end1, predicate_is_i)) != n)
+          {
+            return false;
+          }
         }
       }
     }
 
     return true;
+  }
+
+  //***************************************************************************
+  /// next_permutation
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/next_permutation"></a>
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  bool next_permutation(TIterator first, TIterator last, TCompare compare)
+  {
+    if (first == last)
+    {
+      return false;
+    }
+
+    TIterator i = last;
+    --i;
+
+    if (first == i)
+    {
+      return false;
+    }
+
+    while (true)
+    {
+      TIterator i1 = i;
+      --i;
+
+      if (compare(*i, *i1))
+      {
+        TIterator j = last;
+        --j;
+
+        while (!compare(*i, *j))
+        {
+          --j;
+        }
+
+        etl::iter_swap(i, j);
+        etl::reverse(i1, last);
+        return true;
+      }
+
+      if (i == first)
+      {
+        etl::reverse(first, last);
+        return false;
+      }
+    }
+  }
+
+  //***************************************************************************
+  /// next_permutation
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/next_permutation"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  bool next_permutation(TIterator first, TIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+    return etl::next_permutation(first, last, compare());
+  }
+
+  //***************************************************************************
+  /// prev_permutation
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/prev_permutation"></a>
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
+  bool prev_permutation(TIterator first, TIterator last, TCompare compare)
+  {
+    if (first == last)
+    {
+      return false;
+    }
+
+    TIterator i = last;
+    --i;
+
+    if (first == i)
+    {
+      return false;
+    }
+
+    while (true)
+    {
+      TIterator i1 = i;
+      --i;
+
+      if (compare(*i1, *i))
+      {
+        TIterator j = last;
+        --j;
+
+        while (!compare(*j, *i))
+        {
+          --j;
+        }
+
+        etl::iter_swap(i, j);
+        etl::reverse(i1, last);
+        return true;
+      }
+
+      if (i == first)
+      {
+        etl::reverse(first, last);
+        return false;
+      }
+    }
+  }
+
+  //***************************************************************************
+  /// prev_permutation
+  ///\ingroup algorithm
+  ///<a href="http://en.cppreference.com/w/cpp/algorithm/prev_permutation"></a>
+  //***************************************************************************
+  template <typename TIterator>
+  ETL_CONSTEXPR14
+  bool prev_permutation(TIterator first, TIterator last)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+    return etl::prev_permutation(first, last, compare());
   }
 
   //***************************************************************************
