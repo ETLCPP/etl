@@ -315,13 +315,17 @@ namespace etl
     /// Duration types
     //***********************************************************************
 #if (ETL_USING_64BIT_TYPES)
+  #if (INT_MAX >= INT32_MAX)
     using nanoseconds  = etl::chrono::duration<int64_t, etl::nano>;
     using microseconds = etl::chrono::duration<int64_t, etl::micro>;
+  #endif
     using milliseconds = etl::chrono::duration<int64_t, etl::milli>;
     using seconds      = etl::chrono::duration<int64_t, etl::ratio<1U>>;
 #else
+  #if (INT_MAX >= INT32_MAX)
     using nanoseconds  = etl::chrono::duration<int32_t, etl::nano>;
     using microseconds = etl::chrono::duration<int32_t, etl::micro>;
+  #endif
     using milliseconds = etl::chrono::duration<int32_t, etl::milli>;
     using seconds      = etl::chrono::duration<int32_t, etl::ratio<1U>>;
 #endif
@@ -811,6 +815,7 @@ namespace etl
         return etl::chrono::duration<double, milli>(s);
       }
 
+#if (INT_MAX >= INT32_MAX)
       //***********************************************************************
       /// Literal for microseconds duration
       //***********************************************************************
@@ -848,7 +853,7 @@ namespace etl
       }
 
       //***********************************************************************
-      /// Literal for floating point microseconds duration
+      /// Literal for floating point nanoseconds duration
       //***********************************************************************
 #if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator ""_nanoseconds(long double s) ETL_NOEXCEPT
@@ -858,6 +863,7 @@ namespace etl
       {
         return etl::chrono::duration<double, nano>(s);
       }
+#endif
     }
   }
 }

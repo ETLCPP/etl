@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/container.h"
 
 #include <list>
+#include <vector>
 
 #if ETL_NOT_USING_STL
 
@@ -144,6 +145,34 @@ namespace
 
       size_t compiletime_size = sizeof(etl::array_size(data));
       CHECK_EQUAL(SIZE, compiletime_size);
+    }
+
+    //*************************************************************************
+    TEST(test_stl_style_container_data)
+    {
+      const size_t SIZE = 10UL;
+      std::vector<int> data(SIZE);
+      const std::vector<int> cdata(SIZE);
+
+      int* pdata = ETL_OR_STD17::data(data);
+      const int* pcdata = ETL_OR_STD17::data(cdata);
+
+      CHECK(data.data() == pdata);
+      CHECK(cdata.data() == pcdata);
+    }
+
+    //*************************************************************************
+    TEST(test_c_array_data)
+    {
+      const size_t SIZE = 10UL;
+      int data[SIZE];
+      const int cdata[SIZE] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      int* pdata = ETL_OR_STD17::data(data);
+      const int* pcdata = ETL_OR_STD17::data(cdata);
+
+      CHECK(&data[0] == pdata);
+      CHECK(&cdata[0] == pcdata);
     }
   }
 }
