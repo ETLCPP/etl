@@ -1030,6 +1030,98 @@ namespace
       CHECK_EQUAL(0x12, bev0);
       CHECK_EQUAL(0x34, bev1);
     }
+
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+    //*************************************************************************
+    TEST(test_constexpr_endianness_integral_round_trip)
+    {
+      // Store a known value in LE, BE, and host-order unaligned types.
+      const uint32_t value = 0x12345678U;
+
+      etl::le_uint32_t le_v(value);
+      etl::be_uint32_t be_v(value);
+      etl::host_uint32_t host_v(value);
+
+      // All must read back the original value.
+      CHECK_EQUAL(value, uint32_t(le_v));
+      CHECK_EQUAL(value, uint32_t(be_v));
+      CHECK_EQUAL(value, uint32_t(host_v));
+
+      // Verify the storage byte order is correct.
+      // LE stores LSB first: 0x78, 0x56, 0x34, 0x12
+      CHECK_EQUAL(0x78, int(le_v[0]));
+      CHECK_EQUAL(0x56, int(le_v[1]));
+      CHECK_EQUAL(0x34, int(le_v[2]));
+      CHECK_EQUAL(0x12, int(le_v[3]));
+
+      // BE stores MSB first: 0x12, 0x34, 0x56, 0x78
+      CHECK_EQUAL(0x12, int(be_v[0]));
+      CHECK_EQUAL(0x34, int(be_v[1]));
+      CHECK_EQUAL(0x56, int(be_v[2]));
+      CHECK_EQUAL(0x78, int(be_v[3]));
+
+      // Host-order must match one of the above depending on the platform.
+      if (etl::endianness::value() == etl::endian::little)
+      {
+        CHECK_EQUAL(0x78, int(host_v[0]));
+        CHECK_EQUAL(0x56, int(host_v[1]));
+        CHECK_EQUAL(0x34, int(host_v[2]));
+        CHECK_EQUAL(0x12, int(host_v[3]));
+      }
+      else
+      {
+        CHECK_EQUAL(0x12, int(host_v[0]));
+        CHECK_EQUAL(0x34, int(host_v[1]));
+        CHECK_EQUAL(0x56, int(host_v[2]));
+        CHECK_EQUAL(0x78, int(host_v[3]));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr_endianness_float_round_trip)
+    {
+      // Store a known float value in LE, BE, and host-order unaligned types.
+      const float value = 3.1415927f;
+
+      etl::le_float_t  le_v(value);
+      etl::be_float_t  be_v(value);
+      etl::host_float_t host_v(value);
+
+      // All must read back the original value.
+      CHECK_CLOSE(value, float(le_v),   0.0001f);
+      CHECK_CLOSE(value, float(be_v),   0.0001f);
+      CHECK_CLOSE(value, float(host_v), 0.0001f);
+
+      // LE and BE storage bytes must be the reverse of each other.
+      CHECK_EQUAL(int(le_v[0]), int(be_v[3]));
+      CHECK_EQUAL(int(le_v[1]), int(be_v[2]));
+      CHECK_EQUAL(int(le_v[2]), int(be_v[1]));
+      CHECK_EQUAL(int(le_v[3]), int(be_v[0]));
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr_endianness_cross_endian_copy)
+    {
+      // Verify that converting between LE <-> BE via host works correctly.
+      const uint16_t value = 0xABCDU;
+
+      etl::le_uint16_t  le_v(value);
+      etl::be_uint16_t  be_v(value);
+      etl::host_uint16_t host_from_le(le_v);
+      etl::host_uint16_t host_from_be(be_v);
+
+      CHECK_EQUAL(value, uint16_t(host_from_le));
+      CHECK_EQUAL(value, uint16_t(host_from_be));
+
+      // Round-trip: host -> le -> read back
+      etl::le_uint16_t le_from_host(host_from_le);
+      CHECK_EQUAL(value, uint16_t(le_from_host));
+
+      // Round-trip: host -> be -> read back
+      etl::be_uint16_t be_from_host(host_from_be);
+      CHECK_EQUAL(value, uint16_t(be_from_host));
+    }
+#endif
   }
 }
 
