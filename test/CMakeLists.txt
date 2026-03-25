@@ -380,6 +380,10 @@ target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
 
 option(ETL_NO_STL "No STL" OFF)
 
+set(EXTRA_COMPILE_OPTIONS "" CACHE STRING "Additional compiler options")
+set(EXTRA_LINK_OPTIONS "" CACHE STRING "Additional linker options")
+set(EXTRA_LINK_LIBS "" CACHE STRING "Additional libraries to link")
+
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
@@ -477,7 +481,9 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wnull-dereference
 			-Wextra-semi
 			-g
+			${EXTRA_COMPILE_OPTIONS}
 			)
+	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -496,7 +502,9 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Wextra-semi-stmt
 			-Wc++11-extra-semi
 			-g
+			${EXTRA_COMPILE_OPTIONS}
 			)
+	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
@@ -522,7 +530,7 @@ target_include_directories(etl_tests
 		${PROJECT_SOURCE_DIR}/../include)
 
 add_subdirectory(UnitTest++)
-target_link_libraries(etl_tests PRIVATE UnitTestpp)
+target_link_libraries(etl_tests PRIVATE UnitTestpp ${EXTRA_LINK_LIBS})
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)
@@ -531,4 +539,3 @@ add_test(etl_unit_tests etl_tests)
 # define a target that will output all of the failing or passing tests
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
-
