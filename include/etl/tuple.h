@@ -276,7 +276,7 @@ namespace etl
     /// Implicit conversion
     //*********************************
     template <typename UHead, typename... UTail, etl::enable_if_t<(number_of_types<THead, TTail...>() == number_of_types<UHead, UTail...>()) &&
-                                                                  (number_of_types<THead, TTail...>() >= 1U) && 
+                                                                  (number_of_types<THead, TTail...>() >= 1U) &&
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(tuple<UHead, UTail...>& other)
@@ -290,7 +290,7 @@ namespace etl
     /// Explicit conversion
     //*********************************
     template <typename UHead, typename... UTail, etl::enable_if_t<(number_of_types<THead, TTail...>() == number_of_types<UHead, UTail...>()) &&
-                                                                  (number_of_types<THead, TTail...>() >= 1U) && 
+                                                                  (number_of_types<THead, TTail...>() >= 1U) &&
                                                                   !etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     explicit tuple(tuple<UHead, UTail...>& other)
@@ -304,7 +304,7 @@ namespace etl
     /// Implicit conversion
     //*********************************
     template <typename UHead, typename... UTail, etl::enable_if_t<(number_of_types<THead, TTail...>() == number_of_types<UHead, UTail...>()) &&
-                                                                  (number_of_types<THead, TTail...>() >= 1U) && 
+                                                                  (number_of_types<THead, TTail...>() >= 1U) &&
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(const tuple<UHead, UTail...>& other)
@@ -318,7 +318,7 @@ namespace etl
     /// Explicit conversion
     //*********************************
     template <typename UHead, typename... UTail, etl::enable_if_t<(number_of_types<THead, TTail...>() == number_of_types<UHead, UTail...>()) &&
-                                                                  (number_of_types<THead, TTail...>() >= 1U) && 
+                                                                  (number_of_types<THead, TTail...>() >= 1U) &&
                                                                   !etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(const tuple<UHead, UTail...>& other)
@@ -332,7 +332,7 @@ namespace etl
     /// Implicit conversion
     //*********************************
     template <typename UHead, typename... UTail, etl::enable_if_t<(number_of_types<THead, TTail...>() == number_of_types<UHead, UTail...>()) &&
-                                                                  (number_of_types<THead, TTail...>() >= 1U) && 
+                                                                  (number_of_types<THead, TTail...>() >= 1U) &&
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(tuple<UHead, UTail...>&& other)
@@ -399,7 +399,7 @@ namespace etl
     //*********************************
     template <typename UHead, typename... UTail, etl::enable_if_t<!is_tuple<etl::remove_reference_t<UHead>>::value &&
                                                                   (number_of_types<THead, TTail...>() == number_of_types<UHead, UTail...>()) && 
-                                                                  (number_of_types<THead, TTail...>() >= 1U) && 
+                                                                  (number_of_types<THead, TTail...>() >= 1U) &&
                                                                   etl::is_convertible<UHead, THead>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(UHead&& head, UTail&&... tail) ETL_NOEXCEPT
@@ -428,8 +428,8 @@ namespace etl
     /// Implicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U &&
-                                                         etl ::is_convertible<U1, THead>::value && 
-                                                         etl ::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
+                                                         etl::is_convertible<U1, THead>::value &&
+                                                         etl::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(ETL_OR_STD::pair<U1, U2>& p) ETL_NOEXCEPT
       : base_type(p.second)
@@ -442,8 +442,8 @@ namespace etl
     /// Explicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U &&
-                                                         (!etl ::is_convertible<U1, THead>::value || 
-                                                          !etl ::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
+                                                         (!etl::is_convertible<U1, THead>::value ||
+                                                          !etl::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(ETL_OR_STD::pair<U1, U2>& p) ETL_NOEXCEPT
       : base_type(p.second)
@@ -456,8 +456,8 @@ namespace etl
     /// Implicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U && 
-                                                         etl ::is_convertible<U1, THead>::value && 
-                                                         etl ::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
+                                                         etl::is_convertible<U1, THead>::value &&
+                                                         etl::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(const ETL_OR_STD::pair<U1, U2>& p) ETL_NOEXCEPT
       : base_type(p.second)
@@ -470,8 +470,8 @@ namespace etl
     /// Explicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U &&
-                                                         (!etl ::is_convertible<U1, THead>::value || 
-                                                          !etl ::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
+                                                         (!etl::is_convertible<U1, THead>::value ||
+                                                          !etl::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
     ETL_CONSTEXPR14
     explicit tuple(const ETL_OR_STD::pair<U1, U2>& p) ETL_NOEXCEPT
       : base_type(p.second)
@@ -484,8 +484,8 @@ namespace etl
     /// Implicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U &&
-                                                         etl ::is_convertible<U1, THead>::value && 
-                                                         etl ::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
+                                                         etl::is_convertible<U1, THead>::value &&
+                                                         etl::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(ETL_OR_STD::pair<U1, U2>&& p) ETL_NOEXCEPT
       : base_type(etl::forward<U2>(p.second))
@@ -498,8 +498,8 @@ namespace etl
     /// Explicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U &&
-                                                         (!etl ::is_convertible<U1, THead>::value ||
-                                                          !etl ::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
+                                                         (!etl::is_convertible<U1, THead>::value ||
+                                                          !etl::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(ETL_OR_STD::pair<U1, U2>&& p) ETL_NOEXCEPT
       : base_type(etl::forward<U2>(p.second))
@@ -512,12 +512,12 @@ namespace etl
     /// Implicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U && 
-                                                         etl ::is_convertible<U1, THead>::value &&
-                                                         etl ::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
+                                                         etl::is_convertible<U1, THead>::value &&
+                                                         etl::is_convertible<U2, typename base_type::value_type>::value, int> = 0>
     ETL_CONSTEXPR14
     tuple(const ETL_OR_STD::pair<U1, U2>&& p) ETL_NOEXCEPT
-      : base_type(etl::forward<U2>(p.second))
-      , value(etl::forward<U1>(p.first))
+      : base_type(etl::forward<const U2>(p.second))
+      , value(etl::forward<const U1>(p.first))
     {
     }
 
@@ -526,12 +526,12 @@ namespace etl
     /// Explicit conversion.
     //*********************************
     template <typename U1, typename U2, etl::enable_if_t<number_of_types<THead, TTail...>() == 2U &&
-                                                         (!etl ::is_convertible<U1, THead>::value || 
-                                                          !etl ::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
+                                                         (!etl::is_convertible<U1, THead>::value ||
+                                                          !etl::is_convertible<U2, typename base_type::value_type>::value), int> = 0>
     ETL_CONSTEXPR14 
     explicit tuple(const ETL_OR_STD::pair<U1, U2>&& p) ETL_NOEXCEPT
-      : base_type(p.second)
-      , value(p.first)
+      : base_type(etl::forward<const U2>(p.second))
+      , value(etl::forward<const U1>(p.first))
     {
     }
 
@@ -605,8 +605,8 @@ namespace etl
     ETL_CONSTEXPR14
     tuple& operator =(const ETL_OR_STD::pair<U1, U2>&& p)
     {
-      get_value()            = p.first;
-      get_base().get_value() = p.second;
+      get_value()            = etl::forward<const U1>(p.first);
+      get_base().get_value() = etl::forward<const U2>(p.second);
 
       return *this;
     }
@@ -763,7 +763,7 @@ namespace etl
 
   //***************************************************************************
   /// Extracts the element at Index from the tuple. 
-  /// Index must be an integer value in sizeof...(TTypes)).
+  /// Index must be an integer value in [0, sizeof...(TTypes)).
   /// Returns a reference.
   //***************************************************************************
   template <size_t Index, typename... TTypes>
@@ -782,7 +782,7 @@ namespace etl
 
   //***************************************************************************
   /// Extracts the element at Index from the tuple. 
-  /// Index must be an integer value in [?0?, sizeof...(TTypes)).
+  /// Index must be an integer value in [0, sizeof...(TTypes)).
   /// Returns a const reference.
   //***************************************************************************
   template <size_t Index, typename... TTypes>
@@ -801,7 +801,7 @@ namespace etl
 
   //***************************************************************************
   /// Extracts the element at Index from the tuple. 
-  /// Index must be an integer value in [?0?, sizeof...(TTypes)).
+  /// Index must be an integer value in [0, sizeof...(TTypes)).
   /// Returns an rvalue reference.
   //***************************************************************************
   template <size_t Index, typename... TTypes>
@@ -820,7 +820,7 @@ namespace etl
 
   //***************************************************************************
   /// Extracts the element at Index from the tuple. 
-  /// Index must be an integer value in [?0?, sizeof...(TTypes)).
+  /// Index must be an integer value in [0, sizeof...(TTypes)).
   /// Returns a const rvalue reference.
   //***************************************************************************
   template <size_t Index, typename... TTypes>
@@ -1017,17 +1017,17 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14
   auto tuple_cat(Tuple1&& t1, Tuple2&& t2, Tuples&&... ts)
-    -> decltype(private_tuple::tuple_cat_impl(etl::forward<Tuple1>(t1), 
-                                              etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple1>>::value>{},
-                                              etl::forward<Tuple2>(t2),
-                                              etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple2>>::value>{}))
+    -> decltype(tuple_cat(private_tuple::tuple_cat_impl(etl::forward<Tuple1>(t1),
+                                                        etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple1>>::value>{},
+                                                        etl::forward<Tuple2>(t2),
+                                                        etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple2>>::value>{}),
+                          etl::forward<Tuples>(ts)...))
   {
-    auto concatenated = private_tuple::tuple_cat_impl(etl::forward<Tuple1>(t1), 
-                                                      etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple1>>::value>{},
-                                                      etl::forward<Tuple2>(t2),
-                                                      etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple2>>::value>{});
-
-    return tuple_cat(etl::move(concatenated), etl::forward<Tuples>(ts)...);
+    return tuple_cat(private_tuple::tuple_cat_impl(etl::forward<Tuple1>(t1), 
+                                                   etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple1>>::value>{},
+                                                   etl::forward<Tuple2>(t2),
+                                                   etl::make_index_sequence<etl::tuple_size<etl::decay_t<Tuple2>>::value>{}),
+                          etl::forward<Tuples>(ts)...);
   }
 
 #if ETL_USING_STL
@@ -1317,7 +1317,7 @@ namespace std
   template <size_t Index, typename... Types>
   struct tuple_element<Index, etl::tuple<Types...>>
   {
-    using type = typename etl::nth_type_t<Index, Types...>;
+    using type = etl::nth_type_t<Index, Types...>;
   };
 }
 
