@@ -37,7 +37,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "utility.h"
-#include "algorithm.h"
 
 #include <stdint.h>
 

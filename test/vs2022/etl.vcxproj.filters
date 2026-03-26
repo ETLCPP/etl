@@ -2381,6 +2381,9 @@
     <ClCompile Include="..\test_random.cpp">
       <Filter>Tests\Maths</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_ranges.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_error_handler.cpp">
       <Filter>Tests\Errors</Filter>
     </ClCompile>

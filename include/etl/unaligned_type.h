@@ -345,8 +345,8 @@ namespace etl
       {
         memcpy(store, &value, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-        if ETL_IF_CONSTEXPR(Endian_ == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
         if (Endian_ != etl::endianness::value())
 #endif
@@ -361,8 +361,8 @@ namespace etl
       {
         memcpy(&value, store, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-        if ETL_IF_CONSTEXPR(Endian == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
         if (Endian_ != etl::endianness::value())
 #endif
@@ -402,8 +402,8 @@ namespace etl
       {
         memcpy(store, &value, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-        if ETL_IF_CONSTEXPR(Endian_ == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
         if (Endian_ != etl::endianness::value())
 #endif
@@ -418,14 +418,14 @@ namespace etl
       {
         memcpy(&value, store, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-          if ETL_IF_CONSTEXPR(Endian == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
-          if (Endian_ != etl::endianness::value())
+        if (Endian_ != etl::endianness::value())
 #endif
-          {
-            etl::reverse(reinterpret_cast<pointer>(&value), reinterpret_cast<pointer>(&value) + Size_);
-          }
+        {
+          etl::reverse(reinterpret_cast<pointer>(&value), reinterpret_cast<pointer>(&value) + Size_);
+        }
       }
 
       //*******************************

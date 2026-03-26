@@ -363,6 +363,7 @@ namespace etl
     }
 #include "private/diagnostic_pop.h"
 
+#include "private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
     bool add_new_message_type(etl::imessage&& msg)
@@ -378,6 +379,7 @@ namespace etl
         return false;
       }
     }
+#include "private/diagnostic_pop.h"
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
