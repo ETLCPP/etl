@@ -41,6 +41,7 @@ SOFTWARE.
 #include "initializer_list.h"
 #include "type_traits.h"
 #include "invoke.h"
+#include "memory.h"
 
 namespace etl
 {
