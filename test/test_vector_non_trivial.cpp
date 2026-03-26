@@ -1022,6 +1022,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_array_bounds_push.h"
     TEST(test_emplace_out_of_range_before_begin)
     {
       DataNDC data;
@@ -1032,6 +1033,7 @@ namespace
 
       CHECK_THROW(data.emplace(it, INITIAL_VALUE), etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
 #include "etl/private/diagnostic_array_bounds_push.h"
