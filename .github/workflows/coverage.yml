@@ -1,0 +1,72 @@
+name: coverage
+
+on:
+  push:
+    branches: [ master, pull-request/* ]
+  pull_request:
+    branches: [ master, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+# Allow only one concurrent deployment to GitHub Pages
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+# Grant GITHUB_TOKEN the minimum permissions needed at the workflow level
+permissions:
+  contents: read
+
+jobs:
+
+  coverage:
+    name: Generate Coverage Report
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lcov llvm gcc g++ clang cmake
+
+    - name: Build, test, and collect coverage
+      run: |
+        cd test
+        ./run-coverage.sh
+
+    - name: Upload coverage report artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: test/build-coverage/coverage/
+        retention-days: 30
+
+    - name: Upload Pages artifact
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: test/build-coverage/coverage/
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: coverage
+    runs-on: ubuntu-22.04
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+# GitHub Repository settings
+# -> Settings -> Pages
+# -> Source: gh actions

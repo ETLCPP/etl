@@ -116,6 +116,14 @@ namespace
     }
   };
 
+  struct DataEquivalenceByA : public etl::binary_function<Data, Data, bool>
+  {
+    bool operator ()(const Data& lhs, const Data& rhs) const
+    {
+      return lhs.a == rhs.a;
+    }
+  };
+
   Data dataD[10] = { Data(1, 2), Data(2, 1), Data(3, 4), Data(4, 3), Data(5, 6), Data(6, 5), Data(7, 8), Data(8, 7), Data(9, 10), Data(10, 9) };
 
   struct Greater : public etl::binary_function<int, int, bool>
@@ -3449,18 +3457,174 @@ namespace
     }
 
     //*************************************************************************
-    TEST(stable_sort_greater)
+    TEST(next_permutation)
     {
-      std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
+      std::array<int, 4U> expected = { 1, 1, 2, 2 };
+      std::array<int, 4U> result = expected;
 
-      std::vector<NDC> data1(initial_data);
-      std::vector<NDC> data2(initial_data);
+      for (size_t i = 0U; i < 8U; ++i)
+      {
+        bool expected_has_next = std::next_permutation(expected.begin(), expected.end());
+        bool result_has_next = etl::next_permutation(result.begin(), result.end());
 
-      std::stable_sort(data1.begin(), data1.end(), std::greater<NDC>());
-      etl::stable_sort(data2.begin(), data2.end(), std::greater<NDC>());
+        CHECK_EQUAL(expected_has_next, result_has_next);
+        CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+      }
 
-      bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
-      CHECK(is_same);
+      // Check one past the end.
+      bool expected_has_next = std::next_permutation(expected.begin(), expected.end());
+      bool result_has_next = etl::next_permutation(result.begin(), result.end());
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
+      int single_expected[] = { 1 };
+      int single_result[] = { 1 };
+
+      expected_has_next = std::next_permutation(std::begin(single_expected), std::end(single_expected));
+      result_has_next = etl::next_permutation(std::begin(single_result), std::end(single_result));
+
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_next = std::next_permutation(std::begin(single_expected), std::begin(single_expected));
+      result_has_next = etl::next_permutation(std::begin(single_result), std::begin(single_result));
+
+      CHECK_EQUAL(expected_has_next, result_has_next);
+    }
+
+    //*************************************************************************
+    TEST(next_permutation_compare)
+    {
+      std::array<int, 4U> expected = { 3, 2, 2, 1 };
+      std::array<int, 4U> result = expected;
+
+      for (size_t i = 0U; i < 8U; ++i)
+      {
+        bool expected_has_next = std::next_permutation(expected.begin(), expected.end(), std::greater<int>());
+        bool result_has_next = etl::next_permutation(result.begin(), result.end(), std::greater<int>());
+
+        CHECK_EQUAL(expected_has_next, result_has_next);
+        CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+      }
+
+      // Check one past the end.
+      bool expected_has_next = std::next_permutation(expected.begin(), expected.end(), std::greater<int>());
+      bool result_has_next = etl::next_permutation(result.begin(), result.end(), std::greater<int>());
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
+      int single_expected[] = { 1 };
+      int single_result[] = { 1 };
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_next = std::next_permutation(std::begin(single_expected), std::begin(single_expected), std::greater<int>());
+      result_has_next = etl::next_permutation(std::begin(single_result), std::begin(single_result), std::greater<int>());
+
+      CHECK_EQUAL(expected_has_next, result_has_next);
+      CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
+    }
+
+    //*************************************************************************
+    TEST(prev_permutation)
+    {
+      std::array<int, 4U> expected = { 2, 2, 1, 1 };
+      std::array<int, 4U> result = expected;
+
+      for (size_t i = 0U; i < 8U; ++i)
+      {
+        bool expected_has_prev = std::prev_permutation(expected.begin(), expected.end());
+        bool result_has_prev = etl::prev_permutation(result.begin(), result.end());
+
+        CHECK_EQUAL(expected_has_prev, result_has_prev);
+        CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+      }
+
+      // Check one past the end.
+      bool expected_has_prev = std::prev_permutation(expected.begin(), expected.end());
+      bool result_has_prev = etl::prev_permutation(result.begin(), result.end());
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
+      int single_expected[] = { 1 };
+      int single_result[] = { 1 };
+
+      expected_has_prev = std::prev_permutation(std::begin(single_expected), std::end(single_expected));
+      result_has_prev = etl::prev_permutation(std::begin(single_result), std::end(single_result));
+
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_prev = std::prev_permutation(std::begin(single_expected), std::begin(single_expected));
+      result_has_prev = etl::prev_permutation(std::begin(single_result), std::begin(single_result));
+
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+    }
+
+    //*************************************************************************
+    TEST(prev_permutation_compare)
+    {
+      std::array<int, 4U> expected = { 1, 1, 2, 3 };
+      std::array<int, 4U> result = expected;
+
+      for (size_t i = 0U; i < 8U; ++i)
+      {
+        bool expected_has_prev = std::prev_permutation(expected.begin(), expected.end(), std::greater<int>());
+        bool result_has_prev = etl::prev_permutation(result.begin(), result.end(), std::greater<int>());
+
+        CHECK_EQUAL(expected_has_prev, result_has_prev);
+        CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+      }
+
+      // Check one past the end.
+      bool expected_has_prev = std::prev_permutation(expected.begin(), expected.end(), std::greater<int>());
+      bool result_has_prev = etl::prev_permutation(result.begin(), result.end(), std::greater<int>());
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), result.size());
+
+      int single_expected[] = { 1 };
+      int single_result[] = { 1 };
+
+      // Check for what happens if the beginning and end are the same.
+      expected_has_prev = std::prev_permutation(std::begin(single_expected), std::begin(single_expected), std::greater<int>());
+      result_has_prev = etl::prev_permutation(std::begin(single_result), std::begin(single_result), std::greater<int>());
+
+      CHECK_EQUAL(expected_has_prev, result_has_prev);
+      CHECK_ARRAY_EQUAL(single_expected, single_result, 1U);
+    }
+
+    //*************************************************************************
+    TEST(is_permutation_length_mismatch)
+    {
+      int data1[] = { 1, 2, 3 };
+      int data2[] = { 1, 2, 3, 4 };
+
+      bool is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(data2), std::end(data2));
+      CHECK_FALSE(is_permutation);
+
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(data2), std::end(data2), etl::equal_to<int>());
+      CHECK_FALSE(is_permutation);
+    }
+
+    //*************************************************************************
+    TEST(is_permutation_predicate)
+    {
+      Data data1[] = { Data(1, 10), Data(2, 20), Data(2, 30), Data(3, 40) };
+      Data permutation[] = { Data(2, 200), Data(1, 100), Data(3, 300), Data(2, 400) };
+      Data not_permutation[] = { Data(2, 200), Data(1, 100), Data(4, 300), Data(2, 400) };
+
+      bool is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), DataEquivalenceByA());
+      CHECK_TRUE(is_permutation);
+
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), DataEquivalenceByA());
+      CHECK_FALSE(is_permutation);
+
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), DataEquivalenceByA());
+      CHECK_TRUE(is_permutation);
+
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), DataEquivalenceByA());
+      CHECK_FALSE(is_permutation);
     }
 
     //*************************************************************************
