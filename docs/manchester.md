@@ -13,8 +13,9 @@ Efficient Manchester encoding and decoding of data. The Manchester code represen
 - Normal and inverted Manchester encoding
 - Support for multiple encoding chunk sizes: 8-bit, 16-bit and 32-bit
 - Span-based operations or chunk-based operations
-- Constexpr functions for compile-time encoding/decoding (8-bit chunk size only)
+- Constexpr functions for compile-time encoding/decoding
 - Validation of encoded data
+- Chunked span I/O uses little-endian byte order for multi-byte chunks, independent of host platform endianness
 
 ## Algorithm background
 
