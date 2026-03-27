@@ -66,7 +66,7 @@ struct hash3_t
 
   size_t operator ()(argument_type text) const
   {
-    return etl::crc16(text, text + etl::char_traits<char>::length(text)) | (etl::crc16_ccitt(text, text + etl::char_traits<char>::length(text)) << 16);
+    return static_cast<size_t>(etl::crc16(text, text + etl::char_traits<char>::length(text))) | (static_cast<size_t>(etl::crc16_ccitt(text, text + etl::char_traits<char>::length(text))) << 16);
   }
 };
 

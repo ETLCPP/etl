@@ -1469,20 +1469,20 @@ namespace
       CHECK((unsigned short)(0xFEFD) == etl::le_ushort_ext_t((unsigned short)(0xFEFD), store_s2.data()));
 
       // int
-      CHECK(int(0xFEFDFCFB) == etl::le_int_ext_t(0xFEFDFCFB, store_i1.data()));
+      CHECK(static_cast<int>(0xFEFDFCFB) == etl::le_int_ext_t(static_cast<int>(0xFEFDFCFB), store_i1.data()));
       CHECK((unsigned int)(0xFEFDFCFBU) == etl::le_uint_ext_t(0xFEFDFCFBU, store_i2.data()));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(long(0xFEFDFCFB) == etl::le_long_ext_t(0xFEFDFCFB, store_l1.data()));
+        CHECK(static_cast<long>(0xFEFDFCFB) == etl::le_long_ext_t(static_cast<long>(0xFEFDFCFB), store_l1.data()));
         CHECK((unsigned long)(0xFEFDFCFBU) == etl::le_ulong_ext_t(0xFEFDFCFBU, store_l2.data()));
       }
 
       if (sizeof(long long) == 8U)
       {
         // long long
-        CHECK((long long)(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_ext_t(0xFEFDFCFBFAF9F8F7, store_ll1.data()));
+        CHECK(static_cast<long long>(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_ext_t(static_cast<long long>(0xFEFDFCFBFAF9F8F7), store_ll1.data()));
         CHECK((unsigned long long)(0xFEFDFCFBFAF9F8F7U) == etl::le_ulong_long_ext_t(0xFEFDFCFBFAF9F8F7U, store_ll2.data()));
       }
     }

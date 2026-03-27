@@ -1015,7 +1015,7 @@ namespace etl
     {
 #if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
-      ETL_ASSERT((d + size()) <= MAX_SIZE, ETL_ERROR(forward_list_full));
+      ETL_ASSERT((static_cast<size_type>(d) + size()) <= MAX_SIZE, ETL_ERROR(forward_list_full));
 #endif
 
       while (first != last)

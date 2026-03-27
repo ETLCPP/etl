@@ -109,7 +109,7 @@ namespace etl
     template <int Id>
     struct type_from_id
     {
-      using type = typename type_from_id_helper<Id, TTypes...>::type;
+      using type = typename type_from_id_helper<size_t(Id), TTypes...>::type;
 
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };

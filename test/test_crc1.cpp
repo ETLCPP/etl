@@ -86,7 +86,7 @@ namespace
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
-        crc_calculator.add(data[i]);
+        crc_calculator.add(static_cast<uint8_t>(data[i]));
       }
 
       uint8_t crc = crc_calculator;

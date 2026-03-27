@@ -422,7 +422,7 @@ namespace
     //*************************************************************************
     TEST(test_lambda)
     {
-      auto lambda = [](int a, const std::string& s) -> long { return static_cast<long>(a + s.size()); };
+      auto lambda = [](int a, const std::string& s) -> long { return static_cast<long>(static_cast<size_t>(a) + s.size()); };
 
       using traits = etl::function_traits<decltype(lambda)>;
 
@@ -447,7 +447,7 @@ namespace
       {
         long operator()(int a, const std::string& s)
         {
-          return static_cast<long>(a + s.size());
+          return static_cast<long>(static_cast<size_t>(a) + s.size());
         }
       };
 

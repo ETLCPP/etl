@@ -717,8 +717,8 @@ namespace
       char c2 = -91;             // 0xA5
       unsigned short s1 = 4660;  // 0x1234
       unsigned short s2 = 22136; // 0x5678
-      int32_t i1 = 0x89ABCDEF;   // 0x89ABCDEF
-      int32_t i2 = 0xFEDCBA98;   // 0xFEDCBA98
+      int32_t i1 = static_cast<int32_t>(0x89ABCDEFU);   // 0x89ABCDEF
+      int32_t i2 = static_cast<int32_t>(0xFEDCBA98U);   // 0xFEDCBA98
 
       std::array<char, 14> storage;
       std::array<char, 14> expected = { char(0x5A),
@@ -767,8 +767,8 @@ namespace
       char c2 = -91;             // 0xA5       7 bits
       unsigned short s1 = 4660;  // 0x1234     13 bits
       unsigned short s2 = 22136; // 0x5678     11 bits
-      int32_t i1 = 0x89ABCDEF;   // 0x89ABCDEF 23 bits
-      int32_t i2 = 0xFEDCBA98;   // 0xFEDCBA98 25 bits
+      int32_t i1 = static_cast<int32_t>(0x89ABCDEFU);   // 0x89ABCDEF 23 bits
+      int32_t i2 = static_cast<int32_t>(0xFEDCBA98U);   // 0xFEDCBA98 25 bits
 
       std::array<char, 14> storage;
       std::array<char, 14> expected = { char(0x58), char(0xB1), char(0x3E), char(0xF6), 
@@ -811,8 +811,8 @@ namespace
       char c2 = -91;             // 0xA5       7 bits
       unsigned short s1 = 4660;  // 0x1234     13 bits
       unsigned short s2 = 22136; // 0x5678     11 bits
-      int32_t i1 = 0x89ABCDEF;   // 0x89ABCDEF 23 bits
-      int32_t i2 = 0xFEDCBA98;   // 0xFEDCBA98 25 bits
+      int32_t i1 = static_cast<int32_t>(0x89ABCDEFU);   // 0x89ABCDEF 23 bits
+      int32_t i2 = static_cast<int32_t>(0xFEDCBA98U);   // 0xFEDCBA98 25 bits
 
       std::array<char, 14> storage;
       std::array<char, 14> expected = { char(0x58), char(0xB1), char(0x3E), char(0xF6),

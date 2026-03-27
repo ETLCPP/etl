@@ -800,7 +800,7 @@ namespace etl
     {
       if (first != end() && (first != last))
       {
-        this->current_size -= etl::distance(first, last) - 1;
+        this->current_size -= static_cast<size_t>(etl::distance(first, last) - 1);
 
         link_type* p_first = first.p_value;
         link_type* p_last  = last.p_value;
@@ -1120,7 +1120,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = etl::distance(begin_, end_) - 1;
+          size_t n = static_cast<size_t>(etl::distance(begin_, end_) - 1);
           this->current_size += n;
           other.current_size -= n;
         }

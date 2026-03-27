@@ -326,7 +326,7 @@ namespace etl
       if ((etl::absolute(value) % scale_t(Scaling)) == scale_t(Scaling / 2U))
       {
         // Odd?
-        if ((value / scale_t(Scaling)) & 1U)
+        if (static_cast<unsigned int>(value / scale_t(Scaling)) & 1U)
         {
           return T(round_half_up_unscaled<Scaling>(value));
         }
@@ -381,7 +381,7 @@ namespace etl
       if ((etl::absolute(value) % scale_t(Scaling)) == scale_t(Scaling / 2U))
       {
         // Odd?
-        if ((value / scale_t(Scaling)) & 1U)
+        if (static_cast<unsigned int>(value / scale_t(Scaling)) & 1U)
         {
           return T(round_half_down_unscaled<Scaling>(value));
         }

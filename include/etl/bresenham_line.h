@@ -240,11 +240,11 @@ namespace etl
     {
       if (y_is_major_axis())
       {
-        return (dy / 2) + 1;       
+        return static_cast<size_t>((dy / 2) + 1);
       }
       else
       {
-        return (dx / 2) + 1;
+        return static_cast<size_t>((dx / 2) + 1);
       }
     }
 

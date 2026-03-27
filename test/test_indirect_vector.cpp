@@ -169,7 +169,7 @@ namespace
       delete p;
 
       DataNDC* pdata = new DataNDC(INITIAL_SIZE, INITIAL_VALUE);
-      CHECK_EQUAL(int(current_count + INITIAL_SIZE), NDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(INITIAL_SIZE)), NDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;
@@ -1014,8 +1014,8 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.insert(data.begin() + offset, INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
+        data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1054,8 +1054,8 @@ namespace
         data.assign(std::begin(initial), std::begin(initial) + INITIAL_SIZE);
         compare_data.assign(std::begin(initial), std::begin(initial) + INITIAL_SIZE);
 
-        data.emplace(data.begin() + offset);
-        compare_data.emplace(compare_data.begin() + offset);
+        data.emplace(data.begin() + static_cast<ptrdiff_t>(offset));
+        compare_data.emplace(compare_data.begin() + static_cast<ptrdiff_t>(offset));
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1078,8 +1078,8 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.emplace(data.begin() + offset, INITIAL_VALUE);
-        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+        data.emplace(data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1114,15 +1114,15 @@ namespace
 
       size_t offset = 2UL;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE), etl::vector_full);
 
       offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -1139,8 +1139,8 @@ namespace
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-        data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1174,19 +1174,19 @@ namespace
 
       size_t offset = 0UL;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = 4;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -1204,8 +1204,8 @@ namespace
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-        data.insert(data.begin() + offset, insert_data.begin(), insert_data.end());
-        compare_data.insert(compare_data.begin() + offset, insert_data.begin(), insert_data.end());
+        data.insert(data.begin() + static_cast<ptrdiff_t>(offset), insert_data.begin(), insert_data.end());
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), insert_data.begin(), insert_data.end());
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1236,19 +1236,19 @@ namespace
 
       size_t offset = 0UL;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), initial_data.begin(), initial_data.end()), etl::vector_full);
 
       offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), initial_data.begin(), initial_data.end()), etl::vector_full);
 
       offset = 4;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), initial_data.begin(), initial_data.end()), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.begin() + static_cast<ptrdiff_t>(offset), initial_data.begin(), initial_data.end()), etl::vector_full);
     }
 
     //*************************************************************************

@@ -559,7 +559,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr = itr + step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -582,7 +582,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr = itr + step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -605,7 +605,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr += + step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -628,7 +628,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr += step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -651,7 +651,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr = itr - step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -674,7 +674,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr = itr - step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -697,7 +697,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr -= step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -720,7 +720,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr -= step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }

@@ -387,8 +387,8 @@ namespace etl
     {
       typedef char8_t value_type;
 
-      static ETL_CONSTANT char8_t min       = (etl::is_signed<char8_t>::value) ? SCHAR_MIN : 0;
-      static ETL_CONSTANT char8_t max       = (etl::is_signed<char8_t>::value) ? SCHAR_MAX : static_cast<char8_t>(UCHAR_MAX);
+      static ETL_CONSTANT char8_t min       = static_cast<char8_t>((etl::is_signed<char8_t>::value) ? SCHAR_MIN : 0);
+      static ETL_CONSTANT char8_t max       = (etl::is_signed<char8_t>::value) ? static_cast<char8_t>(SCHAR_MAX) : static_cast<char8_t>(UCHAR_MAX);
       static ETL_CONSTANT int     bits      = CHAR_BIT;
       static ETL_CONSTANT bool    is_signed = etl::is_signed<char8_t>::value;
     };

@@ -63,7 +63,7 @@ namespace
       i = 12 + i;
     }
 
-    return i == 0 ? 12 : i;
+    return i == 0 ? 12U : static_cast<unsigned>(i);
   }
 
   //*************************************************************************
@@ -166,7 +166,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month month(static_cast<unsigned>(m));
           Chrono::months months(ms);
           month += months;
 
@@ -183,7 +183,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month month(static_cast<unsigned>(m));
           Chrono::months months(ms);
           month = month + months;
 
@@ -200,7 +200,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month month(static_cast<unsigned>(m));
           Chrono::months months(ms);
           month = months + month;
 
@@ -217,7 +217,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month month(static_cast<unsigned>(m));
           Chrono::months months(ms);
           month -= months;
 
@@ -234,7 +234,7 @@ namespace
       {
         for (int ms = 0; ms <= 24; ++ms)
         {
-          Chrono::month month(m);
+          Chrono::month month(static_cast<unsigned>(m));
           Chrono::months months(ms);
           month = month - months;
 
@@ -252,14 +252,14 @@ namespace
         int m1 = m;
         int m2 = 13 - m;
 
-        Chrono::month month1(m1);
-        Chrono::month month2(m2);
+        Chrono::month month1(static_cast<unsigned>(m1));
+        Chrono::month month2(static_cast<unsigned>(m2));
 
         Chrono::months months12 = month1 - month2;
         Chrono::months months21 = month2 - month1;
 
-        int difference12 = expected_month(m1) - expected_month(m2);
-        int difference21 = expected_month(m2) - expected_month(m1);
+        int difference12 = static_cast<int>(expected_month(m1)) - static_cast<int>(expected_month(m2));
+        int difference21 = static_cast<int>(expected_month(m2)) - static_cast<int>(expected_month(m1));
 
         difference12 = (difference12 < 0) ? 12 + difference12: difference12;
         difference21 = (difference21 < 0) ? 12 + difference21: difference21;
@@ -318,7 +318,7 @@ namespace
 
       for (int i = 0; i < 256; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::month>()(Chrono::month(i)));
+        hashes.push_back(etl::hash<Chrono::month>()(Chrono::month(static_cast<unsigned>(i))));
       }
 
       std::sort(hashes.begin(), hashes.end());

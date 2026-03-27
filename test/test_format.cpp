@@ -600,7 +600,7 @@ namespace
       etl::string<100> s;
 
       etl::istring::iterator result = etl::format_to(s.begin(), "{0} {1}", 34, 56);
-      s.uninitialized_resize(result - s.begin());
+      s.uninitialized_resize(static_cast<size_t>(result - s.begin()));
       CHECK_EQUAL("34 56", s);
 
       s.clear();

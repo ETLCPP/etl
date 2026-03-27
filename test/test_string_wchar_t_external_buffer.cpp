@@ -1767,7 +1767,7 @@ namespace
         compare_text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
 
         text.insert(text.begin() + offset, INITIAL_VALUE);
-        compare_text.insert(compare_text.begin() + offset, INITIAL_VALUE);
+        compare_text.insert(compare_text.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
 
         CHECK_EQUAL(compare_text.size(), text.size());
 
@@ -1804,7 +1804,7 @@ namespace
 
       size_t offset = 2UL;
       text.insert(text.cbegin() + offset, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, INITIAL_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
       compare_text.erase(compare_text.cend() - 1);
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1818,7 +1818,7 @@ namespace
 
       offset = 0;
       text.insert(text.cbegin() + offset, STR('A'));
-      compare_text.insert(compare_text.cbegin() + offset, STR('A'));
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), STR('A'));
       compare_text.erase(compare_text.cend() - 1);
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1832,7 +1832,7 @@ namespace
 
       offset = text.size();
       text.insert(text.cbegin() + offset, STR('A'));
-      compare_text.insert(compare_text.cbegin() + offset, STR('A'));
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), STR('A'));
       compare_text.erase(compare_text.cend() - 1);
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1861,7 +1861,7 @@ namespace
         text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         compare_text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         text.insert(text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
-        compare_text.insert(compare_text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        compare_text.insert(compare_text.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE);
 
         CHECK_FALSE(text.is_truncated());
 
@@ -1900,7 +1900,7 @@ namespace
       size_t offset = 0UL;
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
 
@@ -1916,7 +1916,7 @@ namespace
       offset = 2;
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1933,7 +1933,7 @@ namespace
       offset = 4;
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1950,7 +1950,7 @@ namespace
       offset = text.size();
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1979,7 +1979,7 @@ namespace
         text.assign(initial_text.cbegin(), initial_text.cbegin() + INITIAL_SIZE);
         compare_text.assign(initial_text.cbegin(), initial_text.cbegin() + INITIAL_SIZE);
         text.insert(text.cbegin() + offset, insert_text.cbegin(), insert_text.cend());
-        compare_text.insert(compare_text.cbegin() + offset, insert_text.cbegin(), insert_text.cend());
+        compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), insert_text.cbegin(), insert_text.cend());
 
         CHECK_FALSE(text.is_truncated());
 
@@ -2029,7 +2029,7 @@ namespace
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), initial_text.cbegin(), initial_text.cend());
       compare_text.resize(initial_text.size());
       text.insert(text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
 
@@ -2046,7 +2046,7 @@ namespace
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), initial_text.cbegin(), initial_text.cend());
       compare_text.resize(initial_text.size());
       text.insert(text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
 
@@ -2064,7 +2064,7 @@ namespace
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), initial_text.cbegin(), initial_text.cend());
       compare_text.resize(initial_text.size());
       text.insert(text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
 
@@ -2092,7 +2092,7 @@ namespace
         text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
         text.insert(text.cbegin() + offset, text.cbegin() + 5, text.cbegin() + 10);
-        compare_text.insert(compare_text.cbegin() + offset, compare_text.cbegin() + 5, compare_text.cbegin() + 10);
+        compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), compare_text.cbegin() + 5, compare_text.cbegin() + 10);
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);

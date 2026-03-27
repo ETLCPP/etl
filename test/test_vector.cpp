@@ -791,7 +791,7 @@ namespace
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
         data.insert(data.cbegin() + offset, INITIAL_VALUE);
-        compare_data.insert(compare_data.cbegin() + offset, INITIAL_VALUE);
+        compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -830,7 +830,7 @@ namespace
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
         data.emplace(data.cbegin() + offset, INITIAL_VALUE);
-        compare_data.emplace(compare_data.cbegin() + offset, INITIAL_VALUE);
+        compare_data.emplace(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -989,7 +989,7 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE);
-        compare_data.insert(compare_data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1055,7 +1055,7 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.cbegin() + offset, insert_data.cbegin(), insert_data.cend());
-        compare_data.insert(compare_data.cbegin() + offset, insert_data.cbegin(), insert_data.cend());
+        compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), insert_data.cbegin(), insert_data.cend());
 
         CHECK_EQUAL(compare_data.size(), data.size());
 

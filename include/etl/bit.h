@@ -151,9 +151,9 @@ namespace etl
     bit_width(T value) ETL_NOEXCEPT
   {
 #if ETL_USING_CPP20 && ETL_USING_STL
-    return std::bit_width(value);
+    return static_cast<T>(std::bit_width(value));
 #else
-    return etl::integral_limits<T>::bits - etl::countl_zero(value);
+    return static_cast<T>(etl::integral_limits<T>::bits - etl::countl_zero(value));
 #endif
   }
 
@@ -211,11 +211,11 @@ namespace etl
   {
     if (n < 0)
     {
-      return etl::rotate_right(value, -n);
+      return etl::rotate_right(value, static_cast<size_t>(-n));
     }
     else
     {
-      return etl::rotate_left(value, n);
+      return etl::rotate_left(value, static_cast<size_t>(n));
     }
   }
 
@@ -229,11 +229,11 @@ namespace etl
   {
     if (n < 0)
     {
-      return etl::rotate_left(value, -n);
+      return etl::rotate_left(value, static_cast<size_t>(-n));
     }
     else
     {
-      return etl::rotate_right(value, n);
+      return etl::rotate_right(value, static_cast<size_t>(n));
     }
   }
  

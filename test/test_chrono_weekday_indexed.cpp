@@ -146,13 +146,13 @@ namespace
 
       for (int i = 0; i < 6; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Monday,    i)));
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Tuesday,   i)));
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Wednesday, i)));
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Thursday,  i)));
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Friday,    i)));
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Saturday,  i)));
-        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Sunday,    i)));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Monday, static_cast<unsigned>(i))));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Tuesday, static_cast<unsigned>(i))));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Wednesday, static_cast<unsigned>(i))));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Thursday, static_cast<unsigned>(i))));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Friday, static_cast<unsigned>(i))));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Saturday, static_cast<unsigned>(i))));
+        hashes.push_back(etl::hash<Chrono::weekday_indexed>()(Chrono::weekday_indexed(Chrono::Sunday, static_cast<unsigned>(i))));
       }
 
       std::sort(hashes.begin(), hashes.end());

@@ -982,20 +982,20 @@ namespace
       CHECK((unsigned short)(0xFEFD) == etl::le_ushort_t((unsigned short)(0xFEFD)));
 
       // int
-      CHECK(int(0xFEFDFCFB) == etl::le_int_t(0xFEFDFCFB));
+      CHECK(static_cast<int>(0xFEFDFCFB) == etl::le_int_t(static_cast<int>(0xFEFDFCFB)));
       CHECK((unsigned int)(0xFEFDFCFBU) == etl::le_uint_t(0xFEFDFCFBU));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(long(0xFEFDFCFB) == etl::le_long_t(0xFEFDFCFB));
+        CHECK(static_cast<long>(0xFEFDFCFB) == etl::le_long_t(static_cast<long>(0xFEFDFCFB)));
         CHECK((unsigned long)(0xFEFDFCFBU) == etl::le_ulong_t(0xFEFDFCFBU));
       }
 
       if (sizeof(long long) == 8U)
       {
         // long long
-        CHECK((long long)(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_t(0xFEFDFCFBFAF9F8F7));
+        CHECK(static_cast<long long>(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_t(static_cast<long long>(0xFEFDFCFBFAF9F8F7)));
         CHECK((unsigned long long)(0xFEFDFCFBFAF9F8F7U) == etl::le_ulong_long_t(0xFEFDFCFBFAF9F8F7U));
       }
     }

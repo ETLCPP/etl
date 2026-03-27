@@ -211,7 +211,7 @@ namespace etl
     //*********************************
     void add(key_type key)
     {
-      ++this->accumulator[key - Start_Index];
+      ++this->accumulator[static_cast<size_t>(key - Start_Index)];
     }
 
     //*********************************
@@ -249,7 +249,7 @@ namespace etl
     //*********************************
     value_type operator [](key_type key) const
     {
-      return this->accumulator[key - Start_Index];
+      return this->accumulator[static_cast<size_t>(key - Start_Index)];
     }
   };
 
@@ -335,7 +335,7 @@ namespace etl
     //*********************************
     void add(key_type key)
     {
-      ++this->accumulator[key - start_index];
+      ++this->accumulator[static_cast<size_t>(key - start_index)];
     }
 
     //*********************************
@@ -373,7 +373,7 @@ namespace etl
     //*********************************
     value_type operator [](key_type key) const
     {
-      return this->accumulator[key - start_index];
+      return this->accumulator[static_cast<size_t>(key - start_index)];
     }
 
   private:
@@ -588,7 +588,7 @@ namespace etl
         ++itr;
       }
 
-      return sum;
+      return static_cast<size_t>(sum);
     }
 
   private:

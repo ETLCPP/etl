@@ -169,7 +169,7 @@ namespace
 
       for (size_t i = 1UL; i <= length; ++i)
       {
-        CHECK_EQUAL(data[length - i], *etl::prev(itr, i));
+        CHECK_EQUAL(data[length - i], *etl::prev(itr, static_cast<ptrdiff_t>(i)));
       }
     }
 
@@ -184,7 +184,7 @@ namespace
 
       for (size_t i = 1UL; i <= length; ++i)
       {
-        CHECK_EQUAL(data[i], *etl::next(itr, i));
+        CHECK_EQUAL(data[i], *etl::next(itr, static_cast<ptrdiff_t>(i)));
       }
     }
 

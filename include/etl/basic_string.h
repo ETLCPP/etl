@@ -1003,7 +1003,7 @@ namespace etl
 
       // Quick hack, as iterators are pointers.
       iterator insert_position = to_iterator(position);
-      const size_type start = etl::distance(cbegin(), position);
+      const size_type start = static_cast<size_type>(etl::distance(cbegin(), position));
 
       // No effect.
       if (start >= CAPACITY)
@@ -1091,8 +1091,8 @@ namespace etl
         return position_;
       }
 
-      const size_type start = etl::distance(begin(), position_);
-      const size_type n = etl::distance(first, last);
+      const size_type start = static_cast<size_type>(etl::distance(begin(), position_));
+      const size_type n = static_cast<size_type>(etl::distance(first, last));
 
       // No effect.
       if (start >= CAPACITY)
@@ -1123,7 +1123,7 @@ namespace etl
 
         current_size = CAPACITY;
 
-        position_ = copy_characters(first, etl::distance(position_, end()), position_);
+        position_ = copy_characters(first, static_cast<size_t>(etl::distance(position_, end())), position_);
       }
       else
       {
@@ -1155,7 +1155,7 @@ namespace etl
         etl::mem_move(position_, position_ + characters_to_shift, begin() + to_position);
         //etl::copy_backward(position_, position_ + characters_to_shift, begin() + to_position + characters_to_shift);
 
-        position_ = copy_characters(first, etl::distance(first, last), position_);
+        position_ = copy_characters(first, static_cast<size_t>(etl::distance(first, last)), position_);
       }
 
       p_buffer[current_size] = 0;
@@ -1383,7 +1383,7 @@ namespace etl
       }
 
       etl::mem_move(last_, end(), first_);
-      size_type n_delete = etl::distance(first_, last_);
+      size_type n_delete = static_cast<size_type>(etl::distance(first_, last_));
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
@@ -1486,7 +1486,7 @@ namespace etl
 
       if (i != end())
       {
-        return etl::distance(begin(), i);
+        return static_cast<size_type>(etl::distance(begin(), i));
       }
       else
       {
@@ -1557,11 +1557,11 @@ namespace etl
 
       position = size() - position;
 
-      const_reverse_iterator i = etl::find(rbegin() + position, rend(), c);
+      const_reverse_iterator i = etl::find(rbegin() + static_cast<difference_type>(position), rend(), c);
 
       if (i != rend())
       {
-        return size() - etl::distance(rbegin(), i) - 1;
+        return size() - static_cast<size_type>(etl::distance(rbegin(), i)) - 1;
       }
       else
       {
@@ -2133,7 +2133,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<difference_type>(size() - position - 1);
 
       while (it != rend())
       {
@@ -2166,7 +2166,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<difference_type>(size() - position - 1);
 
       while (it != rend())
       {
@@ -2312,7 +2312,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<difference_type>(size() - position - 1);
 
       while (it != rend())
       {
@@ -2350,7 +2350,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<difference_type>(size() - position - 1);
 
       while (it != rend())
       {
@@ -2749,7 +2749,7 @@ namespace etl
 
       while (count != n) 
       {
-        *to++ = *from++;
+        *to++ = static_cast<value_type>(*from++);
         ++count;
       }
 
@@ -2881,7 +2881,7 @@ namespace etl
       }
       else
       {
-        return etl::distance(begin(), iposition);
+        return static_cast<size_type>(etl::distance(begin(), iposition));
       }
     }
 
@@ -2903,7 +2903,7 @@ namespace etl
 
       pos = size() - pos;
 
-      const_reverse_iterator iposition = etl::search(rbegin() + pos, rend(), rfirst, rlast);
+      const_reverse_iterator iposition = etl::search(rbegin() + static_cast<difference_type>(pos), rend(), rfirst, rlast);
 
       if (iposition == rend())
       {
@@ -2911,7 +2911,7 @@ namespace etl
       }
       else
       {
-        return size() - sz - etl::distance(rbegin(), iposition);
+        return size() - sz - static_cast<size_type>(etl::distance(rbegin(), iposition));
       }
     }
 
@@ -3216,7 +3216,7 @@ namespace etl
   std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
                                                           const etl::ibasic_string<T>& str)
   {
-    os.write(str.data(), str.size());
+    os.write(str.data(), static_cast<std::streamsize>(str.size()));
     return os;
   }
 #endif

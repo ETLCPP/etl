@@ -830,8 +830,8 @@ namespace
       unsigned char data1[10];
       unsigned char data2[10];
 
-      std::fill(std::begin(data1), std::end(data1), char(0x12U));
-      etl::fill(std::begin(data2), std::end(data2), char(0x12U));
+      std::fill(std::begin(data1), std::end(data1), static_cast<unsigned char>(0x12U));
+      etl::fill(std::begin(data2), std::end(data2), static_cast<unsigned char>(0x12U));
 
       bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
@@ -2217,8 +2217,8 @@ namespace
     //*************************************************************************
     TEST(count)
     {
-      size_t c1 = std::count(std::begin(dataEQ), std::end(dataEQ), 5);
-      size_t c2 = etl::count(std::begin(dataEQ), std::end(dataEQ), 5);
+      size_t c1 = static_cast<size_t>(std::count(std::begin(dataEQ), std::end(dataEQ), 5));
+      size_t c2 = static_cast<size_t>(etl::count(std::begin(dataEQ), std::end(dataEQ), 5));
 
       CHECK(c1 == c2);
     }
@@ -2234,8 +2234,8 @@ namespace
         }
       };
 
-      size_t c1 = std::count_if(std::begin(dataEQ), std::end(dataEQ), predicate());
-      size_t c2 = etl::count_if(std::begin(dataEQ), std::end(dataEQ), predicate());
+      size_t c1 = static_cast<size_t>(std::count_if(std::begin(dataEQ), std::end(dataEQ), predicate()));
+      size_t c2 = static_cast<size_t>(etl::count_if(std::begin(dataEQ), std::end(dataEQ), predicate()));
 
       CHECK(c1 == c2);
     }
@@ -4049,8 +4049,8 @@ namespace
       auto std_end = std::unique(data1.begin(), data1.end());
       auto etl_end = etl::unique(data2.begin(), data2.end());
 
-      size_t std_size = std::distance(data1.begin(), std_end);
-      size_t etl_size = std::distance(data2.begin(), etl_end);
+      size_t std_size = static_cast<size_t>(std::distance(data1.begin(), std_end));
+      size_t etl_size = static_cast<size_t>(std::distance(data2.begin(), etl_end));
 
       CHECK_EQUAL(std_size, etl_size);
       bool is_same = std::equal(data1.begin(), std_end, data2.begin());
@@ -4066,8 +4066,8 @@ namespace
       auto std_end = std::unique(data1.begin(), data1.end(), std::equal_to<int>());
       auto etl_end = etl::unique(data2.begin(), data2.end(), std::equal_to<int>());
 
-      size_t std_size = std::distance(data1.begin(), std_end);
-      size_t etl_size = std::distance(data2.begin(), etl_end);
+      size_t std_size = static_cast<size_t>(std::distance(data1.begin(), std_end));
+      size_t etl_size = static_cast<size_t>(std::distance(data2.begin(), etl_end));
 
       CHECK_EQUAL(std_size, etl_size);
       bool is_same = std::equal(data1.begin(), std_end, data2.begin());
@@ -4194,8 +4194,8 @@ namespace
       auto std_end = std::unique_copy(data.begin(), data.end(), std_result.begin());
       auto etl_end = etl::unique_copy(data.begin(), data.end(), etl_result.begin());
 
-      size_t std_size = std::distance(std_result.begin(), std_end);
-      size_t etl_size = std::distance(etl_result.begin(), etl_end);
+      size_t std_size = static_cast<size_t>(std::distance(std_result.begin(), std_end));
+      size_t etl_size = static_cast<size_t>(std::distance(etl_result.begin(), etl_end));
 
       CHECK_EQUAL(std_size, etl_size);
       bool is_same = std::equal(std_result.begin(), std_end, etl_result.begin());
@@ -4212,8 +4212,8 @@ namespace
       auto std_end = std::unique_copy(data.begin(), data.end(), std_result.begin(), std::equal_to<int>());
       auto etl_end = etl::unique_copy(data.begin(), data.end(), etl_result.begin(), std::equal_to<int>());
 
-      size_t std_size = std::distance(std_result.begin(), std_end);
-      size_t etl_size = std::distance(etl_result.begin(), etl_end);
+      size_t std_size = static_cast<size_t>(std::distance(std_result.begin(), std_end));
+      size_t etl_size = static_cast<size_t>(std::distance(etl_result.begin(), etl_end));
 
       CHECK_EQUAL(std_size, etl_size);
       bool is_same = std::equal(std_result.begin(), std_end, etl_result.begin());
@@ -4362,7 +4362,7 @@ namespace
 
       etl::nth_element(data.begin(), data.begin() + nth_index, data.end());
 
-      return data[nth_index];
+      return data[static_cast<size_t>(nth_index)];
     }
     
     TEST(constexpr_nth_element_with_default_less_than_comparison)
@@ -12470,13 +12470,13 @@ namespace
       CHECK_EQUAL(3, vec[2]);
 
       // All elements before nth should be <= vec[2]
-      for (int i = 0; i < 2; ++i)
+      for (size_t i = 0; i < 2; ++i)
       {
         CHECK(vec[i] <= vec[2]);
       }
 
       // All elements after nth should be >= vec[2]
-      for (int i = 3; i < 5; ++i)
+      for (size_t i = 3; i < 5; ++i)
       {
         CHECK(vec[i] >= vec[2]);
       }
@@ -12492,12 +12492,12 @@ namespace
       CHECK(result == vec.end());
       CHECK_EQUAL(3, vec[2]);
 
-      for (int i = 0; i < 2; ++i)
+      for (size_t i = 0; i < 2; ++i)
       {
         CHECK(vec[i] <= vec[2]);
       }
 
-      for (int i = 3; i < 5; ++i)
+      for (size_t i = 3; i < 5; ++i)
       {
         CHECK(vec[i] >= vec[2]);
       }
@@ -12513,12 +12513,12 @@ namespace
       CHECK(result == vec.end());
       CHECK_EQUAL(3, vec[2]);
 
-      for (int i = 0; i < 2; ++i)
+      for (size_t i = 0; i < 2; ++i)
       {
         CHECK(vec[i] >= vec[2]);
       }
 
-      for (int i = 3; i < 5; ++i)
+      for (size_t i = 3; i < 5; ++i)
       {
         CHECK(vec[i] <= vec[2]);
       }
@@ -12534,12 +12534,12 @@ namespace
       CHECK(result == vec.end());
       CHECK_EQUAL(3, vec[2]);
 
-      for (int i = 0; i < 2; ++i)
+      for (size_t i = 0; i < 2; ++i)
       {
         CHECK(vec[i] >= vec[2]);
       }
 
-      for (int i = 3; i < 5; ++i)
+      for (size_t i = 3; i < 5; ++i)
       {
         CHECK(vec[i] <= vec[2]);
       }
@@ -12556,12 +12556,12 @@ namespace
       CHECK_EQUAL(3, vec[2].key);
       CHECK_EQUAL(30, vec[2].value);
 
-      for (int i = 0; i < 2; ++i)
+      for (size_t i = 0; i < 2; ++i)
       {
         CHECK(vec[i].key <= vec[2].key);
       }
 
-      for (int i = 3; i < 5; ++i)
+      for (size_t i = 3; i < 5; ++i)
       {
         CHECK(vec[i].key >= vec[2].key);
       }
@@ -12578,12 +12578,12 @@ namespace
       CHECK_EQUAL(3, vec[2].key);
       CHECK_EQUAL(30, vec[2].value);
 
-      for (int i = 0; i < 2; ++i)
+      for (size_t i = 0; i < 2; ++i)
       {
         CHECK(vec[i].key <= vec[2].key);
       }
 
-      for (int i = 3; i < 5; ++i)
+      for (size_t i = 3; i < 5; ++i)
       {
         CHECK(vec[i].key >= vec[2].key);
       }
@@ -12635,7 +12635,7 @@ namespace
 
       CHECK_EQUAL(5, vec[4]);
 
-      for (int i = 0; i < 4; ++i)
+      for (size_t i = 0; i < 4; ++i)
       {
         CHECK(vec[i] <= vec[4]);
       }

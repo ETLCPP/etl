@@ -816,7 +816,7 @@ namespace etl
   {
     const T quotient  = numerator / denominator;
     const T remainder = numerator % denominator;
-    const T direction = ((numerator >= 0U) == (denominator >= 0U)) ? 1 : -1;
+    const T direction = ((numerator >= 0U) == (denominator >= 0U)) ? T(1) : T(-1);
 
     if ((remainder * 2U) < denominator)
     {

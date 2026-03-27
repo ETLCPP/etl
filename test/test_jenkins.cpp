@@ -43,7 +43,7 @@ uint32_t jenkins(TIterator begin, TIterator end)
 
   while (begin != end)
   {
-    hash += *begin++;
+    hash += static_cast<uint32_t>(*begin++);
     hash += (hash << 10U);
     hash ^= (hash >> 6U);
   }
@@ -79,7 +79,7 @@ namespace
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
-        jenkins_calculator.add(data[i]);
+        jenkins_calculator.add(static_cast<uint8_t>(data[i]));
       }
 
       uint32_t hash    = jenkins_calculator;

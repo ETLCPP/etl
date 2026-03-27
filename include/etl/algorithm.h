@@ -1973,7 +1973,7 @@ namespace etl
       {
         if (i == etl::find(begin1, i, *i))
         {
-          size_t n = etl::count(begin2, end2, *i);
+          size_t n = static_cast<size_t>(etl::count(begin2, end2, *i));
 
           if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
           {
@@ -2010,7 +2010,7 @@ namespace etl
         const typename etl::binder1st<TBinaryPredicate> predicate_is_i = etl::bind1st(predicate, *i);
         if (i == etl::find_if(begin1, i, predicate_is_i))
         {
-          size_t n = etl::count_if(begin2, end2, predicate_is_i);
+          size_t n = static_cast<size_t>(etl::count_if(begin2, end2, predicate_is_i));
 
           if (n == 0 || size_t(etl::count_if(i, end1, predicate_is_i)) != n)
           {
@@ -2047,7 +2047,7 @@ namespace etl
       {
         if (i == etl::find(begin1, i, *i))
         {
-          size_t n = etl::count(begin2, end2, *i);
+          size_t n = static_cast<size_t>(etl::count(begin2, end2, *i));
 
           if (n == 0 || size_t(etl::count(i, end1, *i)) != n)
           {
@@ -2086,7 +2086,7 @@ namespace etl
         const typename etl::binder1st<TBinaryPredicate> predicate_is_i = etl::bind1st(predicate, *i);
         if (i == etl::find_if(begin1, i, predicate_is_i))
         {
-          size_t n = etl::count_if(begin2, end2, predicate_is_i);
+          size_t n = static_cast<size_t>(etl::count_if(begin2, end2, predicate_is_i));
 
           if (n == 0 || size_t(etl::count_if(i, end1, predicate_is_i)) != n)
           {
@@ -2497,7 +2497,7 @@ namespace etl
   {
     while (first != last)
     {
-      sum = ETL_MOVE(sum) + *first;
+      sum = static_cast<T>(ETL_MOVE(sum) + static_cast<T>(*first));
       ++first;
     }
       

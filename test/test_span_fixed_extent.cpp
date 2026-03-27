@@ -875,7 +875,7 @@ namespace
 
       View::circular_iterator sci = view.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i], *++sci);
       }
@@ -892,7 +892,7 @@ namespace
 
       View::circular_iterator sci = subspan.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i], *++sci);
       }
@@ -908,7 +908,7 @@ namespace
 
       View::circular_iterator sci = view.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
@@ -925,7 +925,7 @@ namespace
 
       View::circular_iterator sci = subspan.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i], *sci++);
       }
@@ -941,7 +941,7 @@ namespace
 
       View::reverse_circular_iterator sci = view.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
@@ -958,7 +958,7 @@ namespace
 
       etl::span<int, 10U>::reverse_circular_iterator sci = subspan.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
@@ -974,7 +974,7 @@ namespace
 
       View::reverse_circular_iterator sci = view.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
@@ -991,7 +991,7 @@ namespace
 
       View::reverse_circular_iterator sci = subspan.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
@@ -1009,7 +1009,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci += step;
@@ -1029,7 +1029,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci = sci + step;
@@ -1049,7 +1049,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci -= step;
@@ -1069,7 +1069,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci = sci - step;

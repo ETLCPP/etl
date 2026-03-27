@@ -480,6 +480,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wsign-conversion
 			-Wextra-semi
 			-g
 			${EXTRA_COMPILE_OPTIONS}
@@ -499,6 +500,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wsign-conversion
 			-Wextra-semi
 			-Wextra-semi-stmt
 			-Wc++11-extra-semi

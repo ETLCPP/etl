@@ -120,7 +120,7 @@ namespace etl
 
         size_t size() const
         {
-          return etl::distance(cbegin(), cend());
+          return static_cast<size_t>(etl::distance(cbegin(), cend()));
         }
 
         constexpr decltype(auto) front()
@@ -512,7 +512,7 @@ namespace etl
         {
           return etl::numeric_limits<T>::max();
         }
-        return _bound - _value;
+        return static_cast<size_t>(_bound - _value);
       }
 
       constexpr bool empty() const noexcept
@@ -588,20 +588,20 @@ namespace etl
         return tmp;
       }
 
-      repeat_iterator& operator+=(size_t n)
+      repeat_iterator& operator+=(difference_type n)
       {
-        _i -= n;
+        _i -= static_cast<B>(n);
         return *this;
       }
 
-      repeat_iterator operator+(size_t n) const
+      repeat_iterator operator+(difference_type n) const
       {
-        return repeat_iterator{_value, static_cast<B>(_i - n)};
+        return repeat_iterator{_value, static_cast<B>(_i - static_cast<B>(n))};
       }
 
-      repeat_iterator operator-(size_t n) const
+      repeat_iterator operator-(difference_type n) const
       {
-        return repeat_iterator{_value, static_cast<B>(_i + n)};
+        return repeat_iterator{_value, static_cast<B>(_i + static_cast<B>(n))};
       }
 
       difference_type operator-(repeat_iterator other) const
@@ -666,7 +666,7 @@ namespace etl
 
       constexpr size_t size() const noexcept
       {
-        return _bound;
+        return static_cast<size_t>(_bound);
       }
 
       constexpr bool empty() const noexcept
@@ -738,7 +738,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(begin(), end());
+          return static_cast<size_t>(etl::distance(begin(), end()));
         }
 
         constexpr pointer data() const
@@ -835,7 +835,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(begin(), end());
+          return static_cast<size_t>(etl::distance(begin(), end()));
         }
 
         constexpr pointer data()
@@ -1238,7 +1238,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
       private:
         const Fun _fun;
@@ -1320,7 +1320,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
 
       private:
@@ -1397,7 +1397,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
 
       private:
@@ -1605,7 +1605,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
 
       private:
@@ -1683,7 +1683,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r)));
         }
 
       private:
@@ -1769,7 +1769,7 @@ namespace etl
             _begin_cache = drop_begin();
             _begin_cache_valid = true;
           }
-          return etl::distance(_begin_cache, ETL_OR_STD::end(_r));
+          return static_cast<size_t>(etl::distance(_begin_cache, ETL_OR_STD::end(_r)));
         }
 
       private:
@@ -1996,7 +1996,7 @@ namespace etl
       template<typename Range>
       constexpr auto operator()(Range&& r) const
       {
-        return take_view(views::all(etl::forward<Range>(r)), _take_n);
+        return take_view(views::all(etl::forward<Range>(r)), static_cast<ranges::range_difference_t<Range>>(_take_n));
       }
 
       const size_t _take_n;
@@ -4002,7 +4002,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r)));
         }
 
       private:
@@ -4184,12 +4184,12 @@ namespace etl
 
         constexpr const_iterator end() const
         {
-          return const_iterator(ETL_OR_STD::end(_r), etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
+          return const_iterator(ETL_OR_STD::end(_r), static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r))));
         }
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
 
       private:
@@ -4337,7 +4337,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
 
       private:
@@ -4939,7 +4939,7 @@ namespace etl
       template<typename Range>
       constexpr auto operator()(Range&& r) const
       {
-        return chunk_view(views::all(etl::forward<Range>(r)), _chunk_size);
+        return chunk_view(views::all(etl::forward<Range>(r)), static_cast<typename chunk_view<views::all_t<Range>>::difference_type>(_chunk_size));
       }
 
       const size_t _chunk_size;
@@ -5107,7 +5107,7 @@ namespace etl
       template<typename Range>
       constexpr auto operator()(Range&& r) const
       {
-        return slide_view(views::all(etl::forward<Range>(r)), _window_size);
+        return slide_view(views::all(etl::forward<Range>(r)), static_cast<typename slide_view<views::all_t<Range>>::difference_type>(_window_size));
       }
 
       const size_t _window_size;
@@ -5447,7 +5447,7 @@ namespace etl
       template<typename Range>
       constexpr auto operator()(Range&& r) const
       {
-        return stride_view(views::all(etl::forward<Range>(r)), _stride_n);
+        return stride_view(views::all(etl::forward<Range>(r)), static_cast<typename stride_view<views::all_t<Range>>::difference_type>(_stride_n));
       }
 
       const size_t _stride_n;
@@ -5799,7 +5799,7 @@ namespace etl
 
         constexpr size_t size() const
         {
-          return etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r));
+          return static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
         }
 
       private:

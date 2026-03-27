@@ -479,7 +479,7 @@ namespace etl
 
       if ((length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
       {
-        value = etl::sign_extend<T>(value, length);
+        value = static_cast<unsigned_t>(etl::sign_extend<T>(static_cast<T>(value), length));
       }
 
       return static_cast<T>(value);
@@ -506,7 +506,7 @@ namespace etl
 
       if ((Length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
       {
-        value = etl::sign_extend<T>(value, Length);
+        value = static_cast<unsigned_t>(etl::sign_extend<T>(static_cast<T>(value), Length));
       }
 
       return static_cast<T>(value);
@@ -1344,7 +1344,7 @@ namespace etl
       else
       {
         // Get the number of active bits in the msb element 
-        size_t active_bits_in_msb = (position + length) - (Msb_Element_Index * Bits_Per_Element);
+        size_t active_bits_in_msb = (position + length) - (static_cast<size_t>(Msb_Element_Index) * Bits_Per_Element);
 
         // Start with index of the element containing the msb.
         int element_index = Msb_Element_Index;
@@ -1409,7 +1409,7 @@ namespace etl
 
       if ((length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
       {
-        value = etl::sign_extend<T>(value, length);
+        value = static_cast<unsigned_t>(etl::sign_extend<T>(static_cast<T>(value), length));
       }
 
       return static_cast<T>(value);
@@ -1429,7 +1429,7 @@ namespace etl
 
       if ((Length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
       {
-        value = etl::sign_extend<T>(value, Length);
+        value = static_cast<unsigned_t>(etl::sign_extend<T>(static_cast<T>(value), Length));
       }
 
       return static_cast<T>(value);
@@ -2059,7 +2059,7 @@ namespace etl
     ETL_CONSTEXPR14 bitset(TValue value, typename etl::enable_if<is_integral<TValue>::value>::type* = 0) ETL_NOEXCEPT
       : buffer()
     {
-      implementation::template initialise<element_type>(buffer, Number_Of_Elements, value);
+      implementation::template initialise<element_type>(buffer, Number_Of_Elements, static_cast<unsigned long long>(value));
     }
 
     //*************************************************************************
@@ -3018,7 +3018,7 @@ namespace etl
     ETL_CONSTEXPR14 bitset_ext(TValue value, buffer_type& buffer, typename etl::enable_if<is_integral<TValue>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
-      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, value);
+      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, static_cast<unsigned long long>(value));
     }
 
     //*************************************************************************

@@ -339,7 +339,7 @@ namespace etl
         // Only triggered on call to flush().
         case 2:
         {
-          uint32_t octets = (input_buffer[0] << 8) | input_buffer[1];
+          uint32_t octets = (static_cast<uint32_t>(input_buffer[0]) << 8) | input_buffer[1];
           octets <<= 2; // Adjust two octets (16 bits) for three sextets worth of data (18 bits)
 
           // Write out three sextets + optional padding.
@@ -357,7 +357,7 @@ namespace etl
         // Only triggered on call to encode().
         case 3:
         {
-          uint32_t octets = (input_buffer[0] << 16) | (input_buffer[1] << 8) | input_buffer[2];
+          uint32_t octets = (static_cast<uint32_t>(input_buffer[0]) << 16) | (static_cast<uint32_t>(input_buffer[1]) << 8) | input_buffer[2];
 
           // Write out four sextets
           push_to_output_buffer(encoder_table[(octets >> 18) & 0x3F]);

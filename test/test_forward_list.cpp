@@ -177,7 +177,7 @@ namespace
       int current_count = ItemNDC::get_instance_count();
 
       DataNDC* pdata = new DataNDC(sorted_data.begin(), sorted_data.end());
-      CHECK_EQUAL(int(current_count + sorted_data.size()), ItemNDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(sorted_data.size())), ItemNDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;

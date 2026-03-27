@@ -2280,7 +2280,7 @@ namespace etl
   etl::istring::iterator format_to(etl::istring& out, format_string<Args...> fmt, Args&&... args)
   {
     etl::istring::iterator result = format_to_n(out.begin(), out.max_size(), fmt, etl::forward<Args>(args)...);
-    out.uninitialized_resize(result - out.begin());
+    out.uninitialized_resize(static_cast<size_t>(result - out.begin()));
     return result;
   }
 

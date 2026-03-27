@@ -80,7 +80,7 @@ namespace etl
         etl::chrono::days days_since_epoch = sd.time_since_epoch();
 
         // Convert to weekday. Beginning of the epoch was a Thursday (4).
-        value = (days_since_epoch.count() + 4) % 7;
+        value = static_cast<unsigned char>((days_since_epoch.count() + 4) % 7);
       }
 
       //*************************************************************************
@@ -279,7 +279,7 @@ namespace etl
       // Adjust to allow a limited +-7 weekday delta
       value %= 7U;
       value += 7U;
-      value += delta;
+      value += static_cast<unsigned int>(delta);
       value %= 7U;
 
       return etl::chrono::weekday(value);

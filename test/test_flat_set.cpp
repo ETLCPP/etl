@@ -328,7 +328,7 @@ namespace
       int current_count = NDC::get_instance_count();
 
       DataNDC* pdata = new DataNDC(initial_data.begin(), initial_data.end());
-      CHECK_EQUAL(int(current_count + initial_data.size()), NDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(initial_data.size())), NDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;

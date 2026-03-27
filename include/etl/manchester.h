@@ -260,10 +260,10 @@ namespace etl
 
       TEncoded encoded = decoded;
 
-      encoded = (encoded | (encoded << 4U)) & 0x0F0FU;
-      encoded = (encoded | (encoded << 2U)) & 0x3333U;
-      encoded = (encoded | (encoded << 1U)) & 0x5555U;
-      encoded = (encoded | (encoded << 1U)) ^ (0xAAAAU ^ static_cast<TEncoded>(TManchesterType::inversion_mask));
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 4U)) & 0x0F0FU);
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 2U)) & 0x3333U);
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 1U)) & 0x5555U);
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 1U)) ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask)));
       return encoded;
     }
 #endif
@@ -357,10 +357,10 @@ namespace etl
     {
       typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
 
-      encoded = (encoded ^ (0xAAAAU ^ static_cast<TEncoded>(TManchesterType::inversion_mask))) & 0x5555U;
-      encoded = (encoded | (encoded >> 1)) & 0x3333U;
-      encoded = (encoded | (encoded >> 2)) & 0x0F0FU;
-      return static_cast<TDecoded>(encoded | (encoded >> 4U));
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask))) & 0x5555U);
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 1)) & 0x3333U);
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 2)) & 0x0F0FU);
+      return static_cast<TDecoded>(static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 4U));
     }
 #endif
 
