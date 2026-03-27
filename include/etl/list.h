@@ -130,6 +130,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// Unsorted exception for the list.
   ///\ingroup list
@@ -757,33 +758,41 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(list_empty));
       return data_cast(get_head()).value;
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(list_empty));
       return data_cast(get_head()).value;
     }
 
     //*************************************************************************
     /// Gets a reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::list_empty if the list is empty.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(list_empty));
       return data_cast(get_tail()).value;
     }
 
     //*************************************************************************
     /// Gets a reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::list_empty if the list is empty.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(list_empty));
       return data_cast(get_tail()).value;
     }
 

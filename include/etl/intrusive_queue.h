@@ -241,41 +241,45 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the value at the front of the queue.
-    /// Undefined behaviour if the queue is empty.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_queue_empty if the queue is empty.
     /// \return A reference to the value at the front of the queue.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<TValue*>(this->terminator.etl_next);
     }
 
     //*************************************************************************
     /// Gets a reference to the value at the back of the queue.
-    /// Undefined behaviour if the queue is empty.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_queue_empty if the queue is empty.
     /// \return A reference to the value at the back of the queue.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<TValue*>(this->p_back);
     }
 
     //*************************************************************************
     /// Gets a const reference to the value at the front of the queue.
-    /// Undefined behaviour if the queue is empty.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_queue_empty if the queue is empty.
     /// \return A const reference to the value at the front of the queue.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<const TValue*>(this->terminator.etl_next);
     }
 
     //*************************************************************************
     /// Gets a reference to the value at the back of the queue.
-    /// Undefined behaviour if the queue is empty.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_queue_empty if the queue is empty.
     /// \return A reference to the value at the back of the queue.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<const TValue*>(this->p_back);
     }
 

@@ -48,6 +48,34 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_mpmc_exception : public exception
+  {
+  public:
+
+    queue_mpmc_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_mpmc_empty : public queue_mpmc_exception
+  {
+  public:
+
+    queue_mpmc_empty(string_type file_name_, numeric_type line_number_)
+      : queue_mpmc_exception(ETL_ERROR_TEXT("queue_mpmc_mutex:empty", ETL_QUEUE_MPMC_MUTEX_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_mpmc_mutex_base
   {
@@ -138,13 +166,13 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;      ///< The type stored in the queue.
-    typedef T&                         reference;       ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef T                          value_type;       ///< The type stored in the queue.
+    typedef T&                         reference;        ///< A reference to the type used in the queue.
+    typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+    typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
 
     using base_t::write_index;
     using base_t::read_index;
@@ -309,29 +337,57 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+#if ETL_CHECKING_EXTRA
       access.lock();
-
+      if (current_size != 0)
+      {
+        reference inner_result = front_implementation();
+        access.unlock();
+        return inner_result;
+      }
+      else
+      {
+        access.unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      access.lock();
       reference result = front_implementation();
-
       access.unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+#if ETL_CHECKING_EXTRA
       access.lock();
-
+      if (current_size != 0)
+      {
+        const_reference inner_result = front_implementation();
+        access.unlock();
+        return inner_result;
+      }
+      else
+      {
+        access.unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      access.lock();
       const_reference result = front_implementation();
-
       access.unlock();
-
       return result;
     }
 

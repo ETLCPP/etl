@@ -1093,6 +1093,32 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_empty_exception)
+    {
+      DataNDC0 data0;
+
+      CHECK_EQUAL(0U, data0.size());
+      CHECK_THROW(data0.front(), etl::intrusive_list_empty);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back)
+    {
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+
+      CHECK_EQUAL(sorted_data.back(), data0.back());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back_empty_exception)
+    {
+      DataNDC0 data0;
+
+      CHECK_EQUAL(0U, data0.size());
+      CHECK_THROW(data0.back(), etl::intrusive_list_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_unique)
     {
       bool are_equal;

@@ -460,6 +460,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_exception)
+    {
+      DataNDC data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.front(), etl::deque_empty);
+    }
+
+    //*************************************************************************
     TEST(test_front_const)
     {
       DataNDC data;
@@ -506,6 +515,15 @@ namespace
 
       data.push_back(N6);
       CHECK_EQUAL(N6, data.back());
+    }
+
+    //*************************************************************************
+    TEST(test_back_exception)
+    {
+      DataNDC data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.back(), etl::deque_empty);
     }
 
     //*************************************************************************

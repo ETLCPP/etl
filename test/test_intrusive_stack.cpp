@@ -279,6 +279,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_top_empty_exception)
+    {
+      etl::intrusive_stack<Data, link0> stackD;
+
+      CHECK_EQUAL(0U, stackD.size());
+      CHECK_THROW(stackD.top(), etl::intrusive_stack_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_top_const_empty_exception)
+    {
+      etl::intrusive_stack<Data, link0> stackD;
+      const etl::intrusive_stack<Data, link0>& stackDR = stackD;
+
+      CHECK_EQUAL(0U, stackDR.size());
+      CHECK_THROW(stackDR.top(), etl::intrusive_stack_empty);
+    }
+
+    //*************************************************************************
     TEST(test_reverse1)
     {
       Data data1(1);

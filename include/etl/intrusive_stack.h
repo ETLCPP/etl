@@ -82,6 +82,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   ///\ingroup stack
   /// Base for intrusive stack. Stores elements derived any type that supports an 'etl_next' pointer member.
@@ -242,20 +243,23 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the value at the top of the stack.
-    /// Undefined behaviour if the stack is empty.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_stack_empty if the stack is empty.
     /// \return A reference to the value at the top of the stack.
     //*************************************************************************
     reference top()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_stack_empty));
       return *static_cast<TValue*>(this->p_top);
     }
 
     //*************************************************************************
-    /// Gets a const reference to the value at the top of the stack.<br>
+    /// Gets a const reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_stack_empty if the stack is empty.
     /// \return A const reference to the value at the top of the stack.
     //*************************************************************************
     const_reference top() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_stack_empty));
       return *static_cast<const TValue*>(this->p_top);
     }
 

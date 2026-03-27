@@ -418,6 +418,34 @@ namespace
       CHECK_THROW(view.at(view.size()), etl::string_view_bounds);
     }
 
+#ifdef ETL_CHECK_INDEX_OPERATOR
+
+    //*************************************************************************
+    TEST(test_index_bounds_exception)
+    {
+      View  view(text.c_str(), text.size());
+
+      CHECK_THROW(view[view.size()], etl::string_view_bounds);
+    }
+  
+#endif
+
+    //*************************************************************************
+    TEST(test_front_bounds_exception)
+    {
+      View view(text.c_str(), text.c_str());
+
+      CHECK_THROW(view.front(), etl::string_view_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_back_bounds_exception)
+    {
+      View view(text.c_str(), text.c_str());
+
+      CHECK_THROW(view.back(), etl::string_view_empty);
+    }
+
     //*************************************************************************
     TEST(test_non_member_same)
     {

@@ -39,12 +39,41 @@ SOFTWARE.
 #include "function.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "mutex.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_spsc_locked_exception : public exception
+  {
+  public:
+
+    queue_spsc_locked_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_spsc_locked_empty : public queue_spsc_locked_exception
+  {
+  public:
+
+    queue_spsc_locked_empty(string_type file_name_, numeric_type line_number_)
+      : queue_spsc_locked_exception(ETL_ERROR_TEXT("queue_spsc_locked:empty", ETL_QUEUE_SPSC_LOCKED_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_locked_base
   {
@@ -187,6 +216,7 @@ namespace etl
   ///\details Normally a reference to this type will be taken from a derived queue_spsc_locked.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_locked holds.
+  /// \note All types used must have a copy constructor.
   //***************************************************************************
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_locked : public iqueue_spsc_locked_base<MEMORY_MODEL>
@@ -466,29 +496,57 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value from the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_locked_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+#if ETL_CHECKING_EXTRA
       lock();
-
+      if (!this->empty_from_unlocked())
+      {
+        reference inner_result = front_implementation();
+        unlock();
+        return inner_result;
+      }
+      else
+      {
+        unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_locked_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      lock();
       reference result = front_implementation();
-
       unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value from the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_locked_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+#if ETL_CHECKING_EXTRA
       lock();
-
+      if (!this->empty_from_unlocked())
+      {
+        const_reference inner_result = front_implementation();
+        unlock();
+        return inner_result;
+      }
+      else
+      {
+        unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_locked_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      lock();
       const_reference result = front_implementation();
-
       unlock();
-
       return result;
     }
 
@@ -857,6 +915,7 @@ namespace etl
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
   /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \note T must have a copy constructor defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_locked : public etl::iqueue_spsc_locked<T, MEMORY_MODEL>

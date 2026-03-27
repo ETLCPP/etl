@@ -131,6 +131,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// Base for intrusive forward list.
   ///\ingroup intrusive_forward_list
@@ -727,17 +728,21 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_forward_list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_forward_list_empty));
       return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_forward_list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_forward_list_empty));
       return *static_cast<const value_type*>(this->get_head());
     }
 

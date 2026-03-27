@@ -399,6 +399,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_top_bounds_exception)
+    {
+      etl::stack<ItemNDC, 4> stack;
+
+      CHECK(stack.empty());
+      CHECK_THROW(stack.top(), etl::stack_empty);
+    }
+
+    //*************************************************************************
     TEST(test_top_const)
     {
       etl::stack<int, 4> stack;
@@ -415,6 +424,16 @@ namespace
 
       stack.pop();
       CHECK_EQUAL(1, constQueue.top());
+    }
+
+    //*************************************************************************
+    TEST(test_top_const_bounds_exception)
+    {
+      etl::stack<int, 4> stack;
+      const etl::stack<int, 4>& constStack = stack;
+
+      CHECK(constStack.empty());
+      CHECK_THROW(constStack.top(), etl::stack_empty);
     }
 
     //*************************************************************************

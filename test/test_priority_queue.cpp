@@ -271,6 +271,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_top_bounds_exception)
+    {
+      etl::priority_queue<int, SIZE> priority_queue;
+     
+      CHECK(priority_queue.empty());
+      CHECK_THROW(priority_queue.top(), etl::priority_queue_empty);
+    }
+
+    //*************************************************************************
     TEST(test_top_const)
     {
       etl::priority_queue<int, SIZE> priority_queue;
@@ -284,6 +293,16 @@ namespace
       CHECK_EQUAL(3, constQueue.top());
       priority_queue.push(4);
       CHECK_EQUAL(4, constQueue.top());
+    }
+
+    //*************************************************************************
+    TEST(test_top_const_bounds_exception)
+    {
+      etl::priority_queue<int, SIZE> priority_queue;
+      const etl::priority_queue<int, SIZE>& constQueue = priority_queue;
+
+      CHECK(constQueue.empty());
+      CHECK_THROW(constQueue.top(), etl::priority_queue_empty);
     }
 
     //*************************************************************************

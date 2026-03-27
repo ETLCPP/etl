@@ -130,6 +130,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// The base class for all forward_lists.
   ///\ingroup forward_list
@@ -624,17 +625,21 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::forward_list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(forward_list_empty));
       return data_cast(*get_head()).value;
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::forward_list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(forward_list_empty));
       return data_cast(*get_head()).value;
     }
 
