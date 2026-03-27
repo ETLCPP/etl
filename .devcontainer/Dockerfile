@@ -2,7 +2,6 @@ ARG BASE_IMAGE_NAME="mcr.microsoft.com/devcontainers/cpp:2@sha256:a5eb5a1e9109af
 
 FROM ${BASE_IMAGE_NAME}
 
-ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="3.31.7"
 ARG DEBIAN_SNAPSHOT="20260223T000000Z"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
