@@ -306,11 +306,11 @@ namespace etl
 #endif
 
   constexpr bool operator >(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
-	constexpr bool operator <(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
-	constexpr bool operator !=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
-	constexpr bool operator <=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
-	constexpr bool operator >=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
-	constexpr bool operator ==(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
+  constexpr bool operator <(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
+  constexpr bool operator !=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return false; }
+  constexpr bool operator <=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
+  constexpr bool operator >=(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
+  constexpr bool operator ==(etl::monostate, etl::monostate) ETL_NOEXCEPT { return true; }
 #if ETL_USING_CPP20 && ETL_USING_STL && !(defined(ETL_DEVELOPMENT_OS_APPLE) && defined(ETL_COMPILER_CLANG))
   constexpr std::strong_ordering operator<=>(monostate, monostate) ETL_NOEXCEPT
   {
@@ -569,16 +569,13 @@ namespace etl
       : operation(other.operation)
       , type_id(other.type_id)
     {
-      if (this != &other)
+      if (other.valueless_by_exception())
       {
-        if (other.index() == variant_npos)
-        {
-          type_id = variant_npos;
-        }
-        else
-        {
-          operation(private_variant::Copy, data, other.data);
-        }
+        type_id = variant_npos;
+      }
+      else
+      {
+        operation(private_variant::Copy, data, other.data);
       }
     }
 #include "diagnostic_pop.h"
@@ -592,20 +589,13 @@ namespace etl
       : operation(other.operation)
       , type_id(other.type_id)
     {
-      if (this != &other)
+      if (other.valueless_by_exception())
       {
-        if (other.index() == variant_npos)
-        {
-          type_id = variant_npos;
-        }
-        else
-        {
-          operation(private_variant::Move, data, other.data);
-        }
+        type_id = variant_npos;
       }
       else
       {
-        type_id = variant_npos;
+        operation(private_variant::Move, data, other.data);
       }
     }
 #include "diagnostic_pop.h"
@@ -615,7 +605,7 @@ namespace etl
     //***************************************************************************
     ~variant()
     {
-      if (index() != variant_npos)
+      if (!valueless_by_exception())
       {
         operation(private_variant::Destroy, data, nullptr);
       }
@@ -634,7 +624,10 @@ namespace etl
 
       using type = etl::remove_cvref_t<T>;
 
-      operation(private_variant::Destroy, data, nullptr);
+      if (!valueless_by_exception())
+      {
+        operation(private_variant::Destroy, data, nullptr);
+      }
 
       construct_in_place_args<type>(data, etl::forward<TArgs>(args)...);
 
@@ -656,7 +649,10 @@ namespace etl
 
       using type = etl::remove_cvref_t<T>;
 
-      operation(private_variant::Destroy, data, nullptr);
+      if (!valueless_by_exception())
+      {
+        operation(private_variant::Destroy, data, nullptr);
+      }
 
       construct_in_place_args<type>(data, il, etl::forward<TArgs>(args)...);
 
@@ -678,7 +674,10 @@ namespace etl
 
       using type = type_from_index<Index>;
 
-      operation(private_variant::Destroy, data, nullptr);
+      if (!valueless_by_exception())
+      {
+        operation(private_variant::Destroy, data, nullptr);
+      }
 
       construct_in_place_args<type>(data, etl::forward<TArgs>(args)...);
 
@@ -700,7 +699,10 @@ namespace etl
 
       using type = type_from_index<Index>;
 
-      operation(private_variant::Destroy, data, nullptr);
+      if (!valueless_by_exception())
+      {
+        operation(private_variant::Destroy, data, nullptr);
+      }
 
       construct_in_place_args<type>(data, il, etl::forward<TArgs>(args)...);
 
@@ -723,7 +725,10 @@ namespace etl
 
       static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
 
-      operation(private_variant::Destroy, data, nullptr);
+      if (!valueless_by_exception())
+      {
+        operation(private_variant::Destroy, data, nullptr);
+      }
 
       construct_in_place<type>(data, etl::forward<T>(value));
 
@@ -741,14 +746,17 @@ namespace etl
     {
       if (this != &other)
       {
-        if (other.index() == variant_npos)
+        if (!valueless_by_exception())
+        {
+          operation(Destroy, data, nullptr);
+        }
+
+        if (other.valueless_by_exception())
         {
           type_id = variant_npos;
         }
         else
         {
-          operation(Destroy, data, nullptr);
-
           operation = other.operation;
           operation(Copy, data, other.data);
 
@@ -767,14 +775,17 @@ namespace etl
     {
       if (this != &other)
       {
-        if (other.index() == variant_npos)
+        if (!valueless_by_exception())
+        {
+          operation(Destroy, data, nullptr);
+        }
+
+        if (other.valueless_by_exception())
         {
           type_id = variant_npos;
         }
         else
         {
-          operation(Destroy, data, nullptr);
-
           operation = other.operation;
           operation(Move, data, other.data);
 
@@ -1371,7 +1382,7 @@ namespace etl
   ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&&
     get(const etl::variant<TTypes...>&& v)
   {
-#if ETL_USING_CPP17 & !defined(ETL_VARIANT_FORCE_CPP11)
+#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
 #endif
 

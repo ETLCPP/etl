@@ -338,11 +338,11 @@ namespace etl
         }
 
         // Find the integral part of the floating point
-        T f_integral = floor(etl::absolute(value));
+        T f_integral = ::floor(etl::absolute(value));
         uworkspace_t integral = static_cast<uworkspace_t>(f_integral);
 
         // Find the fractional part of the floating point.
-        uworkspace_t fractional = static_cast<uworkspace_t>(round((etl::absolute(value) - f_integral) * multiplier));
+        uworkspace_t fractional = static_cast<uworkspace_t>(::round((etl::absolute(value) - f_integral) * multiplier));
 
         // Check for a rounding carry to the integral.
         if (fractional == multiplier)

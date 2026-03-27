@@ -210,6 +210,8 @@ using etl::is_assignable;
 using etl::is_constructible;
 using etl::is_copy_constructible;
 using etl::is_move_constructible;
+using etl::is_copy_assignable;
+using etl::is_move_assignable;
 
 //*************************
 template <>
@@ -224,6 +226,16 @@ struct etl::is_copy_constructible<Copyable> : public etl::true_type
 
 template <>
 struct etl::is_move_constructible<Copyable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_copy_assignable<Copyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_assignable<Copyable> : public etl::true_type
 {
 };
 
@@ -243,6 +255,16 @@ struct etl::is_move_constructible<Moveable> : public etl::true_type
 {
 };
 
+template <>
+struct etl::is_copy_assignable<Moveable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_assignable<Moveable> : public etl::true_type
+{
+};
+
 //*************************
 template <>
 struct etl::is_assignable<MoveableCopyable, MoveableCopyable> : public etl::true_type
@@ -256,6 +278,16 @@ struct etl::is_copy_constructible<MoveableCopyable> : public etl::true_type
 
 template <>
 struct etl::is_move_constructible<MoveableCopyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_assignable<MoveableCopyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_assignable<MoveableCopyable> : public etl::true_type
 {
 };
 #endif
@@ -1293,6 +1325,34 @@ namespace
       CHECK((etl::is_move_constructible<Copyable>::value) == (std::is_move_constructible<Copyable>::value));
       CHECK((etl::is_move_constructible<Moveable>::value) == (std::is_move_constructible<Moveable>::value));
       CHECK((etl::is_move_constructible<MoveableCopyable>::value) == (std::is_move_constructible<MoveableCopyable>::value));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_copy_assignable)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_copy_assignable_v<Copyable>) == (std::is_copy_assignable_v<Copyable>));
+      CHECK((etl::is_copy_assignable_v<Moveable>) == (std::is_copy_assignable_v<Moveable>));
+      CHECK((etl::is_copy_assignable_v<MoveableCopyable>) == (std::is_copy_assignable_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_copy_assignable<Copyable>::value) == (std::is_copy_assignable<Copyable>::value));
+      CHECK((etl::is_copy_assignable<Moveable>::value) == (std::is_copy_assignable<Moveable>::value));
+      CHECK((etl::is_copy_assignable<MoveableCopyable>::value) == (std::is_copy_assignable<MoveableCopyable>::value));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_move_assignable)
+    {
+  #if ETL_USING_CPP17
+      CHECK((etl::is_move_assignable_v<Copyable>) == (std::is_move_assignable_v<Copyable>));
+      CHECK((etl::is_move_assignable_v<Moveable>) == (std::is_move_assignable_v<Moveable>));
+      CHECK((etl::is_move_assignable_v<MoveableCopyable>) == (std::is_move_assignable_v<MoveableCopyable>));
+  #else
+      CHECK((etl::is_move_assignable<Copyable>::value) == (std::is_move_assignable<Copyable>::value));
+      CHECK((etl::is_move_assignable<Moveable>::value) == (std::is_move_assignable<Moveable>::value));
+      CHECK((etl::is_move_assignable<MoveableCopyable>::value) == (std::is_move_assignable<MoveableCopyable>::value));
   #endif
     }
 
