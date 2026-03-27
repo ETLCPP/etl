@@ -34,6 +34,8 @@ SOFTWARE.
 #include "etl/error_handler.h"
 #include "etl/exception.h"
 
+#include <cstring>
+
 namespace
 {
   class TestException1 : public etl::exception

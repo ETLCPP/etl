@@ -713,6 +713,7 @@ namespace etl
   //***************************************************************************
   /// get_token
   //***************************************************************************
+#include "private/diagnostic_uninitialized_push.h"
   template <typename TInput, typename TStringView>
   etl::optional<TStringView> get_token(const TInput& input, typename TInput::const_pointer delimiters, const etl::optional<TStringView>& last_view, bool ignore_empty_tokens)
   {
@@ -755,6 +756,7 @@ namespace etl
 
     return etl::optional<TStringView>(view);
   }
+#include "private/diagnostic_pop.h"
 
   //***************************************************************************
   /// get_token_list

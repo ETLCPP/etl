@@ -454,7 +454,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Removes the oldest value from the back of the queue.
+    /// Removes the oldest value from the front of the queue.
     /// Does nothing if the queue is already empty.
     /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     //*************************************************************************

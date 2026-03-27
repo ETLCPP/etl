@@ -43,7 +43,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// A definition of reference_wrapper for those that don't have C++ 0x11 support.
+  /// A definition of reference_wrapper for those that don't have C++11 support.
   ///\ingroup reference
   //***************************************************************************
   template <typename T>
@@ -78,6 +78,17 @@ namespace etl
     {
       return *t;
     }
+
+#if ETL_USING_CPP11
+    // implementation without etl::invoke, which would add a circular dependency
+    template <typename... TArgs>
+    ETL_CONSTEXPR20 auto operator()(TArgs&&... args) const
+      noexcept(noexcept(etl::declval<T&>()(etl::declval<TArgs>()...)))
+      -> decltype(etl::declval<T&>()(etl::declval<TArgs>()...))
+    {
+      return get()(etl::forward<TArgs>(args)...);
+    }
+#endif
 
   private:
 
@@ -224,9 +235,9 @@ namespace etl
     typedef int is_transparent;
 
     template <typename T1, typename T2>
-    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(!(static_cast<T2&&>(rhs) < static_cast<T1&&>(lhs)))
     {
-      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
+      return !(static_cast<T2&&>(rhs) < static_cast<T1&&>(lhs));
     }
   };
 #endif
@@ -250,7 +261,7 @@ namespace etl
     typedef int is_transparent;
 
     template <typename T1, typename T2>
-    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T2&&>(rhs) < static_cast<T1&&>(lhs))
     {
       return static_cast<T2&&>(rhs) < static_cast<T1&&>(lhs);
     }
@@ -276,9 +287,9 @@ namespace etl
     typedef int is_transparent;
 
     template <typename T1, typename T2>
-    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(!(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs)))
     {
-      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
     }
   };
 #endif
@@ -303,7 +314,7 @@ namespace etl
     typedef int is_transparent;
 
     template <typename T1, typename T2>
-    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs))
     {
       return static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs);
     }
@@ -329,7 +340,7 @@ namespace etl
     typedef int is_transparent;
 
     template <typename T1, typename T2>
-    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(!(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs)))
     {
       return !(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs));
     }
@@ -646,7 +657,41 @@ namespace etl
     return private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...>(member_function);
   }
 #endif
+
+#if ETL_USING_CPP14
+  struct identity
+  {
+    template<class T>
+    constexpr T&& operator()(T&& t) const noexcept
+    {
+      return etl::forward<T>(t);
+    }
+  };
+#endif
+
+#if ETL_USING_CPP17
+namespace ranges
+{
+  struct equal_to
+  {
+    template <typename T, typename U>
+    constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) == static_cast<U&&>(u))
+    {
+      return static_cast<T&&>(t) == static_cast<U&&>(u);
+    }
+  };
+
+  struct less
+  {
+    template <typename T, typename U>
+    constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) < static_cast<U&&>(u))
+    {
+      return static_cast<T&&>(t) < static_cast<U&&>(u);
+    }
+  };
+}
+#endif
+
 }
 
 #endif
-

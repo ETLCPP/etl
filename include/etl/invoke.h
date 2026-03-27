@@ -110,7 +110,7 @@ namespace etl
 
   //****************************************************************************
   /// Pointer to member object + object (or derived) reference
-  template <typename TFunction, 
+  template <typename TFunction,
             typename TObject,
             typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
                                         !etl::is_pointer<etl::decay_t<TObject>>::value &&
@@ -122,10 +122,36 @@ namespace etl
   }
 
   //****************************************************************************
+  /// reference_wrapper callable (unwrap and call directly)
+  template <typename TFunction,
+            typename... TArgs,
+            typename = etl::enable_if_t<etl::is_reference_wrapper<etl::decay_t<TFunction>>::value &&
+                                        !etl::is_member_pointer<etl::decay_t<decltype(etl::declval<TFunction>().get())>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args)
+    -> decltype(f.get()(etl::forward<TArgs>(args)...))
+  {
+    return f.get()(etl::forward<TArgs>(args)...);
+  }
+
+  //****************************************************************************
+  /// reference_wrapper callable wrapping a member pointer (unwrap and re-invoke)
+  template <typename TFunction,
+            typename... TArgs,
+            typename = etl::enable_if_t<etl::is_reference_wrapper<etl::decay_t<TFunction>>::value &&
+                                        etl::is_member_pointer<etl::decay_t<decltype(etl::declval<TFunction>().get())>>::value>,
+            typename = void>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args)
+    -> decltype(etl::invoke(f.get(), etl::forward<TArgs>(args)...))
+  {
+    return etl::invoke(f.get(), etl::forward<TArgs>(args)...);
+  }
+
+  //****************************************************************************
   /// General callable (function object / lambda / function pointer)
   template <typename TFunction, 
             typename... TArgs,
-            typename = etl::enable_if_t<!etl::is_member_pointer<etl::decay_t<TFunction>>::value>>
+            typename = etl::enable_if_t<!etl::is_member_pointer<etl::decay_t<TFunction>>::value &&
+                                        !etl::is_reference_wrapper<etl::decay_t<TFunction>>::value>>
   ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args)
     -> decltype(etl::forward<TFunction>(f)(etl::forward<TArgs>(args)...))
   {
@@ -204,11 +230,30 @@ namespace etl
     using invoke_result_impl_t = typename invoke_result_impl<TFunction, TArgs...>::type;
 
     //*******************************************
-    // Map raw function type to pointer.
+    // Unwrap reference_wrapper<T> to its underlying type T&,
+    // forwarding to etl::unwrap_ref_decay for reference_wrapper detection.
+    template <typename TFunction, bool = etl::is_reference_wrapper<etl::decay_t<TFunction>>::value>
+    struct unwrap_ref_callable
+    {
+      using type = TFunction;
+    };
+
+    template <typename TFunction>
+    struct unwrap_ref_callable<TFunction, true>
+    {
+      using type = etl::unwrap_ref_decay_t<TFunction>;
+    };
+
+    template <typename TFunction>
+    using unwrap_ref_callable_t = typename unwrap_ref_callable<TFunction>::type;
+
+    //*******************************************
+    // Map raw function type to pointer, and unwrap reference_wrapper
+    // so that function_traits sees the actual callable type.
     template <typename TFunction>
     using effective_callable_t = etl::conditional_t<etl::is_function<etl::remove_reference_t<TFunction>>::value,
                                                     etl::add_pointer_t<etl::remove_reference_t<TFunction>>,
-                                                    TFunction>;
+                                                    unwrap_ref_callable_t<TFunction>>;
   }
 
   //****************************************************************************
