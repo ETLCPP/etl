@@ -252,6 +252,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_bounds_exception)
+    {
+      etl::queue<int, 4> queue;
+      CHECK(queue.empty());
+      CHECK_THROW(queue.front(), etl::queue_empty);
+    }
+
+    //*************************************************************************
     TEST(test_front_const)
     {
       etl::queue<int, 4> queue;
@@ -271,6 +279,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_const_bounds_exception)
+    {
+      etl::queue<int, 4> queue;
+      const etl::queue<int, 4>& constQueue = queue;
+
+      CHECK(constQueue.empty());
+      CHECK_THROW(constQueue.front(), etl::queue_empty);
+    }
+
+    //*************************************************************************
     TEST(test_back)
     {
       etl::queue<int, 4> queue;
@@ -286,6 +304,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_back_bounds_exception)
+    {
+      etl::queue<int, 4> queue;
+      CHECK(queue.empty());
+      CHECK_THROW(queue.back(), etl::queue_empty);
+    }
+    
+    //*************************************************************************
     TEST(test_back_const)
     {
       etl::queue<int, 4> queue;
@@ -299,6 +325,16 @@ namespace
 
       queue.push(3);
       CHECK_EQUAL(3, constQueue.back());
+    }
+
+    //*************************************************************************
+    TEST(test_back_const_bounds_exception)
+    {
+      etl::queue<int, 4> queue;
+      const etl::queue<int, 4>& constQueue = queue;
+
+      CHECK(constQueue.empty());
+      CHECK_THROW(constQueue.back(), etl::queue_empty);
     }
 
     //*************************************************************************

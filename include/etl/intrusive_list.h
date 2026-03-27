@@ -118,6 +118,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// Base for intrusive list.
   ///\ingroup intrusive_list
@@ -769,33 +770,41 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<const_pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<pointer>(this->get_tail());
     }
 
     //*************************************************************************
     /// Gets a const reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<const_pointer>(this->get_tail());
     }
 

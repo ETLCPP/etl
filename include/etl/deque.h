@@ -844,37 +844,45 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the item at the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A reference to the item at the front of the deque.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *_begin;
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A const reference to the item at the front of the deque.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *_begin;
     }
 
     //*************************************************************************
     /// Gets a reference to the item at the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A reference to the item at the back of the deque.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *(_end - 1);
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A const reference to the item at the back of the deque.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *(_end - 1);
     }
 

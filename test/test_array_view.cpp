@@ -480,6 +480,20 @@ namespace
       }
     }
 
+#ifdef ETL_CHECK_INDEX_OPERATOR
+
+    //*************************************************************************
+    TEST(test_index_operator_bounds_check)
+    {
+      View  view(etldata.begin(), etldata.end());
+      CView cview(etldata.begin(), etldata.end());
+
+      CHECK_THROW(view[view.size()], etl::array_view_bounds);
+      CHECK_THROW(cview[cview.size()], etl::array_view_bounds);
+    }
+  
+#endif
+
     //*************************************************************************
     TEST(test_at)
     {
@@ -730,6 +744,18 @@ namespace
 
       CHECK_EQUAL(hashdata, hashview);
       CHECK_EQUAL(hashdata, hashcview);
+    }
+
+    TEST(test_bounds_check)
+    {
+      View view;
+
+      CHECK_EQUAL(0U, view.size());
+      CHECK_EQUAL(0U, view.max_size());
+      CHECK(view.empty());
+
+      CHECK_THROW(view.front(), etl::array_view_empty);
+      CHECK_THROW(view.back(), etl::array_view_empty);
     }
 
     //*************************************************************************
