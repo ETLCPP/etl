@@ -513,6 +513,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST_FIXTURE(SetupFixture, test_front)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -523,8 +524,10 @@ namespace
       Data emptyData;
       CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST_FIXTURE(SetupFixture, test_front_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -535,6 +538,7 @@ namespace
       const Data emptyData;
       CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_back)
@@ -998,6 +1002,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
     {
       const int INITIAL_VALUE   = 0;
@@ -1007,6 +1012,7 @@ namespace
 
       CHECK_THROW(data.insert(data2.end(), 1, INITIAL_VALUE);, etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
@@ -1062,6 +1068,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST_FIXTURE(SetupFixture, test_insert_position_range_out_of_bounds)
     {
       Data data;
@@ -1069,6 +1076,7 @@ namespace
 
       CHECK_THROW(data.insert(data2.end(), insert_data.cbegin(), insert_data.cend());, etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)

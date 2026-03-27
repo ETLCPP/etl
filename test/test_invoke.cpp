@@ -481,4 +481,153 @@ SUITE(test_invoke)
     CHECK_EQUAL(1, etl::invoke(&RR::f, etl::move(rr)));
     CHECK_EQUAL(2, etl::invoke(&RR::g, rr));
   }
+
+  //*************************************************************************
+  // Tests for reference_wrapper as callable (first argument)
+  //*************************************************************************
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_free_function)
+  {
+    // reference_wrapper wrapping a function (decays to function pointer)
+    auto ref_fn = etl::ref(free_add);
+
+    CHECK_EQUAL(3, etl::invoke(ref_fn, 1, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_functor)
+  {
+    Functor functor(10);
+    auto ref_functor = etl::ref(functor);
+
+    CHECK_EQUAL(12, etl::invoke(ref_functor, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_const_functor)
+  {
+    const ConstFunctor functor(10);
+    auto ref_functor = etl::cref(functor);
+
+    CHECK_EQUAL(12, etl::invoke(ref_functor, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_lambda)
+  {
+    int capture_value = 5;
+    auto lambda = [capture_value](int a) { return a + capture_value; };
+    auto ref_lambda = etl::ref(lambda);
+
+    CHECK_EQUAL(6, etl::invoke(ref_lambda, 1));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_nothrow_functor)
+  {
+    NoThrowFunctor nothrow_functor;
+    auto ref_functor = etl::ref(nothrow_functor);
+
+    CHECK_EQUAL(12, etl::invoke(ref_functor, 10));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_throwing_functor)
+  {
+    ThrowingFunctor throwing_functor;
+    auto ref_functor = etl::ref(throwing_functor);
+
+    CHECK_THROW(etl::invoke(ref_functor, 10), int);
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_member_function_pointer)
+  {
+    // reference_wrapper wrapping a pointer-to-member-function
+    auto pmf = &Base::add;
+    auto ref_pmf = etl::ref(pmf);
+
+    Base base(10);
+
+    CHECK_EQUAL(11, etl::invoke(ref_pmf, base, 1));
+    CHECK_EQUAL(12, etl::invoke(ref_pmf, &base, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_const_member_function_pointer)
+  {
+    auto pmf = &Base::add_const;
+    auto ref_pmf = etl::ref(pmf);
+
+    const Base const_base(20);
+
+    CHECK_EQUAL(24, etl::invoke(ref_pmf, const_base, 3));
+    CHECK_EQUAL(25, etl::invoke(ref_pmf, &const_base, 4));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_member_object_pointer)
+  {
+    // reference_wrapper wrapping a pointer-to-member-data
+    auto pmd = &MemberObj::i;
+    auto ref_pmd = etl::ref(pmd);
+
+    MemberObj obj(42);
+
+    CHECK_EQUAL(42, etl::invoke(ref_pmd, obj));
+    CHECK_EQUAL(42, etl::invoke(ref_pmd, &obj));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_derived_member_function)
+  {
+    // reference_wrapper wrapping member pointer, invoked on derived class
+    auto pmf = &Base::add;
+    auto ref_pmf = etl::ref(pmf);
+
+    Derived derived(10);
+
+    CHECK_EQUAL(11, etl::invoke(ref_pmf, derived, 1));
+    CHECK_EQUAL(12, etl::invoke(ref_pmf, &derived, 2));
+  }
+
+#if ETL_USING_CPP14
+  //*************************************************************************
+  TEST(test_reference_wrapper_identity)
+  {
+    // This is the case that triggered the original compile error:
+    // reference_wrapper<etl::identity> as a callable
+    etl::identity id;
+    auto ref_id = etl::ref(id);
+
+    CHECK_EQUAL(42, etl::invoke(ref_id, 42));
+    CHECK_EQUAL(7, etl::invoke(ref_id, 7));
+  }
+#endif
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_with_reference_wrapper_arg)
+  {
+    // reference_wrapper as both callable and second argument (member pointer case)
+    auto pmf = &Base::add;
+    auto ref_pmf = etl::ref(pmf);
+
+    Base base(10);
+    auto ref_base = etl::ref(base);
+
+    CHECK_EQUAL(11, etl::invoke(ref_pmf, ref_base, 1));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_member_object_with_reference_wrapper_arg)
+  {
+    auto pmd = &MemberObj::i;
+    auto ref_pmd = etl::ref(pmd);
+
+    MemberObj obj(99);
+    auto ref_obj = etl::ref(obj);
+
+    CHECK_EQUAL(99, etl::invoke(ref_pmd, ref_obj));
+  }
 }

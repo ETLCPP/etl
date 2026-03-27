@@ -274,6 +274,43 @@ namespace
       CHECK_EQUAL(1, ra);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_reference_wrapper_call_operator_no_args)
+    {
+      struct functor
+      {
+        int operator()() const { return 42; }
+      };
+
+      functor f;
+      etl::reference_wrapper<functor> rw(f);
+      CHECK_EQUAL(42, rw());
+    }
+
+    //*************************************************************************
+    TEST(test_reference_wrapper_call_operator_with_args)
+    {
+      struct adder
+      {
+        int operator()(int a, int b) const { return a + b; }
+      };
+
+      adder f;
+      etl::reference_wrapper<adder> rw(f);
+      CHECK_EQUAL(7, rw(3, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_reference_wrapper_call_operator_function_pointer)
+    {
+      int (*fn)(int, int) = [](int a, int b) { return a * b; };
+
+      etl::reference_wrapper<int(*)(int, int)> rw(fn);
+      CHECK_EQUAL(12, rw(3, 4));
+    }
+#endif
+
     //*************************************************************************
     TEST(test_plus)
     {
@@ -449,5 +486,96 @@ namespace
       result = f3(mft, "Arg1", " : Arg2");
       CHECK_EQUAL("Function3_Const: Arg1 : Arg2", result);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_identity)
+    {
+      etl::identity i;
+      std::string s{"abc"};
+      CHECK_EQUAL(s, i(s));
+      CHECK_EQUAL(&s, &i(s));
+      CHECK_EQUAL(&s, i(&s));
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_ranges_equal_to_same_type)
+    {
+      etl::ranges::equal_to eq;
+
+      CHECK(eq(1, 1));
+      CHECK(!eq(1, 2));
+      CHECK(!eq(2, 1));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_equal_to_mixed_types)
+    {
+      etl::ranges::equal_to eq;
+
+      // int vs long
+      CHECK(eq(1, 1L));
+      CHECK(!eq(1, 2L));
+      CHECK(eq(2L, 2));
+
+      // int vs short
+      CHECK(eq(42, short(42)));
+      CHECK(!eq(42, short(43)));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_equal_to_constexpr)
+    {
+      constexpr etl::ranges::equal_to eq{};
+      constexpr bool result_equal     = eq(5, 5);
+      constexpr bool result_not_equal = eq(5, 6);
+
+      CHECK(result_equal);
+      CHECK(!result_not_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_less_same_type)
+    {
+      etl::ranges::less lt;
+
+      CHECK(lt(1, 2));
+      CHECK(!lt(2, 1));
+      CHECK(!lt(1, 1));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_less_mixed_types)
+    {
+      etl::ranges::less lt;
+
+      // int vs long
+      CHECK(lt(1, 2L));
+      CHECK(!lt(2, 1L));
+      CHECK(!lt(1, 1L));
+      CHECK(lt(1L, 2));
+
+      // int vs short
+      CHECK(lt(42, short(43)));
+      CHECK(!lt(42, short(42)));
+      CHECK(!lt(43, short(42)));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_less_constexpr)
+    {
+      constexpr etl::ranges::less lt{};
+      constexpr bool result_less     = lt(5, 6);
+      constexpr bool result_not_less = lt(6, 5);
+      constexpr bool result_equal    = lt(5, 5);
+
+      CHECK(result_less);
+      CHECK(!result_not_less);
+      CHECK(!result_equal);
+    }
+#endif
+
   }
 }

@@ -31,7 +31,6 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "algorithm.h"
 #include "index_of_type.h"
 #include "integral_limits.h"
 #include "static_assert.h"
