@@ -9,7 +9,7 @@ title: "Embedded Template Library"
 {{< /callout >}}
 
 {{< callout emoji="❓">}}
- ### [Is the ETL free?]({{< ref "Is the ETL free.md" >}})
+ [***Is the ETL free?***]({{< ref "Is the ETL free.md" >}})
 {{< /callout >}}
 
 ## Motivation
@@ -19,7 +19,7 @@ C++ is a powerful language for embedded systems development, with templates offe
 
 In many embedded applications, dynamic memory allocation is discouraged or outright prohibited, making standard STL containers and many other components impractical or unusable.  
 
-What’s needed is a template library specifically designed for embedded systems — one that allows developers to define fixed or maximum sizes for containers and other objects at compile time. Additionally, since many embedded toolchains still lack full support for standards beyond C++03, it's valuable to have access to a library that backports select features from later versions of the C++ Standard Library.  
+What’s needed is a template library specifically designed for embedded systems — one that allows developers to define fixed or maximum sizes for containers and other objects at compile time. Additionally, since many older (but still in use) embedded toolchains lack full support for standards beyond C++03, it's valuable to have access to a library that backports select features from later versions of the C++ Standard Library.  
 
 ## About the ETL
  
@@ -77,11 +77,13 @@ Continuous integration via GitHub Actions.
 - Archived: A snapshot of the ETL is preserved in the Arctic Code Vault for long-term digital preservation.
 
 ## Support the ETL
-### Is the ETL free?
 Maintaining the ETL can take a lot of man-hours of work, but unfortunately it doesn't pay the bills. When I have to take on paying work, the ETL gets a lot less attention. So if you have found the library is an important component in your work and you would like to help out, then please consider by supporting the project.
-Many thanks.
-John.
+
+[**Is the ETL free?**]({{< relref "is the ETL free.md" >}})
 
 Any help porting the library to work under different platforms and compilers would be gratefully received.  
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal
 or RTOS, and DSPs.
+
+Many thanks.  
+John.

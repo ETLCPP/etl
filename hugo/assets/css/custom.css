@@ -1,3 +1,20 @@
+.highlight .chroma .k,
+.highlight .chroma .kc,
+.highlight .chroma .kd,
+.highlight .chroma .kn,
+.highlight .chroma .kp,
+.highlight .chroma .kr, 
+.highlight .chroma .kt, 
+.highlight .chroma .nc,
+.highlight .chroma .cp {
+  font-weight: normal;
+}
+
+html.dark .hextra-code-block .highlight .chroma .cs,
+html.dark .hextra-code-block .highlight .chroma .cp,
+html.dark .hextra-code-block .highlight .chroma .cpf {
+  font-weight: normal;
+}
 
 /* Definitions for light mode */
 html:not(.dark) h1 { 
@@ -46,7 +63,7 @@ html:not(.dark) .hx\:font-extrabold {
 
 /* inactive */
 html:not(.dark) .hx\:text-gray-500 {
-  color: rgb(30, 30, 30) !important;
+  color: black !important;
 }
 
 /* active */
@@ -58,13 +75,30 @@ html:not(.dark) .content p.red-text {
   color: red !important;
 }
 
-/* Definitions for dark mode */
+/* Regular item hover */
+html:not(.dark) .hextra-sidebar-item a:hover,
+html:not(.dark) .hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
+
+/* Active item default + hover - must come AFTER regular hover */
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a span,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: coral !important;
+  color: white !important;
+}
+
+
+
 html.dark body {
   background-color: #1e1e1e !important;
 }
 
 html.dark main {
-  background-color: #1e1e1e !important;
+  background-color: #252525 !important;
 }
 
 html.dark .hx\:dark\:shadow-\[0_-12px_16px_\#111\] {
@@ -73,14 +107,7 @@ html.dark .hx\:dark\:shadow-\[0_-12px_16px_\#111\] {
 
 html.dark .hx\:dark\:bg-dark {
   background-color: #1e1e1e !important;
-}
-
-html.dark #backToTop {
-  color: #e0e0e0 !important;
-}
-
-html.dark #backToTop:hover {
-  color: white !important;
+  border-color: grey !important;
 }
 
 html.dark h1 
@@ -100,20 +127,24 @@ html.dark h4 {
 }
 
 html.dark p { 
-  color: #f0f0f0 !important; 
+  color: #c0c0c0 !important; 
+}
+
+html.dark p strong {
+  color: #c4c3a6;
 }
 
 html.dark dl,
 html.dark dl dt code,
 html.dark dl dd {
-  color: white !important;
+  color: #c0c0c0 !important;
   background-color: #444444 !important;
 }
 
 html.dark code, 
 html.dark pre,
 html.dark pre code {
-  color: lightyellow !important;
+  color: #c0c0c0 !important;
   background-color: #444444 !important;
 }
 
@@ -129,19 +160,37 @@ html.dark .hx\:font-extrabold {
 
 /* inactive */
 html.dark .hx\:text-gray-500 {
-  color: lightgrey !important;
+  color: #c0c0c0 !important;
 }
 
 /* active */
 html.dark .hextra-sidebar-active-item {
-  color: white !important;
+  color: #c0c0c0 !important;
+}
+
+html.dark .hextra-code-block .highlight .chroma span.p {
+  color: #c0c0c0;
 }
 
 html.dark .content p.red-text {
   color: salmon !important;
 }
 
+/* Regular item hover */
+html.dark .hextra-sidebar-item a:hover,
+html.dark .hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
 
+/* Active item default + hover - must come AFTER regular hover */
+html.dark .hextra-sidebar-item[data-active="true"] a,
+html.dark .hextra-sidebar-item[data-active="true"] a span,
+html.dark .hextra-sidebar-item[data-active="true"] a:hover,
+html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: rgb(177, 87, 54) !important;
+  color: #e0e0e0 !important;
+}
 
 /* Common definitions */
 
@@ -160,20 +209,20 @@ html.dark .content p.red-text {
 }
 
 /* Regular item hover */
-.hextra-sidebar-item a:hover,
+/* .hextra-sidebar-item a:hover,
 .hextra-sidebar-item a:hover span {
   background-color: rgb(250, 195, 175) !important;
   color: black !important;
-}
+} */
 
 /* Active item default + hover - must come AFTER regular hover */
-.hextra-sidebar-item[data-active="true"] a,
+/* .hextra-sidebar-item[data-active="true"] a,
 .hextra-sidebar-item[data-active="true"] a span,
 .hextra-sidebar-item[data-active="true"] a:hover,
 .hextra-sidebar-item[data-active="true"] a:hover span {
-  background-color: coral !important;
-  color: #ffffff !important;
-}
+  background-color: rgb(177, 87, 54) !important;
+  color: #e0e0e0 !important;
+} */
 
 .content ul li {
   font-family: Roboto, sans-serif !important;

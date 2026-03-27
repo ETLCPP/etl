@@ -6,9 +6,8 @@ theme = 'hextra'
 
 [markup]
   [markup.highlight]
-    noClasses = false
-    style = "plaintext"
-    codeFences = false
+    noClasses = false   # Must be false to use external CSS
+    style = "github"
 
   [markup.goldmark.renderer]
     unsafe = true
