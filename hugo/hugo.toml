@@ -48,4 +48,14 @@ theme = 'hextra'
 [[menus.main]]
   name = "Home"
   pageRef = "/docs"
-  weight = 10
+  weight = 1
+
+[[menus.main]]
+name = "About"
+url = "/about/"
+weight = 999
+
+[[menus.main]]
+name = "Blog"
+url = "/blog/"
+weight = 3

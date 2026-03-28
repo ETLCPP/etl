@@ -29,7 +29,7 @@ html:not(.dark) h2 {
 html:not(.dark) h3, 
 html:not(.dark) h4 
 { 
-  color: green !important; 
+  color: rgb(29, 172, 29) !important; 
   border-bottom: 1px solid darkgrey !important; 
 }
 
