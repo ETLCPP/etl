@@ -573,6 +573,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Construct from a nullptr.
+    /// Clears the inplace_function.
+    /// \param nullptr_t Null pointer
+    //*************************************************************************
+    inplace_function(etl::nullptr_t) noexcept
+    {
+      clear();
+    }
+
+    //*************************************************************************
     /// Construct from object + non-const member function (runtime).
     /// \tparam TObject The object type.
     /// \param method The member function pointer.
