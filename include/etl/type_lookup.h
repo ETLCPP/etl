@@ -84,7 +84,7 @@ namespace etl
     struct nulltype {};
 
     // For N type pairs.
-    template <size_t Id, typename T1, typename... TRest>
+    template <int Id, typename T1, typename... TRest>
     struct type_from_id_helper
     {
       using type = typename etl::conditional<Id == T1::Id,
@@ -93,7 +93,7 @@ namespace etl
     };
 
     // Specialisation for 1 type pair.
-    template <size_t Id, typename T1>
+    template <int Id, typename T1>
     struct type_from_id_helper<Id, T1>
     {
       using type = typename etl::conditional<Id == T1::Id,
@@ -109,7 +109,7 @@ namespace etl
     template <int Id>
     struct type_from_id
     {
-      using type = typename type_from_id_helper<size_t(Id), TTypes...>::type;
+      using type = typename type_from_id_helper<Id, TTypes...>::type;
 
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
