@@ -816,7 +816,6 @@ namespace etl
   {
     const T quotient  = numerator / denominator;
     const T remainder = numerator % denominator;
-    const T direction = ((numerator >= 0U) == (denominator >= 0U)) ? 1 : -1;
 
     if ((remainder * 2U) < denominator)
     {
@@ -824,12 +823,12 @@ namespace etl
     }
     else if ((remainder * 2U) > denominator)
     {
-      return quotient + direction;
+      return quotient + 1U;
     }
     else
     {
       // Exactly halfway, round to odd
-      return (quotient & 1U) != 0U ? quotient : quotient + direction;
+      return (quotient & 1U) != 0U ? quotient : quotient + 1U;
     }
   }
 

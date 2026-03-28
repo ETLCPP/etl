@@ -100,7 +100,7 @@ namespace etl
       /// The return type for to_duration.
       //***********************************************************************
       using precision = etl::chrono::duration<common_type_t<typename TDuration::rep, etl::chrono::seconds::rep>, 
-                                              ratio<1, etl::power<10, fractional_width>::value>>;
+                                              ratio<1, etl::power<10, size_t(fractional_width)>::value>>;
 
       //***********************************************************************
       /// Default constructor.

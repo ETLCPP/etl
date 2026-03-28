@@ -562,7 +562,7 @@ namespace etl
       }
       else
       {
-        return etl::distance(begin(), iposition);
+        return static_cast<size_type>(etl::distance(begin(), iposition));
       }
     }
 
@@ -604,7 +604,7 @@ namespace etl
       }
       else
       {
-        return etl::distance(begin(), iposition);
+        return static_cast<size_type>(etl::distance(begin(), iposition));
       }
     }
 
@@ -676,7 +676,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<ptrdiff_t>(size() - position - 1);
 
       while (it != rend())
       {
@@ -773,7 +773,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<ptrdiff_t>(size() - position - 1);
 
       while (it != rend())
       {
@@ -1018,7 +1018,7 @@ template <typename T>
 std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
                                                         etl::basic_string_view<T, etl::char_traits<T> > text)
 {
-  os.write(text.data(), text.size());
+  os.write(text.data(), static_cast<std::streamsize>(text.size()));
   return os;
 }
 #endif

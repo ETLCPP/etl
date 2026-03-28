@@ -489,7 +489,7 @@ namespace etl
     //*************************************************************************
     unaligned_type(const void* address)
     {
-      etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), sizeof(T), this->storage);
     }
 
     //*************************************************************************
@@ -499,7 +499,7 @@ namespace etl
     {
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
 
-      etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), sizeof(T), this->storage);
     }
 
     //*************************************************************************

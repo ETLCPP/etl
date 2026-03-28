@@ -225,7 +225,7 @@ namespace
 
       etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *++ci);
       }
@@ -239,7 +239,7 @@ namespace
 
       etl::circular_iterator<DataL::const_iterator> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *++ci);
       }
@@ -253,7 +253,7 @@ namespace
 
       etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *++ci);
       }
@@ -267,7 +267,7 @@ namespace
 
       etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci++);
       }
@@ -281,7 +281,7 @@ namespace
 
       etl::circular_iterator<DataL::const_iterator> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci++);
       }
@@ -295,7 +295,7 @@ namespace
 
       etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci++);
       }
@@ -309,7 +309,7 @@ namespace
 
       etl::circular_iterator<ConstReversePointer> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *++ci);
       }
@@ -323,7 +323,7 @@ namespace
 
       etl::circular_iterator<DataL::const_reverse_iterator> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *++ci);
       }
@@ -337,7 +337,7 @@ namespace
 
       etl::circular_iterator<ConstReversePointer> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci++);
       }
@@ -351,7 +351,7 @@ namespace
 
       etl::circular_iterator<DataL::const_reverse_iterator> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci++);
       }
@@ -365,7 +365,7 @@ namespace
 
       etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *--ci);
       }
@@ -379,7 +379,7 @@ namespace
 
       etl::circular_iterator<DataL::const_iterator> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *--ci);
       }
@@ -393,7 +393,7 @@ namespace
 
       etl::circular_iterator<ConstReversePointer> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *--ci);
       }
@@ -407,7 +407,7 @@ namespace
 
       etl::circular_iterator<DataL::const_reverse_iterator> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *--ci);
       }
@@ -421,7 +421,7 @@ namespace
 
       etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci--);
       }
@@ -435,7 +435,7 @@ namespace
 
       etl::circular_iterator<DataL::const_iterator> ci(std::begin(data), std::end(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci--);
       }
@@ -449,7 +449,7 @@ namespace
 
       etl::circular_iterator<ConstReversePointer> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci--);
       }
@@ -463,7 +463,7 @@ namespace
 
       etl::circular_iterator<DataL::const_reverse_iterator> ci(ETL_OR_STD_R::rbegin(data), ETL_OR_STD_R::rend(data));
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % expected.size()], *ci--);
       }
@@ -619,7 +619,7 @@ namespace
       {
         etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *ci);
           ci += step;
@@ -636,7 +636,7 @@ namespace
       {
         etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(data[i % 10], *ci);
           ci = ci + step;
@@ -657,7 +657,7 @@ namespace
       {
         ci = initial;
         
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % ETL_OR_STD17::size(data)], *ci);
           ci -= step;
@@ -675,7 +675,7 @@ namespace
       {
         etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % ETL_OR_STD17::size(data)], *ci);
           ci = ci - step;

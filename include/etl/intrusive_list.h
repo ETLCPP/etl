@@ -869,7 +869,7 @@ namespace etl
       link_type* p_first = const_cast<link_type*>(cp_first);
       link_type* p_last  = const_cast<link_type*>(cp_last);
 
-      this->current_size -= etl::distance(first, last);
+      this->current_size -= static_cast<size_t>(etl::distance(first, last));
 
       p_last = this->remove_link_range(p_first, p_last);
 
@@ -1166,7 +1166,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = etl::distance(begin_, end_);
+          size_t n = static_cast<size_t>(etl::distance(begin_, end_));
           this->current_size += n;
           other.current_size -= n;
         }

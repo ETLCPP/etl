@@ -570,7 +570,7 @@ namespace etl
     typename etl::enable_if<!etl::is_pointer<TIterator>::value, void>::type
       insert(const_iterator position, TIterator first, TIterator last)
     {
-      size_t count = etl::distance(first, last);
+      size_t count = static_cast<size_t>(etl::distance(first, last));
 
       iterator position_ = to_iterator(position);
 
@@ -594,7 +594,7 @@ namespace etl
     typename etl::enable_if<etl::is_pointer<TIterator>::value, void>::type
       insert(const_iterator position, TIterator first, TIterator last)
     {
-      size_t count = etl::distance(first, last);
+      size_t count = static_cast<size_t>(etl::distance(first, last));
 
       iterator position_ = to_iterator(position);
 

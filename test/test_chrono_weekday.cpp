@@ -290,11 +290,11 @@ namespace
     {
       for (int m = 0; m < 7; ++m)
       {
-        Chrono::weekday weekday1(m);
-        Chrono::weekday weekday2(7 - m);
+        Chrono::weekday weekday1(static_cast<unsigned>(m));
+        Chrono::weekday weekday2(static_cast<unsigned>(7 - m));
 
-        Chrono::weekday std_weekday1(m);
-        Chrono::weekday std_weekday2(7 - m);
+        Chrono::weekday std_weekday1(static_cast<unsigned>(m));
+        Chrono::weekday std_weekday2(static_cast<unsigned>(7 - m));
 
         auto days12 = weekday1 - weekday2;
         auto days21 = weekday2 - weekday1;
@@ -339,8 +339,8 @@ namespace
     //*************************************************************************
     TEST(test_weekday_comparison_operators)
     {
-      Chrono::weekday weekday1(1);
-      Chrono::weekday weekday2(2);
+      Chrono::weekday weekday1(static_cast<unsigned>(1));
+      Chrono::weekday weekday2(static_cast<unsigned>(2));
 
       CHECK_TRUE(weekday1  == weekday1);
       CHECK_FALSE(weekday1 != weekday1);
@@ -375,7 +375,7 @@ namespace
 
       for (int i = 0; i < 256; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::weekday>()(Chrono::weekday(i)));
+        hashes.push_back(etl::hash<Chrono::weekday>()(Chrono::weekday(static_cast<unsigned>(i))));
       }
 
       std::sort(hashes.begin(), hashes.end());

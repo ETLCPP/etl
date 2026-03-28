@@ -325,7 +325,7 @@ namespace etl
       //*************************************************************************
       iterator& operator +=(int n)
       {
-        current += size_type(picb->buffer_size + n);
+        current += size_type(static_cast<int>(picb->buffer_size) + n);
         current %= picb->buffer_size;
 
         return (*this);
@@ -397,7 +397,7 @@ namespace etl
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
         const difference_type reference_index = lhs.container().begin().get_index();
-        const size_t buffer_size = lhs.container().max_size() + 1UL;
+        const difference_type buffer_size = static_cast<difference_type>(lhs.container().max_size() + 1UL);
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -426,7 +426,7 @@ namespace etl
       //***************************************************
       difference_type get_index() const
       {
-        return current;
+        return static_cast<difference_type>(current);
       }
 
       //***************************************************
@@ -616,7 +616,7 @@ namespace etl
       //*************************************************************************
       const_iterator& operator +=(int n)
       {
-        current += size_type(picb->buffer_size + n);
+        current += size_type(static_cast<int>(picb->buffer_size) + n);
         current %= picb->buffer_size;
 
         return (*this);
@@ -676,7 +676,7 @@ namespace etl
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
         const difference_type reference_index = lhs.container().begin().get_index();
-        const size_t buffer_size = lhs.container().max_size() + 1UL;
+        const difference_type buffer_size = static_cast<difference_type>(lhs.container().max_size() + 1UL);
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -705,7 +705,7 @@ namespace etl
       //***************************************************
       difference_type get_index() const
       {
-        return current;
+        return static_cast<difference_type>(current);
       }
 
       //***************************************************
@@ -1065,7 +1065,7 @@ namespace etl
     {
       const difference_type index           = other.get_index();
       const difference_type reference_index = static_cast<difference_type>(other.container().out);
-      const size_t buffer_size              = other.container().buffer_size;
+      const difference_type buffer_size     = static_cast<difference_type>(other.container().buffer_size);
 
       if (index < reference_index)
       {

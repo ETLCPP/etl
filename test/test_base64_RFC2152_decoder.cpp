@@ -386,7 +386,7 @@ namespace
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -410,7 +410,7 @@ namespace
         b64.decode_final(encoded[i].data(), encoded[i].size());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -451,7 +451,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -492,7 +492,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -516,7 +516,7 @@ namespace
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -540,7 +540,7 @@ namespace
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -581,7 +581,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -656,7 +656,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -690,7 +690,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -728,7 +728,7 @@ namespace
         b64.flush();
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(b64.begin(), b64.end());
 #include "etl/private/diagnostic_pop.h"
 
@@ -743,7 +743,7 @@ namespace
     template <size_t Size>
     constexpr auto GetConstexprBase64(const etl::array<char, Size> input) noexcept
     {
-      etl::array<char, 10> output{ 0 };
+      etl::array<unsigned char, 10> output{ 0 };
 
       using codec = etl::base64_rfc2152_decoder<codec::safe_output_buffer_size(Size)>;
 

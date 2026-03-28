@@ -75,7 +75,7 @@ namespace etl
     template <typename T>
 #endif
     ETL_CONSTEXPR type_def(T value_) ETL_NOEXCEPT
-      : value(value_)
+      : value(static_cast<TValue>(value_))
     {
     }
 
@@ -130,7 +130,7 @@ namespace etl
 #endif
       operator +=(T rhs) ETL_NOEXCEPT
     {
-      value += rhs;
+      value += static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -152,7 +152,7 @@ namespace etl
 #endif
       operator -=(T rhs) ETL_NOEXCEPT
     {
-      value -= rhs;
+      value -= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -173,7 +173,7 @@ namespace etl
 #endif
       operator *=(T rhs) ETL_NOEXCEPT
     {
-      value *= rhs;
+      value *= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -194,7 +194,7 @@ namespace etl
 #endif
       operator /=(T rhs) ETL_NOEXCEPT
     {
-      value /= rhs;
+      value /= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -215,7 +215,7 @@ namespace etl
 #endif
       operator %=(T rhs) ETL_NOEXCEPT
     {
-      value %= rhs;
+      value %= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -236,7 +236,7 @@ namespace etl
 #endif
       operator &=(T rhs) ETL_NOEXCEPT
     {
-      value &= rhs;
+      value &= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -257,7 +257,7 @@ namespace etl
 #endif
       operator |=(T rhs) ETL_NOEXCEPT
     {
-      value |= rhs;
+      value |= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -278,7 +278,7 @@ namespace etl
 #endif
       operator ^=(T rhs) ETL_NOEXCEPT
     {
-      value ^= rhs;
+      value ^= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -294,7 +294,7 @@ namespace etl
     ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
      operator <<=(T rhs) ETL_NOEXCEPT
     {
-      value <<= rhs;
+      value <<= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -303,7 +303,7 @@ namespace etl
     ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type
      operator >>=(T rhs) ETL_NOEXCEPT
     {
-      value >>= rhs;
+      value >>= static_cast<TValue>(rhs);
       return *this;
     }
 
@@ -336,14 +336,14 @@ namespace etl
 #endif
       operator +(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value + rhs);
+      return type_def(lhs.value + static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
     friend ETL_CONSTEXPR type_def operator +(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs + rhs.value);
+      return type_def(static_cast<TValue>(lhs) + rhs.value);
     }
 
     //*********************************************************************
@@ -364,7 +364,7 @@ namespace etl
 #endif
       operator -(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value - rhs);
+      return type_def(lhs.value - static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -377,7 +377,7 @@ namespace etl
 #endif
       operator -(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs - rhs.value);
+      return type_def(static_cast<TValue>(lhs) - rhs.value);
     }
 
     //*********************************************************************
@@ -398,7 +398,7 @@ namespace etl
 #endif
       operator *(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value * rhs);
+      return type_def(lhs.value * static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -411,7 +411,7 @@ namespace etl
 #endif
       operator *(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs * rhs.value);
+      return type_def(static_cast<TValue>(lhs) * rhs.value);
     }
 
     //*********************************************************************
@@ -432,7 +432,7 @@ namespace etl
 #endif
       operator /(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value / rhs);
+      return type_def(lhs.value / static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -445,7 +445,7 @@ namespace etl
 #endif
       operator /(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs / rhs.value);
+      return type_def(static_cast<TValue>(lhs) / rhs.value);
     }
 
     //*********************************************************************
@@ -464,7 +464,7 @@ namespace etl
 #endif
       operator %(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value % rhs);
+      return type_def(lhs.value % static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -479,7 +479,7 @@ namespace etl
 #endif
       operator %(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs % rhs.value);
+      return type_def(static_cast<TValue>(lhs) % rhs.value);
     }
 
     //*********************************************************************
@@ -500,7 +500,7 @@ namespace etl
 #endif
       operator &(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value & rhs);
+      return type_def(lhs.value & static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -513,7 +513,7 @@ namespace etl
 #endif
       operator &(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs & rhs.value);
+      return type_def(static_cast<TValue>(lhs) & rhs.value);
     }
 
     //*********************************************************************
@@ -534,7 +534,7 @@ namespace etl
 #endif
       operator |(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value | rhs);
+      return type_def(lhs.value | static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -547,7 +547,7 @@ namespace etl
 #endif
       operator |(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs | rhs.value);
+      return type_def(static_cast<TValue>(lhs) | rhs.value);
     }
 
     //*********************************************************************
@@ -568,7 +568,7 @@ namespace etl
 #endif
       operator ^(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value ^ rhs);
+      return type_def(lhs.value ^ static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -581,7 +581,7 @@ namespace etl
 #endif
       operator ^(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs ^ rhs.value);
+      return type_def(static_cast<TValue>(lhs) ^ rhs.value);
     }
 
     //*********************************************************************
@@ -597,7 +597,7 @@ namespace etl
     friend ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
       operator <<(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value << rhs);
+      return type_def(lhs.value << static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
@@ -615,7 +615,7 @@ namespace etl
     friend ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, type_def>::type
       operator >>(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value >> rhs);
+      return type_def(lhs.value >> static_cast<TValue>(rhs));
     }
 
     //*********************************************************************

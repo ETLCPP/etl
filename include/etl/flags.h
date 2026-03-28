@@ -101,7 +101,7 @@ namespace etl
     template <value_type pattern, bool value>
     ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
     {
-      value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
+      value ? data |= (pattern & MASK) : data &= static_cast<value_type>(~pattern & MASK);
 
       return *this;
     }
@@ -110,7 +110,7 @@ namespace etl
     template <value_type pattern>
     ETL_CONSTEXPR14 flags<T, MASK>& set(bool value) ETL_NOEXCEPT
     {
-      value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
+      value ? data |= (pattern & MASK) : data &= static_cast<value_type>(~pattern & MASK);
 
       return *this;
     }
@@ -135,13 +135,11 @@ namespace etl
     //*******************************************
     ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern, bool value) ETL_NOEXCEPT
     {
-      value ? data |= (pattern & MASK) : data &= (~pattern & MASK);
+      value ? data |= (pattern & MASK) : data &= static_cast<value_type>(~pattern & MASK);
 
       return *this;
     }
 
-    //*************************************************************************
-    /// Clear all of the flags.
     //*************************************************************************
     ETL_CONSTEXPR14 flags<T, MASK>& clear() ETL_NOEXCEPT
     {
@@ -156,7 +154,7 @@ namespace etl
     template <value_type pattern>
     ETL_CONSTEXPR14 flags<T, MASK>& reset() ETL_NOEXCEPT
     {
-      data &= ~pattern;
+      data &= static_cast<value_type>(~pattern);
 
       return *this;
     }
@@ -164,7 +162,7 @@ namespace etl
     //*******************************************
     ETL_CONSTEXPR14 flags<T, MASK>& reset(value_type pattern) ETL_NOEXCEPT
     {
-      data &= ~pattern;
+      data &= static_cast<value_type>(~pattern);
 
       return *this;
     }
@@ -174,7 +172,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 flags<T, MASK>& flip() ETL_NOEXCEPT
     {
-      data = (~data & MASK);
+      data = static_cast<value_type>(~data & MASK);
 
       return *this;
     }

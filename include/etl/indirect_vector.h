@@ -221,13 +221,13 @@ namespace etl
         return *this;
       }
 
-      iterator operator +=(size_type n)
+      iterator operator +=(difference_type n)
       {
         lookup_itr += n;
         return *this;
       }
 
-      iterator operator -=(size_type n)
+      iterator operator -=(difference_type n)
       {
         lookup_itr -= n;
         return *this;
@@ -357,13 +357,13 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator +=(size_type n)
+      const_iterator operator +=(difference_type n)
       {
         lookup_itr += n;
         return *this;
       }
 
-      const_iterator operator -=(size_type n)
+      const_iterator operator -=(difference_type n)
       {
         lookup_itr -= n;
         return *this;

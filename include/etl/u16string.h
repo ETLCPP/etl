@@ -573,7 +573,7 @@ namespace etl
     {
       if (this->is_within_buffer(reinterpret_cast<const_iterator>(etl::addressof(*first))))
       {
-        this->current_size = etl::distance(first, last);
+        this->current_size = static_cast<size_type>(etl::distance(first, last));
       }
       else
       {
@@ -594,7 +594,7 @@ namespace etl
     {
       if (this->is_within_buffer(reinterpret_cast<const_iterator>(etl::addressof(*first))))
       {
-        this->current_size = etl::distance(first, last);
+        this->current_size = static_cast<size_type>(etl::distance(first, last));
       }
       else
       {

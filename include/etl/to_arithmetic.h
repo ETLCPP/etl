@@ -397,11 +397,11 @@ namespace etl
             const char digit = digit_value(c, radix);
 
             // No addition overflow?
-            is_not_overflow = ((maximum - digit) >= integral_value);
+            is_not_overflow = ((maximum - static_cast<TValue>(digit)) >= integral_value);
 
-            if ((maximum - digit) >= integral_value)
+            if ((maximum - static_cast<TValue>(digit)) >= integral_value)
             {
-              integral_value += digit;
+              integral_value += static_cast<TValue>(digit);
               is_success = true;
             }
           }
@@ -762,7 +762,7 @@ namespace etl
             const uvalue_t uvalue = static_cast<uvalue_t>(accumulator_result.value());
 
             // Convert from the accumulator type to the desired type.
-            result = (is_negative ? static_cast<TValue>(0) - uvalue : etl::bit_cast<TValue>(uvalue));
+            result = (is_negative ? static_cast<TValue>(static_cast<TValue>(0) - static_cast<TValue>(uvalue)) : etl::bit_cast<TValue>(uvalue));
           }
         }
       }

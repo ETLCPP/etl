@@ -191,13 +191,13 @@ namespace
 
     type value = type(value_);
 
-    T mask;
+    type mask;
     for (mask = value >> 1U; mask != 0; mask = mask >> 1U)
     {
       value = value ^ mask;
     }
 
-    return value;
+    return static_cast<T>(value);
   }
 
   SUITE(test_binary)
@@ -1482,40 +1482,40 @@ namespace
 
       // Shift 0
       value = value_initial;
-      value &= ~value8mask;
-      value |= value8;
+      value &= ~static_cast<uint32_t>(value8mask);
+      value |= static_cast<uint32_t>(value8);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 0>(value)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 0>(value)));
 
       // Shift 3
       value = value_initial;
-      value &= ~(value8mask << 3);
-      value |= (value8 << 3);
+      value &= ~(static_cast<uint32_t>(value8mask) << 3);
+      value |= (static_cast<uint32_t>(value8) << 3);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 3>(value)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 3>(value)));
 
       // Shift 6
       value = value_initial;
-      value &= ~(value8mask << 6);
-      value |= (value8 << 6);
+      value &= ~(static_cast<uint32_t>(value8mask) << 6);
+      value |= (static_cast<uint32_t>(value8) << 6);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 6>(value)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 6>(value)));
 
       // Shift 12
       value = value_initial;
-      value &= ~(value8mask << 12);
-      value |= (value8 << 12);
+      value &= ~(static_cast<uint32_t>(value8mask) << 12);
+      value |= (static_cast<uint32_t>(value8) << 12);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 12>(value)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 12>(value)));
 
       // Shift 26
       value = value_initial;
-      value &= ~(value8mask << 26);
-      value |= (value8 << 26);
+      value &= ~(static_cast<uint32_t>(value8mask) << 26);
+      value |= (static_cast<uint32_t>(value8) << 26);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t, 6, 26>(value)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t, 6, 26>(value)));
@@ -1601,40 +1601,40 @@ namespace
 
       // Shift 0
       value = value_initial;
-      value &= ~value8mask;
-      value |= value8;
+      value &= ~static_cast<uint32_t>(value8mask);
+      value |= static_cast<uint32_t>(value8);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 0)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 0)));
 
       // Shift 3
       value = value_initial;
-      value &= ~(value8mask << 3);
-      value |= (value8 << 3);
+      value &= ~(static_cast<uint32_t>(value8mask) << 3);
+      value |= (static_cast<uint32_t>(value8) << 3);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 3)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 3)));
 
       // Shift 6
       value = value_initial;
-      value &= ~(value8mask << 6);
-      value |= (value8 << 6);
+      value &= ~(static_cast<uint32_t>(value8mask) << 6);
+      value |= (static_cast<uint32_t>(value8) << 6);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 6)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 6)));
 
       // Shift 12
       value = value_initial;
-      value &= ~(value8mask << 12);
-      value |= (value8 << 12);
+      value &= ~(static_cast<uint32_t>(value8mask) << 12);
+      value |= (static_cast<uint32_t>(value8) << 12);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 12)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 12)));
 
       // Shift 26
       value = value_initial;
-      value &= ~(value8mask << 26);
-      value |= (value8 << 26);
+      value &= ~(static_cast<uint32_t>(value8mask) << 26);
+      value |= (static_cast<uint32_t>(value8) << 26);
 
       CHECK_EQUAL(-22, (etl::sign_extend<int32_t>(value, 6, 26)));
       CHECK_EQUAL(-22, (etl::sign_extend<int64_t>(value, 6, 26)));

@@ -64,7 +64,7 @@ namespace etl
     absolute(T value)
   {
     return (value == etl::integral_limits<T>::min) ? etl::private_absolute::signed_min_error<T>()
-                                                   : (value < T(0)) ? -value : value;
+                                                   : static_cast<T>((value < T(0)) ? -value : value);
   }
 
   template <typename T>

@@ -494,7 +494,7 @@ namespace etl
         }
         else
         {
-          input_buffer[input_buffer_length++] = static_cast<uint8_t>(value);
+          input_buffer[input_buffer_length++] = static_cast<char>(value);
         }
       }
     }

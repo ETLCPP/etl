@@ -73,7 +73,7 @@ namespace etl
     //***************************************************************************
     bit_stream(void* begin_, void* end_)
       : pdata(reinterpret_cast<unsigned char*>(begin_))
-      , length_chars(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
+      , length_chars(static_cast<size_t>(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_))))
     {
       restart();
     }
@@ -103,7 +103,7 @@ namespace etl
     //***************************************************************************
     void set_stream(void* begin_, void* end_)
     {
-      set_stream(begin_, etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)));
+      set_stream(begin_, static_cast<size_t>(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_))));
     }
 
     //***************************************************************************
@@ -252,7 +252,7 @@ namespace etl
       if (etl::is_signed<T>::value && (bits != (CHAR_BIT * sizeof(T))))
       {
         typedef typename etl::make_signed<T>::type ST;
-        value = etl::sign_extend<ST, ST>(value, bits);
+        value = static_cast<T>(etl::sign_extend<ST, ST>(static_cast<ST>(value), bits));
       }
 
       return success;
@@ -422,7 +422,7 @@ namespace etl
     //***************************************************************************
     unsigned char get_chunk(unsigned char nbits)
     {
-      unsigned char value = pdata[char_index];
+      unsigned char value = static_cast<unsigned char>(pdata[char_index]);
 
       value >>= (bits_available_in_char - nbits);
 
@@ -434,7 +434,7 @@ namespace etl
       }
       else
       {
-        mask = (1U << nbits) - 1;
+        mask = static_cast<unsigned char>((1U << nbits) - 1);
       }
 
       value &= mask;
@@ -449,7 +449,7 @@ namespace etl
     //***************************************************************************
     bool get_bit()
     {
-      bool result = (pdata[char_index] & (1U << (bits_available_in_char - 1U))) != 0U;
+      bool result = (static_cast<unsigned char>(pdata[char_index]) & (1U << (bits_available_in_char - 1U))) != 0U;
 
       step(1U);
 
@@ -467,11 +467,11 @@ namespace etl
       // Network to host.
       if (etl::endianness::value() == etl::endian::little)
       {
-        etl::reverse_copy(data, data + sizeof(T), temp.raw);
+        etl::reverse_copy(data, data + sizeof(T), reinterpret_cast<unsigned char*>(temp.raw));
       }
       else
       {
-        etl::copy(data, data + sizeof(T), temp.raw);
+        etl::copy(data, data + sizeof(T), reinterpret_cast<unsigned char*>(temp.raw));
       }
 
       value = *reinterpret_cast<T*>(temp.raw);
@@ -564,7 +564,7 @@ namespace etl
     //***************************************************************************
     bit_stream_writer(void* begin_, void* end_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
-      , length_chars(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
+      , length_chars(static_cast<size_t>(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_))))
       , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
@@ -1086,7 +1086,7 @@ namespace etl
     //***************************************************************************
     bit_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
-      , length_chars(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
+      , length_chars(static_cast<size_t>(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_))))
       , stream_endianness(stream_endianness_)
     {
       restart();
@@ -1149,7 +1149,7 @@ namespace etl
     {
       typedef typename etl::unsigned_type<T>::type unsigned_t;
 
-      T value = read_value<unsigned_t>(nbits, etl::is_signed<T>::value);
+      T value = static_cast<T>(read_value<unsigned_t>(nbits, etl::is_signed<T>::value));
 
       return static_cast<T>(value);
     }
@@ -1299,7 +1299,7 @@ namespace etl
     //***************************************************************************
     unsigned char get_chunk(unsigned char nbits)
     {
-      unsigned char value = pdata[char_index];
+      unsigned char value = static_cast<unsigned char>(pdata[char_index]);
       value >>= (bits_available_in_char - nbits);
 
       unsigned char mask;
@@ -1310,7 +1310,7 @@ namespace etl
       }
       else
       {
-        mask = (1U << nbits) - 1;
+        mask = static_cast<unsigned char>((1U << nbits) - 1);
       }
 
       value &= mask;
@@ -1325,7 +1325,7 @@ namespace etl
     //***************************************************************************
     bool get_bit()
     {
-      bool result = (pdata[char_index] & (1U << (bits_available_in_char - 1U))) != 0U;
+      bool result = (static_cast<unsigned char>(pdata[char_index]) & (1U << (bits_available_in_char - 1U))) != 0U;
 
       step(1U);
 

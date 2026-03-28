@@ -250,7 +250,7 @@ namespace etl
 
       // Adjust to allow a limited +-11 month delta
       value += 11U;
-      value += delta;
+      value += static_cast<unsigned int>(delta);
       value %= 12U;
       ++value;
 

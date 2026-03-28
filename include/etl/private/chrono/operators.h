@@ -48,14 +48,14 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_day operator /(const etl::chrono::month& m, 
                                                              int d) ETL_NOEXCEPT
     {
-      return etl::chrono::month_day(m, etl::chrono::day(d));
+      return etl::chrono::month_day(m, etl::chrono::day(static_cast<unsigned>(d)));
     }
 
     // month_day
     inline ETL_CONSTEXPR14 etl::chrono::month_day operator /(int m, 
                                                              const etl::chrono::day& d) ETL_NOEXCEPT
     {
-      return etl::chrono::month_day(etl::chrono::month(m), d);
+      return etl::chrono::month_day(etl::chrono::month(static_cast<unsigned>(m)), d);
     }
 
     // month_day
@@ -69,7 +69,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_day operator /(const etl::chrono::day& d, 
                                                              int m) ETL_NOEXCEPT
     {
-      return etl::chrono::month_day(etl::chrono::month(m), d);
+      return etl::chrono::month_day(etl::chrono::month(static_cast<unsigned>(m)), d);
     }
 
     //*************************************************************************
@@ -84,7 +84,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_day_last operator /(int m, 
                                                                   etl::chrono::last_spec) ETL_NOEXCEPT
     {
-      return etl::chrono::month_day_last(etl::chrono::month(m));
+      return etl::chrono::month_day_last(etl::chrono::month(static_cast<unsigned>(m)));
     }
 
     // month_day_last
@@ -98,7 +98,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_day_last operator/(etl::chrono::last_spec, 
                                                                  int m) ETL_NOEXCEPT
     {
-      return etl::chrono::month_day_last(etl::chrono::month(m));
+      return etl::chrono::month_day_last(etl::chrono::month(static_cast<unsigned>(m)));
     }
 
     //*************************************************************************
@@ -113,7 +113,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_weekday operator /(int m, 
                                                                  const etl::chrono::weekday_indexed& wdi) ETL_NOEXCEPT
     {
-      return etl::chrono::month_weekday(etl::chrono::month(m), wdi);
+      return etl::chrono::month_weekday(etl::chrono::month(static_cast<unsigned>(m)), wdi);
     }
 
     // month_weekday
@@ -127,7 +127,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_weekday operator /(const etl::chrono::weekday_indexed& wdi, 
                                                                  int m) ETL_NOEXCEPT
     {
-      return etl::chrono::month_weekday(etl::chrono::month(m), wdi);
+      return etl::chrono::month_weekday(etl::chrono::month(static_cast<unsigned>(m)), wdi);
     }
 
     //*************************************************************************
@@ -142,7 +142,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_weekday_last operator /(int m,
                                                                       const etl::chrono::weekday_last& wdl) ETL_NOEXCEPT
     {
-      return etl::chrono::month_weekday_last(etl::chrono::month(m), wdl);
+      return etl::chrono::month_weekday_last(etl::chrono::month(static_cast<unsigned>(m)), wdl);
     }
 
     // month_weekday_last
@@ -156,7 +156,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::month_weekday_last operator /(const etl::chrono::weekday_last& wdl,
                                                                       int m) ETL_NOEXCEPT
     {
-      return etl::chrono::month_weekday_last(etl::chrono::month(m), wdl);
+      return etl::chrono::month_weekday_last(etl::chrono::month(static_cast<unsigned>(m)), wdl);
     }
 
     //*************************************************************************
@@ -171,7 +171,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::year_month operator /(const etl::chrono::year& y,
                                                               int m) ETL_NOEXCEPT
     {
-      return etl::chrono::year_month(y, etl::chrono::month(m));
+      return etl::chrono::year_month(y, etl::chrono::month(static_cast<unsigned>(m)));
     }
 
     ////*************************************************************************
@@ -186,7 +186,7 @@ namespace etl
     inline ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::year_month& ym, 
                                                                   int d ) ETL_NOEXCEPT
     {
-      return etl::chrono::year_month_day(ym.year(), ym.month(), etl::chrono::day(d));
+      return etl::chrono::year_month_day(ym.year(), ym.month(), etl::chrono::day(static_cast<unsigned>(d)));
     }
 
     // year_month_day

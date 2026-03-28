@@ -471,7 +471,7 @@ namespace etl
       }
       else
       {
-        size_t d = etl::distance(range.first, range.second);
+        size_t d = static_cast<size_t>(etl::distance(range.first, range.second));
         erase(range.first, range.second);
         return d;
       }
@@ -490,7 +490,7 @@ namespace etl
       }
       else
       {
-        size_t d = etl::distance(range.first, range.second);
+        size_t d = static_cast<size_t>(etl::distance(range.first, range.second));
         erase(range.first, range.second);
         return d;
       }

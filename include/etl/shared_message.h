@@ -204,7 +204,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD uint32_t get_reference_count() const
     {
-      return p_rcmessage->get_reference_counter().get_reference_count();
+      return static_cast<uint32_t>(p_rcmessage->get_reference_counter().get_reference_count());
     }
 
     //*************************************************************************

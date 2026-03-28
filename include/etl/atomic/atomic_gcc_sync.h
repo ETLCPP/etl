@@ -474,23 +474,23 @@ namespace etl
     // Add
     T* operator +=(ptrdiff_t v)
     {
-      return reinterpret_cast<T*>(__atomic_fetch_add(&value, v * sizeof(T), etl::memory_order_seq_cst));
+      return reinterpret_cast<T*>(__atomic_fetch_add(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), etl::memory_order_seq_cst));
     }
 
     T* operator +=(ptrdiff_t v) volatile
     {
-      return reinterpret_cast<T*>(__atomic_fetch_add(&value, v * sizeof(T), etl::memory_order_seq_cst));
+      return reinterpret_cast<T*>(__atomic_fetch_add(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), etl::memory_order_seq_cst));
     }
 
     // Subtract
     T* operator -=(ptrdiff_t v)
     {
-      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, v * sizeof(T), etl::memory_order_seq_cst));
+      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), etl::memory_order_seq_cst));
     }
 
     T* operator -=(ptrdiff_t v) volatile
     {
-      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, v * sizeof(T), etl::memory_order_seq_cst));
+      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), etl::memory_order_seq_cst));
     }
 
     // Conversion operator
@@ -540,23 +540,23 @@ namespace etl
     // Fetch add
     T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return reinterpret_cast<T*>(__atomic_fetch_add(&value, v, order));
+      return reinterpret_cast<T*>(__atomic_fetch_add(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), order));
     }
 
     T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return reinterpret_cast<T*>(__atomic_fetch_add(&value, v, order));
+      return reinterpret_cast<T*>(__atomic_fetch_add(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), order));
     }
 
     // Fetch subtract
     T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, v, order));
+      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), order));
     }
 
     T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, v, order));
+      return reinterpret_cast<T*>(__atomic_fetch_sub(&value, static_cast<uintptr_t>(v * static_cast<ptrdiff_t>(sizeof(T))), order));
     }
 
     // Exchange

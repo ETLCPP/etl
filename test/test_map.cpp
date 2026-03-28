@@ -305,7 +305,7 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end());
 
-      size_t d = std::distance(data.begin(), data.end());
+      size_t d = static_cast<size_t>(std::distance(data.begin(), data.end()));
 
       CHECK(d == MAX_SIZE);
       CHECK(data.size() == MAX_SIZE);

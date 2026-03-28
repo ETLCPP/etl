@@ -91,7 +91,7 @@ namespace etl
       reset();
       while (begin != end)
       {
-        block |= (*begin) << (block_fill_count * 8U);
+        block |= static_cast<value_type>(static_cast<value_type>(*begin) << (block_fill_count * 8U));
         ++begin;
 
         if (++block_fill_count == FULL_BLOCK)
@@ -130,7 +130,7 @@ namespace etl
 
       while (begin != end)
       {
-        block |= (*begin) << (block_fill_count * 8U);
+        block |= static_cast<value_type>(static_cast<value_type>(*begin) << (block_fill_count * 8U));
         ++begin;
 
         if (++block_fill_count == FULL_BLOCK)
@@ -154,7 +154,7 @@ namespace etl
       // We can't add to a finalised hash!
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
-      block |= value_ << (block_fill_count * 8U);
+      block |= static_cast<value_type>(static_cast<value_type>(value_) << (block_fill_count * 8U));
 
       if (++block_fill_count == FULL_BLOCK)
       {

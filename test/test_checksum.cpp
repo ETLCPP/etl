@@ -58,7 +58,7 @@ namespace
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
-        checksum_calculator.add(data[i]);
+        checksum_calculator.add(static_cast<uint8_t>(data[i]));
       }
       
       uint8_t sum = checksum_calculator;
@@ -75,7 +75,7 @@ namespace
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
-        checksum_calculator.add(data[i]);
+        checksum_calculator.add(static_cast<uint8_t>(data[i]));
       }
 
       uint8_t sum = checksum_calculator;

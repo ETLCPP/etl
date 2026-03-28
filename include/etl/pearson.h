@@ -107,7 +107,7 @@ namespace etl
 
       while (begin != end)
       {
-        add(*begin);
+        add(static_cast<uint8_t>(*begin));
         ++begin;
       }
     }

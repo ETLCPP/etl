@@ -160,12 +160,12 @@ namespace
       {
         for (int ds = 0; ds < 256; ++ds)
         {
-          Chrono::day day(d);
+          Chrono::day day(static_cast<unsigned>(d));
           Chrono::days days(ds);
 
           day = day + days;
 
-          unsigned expected = (d + ds) % 256;
+          unsigned expected = static_cast<unsigned>((d + ds) % 256);
 
           CHECK_TRUE(expected_day_ok(day));
           CHECK_EQUAL(expected, unsigned(day));
@@ -180,12 +180,12 @@ namespace
       {
         for (int ds = 0; ds < d; ++ds)
         {
-          Chrono::day day(d);
+          Chrono::day day(static_cast<unsigned>(d));
           Chrono::days days(ds);
 
           day = days + day;
 
-          unsigned expected = (d + ds) % 256;
+          unsigned expected = static_cast<unsigned>((d + ds) % 256);
 
           CHECK_TRUE(expected_day_ok(day));
           CHECK_EQUAL(expected, unsigned(day));
@@ -230,8 +230,8 @@ namespace
       {
         for (int d2 = 0; d2 < 256; ++d2)
         {
-          Chrono::day day1(d1);
-          Chrono::day day2(d2);
+          Chrono::day day1(static_cast<unsigned>(d1));
+          Chrono::day day2(static_cast<unsigned>(d2));
 
           Chrono::days result_days = day1 - day2;
           int expected_days = d1 - d2;
@@ -306,7 +306,7 @@ namespace
 
       for (int i = 0; i < 256; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::day>()(Chrono::day(i)));
+        hashes.push_back(etl::hash<Chrono::day>()(Chrono::day(static_cast<unsigned>(i))));
       }
 
       std::sort(hashes.begin(), hashes.end());

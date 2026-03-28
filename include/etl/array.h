@@ -496,13 +496,13 @@ namespace etl
       iterator p = to_iterator(position);
       iterator result(p);
 
-      size_t source_size       = etl::distance(first, last);
-      size_t destination_space = etl::distance(position, cend());
+      size_t source_size       = static_cast<size_t>(etl::distance(first, last));
+      size_t destination_space = static_cast<size_t>(etl::distance(position, cend()));
 
       // Do we need to move anything?
       if (source_size < destination_space)
       {
-        size_t length = SIZE - (etl::distance(begin(), p) + source_size);
+        size_t length = SIZE - (static_cast<size_t>(etl::distance(begin(), p)) + source_size);
         etl::move_backward(p, p + length, end());
       }
 

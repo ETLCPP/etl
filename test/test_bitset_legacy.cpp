@@ -1073,7 +1073,7 @@ namespace
       {
         etl::bitset<64> data(value);
 
-        CHECK_EQUAL_HEX((value << shift), (data << shift).value<uint64_t>());
+        CHECK_EQUAL_HEX((value << shift), (data << static_cast<size_t>(shift)).value<uint64_t>());
       }
 
       etl::bitset<64> data(value);
@@ -1090,7 +1090,7 @@ namespace
       {
         etl::bitset<60> data(value);
 
-        CHECK_EQUAL_HEX(((value << shift) & mask), (data << shift).value<uint64_t>());
+        CHECK_EQUAL_HEX(((value << shift) & mask), (data << static_cast<size_t>(shift)).value<uint64_t>());
       }
 
       etl::bitset<64> data(value);
@@ -1128,7 +1128,7 @@ namespace
       {
         etl::bitset<64> data(value);
 
-        CHECK_EQUAL_HEX((value >> shift), (data >> shift).value<uint64_t>());
+        CHECK_EQUAL_HEX((value >> shift), (data >> static_cast<size_t>(shift)).value<uint64_t>());
       }
 
       etl::bitset<64> data(value);
@@ -1145,7 +1145,7 @@ namespace
       {
         etl::bitset<60> data(value);
 
-        CHECK_EQUAL_HEX(((value >> shift) & mask), (data >> shift).value<uint64_t>());
+        CHECK_EQUAL_HEX(((value >> shift) & mask), (data >> static_cast<size_t>(shift)).value<uint64_t>());
       }
 
       etl::bitset<64> data(value);

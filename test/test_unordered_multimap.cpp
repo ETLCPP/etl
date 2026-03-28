@@ -63,7 +63,7 @@ namespace
   {
     size_t operator ()(const std::string& text) const
     {
-      return std::accumulate(text.begin(), text.end(), 0);
+      return std::accumulate(text.begin(), text.end(), size_t(0));
     }
   };
 
@@ -100,7 +100,7 @@ namespace
 
     size_t operator ()(const std::string& text) const
     {
-      return std::accumulate(text.begin(), text.end(), 0);
+      return std::accumulate(text.begin(), text.end(), size_t(0));
     }
   };
 
@@ -1006,7 +1006,7 @@ namespace
       CHECK_CLOSE(0.0, data.load_factor(), 0.01);
 
       // Half the buckets used.
-      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 4));
+      data.assign(initial_data.begin(), initial_data.begin() + static_cast<ptrdiff_t>(initial_data.size() / 4));
       CHECK_CLOSE(0.4, data.load_factor(), 0.01);
 
       // All of the buckets used.
@@ -1023,7 +1023,7 @@ namespace
         // Force hash collisions
         size_t operator()(int key) const
         {
-          return key % 4;
+          return static_cast<size_t>(key % 4);
         }
       };
 

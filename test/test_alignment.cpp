@@ -213,20 +213,20 @@ namespace
       CHECK_FALSE(a.has_value());
 
       // Construct in place.
-      etl::typed_storage<A_t> b(789, 10);  
+      etl::typed_storage<A_t> b(789U, 10U);
       CHECK_TRUE(b.has_value());
       CHECK_EQUAL(b->x, 789);
       CHECK_EQUAL(b->y, 10);
       
       // Create in place.
-      auto& ref = a.create(123, 4);
+      auto& ref = a.create(123U, 4U);
       CHECK_TRUE(a.has_value());
 
-      CHECK_EQUAL(a->x, 123);
-      CHECK_EQUAL(a->y, 4);
+      CHECK_EQUAL(a->x, 123U);
+      CHECK_EQUAL(a->y, 4U);
 
-      CHECK_EQUAL(ref.x, 123);
-      CHECK_EQUAL(ref.y, 4);
+      CHECK_EQUAL(ref.x, 123U);
+      CHECK_EQUAL(ref.y, 4U);
 
       CHECK_TRUE(*a == ref);
 
@@ -247,19 +247,19 @@ namespace
       CHECK_FALSE(a.has_value());
 
       // Construct in place.
-      etl::typed_storage_ext<A_t> b(buffer2, 789, 10);
+      etl::typed_storage_ext<A_t> b(buffer2, 789U, 10U);
       CHECK_TRUE(b.has_value());
       CHECK_EQUAL(b->x, 789);
       CHECK_EQUAL(b->y, 10);
 
       // Create in place.
-      auto& ref = a.create(123, 4);  
-      CHECK_EQUAL(ref.x, 123);
-      CHECK_EQUAL(ref.y, 4);
+      auto& ref = a.create(123U, 4U);
+      CHECK_EQUAL(ref.x, 123U);
+      CHECK_EQUAL(ref.y, 4U);
 
       CHECK_TRUE(a.has_value());
-      CHECK_EQUAL(a->x, 123);
-      CHECK_EQUAL(a->y, 4);
+      CHECK_EQUAL(a->x, 123U);
+      CHECK_EQUAL(a->y, 4U);
       CHECK_TRUE(*a == ref);
 
       // Swap

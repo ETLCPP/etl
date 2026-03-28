@@ -172,10 +172,10 @@ namespace
 
       typedef typename etl::ratio_divide<duration_type1::period, duration_type2::period>::type ratio_divide_t;
 
-      int microseonds_per_millisecond = duration_type1::period::den / duration_type2::period::den;
+      size_t microseonds_per_millisecond = static_cast<size_t>(duration_type1::period::den / duration_type2::period::den);
 
       CHECK_EQUAL(1, ratio_divide_t::num);
-      CHECK_EQUAL(dur1.count(), dur2.count() * microseonds_per_millisecond);
+      CHECK_EQUAL(dur1.count(), static_cast<size_t>(dur2.count() * microseonds_per_millisecond));
     }
 #endif
 
@@ -194,7 +194,7 @@ namespace
       int microseonds_per_millisecond = duration_type2::period::den / duration_type1::period::den;
 
       CHECK_EQUAL(1, ratio_divide_t::den);
-      CHECK_EQUAL(dur1.count() * microseonds_per_millisecond, dur2.count());
+      CHECK_EQUAL(static_cast<int>(dur1.count()) * microseonds_per_millisecond, dur2.count());
     }
 #endif
 
