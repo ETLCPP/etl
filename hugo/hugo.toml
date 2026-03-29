@@ -51,11 +51,21 @@ theme = 'hextra'
   weight = 1
 
 [[menus.main]]
-name = "About"
-url = "/about/"
-weight = 999
+  name = "Github"
+  url = "https://github.com/ETLCPP/etl.git"
+  weight = 2
 
 [[menus.main]]
-name = "Blog"
-url = "/blog/"
-weight = 3
+  name = "Slack"
+  url = "https://slofile.com/slack/etlcpp"
+  weight = 3
+
+[[menus.main]]
+  name = "Arduino"
+  url = "https://github.com/ETLCPP/etl-arduino/archive/master.zip"
+  weight = 4
+
+[[menus.main]]
+name = "About"
+pageRef = "/docs/about"
+weight = 999

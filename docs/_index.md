@@ -13,8 +13,32 @@ weight: 998
  [***Is the ETL free?***]({{< ref "Is the ETL free.md" >}})
 {{< /callout >}}
 
+<div class="not-prose badges">
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
+![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3) 
+![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23-blue.svg) 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+![GitHub contributors](https://img.shields.io/github/contributors-anon/ETLCPP/etl) ![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat) ![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
+
+![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
+
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
+
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++14.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
+
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://www.etlcpp.com/sponsor.html)
+</div>
+
 ## Motivation
- 
 
 C++ is a powerful language for embedded systems development, with templates offering a great deal of flexibility and type safety. While the C++ Standard Library provides a wealth of well-tested functionality, it’s often not well suited to environments with strict deterministic behavior and limited resources.  
 
@@ -23,7 +47,6 @@ In many embedded applications, dynamic memory allocation is discouraged or outri
 What’s needed is a template library specifically designed for embedded systems — one that allows developers to define fixed or maximum sizes for containers and other objects at compile time. Additionally, since many older (but still in use) embedded toolchains lack full support for standards beyond C++03, it's valuable to have access to a library that backports select features from later versions of the C++ Standard Library.  
 
 ## About the ETL
- 
 
 The Embedded Template Library (ETL) is not intended as a full replacement for the C++ Standard Template Library (STL), but rather as a complementary solution tailored specifically for embedded systems.  
 

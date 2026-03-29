@@ -1,21 +1,3 @@
-.highlight .chroma .k,
-.highlight .chroma .kc,
-.highlight .chroma .kd,
-.highlight .chroma .kn,
-.highlight .chroma .kp,
-.highlight .chroma .kr, 
-.highlight .chroma .kt, 
-.highlight .chroma .nc,
-.highlight .chroma .cp {
-  font-weight: normal;
-}
-
-html.dark .hextra-code-block .highlight .chroma .cs,
-html.dark .hextra-code-block .highlight .chroma .cp,
-html.dark .hextra-code-block .highlight .chroma .cpf {
-  font-weight: normal;
-}
-
 /* Definitions for light mode */
 html:not(.dark) h1 { 
   color: coral !important; 
@@ -208,21 +190,39 @@ html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
   font-style: normal;
 }
 
-/* Regular item hover */
-/* .hextra-sidebar-item a:hover,
-.hextra-sidebar-item a:hover span {
-  background-color: rgb(250, 195, 175) !important;
-  color: black !important;
-} */
+.highlight .chroma .k,
+.highlight .chroma .kc,
+.highlight .chroma .kd,
+.highlight .chroma .kn,
+.highlight .chroma .kp,
+.highlight .chroma .kr, 
+.highlight .chroma .kt, 
+.highlight .chroma .nc,
+.highlight .chroma .nf,
+.highlight .chroma .cp,
+.highlight .chroma .cpf {
+  font-weight: normal;
+  font-style: normal;
+}
 
-/* Active item default + hover - must come AFTER regular hover */
-/* .hextra-sidebar-item[data-active="true"] a,
-.hextra-sidebar-item[data-active="true"] a span,
-.hextra-sidebar-item[data-active="true"] a:hover,
-.hextra-sidebar-item[data-active="true"] a:hover span {
-  background-color: rgb(177, 87, 54) !important;
-  color: #e0e0e0 !important;
-} */
+html.dark .hextra-code-block .highlight .chroma .cs,
+html.dark .hextra-code-block .highlight .chroma .cp,
+html.dark .hextra-code-block .highlight .chroma .cpf {
+  font-weight: normal;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.badges p {
+  display: contents;
+  margin: 0;
+}
 
 .content ul li {
   font-family: Roboto, sans-serif !important;
