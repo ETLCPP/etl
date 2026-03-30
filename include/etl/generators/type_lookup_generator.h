@@ -244,7 +244,7 @@ namespace etl
   cog.outl("  template <int Id>")
   cog.outl("  struct type_from_id")
   cog.outl("  {")
-  cog.outl("    typedef ")
+  cog.outl("    typedef")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<Id == T%s::Id, typename T%s::type," %(n, n))
   cog.out("          etl::null_type<0> >")
@@ -311,7 +311,7 @@ namespace etl
   cog.outl("  template <typename T>")
   cog.outl("  struct type_from_type")
   cog.outl("  {")
-  cog.outl("    typedef ")
+  cog.outl("    typedef")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<etl::is_same<T, typename T%s::type1>::value, typename T%s::type2," %(n, n))
   cog.out("          etl::null_type<0> >")

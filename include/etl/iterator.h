@@ -38,7 +38,7 @@ SOFTWARE.
 #include "private/addressof.h"
 
 #if ETL_USING_STL || defined(ETL_IN_UNIT_TEST)
-  #include <iterator>
+#include <iterator>
 #endif
 
 ///\defgroup iterator iterator
@@ -142,8 +142,7 @@ namespace etl
   template <typename TIterator, typename TDistance>
   ETL_CONSTEXPR14 void advance_helper(TIterator& itr, TDistance n, ETL_OR_STD::random_access_iterator_tag)
   {
-    typedef typename etl::iterator_traits<TIterator>::difference_type diff_t;
-    itr += static_cast<diff_t>(n);
+    itr += n;
   }
 
   template <typename TIterator, typename TDistance>
@@ -667,8 +666,8 @@ namespace etl
   //***************************************************************************
   template <typename TContainer>
   ETL_NODISCARD
-  ETL_CONSTEXPR14
-  etl::back_insert_iterator<TContainer> back_inserter(TContainer& container)
+    ETL_CONSTEXPR14
+    etl::back_insert_iterator<TContainer> back_inserter(TContainer& container)
   {
     return etl::back_insert_iterator<TContainer>(container);
   }
@@ -749,8 +748,8 @@ namespace etl
   //***************************************************************************
   template <typename TContainer>
   ETL_NODISCARD
-  ETL_CONSTEXPR14
-  etl::front_insert_iterator<TContainer> front_inserter(TContainer& container)
+    ETL_CONSTEXPR14
+    etl::front_insert_iterator<TContainer> front_inserter(TContainer& container)
   {
     return etl::front_insert_iterator<TContainer>(container);
   }
@@ -901,9 +900,9 @@ namespace etl
   struct is_input_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_input_iterator<T>::value ||
-                                               etl::is_forward_iterator<T>::value ||
-                                               etl::is_bidirectional_iterator<T>::value ||
-                                               etl::is_random_iterator<T>::value;
+                                     etl::is_forward_iterator<T>::value ||
+                                     etl::is_bidirectional_iterator<T>::value ||
+                                     etl::is_random_iterator<T>::value;
   };
 
   template <typename T>
@@ -913,9 +912,9 @@ namespace etl
   struct is_output_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_output_iterator<T>::value ||
-                                               etl::is_forward_iterator<T>::value ||
-                                               etl::is_bidirectional_iterator<T>::value ||
-                                               etl::is_random_iterator<T>::value;
+                                     etl::is_forward_iterator<T>::value ||
+                                     etl::is_bidirectional_iterator<T>::value ||
+                                     etl::is_random_iterator<T>::value;
   };
 
   template <typename T>
@@ -925,8 +924,8 @@ namespace etl
   struct is_forward_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_forward_iterator<T>::value ||
-                                               etl::is_bidirectional_iterator<T>::value ||
-                                               etl::is_random_iterator<T>::value;
+                                     etl::is_bidirectional_iterator<T>::value ||
+                                     etl::is_random_iterator<T>::value;
   };
 
   template <typename T>
@@ -936,7 +935,7 @@ namespace etl
   struct is_bidirectional_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_bidirectional_iterator<T>::value ||
-                                               etl::is_random_iterator<T>::value;
+                                     etl::is_random_iterator<T>::value;
   };
 
   template <typename T>
@@ -1355,7 +1354,7 @@ namespace etl
         template<typename I, typename S, typename = etl::enable_if_t<
           (etl::is_input_iterator_concept<I>::value || etl::is_output_iterator_concept<I>::value) &&
           !etl::is_same<I, S>::value>>
-        constexpr etl::iter_difference_t<I> operator()(I first, S last) const
+          constexpr etl::iter_difference_t<I> operator()(I first, S last) const
         {
           etl::iter_difference_t<I> n = 0;
           while (!(first == last))
@@ -1382,8 +1381,8 @@ namespace etl
           {
             using iter_type = decltype(ETL_OR_STD::begin(t));
             static_assert(etl::is_forward_iterator_concept<iter_type>::value,
-              "ranges::size requires a sized range or at least a forward range; "
-              "single-pass input ranges are not supported");
+                          "ranges::size requires a sized range or at least a forward range; "
+                          "single-pass input ranges are not supported");
             return static_cast<size_t>(distance{}(ETL_OR_STD::begin(t), ETL_OR_STD::end(t)));
           }
         }
@@ -1404,8 +1403,8 @@ namespace etl
           {
             using iter_type = decltype(ETL_OR_STD::begin(t));
             static_assert(etl::is_forward_iterator_concept<iter_type>::value,
-              "ranges::ssize requires a sized range or at least a forward range; "
-              "single-pass input ranges are not supported");
+                          "ranges::ssize requires a sized range or at least a forward range; "
+                          "single-pass input ranges are not supported");
             return static_cast<ptrdiff_t>(distance{}(ETL_OR_STD::begin(t), ETL_OR_STD::end(t)));
           }
         }
@@ -1541,7 +1540,7 @@ namespace etl
 
       template<typename I, typename S, typename = etl::enable_if_t<etl::is_input_iterator_concept<I>::value || etl::is_output_iterator_concept<I>::value>>
       constexpr etl::iter_difference_t<I>
-      operator()(I& i, etl::iter_difference_t<I> n, S bound) const
+        operator()(I& i, etl::iter_difference_t<I> n, S bound) const
       {
         if constexpr (etl::is_same_v<S, I> && etl::is_random_access_iterator_concept<I>::value)
         {
@@ -1704,216 +1703,212 @@ namespace etl
   template<class I>
   class counted_iterator
   {
-      template<class> friend class counted_iterator;
+    template<class> friend class counted_iterator;
 
-    public:
-      using iterator_type = I;
-      using value_type = etl::iter_value_t<I>;
-      using difference_type = etl::iter_difference_t<I>;
-      using iterator_category = typename etl::iterator_traits<iterator_type>::iterator_category;
-      using pointer = typename etl::iterator_traits<iterator_type>::pointer;
-      using reference = typename etl::iterator_traits<iterator_type>::reference;
+  public:
+    using iterator_type     = I;
+    using value_type        = etl::iter_value_t<I>;
+    using difference_type   = etl::iter_difference_t<I>;
+    using iterator_category = typename etl::iterator_traits<iterator_type>::iterator_category;
+    using pointer           = typename etl::iterator_traits<iterator_type>::pointer;
+    using reference         = typename etl::iterator_traits<iterator_type>::reference;
 
-      constexpr counted_iterator() = default;
+    constexpr counted_iterator() = default;
 
-      constexpr counted_iterator(I x, etl::iter_difference_t<I> n): current(etl::move(x)), length(n)
-      {
-      }
+    constexpr counted_iterator(I x, etl::iter_difference_t<I> n): current(etl::move(x)), length(n)
+    {
+    }
 
-      template<class I2>
-      constexpr counted_iterator(const counted_iterator<I2>& other): current(other.current), length(other.length)
-      {
-      }
+    template<class I2>
+    constexpr counted_iterator(const counted_iterator<I2>& other): current(other.current), length(other.length)
+    {
+    }
 
-      template<class I2>
-      constexpr counted_iterator& operator=(const counted_iterator<I2>& other)
-      {
-        current = other.current;
-        length = other.length;
-        return *this;
-      }
+    template<class I2>
+    constexpr counted_iterator& operator=(const counted_iterator<I2>& other)
+    {
+      current = other.current;
+      length = other.length;
+      return *this;
+    }
 
-      constexpr const I& base() const& noexcept
-      {
-        return current;
-      }
+    constexpr const I& base() const& noexcept
+    {
+      return current;
+    }
 
-      constexpr I base() &&
-      {
-        return etl::move(current);
-      }
+    constexpr I base() &&
+    {
+      return etl::move(current);
+    }
 
-      constexpr etl::iter_difference_t<I> count() const noexcept
-      {
-        return length;
-      }
+    constexpr etl::iter_difference_t<I> count() const noexcept
+    {
+      return length;
+    }
 
-      constexpr decltype(auto) operator*() const
-      {
-        return *current;
-      }
+    constexpr decltype(auto) operator*() const
+    {
+      return *current;
+    }
 
-      // operator-> for iterator types that provide a member operator->
-      template<typename J = I, etl::enable_if_t<
-        (etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
-        private_iterator::has_arrow_operator<J>::value, int> = 0>
-      constexpr auto operator->() const noexcept
-      {
-        return current.operator->();
-      }
+    // operator-> for iterator types that provide a member operator->
+    template<typename J = I, etl::enable_if_t<(etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
+                                               private_iterator::has_arrow_operator<J>::value, int> = 0>
+    constexpr auto operator->() const noexcept
+    {
+      return current.operator->();
+    }
 
-      // operator-> fallback for raw-pointer iterators (addressof is always safe)
-      template<typename J = I, etl::enable_if_t<
-        (etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
-        !private_iterator::has_arrow_operator<J>::value &&
-        etl::is_pointer<J>::value, int> = 0>
-      constexpr auto operator->() const noexcept
-      {
-        return current;
-      }
+    // operator-> fallback for raw-pointer iterators (addressof is always safe)
+    template<typename J = I, etl::enable_if_t<(etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
+                                               !private_iterator::has_arrow_operator<J>::value &&
+                                               etl::is_pointer<J>::value, int> = 0>
+    constexpr auto operator->() const noexcept
+    {
+      return current;
+    }
 
-      // operator-> fallback for class-type iterators without member operator->
-      // When *current yields an lvalue reference, just take its address.
-      template<typename J = I, etl::enable_if_t<
-        (etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
-        !private_iterator::has_arrow_operator<J>::value &&
-        !etl::is_pointer<J>::value &&
-        etl::is_lvalue_reference<decltype(*etl::declval<const J&>())>::value, int> = 0>
-      constexpr auto operator->() const noexcept
-      {
-        return etl::addressof(*current);
-      }
+    // operator-> fallback for class-type iterators without member operator->
+    // When *current yields an lvalue reference, just take its address.
+    template<typename J = I, etl::enable_if_t<(etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
+                                               !private_iterator::has_arrow_operator<J>::value &&
+                                               !etl::is_pointer<J>::value &&
+                                               etl::is_lvalue_reference<decltype(*etl::declval<const J&>())>::value, int> = 0>
+    constexpr auto operator->() const noexcept
+    {
+      return etl::addressof(*current);
+    }
 
-      // operator-> fallback for class-type iterators without member operator->
-      // When *current yields a prvalue / proxy, use an owning proxy so the
-      // address remains valid.
-      template<typename J = I, etl::enable_if_t<
-        (etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
-        !private_iterator::has_arrow_operator<J>::value &&
-        !etl::is_pointer<J>::value &&
-        !etl::is_lvalue_reference<decltype(*etl::declval<const J&>())>::value, int> = 0>
-      constexpr auto operator->() const
-      {
-        return private_iterator::arrow_proxy<value_type>{*current};
-      }
+    // operator-> fallback for class-type iterators without member operator->
+    // When *current yields a prvalue / proxy, use an owning proxy so the
+    // address remains valid.
+    template<typename J = I, etl::enable_if_t<(etl::is_input_iterator_concept<J>::value || etl::is_output_iterator_concept<J>::value) &&
+                                               !private_iterator::has_arrow_operator<J>::value &&
+                                               !etl::is_pointer<J>::value &&
+                                               !etl::is_lvalue_reference<decltype(*etl::declval<const J&>())>::value, int> = 0>
+    constexpr auto operator->() const
+    {
+      return private_iterator::arrow_proxy<value_type>{*current};
+    }
 
-      template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
-      constexpr decltype(auto) operator[](etl::iter_difference_t<I> n) const
-      {
-        return current[n];
-      }
+    template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
+    constexpr decltype(auto) operator[](etl::iter_difference_t<I> n) const
+    {
+      return current[n];
+    }
 
-      constexpr counted_iterator& operator++()
-      {
-        ++current;
-        --length;
-        return *this;
-      }
+    constexpr counted_iterator& operator++()
+    {
+      ++current;
+      --length;
+      return *this;
+    }
 
-      constexpr counted_iterator operator++(int)
-      {
-        counted_iterator tmp = *this;
-        current++;
-        length--;
-        return tmp;
-      }
+    constexpr counted_iterator operator++(int)
+    {
+      counted_iterator tmp = *this;
+      current++;
+      length--;
+      return tmp;
+    }
 
-      template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
-      constexpr counted_iterator& operator+=(etl::iter_difference_t<I> n)
-      {
-        current += n;
-        length -= n;
-        return *this;
-      }
+    template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
+    constexpr counted_iterator& operator+=(etl::iter_difference_t<I> n)
+    {
+      current += n;
+      length -= n;
+      return *this;
+    }
 
-      template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
-      constexpr counted_iterator operator+(etl::iter_difference_t<I> n) const
-      {
-        counted_iterator result{*this};
-        result += n;
-        return result;
-      }
+    template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
+    constexpr counted_iterator operator+(etl::iter_difference_t<I> n) const
+    {
+      counted_iterator result{*this};
+      result += n;
+      return result;
+    }
 
-      constexpr counted_iterator& operator--()
-      {
-        --current;
-        ++length;
-        return *this;
-      }
+    constexpr counted_iterator& operator--()
+    {
+      --current;
+      ++length;
+      return *this;
+    }
 
-      constexpr counted_iterator operator--(int)
-      {
-        counted_iterator tmp = *this;
-        current--;
-        length++;
-        return tmp;
-      }
+    constexpr counted_iterator operator--(int)
+    {
+      counted_iterator tmp = *this;
+      current--;
+      length++;
+      return tmp;
+    }
 
-      template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
-      constexpr counted_iterator& operator-=(etl::iter_difference_t<I> n)
-      {
-        current -= n;
-        length += n;
-        return *this;
-      }
+    template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
+    constexpr counted_iterator& operator-=(etl::iter_difference_t<I> n)
+    {
+      current -= n;
+      length += n;
+      return *this;
+    }
 
-      template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
-      constexpr counted_iterator operator-(etl::iter_difference_t<I> n) const
-      {
-        counted_iterator result{*this};
-        result -= n;
-        return result;
-      }
+    template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
+    constexpr counted_iterator operator-(etl::iter_difference_t<I> n) const
+    {
+      counted_iterator result{*this};
+      result -= n;
+      return result;
+    }
 
-      friend constexpr bool operator==(const counted_iterator& x, const counted_iterator& y)
-      {
-        return x.length == y.length;
-      }
+    friend constexpr bool operator==(const counted_iterator& x, const counted_iterator& y)
+    {
+      return x.length == y.length;
+    }
 
-      friend constexpr bool operator==(const counted_iterator& x, etl::default_sentinel_t)
-      {
-        return x.count() == 0;
-      }
+    friend constexpr bool operator==(const counted_iterator& x, etl::default_sentinel_t)
+    {
+      return x.count() == 0;
+    }
 
-      friend constexpr bool operator==(etl::default_sentinel_t, const counted_iterator& x)
-      {
-        return x.count() == 0;
-      }
+    friend constexpr bool operator==(etl::default_sentinel_t, const counted_iterator& x)
+    {
+      return x.count() == 0;
+    }
 
-      friend constexpr bool operator!=(const counted_iterator& x, etl::default_sentinel_t)
-      {
-        return x.count() != 0;
-      }
+    friend constexpr bool operator!=(const counted_iterator& x, etl::default_sentinel_t)
+    {
+      return x.count() != 0;
+    }
 
-      friend constexpr bool operator!=(etl::default_sentinel_t, const counted_iterator& y)
-      {
-        return y.count() != 0;
-      }
+    friend constexpr bool operator!=(etl::default_sentinel_t, const counted_iterator& y)
+    {
+      return y.count() != 0;
+    }
 
-      template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
-      friend constexpr counted_iterator operator+(etl::iter_difference_t<I> n, const counted_iterator& x)
-      {
-        return counted_iterator(x.current + n, x.length - n);
-      }
+    template<typename J = I, etl::enable_if_t<etl::is_random_access_iterator<J>::value, int> = 0>
+    friend constexpr counted_iterator operator+(etl::iter_difference_t<I> n, const counted_iterator& x)
+    {
+      return counted_iterator(x.current + n, x.length - n);
+    }
 
-      friend constexpr etl::iter_difference_t<I> operator-(const counted_iterator& x, const counted_iterator& y)
-      {
-        return y.length - x.length;
-      }
+    friend constexpr etl::iter_difference_t<I> operator-(const counted_iterator& x, const counted_iterator& y)
+    {
+      return y.length - x.length;
+    }
 
-      friend constexpr etl::iter_difference_t<I> operator-(const counted_iterator& x, etl::default_sentinel_t)
-      {
-        return -x.length;
-      }
+    friend constexpr etl::iter_difference_t<I> operator-(const counted_iterator& x, etl::default_sentinel_t)
+    {
+      return -x.length;
+    }
 
-      friend constexpr etl::iter_difference_t<I> operator-(etl::default_sentinel_t, const counted_iterator& y)
-      {
-        return y.length;
-      }
+    friend constexpr etl::iter_difference_t<I> operator-(etl::default_sentinel_t, const counted_iterator& y)
+    {
+      return y.length;
+    }
 
-    private:
-      I current{};
-      difference_type length{};
+  private:
+    I current{};
+    difference_type length{};
   };
 
   template<typename TIterator, typename = etl::enable_if_t<etl::is_base_of<etl::counted_iterator<typename TIterator::iterator_type>, TIterator>::value>>
