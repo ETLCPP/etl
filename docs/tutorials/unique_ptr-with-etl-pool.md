@@ -27,7 +27,10 @@ struct S
 
 int main()
 {
+  // The pool to allocate from.
   etl::pool<S, 10> pool;
+
+  // The deleter called by unique_ptr.
   auto pool_deleter = [&pool](auto ptr) 
     { 
       std::cout << "Releasing S(" << ptr->a << ", " << ptr->b << ") back to pool." << std::endl; 
@@ -40,6 +43,7 @@ int main()
   std::cout << "Created S(" << us1->a << ", " << us1->b << ") from pool." << std::endl;
 
   {
+    // Unique with local scope.
     Unique us2(pool.create(3, 4), pool_deleter);
     std::cout << "Created S(" << us2->a << ", " << us2->b << ") from pool." << std::endl;
   }
