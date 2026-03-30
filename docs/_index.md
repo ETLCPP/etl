@@ -19,13 +19,16 @@ weight: 998
 ![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3) 
 ![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23-blue.svg) 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-
-![GitHub contributors](https://img.shields.io/github/contributors-anon/ETLCPP/etl) ![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat) ![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
-
+![GitHub contributors](https://img.shields.io/github/contributors-anon/ETLCPP/etl) 
+![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat) 
+![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
-
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
-
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++14.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master)

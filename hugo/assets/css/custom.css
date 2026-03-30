@@ -1,4 +1,14 @@
 /* Definitions for light mode */
+html:not(.dark) .highlight .chroma .c1
+{
+  color: forestgreen !important;
+}
+
+html:not(.dark) .highlight .chroma .cp,
+html:not(.dark) .highlight .chroma .cpf {
+  color: mediumslateblue !important;
+}
+
 html:not(.dark) h1 { 
   color: coral !important; 
 }
@@ -74,6 +84,16 @@ html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover span {
 }
 
 
+/* Definitions for dark mode */
+html.dark .highlight .chroma .c1
+{
+  color: lightgreen !important;
+}
+
+html.dark .highlight .chroma .cp,
+html.dark.highlight .chroma .cpf {
+  color: lightsteelblue !important;
+}
 
 html.dark body {
   background-color: #1e1e1e !important;
@@ -204,6 +224,16 @@ html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
   font-weight: normal;
   font-style: normal;
 }
+
+/* .highlight .chroma .c1
+{
+  color: forestgreen !important;
+}
+
+.highlight .chroma .cp,
+.highlight .chroma .cpf {
+  color: mediumslateblue !important;
+} */
 
 html.dark .hextra-code-block .highlight .chroma .cs,
 html.dark .hextra-code-block .highlight .chroma .cp,
