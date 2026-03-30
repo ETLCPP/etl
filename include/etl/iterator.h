@@ -142,7 +142,8 @@ namespace etl
   template <typename TIterator, typename TDistance>
   ETL_CONSTEXPR14 void advance_helper(TIterator& itr, TDistance n, ETL_OR_STD::random_access_iterator_tag)
   {
-    itr += n;
+    typedef typename etl::iterator_traits<TIterator>::difference_type diff_t;
+    itr += static_cast<diff_t>(n);
   }
 
   template <typename TIterator, typename TDistance>
