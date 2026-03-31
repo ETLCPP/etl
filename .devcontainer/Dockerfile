@@ -1,20 +1,61 @@
-ARG BASE_IMAGE_NAME="clang:latest"
+ARG BASE_IMAGE_NAME="mcr.microsoft.com/devcontainers/cpp:2@sha256:a5eb5a1e9109af88bf82ebb0f71903608a68144851ed1e4b852e31b251ac59c6"
 
 FROM ${BASE_IMAGE_NAME}
 
-ARG REINSTALL_CMAKE_VERSION_FROM_SOURCE="3.31.7"
+ARG DEBIAN_SNAPSHOT="20260223T000000Z"
 
-# Optionally install the cmake for vcpkg
-COPY ./reinstall-cmake.sh /tmp/
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    TZ=UTC
+
+RUN set -eux \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && if [[ "${DEBIAN_SNAPSHOT}" != "none" ]]; then \
+        snapshot_main="http://snapshot.debian.org/archive/debian/${DEBIAN_SNAPSHOT}"; \
+        snapshot_security="http://snapshot.debian.org/archive/debian-security/${DEBIAN_SNAPSHOT}"; \
+        if [[ -f /etc/apt/sources.list.d/debian.sources ]]; then \
+            sed -ri "s|^URIs: https?://deb.debian.org/debian$|URIs: ${snapshot_main}|g" /etc/apt/sources.list.d/debian.sources; \
+            sed -ri "s|^URIs: https?://deb.debian.org/debian-security$|URIs: ${snapshot_security}|g" /etc/apt/sources.list.d/debian.sources; \
+        elif [[ -f /etc/apt/sources.list ]] || compgen -G "/etc/apt/sources.list.d/*.list" > /dev/null; then \
+            for list_file in /etc/apt/sources.list /etc/apt/sources.list.d/*.list; do \
+                [[ -f "${list_file}" ]] || continue; \
+                sed -ri "s|https?://deb.debian.org/debian|${snapshot_main}|g" "${list_file}"; \
+                sed -ri "s|https?://security.debian.org/debian-security|${snapshot_security}|g" "${list_file}"; \
+                sed -ri "s|https?://deb.debian.org/debian-security|${snapshot_security}|g" "${list_file}"; \
+            done; \
+        else \
+            echo "ERROR: DEBIAN_SNAPSHOT='${DEBIAN_SNAPSHOT}' is set, but no supported apt source files were found."; \
+            echo "Expected /etc/apt/sources.list.d/debian.sources or one or more .list files under /etc/apt/."; \
+            exit 1; \
+        fi; \
+        printf 'Acquire::Check-Valid-Until "false";\n' > /etc/apt/apt.conf.d/99snapshot; \
+    fi \
+    && apt-get update \
     && apt-get -y install --no-install-recommends \
+        python3-full \
+        python3-pip \
         git \
         wget \
-        python3-cogapp \
-    && rm -rf /var/lib/apt/lists/*
+        cmake \
+    && rm -rf /var/lib/apt/lists/* \
+    && if pip help install | grep -q '\-\-break-system-packages'; then \
+           pip install --no-cache-dir --break-system-packages cogapp; \
+       else \
+           pip install --no-cache-dir cogapp; \
+       fi
 
-RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
-        chmod +x /tmp/reinstall-cmake.sh && /tmp/reinstall-cmake.sh ${REINSTALL_CMAKE_VERSION_FROM_SOURCE}; \
-    fi \
-    && rm -f /tmp/reinstall-cmake.sh
+RUN set -eux \
+    && echo "Pip version: " \
+    && pip --version \
+    && echo "Cogapp version: " \
+    && pip show cogapp \
+    && echo "Git version: " \
+    && git --version \
+    && echo "Wget version: " \
+    && wget --version \
+    && echo "Cmake version: " \
+    && cmake --version \
+    && echo "Make version: " \
+    && make --version
