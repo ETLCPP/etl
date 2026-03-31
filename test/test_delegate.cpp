@@ -676,7 +676,8 @@ namespace
     {
       etl::delegate<int(int, int)> d;
 
-      d.set([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 6; });
+      d.set(+[](int i, int j)
+            { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 6; });
 
       int result = d(VALUE1, VALUE2);
 
