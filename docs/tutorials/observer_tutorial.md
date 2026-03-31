@@ -5,14 +5,14 @@ title: "Observer"
 A tutorial on how the ETL's observer pattern can be used.
 
 ## The Classes
-```C++
+```cpp
 etl::observer
 etl::observable
 ```
 ## Example
 This example shows an observable mouse driver that is observed by two event handlers.
 
-```C++
+```cpp
 #include <iostream>
 
 #include "observer.h"

@@ -2,8 +2,6 @@
 title: "bip_buffer_spsc_atomic"
 ---
 
----
-
 {{< callout >}}
   Header: `bip_buffer_spsc_atomic.h`  
   Supported: tbc
@@ -24,7 +22,7 @@ The second region covers indices N to 2N-1, but maps to the same memory as the f
 
 This means any contiguous slice of up to N bytes can always be read as a single, linear pointer — no wraparound, no copying, no splitting.
 
-```C++
+```cpp
 etl::bip_buffer_spsc_atomic<typename T, 
                             size_t SIZE, 
                             size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -47,7 +45,7 @@ Inherits from `etl::ibip_buffer_spsc_atomic<T>`.
 `MAX_SIZE`  The maximum size of the circular_buffer.
 
 ## Constructor
-```C++
+```cpp
 etl::bip_buffer_spsc_atomic<typename T, 
                             size_t SIZE, 
                             size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>();
@@ -55,7 +53,7 @@ etl::bip_buffer_spsc_atomic<typename T,
 
 ## Capacity
 
-```C++
+```cpp
 bool empty() const
 ```
 **Description**  
@@ -63,7 +61,7 @@ Returns `true` if the size of the circular buffer is zero, otherwise `false`.
 
 ---
 
-```C++
+```cpp
 bool full() const
 ```
 **Description**  
@@ -71,7 +69,7 @@ Returns `true` if the size of the circular buffer is `SIZE`, otherwise `false`.
 
 ---
 
-```C++
+```cpp
 size_t size() const
 ```
 **Description**  
@@ -79,7 +77,7 @@ Returns the size of the circular buffer.
 
 ---
 
-```C++
+```cpp
 size_t max_size() const
 ```
 **Description**  
@@ -87,7 +85,7 @@ Returns the maximum possible size of the circular buffer.
 
 ---
 
-```C++
+```cpp
 size_t capacity() const
 ```
 **Description**  
@@ -95,7 +93,7 @@ Returns the maximum possible size of the circular buffer.
 
 ---
 
-```C++
+```cpp
 size_t available() const
 ```
 **Description**  
@@ -103,13 +101,13 @@ Returns the remaining available capacity in the circular buffer.
 
 ## Modifiers
 
-```C++
+```cpp
 etl::span<T> read_reserve(size_type max_reserve_size = numeric_limits<size_type>::max())
 ```
 **Description**  
 Reserves a memory area for reading (up to the `max_reserve_size`).
 
-```C++
+```cpp
 void read_commit(const etl::span<T> &reserve)
 ```
 **Description**  
@@ -119,7 +117,7 @@ Throws `bip_buffer_reserve_invalid`.
 
 ---
 
-```C++
+```cpp
 etl::span<T> write_reserve(size_type max_reserve_size)
 ```
 **Description**  
@@ -127,7 +125,7 @@ Reserves a memory area for writing up to the `max_reserve_size`.
 
 ---
 
-```C++
+```cpp
 etl::span<T> write_reserve_optimal(size_type min_reserve_size = 1U)
 ```
 **Description**  
@@ -136,7 +134,7 @@ around if the available forward space is less than `min_reserve_size`.
 
 ---
 
-```C++
+```cpp
 void write_commit(const etl::span<T> &reserve)
 ```
 **Description**  
@@ -146,7 +144,7 @@ Throws `bip_buffer_reserve_invalid`
 
 ---
 
-```C++
+```cpp
 void clear()
 ```
 **Description**  

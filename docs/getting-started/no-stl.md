@@ -3,8 +3,6 @@ title: "No STL"
 weight: 2
 ---
 
----
-
 It is possible to use the ETL without any reliance on the STL — 
 This can be achieved by defining the project wide macro `ETL_NO_STL`.  
 

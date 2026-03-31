@@ -3,8 +3,6 @@ title: "Contributing to the ETL"
 weight: 6
 ---
 
----
-
 Thanks for considering a contribution! Here’s what you need to know before opening a pull request:
 
 If you are thinking of adding a new feature then raise this on the GitHub Issues page for discussion as the maintainers and users of the ETL may have questions or suggestions.
@@ -67,7 +65,7 @@ If a feature is only implementable for a certain C++ standard or above, wrap the
 `ETL_USING_CPP23` For C++23 or above  
   
 i.e.
-```C++
+```cpp
 #if ETL_USING_CPP11
 ...
 #endif
@@ -85,7 +83,7 @@ All ETL classes are to be within the `etl` namespace.
 ### Private functionality
 All classes private to the ETL should reside in a nested namespace prefixed with `private_`
 
-```C++
+```cpp
 namespace etl
 {
   namespace private_funky_container
@@ -113,7 +111,7 @@ Use comments to summarise or explain blocks of code that may be difficult to qui
 Avoid using `int8_t` or `uint8_t`.
 Some processors such as DSPs do not support 8 bit values. Use `int_least_8_t` and `uint_least8_t` in their place.
 If `int8_t` or `uint8_t` must be used then surround the code with
-```C++
+```cpp
 #if ETL_USING_8BIT_TYPES
 #endif
 ```
@@ -121,7 +119,7 @@ If `int8_t` or `uint8_t` must be used then surround the code with
 ### 64 bit types
 If `int64_t` or `uint64_t` must be used 
 Then surround the code with
-```C++
+```cpp
 #if ETL_USING_64BIT_TYPES
 #endif
 ```
@@ -146,7 +144,7 @@ This will ensure that the correct code is generated for the user selected error 
 ### Constructors
 Align the initialisation of member variables in constructors as below.
 
-```C++
+```cpp
 class my_new_class
 {
   public:
@@ -164,7 +162,7 @@ class my_new_class
 When possible, try to tabluate the initialisation of multiple variables. It's a lot easier to read.
 Don't be too strict about it, if it would result in giant amounts of whitespace.
 
-```C++
+```cpp
 int              count   = 0;
 double           divisor = 1.234;
 etl::string<10>  name    = "Default";
@@ -175,7 +173,7 @@ etl::intrusive_forward_list<data_link_type> quite_long_variable_name(data1, data
 ### ETL errors
 ETL errors are packaged in exception structures. Do not get confused with this terminology, it does not mean that it will *always* be thrown as an exception. It may just be passed as a parameter to an error handler.
 
-```C++
+```cpp
 class stack_exception : public exception
 {
 public:

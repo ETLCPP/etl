@@ -13,7 +13,7 @@ For example, a message source may pass messages to a message bus. The message bu
 
 ## Messages
 
-```C++
+```cpp
 etl::message
 ```
 
@@ -21,7 +21,7 @@ All messages are untimately derived from `etl::imessage`.
 They are directly derived from the template `etl::message<const etl::message_id_t ID>`.
 Each message must have an id that is at least unique to the receiver, though normally ids would be unique across the application.
 
-```C++
+```cpp
 enum class MessageId : etl::message_id_t
 {
   StartMotorId,
@@ -45,7 +45,7 @@ By default the message id is a `uint_least8_t`. This may be changed by defining 
 
 ## Message Routers
 
-```C++
+```cpp
 etl::message_router
 ```
 Messages routers are defined to handle a specified set of messages. Defining a message router will mandate that a specific set of `on_receive` functions to handle each message type be defined, along with an 'unknown' handler.
@@ -57,7 +57,7 @@ See the `QueuedMessageRouter` project in the `examples` directory.
 
 ## Message Buses
 
-```C++
+```cpp
 etl::message_bus
 ```
 Message buses are a type of message router.
@@ -67,14 +67,14 @@ Messages sent to the bus may either be broadcast or directed only to routers wit
 
 ## Message Timer
 
-```C++
+```cpp
 etl::message_timer
 ```
 The message timer is a generator of messages. Up to 254 timers may be defined that can be configured to send a message to a router, bus or FSM at periodic intervals.
 
 ## Finite State Machines (FSM & HFSM)
 
-```C++
+```cpp
 etl::fsm
 etl::hfsm
 ```

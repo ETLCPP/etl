@@ -2,8 +2,6 @@
 title: "array_wrapper"
 ---
 
----
-
 {{< callout >}}
   Header: `array_wrapper.h`  
   Supported: All versions  
@@ -44,10 +42,10 @@ If C++11 or above is supported then most functions can be 'constexpr'.
 `REND     = -1`  
 
 ## Element access
-```C++
+```cpp
 T& at(size_t i)
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const T& at(size_t i) const
 ```
 **Description**  
@@ -56,10 +54,10 @@ Emits an `etl::array_wrapper_bounds` if the index isout of range of the array.
 If asserts or exceptions are not enabled then undefined behaviour occurs.
 
 ---
-```C++
+```cpp
 T& operator[](size_t i)
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const T& operator[](size_t i) const
 ```
 **Description**  
@@ -67,10 +65,10 @@ Returns a reference or const reference to the indexed element.if the index is ou
 
 ---
 
-```C++
+```cpp
 T& front()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const T& front() const
 ```
 **Description**  
@@ -78,10 +76,10 @@ Returns a reference or const reference to the first element.---
 
 ---
 
-```C++
+```cpp
 T& back()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const T& back() const
 ```
 **Description**  
@@ -89,17 +87,17 @@ Returns a reference or const reference to the last element.---
 
 ---
 
-```C++
+```cpp
 T* data()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const T* data() const
 ```
 **Description**  
 Returns a pointer or const pointer to the array.---Modifiers
 
 ---
-```C++
+```cpp
 void fill(parameter_t value)
 ```
 **Description**  
@@ -107,7 +105,7 @@ Fill a non-cost array with the value.---
 
 ---
 
-```C++
+```cpp
 template <typename T, T(&ARRAYOTHER)[SIZE_]>
 void swap(etl::array_wrapper<T, SIZE_, ARRAYOTHER>& other)
 ```
@@ -116,10 +114,10 @@ Swaps the array contents with another.---Iterators
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR iterator begin()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const_iterator begin() constETL_CONSTEXPR const_iterator cbegin() const
 ```
 **Description**  
@@ -127,10 +125,10 @@ Returns an iterator to the beginning of the array.---
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR iterator end()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const_iterator end() constETL_CONSTEXPR const_iterator cend() const
 ```
 **Description**  
@@ -138,13 +136,13 @@ Returns an iterator to the end of the array.---
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR iterator rbegin()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const_reverse_iterator rbegin() const
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const_reverse_iterator crbegin() const
 ```
 **Description**  
@@ -152,10 +150,10 @@ Returns a reverse iterator to the beginning of the array.---
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR iterator rend()
 ```
-```C++
+```cpp
 ETL_CONSTEXPR const_reverse_iterator rend() constETL_CONSTEXPR const_reverse_iterator crend() const
 ```
 **Description**  
@@ -163,7 +161,7 @@ Returns a reverse iterator to the end of the array.---Capacity
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR size_t size() const
 ```
 **Description**  
@@ -171,7 +169,7 @@ Returns the size of the view.---
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR size_t max_size() const
 ```
 **Description**  
@@ -208,7 +206,7 @@ contents of the rhs,  otherwise `false`.
 contents of the rhs, otherwise `false`
 
 ## Swap
-```C++
+```cpp
 template <typename T, std::size_t SIZE, T(&ARRAYL)[SIZE], T(&ARRAYR)[SIZE]>
 void swap(etl::array_wrapper<T, SIZE, ARRAYL>& lhs,          
           etl::array_wrapper<T, SIZE, ARRAYR>& rhs)
@@ -222,13 +220,13 @@ There is a specialisation for `etl::hash` for `array_wrapper`.
 ## Macros
 A macro is defined to ease the use of the class.
 
-```C++
+```cpp
 ETL_ARRAY_WRAPPER(type, array);
 ```
 
 **Example**  
 
-```C++
+```cpp
 // The address of the array MUST be deducible at compile time.  
 int cdata = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };  
 

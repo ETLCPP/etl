@@ -4,8 +4,6 @@ draft: true
 weight: 1
 ---
 
----
-
 {{< callout type="info">}}
   Header: `my_class.h`  
   Supported: `xx.yy.zz`  
@@ -14,13 +12,13 @@ weight: 1
 
 A short description of the code this document is about.
 
-```C++
+```cpp
 The signature of the class, struct, or function
 ```
 
 ## Template Parameters
 
-```C++
+```cpp
 TParameter1
 ```
 **Description**  
@@ -28,7 +26,7 @@ A description the the TParameter1 template parameter.
 
 ---
 
-```C++
+```cpp
 TParameter1
 ```
 **Description**  
@@ -36,7 +34,7 @@ A description the the TParameter1 template parameter.
 
 ## Exceptions
 
-```C++
+```cpp
 etl::your_firt_exception_type
 ```
 **Description**  
@@ -44,19 +42,19 @@ Description of what the exception indicates.
 
 ## Member Types
 
-```C++
+```cpp
 `first_member_type`
 ```
 **Description**  
 The first member type
 
-```C++
+```cpp
 return_type
 ```
 **Description**
 `The second class member type`
 
-```C++
+```cpp
 argument_types
 ```
 **Description**  
@@ -93,7 +91,7 @@ rvalue reference to etl::my_class.
 
 ## Invocation
 
-```C++
+```cpp
 int operator(float f)
 ```
 **Description**  
@@ -107,7 +105,7 @@ An integer calculated from the float.
 
 ---
 
-```C++
+```cpp
 int calculate(float f)
 ```
 **Description**  
@@ -121,7 +119,7 @@ An integer calculated from the float.
 
 ## Observers
 
-```C++
+```cpp
 bool is_valid() const
 ```
 **Returns**  
@@ -129,7 +127,7 @@ bool is_valid() const
 
 ## Modifiers
 
-```C++
+```cpp
 void clear()
 ```
 **Description**  
@@ -143,7 +141,7 @@ None
 
 ---
 
-```C++
+```cpp
 void swap(my_class& other)
 ```
 **Description**  
@@ -157,7 +155,7 @@ A reference to another my_class object.
 
 ## Example
 
-```C++
+```cpp
 #include "etl/my_class.h"
 
 etl::my_class my_object1;

@@ -2,14 +2,12 @@
 title: "bloom_filter"
 ---
 
----
-
 {{< callout >}}
   Header: `bloom_filter.h`  
   Supported: All versions  
 {{< /callout >}}
 
-```C++
+```cpp
 etl::bloom_filter<size_t Width, typename THash1, typename THash2, typename THash3>
 ```
 
@@ -23,13 +21,13 @@ i.e. A bloom filter with a specified capacity of 195 bits will be rounded up to 
 
 The initial state of the Bloom filter is clear.
 
-```C++
+```cpp
 bloom_filter();
 ```
 
 ## Operations
 
-```C++
+```cpp
 void clear()
 ```
 **Description**  
@@ -37,7 +35,7 @@ Clears the filter of all entries.
 
 ---
 
-```C++
+```cpp
 void add(parameter_t key)
 ```
 **Description**  
@@ -45,7 +43,7 @@ Adds a key to the filter, where parameter_t is derived from the first hash argum
 
 ---
 
-```C++
+```cpp
 bool exists(parameter_t key) const
 ```
 **Description**  
@@ -53,7 +51,7 @@ Checks to see if a key may exist in the filter, where parameter_t is derived fro
 
 ---
 
-```C++
+```cpp
 size_t usage() const
 ```
 **Description**  
@@ -62,7 +60,7 @@ Equal to `100 * count() / width()`
 
 ---
 
-```C++
+```cpp
 bool count() const
 ```
 **Description**  
@@ -70,7 +68,7 @@ Returns the number of elements in use in the filter.
 
 ---
 
-```C++
+```cpp
 bool width() const
 ```
 **Description**  
@@ -79,7 +77,7 @@ Equal to the template parameter WIDTH.
 
 ## Example
 
-```C++
+```cpp
 #include "bloom_filter.h"
 #include "fnv-1.h"
 #include "string.h"

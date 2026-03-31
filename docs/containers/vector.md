@@ -2,8 +2,6 @@
 title: "vector"
 ---
 
----
-
 {{< callout >}}
   Header: `vector.h`  
   Supported: All versions  

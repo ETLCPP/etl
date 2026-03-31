@@ -2,8 +2,6 @@
 title: "Containers"
 ---
 
----
-
 ## Overview
 The containers in the ETL are designed to complement those found in the STL. The main difference is that their capacity is defined at compile time and they contain their own storage. They do not allocate any storage from the heap at any time.  
 This is an advantage on an embedded device as all of the memory required by the application will be defined upfront. Also due to the storage's contiguous nature, the containers are cache friendly.
@@ -11,14 +9,14 @@ This is an advantage on an embedded device as all of the memory required by the 
 Containers in the ETL library are mostly based around a common design theme of three classes.  
 (Where container is the name of the relevant container).
 
-```C++
+```cpp
 container<type, size>
 icontainer<type>
 container_base
 ```
 
 **i.e.**
-```C++
+```cpp
 etl::vector<type, size>
 etl::ivector<type>
 etl::vector_base
@@ -33,7 +31,7 @@ The classes do not implement any virtual functions and, like STL containers, are
 Code using containers of a specific type can be written to be independent of the storage size through use of icontainer class references.  
 
 ## Example
-```C++
+```cpp
 #include "etl/vector.h"
 #include "etl/numeric.h"
 

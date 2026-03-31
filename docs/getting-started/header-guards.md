@@ -3,8 +3,6 @@ title: "Header guards"
 weight: 6
 ---
 
----
-
 The ETL as a default uses `#include` headers guards.  
 If you wish, you can convert them to using `#pragma once`.
 

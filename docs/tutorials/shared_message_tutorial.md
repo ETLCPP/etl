@@ -16,13 +16,13 @@ A shared message encapsulates a pointer to a reference counted message. Each tim
 The shared message assumes that the owner pool implements a function or function template that will allocate a reference counted message from the supplied message type.
 
 **Example**
-```C++
+```cpp
 template <typename TMessage>
 etl::ireference_counted_message* allocate(const TMessage& message)
 ```
 
 ## Reference Counted Messages
-```C++
+```cpp
 reference_counted_message
 reference_counted_message_pool
 ```
@@ -44,7 +44,7 @@ If the pool is being used in a multi-threaded environment or with interrupts the
 An `etl::persistent_message` is a special type of reference counted message that does not belong to a pool. It will always have a reference count of 1. These may be used for messages that are fixed in value; i.e. their members do not change during the lifetime of the application. 
 
 ## Memory block allocators
-```c++
+```cpp
 imemory_block_allocator
 fixed_sized_memory_block_allocator
 ```
@@ -61,7 +61,7 @@ The ETL defines a simple, fixed sized, memory block allocator, `etl::fixed_sized
 
 The code below may be found in `examples/SharedMessage`
 
-```c++
+```cpp
 //*****************************************************************************
 // Shared message example
 //*****************************************************************************

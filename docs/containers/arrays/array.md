@@ -3,8 +3,6 @@ title: "array"
 weight: 1
 ---
 
----
-
 {{< callout >}}
   Header: `array.h`  
   Supported: All versions  
@@ -14,7 +12,7 @@ weight: 1
 A fixed capacity array.
 Adds additional members functions, `assign`, `insert` & `erase`.
 
-```C++
+```cpp
 etl::array<typename T, const size_t SIZE>
 ```
 
@@ -24,13 +22,13 @@ See also
 ## Template deduction guides
 **C++17 and above**
 
-```C++
+```cpp
 template <typename... T>
 etl::array(T...)
 ```
 
 ### Example
-```C++
+```cpp
 etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 ```
 Defines data as an array of 'int', of length '10', containing the supplied data.
@@ -38,13 +36,13 @@ Defines data as an array of 'int', of length '10', containing the supplied data.
 ## Make template
 **C++11 and above**
 
-```C++
+```cpp
 template <typename T, typename... TValues>
 constexpr auto make_array(TValues&&... values)
 ```
 
 ### Example
-```C++
+```cpp
 auto data = etl::make_array<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 ```
 
@@ -66,7 +64,7 @@ auto data = etl::make_array<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 ## Static Constants
 
-```C++
+```cpp
 SIZE
 ```
 **Description**  
@@ -74,7 +72,7 @@ The size of the array.
 
 ## Constructor
 
-```C++
+```cpp
 etl::array<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 ```
 **Description**  
@@ -82,7 +80,7 @@ Default or copy constructs each element.
 Can be initialised like a C array.
 
 ## Element access
-```C++
+```cpp
 T& at(size_t i)
 const T& at(size_t i) const
 ```
@@ -92,7 +90,7 @@ If asserts or exceptions are not enabled then an out of range index results in u
 
 ---
 
-```C++
+```cpp
 T& operator[](size_t i)
 const T& operator[](size_t i) const
 ```
@@ -102,7 +100,7 @@ An out of range index results in undefined behaviour.
 
 ---
 
-```C++
+```cpp
 T& front()
 const T& front() const
 ```
@@ -111,7 +109,7 @@ Returns a reference or const reference to the first element.
 
 ---
 
-```C++
+```cpp
 T& back()
 const T& back() const
 ```
@@ -120,7 +118,7 @@ Returns a reference or const reference to the last element.
 
 ## Iterators
 
-```C++
+```cpp
 iterator begin()  
 const_iterator begin() const  
 const_iterator cbegin() const  
@@ -130,7 +128,7 @@ Returns an iterator to the beginning of the array.
 
 ---
 
-```C++
+```cpp
 iterator end()  
 const_iterator end() const  
 const_iterator cend() const  
@@ -140,7 +138,7 @@ Returns an iterator to the end of the array.
 
 ---
 
-```C++
+```cpp
 iterator rbegin()  
 const_iterator rbegin() const  
 const_iterator crbegin() const  
@@ -150,7 +148,7 @@ Returns a reverse iterator to the beginning of the array.
 
 ---
 
-```C++
+```cpp
 iterator rend()  
 const_iterator rend() const  
 const_iterator crend() const  
@@ -160,7 +158,7 @@ Returns a reverse iterator to the end of the array.
 
 ## Capacity
 
-```C++
+```cpp
 bool empty() const
 ```
 **Description**  
@@ -168,7 +166,7 @@ Returns true if the size of the array is zero, otherwise false.
 
 ---
 
-```C++
+```cpp
 size_t size() const  
 ```
 **Description**  
@@ -176,7 +174,7 @@ Returns the size of the array.
 
 ---
 
-```C++
+```cpp
 size_t max_size() const  
 ```
 **Description**  
@@ -184,7 +182,7 @@ Returns the maximum possible size of the array.
 
 ## Modifiers
 
-```C++
+```cpp
 void fill(T value)  
 ```
 **Description**  
@@ -192,12 +190,12 @@ Fills the array with value.
 
 ## ETL Extensions
 
-```C++
+```cpp
 template <typename TIterator>
 void assign(TIterator first, const TIterator last)
 ```
 
-```C++
+```cpp
 template <typename TIterator>
 void assign(TIterator first, const TIterator last, parameter_t value)  
 ```
@@ -209,7 +207,7 @@ If the range is smaller than the array then the unused array elements are left u
 
 ---
 
-```C++
+```cpp
 iterator insert_at(size_t position, parameter_t value)  
 iterator insert(const_iterator position, parameter_t value)  
 ```
@@ -220,7 +218,7 @@ Elements may be truncated if they are shifted off the end of the array.
 
 ---
 
-```C++
+```cpp
 template <typename TIterator>
 iterator insert_at(size_t position, TIterator first, const TIterator last)
 ```
@@ -230,7 +228,7 @@ iterator insert_at(size_t position, TIterator first, const TIterator last)
 
 ---
 
-```C++
+```cpp
 template <typename TIterator>
 iterator insert(const_iterator position, TIterator first, const TIterator last)
 ```
@@ -242,7 +240,7 @@ The range may be larger than the capacity of the array. Excess elements will be 
 
 ---
 
-```C++
+```cpp
 iterator erase_at(size_t position)
 iterator erase_at(size_t position, parameter_t value)
 iterator erase(const_iterator position)
@@ -256,7 +254,7 @@ position is not checked for valid range.
 
 ---
 
-```C++
+```cpp
 iterator erase_range(size_t first, size_t last)
 iterator erase_range(size_t first, size_t last, parameter_t value)
 iterator erase(const_iterator first, const_iterator last)

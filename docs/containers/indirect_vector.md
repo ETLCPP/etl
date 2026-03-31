@@ -2,8 +2,6 @@
 title: "indirect_vector"
 ---
 
----
-
 {{< callout >}}
   Header: `vector.h`  
   Supported: All versions  

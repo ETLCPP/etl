@@ -3,8 +3,6 @@ title: "Setup"
 weight: 1
 ---
 
----
-
 This page describes the steps needed to integrate the ETL with your project.
 
 ## CMake
@@ -75,7 +73,7 @@ work with default values.
 
 ## Example
 
-```C++
+```cpp
 #ifndef __ETL_PROFILE_H__
 #define __ETL_PROFILE_H__
 
@@ -107,7 +105,7 @@ used, due to project specifics:
 
 ### Example
 
-```C++
+```cpp
 #include <etl/chrono.h>
 #include <etl/print.h>
 
@@ -165,7 +163,7 @@ This header is included from ETL's `platform.h`
 
 An example of `etl_profile.h` could be:-
 
-```C++
+```cpp
 #ifndef ETL_PROFILE_H
 #define ETL_PROFILE_H
 
@@ -187,7 +185,7 @@ The user does not need to modify this file.
 ## Additional include directories
 The compiler will normally expect paths to additional include directories to be specified  
 A path to `etl/include` would normally be set, allowing header files to be specified as follows:-
-```C++
+```cpp
 #include "etl/vector.h"
 #include "etl/fsm.h"
 ```

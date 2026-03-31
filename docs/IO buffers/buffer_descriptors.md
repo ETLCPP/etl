@@ -1,6 +1,5 @@
 ---
 title: "buffer_descriptors"
-
 ---
 
 {{< callout >}}
@@ -10,7 +9,7 @@ title: "buffer_descriptors"
 
 A set of descriptors to a collection of buffers.
 
-```C++
+```cpp
 template <typename TBuffer,      // The type to store in the buffer.
           TSize    BUFFER_SIZE,  // The size of each buffer.
           size_t   N_BUFFERS,    // The total number of buffers.
@@ -39,7 +38,7 @@ For interrupts and multi-threaded code, either the flag  type must force a fence
 | BUFFER_SIZE | The number of elements in each buffer                     |
 
 ## Constructors  
-```C++
+```cpp
 buffer_descriptors(pointer pbuffers)
 ```
 **Description**  
@@ -48,7 +47,7 @@ This storage should be contiguous and large enough to hold `N_BUFFERS`.
 
 ---
 
-```C++
+```cpp
 buffer_descriptors(pointer pbuffers, const callback_type& callback)
 ```
 **Description**  
@@ -56,7 +55,7 @@ Construct with a pointer to the start of the buffers to control and the callback
 
 ## Member functions  
 
-```C++
+```cpp
 void set_callback(const callback_type& callback)
 ```
 **Description**  
@@ -64,7 +63,7 @@ Set the callback for notification.
 
 ---
 
-```C++
+```cpp
 bool is_valid() const
 ```
 **Description**  
@@ -72,7 +71,7 @@ Returns true if class contains valid buffers.
 
 ---
 
-```C++
+```cpp
 void notify(notification n)
 ```
 **Description**  
@@ -81,7 +80,7 @@ Used when the buffer has been filled and is ready for processing via the callbac
 
 ---
 
-```C++
+```cpp
 descriptor allocate()
 ```
 **Description**  
@@ -90,7 +89,7 @@ If all descriptors are in use then the descriptor will be invalid.
 
 ---
 
-```C++
+```cpp
 descriptor allocate(value_type fill)
 ```
 **Description**  
@@ -99,13 +98,13 @@ If all descriptors are in use then the descriptor will be invalid.
 
 ---
 
-```C++
+```cpp
 void clear()
 ```
 **Description**  
 Clears by releasing all allocated descriptors.
 
-```C++
+```cpp
 descriptor
 ```
 **Description**  
@@ -113,7 +112,7 @@ A nested class that encapsulates the details of an individual buffer.
 
 ---
 
-```C++
+```cpp
 const size_type MAX_SIZE
 ```
 **Description**  
@@ -121,7 +120,7 @@ The maximum size of the buffer.
 
 ---
 
-```C++
+```cpp
 descriptor()
 ```
 **Description**  
@@ -129,7 +128,7 @@ Default constructor.
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR pointer data() const
 ```
 **Description**  
@@ -137,7 +136,7 @@ Returns a pointer to the start of the buffer.
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR size_type max_size() const
 ```
 **Description**  
@@ -145,7 +144,7 @@ Returns the maximum size of the buffer.
 
 ---
 
-```C++
+```cpp
 bool is_valid() const
 ```
 **Description**  
@@ -153,7 +152,7 @@ Returns true if the descriptor points to a valid buffer.
 
 ---
 
-```C++
+```cpp
 bool is_allocated() const
 ```
 **Description**  
@@ -161,7 +160,7 @@ Returns true if the descriptor has been allocated.
 
 ---
 
-```C++
+```cpp
 bool is_released() const
 ```
 **Description**  
@@ -169,7 +168,7 @@ Returns true if the descriptor has been released.
 
 ---
 
-```C++
+```cpp
 void release()
 ```
 **Description**  
@@ -177,7 +176,7 @@ Releases the descriptor.
 
 ---
 
-```C++
+```cpp
 notification
 ```
 **Description**  
@@ -185,7 +184,7 @@ A nested class that is sent to the user defined callback function.
 
 ---
 
-```C++
+```cpp
 notification()
 ```
 **Description**  
@@ -194,7 +193,7 @@ Initialises to a default constructed descriptor and a count of zero.
 
 ---
 
-```C++
+```cpp
 notification(descriptor desc, size_t count)
 ```
 **Description**  
@@ -202,7 +201,7 @@ Construct with the supplied parameters.
 
 ---
 
-```C++
+```cpp
 descriptor get_descriptor() const
 ```
 **Description**  
@@ -210,7 +209,7 @@ Gets the descriptor.
 
 ---
 
-```C++
+```cpp
 size_t get_count() const
 ```
 **Description**  
@@ -222,7 +221,7 @@ Assumes that there is a DMA driver class called DMA.
 In the real world the descriptor would be queued in the callback and handled in a foreground thread.  
 The handler in the thread would release the descriptor.
 
-```C++
+```cpp
 constexpr size_t BUFFER_SIZE = 256U;
 constexpr size_t N_BUFFERS   = 8U;
 

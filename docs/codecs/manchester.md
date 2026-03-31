@@ -3,8 +3,6 @@ title: Manchester encoding and decoding
 weight: 1
 ---
 
----
-
 {{< callout type="info">}}
   Header: `manchester.h`  
   Support: `20.45.0`  

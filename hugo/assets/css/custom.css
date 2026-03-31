@@ -10,7 +10,10 @@ html:not(.dark) .highlight .chroma .cpf {
 }
 
 html:not(.dark) h1 { 
-  color: coral !important; 
+  color: coral !important;
+  width: 100%;
+  border-bottom: 3px solid black !important;
+  padding-bottom: 0.5rem;
 }
 
 html:not(.dark) h2 { 
@@ -22,7 +25,6 @@ html:not(.dark) h3,
 html:not(.dark) h4 
 { 
   color: rgb(29, 172, 29) !important; 
-  border-bottom: 1px solid darkgrey !important; 
 }
 
 html:not(.dark) p { 
@@ -115,17 +117,18 @@ html.dark .hx\:dark\:bg-dark {
 html.dark h1 
 { 
   color: coral !important; 
+  border-bottom: 2px solid #c0c0c0 !important;
+  padding-bottom: 0.5rem;
 }
 
 html.dark h2 { 
   color: #7099c7 !important; 
-  border-bottom: 3px solid #f0f0f0 !important; 
+  border-bottom: 2px solid #c0c0c0 !important; 
 }
 
 html.dark h3, 
 html.dark h4 { 
   color: lightgreen !important;
-  border-bottom: 1px solid rgb(76, 76, 76) !important; 
 }
 
 html.dark p { 
@@ -219,10 +222,16 @@ html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
 .highlight .chroma .kt, 
 .highlight .chroma .nc,
 .highlight .chroma .nf,
+.highlight .chroma .o,
 .highlight .chroma .cp,
 .highlight .chroma .cpf {
-  font-weight: normal;
-  font-style: normal;
+  font-weight: normal !important;
+  font-style: normal !important;
+}
+
+.hx\:mb-0 {
+  display: block;
+  width: 100%;
 }
 
 /* .highlight .chroma .c1

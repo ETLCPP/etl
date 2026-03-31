@@ -5,7 +5,7 @@ title: "Visitor"
 A tutorial on how the ETL's visitor pattern can be used.
 
 ## The Classes
-```C++
+```cpp
 etl::visitor
 etl::visitable
 ```
@@ -15,7 +15,7 @@ I'll use the familiar 'Shape' example.
 
 First, you create the base for your 'Shape' visitor.
 
-```C++
+```cpp
 //*****************************************************************
 // Pre-declare the shapes.
 //*****************************************************************
@@ -35,7 +35,7 @@ class Shape_Visitor : public etl:visitor<Square, Circle, Triangle>
 
 Then, you define the Shape base class. It derives from the `etl::visitable` class that defines a pure virtual accept function that accepts a `Shape_Visitor`.
 
-```C++
+```cpp
 //*****************************************************************
 // The shape base class.
 //*****************************************************************
@@ -46,7 +46,7 @@ class Shape : public etl::visitable<Shape_Visitor>
 
 Next, you define the shapes `Square`, `Circle`, and `Triangle`. Each overrides the accept function that calls the visitor with itself as a parameter.
 
-```C++
+```cpp
 //*****************************************************************
 // The square class
 //*****************************************************************
@@ -83,7 +83,7 @@ class Triangle : public Shape
 
 Now that you have the framework in place, you can do something with it. Here's an example that creates `Draw` and `Serialise` visitors and applies them to a vector of `Shape` objects.
 
-```C++
+```cpp
 //*****************************************************************
 // The 'draw' visitor.
 //*****************************************************************

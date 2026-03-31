@@ -2,8 +2,6 @@
 title: "array_view"
 ---
 
----
-
 {{< callout >}}
   Header: `array_view.h`  
   Supported: All versions  
@@ -16,23 +14,23 @@ It will support construction from any class that supports data() and size() memb
 If `ETL_ARRAY_VIEW_IS_MUTABLE` is defined, then the contents of the view are mutable.
 The view is non-mutable by default, which is the opposite to the behaviour in 17.5.0 or earlier.
 
-```C++
+```cpp
 etl::array_view<typename T>
 ```
 
 ## Template deduction guides
 **C++17 and above**
-```C++
+```cpp
 template <typename TArray>
 etl::array_view(TArray& a) 
   -> etl::array_view<typename TArray::value_type>;
 ```
-```C++
+```cpp
 template <typename TIterator>
 etl::array_view(const TIterator begin_, const TIterator end_)
   -> etl::array_view<etl::remove_pointer_t<TIterator>>;
 ```  
-```C++
+```cpp
 template <typename TIterator, typename TSize>
 etl::array_view(const TIterator begin_, const TSize size_)
   -> etl::array_view<etl::remove_pointer_t<TIterator>>;
@@ -40,7 +38,7 @@ etl::array_view(const TIterator begin_, const TSize size_)
 
 ## Examples
 
-```C++
+```cpp
 etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       
 etl::array_view view1{ data };
@@ -64,7 +62,7 @@ etl::array_view view4{ view1 };
 
 ## Constructors
 
-```C++
+```cpp
 ETL_CONSTEXPR array_view()
 ```
 **Description**  
@@ -72,7 +70,7 @@ Default constructor.
 
 ---
 
-```C++
+```cpp
 template <typename TArray>
 ETL_CONSTEXPR explicit array_view(TArray& a)
 ```
@@ -81,7 +79,7 @@ Construct from array or vector like class.
 
 ---
 
-```C++
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR array_view(TIterator begin_, TIterator end_)
 ```
@@ -90,7 +88,7 @@ Construct from an iterator or pointer range.
 
 ---
 
-```C++
+```cpp
 template <typename TIterator, typename TSize>
 ETL_CONSTEXPR array_view(TIterator begin_, TSize size_)
 ```
@@ -99,7 +97,7 @@ Construct from a start and size
 
 ---
 
-```C++
+```cpp
 template<const size_t ARRAY_SIZE>
 ETL_CONSTEXPR explicit array_view(T(&begin_)[ARRAY_SIZE])
 ```
@@ -108,7 +106,7 @@ Construct from a compile time sized C array.
 
 ---
 
-```C++
+```cpp
 ETL_CONSTEXPR array_view(const array_view& other)
 ```
 **Description**  
@@ -116,7 +114,7 @@ Copy constructor.
 
 ## Modifiers
 
-```C++
+```cpp
 template <typename TIterator>
 void assign(TIterator begin_, TIterator end_)
 ```
@@ -126,7 +124,7 @@ Does not copy the elements in the range.
 
 ---
 
-```C++
+```cpp
 template <typename TIterator, typename TSize>
 void assign(TIterator begin_, TSize size_)
 ```
@@ -136,7 +134,7 @@ Does not copy the elements in the range.
 
 ---
 
-```C++
+```cpp
 void remove_prefix(size_type n)
 ```
 **Description**
@@ -145,7 +143,7 @@ A value of `n` larger than the array will result in undefined behaviour.
 
 ---
 
-```C++
+```cpp
 void remove_suffix(size_type n)
 ```
 **Description**  
@@ -153,7 +151,7 @@ Shrinks the view from the back.
 A value of `n` larger than the array will result in undefined behaviour.
 
 ---
-```C++
+```cpp
 void fill(value_type value)
 ```
 *Introduced:* `20.24.0`  
@@ -166,7 +164,7 @@ Fill the underlying array with value.
 Mutable access is only possible by defining the macro `ETL_ARRAY_VIEW_IS_MUTABLE`.
 In this case, `reference`, `pointer`, `iterator` and `reverse_iterator` are defined as their `const` counterparts.
 
-```C++
+```cpp
 reference at(size_t i)
 const_reference at(size_t i) const
 ```
@@ -184,7 +182,7 @@ A reference or const reference to the indexed element
 
 ---
 
-```C++
+```cpp
 reference operator[](size_t i)
 const_reference operator[](size_t i) const
 ```
@@ -197,7 +195,7 @@ Undefined behaviour if the `array_view` is empty.
 
 ---
 
-```C++
+```cpp
 reference front()
 const_reference front() const
 ```
@@ -210,7 +208,7 @@ Undefined behaviour if the `array_view` is empty.
 
 ---
 
-```C++
+```cpp
 reference back()
 const_reference back() const
 ```
@@ -223,7 +221,7 @@ Undefined behaviour if the `array_view` is empty.
 
 ---
 
-```C++
+```cpp
 pointer data()
 const_pointer data() const
 ```
@@ -235,7 +233,7 @@ A pointer or const pointer to the first element.
 Equal to `end()` if the array_view is empty.
 
 ## Iterators
-```C++
+```cpp
 iterator begin()
 const_iterator begin() const
 const_iterator cbegin() const
@@ -245,7 +243,7 @@ Returns an iterator to the beginning of the array view.
 
 ---
 
-```C++
+```cpp
 iterator end()
 const_iterator end() const
 const_iterator cend() const
@@ -255,7 +253,7 @@ Returns an iterator to the end of the array view.
 
 ---
 
-```C++
+```cpp
 iterator rbegin()
 const_iterator rbegin() const
 const_iterator crbegin() const
@@ -265,7 +263,7 @@ Gets a reverse iterator to the beginning of the array view.
 
 ---
 
-```C++
+```cpp
 iterator rend()
 const_iterator rend() const
 const_iterator crend() const
@@ -277,7 +275,7 @@ Gets a reverse iterator to the end of the array view.
 
 Capacity
 
-```C++
+```cpp
 bool empty() const
 ```
 **Description**  
@@ -285,7 +283,7 @@ Returns true if the size of the array view is zero, otherwise false.
 
 ---
 
-```C++
+```cpp
 size_t size() const
 ```
 **Description**  
@@ -338,7 +336,7 @@ contents of the rhs, otherwise `false`.
 There are specialisations of `etl::hash` for `array_view`.
 
 ## Example
-```C++
+```cpp
 etl::array<int, 10> data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
 typedef etl::array_view<int> View;

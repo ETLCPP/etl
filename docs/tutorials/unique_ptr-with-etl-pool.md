@@ -2,12 +2,10 @@
 title: "unique_ptr with pool"
 ---
 
----
-
 This example shows objects being created from an `etl::pool`, stored in an `etl::unique_ptr`, and released back
 to the pool when the `etl::unique_ptr` goes out of scope.
 
-```C++
+```cpp
 #include <iostream>
 
 #include "etl/memory.h"

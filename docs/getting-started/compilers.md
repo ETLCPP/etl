@@ -3,8 +3,6 @@ title: "Compilers"
 weight: 3
 ---
 
----
-
 The library is intended to be used on multiple platforms and devices. Not every single combination ofcompiler/IDE/device/library template have been, or can realistically be, checked. A set of profiles have been created for the most popular setups.
 If you have issues porting the library to your platform then contact me, and I will do my best to resolve anyincompatibilities.
 If you have no issues, or have solved it by yourself then please [let me know](https://github.com/ETLCPP/etl/issues) so that I may add information about it to this page.
@@ -82,7 +80,7 @@ If `ArduinoSTL.h` is removed, then fails with printf has not been declared.
 
 **General**  
 It may be necessary to add the following lines to the beginning of the file.
-```C++
+```cpp
 #undef min
 #undef max
 ```

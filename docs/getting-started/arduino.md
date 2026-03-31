@@ -3,8 +3,6 @@ title: "Arduino"
 weight: 5
 ---
 
----
-
 This page describes the issue specific to using the ETL with the Arduino platform.  
 
 The Arduino version of the ETL may be downloaded either through the Arduino IDE's library manager, or the ZIP fileavailable from the GitHub repository.  
@@ -17,7 +15,7 @@ If you wish to identify the Arduino board then `Embedded_Template_Library.h` wil
 
 You must also define `ETL_NO_STL` if you are not using the STL.
 
-```C++
+```cpp
 #define ETL_NO_STL
 
 #include <Arduino>

@@ -2,8 +2,6 @@
 title: "bitset"
 ---
 
----
-
 {{< callout >}}
   Header: `bitset.h`  
   Supported: 20.33.0  
@@ -17,13 +15,13 @@ A fixed capacity bitset.
 Has a number of extensions over std::bitset. Can be considered similar to an array of bool.
 
 Internally defined buffers
-```C++
+```cpp
 etl::bitset<size_t N>
 etl::bitset<size_t N, typename TElement>
 ```
 
 Externally defined buffers from `20.34.0`  
-```C++
+```cpp
 etl::bitset_ext<size_t N>
 etl::bitset_ext<size_t N, typename TElement>
 ```
@@ -39,10 +37,10 @@ Note: `etl::ibitset` is no longer a reference type for any size `etl::bitset`.
 
 ---
 
-```C++
+```cpp
 etl::bitset<size_t N, typename TElement>
 ```
-```C++
+```cpp
 etl::bitset_ext<size_t N, typename TElement>
 ```
 Specifying a type for `TElement` will override the default element type and define it as the *unsigned* type of `TElement`.
@@ -52,7 +50,7 @@ Specifying a type for `TElement` will override the default element type and defi
 There are specialisations for when the required number of bits matches the number of bits in the element type.  
 These specialisations are considerably faster and more efficient.
 
-```C++
+```cpp
 etl::bitset<8,  uint8_t>
 etl::bitset<16, uint16_t>
 etl::bitset<32, uint32_t>
@@ -61,7 +59,7 @@ etl::bitset<8,  uint64_t>
 
 `any()`, `none()` and `all()` are overloaded in these specialisations to allow a mask to be specified, so that a bitset that requires less bits than the element type may still use the most efficient implementation.
 
-```C++
+```cpp
 etl::bitset<8, uint8_t> bst; // But only want to use 6 bits.
 bool any = bst.any(0x3F);    // Check the lower 6 bits.
 ```
@@ -78,13 +76,13 @@ bool any = bst.any(0x3F);    // Check the lower 6 bits.
 ## Constants
 
 All `npos` values are equivalent.
-```C++
+```cpp
 etl::bitset_constants::npos
 ```
-```C++
+```cpp
 etl::bitset<>::npos
 ```
-```C++
+```cpp
 template <size_t Size, typename TElement>
 etl::bitset<Size, TElement>::npos
 ```
@@ -101,7 +99,7 @@ From: 20.38.11
 
 The initial state of the bitset is all clear (`false`).
 
-```C++
+```cpp
 etl::bitset();
 etl::bitset(unsigned long value);
 etl::bitset(const char* str);
@@ -114,7 +112,7 @@ The bitset is either default constructed, initialised with a numeric value, or a
 
 ---
 
-```C++
+```cpp
 etl::bitset_ext(element_type* pbuffer);
 etl::bitset_ext(unsigned long value, element_type* pbuffer);
 etl::bitset_ext(const char* str, element_type* pbuffer);
@@ -126,7 +124,7 @@ etl::bitset_ext(const char32_t* str, element_type* pbuffer);
 The bitset is either default constructed, initialised with a numeric value, or a text string of zeros and ones.
 A pointer to the external must b supplied that is large enough to hold the bitset.
 The buffer may be defined as follows:-
-```C++
+```cpp
 using Bitset = etl::bitset_ext<32>;
 
 Bitset::element_type buffer[Bitset::Number_Of_Elements];
@@ -135,7 +133,7 @@ From: 20.34.0
 
 ---
 
-```C++
+```cpp
 etl::bitset_ext(buffer_type& buffer);
 etl::bitset_ext(unsigned long value, buffer_type& buffer);
 etl::bitset_ext(const char* str, buffer_type& buffer);
@@ -147,7 +145,7 @@ etl::bitset_ext(const char32_t* str, buffer_type& buffer);
 The bitset is either default constructed, initialised with a numeric value, or a text string of zeros and ones.
 A n external must b supplied that is large enough to hold the bitset.
 The buffer may be defined as follows:-
-```C++
+```cpp
 using Bitset = etl::bitset_ext<32>;
 
 Bitset::buffer_type buffer;
@@ -156,7 +154,7 @@ From: 20.34.0
 
 ## Modifiers
 
-```C++
+```cpp
 etl::bitset& set();  
 ```
 **Description**  
@@ -164,7 +162,7 @@ Set all bits.
 
 ---
 
-```C++
+```cpp
 etl::bitset& set(element_type value);
 ```
 **Description**  
@@ -174,7 +172,7 @@ Valid when the bitset width matches the element type width.
 
 ---
 
-```C++
+```cpp
 etl::bitset& set(const char* str);
 etl::bitset& set(const wchar_t* str);
 etl::bitset& set(const char16_t* str);
@@ -185,7 +183,7 @@ Set with a text string of  `0` and `1` characters.
 
 ---
 
-```C++
+```cpp
 etl::bitset& set(size_t position, bool value = true);
 ```
 **Description**  
@@ -193,7 +191,7 @@ Set a position to a one or zero, default one.
 
 ---
 
-```C++
+```cpp
 etl::bitset& reset();  
 ```
 **Description**  
@@ -201,7 +199,7 @@ Reset all bits.
 
 ---
 
-```C++
+```cpp
 etl::bitset& reset(size_t position);  
 ```
 **Description**  
@@ -209,7 +207,7 @@ Set a position to a zero.
 
 ---
 
-```C++
+```cpp
 etl::bitset& from_string(const char*);
 etl::bitset& from_string(const wchar_t*);
 etl::bitset& from_string(const char16_t*);
@@ -221,7 +219,7 @@ The bitset is built from a string of  `0` and `1` characters.
 
 ## Access
 
-```C++
+```cpp
 template <typename T>
 T value() const
 ```
@@ -231,7 +229,7 @@ Returns the value corresponding to the bitset.
 
 ---
 
-```C++
+```cpp
 unsigned long to_ulong() const
 unsigned long long to_ullong() const
 ```
@@ -243,7 +241,7 @@ If the type is too small to contain the bitset size, a compile time error will r
 
 ---
 
-```C++
+```cpp
 template <typename TString>
 TString to_string(typename TString::value_type zero = typename TString::value_type('0'),
                   typename TString::value_type one  = typename TString::value_type('1')) const
@@ -253,7 +251,7 @@ If the string type is not large enough to contain the digits then an `etl::bitse
 
 ---
 
-```C++
+```cpp
 span_type span()
 const_span_type span() const
 ```
@@ -263,7 +261,7 @@ The span is ordered LSB to MSB.
 
 ---
 
-```C++
+```cpp
 template <typename T>
 ETL_CONSTEXPR14
 T extract(size_t position, size_t length = etl::integral_limits<T>::bits) const
@@ -274,7 +272,7 @@ Run time position and length.
 
 ---
 
-```C++
+```cpp
 template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
 ETL_CONSTEXPR14
 T extract() const
@@ -287,7 +285,7 @@ For C++11 and above
 
 ---
 
-```C++
+```cpp
 template <typename T, size_t Position, size_t Length>
 T extract() const
 ```
@@ -299,7 +297,7 @@ For C++98/03
 
 ## Bit access
 
-```C++
+```cpp
 bool operator[](size_t position) const
 ```
 **Description**  
@@ -308,7 +306,7 @@ position is not checked for validity.
 
 ---
 
-```C++
+```cpp
 size_t count() const
 ```
 **Description**  
@@ -316,7 +314,7 @@ Returns the number of set bits.
 
 ---
 
-```C++
+```cpp
 size_t size() const
 ```
 **Description**  
@@ -324,7 +322,7 @@ Returns the number of bits supported by this bitset.
 
 ---
 
-```C++
+```cpp
 bool test(size_t position) const
 ```
 **Description**  
@@ -333,13 +331,13 @@ position is not checked for validity.
 
 ---
 
-```C++
+```cpp
 bool any() const
 ```
 **Description**  
 Returns true if any of the bits are set, otherwise false.
 
-```C++
+```cpp
 bool any(element_type mask) const
 ```
 **Description**  
@@ -350,13 +348,13 @@ Valid when the bitset width matches the element type width.
 
 ---
 
-```C++
+```cpp
 bool none() const
 ```
 **Description**  
 Returns true if none of the bits are set, otherwise false.
 
-```C++
+```cpp
 bool none(element_type mask) const
 ```
 **Description**  
@@ -367,13 +365,13 @@ Valid when the bitset width matches the element type width.
 
 ---
 
-```C++
+```cpp
 bool all() const
 ```
 **Description**  
 Returns true if al of the bits are set, otherwise false.
 
-```C++
+```cpp
 bool all(element_type mask) const
 ```
 **Description**  
@@ -384,7 +382,7 @@ Valid when the bitset width matches the element type width.
 
 ---
 
-```C++
+```cpp
 size_t find_first(bool state) const
 ```
 **Description**  
@@ -392,7 +390,7 @@ Returns the position of the first bit in the specified state. If not found then 
 
 ---
 
-```C++
+```cpp
 size_t find_next(bool state, size_t position) const
 ```
 **Description**  
@@ -401,7 +399,7 @@ position is not checked for validity.
 
 ## Bit operations
 
-```C++
+```cpp
 bitset<size_t Size>& operator &= (const bitset<size_t Size>& rhs);
 bitset<size_t Size>& operator |= (const bitset<size_t Size>& rhs);
 bitset<size_t Size>& operator ^= (const bitset<size_t Size>& rhs);
@@ -413,7 +411,7 @@ bool operator != (const bitset<size_t Size>& rhs);
 
 ## Non-member functions
 
-```C++
+```cpp
 void swap(etl::bitset<Size>& lhs, etl::bitset<Size>& rhs)
 ```
 **Description**  

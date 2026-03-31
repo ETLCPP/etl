@@ -6,8 +6,6 @@ weight: 1
 toc: false
 ---
 
----
-
 The ETL is free for you or your company to use, including in commercial applications.  
 
 *However, it is not free for me to create or maintain.*
