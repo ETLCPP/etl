@@ -517,7 +517,7 @@ namespace etl
       }
       else
       {
-        size_t d = etl::distance(range.first, range.second);
+        size_t d = static_cast<size_t>(etl::distance(range.first, range.second));
         erase(range.first, range.second);
         return d;
       }
@@ -536,7 +536,7 @@ namespace etl
       }
       else
       {
-        size_t d = etl::distance(range.first, range.second);
+        size_t d = static_cast<size_t>(etl::distance(range.first, range.second));
         erase(range.first, range.second);
         return d;
       }
@@ -684,7 +684,7 @@ namespace etl
     {
       ETL_OR_STD::pair<const_iterator, const_iterator> range = equal_range(key);
 
-      return etl::distance(range.first, range.second);
+      return static_cast<size_t>(etl::distance(range.first, range.second));
     }
 
 #if ETL_USING_CPP11
@@ -694,7 +694,7 @@ namespace etl
     {
       ETL_OR_STD::pair<const_iterator, const_iterator> range = equal_range(key);
 
-      return etl::distance(range.first, range.second);
+      return static_cast<size_t>(etl::distance(range.first, range.second));
     }
 #endif
 

@@ -34,16 +34,43 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "integral_limits.h"
+#include "error_handler.h"
 
 namespace etl
 {
+  namespace private_absolute
+  {
+    //*************************************************************************
+    // Non-constexpr function that is never called for valid inputs.
+    // If reached during constant evaluation, the compiler emits an error
+    // because it's not constexpr.
+    // At runtime, triggers the ETL assert handler.
+    //*************************************************************************
+    template <typename T>
+    inline T signed_min_error()
+    {
+      ETL_ASSERT_FAIL(ETL_ERROR_GENERIC("absolute value of minimum signed integer is undefined"));
+      return T(0);
+    }
+  }
+
   //***************************************************************************
   // For signed types.
   //***************************************************************************
   template <typename T>
   ETL_NODISCARD
-  ETL_CONSTEXPR 
-  typename etl::enable_if<etl::is_signed<T>::value, T>::type
+  ETL_CONSTEXPR
+  typename etl::enable_if<etl::is_signed<T>::value && etl::is_integral<T>::value, T>::type
+    absolute(T value)
+  {
+    return (value == etl::integral_limits<T>::min) ? etl::private_absolute::signed_min_error<T>()
+                                                   : static_cast<T>((value < T(0)) ? -value : value);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  ETL_CONSTEXPR
+  typename etl::enable_if<etl::is_signed<T>::value && !etl::is_integral<T>::value, T>::type
     absolute(T value) ETL_NOEXCEPT
   {
     return (value < T(0)) ? -value : value;

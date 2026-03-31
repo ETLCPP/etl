@@ -340,6 +340,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_bounds_exception)
+    {
+      etl::queue_mpmc_mutex<int, 4> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+      CHECK_THROW(queue.front(), etl::queue_mpmc_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const_bounds_exception)
+    {
+      etl::queue_mpmc_mutex<int, 4> queue;
+      const etl::queue_mpmc_mutex<int, 4>& constQueue = queue;
+
+      CHECK_EQUAL(0U, constQueue.size());
+      CHECK_THROW(constQueue.front(), etl::queue_mpmc_empty);
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
       etl::queue_mpmc_mutex<int, 4> queue;

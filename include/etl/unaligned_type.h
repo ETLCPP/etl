@@ -345,8 +345,8 @@ namespace etl
       {
         memcpy(store, &value, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-        if ETL_IF_CONSTEXPR(Endian_ == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
         if (Endian_ != etl::endianness::value())
 #endif
@@ -361,8 +361,8 @@ namespace etl
       {
         memcpy(&value, store, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-        if ETL_IF_CONSTEXPR(Endian == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
         if (Endian_ != etl::endianness::value())
 #endif
@@ -402,8 +402,8 @@ namespace etl
       {
         memcpy(store, &value, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-        if ETL_IF_CONSTEXPR(Endian_ == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
         if (Endian_ != etl::endianness::value())
 #endif
@@ -418,14 +418,14 @@ namespace etl
       {
         memcpy(&value, store, Size_);
 
-#if ETL_HAS_CONSTEXPR_ENDIANESS
-          if ETL_IF_CONSTEXPR(Endian == etl::endianness::value())
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+        if ETL_IF_CONSTEXPR(Endian_ != etl::endianness::value())
 #else
-          if (Endian_ != etl::endianness::value())
+        if (Endian_ != etl::endianness::value())
 #endif
-          {
-            etl::reverse(reinterpret_cast<pointer>(&value), reinterpret_cast<pointer>(&value) + Size_);
-          }
+        {
+          etl::reverse(reinterpret_cast<pointer>(&value), reinterpret_cast<pointer>(&value) + Size_);
+        }
       }
 
       //*******************************
@@ -489,7 +489,7 @@ namespace etl
     //*************************************************************************
     unaligned_type(const void* address)
     {
-      etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), sizeof(T), this->storage);
     }
 
     //*************************************************************************
@@ -499,7 +499,7 @@ namespace etl
     {
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
 
-      etl::copy_n(reinterpret_cast<const char*>(address), sizeof(T), this->storage);
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), sizeof(T), this->storage);
     }
 
     //*************************************************************************

@@ -131,6 +131,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// Base for intrusive forward list.
   ///\ingroup intrusive_forward_list
@@ -727,17 +728,21 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_forward_list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_forward_list_empty));
       return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_forward_list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_forward_list_empty));
       return *static_cast<const value_type*>(this->get_head());
     }
 
@@ -795,7 +800,7 @@ namespace etl
     {
       if (first != end() && (first != last))
       {
-        this->current_size -= etl::distance(first, last) - 1;
+        this->current_size -= static_cast<size_t>(etl::distance(first, last) - 1);
 
         link_type* p_first = first.p_value;
         link_type* p_last  = last.p_value;
@@ -1115,7 +1120,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = etl::distance(begin_, end_) - 1;
+          size_t n = static_cast<size_t>(etl::distance(begin_, end_) - 1);
           this->current_size += n;
           other.current_size -= n;
         }

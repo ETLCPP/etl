@@ -515,7 +515,7 @@ namespace
     //*************************************************************************
     TEST(test_fsm_emergency_stop)
     {
-      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList)); 
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -758,7 +758,7 @@ namespace
       CHECK_EQUAL(StateId::Running, int(motorControl.get_state().get_state_id()));
 
       auto id2 = motorControl.transition_to(StateId::Idle);
-      
+
       // Now in Locked state.
       CHECK_EQUAL(StateId::Locked, int(id2));
       CHECK_EQUAL(StateId::Locked, int(motorControl.get_state_id()));

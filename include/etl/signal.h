@@ -274,7 +274,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type size() const ETL_NOEXCEPT
     {
-      return etl::distance(begin(), end());
+      return static_cast<size_type>(etl::distance(begin(), end()));
     }
 
     //*************************************************************************

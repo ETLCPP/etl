@@ -374,7 +374,7 @@ namespace
       etl::multi_span<const int> ms_int(span_list.data(), span_list.size());
 
       std::vector<int> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int>::iterator exp_itr = expected.begin() + expected.size() - 1;
+      std::vector<int>::iterator exp_itr = expected.begin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       etl::multi_span<const int>::iterator ms_itr = ms_int.begin();
       std::advance(ms_itr, ms_int.size() - 1);
@@ -406,7 +406,7 @@ namespace
       etl::multi_span<int> ms_int(span_list.data(), span_list.size());
 
       std::vector<int> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int>::iterator exp_itr = expected.begin() + expected.size() - 1;
+      std::vector<int>::iterator exp_itr = expected.begin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       etl::multi_span<int>::iterator ms_itr = ms_int.begin();
       std::advance(ms_itr, ms_int.size() - 1);
@@ -424,7 +424,7 @@ namespace
 
       ms_itr = ms_int.begin();
       std::advance(ms_itr, ms_int.size() - 1);
-      exp_itr = expected.begin() + expected.size() - 1;
+      exp_itr = expected.begin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       for (size_t i = 0; i < expected.size(); ++i)
       {
@@ -482,7 +482,7 @@ namespace
       const etl::multi_span<const int> ms_int(span_list.data(), span_list.size());
 
       std::vector<int> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int>::iterator exp_itr = expected.begin() + expected.size() - 1;
+      std::vector<int>::iterator exp_itr = expected.begin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       etl::multi_span<const int>::const_iterator ms_itr = ms_int.begin();
       std::advance(ms_itr, ms_int.size() - 1);
@@ -585,7 +585,7 @@ namespace
       multi_span_type ms_int(span_list.data(), span_list.size());
 
       std::vector<int> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int>::reverse_iterator exp_itr = expected.rbegin() + expected.size() - 1;
+      std::vector<int>::reverse_iterator exp_itr = expected.rbegin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       multi_span_type::reverse_iterator ms_itr = ms_int.rbegin();
       std::advance(ms_itr, ms_int.size() - 1);
@@ -620,7 +620,7 @@ namespace
       multi_span_type ms_int(span_list.data(), span_list.size());
 
       std::vector<int> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int>::reverse_iterator exp_itr = expected.rbegin() + expected.size() - 1;
+      std::vector<int>::reverse_iterator exp_itr = expected.rbegin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       multi_span_type::reverse_iterator ms_itr = ms_int.rbegin();
       std::advance(ms_itr, ms_int.size() - 1);
@@ -640,7 +640,7 @@ namespace
 
       ms_itr = ms_int.rbegin();
       std::advance(ms_itr, ms_int.size() - 1);
-      exp_itr = expected.rbegin() + expected.size() - 1;
+      exp_itr = expected.rbegin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       for (size_t i = 0; i < expected.size(); ++i)
       {
@@ -703,7 +703,7 @@ namespace
       const multi_span_type ms_int(span_list.data(), span_list.size());
 
       std::vector<int> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int>::reverse_iterator exp_itr = expected.rbegin() + expected.size() - 1;
+      std::vector<int>::reverse_iterator exp_itr = expected.rbegin() + static_cast<ptrdiff_t>(expected.size()) - 1;
 
       multi_span_type::reverse_iterator ms_itr = ms_int.rbegin();
       std::advance(ms_itr, ms_int.size() - 1);

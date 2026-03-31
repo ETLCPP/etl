@@ -485,7 +485,7 @@ namespace etl
 
       etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
-      typename ivector<T*>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
+      typename ivector<T*>::iterator larger_itr = etl::next(larger.begin(), static_cast<ptrdiff_t>(smaller.size()));
 
       etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
 
@@ -933,7 +933,7 @@ namespace etl
 
       etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
-      typename ivector<const T*>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
+      typename ivector<const T*>::iterator larger_itr = etl::next(larger.begin(), static_cast<ptrdiff_t>(smaller.size()));
 
       etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
 

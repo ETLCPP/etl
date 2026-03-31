@@ -159,7 +159,7 @@ namespace etl
       pbegin = view.data() + first;
     }
 
-    return TStringView(pbegin, etl::distance(pbegin, view.data() + view.size()));
+    return TStringView(pbegin, static_cast<size_t>(etl::distance(pbegin, view.data() + view.size())));
   }
 
   //***************************************************************************
@@ -249,7 +249,7 @@ namespace etl
       pend += last;
     }
 
-    return TStringView(view.data(), etl::distance(view.data(), pend));
+    return TStringView(view.data(), static_cast<size_t>(etl::distance(view.data(), pend)));
   }
 
   //***************************************************************************
@@ -298,7 +298,7 @@ namespace etl
     if (last != TStringView::npos)
     {
       pend += last;
-      return TStringView(view.data(), etl::distance(view.data(), pend));
+      return TStringView(view.data(), static_cast<size_t>(etl::distance(view.data(), pend)));
     }
     else
     {
@@ -350,7 +350,7 @@ namespace etl
       pend += last;
     }
 
-    return TStringView(pbegin, etl::distance(pbegin, pend));
+    return TStringView(pbegin, static_cast<size_t>(etl::distance(pbegin, pend)));
   }
 
   //***************************************************************************
@@ -397,7 +397,7 @@ namespace etl
       pend += last;
     }
 
-    return TStringView(pbegin, etl::distance(pbegin, pend));
+    return TStringView(pbegin, static_cast<size_t>(etl::distance(pbegin, pend)));
   }
 
   //***************************************************************************
@@ -408,7 +408,7 @@ namespace etl
   {
     n = (n > s.size()) ? s.size() : n;
 
-    s.erase(s.begin() + n, s.end());
+    s.erase(s.begin() + static_cast<typename TIString::difference_type>(n), s.end());
   }
 
   //***************************************************************************
@@ -430,7 +430,7 @@ namespace etl
   {
     n = (n > s.size()) ? s.size() : n;
 
-    s.erase(s.begin(), s.end() - n);
+    s.erase(s.begin(), s.end() - static_cast<typename TIString::difference_type>(n));
   }
 
   //***************************************************************************
@@ -713,6 +713,7 @@ namespace etl
   //***************************************************************************
   /// get_token
   //***************************************************************************
+#include "private/diagnostic_uninitialized_push.h"
   template <typename TInput, typename TStringView>
   etl::optional<TStringView> get_token(const TInput& input, typename TInput::const_pointer delimiters, const etl::optional<TStringView>& last_view, bool ignore_empty_tokens)
   {
@@ -735,7 +736,7 @@ namespace etl
       // Does the last view have valid data?
       if (view.data() != ETL_NULLPTR)
       {
-        position = etl::distance(begin_ptr, view.data() + view.size() + 1U);
+        position = static_cast<typename TStringView::size_type>(etl::distance(begin_ptr, view.data() + view.size() + 1U));
 
         // Have we reached the end of the string?
         if (position > input.size())
@@ -748,13 +749,14 @@ namespace etl
       const_pointer first_ptr = begin_ptr + position;
       const_pointer last_ptr  = find_first_of(first_ptr, end_ptr, delimiters);
 
-      view = TStringView(first_ptr, etl::distance(first_ptr, last_ptr));
+      view = TStringView(first_ptr, static_cast<size_t>(etl::distance(first_ptr, last_ptr)));
 
       token_found = ((view.size() != 0U) || !ignore_empty_tokens);
     }
 
     return etl::optional<TStringView>(view);
   }
+#include "private/diagnostic_pop.h"
 
   //***************************************************************************
   /// get_token_list

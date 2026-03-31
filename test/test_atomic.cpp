@@ -712,6 +712,130 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_non_scalar_trivially_copyable_struct)
+    {
+      struct Data
+      {
+        int x;
+        int y;
+
+        bool operator ==(const Data& other) const
+        {
+          return (x == other.x) && (y == other.y);
+        }
+      };
+
+      // Default construction
+      etl::atomic<Data> test;
+
+      Data d1 = { 1, 2 };
+      Data d2 = { 3, 4 };
+      Data d3 = { 5, 6 };
+
+      // Store and load
+      test.store(d1);
+      Data loaded = test.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+
+      // Assignment operator
+      test = d2;
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Conversion operator
+      test.store(d1);
+      Data converted = static_cast<Data>(test);
+      CHECK_EQUAL(d1.x, converted.x);
+      CHECK_EQUAL(d1.y, converted.y);
+
+      // Exchange
+      test.store(d1);
+      Data old_val = test.exchange(d2);
+      CHECK_EQUAL(d1.x, old_val.x);
+      CHECK_EQUAL(d1.y, old_val.y);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Compare exchange weak - pass (expected matches)
+      test.store(d1);
+      Data expected = d1;
+      bool result = test.compare_exchange_weak(expected, d3);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d3.x, loaded.x);
+      CHECK_EQUAL(d3.y, loaded.y);
+
+      // Compare exchange weak - fail (expected does not match)
+      test.store(d1);
+      expected = d2;
+      result = test.compare_exchange_weak(expected, d3);
+      CHECK_FALSE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+
+      // Compare exchange weak with two memory order args - pass
+      test.store(d1);
+      expected = d1;
+      result = test.compare_exchange_weak(expected, d2, etl::memory_order_seq_cst, etl::memory_order_seq_cst);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Compare exchange strong - pass (expected matches)
+      test.store(d1);
+      expected = d1;
+      result = test.compare_exchange_strong(expected, d3);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d3.x, loaded.x);
+      CHECK_EQUAL(d3.y, loaded.y);
+
+      // Compare exchange strong - fail (expected does not match)
+      test.store(d1);
+      expected = d2;
+      result = test.compare_exchange_strong(expected, d3);
+      CHECK_FALSE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+
+      // Compare exchange strong with two memory order args - pass
+      test.store(d1);
+      expected = d1;
+      result = test.compare_exchange_strong(expected, d2, etl::memory_order_seq_cst, etl::memory_order_seq_cst);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Explicit memory order on store/load
+      test.store(d3, etl::memory_order_release);
+      loaded = test.load(etl::memory_order_acquire);
+      CHECK_EQUAL(d3.x, loaded.x);
+      CHECK_EQUAL(d3.y, loaded.y);
+
+      // Exchange with explicit memory order
+      test.store(d1);
+      old_val = test.exchange(d2, etl::memory_order_acq_rel);
+      CHECK_EQUAL(d1.x, old_val.x);
+      CHECK_EQUAL(d1.y, old_val.y);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Value construction
+      etl::atomic<Data> test2(d1);
+      loaded = test2.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+    }
+
+    //*************************************************************************
 #if REALTIME_TEST
 
 #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported

@@ -177,7 +177,7 @@ namespace
       int current_count = ItemNDC::get_instance_count();
 
       DataNDC* pdata = new DataNDC(sorted_data.begin(), sorted_data.end());
-      CHECK_EQUAL(int(current_count + sorted_data.size()), ItemNDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(sorted_data.size())), ItemNDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;
@@ -758,6 +758,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_const_exception)
+    {
+      const DataNDC data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.front(), etl::forward_list_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_before_begin_const)
     {
       const DataNDC data(sorted_data.begin(), sorted_data.end());
@@ -942,6 +951,15 @@ namespace
       DataNDC data(sorted_data.begin(), sorted_data.end());
 
       CHECK_EQUAL(compare_data.front(), data.front());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_exception)
+    {
+      DataNDC data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.front(), etl::forward_list_empty);
     }
 
     //*************************************************************************

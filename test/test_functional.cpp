@@ -85,6 +85,24 @@ namespace
     mutable std::string result;
   };
 
+#if ETL_USING_CPP11
+  // Lightweight type used to verify transparent heterogeneous comparison.
+  // Only operator<(int, Wrapper) is defined; operator<(Wrapper, int) is
+  // intentionally absent.  less_equal<void> is implemented as
+  // !(rhs < lhs), so less_equal<void>{}(Wrapper, int) needs
+  // operator<(int, Wrapper) which IS provided.
+  struct Wrapper
+  {
+    int value;
+    constexpr explicit Wrapper(int v) : value(v) {}
+  };
+
+  // int < Wrapper  -- defined
+  constexpr bool operator<(int lhs, const Wrapper& rhs) { return lhs < rhs.value; }
+
+  // Wrapper < int  -- intentionally NOT defined
+#endif
+
   SUITE(test_functional)
   {
     //*************************************************************************
@@ -101,6 +119,32 @@ namespace
       CHECK((compare<etl::less_equal<int>>(1, 2)));
       CHECK(!(compare<etl::less_equal<int>>(2, 1)));
       CHECK((compare<etl::less_equal<int>>(1, 1)));
+
+#if ETL_USING_CPP11
+      CHECK((compare<etl::less_equal<void>>(1, 2)));
+      CHECK(!(compare<etl::less_equal<void>>(2, 1)));
+      CHECK((compare<etl::less_equal<void>>(1, 1)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_less_equal_void_heterogeneous)
+    {
+#if ETL_USING_CPP11
+      // less_equal<void>{}(lhs, rhs) is !(rhs < lhs).
+      // With only operator<(int, Wrapper) defined, we can call
+      // less_equal<void>{}(Wrapper, int) because the implementation
+      // evaluates !(int < Wrapper).
+
+      // Wrapper(1) <= 2  →  !(2 < Wrapper(1))  →  !(2 < 1) → !false → true
+      CHECK((etl::less_equal<void>{}(Wrapper(1), 2)));
+
+      // Wrapper(2) <= 1  →  !(1 < Wrapper(2))  →  !(1 < 2) → !true → false
+      CHECK(!(etl::less_equal<void>{}(Wrapper(2), 1)));
+
+      // Wrapper(3) <= 3  →  !(3 < Wrapper(3))  →  !(3 < 3) → !false → true
+      CHECK((etl::less_equal<void>{}(Wrapper(3), 3)));
+#endif
     }
 
     //*************************************************************************
@@ -117,6 +161,32 @@ namespace
       CHECK(!(compare<etl::greater_equal<int>>(1, 2)));
       CHECK((compare<etl::greater_equal<int>>(2, 1)));
       CHECK((compare<etl::greater_equal<int>>(1, 1)));
+
+#if ETL_USING_CPP11
+      CHECK(!(compare<etl::greater_equal<void>>(1, 2)));
+      CHECK((compare<etl::greater_equal<void>>(2, 1)));
+      CHECK((compare<etl::greater_equal<void>>(1, 1)));
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_greater_equal_void_heterogeneous)
+    {
+#if ETL_USING_CPP11
+      // greater_equal<void>{}(lhs, rhs) is !(lhs < rhs).
+      // With only operator<(int, Wrapper) defined, we can call
+      // greater_equal<void>{}(int, Wrapper) because the implementation
+      // evaluates !(int < Wrapper).
+
+      // 2 >= Wrapper(1)  →  !(2 < Wrapper(1))  →  !(2 < 1) → !false → true
+      CHECK((etl::greater_equal<void>{}(2, Wrapper(1))));
+
+      // 1 >= Wrapper(2)  →  !(1 < Wrapper(2))  →  !(1 < 2) → !true → false
+      CHECK(!(etl::greater_equal<void>{}(1, Wrapper(2))));
+
+      // 3 >= Wrapper(3)  →  !(3 < Wrapper(3))  →  !(3 < 3) → !false → true
+      CHECK((etl::greater_equal<void>{}(3, Wrapper(3))));
+#endif
     }
 
     //*************************************************************************
@@ -203,6 +273,43 @@ namespace
       CHECK_EQUAL(1, a);
       CHECK_EQUAL(1, ra);
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_reference_wrapper_call_operator_no_args)
+    {
+      struct functor
+      {
+        int operator()() const { return 42; }
+      };
+
+      functor f;
+      etl::reference_wrapper<functor> rw(f);
+      CHECK_EQUAL(42, rw());
+    }
+
+    //*************************************************************************
+    TEST(test_reference_wrapper_call_operator_with_args)
+    {
+      struct adder
+      {
+        int operator()(int a, int b) const { return a + b; }
+      };
+
+      adder f;
+      etl::reference_wrapper<adder> rw(f);
+      CHECK_EQUAL(7, rw(3, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_reference_wrapper_call_operator_function_pointer)
+    {
+      int (*fn)(int, int) = [](int a, int b) { return a * b; };
+
+      etl::reference_wrapper<int(*)(int, int)> rw(fn);
+      CHECK_EQUAL(12, rw(3, 4));
+    }
+#endif
 
     //*************************************************************************
     TEST(test_plus)
@@ -379,5 +486,96 @@ namespace
       result = f3(mft, "Arg1", " : Arg2");
       CHECK_EQUAL("Function3_Const: Arg1 : Arg2", result);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_identity)
+    {
+      etl::identity i;
+      std::string s{"abc"};
+      CHECK_EQUAL(s, i(s));
+      CHECK_EQUAL(&s, &i(s));
+      CHECK_EQUAL(&s, i(&s));
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_ranges_equal_to_same_type)
+    {
+      etl::ranges::equal_to eq;
+
+      CHECK(eq(1, 1));
+      CHECK(!eq(1, 2));
+      CHECK(!eq(2, 1));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_equal_to_mixed_types)
+    {
+      etl::ranges::equal_to eq;
+
+      // int vs long
+      CHECK(eq(1, 1L));
+      CHECK(!eq(1, 2L));
+      CHECK(eq(2L, 2));
+
+      // int vs short
+      CHECK(eq(42, short(42)));
+      CHECK(!eq(42, short(43)));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_equal_to_constexpr)
+    {
+      constexpr etl::ranges::equal_to eq{};
+      constexpr bool result_equal     = eq(5, 5);
+      constexpr bool result_not_equal = eq(5, 6);
+
+      CHECK(result_equal);
+      CHECK(!result_not_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_less_same_type)
+    {
+      etl::ranges::less lt;
+
+      CHECK(lt(1, 2));
+      CHECK(!lt(2, 1));
+      CHECK(!lt(1, 1));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_less_mixed_types)
+    {
+      etl::ranges::less lt;
+
+      // int vs long
+      CHECK(lt(1, 2L));
+      CHECK(!lt(2, 1L));
+      CHECK(!lt(1, 1L));
+      CHECK(lt(1L, 2));
+
+      // int vs short
+      CHECK(lt(42, short(43)));
+      CHECK(!lt(42, short(42)));
+      CHECK(!lt(43, short(42)));
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_less_constexpr)
+    {
+      constexpr etl::ranges::less lt{};
+      constexpr bool result_less     = lt(5, 6);
+      constexpr bool result_not_less = lt(6, 5);
+      constexpr bool result_equal    = lt(5, 5);
+
+      CHECK(result_less);
+      CHECK(!result_not_less);
+      CHECK(!result_equal);
+    }
+#endif
+
   }
 }

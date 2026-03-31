@@ -269,7 +269,7 @@ namespace etl
         }
 
         // Add days for the current month
-        day_count += static_cast<unsigned>(this->day()) - 1;
+        day_count += static_cast<int>(static_cast<unsigned>(this->day()) - 1);
 
         return sys_days(etl::chrono::days(day_count));
       }

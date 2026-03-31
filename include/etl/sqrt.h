@@ -46,7 +46,7 @@ namespace etl
   struct sqrt
   {
     typedef typename etl::conditional<((Root * Root) > Value), 
-                                      etl::constant<intmax_t, Root - 1>,
+                                      etl::constant<intmax_t, static_cast<intmax_t>(Root - 1)>,
                                       etl::sqrt<Value, Root + 1> >::type type;
 
 #if ETL_USING_CPP11

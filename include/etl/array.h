@@ -46,7 +46,7 @@ SOFTWARE.
 #include <stddef.h>
 
 ///\defgroup array array
-/// A replacement for std::array if you haven't got C++0x11.
+/// A replacement for std::array if you haven't got C++11.
 ///\ingroup containers
 
 namespace etl
@@ -81,7 +81,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup array
-  /// A replacement for std::array if you haven't got C++0x11.
+  /// A replacement for std::array if you haven't got C++11.
   //***************************************************************************
   template <typename T, size_t SIZE_>
   class array
@@ -496,13 +496,13 @@ namespace etl
       iterator p = to_iterator(position);
       iterator result(p);
 
-      size_t source_size       = etl::distance(first, last);
-      size_t destination_space = etl::distance(position, cend());
+      size_t source_size       = static_cast<size_t>(etl::distance(first, last));
+      size_t destination_space = static_cast<size_t>(etl::distance(position, cend()));
 
       // Do we need to move anything?
       if (source_size < destination_space)
       {
-        size_t length = SIZE - (etl::distance(begin(), p) + source_size);
+        size_t length = SIZE - (static_cast<size_t>(etl::distance(begin(), p)) + source_size);
         etl::move_backward(p, p + length, end());
       }
 
@@ -646,7 +646,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup array
-  /// A replacement for std::array if you haven't got C++0x11.
+  /// A replacement for std::array if you haven't got C++11.
   /// Specialisation for zero sized array.
   //***************************************************************************
   template <typename T>
@@ -1105,7 +1105,7 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename... T>
   array(T...) -> array<typename etl::common_type<T...>::type, sizeof...(T)>;
-#endif  
+#endif
 
   //*************************************************************************
   /// Make

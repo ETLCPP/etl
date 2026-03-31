@@ -99,7 +99,7 @@ namespace etl
   template <typename TOutputIterator, typename T, typename TCounter>
   TOutputIterator  uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     std::uninitialized_fill(o_begin, o_end, value);
 
@@ -150,7 +150,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
     uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     etl::fill(o_begin, o_end, value);
 
@@ -167,7 +167,7 @@ namespace etl
   typename etl::enable_if<!etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
     uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     etl::uninitialized_fill(o_begin, o_end, value);
 
@@ -248,7 +248,7 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
   TOutputIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     return std::uninitialized_copy(i_begin, i_end, o_begin);
   }
@@ -299,7 +299,7 @@ namespace etl
     uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::copy(i_begin, i_end, o_begin);
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     return o_end;
   }
@@ -316,10 +316,194 @@ namespace etl
   {
     TOutputIterator o_end = etl::uninitialized_copy(i_begin, i_end, o_begin);
 
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     return o_end;
   }
+#endif
+
+#if ETL_USING_CPP17
+namespace ranges {
+  //*****************************************************************************
+  /// Copies a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_copy
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_copy_fn
+  {
+    template<class I, class S1, class O, class S2, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    ranges::uninitialized_copy_result<I, O>
+    operator()(I ifirst, S1 ilast, O ofirst, S2 olast) const
+    {
+      using value_type = typename etl::iterator_traits<O>::value_type;
+
+      O ofirst_original = ofirst;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; ifirst != ilast && ofirst != olast; ++ifirst, ++ofirst)
+        {
+          ::new (static_cast<void*>(etl::to_address(ofirst)))
+              value_type(*ifirst);
+        }
+
+        return {etl::move(ifirst), etl::move(ofirst)};
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; ofirst_original != ofirst; ++ofirst_original)
+        {
+          etl::to_address(ofirst_original)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+
+    template<class IR, class OR, typename = etl::enable_if_t<etl::is_range_v<IR>>>
+    ranges::uninitialized_copy_result<ranges::borrowed_iterator_t<IR>, ranges::borrowed_iterator_t<OR>>
+    operator()(IR&& in_range, OR&& out_range) const
+    {
+      return (*this)(ranges::begin(in_range), ranges::end(in_range),
+                     ranges::begin(out_range), ranges::end(out_range));
+    }
+  };
+
+  inline constexpr uninitialized_copy_fn uninitialized_copy {};
+
+  //*****************************************************************************
+  /// Copies N objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_copy_n
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_copy_n_fn
+  {
+    template<class I, class O, class S, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    ranges::uninitialized_copy_n_result<I, O>
+    operator()(I ifirst, etl::iter_difference_t<I> n, O ofirst, S olast) const
+    {
+      using value_type = typename etl::iterator_traits<O>::value_type;
+
+      O ofirst_original = ofirst;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; n > 0 && ofirst != olast; ++ifirst, ++ofirst, --n)
+        {
+          ::new (static_cast<void*>(etl::to_address(ofirst)))
+              value_type(*ifirst);
+        }
+
+        return {etl::move(ifirst), etl::move(ofirst)};
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; ofirst_original != ofirst; ++ofirst_original)
+        {
+          etl::to_address(ofirst_original)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+  };
+
+  inline constexpr uninitialized_copy_n_fn uninitialized_copy_n {};
+
+  //*****************************************************************************
+  /// Fills uninitialised memory range with a value.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_fill
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_fill_fn
+  {
+    template<class I, class S, class T, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    I operator()(I first, S last, const T& value) const
+    {
+      using value_type = typename etl::iterator_traits<I>::value_type;
+
+      I current = first;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; current != last; ++current)
+        {
+          ::new (static_cast<void*>(etl::to_address(current)))
+              value_type(value);
+        }
+
+        return current;
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; first != current; ++first)
+        {
+          etl::to_address(first)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+
+    template<class R, class T, typename = etl::enable_if_t<etl::is_range_v<R>>>
+    ranges::borrowed_iterator_t<R> operator()(R&& r, const T& value) const
+    {
+      return (*this)(ranges::begin(r), ranges::end(r), value);
+    }
+  };
+
+  inline constexpr uninitialized_fill_fn uninitialized_fill {};
+
+  //*****************************************************************************
+  /// Fills uninitialised memory with N copies of a value.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_fill_n
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_fill_n_fn
+  {
+    template<class I, class T>
+    I operator()(I first, etl::iter_difference_t<I> n, const T& value) const
+    {
+      using value_type = typename etl::iterator_traits<I>::value_type;
+
+      I current = first;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; n > 0; ++current, --n)
+        {
+          ::new (static_cast<void*>(etl::to_address(current)))
+              value_type(value);
+        }
+
+        return current;
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; first != current; ++first)
+        {
+          etl::to_address(first)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+  };
+
+  inline constexpr uninitialized_fill_n_fn uninitialized_fill_n {};
+}
 #endif
 
 #if ETL_USING_STL && ETL_USING_CPP11
@@ -400,7 +584,7 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
   TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
 #include "etl/private/diagnostic_array_bounds_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
@@ -453,7 +637,7 @@ namespace etl
     uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::move(i_begin, i_end, o_begin);
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     return o_end;
   }
@@ -470,7 +654,7 @@ namespace etl
   {
     TOutputIterator o_end = etl::uninitialized_move(i_begin, i_end, o_begin);
 
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     return o_end;
   }
@@ -498,7 +682,7 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
   TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
-    count += int32_t(etl::distance(i_begin, i_end));
+    count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     // Move not supported. Defer to copy.
     return ETL_OR_STD::uninitialized_copy(i_begin, i_end, o_begin);
@@ -638,6 +822,102 @@ namespace etl
   }
 #endif
 
+#if ETL_USING_CPP17
+namespace ranges {
+  //*****************************************************************************
+  /// Moves a range of objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_move
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_move_fn
+  {
+    template<class I, class S1, class O, class S2, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    ranges::uninitialized_move_result<I, O>
+    operator()(I ifirst, S1 ilast, O ofirst, S2 olast) const
+    {
+      using value_type = typename etl::iterator_traits<O>::value_type;
+
+      O ofirst_original = ofirst;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; ifirst != ilast && ofirst != olast; ++ifirst, ++ofirst)
+        {
+          ::new (static_cast<void*>(etl::to_address(ofirst)))
+              value_type(etl::move(*ifirst));
+        }
+
+        return {etl::move(ifirst), etl::move(ofirst)};
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; ofirst_original != ofirst; ++ofirst_original)
+        {
+          etl::to_address(ofirst_original)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+
+    template<class IR, class OR, typename = etl::enable_if_t<etl::is_range_v<IR>>>
+    ranges::uninitialized_move_result<ranges::borrowed_iterator_t<IR>, ranges::borrowed_iterator_t<OR>>
+    operator()(IR&& in_range, OR&& out_range) const
+    {
+      return (*this)(ranges::begin(in_range), ranges::end(in_range),
+                     ranges::begin(out_range), ranges::end(out_range));
+    }
+  };
+
+  inline constexpr uninitialized_move_fn uninitialized_move {};
+
+  //*****************************************************************************
+  /// Moves N objects to uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_move_n
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_move_n_fn
+  {
+    template<class I, class O, class S, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    ranges::uninitialized_move_n_result<I, O>
+    operator()(I ifirst, etl::iter_difference_t<I> n, O ofirst, S olast) const
+    {
+      using value_type = typename etl::iterator_traits<O>::value_type;
+
+      O ofirst_original = ofirst;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; n > 0 && ofirst != olast; ++ifirst, ++ofirst, --n)
+        {
+          ::new (static_cast<void*>(etl::to_address(ofirst)))
+              value_type(etl::move(*ifirst));
+        }
+
+        return {etl::move(ifirst), etl::move(ofirst)};
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; ofirst_original != ofirst; ++ofirst_original)
+        {
+          etl::to_address(ofirst_original)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+  };
+
+  inline constexpr uninitialized_move_n_fn uninitialized_move_n {};
+}
+#endif
+
 #if ETL_USING_STL && ETL_USING_CPP17
   //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
@@ -661,7 +941,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, void>::type
     uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count = int32_t(etl::distance(o_begin, o_end));
+    count = static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     std::uninitialized_default_construct(o_begin, o_end);
   }
@@ -707,7 +987,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, void>::type
     uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count = int32_t(etl::distance(o_begin, o_end));
+    count = static_cast<TCounter>(etl::distance(o_begin, o_end));
   }
 
   //*****************************************************************************
@@ -720,7 +1000,7 @@ namespace etl
   typename etl::enable_if<!etl::is_trivially_constructible<typename etl::iterator_traits<TOutputIterator>::value_type>::value, void>::type
     uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     etl::uninitialized_default_construct(o_begin, o_end);
   }
@@ -818,6 +1098,98 @@ namespace etl
   }
 #endif
 
+#if ETL_USING_CPP17
+namespace ranges {
+  //*****************************************************************************
+  /// Default constructs objects in uninitialised memory range.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_default_construct
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_default_construct_fn
+  {
+    template<class I, class S, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    I operator()(I first, S last) const
+    {
+      using value_type = typename etl::iterator_traits<I>::value_type;
+
+      I current = first;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; current != last; ++current)
+        {
+          ::new (static_cast<void*>(etl::to_address(current)))
+              value_type;
+        }
+
+        return current;
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; first != current; ++first)
+        {
+          etl::to_address(first)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+
+    template<class R, typename = etl::enable_if_t<etl::is_range_v<R>>>
+    ranges::borrowed_iterator_t<R> operator()(R&& r) const
+    {
+      return (*this)(ranges::begin(r), ranges::end(r));
+    }
+  };
+
+  inline constexpr uninitialized_default_construct_fn uninitialized_default_construct {};
+
+  //*****************************************************************************
+  /// Default constructs N objects in uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_default_construct_n
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_default_construct_n_fn
+  {
+    template<class I>
+    I operator()(I first, etl::iter_difference_t<I> n) const
+    {
+      using value_type = typename etl::iterator_traits<I>::value_type;
+
+      I current = first;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; n > 0; ++current, --n)
+        {
+          ::new (static_cast<void*>(etl::to_address(current)))
+              value_type;
+        }
+
+        return current;
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; first != current; ++first)
+        {
+          etl::to_address(first)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+  };
+
+  inline constexpr uninitialized_default_construct_n_fn uninitialized_default_construct_n {};
+}
+#endif
+
 #if ETL_USING_STL && ETL_USING_CPP17
   //*****************************************************************************
   /// Default initialises a range of objects to uninitialised memory.
@@ -839,7 +1211,7 @@ namespace etl
   template <typename TOutputIterator, typename TCounter>
   void uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     std::uninitialized_value_construct(o_begin, o_end);
   }
@@ -885,7 +1257,7 @@ namespace etl
   template <typename TOutputIterator, typename TCounter>
   void uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
   {
-    count += int32_t(etl::distance(o_begin, o_end));
+    count += static_cast<TCounter>(etl::distance(o_begin, o_end));
 
     etl::uninitialized_value_construct(o_begin, o_end);
   }
@@ -951,6 +1323,98 @@ namespace etl
   }
 #endif
 
+#if ETL_USING_CPP17
+namespace ranges {
+  //*****************************************************************************
+  /// Value constructs objects in uninitialised memory range.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_value_construct
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_value_construct_fn
+  {
+    template<class I, class S, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    I operator()(I first, S last) const
+    {
+      using value_type = typename etl::iterator_traits<I>::value_type;
+
+      I current = first;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; current != last; ++current)
+        {
+          ::new (static_cast<void*>(etl::to_address(current)))
+              value_type();
+        }
+
+        return current;
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; first != current; ++first)
+        {
+          etl::to_address(first)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+
+    template<class R, typename = etl::enable_if_t<etl::is_range_v<R>>>
+    ranges::borrowed_iterator_t<R> operator()(R&& r) const
+    {
+      return (*this)(ranges::begin(r), ranges::end(r));
+    }
+  };
+
+  inline constexpr uninitialized_value_construct_fn uninitialized_value_construct {};
+
+  //*****************************************************************************
+  /// Value constructs N objects in uninitialised memory.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/uninitialized_value_construct_n
+  ///\ingroup memory
+  //*****************************************************************************
+  struct uninitialized_value_construct_n_fn
+  {
+    template<class I>
+    I operator()(I first, etl::iter_difference_t<I> n) const
+    {
+      using value_type = typename etl::iterator_traits<I>::value_type;
+
+      I current = first;
+
+#if ETL_USING_EXCEPTIONS
+      try
+      {
+#endif
+        for (; n > 0; ++current, --n)
+        {
+          ::new (static_cast<void*>(etl::to_address(current)))
+              value_type();
+        }
+
+        return current;
+#if ETL_USING_EXCEPTIONS
+      }
+      catch (...)
+      {
+        for (; first != current; ++first)
+        {
+          etl::to_address(first)->~value_type();
+        }
+        throw;
+      }
+#endif
+    }
+  };
+
+  inline constexpr uninitialized_value_construct_n_fn uninitialized_value_construct_n {};
+}
+#endif
+
 #if ETL_USING_STL && ETL_USING_CPP20
   //*****************************************************************************
   /// Constructs an item at address p with value constructed from 'args'.
@@ -994,6 +1458,26 @@ namespace etl
   {
     return ::new (const_cast<void*>(static_cast<const volatile void*>(p))) T(arg);
   }
+#endif
+
+#if ETL_USING_CPP17
+namespace ranges {
+  //*****************************************************************************
+  /// Constructs an item at address p with value constructed from 'args'.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/construct_at
+  ///\ingroup memory
+  //*****************************************************************************
+  struct construct_at_fn
+  {
+    template<class T, class... Args>
+    constexpr T* operator()(T* p, Args&&... args) const
+    {
+      return etl::construct_at(p, etl::forward<Args>(args)...);
+    }
+  };
+
+  inline constexpr construct_at_fn construct_at {};
+}
 #endif
 
 #if ETL_USING_STL && ETL_USING_CPP20
@@ -1095,7 +1579,7 @@ namespace etl
   template <typename TIterator, typename TCounter>
   void destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
-    count -= int32_t(etl::distance(i_begin, i_end));
+    count -= static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     std::destroy(i_begin, i_end);
   }
@@ -1137,7 +1621,7 @@ namespace etl
   typename etl::enable_if<etl::is_trivially_destructible<typename etl::iterator_traits<TIterator>::value_type>::value, void>::type
     destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
-    count -= int32_t(etl::distance(i_begin, i_end));
+    count -= static_cast<TCounter>(etl::distance(i_begin, i_end));
   }
 
   //*****************************************************************************
@@ -1150,7 +1634,7 @@ namespace etl
   typename etl::enable_if<!etl::is_trivially_destructible<typename etl::iterator_traits<TIterator>::value_type>::value, void>::type
     destroy(TIterator i_begin, TIterator i_end, TCounter& count)
   {
-    count -= int32_t(etl::distance(i_begin, i_end));
+    count -= static_cast<TCounter>(etl::distance(i_begin, i_end));
 
     while (i_begin != i_end)
     {
@@ -1252,6 +1736,74 @@ namespace etl
 
     return i_begin;
   }
+#endif
+
+#if ETL_USING_CPP17
+namespace ranges {
+  //*****************************************************************************
+  /// Destroys an item at address p.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/destroy_at
+  ///\ingroup memory
+  //*****************************************************************************
+  struct destroy_at_fn
+  {
+    template<class T>
+    constexpr void operator()(T* p) const
+    {
+      etl::destroy_at(p);
+    }
+  };
+
+  inline constexpr destroy_at_fn destroy_at {};
+
+  //*****************************************************************************
+  /// Destroys a range of items.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/destroy
+  ///\ingroup memory
+  //*****************************************************************************
+  struct destroy_fn
+  {
+    template<class I, class S, typename = etl::enable_if_t<!etl::is_range_v<I>>>
+    I operator()(I first, S last) const
+    {
+      for (; first != last; ++first)
+      {
+        etl::destroy_at(etl::to_address(first));
+      }
+
+      return first;
+    }
+
+    template<class R, typename = etl::enable_if_t<etl::is_range_v<R>>>
+    ranges::borrowed_iterator_t<R> operator()(R&& r) const
+    {
+      return (*this)(ranges::begin(r), ranges::end(r));
+    }
+  };
+
+  inline constexpr destroy_fn destroy {};
+
+  //*****************************************************************************
+  /// Destroys a number of items.
+  /// https://en.cppreference.com/w/cpp/memory/ranges/destroy_n
+  ///\ingroup memory
+  //*****************************************************************************
+  struct destroy_n_fn
+  {
+    template<class I>
+    I operator()(I first, etl::iter_difference_t<I> n) const
+    {
+      for (; n > 0; ++first, --n)
+      {
+        etl::destroy_at(etl::to_address(first));
+      }
+
+      return first;
+    }
+  };
+
+  inline constexpr destroy_n_fn destroy_n {};
+}
 #endif
 
   //*****************************************************************************

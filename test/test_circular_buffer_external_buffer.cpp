@@ -570,17 +570,17 @@ namespace
       Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
 
-      for (int i = 0; i < int(SIZE); ++i)
+      for (size_t i = 0U; i < SIZE; ++i)
       {
-        CHECK_EQUAL(input1[i + 3], data[i]);
+        CHECK_EQUAL(input1[i + 3U], data[i]);
       }
 
-      for (int i = 0; i < int(SIZE); ++i)
+      for (size_t i = 0U; i < SIZE; ++i)
       {
         data[i] = input2[i];
       }
 
-      for (int i = 0; i < int(SIZE); ++i)
+      for (size_t i = 0U; i < SIZE; ++i)
       {
         CHECK_EQUAL(input2[i], data[i]);
       }
@@ -595,9 +595,9 @@ namespace
       Data data(buffer1.raw, SIZE);
       data.push(input.begin(), input.end());
 
-      for (int i = 0; i < int(SIZE); ++i)
+      for (size_t i = 0U; i < SIZE; ++i)
       {
-        CHECK_EQUAL(input[i + 3], data[i]);
+        CHECK_EQUAL(input[i + 3U], data[i]);
       }
     }
 
@@ -620,7 +620,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr = itr + step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -644,7 +644,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr = itr + step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -668,7 +668,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr += + step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -692,7 +692,7 @@ namespace
         while ((offset += step) < int(data.size() - 1))
         {
           itr += step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -716,7 +716,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr = itr - step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -740,7 +740,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr = itr - step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -764,7 +764,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr -= step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }
@@ -788,7 +788,7 @@ namespace
         while ((offset -= step) > 0)
         {
           itr -= step;
-          CHECK_EQUAL(compare[offset], *itr);
+          CHECK_EQUAL(compare[static_cast<size_t>(offset)], *itr);
         }
       }
     }

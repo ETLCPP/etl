@@ -111,9 +111,9 @@ namespace
     {
       std::vector<size_t> hashes;
 
-      for (int i = 0; i < 256; ++i)
+      for (unsigned int i = 0U; i < 256U; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::month_weekday_last>()(Chrono::month_weekday_last(Chrono::month((i % 12) + 1), Chrono::weekday_last(Chrono::weekday(i % 7)))));
+        hashes.push_back(etl::hash<Chrono::month_weekday_last>()(Chrono::month_weekday_last(Chrono::month((i % 12U) + 1U), Chrono::weekday_last(Chrono::weekday(i % 7U)))));
       }
 
       std::sort(hashes.begin(), hashes.end());

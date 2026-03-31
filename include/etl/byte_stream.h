@@ -93,7 +93,7 @@ namespace etl
     byte_stream_writer(void* begin_, void* end_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
       , pcurrent(reinterpret_cast<char*>(begin_))
-      , stream_length(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)))
+      , stream_length(static_cast<size_t>(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_))))
       , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
@@ -381,7 +381,7 @@ namespace etl
     //***************************************************************************
     size_t size_bytes() const
     {
-      return etl::distance(pdata, pcurrent);
+      return static_cast<size_t>(etl::distance(pdata, pcurrent));
     }
 
     //***************************************************************************
@@ -525,7 +525,7 @@ namespace etl
     byte_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , pcurrent(reinterpret_cast<const char*>(begin_))
-      , stream_length(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
+      , stream_length(static_cast<size_t>(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_))))
       , stream_endianness(stream_endianness_)
     {
     }
@@ -799,7 +799,7 @@ namespace etl
     template <typename T>
     size_t available() const
     {
-      size_t used = etl::distance(pdata, pcurrent);
+      size_t used = static_cast<size_t>(etl::distance(pdata, pcurrent));
 
       return (stream_length - used) / sizeof(T);
     }

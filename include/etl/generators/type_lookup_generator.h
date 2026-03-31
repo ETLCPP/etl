@@ -85,7 +85,7 @@ namespace etl
 
 #if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  // type_id_lookup 
+  // type_id_lookup
   //***************************************************************************
   template <typename... TTypes>
   struct type_id_lookup
@@ -96,21 +96,21 @@ namespace etl
     struct nulltype {};
 
     // For N type pairs.
-    template <size_t Id, typename T1, typename... TRest>
+    template <int Id, typename T1, typename... TRest>
     struct type_from_id_helper
     {
       using type = typename etl::conditional<Id == T1::Id,
-                                             typename T1::type,
-                                             typename type_from_id_helper<Id, TRest...>::type>::type;
+        typename T1::type,
+        typename type_from_id_helper<Id, TRest...>::type>::type;
     };
 
     // Specialisation for 1 type pair.
-    template <size_t Id, typename T1>
+    template <int Id, typename T1>
     struct type_from_id_helper<Id, T1>
     {
       using type = typename etl::conditional<Id == T1::Id,
-                                             typename T1::type,
-                                             nulltype>::type;
+        typename T1::type,
+        nulltype>::type;
     };
 
   public:
@@ -171,7 +171,7 @@ namespace etl
     {
       return get_id_from_type<T>();
     }
-     
+
     //************************************
     template <typename T>
     static unsigned int get_id_from_type()
@@ -195,16 +195,16 @@ namespace etl
     struct type_from_type_helper
     {
       using type = typename etl::conditional<etl::is_same<T, typename T1::type1>::value,
-                                             typename T1::type2,
-                                             typename type_from_type_helper<T, TRest...>::type>::type;
+        typename T1::type2,
+        typename type_from_type_helper<T, TRest...>::type>::type;
     };
 
     template <typename T, typename T1>
     struct type_from_type_helper<T, T1>
     {
       using type = typename etl::conditional<etl::is_same<T, typename T1::type1>::value,
-                                             typename T1::type2,
-                                             nulltype>::type;
+        typename T1::type2,
+        nulltype>::type;
     };
 
   public:
@@ -244,7 +244,7 @@ namespace etl
   cog.outl("  template <int Id>")
   cog.outl("  struct type_from_id")
   cog.outl("  {")
-  cog.outl("    typedef ")
+  cog.outl("    typedef")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<Id == T%s::Id, typename T%s::type," %(n, n))
   cog.out("          etl::null_type<0> >")
@@ -253,7 +253,7 @@ namespace etl
           cog.outl("::type type;")
       else:
           cog.out("::type>")
-      if n % 4 == 0:          
+      if n % 4 == 0:
           if n != int(NTypes):
               cog.outl("")
               cog.out("                            ")
@@ -311,7 +311,7 @@ namespace etl
   cog.outl("  template <typename T>")
   cog.outl("  struct type_from_type")
   cog.outl("  {")
-  cog.outl("    typedef ")
+  cog.outl("    typedef")
   for n in range(1, int(NTypes) + 1):
       cog.outl("          typename etl::conditional<etl::is_same<T, typename T%s::type1>::value, typename T%s::type2," %(n, n))
   cog.out("          etl::null_type<0> >")

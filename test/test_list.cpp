@@ -129,7 +129,7 @@ namespace
       int current_count = ItemNDC::get_instance_count();
 
       DataNDC* pdata = new DataNDC(sorted_data.begin(), sorted_data.end());
-      CHECK_EQUAL(int(current_count + sorted_data.size()), ItemNDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(sorted_data.size())), ItemNDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;
@@ -1172,12 +1172,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_exception)
+    {
+      DataInt data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.front(), etl::list_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_front_const)
     {
       const CompareData compare_data(sorted_data.begin(), sorted_data.end());
       const DataNDC data(sorted_data.begin(), sorted_data.end());
 
       CHECK_EQUAL(compare_data.front(), data.front());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_const_exception)
+    {
+      const DataInt data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.front(), etl::list_empty);
     }
 
     //*************************************************************************
@@ -1190,12 +1208,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back_exception)
+    {
+      DataInt data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.back(), etl::list_empty);
+    }
+    
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_back_const)
     {
       const CompareData compare_data(sorted_data.begin(), sorted_data.end());
       const DataNDC data(sorted_data.begin(), sorted_data.end());
 
       CHECK_EQUAL(compare_data.back(), data.back());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back_const_exception)
+    {
+      const DataInt data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.back(), etl::list_empty);
     }
 
     //*************************************************************************

@@ -38,12 +38,41 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "mutex.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_spsc_isr_exception : public exception
+  {
+  public:
+
+    queue_spsc_isr_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_spsc_isr_empty : public queue_spsc_isr_exception
+  {
+  public:
+
+    queue_spsc_isr_empty(string_type file_name_, numeric_type line_number_)
+      : queue_spsc_isr_exception(ETL_ERROR_TEXT("queue_spsc_isr:empty", ETL_QUEUE_SPSC_ISR_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_isr_base
   {
@@ -52,11 +81,11 @@ namespace etl
     /// The type used for determining the size of queue.
     typedef typename etl::size_type_lookup<MEMORY_MODEL>::type size_type;
 
-    typedef T        value_type;      ///< The type stored in the queue.
-    typedef T&       reference;       ///< A reference to the type used in the queue.
-    typedef const T& const_reference; ///< A const reference to the type used in the queue.
+    typedef T        value_type;       ///< The type stored in the queue.
+    typedef T&       reference;        ///< A reference to the type used in the queue.
+    typedef const T& const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&      rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&&      rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
 
     //*************************************************************************
@@ -108,17 +137,23 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue from an ISR
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     reference front_from_isr()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty_from_isr(), ETL_ERROR(queue_spsc_isr_empty));
+
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue from an ISR
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     const_reference front_from_isr() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty_from_isr(), ETL_ERROR(queue_spsc_isr_empty));
+
       return front_implementation();
     }
 
@@ -494,9 +529,9 @@ namespace etl
 
   public:
 
-    typedef typename base_t::value_type       value_type;      ///< The type stored in the queue.
-    typedef typename base_t::reference        reference;       ///< A reference to the type used in the queue.
-    typedef typename base_t::const_reference  const_reference; ///< A const reference to the type used in the queue.
+    typedef typename base_t::value_type       value_type;       ///< The type stored in the queue.
+    typedef typename base_t::reference        reference;        ///< A reference to the type used in the queue.
+    typedef typename base_t::const_reference  const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
     typedef typename base_t::rvalue_reference rvalue_reference;///< A const reference to the type used in the queue.
 #endif
@@ -659,29 +694,57 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+#if ETL_CHECKING_EXTRA
       TAccess::lock();
-
+      if (!this->empty_from_isr())
+      {
+        reference inner_result = this->front_implementation();
+        TAccess::unlock();
+        return inner_result;
+      }
+      else
+      {
+        TAccess::unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_isr_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      TAccess::lock();
       reference result = this->front_implementation();
-
       TAccess::unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_spsc_isr_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+#if ETL_CHECKING_EXTRA
       TAccess::lock();
-
+      if (!this->empty_from_isr())
+      {
+        const_reference inner_result = this->front_implementation();
+        TAccess::unlock();
+        return inner_result;
+      }
+      else
+      {
+        TAccess::unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_isr_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      TAccess::lock();
       const_reference result = this->front_implementation();
-
       TAccess::unlock();
-
       return result;
     }
 
@@ -716,7 +779,7 @@ namespace etl
     {
       TAccess::lock();
 
-      size_type result = (this->current_size == 0);
+      bool result = (this->current_size == 0);
 
       TAccess::unlock();
 
@@ -730,7 +793,7 @@ namespace etl
     {
       TAccess::lock();
 
-      size_type result = (this->current_size == this->MAX_SIZE);
+      bool result = (this->current_size == this->MAX_SIZE);
 
       TAccess::unlock();
 

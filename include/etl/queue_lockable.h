@@ -39,12 +39,41 @@ SOFTWARE.
 #include "function.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "mutex.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_lockable_exception : public exception
+  {
+  public:
+
+    queue_lockable_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_lockable_empty : public queue_lockable_exception
+  {
+  public:
+
+    queue_lockable_empty(string_type file_name_, numeric_type line_number_)
+      : queue_lockable_exception(ETL_ERROR_TEXT("queue_lockable:empty", ETL_QUEUE_SPSC_LOCKABLE_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_lockable_base
   {
@@ -491,45 +520,77 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue without locking.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     reference front_unlocked()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue without locking.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     const_reference front_unlocked() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+#if ETL_CHECKING_EXTRA
       this->lock();
-
+      if (!this->empty_unlocked())
+      {
+        reference inner_result = front_implementation();
+        this->unlock();
+        return inner_result;
+      }
+      else
+      {
+        this->unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      this->lock();
       reference result = front_implementation();
-
       this->unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+#if ETL_CHECKING_EXTRA
       this->lock();
-
+      if (!this->empty_unlocked())
+      {
+        const_reference inner_result = front_implementation();
+        this->unlock();
+        return inner_result;
+      }
+      else
+      {
+        this->unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      this->lock();
       const_reference result = front_implementation();
-
       this->unlock();
-
       return result;
     }
 

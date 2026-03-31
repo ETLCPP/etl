@@ -574,12 +574,11 @@ namespace
       constexpr uint16_t absolute1 = etl::absolute(int16_t(0));
       constexpr uint16_t absolute2 = etl::absolute(int16_t(32767));
       constexpr uint16_t absolute3 = etl::absolute(int16_t(-32767));
-      constexpr uint16_t absolute4 = etl::absolute(int16_t(-32768));
+      //constexpr uint16_t absolute4 = etl::absolute(int16_t(-32768)); // Compile error
 
       CHECK_EQUAL(uint16_t(0),     absolute1);
       CHECK_EQUAL(uint16_t(32767), absolute2);
       CHECK_EQUAL(uint16_t(32767), absolute3);
-      CHECK_EQUAL(uint16_t(32768), absolute4);
 
       constexpr uint16_t absolute5 = etl::absolute(uint16_t(0));
       constexpr uint16_t absolute6 = etl::absolute(uint16_t(65535));

@@ -97,6 +97,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   ///\ingroup stack
   /// A fixed capacity stack written in the STL style.
@@ -238,11 +239,13 @@ namespace etl
   public:
 
     //*************************************************************************
-    /// Gets a reference to the value at the top of the stack.<br>
+    /// Gets a reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an etl::stack_empty if the stack is empty.
     /// \return A reference to the value at the top of the stack.
     //*************************************************************************
     reference top()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(stack_empty));
       return p_buffer[top_index];
     }
 
@@ -372,11 +375,13 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// Gets a const reference to the value at the top of the stack.<br>
+    /// Gets a const reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an etl::stack_empty if the stack is empty.
     /// \return A const reference to the value at the top of the stack.
     //*************************************************************************
     const_reference top() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(stack_empty));
       return p_buffer[top_index];
     }
 

@@ -119,7 +119,7 @@ namespace etl
       //***************************************************************************
       ETL_CONSTEXPR14 size_t size() const
       {
-        return etl::distance(itr_begin, itr_end);
+        return static_cast<size_t>(etl::distance(itr_begin, itr_end));
       }
 
       //***************************************************************************

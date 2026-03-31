@@ -296,7 +296,7 @@ namespace etl
         if (offset > 0)
         {
           index += offset;
-          index = (static_cast<size_t>(index) > p_deque->Buffer_Size - 1) ? index - p_deque->Buffer_Size : index;
+          index = (static_cast<size_t>(index) > p_deque->Buffer_Size - 1) ? index - static_cast<difference_type>(p_deque->Buffer_Size) : index;
         }
         else if (offset < 0)
         {
@@ -312,7 +312,7 @@ namespace etl
         if (offset > 0)
         {
           index -= offset;
-          index = (index < 0) ? index + p_deque->Buffer_Size : index;
+          index = (index < 0) ? index + static_cast<difference_type>(p_deque->Buffer_Size) : index;
         }
         else if (offset < 0)
         {
@@ -325,7 +325,7 @@ namespace etl
       //***************************************************
       iterator& operator --()
       {
-        index = (index == 0) ? p_deque->Buffer_Size - 1 : index - 1;
+        index = (index == 0) ? static_cast<difference_type>(p_deque->Buffer_Size) - 1 : index - 1;
 
         return *this;
       }
@@ -334,7 +334,7 @@ namespace etl
       iterator operator --(int)
       {
         iterator previous(*this);
-        index = (index == 0) ? p_deque->Buffer_Size - 1 : index - 1;
+        index = (index == 0) ? static_cast<difference_type>(p_deque->Buffer_Size) - 1 : index - 1;
 
         return previous;
       }
@@ -411,7 +411,7 @@ namespace etl
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
         const difference_type reference_index = lhs.container().begin().get_index();
-        const size_t buffer_size = lhs.container().max_size() + 1;
+        const difference_type buffer_size = static_cast<difference_type>(lhs.container().max_size() + 1);
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -470,7 +470,7 @@ namespace etl
       {
         if (index_ < firstIndex)
         {
-          return p_deque->Buffer_Size + index_ - firstIndex;
+          return static_cast<difference_type>(p_deque->Buffer_Size) + index_ - firstIndex;
         }
         else
         {
@@ -566,7 +566,7 @@ namespace etl
         if (offset > 0)
         {
           index += offset;
-          index = (static_cast<size_t>(index) > p_deque->Buffer_Size - 1) ? index - p_deque->Buffer_Size : index;
+          index = (static_cast<size_t>(index) > p_deque->Buffer_Size - 1) ? index - static_cast<difference_type>(p_deque->Buffer_Size) : index;
         }
         else if (offset < 0)
         {
@@ -582,7 +582,7 @@ namespace etl
         if (offset > 0)
         {
           index -= offset;
-          index = (index < 0) ? static_cast<size_t>(index) + p_deque->Buffer_Size : index;
+          index = (index < 0) ? index + static_cast<difference_type>(p_deque->Buffer_Size) : index;
         }
         else if (offset < 0)
         {
@@ -595,7 +595,7 @@ namespace etl
       //***************************************************
       const_iterator& operator --()
       {
-        index = (index == 0) ? p_deque->Buffer_Size - 1 : index - 1;
+        index = (index == 0) ? static_cast<difference_type>(p_deque->Buffer_Size) - 1 : index - 1;
 
         return *this;
       }
@@ -604,7 +604,7 @@ namespace etl
       const_iterator operator --(int)
       {
         const_iterator previous(*this);
-        index = (index == 0) ? p_deque->Buffer_Size - 1 : index - 1;
+        index = (index == 0) ? static_cast<difference_type>(p_deque->Buffer_Size) - 1 : index - 1;
 
         return previous;
       }
@@ -672,7 +672,7 @@ namespace etl
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
         const difference_type reference_index = lhs.container().begin().get_index();
-        const size_t buffer_size = lhs.container().max_size() + 1UL;
+        const difference_type buffer_size = static_cast<difference_type>(lhs.container().max_size() + 1UL);
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -729,7 +729,7 @@ namespace etl
       {
         if (index_ < firstIndex)
         {
-          return p_deque->Buffer_Size + index_ - firstIndex;
+          return static_cast<difference_type>(p_deque->Buffer_Size) + index_ - firstIndex;
         }
         else
         {
@@ -798,7 +798,7 @@ namespace etl
       ETL_ASSERT(index < current_size, ETL_ERROR(deque_out_of_bounds));
 
       iterator result(_begin);
-      result += index;
+      result += static_cast<difference_type>(index);
 
       return *result;
     }
@@ -813,7 +813,7 @@ namespace etl
       ETL_ASSERT(index < current_size, ETL_ERROR(deque_out_of_bounds));
 
       iterator result(_begin);
-      result += index;
+      result += static_cast<difference_type>(index);
 
       return *result;
     }
@@ -825,7 +825,7 @@ namespace etl
     reference operator [](size_t index)
     {
       iterator result(_begin);
-      result += index;
+      result += static_cast<difference_type>(index);
 
       return *result;
     }
@@ -837,44 +837,52 @@ namespace etl
     const_reference operator [](size_t index) const
     {
       iterator result(_begin);
-      result += index;
+      result += static_cast<difference_type>(index);
 
       return *result;
     }
 
     //*************************************************************************
     /// Gets a reference to the item at the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A reference to the item at the front of the deque.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *_begin;
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A const reference to the item at the front of the deque.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *_begin;
     }
 
     //*************************************************************************
     /// Gets a reference to the item at the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A reference to the item at the back of the deque.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *(_end - 1);
     }
 
     //*************************************************************************
     /// Gets a const reference to the item at the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_empty if the deque is empty.
     ///\return A const reference to the item at the back of the deque.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(deque_empty));
       return *(_end - 1);
     }
 
@@ -1454,7 +1462,7 @@ namespace etl
           create_element_back(value);
         }
 
-        position = _end - n;
+        position = _end - static_cast<difference_type>(n);
       }
       else
       {
@@ -1465,14 +1473,14 @@ namespace etl
         if (distance(_begin, insert_position) <= difference_type(current_size / 2))
         {
           size_t n_insert = n;
-          size_t n_move = etl::distance(begin(), position);
+          size_t n_move = static_cast<size_t>(etl::distance(begin(), position));
           size_t n_create_copy = etl::min(n_insert, n_move);
           size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
           size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
           size_t n_copy_old = n_move - n_create_copy;
 
           // Remember the original start.
-          iterator from = _begin + n_create_copy - 1;
+          iterator from = _begin + static_cast<difference_type>(n_create_copy) - 1;
           iterator to;
 
           // Create new.
@@ -1489,20 +1497,20 @@ namespace etl
           }
 
           // Move old.
-          from = position - n_copy_old;
-          to = _begin + n_create_copy;
-          etl::move(from, from + n_copy_old, to);
+          from = position - static_cast<difference_type>(n_copy_old);
+          to = _begin + static_cast<difference_type>(n_create_copy);
+          etl::move(from, from + static_cast<difference_type>(n_copy_old), to);
 
           // Copy new.
-          to = position - n_create_copy;
+          to = position - static_cast<difference_type>(n_create_copy);
           etl::fill_n(to, n_copy_new, value);
 
-          position = _begin + n_move;
+          position = _begin + static_cast<difference_type>(n_move);
         }
         else
         {
           size_t n_insert = n;
-          size_t n_move = etl::distance(position, end());
+          size_t n_move = static_cast<size_t>(etl::distance(position, end()));
           size_t n_create_copy = etl::min(n_insert, n_move);
           size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
           size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
@@ -1515,7 +1523,7 @@ namespace etl
           }
 
           // Create copy.
-          const_iterator from = position + n_copy_old;
+          const_iterator from = position + static_cast<difference_type>(n_copy_old);
 
           for (size_t i = 0UL; i < n_create_copy; ++i)
           {
@@ -1524,7 +1532,7 @@ namespace etl
           }
 
           // Move old.
-          etl::move_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
+          etl::move_backward(position, position + static_cast<difference_type>(n_copy_old), position + static_cast<difference_type>(n_insert + n_copy_old));
 
           // Copy new.
           etl::fill_n(position, n_copy_new, value);
@@ -1549,11 +1557,11 @@ namespace etl
 
       difference_type n = etl::distance(range_begin, range_end);
 
-      ETL_ASSERT((current_size + n) <= CAPACITY, ETL_ERROR(deque_full));
+      ETL_ASSERT((current_size + static_cast<size_t>(n)) <= CAPACITY, ETL_ERROR(deque_full));
 
       if (insert_position == begin())
       {
-        create_element_front(n, range_begin);
+        create_element_front(static_cast<size_t>(n), range_begin);
 
         position = _begin;
       }
@@ -1575,8 +1583,8 @@ namespace etl
         // Are we closer to the front?
         if (distance(_begin, insert_position) < difference_type(current_size / 2))
         {
-          size_t n_insert = n;
-          size_t n_move = etl::distance(begin(), position);
+          size_t n_insert = static_cast<size_t>(n);
+          size_t n_move = static_cast<size_t>(etl::distance(begin(), position));
           size_t n_create_copy = etl::min(n_insert, n_move);
           size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
           size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
@@ -1590,31 +1598,31 @@ namespace etl
           create_element_front(n_create_new, range_begin);
 
           // Create copy.
-          create_element_front(n_create_copy, _begin + n_create_new);
+          create_element_front(n_create_copy, _begin + static_cast<difference_type>(n_create_new));
 
           // Move old.
-          from = position - n_copy_old;
-          to = _begin + n_create_copy;
-          etl::move(from, from + n_copy_old, to);
+          from = position - static_cast<difference_type>(n_copy_old);
+          to = _begin + static_cast<difference_type>(n_create_copy);
+          etl::move(from, from + static_cast<difference_type>(n_copy_old), to);
 
           // Copy new.
-          to = position - n_create_copy;
-          range_begin += n_create_new;
-          etl::copy(range_begin, range_begin + n_copy_new, to);
+          to = position - static_cast<difference_type>(n_create_copy);
+          range_begin += static_cast<difference_type>(n_create_new);
+          etl::copy(range_begin, range_begin + static_cast<difference_type>(n_copy_new), to);
 
-          position = _begin + n_move;
+          position = _begin + static_cast<difference_type>(n_move);
         }
         else
         {
-          size_t n_insert = n;
-          size_t n_move = etl::distance(position, end());
+          size_t n_insert = static_cast<size_t>(n);
+          size_t n_move = static_cast<size_t>(etl::distance(position, end()));
           size_t n_create_copy = etl::min(n_insert, n_move);
           size_t n_create_new = (n_insert > n_create_copy) ? n_insert - n_create_copy : 0;
           size_t n_copy_new = (n_insert > n_create_new) ? n_insert - n_create_new : 0;
           size_t n_copy_old = n_move - n_create_copy;
 
           // Create new.
-          TIterator item = range_begin + (n - n_create_new);
+          TIterator item = range_begin + static_cast<difference_type>(n_insert - n_create_new);
           for (size_t i = 0UL; i < n_create_new; ++i)
           {
             create_element_back(*item);
@@ -1622,7 +1630,7 @@ namespace etl
           }
 
           // Create copy.
-          const_iterator from = position + n_copy_old;
+          const_iterator from = position + static_cast<difference_type>(n_copy_old);
 
           for (size_t i = 0UL; i < n_create_copy; ++i)
           {
@@ -1631,11 +1639,11 @@ namespace etl
           }
 
           // Move old.
-          etl::move_backward(position, position + n_copy_old, position + n_insert + n_copy_old);
+          etl::move_backward(position, position + static_cast<difference_type>(n_copy_old), position + static_cast<difference_type>(n_insert + n_copy_old));
 
           // Copy new.
           item = range_begin;
-          etl::copy(item, item + n_copy_new, position);
+          etl::copy(item, item + static_cast<difference_type>(n_copy_new), position);
         }
       }
 
@@ -1696,7 +1704,7 @@ namespace etl
       ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), ETL_ERROR(deque_out_of_bounds));
 
       // How many to erase?
-      size_t length = etl::distance(range_begin, range_end);
+      size_t length = static_cast<size_t>(etl::distance(range_begin, range_end));
 
       // At the beginning?
       if (position == _begin)
@@ -1709,7 +1717,7 @@ namespace etl
         position = begin();
       }
       // At the end?
-      else if (position == _end - length)
+      else if (position == _end - static_cast<difference_type>(length))
       {
         for (size_t i = 0UL; i < length; ++i)
         {
@@ -1725,20 +1733,20 @@ namespace etl
         if (distance(_begin, position) < difference_type(current_size / 2))
         {
           // Move the items.
-          etl::move_backward(_begin, position, position + length);
+          etl::move_backward(_begin, position, position + static_cast<difference_type>(length));
 
           for (size_t i = 0UL; i < length; ++i)
           {
             destroy_element_front();
           }
 
-          position += length;
+          position += static_cast<difference_type>(length);
         }
         else
           // Must be closer to the back.
         {
           // Move the items.
-          etl::move(position + length, _end, position);
+          etl::move(position + static_cast<difference_type>(length), _end, position);
 
           for (size_t i = 0UL; i < length; ++i)
           {
@@ -2181,7 +2189,7 @@ namespace etl
         return;
       }
 
-      _begin -= n;
+      _begin -= static_cast<difference_type>(n);
 
       iterator item = _begin;
 
@@ -2294,7 +2302,7 @@ namespace etl
     {
       const difference_type index = other.get_index();
       const difference_type reference_index = other.container()._begin.index;
-      const size_t buffer_size = other.container().Buffer_Size;
+      const difference_type buffer_size = static_cast<difference_type>(other.container().Buffer_Size);
 
       if (index < reference_index)
       {

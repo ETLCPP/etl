@@ -208,14 +208,14 @@ namespace
       int current_count = ItemNDC::get_instance_count();
 
       DataNDC* pdata1 = new DataNDC(sorted_data.begin(), sorted_data.end(), pool);
-      CHECK_EQUAL(int(current_count + sorted_data.size()), ItemNDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(sorted_data.size())), ItemNDC::get_instance_count());
 
       DataNDC* pdata2 = new DataNDC(sorted_data.begin(), sorted_data.end(), pool);
-      CHECK_EQUAL(int(current_count + sorted_data.size() + sorted_data.size()), ItemNDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(sorted_data.size()) + int(sorted_data.size())), ItemNDC::get_instance_count());
 
       IDataNDC* pidata1 = pdata1;
       delete pidata1;
-      CHECK_EQUAL(current_count + sorted_data.size(), uint32_t(ItemNDC::get_instance_count()));
+      CHECK_EQUAL(current_count + int(sorted_data.size()), ItemNDC::get_instance_count());
 
       IDataNDC* pidata2 = pdata2;
       delete pidata2;

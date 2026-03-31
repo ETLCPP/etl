@@ -197,6 +197,7 @@ namespace
       CHECK_EQUAL("-6759414", test_format(s, "{}", static_cast<int32_t>(-6759414)));
     }
 
+#if ETL_USING_FORMAT_FLOATING_POINT
     //*************************************************************************
     TEST(test_format_float)
     {
@@ -266,6 +267,7 @@ namespace
       CHECK_EQUAL("0x1.92a738p-5", test_format(s, "{:a}", 0.0000015f));
       CHECK_EQUAL("0x1.6345785d8ap+e", test_format(s, "{:a}", 100000000000000000.l));
     }
+#endif
 
     //*************************************************************************
     TEST(test_format_char_array)
@@ -598,7 +600,7 @@ namespace
       etl::string<100> s;
 
       etl::istring::iterator result = etl::format_to(s.begin(), "{0} {1}", 34, 56);
-      s.uninitialized_resize(result - s.begin());
+      s.uninitialized_resize(static_cast<size_t>(result - s.begin()));
       CHECK_EQUAL("34 56", s);
 
       s.clear();

@@ -496,11 +496,17 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      View view1(etldata.begin(), etldata.begin());
-      CHECK(!view1.empty());
-
       EView view2(etldata.begin(), etldata.begin());
       CHECK(view2.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_construction_from_mismatched_size)
+    {
+      CHECK_THROW((View(etldata.begin(), etldata.begin())),    etl::span_size_mismatch);
+      CHECK_THROW((View(etldata.begin(), 1)),                  etl::span_size_mismatch);
+      CHECK_THROW((View(etldata.begin(), etldata.size() - 1)), etl::span_size_mismatch);
+      CHECK_THROW((View(etldata.begin(), etldata.size() + 1)), etl::span_size_mismatch);
     }
 
     //*************************************************************************
@@ -664,7 +670,7 @@ namespace
       CHECK_EQUAL(sub1.size(), cspan1.extent);
       CHECK_EQUAL(sub1.size(), cspan1.size());
 
-      auto span2 = view.subspan<2>();     
+      auto span2 = view.subspan<2>();
       isEqual = std::equal(sub2.begin(), sub2.end(), span2.begin());
       CHECK(isEqual);
       CHECK_EQUAL(span2.size(), span2.extent);
@@ -804,7 +810,7 @@ namespace
 
     //*************************************************************************
 #include "etl/private/diagnostic_unused_function_push.h"
-    
+
     struct C_issue_482 {};
 
     void f_issue_482(etl::span<char>)
@@ -869,7 +875,7 @@ namespace
 
       View::circular_iterator sci = view.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i], *++sci);
       }
@@ -886,7 +892,7 @@ namespace
 
       View::circular_iterator sci = subspan.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i], *++sci);
       }
@@ -902,7 +908,7 @@ namespace
 
       View::circular_iterator sci = view.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
@@ -919,7 +925,7 @@ namespace
 
       View::circular_iterator sci = subspan.begin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i], *sci++);
       }
@@ -935,7 +941,7 @@ namespace
 
       View::reverse_circular_iterator sci = view.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
@@ -952,7 +958,7 @@ namespace
 
       etl::span<int, 10U>::reverse_circular_iterator sci = subspan.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
@@ -968,7 +974,7 @@ namespace
 
       View::reverse_circular_iterator sci = view.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
@@ -985,7 +991,7 @@ namespace
 
       View::reverse_circular_iterator sci = subspan.rbegin_circular();
 
-      for (int i = 0; i < 20; ++i)
+      for (size_t i = 0U; i < 20U; ++i)
       {
         CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
@@ -1003,7 +1009,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci += step;
@@ -1023,7 +1029,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci = sci + step;
@@ -1043,7 +1049,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci -= step;
@@ -1063,7 +1069,7 @@ namespace
       {
         View::circular_iterator sci = view.begin_circular();
 
-        for (int i = 0; i < 20; i += step)
+        for (size_t i = 0U; i < 20U; i += static_cast<size_t>(step))
         {
           CHECK_EQUAL(expected[i % 10], *sci);
           sci = sci - step;
@@ -1220,7 +1226,7 @@ namespace
       etl::span<int, 5> span2(span1);
       //etl::span<int, 10> span3(span1); // This line should fail to compile.
     }
-    
+
     //*************************************************************************
     TEST(test_reinterpret_as)
     {
@@ -1306,5 +1312,23 @@ namespace
     }
 
 #include "etl/private/diagnostic_pop.h"
+
+    //*************************************************************************
+    TEST(test_not_constructible_from_rvalue_container)
+    {
+#if ETL_USING_CPP17
+      CHECK(!(etl::is_constructible_v<View,  StlVData&&>));
+      CHECK(!(etl::is_constructible_v<CView, StlVData&&>));
+
+      CHECK(!(etl::is_constructible_v<View,  EtlData&&>));
+      CHECK(!(etl::is_constructible_v<View,  StlData&&>));
+#else
+      CHECK(!(etl::is_constructible<View,  StlVData&&>::value));
+      CHECK(!(etl::is_constructible<CView, StlVData&&>::value));
+
+      CHECK(!(etl::is_constructible<View,  EtlData&&>::value));
+      CHECK(!(etl::is_constructible<View,  StlData&&>::value));
+#endif
+    }
   }
 }

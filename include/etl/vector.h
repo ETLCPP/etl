@@ -783,7 +783,7 @@ namespace etl
       iterator position_ = to_iterator(position);
 
       size_t insert_n = n;
-      size_t insert_begin = etl::distance(begin(), position_);
+      size_t insert_begin = static_cast<size_t>(etl::distance(begin(), position_));
       size_t insert_end = insert_begin + insert_n;
 
       // Copy old data.
@@ -835,13 +835,13 @@ namespace etl
     template <class TIterator>
     void insert(const_iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
-      size_t count = etl::distance(first, last);
+      size_t count = static_cast<size_t>(etl::distance(first, last));
 
       ETL_ASSERT_OR_RETURN((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
       ETL_ASSERT_CHECK_EXTRA(cbegin() <= position && position <= cend(), ETL_ERROR(vector_out_of_bounds));
 
       size_t insert_n = count;
-      size_t insert_begin = etl::distance(cbegin(), position);
+      size_t insert_begin = static_cast<size_t>(etl::distance(cbegin(), position));
       size_t insert_end = insert_begin + insert_n;
 
       // Move old data.
@@ -873,11 +873,12 @@ namespace etl
       etl::move_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Copy construct new.
-      etl::uninitialized_copy(first + copy_new_n, first + copy_new_n + construct_new_n, p_end);
+      typedef typename etl::iterator_traits<TIterator>::difference_type diff_t;
+      etl::uninitialized_copy(first + static_cast<diff_t>(copy_new_n), first + static_cast<diff_t>(copy_new_n + construct_new_n), p_end);
       ETL_ADD_DEBUG_COUNT(construct_new_n);
 
       // Copy new.
-      etl::copy(first, first + copy_new_n, p_buffer + insert_begin);
+      etl::copy(first, first + static_cast<diff_t>(copy_new_n), p_buffer + insert_begin);
 
       p_end += count;
     }
@@ -936,7 +937,7 @@ namespace etl
       else
       {
         etl::move(last_, end(), first_);
-        size_t n_delete = etl::distance(first_, last_);
+        size_t n_delete = static_cast<size_t>(etl::distance(first_, last_));
 
         // Destroy the elements left over at the end.
         etl::destroy(p_end - n_delete, p_end);
@@ -965,7 +966,7 @@ namespace etl
 
       etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
 
-      typename ivector<T>::iterator larger_itr = etl::next(larger.begin(), smaller.size());
+      typename ivector<T>::iterator larger_itr = etl::next(larger.begin(), static_cast<typename etl::iterator_traits<typename ivector<T>::iterator>::difference_type>(smaller.size()));
 
       etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
 
@@ -1086,7 +1087,7 @@ namespace etl
     //*************************************************************************
     void repair_buffer(T* p_buffer_)
     {
-      uintptr_t length = p_end - p_buffer;
+      uintptr_t length = static_cast<uintptr_t>(p_end - p_buffer);
       p_buffer = p_buffer_;
       p_end    = p_buffer_ + length;
     }

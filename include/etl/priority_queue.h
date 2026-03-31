@@ -96,6 +96,21 @@ namespace etl
   };
 
   //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  ///\ingroup queue
+  //***************************************************************************
+  class priority_queue_empty : public etl::priority_queue_exception
+  {
+  public:
+
+    priority_queue_empty(string_type file_name_, numeric_type line_number_)
+      : priority_queue_exception(ETL_ERROR_TEXT("priority_queue:empty", ETL_PRIORITY_QUEUE_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+
+  //***************************************************************************
   ///\ingroup queue
   ///\brief This is the base for all priority queues that contain a particular type.
   ///\details Normally a reference to this type will be taken from a derived queue.
@@ -128,20 +143,24 @@ namespace etl
     typedef typename etl::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
 
     //*************************************************************************
-    /// Gets a reference to the highest priority value in the priority queue.<br>
+    /// Gets a reference to the highest priority value in the priority queue.
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_empty if the priority queue is empty.
     /// \return A reference to the highest priority value in the priority queue.
     //*************************************************************************
     reference top()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(priority_queue_empty));
       return container.front();
     }
 
     //*************************************************************************
-    /// Gets a const reference to the highest priority value in the priority queue.<br>
+    /// Gets a const reference to the highest priority value in the priority queue.
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_empty if the priority queue is empty.
     /// \return A const reference to the highest priority value in the priority queue.
     //*************************************************************************
     const_reference top() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(priority_queue_empty));
       return container.front();
     }
 
@@ -307,10 +326,12 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest value from the back of the priority queue.
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_empty if the priority queue is empty.
     /// Does nothing if the priority queue is already empty.
     //*************************************************************************
     void pop()
     {
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(priority_queue_empty));
       // Move largest element to end
       etl::pop_heap(container.begin(), container.end(), compare);
       // Actually remove largest element at end

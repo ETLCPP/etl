@@ -253,12 +253,12 @@ namespace etl
     // Keep shifting down and XORing the lower bits.
     while (value >= etl::max_value_for_nbits<NBits>::value)
     {
-      folded_value ^= value & mask;
+      folded_value ^= static_cast<TReturn>(value & mask);
       value >>= shift;
     }
 
     // Fold the remaining bits.
-    folded_value ^= value & mask;
+    folded_value ^= static_cast<TReturn>(value & mask);
 
     return folded_value;
   }
@@ -280,7 +280,7 @@ namespace etl
       signed value : NBits;
     } s = {0};
 
-    return (s.value = value);
+    return (s.value = static_cast<int>(static_cast<TReturn>(value)));
   }
 
   //***************************************************************************
@@ -302,7 +302,7 @@ namespace etl
       signed value : NBits;
     } s = {0};
 
-    return (s.value = (value >> SHIFT));
+    return (s.value = static_cast<int>(static_cast<TReturn>(value >> SHIFT)));
   }
 
   //***************************************************************************
@@ -321,7 +321,7 @@ namespace etl
     TReturn mask = TReturn(1) << (NBits - 1);
     value = value & TValue((TValue(1) << NBits) - 1);
 
-    return TReturn((value ^ mask) - mask);
+    return static_cast<TReturn>(static_cast<TReturn>(value ^ static_cast<TValue>(mask)) - mask);
   }
 
   //***************************************************************************
@@ -341,7 +341,7 @@ namespace etl
     TReturn mask = TReturn(1) << (NBits - 1);
     value = (value >> SHIFT) & TValue((TValue(1) << NBits) - 1);
 
-    return TReturn((value ^ mask) - mask);
+    return static_cast<TReturn>(static_cast<TReturn>(value ^ static_cast<TValue>(mask)) - mask);
   }
 
   //***************************************************************************
@@ -520,12 +520,12 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int8_t value1 = int8_t(((Value  & 0xAAU) >> 1U) | ((Value  & 0x55U) << 1U));
-    static ETL_CONSTANT int8_t value2 = int8_t(((value1 & 0xCCU) >> 2U) | ((value1 & 0x33U) << 2U));
+    static ETL_CONSTANT int8_t value1 = int8_t(((static_cast<uint8_t>(Value) & 0xAAU) >> 1U) | ((static_cast<uint8_t>(Value) & 0x55U) << 1U));
+    static ETL_CONSTANT int8_t value2 = int8_t(((static_cast<uint8_t>(value1) & 0xCCU) >> 2U) | ((static_cast<uint8_t>(value1) & 0x33U) << 2U));
 
   public:
 
-    static ETL_CONSTANT int8_t value = int8_t((value2 >> 4U) | ((value2 & 0x0FU) << 4U));
+    static ETL_CONSTANT int8_t value = int8_t((static_cast<uint8_t>(value2) >> 4U) | ((static_cast<uint8_t>(value2) & 0x0FU) << 4U));
   };
 
   template <int8_t Value>
@@ -573,13 +573,13 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int16_t value1 = int16_t(((Value  & 0xAAAAU) >> 1U) | ((Value  & 0x5555U) << 1U));
-    static ETL_CONSTANT int16_t value2 = int16_t(((value1 & 0xCCCCU) >> 2U) | ((value1 & 0x3333U) << 2U));
-    static ETL_CONSTANT int16_t value3 = int16_t(((value2 & 0xF0F0U) >> 4U) | ((value2 & 0x0F0FU) << 4U));
+    static ETL_CONSTANT int16_t value1 = int16_t(((static_cast<uint16_t>(Value) & 0xAAAAU) >> 1U) | ((static_cast<uint16_t>(Value) & 0x5555U) << 1U));
+    static ETL_CONSTANT int16_t value2 = int16_t(((static_cast<uint16_t>(value1) & 0xCCCCU) >> 2U) | ((static_cast<uint16_t>(value1) & 0x3333U) << 2U));
+    static ETL_CONSTANT int16_t value3 = int16_t(((static_cast<uint16_t>(value2) & 0xF0F0U) >> 4U) | ((static_cast<uint16_t>(value2) & 0x0F0FU) << 4U));
 
   public:
 
-    static ETL_CONSTANT int16_t value = int16_t((value3 >> 8U) | ((value3 & 0xFFU) << 8U));
+    static ETL_CONSTANT int16_t value = int16_t((static_cast<uint16_t>(value3) >> 8U) | ((static_cast<uint16_t>(value3) & 0xFFU) << 8U));
   };
 
   template <int16_t Value>
@@ -628,14 +628,14 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int32_t value1 = int32_t(((Value  & 0xAAAAAAAAUL) >>  1U) | ((Value  & 0x55555555UL) <<  1U));
-    static ETL_CONSTANT int32_t value2 = int32_t(((value1 & 0xCCCCCCCCUL) >>  2U) | ((value1 & 0x33333333UL) <<  2U));
-    static ETL_CONSTANT int32_t value3 = int32_t(((value2 & 0xF0F0F0F0UL) >>  4U) | ((value2 & 0x0F0F0F0FUL) <<  4U));
-    static ETL_CONSTANT int32_t value4 = int32_t(((value3 & 0xFF00FF00UL) >>  8U) | ((value3 & 0x00FF00FFUL) <<  8U));
+    static ETL_CONSTANT int32_t value1 = int32_t(((static_cast<uint32_t>(Value)  & 0xAAAAAAAAUL) >>  1U) | ((static_cast<uint32_t>(Value)  & 0x55555555UL) <<  1U));
+    static ETL_CONSTANT int32_t value2 = int32_t(((static_cast<uint32_t>(value1) & 0xCCCCCCCCUL) >>  2U) | ((static_cast<uint32_t>(value1) & 0x33333333UL) <<  2U));
+    static ETL_CONSTANT int32_t value3 = int32_t(((static_cast<uint32_t>(value2) & 0xF0F0F0F0UL) >>  4U) | ((static_cast<uint32_t>(value2) & 0x0F0F0F0FUL) <<  4U));
+    static ETL_CONSTANT int32_t value4 = int32_t(((static_cast<uint32_t>(value3) & 0xFF00FF00UL) >>  8U) | ((static_cast<uint32_t>(value3) & 0x00FF00FFUL) <<  8U));
 
   public:
 
-    static ETL_CONSTANT int32_t value = int32_t((value4 >> 16U) | ((value4 & 0xFFFFUL) << 16U));
+    static ETL_CONSTANT int32_t value = int32_t((static_cast<uint32_t>(value4) >> 16U) | ((static_cast<uint32_t>(value4) & 0xFFFFUL) << 16U));
   };
 
   template <int32_t Value>
@@ -687,15 +687,15 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int64_t value1 = int64_t(((Value  & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((Value  & 0x5555555555555555ULL) <<  1U));
-    static ETL_CONSTANT int64_t value2 = int64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value1 & 0x3333333333333333ULL) <<  2U));
-    static ETL_CONSTANT int64_t value3 = int64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) <<  4U));
-    static ETL_CONSTANT int64_t value4 = int64_t(((value3 & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value3 & 0x00FF00FF00FF00FFULL) <<  8U));
-    static ETL_CONSTANT int64_t value5 = int64_t(((value4 & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value4 & 0x0000FFFF0000FFFFULL) << 16U));
+    static ETL_CONSTANT int64_t value1 = int64_t(((static_cast<uint64_t>(Value)  & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((static_cast<uint64_t>(Value)  & 0x5555555555555555ULL) <<  1U));
+    static ETL_CONSTANT int64_t value2 = int64_t(((static_cast<uint64_t>(value1) & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((static_cast<uint64_t>(value1) & 0x3333333333333333ULL) <<  2U));
+    static ETL_CONSTANT int64_t value3 = int64_t(((static_cast<uint64_t>(value2) & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((static_cast<uint64_t>(value2) & 0x0F0F0F0F0F0F0F0FULL) <<  4U));
+    static ETL_CONSTANT int64_t value4 = int64_t(((static_cast<uint64_t>(value3) & 0xFF00FF00FF00FF00ULL) >>  8U) | ((static_cast<uint64_t>(value3) & 0x00FF00FF00FF00FFULL) <<  8U));
+    static ETL_CONSTANT int64_t value5 = int64_t(((static_cast<uint64_t>(value4) & 0xFFFF0000FFFF0000ULL) >> 16U) | ((static_cast<uint64_t>(value4) & 0x0000FFFF0000FFFFULL) << 16U));
 
   public:
 
-    static ETL_CONSTANT int64_t value = int64_t((value5 >> 32U) | ((value5 & 0xFFFFFFFFULL) << 32U));
+    static ETL_CONSTANT int64_t value = int64_t((static_cast<uint64_t>(value5) >> 32U) | ((static_cast<uint64_t>(value5) & 0xFFFFFFFFULL) << 32U));
   };
 
   template <int64_t Value>
@@ -998,7 +998,7 @@ namespace etl
   {
     typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-    return static_cast<T>(count_bits(static_cast<unsigned_t>(value)));
+    return static_cast<uint_least8_t>(count_bits(static_cast<unsigned_t>(value)));
   }
 
 #if ETL_USING_8BIT_TYPES
@@ -1078,7 +1078,7 @@ namespace etl
   {
     typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-    return static_cast<T>(parity(static_cast<unsigned_t>(value)));
+    return static_cast<uint_least8_t>(parity(static_cast<unsigned_t>(value)));
   }
 
 #if ETL_USING_8BIT_TYPES
@@ -2111,13 +2111,13 @@ namespace etl
 	  uint16_t f = uint16_t(first);
 	  uint16_t s = uint16_t(second);
 
-	  f = (f | (f << 4U)) & 0x0F0FU;
-	  f = (f | (f << 2U)) & 0x3333U;
-	  f = (f | (f << 1U)) & 0x5555U;
+	  f = static_cast<uint16_t>((static_cast<uint32_t>(f) | (static_cast<uint32_t>(f) << 4U)) & 0x0F0FU);
+	  f = static_cast<uint16_t>((static_cast<uint32_t>(f) | (static_cast<uint32_t>(f) << 2U)) & 0x3333U);
+	  f = static_cast<uint16_t>((static_cast<uint32_t>(f) | (static_cast<uint32_t>(f) << 1U)) & 0x5555U);
 
-	  s = (s | (s << 4U)) & 0x0F0FU;
-	  s = (s | (s << 2U)) & 0x3333U;
-	  s = (s | (s << 1U)) & 0x5555U;
+	  s = static_cast<uint16_t>((static_cast<uint32_t>(s) | (static_cast<uint32_t>(s) << 4U)) & 0x0F0FU);
+	  s = static_cast<uint16_t>((static_cast<uint32_t>(s) | (static_cast<uint32_t>(s) << 2U)) & 0x3333U);
+	  s = static_cast<uint16_t>((static_cast<uint32_t>(s) | (static_cast<uint32_t>(s) << 1U)) & 0x5555U);
 
 	  return (f | (s << 1U));
   }

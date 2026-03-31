@@ -58,10 +58,10 @@ namespace etl
         if (sample != ((flags & Sample) != 0))
         {
           count = 0;
-          flags = (flags & ~Sample) | (sample ? Sample : 0);
+          flags = static_cast<flags_t>((flags & static_cast<flags_t>(~Sample)) | (sample ? Sample : 0));
         }
 
-        flags &= ~Change;
+        flags &= static_cast<flags_t>(~Change);
       }
 
       //*************************************************************************
@@ -139,7 +139,7 @@ namespace etl
 
         flags_t next = flags;
 
-        next &= ~State;
+        next &= static_cast<flags_t>(~State);
         next |= state_table[index1][index2];
 
         if (next != flags)
@@ -148,7 +148,7 @@ namespace etl
         }
         else
         {
-          next &= ~Change;
+          next &= static_cast<flags_t>(~Change);
         }
 
         flags = next;

@@ -33,7 +33,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_SYSTEM_CLOCK_DURATION)
-  #define ETL_CHRONO_SYSTEM_CLOCK_DURATION etl::chrono::nanoseconds
+  #if (INT_MAX >= INT32_MAX)
+    #define ETL_CHRONO_SYSTEM_CLOCK_DURATION etl::chrono::nanoseconds
+  #else
+    #define ETL_CHRONO_SYSTEM_CLOCK_DURATION etl::chrono::milliseconds
+  #endif
 #endif
 
 #if !defined(ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY)
@@ -41,7 +45,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION)
-  #define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::nanoseconds
+  #if (INT_MAX >= INT32_MAX)
+    #define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::nanoseconds
+  #else
+    #define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::milliseconds
+  #endif
 #endif
 
 #if !defined(ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY)
@@ -49,7 +57,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_STEADY_CLOCK_DURATION)
-#define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::nanoseconds
+  #if (INT_MAX >= INT32_MAX)
+    #define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::nanoseconds
+  #else
+    #define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::milliseconds
+  #endif
 #endif
 
 extern "C" ETL_CHRONO_SYSTEM_CLOCK_DURATION::rep          etl_get_system_clock();

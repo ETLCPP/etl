@@ -1125,7 +1125,7 @@ namespace
     TEST(test_value_u64_min)
     {
       ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::min);
-      ETL_CONSTEXPR14 uint64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 uint64_t value = static_cast<uint64_t>(data.value<int64_t>());
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::min(), value);
     }
@@ -1134,7 +1134,7 @@ namespace
     TEST(test_value_u64_max)
     {
       ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::max);
-      ETL_CONSTEXPR14 uint64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 uint64_t value = static_cast<uint64_t>(data.value<int64_t>());
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::max(), value);
     }
@@ -1143,7 +1143,7 @@ namespace
     TEST(test_value_s64_min)
     {
       ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::min);
-      ETL_CONSTEXPR14 uint64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 uint64_t value = static_cast<uint64_t>(data.value<int64_t>());
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::min(), value);
     }
@@ -1152,7 +1152,7 @@ namespace
     TEST(test_value_s64_max)
     {
       ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::max);
-      ETL_CONSTEXPR14 uint64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 uint64_t value = static_cast<uint64_t>(data.value<int64_t>());
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::max(), value);
     }
@@ -2086,7 +2086,7 @@ namespace
 
     TEST(test_swap)
     {
-      ETL_CONSTEXPR14 etl::bitset<8> compare1(0x2A);
+      ETL_CONSTEXPR14 etl::bitset<8> compare1(0x2AULL);
       ETL_CONSTEXPR14 etl::bitset<8> compare2(0x15);
 
       ETL_CONSTEXPR14 std::pair<etl::bitset<8>, etl::bitset<8>> swapped = test_swap_helper();

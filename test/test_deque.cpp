@@ -120,7 +120,7 @@ namespace
       int current_count = NDC::get_instance_count();
 
       DataNDC* pdata = new DataNDC(SIZE, N999);
-      CHECK_EQUAL(int(current_count + SIZE), NDC::get_instance_count());
+      CHECK_EQUAL(int(current_count + int(SIZE)), NDC::get_instance_count());
 
       IDataNDC* pidata = pdata;
       delete pidata;
@@ -460,6 +460,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_front_exception)
+    {
+      DataNDC data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.front(), etl::deque_empty);
+    }
+
+    //*************************************************************************
     TEST(test_front_const)
     {
       DataNDC data;
@@ -506,6 +515,15 @@ namespace
 
       data.push_back(N6);
       CHECK_EQUAL(N6, data.back());
+    }
+
+    //*************************************************************************
+    TEST(test_back_exception)
+    {
+      DataNDC data;
+
+      CHECK(data.empty());
+      CHECK_THROW(data.back(), etl::deque_empty);
     }
 
     //*************************************************************************
@@ -1192,8 +1210,8 @@ namespace
           Compare_Data compare_data(initial_data_small.begin(), initial_data_small.end());
           DataNDC data(compare_data.begin(), compare_data.end());
 
-          compare_data.insert(compare_data.cbegin() + offset, insert_size, N14);
-          data.insert(data.cbegin() + offset, insert_size, N14);
+          compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), insert_size, N14);
+          data.insert(data.cbegin() + static_cast<ptrdiff_t>(offset), insert_size, N14);
 
           CHECK_EQUAL(compare_data.size(), data.size());
           CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -1220,7 +1238,7 @@ namespace
 
       for (size_t insert_size = 1UL; insert_size <= max_insert; ++insert_size)
       {
-        Compare_Data range(insert_data.begin(), insert_data.begin() + insert_size);
+        Compare_Data range(insert_data.begin(), insert_data.begin() + static_cast<ptrdiff_t>(insert_size));
 
         for (size_t offset = 0UL; offset <= initial_data_small.size(); ++offset)
         {
@@ -1228,8 +1246,8 @@ namespace
           DataNDC data(blank_data.begin(), blank_data.end());
           data.assign(compare_data.begin(), compare_data.end());
 
-          compare_data.insert(compare_data.cbegin() + offset, range.begin(), range.end());
-          data.insert(data.cbegin() + offset, range.begin(), range.end());
+          compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), range.begin(), range.end());
+          data.insert(data.cbegin() + static_cast<ptrdiff_t>(offset), range.begin(), range.end());
 
           CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
           CHECK_EQUAL(compare_data.size(), data.size());

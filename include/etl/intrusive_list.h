@@ -118,6 +118,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// Base for intrusive list.
   ///\ingroup intrusive_list
@@ -769,33 +770,41 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<const_pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<pointer>(this->get_tail());
     }
 
     //*************************************************************************
     /// Gets a const reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::intrusive_list_empty if the list is empty.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_list_empty));
       return *static_cast<const_pointer>(this->get_tail());
     }
 
@@ -860,7 +869,7 @@ namespace etl
       link_type* p_first = const_cast<link_type*>(cp_first);
       link_type* p_last  = const_cast<link_type*>(cp_last);
 
-      this->current_size -= etl::distance(first, last);
+      this->current_size -= static_cast<size_t>(etl::distance(first, last));
 
       p_last = this->remove_link_range(p_first, p_last);
 
@@ -1157,7 +1166,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = etl::distance(begin_, end_);
+          size_t n = static_cast<size_t>(etl::distance(begin_, end_));
           this->current_size += n;
           other.current_size -= n;
         }

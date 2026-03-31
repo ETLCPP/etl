@@ -1228,7 +1228,7 @@ namespace
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
         data.insert(data.begin() + offset, &INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, &INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), &INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1265,7 +1265,7 @@ namespace
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
         data.insert(data.begin() + offset, &INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, &INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), &INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1325,7 +1325,7 @@ namespace
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
         data.emplace(data.begin() + offset, &INITIAL_VALUE);
-        compare_data.emplace(compare_data.begin() + offset, &INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + static_cast<ptrdiff_t>(offset), &INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1362,7 +1362,7 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, &INITIAL_VALUE);
 
         bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -1395,7 +1395,7 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE);
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, &INITIAL_VALUE);
 
         bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -1478,7 +1478,7 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.begin() + offset, insert_data.begin(), insert_data.end());
-        compare_data.insert(compare_data.begin() + offset, insert_data.begin(), insert_data.end());
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), insert_data.begin(), insert_data.end());
 
         bool is_equal = std::equal(data.begin(),
                                    data.end(),
@@ -1510,7 +1510,7 @@ namespace
         data.assign(initial_data.data(), initial_data.data() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.data() + offset, insert_data.data(), insert_data.data() + insert_data.size());
-        compare_data.insert(compare_data.begin() + offset, insert_data.begin(), insert_data.end());
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), insert_data.begin(), insert_data.end());
 
         bool is_equal = std::equal(data.begin(),
                                    data.end(),
@@ -1541,7 +1541,7 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         data.insert(data.begin() + offset, insert_data.begin(), insert_data.end());
-        compare_data.insert(compare_data.begin() + offset, insert_data.begin(), insert_data.end());
+        compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), insert_data.begin(), insert_data.end());
 
         bool is_equal = std::equal(data.begin(),
           data.end(),

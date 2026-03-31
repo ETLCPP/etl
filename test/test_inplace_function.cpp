@@ -509,6 +509,16 @@ namespace
       CHECK(function_called == FunctionCalled::Free_Void_Called);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_from_nullptr)
+    {
+      etl::inplace_function<void(void)> ipf(nullptr);
+
+      CHECK_FALSE(ipf.is_valid());
+      CHECK_FALSE(ipf);
+      CHECK_THROW(ipf(), etl::inplace_function_uninitialized);
+    }
+
 #if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_free_void_compile_time)

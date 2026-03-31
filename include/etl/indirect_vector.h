@@ -221,13 +221,13 @@ namespace etl
         return *this;
       }
 
-      iterator operator +=(size_type n)
+      iterator operator +=(difference_type n)
       {
         lookup_itr += n;
         return *this;
       }
 
-      iterator operator -=(size_type n)
+      iterator operator -=(difference_type n)
       {
         lookup_itr -= n;
         return *this;
@@ -357,13 +357,13 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator +=(size_type n)
+      const_iterator operator +=(difference_type n)
       {
         lookup_itr += n;
         return *this;
       }
 
-      const_iterator operator -=(size_type n)
+      const_iterator operator -=(difference_type n)
       {
         lookup_itr -= n;
         return *this;
@@ -664,6 +664,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::vector_out_of_bounds if the vector is empty.
     ///\return A reference to the first element.
     //*********************************************************************
     reference front()
@@ -673,6 +674,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::vector_out_of_bounds if the vector is empty.
     ///\return A const reference to the first element.
     //*********************************************************************
     const_reference front() const
@@ -682,6 +684,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::vector_out_of_bounds if the vector is empty.
     ///\return A reference to the last element.
     //*********************************************************************
     reference back()
@@ -691,6 +694,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::vector_out_of_bounds if the vector is empty.
     ///\return A const reference to the last element.
     //*********************************************************************
     const_reference back() const

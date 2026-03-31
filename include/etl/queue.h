@@ -97,6 +97,7 @@ namespace etl
     }
   };
 
+
   //***************************************************************************
   /// The base class for all queues.
   ///\ingroup queue
@@ -266,38 +267,46 @@ namespace etl
     using base_t::del_out;
 
     //*************************************************************************
-    /// Gets a reference to the value at the front of the queue.<br>
+    /// Gets a reference to the value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     /// \return A reference to the value at the front of the queue.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(queue_empty));
       return p_buffer[out];
     }
 
     //*************************************************************************
-    /// Gets a const reference to the value at the front of the queue.<br>
+    /// Gets a const reference to the value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     /// \return A const reference to the value at the front of the queue.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(queue_empty));
       return p_buffer[out];
     }
 
     //*************************************************************************
-    /// Gets a reference to the value at the back of the queue.<br>
+    /// Gets a reference to the value at the back of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     /// \return A reference to the value at the back of the queue.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(queue_empty));
       return p_buffer[in == 0 ? CAPACITY - 1 : in - 1];
     }
 
     //*************************************************************************
-    /// Gets a const reference to the value at the back of the queue.<br>
+    /// Gets a const reference to the value at the back of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     /// \return A const reference to the value at the back of the queue.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(queue_empty));
       return p_buffer[in == 0 ? CAPACITY - 1 : in - 1];
     }
 
@@ -454,7 +463,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Removes the oldest value from the back of the queue.
+    /// Removes the oldest value from the front of the queue.
     /// Does nothing if the queue is already empty.
     /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
     //*************************************************************************
