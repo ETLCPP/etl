@@ -19,7 +19,9 @@ for generator in generator_folder.iterdir():
     output_path = str(test_folder / output_name)
 
     cog_cmd = [
-        "cog",
+        "python3",
+        "-m",
+        "cogapp",
         "-d",
         "-e",
         f"-o{output_path}",
@@ -32,7 +34,12 @@ for generator in generator_folder.iterdir():
     subprocess.run(cog_cmd)
 
     # Compare generator output against actual file output
-    actual_path = str(generator_folder.parent / output_name)
+    actual_path = str(generator_folder.parent / "private" / output_name)
+
+    print(f"generator_path {generator_path}")
+    print(f"output_path {output_path}")
+    print(f"actual_path {actual_path}")
+
     if not filecmp.cmp(actual_path, output_path):
         print(f"Generator for {output_name} does not match file contents")
         all_ok = False
