@@ -39,4 +39,5 @@ jobs:
             '*.h' '*.hh' '*.hpp' '*.hxx' \
             '*.ipp' '*.inl' \
             ':(exclude)include/etl/generators/*' \
+            ':(exclude)include/etl/private/*_cpp03.h' \
             | xargs -0 --no-run-if-empty clang-format --Werror -n --style=file

@@ -31,7 +31,8 @@ Format every tracked source file in the repository:
 git ls-files -z \
             '*.c' '*.cc' '*.cpp' \
             '*.h' '*.hh' '*.hpp' \
-            ':(exclude)include/etl/generators/*' | xargs -0 scripts/clang-format-wrapper -i --verbose --style=file
+            ':(exclude)include/etl/generators/*' \
+            ':(exclude)include/etl/private/*_cpp03.h' | xargs -0 scripts/clang-format-wrapper -i --verbose --style=file
 ```
 
 You can also format individual files directly:
