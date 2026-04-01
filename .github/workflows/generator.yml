@@ -14,10 +14,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Generate
+    - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-cogapp
+
+    - name: Run generator_test.py
+      run: |
+        cd scripts && python3 generator_test.py
+
+    - name: Generate
+      run: |
         cd include/etl/generators && bash generate.bat
 
     - name: Check Generated Headers For Changes
