@@ -99,6 +99,15 @@ AttributeMacros:
   - ETL_NODISCARD
   - ETL_NORETURN
   - ETL_DEPRECATED
+  - ETL_CONSTEXPR
+  - ETL_CONSTEXPR14
+
+Macros:
+  - ETL_CONSTEXPR=constexpr
+  - ETL_CONSTEXPR14=constexpr
+  - ETL_NODISCARD=[[nodiscard]]
+  - ETL_NORETURN=[[noreturn]]
+  - ETL_DEPRECATED=[[deprecated]]
 
 # Macros that behave like type names
 TypenameMacros:
