@@ -7,8 +7,6 @@ This project uses **clang-format** (version 18) to enforce a consistent coding s
 for C and C++ source files. For convenience, **treefmt** is also configured as a
 single-command wrapper that discovers and formats every file in the tree.
 
----
-
 ## clang-format
 
 ### Configuration file
@@ -42,9 +40,6 @@ You can also format individual files directly:
 ```bash
 scripts/clang-format-wrapper -i --style=file path/to/file.cpp
 ```
-
----
-
 ## treefmt
 
 [treefmt](https://treefmt.com) is a language-agnostic source-tree formatter.
@@ -86,8 +81,6 @@ treefmt
 # Check formatting without modifying files (useful in CI)
 treefmt --fail-on-change
 ```
-
----
 
 ## Excluded paths
 
