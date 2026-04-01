@@ -76,6 +76,7 @@ for CXXSTD in 11 14 17 20 23; do
 done
 
 genhtml total.info --output-directory coverage --rc "genhtml_branch_coverage=1" --branch-coverage -t $COMPILER \
-        --ignore-errors inconsistent
+        --ignore-errors inconsistent \
+        --ignore-errors category
 
 cd ..
