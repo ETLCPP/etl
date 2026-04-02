@@ -25,6 +25,7 @@ BreakInheritanceList:            BeforeComma
 BreakBeforeBinaryOperators:      NonAssignment
 BreakStringLiterals:             false
 AlwaysBreakTemplateDeclarations: Yes           # template <…> always on its own line
+BreakAfterAttributes:            Always
 
 # =============================================================================
 # Short statements
@@ -71,7 +72,10 @@ ReflowComments: true # preserve hand-formatted comment rulers
 IncludeCategories:
   - Regex:    '^(<|")(.*/)?platform\.h(>|")$'
     Priority: -1
-  # everything else gets the default priority (0)
+  - Regex:    'private'
+    Priority: 1
+  - Regex:    '.*'
+    Priority: 0
 
 # =============================================================================
 # Arguments, parameters and constructor initialisers
