@@ -28,9 +28,15 @@ excludes = [
   "*.yaml",
   "*.yml",
   "docker/**",
+  "temp/**",
   "scripts/clang-format-wrapper",
   "include/etl/generators/**",
-  "include/etl/private/*_cpp03.h"
+  "include/etl/private/*_cpp03.h",
+  "subprojects/**",
+  "test/UnitTest++/**",
+  "test/Deprecated/**",
+  "test/Performance/**",
+  "test/temp/**"
 ]
 
 [formatter.cpp]
