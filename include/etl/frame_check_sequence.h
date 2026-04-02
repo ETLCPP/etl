@@ -26,10 +26,10 @@ SOFTWARE.
 #define ETL_FRAME_CHECK_SEQUENCE_INCLUDED
 
 #include "platform.h"
-#include "static_assert.h"
-#include "type_traits.h"
 #include "binary.h"
 #include "iterator.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include <stdint.h>
 
@@ -76,7 +76,7 @@ namespace etl
       }
 
       //***********************************
-      add_insert_iterator& operator =(uint8_t value)
+      add_insert_iterator& operator=(uint8_t value)
       {
         p_fcs->add(value);
         return *this;
@@ -86,7 +86,7 @@ namespace etl
 
       TFrame_Check_Sequence* p_fcs;
     };
-  }
+  } // namespace private_frame_check_sequence
 
   //***************************************************************************
   /// Calculates a frame check sequence according to the specified policy.
@@ -98,16 +98,16 @@ namespace etl
   {
   public:
 
-    typedef TPolicy policy_type;
-    typedef typename policy_type::value_type value_type;
-    typedef private_frame_check_sequence::add_insert_iterator<frame_check_sequence<TPolicy> > add_insert_iterator;
+    typedef TPolicy                                                                            policy_type;
+    typedef typename policy_type::value_type                                                   value_type;
+    typedef private_frame_check_sequence::add_insert_iterator< frame_check_sequence<TPolicy> > add_insert_iterator;
 
     ETL_STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 frame_check_sequence() 
+    ETL_CONSTEXPR14 frame_check_sequence()
       : frame_check()
     {
       reset();
@@ -118,8 +118,9 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
-    ETL_CONSTEXPR14 frame_check_sequence(TIterator begin, const TIterator end) : frame_check()
+    template <typename TIterator>
+    ETL_CONSTEXPR14 frame_check_sequence(TIterator begin, const TIterator end)
+      : frame_check()
     {
       ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
 
@@ -140,7 +141,7 @@ namespace etl
     /// \param begin
     /// \param end
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     ETL_CONSTEXPR14 void add(TIterator begin, const TIterator end)
     {
       ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Type not supported");
@@ -171,7 +172,7 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    ETL_CONSTEXPR14 operator value_type () const
+    ETL_CONSTEXPR14 operator value_type() const
     {
       return policy.final(frame_check);
     }
@@ -189,6 +190,6 @@ namespace etl
     value_type  frame_check;
     policy_type policy;
   };
-}
+} // namespace etl
 
 #endif

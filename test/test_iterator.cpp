@@ -28,16 +28,16 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <string>
+#include <algorithm>
 #include <list>
 #include <queue>
-#include <algorithm>
+#include <string>
 #include <vector>
 
 #include "etl/iterator.h"
 
-#include "iterators_for_unit_tests.h"
 #include "data.h"
+#include "iterators_for_unit_tests.h"
 
 namespace
 {
@@ -45,30 +45,25 @@ namespace
 
   struct input : public etl::iterator<ETL_OR_STD::input_iterator_tag, int>
   {
-
   };
 
   struct output : public etl::iterator<ETL_OR_STD::output_iterator_tag, int>
   {
-
   };
 
   struct forward : public etl::iterator<ETL_OR_STD::forward_iterator_tag, int>
   {
-
   };
 
   struct bidirectional : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, int>
   {
-
   };
 
   struct random : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, int>
   {
-
   };
 
-  typedef int* pointer;
+  typedef int*       pointer;
   typedef const int* const_pointer;
 
   // A sentinel type for non_random_iterator, used to test the
@@ -76,8 +71,14 @@ namespace
   template <typename T>
   struct non_random_sentinel
   {
-    non_random_sentinel() : ptr(nullptr) {}
-    non_random_sentinel(T* v) : ptr(v) {}
+    non_random_sentinel()
+      : ptr(nullptr)
+    {
+    }
+    non_random_sentinel(T* v)
+      : ptr(v)
+    {
+    }
     T* ptr;
   };
 
@@ -105,8 +106,8 @@ namespace
     return rhs != lhs;
   }
 
-  const size_t SIZE = 10UL;
-  int dataA[SIZE] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
+  const size_t SIZE        = 10UL;
+  int          dataA[SIZE] = {2, 1, 4, 3, 6, 5, 8, 7, 10, 9};
 
   SUITE(test_iterator)
   {
@@ -131,7 +132,7 @@ namespace
     //*************************************************************************
     TEST(advance_non_random)
     {
-      int* itr1 = std::begin(dataA);
+      int*                     itr1 = std::begin(dataA);
       non_random_iterator<int> itr2 = std::begin(dataA);
 
       std::advance(itr1, 4);
@@ -146,7 +147,7 @@ namespace
     //*************************************************************************
     TEST(advance_random)
     {
-      int* itr1 = std::begin(dataA);
+      int*                 itr1 = std::begin(dataA);
       random_iterator<int> itr2 = std::begin(dataA);
 
       std::advance(itr1, 4);
@@ -161,7 +162,7 @@ namespace
     //*************************************************************************
     TEST(prev)
     {
-      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       size_t length = 6UL;
 
@@ -176,7 +177,7 @@ namespace
     //*************************************************************************
     TEST(next)
     {
-      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       size_t length = 6UL;
 
@@ -191,7 +192,7 @@ namespace
     //*************************************************************************
     TEST(reverse_iterator)
     {
-      int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       std::reverse_iterator<int*> sri(&data[7]);
       etl::reverse_iterator<int*> eri(&data[7]);
@@ -238,7 +239,7 @@ namespace
       eri -= 2;
       CHECK_EQUAL(*sri, *eri);
 
-      std::reverse_iterator<int*>    sri2 = sri + 3;
+      std::reverse_iterator<int*> sri2 = sri + 3;
       etl::reverse_iterator<int*> eri2 = eri + 3;
       CHECK_EQUAL(*sri, *eri);
 
@@ -250,7 +251,7 @@ namespace
     //*************************************************************************
     TEST(reverse_iterator_const)
     {
-      const int data[] = { 1, 2, 3, 4, 5, 6, 7 };
+      const int data[] = {1, 2, 3, 4, 5, 6, 7};
 
       std::reverse_iterator<const int*> sri(&data[7]);
       etl::reverse_iterator<const int*> eri(&data[7]);
@@ -305,7 +306,7 @@ namespace
       eri -= 2;
       CHECK_EQUAL(*sri, *eri);
 
-      std::reverse_iterator<const int*>    sri2 = sri + 3;
+      std::reverse_iterator<const int*> sri2 = sri + 3;
       etl::reverse_iterator<const int*> eri2 = eri + 3;
       CHECK_EQUAL(*sri, *eri);
 
@@ -429,7 +430,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_constructors)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr1(&list[0]);
       etl::move_iterator<Item*> mitr2(&list[1]);
@@ -448,7 +449,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_relational_operators)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr1(&list[0]);
       etl::move_iterator<Item*> mitr2(&list[1]);
@@ -501,7 +502,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_index)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr(&list[0]);
 
@@ -512,7 +513,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_increment_decrement)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr(&list[0]);
 
@@ -552,7 +553,7 @@ namespace
     //*************************************************************************
     TEST(test_move_iterator_subtraction)
     {
-      Item list[] = { Item("1"), Item("2"), Item("3") };
+      Item list[] = {Item("1"), Item("2"), Item("3")};
 
       etl::move_iterator<Item*> mitr1(&list[0]);
       etl::move_iterator<Item*> mitr2(&list[1]);
@@ -565,8 +566,8 @@ namespace
     //*************************************************************************
     TEST(test_front_insert_iterator)
     {
-      std::list<int> input    = {  0,  1,  2,  3,  4,  5, 6, 7, 8, 9 };
-      std::list<int> expected = { 81, 64, 49, 36, 25, 16, 9, 4, 1, 0 };
+      std::list<int> input    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      std::list<int> expected = {81, 64, 49, 36, 25, 16, 9, 4, 1, 0};
       std::list<int> output;
 
       auto squared = [](int value)
@@ -583,11 +584,11 @@ namespace
     //*************************************************************************
     TEST(test_back_insert_iterator)
     {
-      std::list<int> input    = { 0, 1, 2, 3,  4,  5,  6,  7,  8,  9 };
-      std::list<int> expected = { 0, 1, 4, 9, 16, 25, 36, 49, 64, 81 };
+      std::list<int> input    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      std::list<int> expected = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};
       std::list<int> output;
 
-      auto squared = [](int value) 
+      auto squared = [](int value)
       {
         return value * value;
       };
@@ -599,7 +600,7 @@ namespace
     }
 
     //*************************************************************************
-    //TEST(test_push_insert_iterator)
+    // TEST(test_push_insert_iterator)
     //{
     //  std::list<int> input = { 0, 1, 2, 3,  4,  5,  6,  7,  8,  9 };
     //  std::list<int> expected = { 0, 1, 4, 9, 16, 25, 36, 49, 64, 81 };
@@ -610,7 +611,8 @@ namespace
     //    return value * value;
     //  };
 
-    //  std::transform(input.begin(), input.cend(), etl::push_inserter(output), squared);
+    //  std::transform(input.begin(), input.cend(), etl::push_inserter(output),
+    //  squared);
 
     //  CHECK_EQUAL(expected.size(), output.size());
     //  CHECK(std::equal(output.begin(), output.end(), expected.begin()));
@@ -670,7 +672,6 @@ namespace
       CHECK(ci1.count() == 3);
       CHECK_EQUAL(ci3.count(), 0);
       CHECK(ci4.count() == 3);
-
     }
 
     //*************************************************************************
@@ -678,7 +679,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_random_access_forward)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       int* itr = &data[0];
       etl::ranges::advance(itr, 4);
@@ -688,7 +689,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_random_access_backward)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       int* itr = &data[7];
       etl::ranges::advance(itr, -3);
@@ -698,7 +699,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_random_access_zero)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       int* itr = &data[5];
       etl::ranges::advance(itr, 0);
@@ -710,7 +711,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bidirectional_forward)
     {
-      std::list<int> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::list<int> data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto itr = data.begin();
       etl::ranges::advance(itr, 4);
@@ -720,7 +721,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bidirectional_backward)
     {
-      std::list<int> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::list<int> data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto itr = data.end();
       etl::ranges::advance(itr, -3);
@@ -730,7 +731,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bidirectional_zero)
     {
-      std::list<int> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::list<int> data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto itr = data.begin();
       etl::ranges::advance(itr, 5);
@@ -741,7 +742,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_non_random_iterator_forward)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       etl::ranges::advance(itr, 6);
@@ -751,7 +752,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_non_random_iterator_backward)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[8]);
       etl::ranges::advance(itr, -3);
@@ -763,9 +764,9 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_to_bound_random_access)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
+      int* itr   = &data[0];
       int* bound = &data[7];
       etl::ranges::advance(itr, bound);
       CHECK_EQUAL(7, *itr);
@@ -775,9 +776,9 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_to_bound_bidirectional)
     {
-      std::list<int> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::list<int> data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      auto itr = data.begin();
+      auto itr   = data.begin();
       auto bound = data.end();
       etl::ranges::advance(itr, bound);
       CHECK(itr == bound);
@@ -786,7 +787,7 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_to_bound_non_random)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       non_random_iterator<int> bound(&data[5]);
@@ -797,9 +798,9 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_to_bound_already_at_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[3];
+      int* itr   = &data[3];
       int* bound = &data[3];
       etl::ranges::advance(itr, bound);
       CHECK(itr == bound);
@@ -811,10 +812,10 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_random_access_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[9];
+      int* itr       = &data[0];
+      int* bound     = &data[9];
       auto remaining = etl::ranges::advance(itr, 4, bound);
       CHECK_EQUAL(4, *itr);
       CHECK_EQUAL(0, remaining);
@@ -823,10 +824,10 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_random_access_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[3];
+      int* itr       = &data[0];
+      int* bound     = &data[3];
       auto remaining = etl::ranges::advance(itr, 7, bound);
       CHECK(itr == bound);
       CHECK_EQUAL(3, *itr);
@@ -836,10 +837,10 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_random_access_exact_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[5];
+      int* itr       = &data[0];
+      int* bound     = &data[5];
       auto remaining = etl::ranges::advance(itr, 5, bound);
       CHECK(itr == bound);
       CHECK_EQUAL(5, *itr);
@@ -849,10 +850,10 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_random_access_backward_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[9];
-      int* bound = &data[0];
+      int* itr       = &data[9];
+      int* bound     = &data[0];
       auto remaining = etl::ranges::advance(itr, -4, bound);
       CHECK_EQUAL(5, *itr);
       CHECK_EQUAL(0, remaining);
@@ -861,10 +862,10 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_random_access_backward_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
-      int* bound = &data[2];
+      int* itr       = &data[5];
+      int* bound     = &data[2];
       auto remaining = etl::ranges::advance(itr, -7, bound);
       CHECK(itr == bound);
       CHECK_EQUAL(2, *itr);
@@ -874,11 +875,11 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_non_random_forward_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       non_random_sentinel<int> bound(&data[9]);
-      auto remaining = etl::ranges::advance(itr, 4, bound);
+      auto                     remaining = etl::ranges::advance(itr, 4, bound);
       CHECK_EQUAL(4, *itr);
       CHECK_EQUAL(0, remaining);
     }
@@ -886,11 +887,11 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_non_random_forward_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       non_random_sentinel<int> bound(&data[3]);
-      auto remaining = etl::ranges::advance(itr, 7, bound);
+      auto                     remaining = etl::ranges::advance(itr, 7, bound);
       CHECK_EQUAL(3, *itr);
       CHECK_EQUAL(4, remaining);
     }
@@ -898,11 +899,11 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_non_random_backward_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[9]);
       non_random_sentinel<int> bound(&data[0]);
-      auto remaining = etl::ranges::advance(itr, -3, bound);
+      auto                     remaining = etl::ranges::advance(itr, -3, bound);
       CHECK_EQUAL(6, *itr);
       CHECK_EQUAL(0, remaining);
     }
@@ -910,11 +911,11 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_non_random_backward_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[3]);
       non_random_sentinel<int> bound(&data[1]);
-      auto remaining = etl::ranges::advance(itr, -7, bound);
+      auto                     remaining = etl::ranges::advance(itr, -7, bound);
       CHECK_EQUAL(1, *itr);
       CHECK_EQUAL(-5, remaining);
     }
@@ -922,10 +923,10 @@ namespace
     //*************************************************************************
     TEST(ranges_advance_n_bound_zero_steps)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
-      int* bound = &data[8];
+      int* itr       = &data[5];
+      int* bound     = &data[8];
       auto remaining = etl::ranges::advance(itr, 0, bound);
       CHECK_EQUAL(5, *itr);
       CHECK_EQUAL(0, remaining);
@@ -936,9 +937,9 @@ namespace
     //*************************************************************************
     TEST(ranges_prev_random_access)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
+      int* itr    = &data[5];
       int* result = etl::ranges::prev(itr);
       CHECK_EQUAL(4, *result);
       CHECK_EQUAL(5, *itr); // original unchanged
@@ -949,7 +950,7 @@ namespace
     //*************************************************************************
     TEST(ranges_prev_non_random)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[5]);
       non_random_iterator<int> result = etl::ranges::prev(itr);
@@ -962,9 +963,9 @@ namespace
     //*************************************************************************
     TEST(ranges_prev_n_random_access_positive)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[7];
+      int* itr    = &data[7];
       int* result = etl::ranges::prev(itr, 3);
       CHECK_EQUAL(4, *result);
       CHECK_EQUAL(7, *itr); // original unchanged
@@ -975,32 +976,34 @@ namespace
     //*************************************************************************
     TEST(ranges_prev_n_random_access_zero)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
+      int* itr    = &data[5];
       int* result = etl::ranges::prev(itr, 0);
       CHECK_EQUAL(5, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n) with random access iterator — negative n (moves forward)
+    // etl::ranges::prev(i, n) with random access iterator — negative n (moves
+    // forward)
     //*************************************************************************
     TEST(ranges_prev_n_random_access_negative)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[3];
+      int* itr    = &data[3];
       int* result = etl::ranges::prev(itr, -2);
       CHECK_EQUAL(5, *result);
       CHECK_EQUAL(3, *itr); // original unchanged
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n) with bidirectional (non-random) iterator — positive n
+    // etl::ranges::prev(i, n) with bidirectional (non-random) iterator —
+    // positive n
     //*************************************************************************
     TEST(ranges_prev_n_non_random_positive)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[7]);
       non_random_iterator<int> result = etl::ranges::prev(itr, 4);
@@ -1013,7 +1016,7 @@ namespace
     //*************************************************************************
     TEST(ranges_prev_n_non_random_zero)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[5]);
       non_random_iterator<int> result = etl::ranges::prev(itr, 0);
@@ -1021,11 +1024,12 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n) with bidirectional (non-random) iterator — negative n (moves forward)
+    // etl::ranges::prev(i, n) with bidirectional (non-random) iterator —
+    // negative n (moves forward)
     //*************************************************************************
     TEST(ranges_prev_n_non_random_negative)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[3]);
       non_random_iterator<int> result = etl::ranges::prev(itr, -2);
@@ -1034,27 +1038,29 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n, bound) with random access iterator — not reaching bound
+    // etl::ranges::prev(i, n, bound) with random access iterator — not reaching
+    // bound
     //*************************************************************************
     TEST(ranges_prev_n_bound_random_access_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[8];
-      int* bound = &data[2];
+      int* itr    = &data[8];
+      int* bound  = &data[2];
       int* result = etl::ranges::prev(itr, 4, bound);
       CHECK_EQUAL(4, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n, bound) with random access iterator — reaching bound
+    // etl::ranges::prev(i, n, bound) with random access iterator — reaching
+    // bound
     //*************************************************************************
     TEST(ranges_prev_n_bound_random_access_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
-      int* bound = &data[3];
+      int* itr    = &data[5];
+      int* bound  = &data[3];
       int* result = etl::ranges::prev(itr, 7, bound);
       CHECK_EQUAL(3, *result);
       CHECK(result == bound);
@@ -1065,20 +1071,21 @@ namespace
     //*************************************************************************
     TEST(ranges_prev_n_bound_random_access_zero_steps)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
-      int* bound = &data[2];
+      int* itr    = &data[5];
+      int* bound  = &data[2];
       int* result = etl::ranges::prev(itr, 0, bound);
       CHECK_EQUAL(5, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n, bound) with bidirectional (non-random) iterator — not reaching bound
+    // etl::ranges::prev(i, n, bound) with bidirectional (non-random) iterator —
+    // not reaching bound
     //*************************************************************************
     TEST(ranges_prev_n_bound_non_random_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[8]);
       non_random_iterator<int> bound(&data[2]);
@@ -1087,11 +1094,12 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::prev(i, n, bound) with bidirectional (non-random) iterator — reaching bound
+    // etl::ranges::prev(i, n, bound) with bidirectional (non-random) iterator —
+    // reaching bound
     //*************************************************************************
     TEST(ranges_prev_n_bound_non_random_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[5]);
       non_random_iterator<int> bound(&data[3]);
@@ -1105,9 +1113,9 @@ namespace
     //*************************************************************************
     TEST(ranges_next_random_access)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
+      int* itr    = &data[5];
       int* result = etl::ranges::next(itr);
       CHECK_EQUAL(6, *result);
       CHECK_EQUAL(5, *itr); // original unchanged
@@ -1118,7 +1126,7 @@ namespace
     //*************************************************************************
     TEST(ranges_next_non_random)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[5]);
       non_random_iterator<int> result = etl::ranges::next(itr);
@@ -1131,9 +1139,9 @@ namespace
     //*************************************************************************
     TEST(ranges_next_n_random_access_positive)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[2];
+      int* itr    = &data[2];
       int* result = etl::ranges::next(itr, 5);
       CHECK_EQUAL(7, *result);
       CHECK_EQUAL(2, *itr); // original unchanged
@@ -1144,32 +1152,34 @@ namespace
     //*************************************************************************
     TEST(ranges_next_n_random_access_zero)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
+      int* itr    = &data[5];
       int* result = etl::ranges::next(itr, 0);
       CHECK_EQUAL(5, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n) with random access iterator — negative n (moves backward)
+    // etl::ranges::next(i, n) with random access iterator — negative n (moves
+    // backward)
     //*************************************************************************
     TEST(ranges_next_n_random_access_negative)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[7];
+      int* itr    = &data[7];
       int* result = etl::ranges::next(itr, -3);
       CHECK_EQUAL(4, *result);
       CHECK_EQUAL(7, *itr); // original unchanged
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n) with bidirectional (non-random) iterator — positive n
+    // etl::ranges::next(i, n) with bidirectional (non-random) iterator —
+    // positive n
     //*************************************************************************
     TEST(ranges_next_n_non_random_positive)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[1]);
       non_random_iterator<int> result = etl::ranges::next(itr, 4);
@@ -1182,7 +1192,7 @@ namespace
     //*************************************************************************
     TEST(ranges_next_n_non_random_zero)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[5]);
       non_random_iterator<int> result = etl::ranges::next(itr, 0);
@@ -1190,11 +1200,12 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n) with bidirectional (non-random) iterator — negative n (moves backward)
+    // etl::ranges::next(i, n) with bidirectional (non-random) iterator —
+    // negative n (moves backward)
     //*************************************************************************
     TEST(ranges_next_n_non_random_negative)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[7]);
       non_random_iterator<int> result = etl::ranges::next(itr, -3);
@@ -1207,10 +1218,10 @@ namespace
     //*************************************************************************
     TEST(ranges_next_bound_random_access)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[7];
+      int* itr    = &data[0];
+      int* bound  = &data[7];
       int* result = etl::ranges::next(itr, bound);
       CHECK_EQUAL(7, *result);
       CHECK(result == bound);
@@ -1222,7 +1233,7 @@ namespace
     //*************************************************************************
     TEST(ranges_next_bound_non_random)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       non_random_sentinel<int> bound(&data[5]);
@@ -1236,38 +1247,40 @@ namespace
     //*************************************************************************
     TEST(ranges_next_bound_already_at_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[4];
-      int* bound = &data[4];
+      int* itr    = &data[4];
+      int* bound  = &data[4];
       int* result = etl::ranges::next(itr, bound);
       CHECK(result == bound);
       CHECK_EQUAL(4, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with random access iterator — not reaching bound
+    // etl::ranges::next(i, n, bound) with random access iterator — not reaching
+    // bound
     //*************************************************************************
     TEST(ranges_next_n_bound_random_access_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[9];
+      int* itr    = &data[0];
+      int* bound  = &data[9];
       int* result = etl::ranges::next(itr, 4, bound);
       CHECK_EQUAL(4, *result);
       CHECK_EQUAL(0, *itr); // original unchanged
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with random access iterator — reaching bound
+    // etl::ranges::next(i, n, bound) with random access iterator — reaching
+    // bound
     //*************************************************************************
     TEST(ranges_next_n_bound_random_access_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[3];
+      int* itr    = &data[0];
+      int* bound  = &data[3];
       int* result = etl::ranges::next(itr, 7, bound);
       CHECK(result == bound);
       CHECK_EQUAL(3, *result);
@@ -1278,37 +1291,39 @@ namespace
     //*************************************************************************
     TEST(ranges_next_n_bound_random_access_exact_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[0];
-      int* bound = &data[5];
+      int* itr    = &data[0];
+      int* bound  = &data[5];
       int* result = etl::ranges::next(itr, 5, bound);
       CHECK(result == bound);
       CHECK_EQUAL(5, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with random access iterator — backward not reaching bound
+    // etl::ranges::next(i, n, bound) with random access iterator — backward not
+    // reaching bound
     //*************************************************************************
     TEST(ranges_next_n_bound_random_access_backward_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[9];
-      int* bound = &data[0];
+      int* itr    = &data[9];
+      int* bound  = &data[0];
       int* result = etl::ranges::next(itr, -4, bound);
       CHECK_EQUAL(5, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with random access iterator — backward reaching bound
+    // etl::ranges::next(i, n, bound) with random access iterator — backward
+    // reaching bound
     //*************************************************************************
     TEST(ranges_next_n_bound_random_access_backward_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
-      int* bound = &data[2];
+      int* itr    = &data[5];
+      int* bound  = &data[2];
       int* result = etl::ranges::next(itr, -7, bound);
       CHECK(result == bound);
       CHECK_EQUAL(2, *result);
@@ -1319,20 +1334,21 @@ namespace
     //*************************************************************************
     TEST(ranges_next_n_bound_random_access_zero_steps)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      int* itr = &data[5];
-      int* bound = &data[8];
+      int* itr    = &data[5];
+      int* bound  = &data[8];
       int* result = etl::ranges::next(itr, 0, bound);
       CHECK_EQUAL(5, *result);
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with non-random iterator — forward not reaching bound
+    // etl::ranges::next(i, n, bound) with non-random iterator — forward not
+    // reaching bound
     //*************************************************************************
     TEST(ranges_next_n_bound_non_random_forward_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       non_random_sentinel<int> bound(&data[9]);
@@ -1341,11 +1357,12 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with non-random iterator — forward reaching bound
+    // etl::ranges::next(i, n, bound) with non-random iterator — forward
+    // reaching bound
     //*************************************************************************
     TEST(ranges_next_n_bound_non_random_forward_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[0]);
       non_random_sentinel<int> bound(&data[3]);
@@ -1354,11 +1371,12 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with non-random iterator — backward not reaching bound
+    // etl::ranges::next(i, n, bound) with non-random iterator — backward not
+    // reaching bound
     //*************************************************************************
     TEST(ranges_next_n_bound_non_random_backward_not_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[9]);
       non_random_sentinel<int> bound(&data[0]);
@@ -1367,11 +1385,12 @@ namespace
     }
 
     //*************************************************************************
-    // etl::ranges::next(i, n, bound) with non-random iterator — backward reaching bound
+    // etl::ranges::next(i, n, bound) with non-random iterator — backward
+    // reaching bound
     //*************************************************************************
     TEST(ranges_next_n_bound_non_random_backward_reaching_bound)
     {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       non_random_iterator<int> itr(&data[3]);
       non_random_sentinel<int> bound(&data[1]);
@@ -1382,8 +1401,8 @@ namespace
     TEST(test_is_range)
     {
       std::vector<int> vec;
-      int arr[3]{};
-      int i{};
+      int              arr[3]{};
+      int              i{};
       static_assert(etl::is_range_v<decltype(vec)> == true, "Expected range");
       static_assert(etl::is_range_v<decltype(arr)> == true, "Expected range");
       static_assert(etl::is_range_v<decltype(i)> == false, "Expected non range");
@@ -1391,4 +1410,4 @@ namespace
 
 #endif
   }
-}
+} // namespace

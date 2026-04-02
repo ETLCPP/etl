@@ -44,8 +44,8 @@ namespace
 
       etl::bitset_ext<64, uint64_t>::buffer_type buffer3;
       etl::bitset_ext<64, uint64_t>::buffer_type buffer4;
-      etl::bitset_ext<64, uint64_t> data3(0x0123456789012345ULL, buffer3);
-      etl::bitset_ext<64, uint64_t> data4(0x0123456789012345ULL, buffer4);
+      etl::bitset_ext<64, uint64_t>              data3(0x0123456789012345ULL, buffer3);
+      etl::bitset_ext<64, uint64_t>              data4(0x0123456789012345ULL, buffer4);
 
       // Double check we are using the single element storage model.
       CHECK(etl::bitset_storage_model::Single == data1.Storage_Model);
@@ -67,8 +67,8 @@ namespace
 
       etl::bitset_ext<64, uint64_t>::buffer_type buffer3;
       etl::bitset_ext<64, uint64_t>::buffer_type buffer4;
-      etl::bitset_ext<64, uint64_t> data3(0x0123456787012345ULL, buffer3);
-      etl::bitset_ext<64, uint64_t> data4(0x0123426789012345ULL, buffer4);
+      etl::bitset_ext<64, uint64_t>              data3(0x0123456787012345ULL, buffer3);
+      etl::bitset_ext<64, uint64_t>              data4(0x0123426789012345ULL, buffer4);
 
       // Double check we are using the single element storage model.
       CHECK(etl::bitset_storage_model::Single == data1.Storage_Model);
@@ -90,8 +90,8 @@ namespace
 
       etl::bitset_ext<64>::buffer_type buffer3;
       etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64> data3(0x0123456789012345ULL, buffer3);
-      etl::bitset_ext<64> data4(0x0123456789012345ULL, buffer4);
+      etl::bitset_ext<64>              data3(0x0123456789012345ULL, buffer3);
+      etl::bitset_ext<64>              data4(0x0123456789012345ULL, buffer4);
 
       // Double check we are using the multi element storage model.
       CHECK(etl::bitset_storage_model::Multi == data1.Storage_Model);
@@ -113,8 +113,8 @@ namespace
 
       etl::bitset_ext<64>::buffer_type buffer3;
       etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64> data3(0x0123456787012345ULL, buffer3);
-      etl::bitset_ext<64> data4(0x0123426789012345ULL, buffer4);
+      etl::bitset_ext<64>              data3(0x0123456787012345ULL, buffer3);
+      etl::bitset_ext<64>              data4(0x0123426789012345ULL, buffer4);
 
       // Double check we are using the multi element storage model.
       CHECK(etl::bitset_storage_model::Multi == data1.Storage_Model);
@@ -135,15 +135,15 @@ namespace
       ETL_CONSTEXPR14 etl::bitset<64> data2(0x0123456789012345ULL);
 
       etl::bitset_ext<64, uint64_t>::buffer_type buffer3;
-      etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64, uint64_t> data3(0x0123456789012345ULL, buffer3);
-      etl::bitset_ext<64> data4(0x0123456789012345ULL, buffer4);
+      etl::bitset_ext<64>::buffer_type           buffer4;
+      etl::bitset_ext<64, uint64_t>              data3(0x0123456789012345ULL, buffer3);
+      etl::bitset_ext<64>                        data4(0x0123456789012345ULL, buffer4);
 
       // Double check we are using the single/multi element storage model.
       CHECK(etl::bitset_storage_model::Single == data1.Storage_Model);
-      CHECK(etl::bitset_storage_model::Multi  == data2.Storage_Model);
+      CHECK(etl::bitset_storage_model::Multi == data2.Storage_Model);
       CHECK(etl::bitset_storage_model::Single == data3.Storage_Model);
-      CHECK(etl::bitset_storage_model::Multi  == data4.Storage_Model);
+      CHECK(etl::bitset_storage_model::Multi == data4.Storage_Model);
 
       CHECK(data1 == data2); // bitset     (S) == bitset     (M)
       CHECK(data2 == data1); // bitset     (M) == bitset     (S)
@@ -162,15 +162,15 @@ namespace
       ETL_CONSTEXPR14 etl::bitset<64> data2(0x0123456784012345ULL);
 
       etl::bitset_ext<64, uint64_t>::buffer_type buffer3;
-      etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64, uint64_t> data3(0x0123456787012345ULL, buffer3);
-      etl::bitset_ext<64> data4(0x0123426789012345ULL, buffer4);
+      etl::bitset_ext<64>::buffer_type           buffer4;
+      etl::bitset_ext<64, uint64_t>              data3(0x0123456787012345ULL, buffer3);
+      etl::bitset_ext<64>                        data4(0x0123426789012345ULL, buffer4);
 
       // Double check we are using the single/multi element storage model.
       CHECK(etl::bitset_storage_model::Single == data1.Storage_Model);
-      CHECK(etl::bitset_storage_model::Multi  == data2.Storage_Model);
+      CHECK(etl::bitset_storage_model::Multi == data2.Storage_Model);
       CHECK(etl::bitset_storage_model::Single == data3.Storage_Model);
-      CHECK(etl::bitset_storage_model::Multi  == data4.Storage_Model);
+      CHECK(etl::bitset_storage_model::Multi == data4.Storage_Model);
 
       CHECK(data1 != data2); // bitset     (S) != bitset     (M)
       CHECK(data2 != data1); // bitset     (M) != bitset     (S)
@@ -179,19 +179,19 @@ namespace
       CHECK(data1 != data4); // bitset     (S) != bitset_ext (M)
       CHECK(data4 != data1); // bitset_ext (M) != bitset     (S)
       CHECK(data2 != data3); // bitset     (M) != bitset_ext (S)
-      CHECK(data3 != data2); // bitset_ext (S) != bitset     (M) 
+      CHECK(data3 != data2); // bitset_ext (S) != bitset     (M)
     }
 
     //*************************************************************************
     TEST(test_equality_mixed_storage_model_different_element_types)
     {
       ETL_CONSTEXPR14 etl::bitset<64, uint32_t> data1(0x0123456789012345ULL);
-      ETL_CONSTEXPR14 etl::bitset<64, uint8_t>  data2(0x0123456789012345ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, uint8_t> data2(0x0123456789012345ULL);
 
       etl::bitset_ext<64, uint32_t>::buffer_type buffer3;
       etl::bitset_ext<64, uint8_t>::buffer_type  buffer4;
-      etl::bitset_ext<64, uint32_t> data3(0x0123456789012345ULL, buffer3);
-      etl::bitset_ext<64, uint8_t>  data4(0x0123456789012345ULL, buffer4);
+      etl::bitset_ext<64, uint32_t>              data3(0x0123456789012345ULL, buffer3);
+      etl::bitset_ext<64, uint8_t>               data4(0x0123456789012345ULL, buffer4);
 
       // Double check we are using the multi element storage model.
       CHECK(etl::bitset_storage_model::Multi == data1.Storage_Model);
@@ -213,12 +213,12 @@ namespace
     TEST(test_inequality_mixed_storage_model_different_element_types)
     {
       ETL_CONSTEXPR14 etl::bitset<64, uint32_t> data1(0x0123456789012345ULL);
-      ETL_CONSTEXPR14 etl::bitset<64, uint8_t>  data2(0x0123456784012345ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, uint8_t> data2(0x0123456784012345ULL);
 
       etl::bitset_ext<64, uint32_t>::buffer_type buffer3;
       etl::bitset_ext<64, uint8_t>::buffer_type  buffer4;
-      etl::bitset_ext<64, uint32_t> data3(0x0123456787012345ULL, buffer3);
-      etl::bitset_ext<64, uint8_t>  data4(0x0123426789012345ULL, buffer4);
+      etl::bitset_ext<64, uint32_t>              data3(0x0123456787012345ULL, buffer3);
+      etl::bitset_ext<64, uint8_t>               data4(0x0123426789012345ULL, buffer4);
 
       // Double check we are using the multi element storage model.
       CHECK(etl::bitset_storage_model::Multi == data1.Storage_Model);
@@ -236,4 +236,4 @@ namespace
       CHECK(data3 != data2); // bitset_ext (S) != bitset     (M)
     }
   }
-}
+} // namespace

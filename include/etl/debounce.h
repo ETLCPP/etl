@@ -117,17 +117,15 @@ namespace etl
       /// Constructor.
       //*************************************************************************
       debounce_base(bool initial_state)
-        : flags(initial_state ? On : Off),
-          count(0)
+        : flags(initial_state ? On : Off)
+        , count(0)
       {
       }
 
       //*************************************************************************
       /// Destructor.
       //*************************************************************************
-      ~debounce_base()
-      {
-      }
+      ~debounce_base() {}
 
       //*************************************************************************
       /// Gets the next state based on the inputs.
@@ -173,21 +171,18 @@ namespace etl
       //*************************************************************************
       /// Destructor.
       //*************************************************************************
-      ~debounce2()
-      {
-      }
+      ~debounce2() {}
 
       //*************************************************************************
       ///
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
-        static ETL_CONSTANT uint_least8_t state_table[4][2] =
-        {
-          /* Off 0 */{ debounce_base::Off, debounce_base::Off },
-          /* Off 1 */{ debounce_base::On,  debounce_base::Off },
-          /* On  0 */{ debounce_base::Off, debounce_base::On },
-          /* On  1 */{ debounce_base::On,  debounce_base::On },
+        static ETL_CONSTANT uint_least8_t state_table[4][2] = {
+          /* Off 0 */ {debounce_base::Off, debounce_base::Off},
+          /* Off 1 */ {debounce_base::On, debounce_base::Off},
+          /* On  0 */ {debounce_base::Off, debounce_base::On},
+          /* On  1 */ {debounce_base::On, debounce_base::On},
         };
 
         get_next(sample, condition_set, condition_clear, state_table);
@@ -209,21 +204,21 @@ namespace etl
           switch (flags & State)
           {
             case Off:
-            {
-              set_state(sample, valid, valid);
-              break;
-            }
+              {
+                set_state(sample, valid, valid);
+                break;
+              }
 
             case On:
-            {
-              set_state(sample, valid, valid);
-              break;
-            }
+              {
+                set_state(sample, valid, valid);
+                break;
+              }
 
             default:
-            {
-              break;
-            }
+              {
+                break;
+              }
           }
         }
 
@@ -251,24 +246,19 @@ namespace etl
       //*************************************************************************
       /// Destructor.
       //*************************************************************************
-      ~debounce3()
-      {
-      }
+      ~debounce3() {}
 
       //*************************************************************************
       ///
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
-        static ETL_CONSTANT uint_least8_t state_table[6][2] =
-        {
-          /* Off  0 */{ debounce_base::Off,  debounce_base::Off },
-          /* Off  1 */{ debounce_base::On,   debounce_base::Off },
-          /* On   0 */{ debounce_base::Off,  debounce_base::On },
-          /* On   1 */{ debounce_base::Held, debounce_base::On },
-          /* Held 0 */{ debounce_base::Off,  debounce_base::Held },
-          /* Held 1 */{ debounce_base::Held, debounce_base::Held }
-        };
+        static ETL_CONSTANT uint_least8_t state_table[6][2] = {/* Off  0 */ {debounce_base::Off, debounce_base::Off},
+                                                       /* Off  1 */ {debounce_base::On, debounce_base::Off},
+                                                       /* On   0 */ {debounce_base::Off, debounce_base::On},
+                                                       /* On   1 */ {debounce_base::Held, debounce_base::On},
+                                                       /* Held 0 */ {debounce_base::Off, debounce_base::Held},
+                                                       /* Held 1 */ {debounce_base::Held, debounce_base::Held}};
 
         get_next(sample, condition_set, condition_clear, state_table);
       }
@@ -290,27 +280,27 @@ namespace etl
           switch (flags & State)
           {
             case Off:
-            {
-              set_state(sample, valid, valid);
-              break;
-            }
+              {
+                set_state(sample, valid, valid);
+                break;
+              }
 
             case On:
-            {
-              set_state(sample, hold, valid);
-              break;
-            }
+              {
+                set_state(sample, hold, valid);
+                break;
+              }
 
             case Held:
-            {
-              set_state(sample, hold, valid);
-              break;
-            }
+              {
+                set_state(sample, hold, valid);
+                break;
+              }
 
             default:
-            {
-              break;
-            }
+              {
+                break;
+              }
           }
         }
 
@@ -338,26 +328,22 @@ namespace etl
       //*************************************************************************
       /// Destructor.
       //*************************************************************************
-      ~debounce4()
-      {
-      }
+      ~debounce4() {}
 
       //*************************************************************************
       ///
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
-        static ETL_CONSTANT uint_least8_t state_table[8][2] =
-        {
-          /* Off       0 */{ debounce_base::Off,       debounce_base::Off },
-          /* Off       1 */{ debounce_base::On,        debounce_base::Off },
-          /* On        0 */{ debounce_base::Off,       debounce_base::On },
-          /* On        1 */{ debounce_base::Held,      debounce_base::On },
-          /* Held      0 */{ debounce_base::Off,       debounce_base::Held },
-          /* Held      1 */{ debounce_base::Repeating, debounce_base::Held },
-          /* Repeating 0 */{ debounce_base::Off,       debounce_base::Repeating },
-          /* Repeating 1 */{ debounce_base::Repeating, debounce_base::Repeating }
-        };
+        static ETL_CONSTANT uint_least8_t state_table[8][2] = {/* Off       0 */ {debounce_base::Off, debounce_base::Off},
+                                                       /* Off       1 */ {debounce_base::On, debounce_base::Off},
+                                                       /* On        0 */ {debounce_base::Off, debounce_base::On},
+                                                       /* On        1 */ {debounce_base::Held, debounce_base::On},
+                                                       /* Held      0 */ {debounce_base::Off, debounce_base::Held},
+                                                       /* Held      1 */ {debounce_base::Repeating, debounce_base::Held},
+                                                       /* Repeating 0 */ {debounce_base::Off, debounce_base::Repeating},
+                                                       /* Repeating 1 */
+                                                       {debounce_base::Repeating, debounce_base::Repeating}};
 
         get_next(sample, condition_set, condition_clear, state_table);
       }
@@ -380,39 +366,39 @@ namespace etl
           switch (flags & State)
           {
             case Off:
-            {
-              set_state(sample, valid, valid);
-              break;
-            }
+              {
+                set_state(sample, valid, valid);
+                break;
+              }
 
             case On:
-            {
-              set_state(sample, hold, valid);
-              break;
-            }
+              {
+                set_state(sample, hold, valid);
+                break;
+              }
 
             case Held:
-            {
-              set_state(sample, repeat, valid);
-              break;
-            }
+              {
+                set_state(sample, repeat, valid);
+                break;
+              }
 
             case Repeating:
-            {
-              set_state(sample, repeat, valid);
-
-              if (sample && repeat)
               {
-                count = 0;
-                flags |= Change;
+                set_state(sample, repeat, valid);
+
+                if (sample && repeat)
+                {
+                  count = 0;
+                  flags |= Change;
+                }
+                break;
               }
-              break;
-            }
 
             default:
-            {
-              break;
-            }
+              {
+                break;
+              }
           }
         }
 
@@ -424,7 +410,7 @@ namespace etl
         return (flags & Change);
       }
     };
-  }
+  } // namespace private_debounce
 
   //***************************************************************************
   /// A class to debounce signals.
@@ -532,18 +518,19 @@ namespace etl
     ///\param initial_state The initial state. Default = false.
     //*************************************************************************
     debounce(bool initial_state = false)
-      : debounce4(initial_state),
-        valid_count(1),
-        hold_count(0),
-        repeat_count(0)
+      : debounce4(initial_state)
+      , valid_count(1)
+      , hold_count(0)
+      , repeat_count(0)
     {
     }
 
     //*************************************************************************
     /// Constructor.
     ///\param valid_count   The count for a valid state..
-    ///\param hold_count    The count after valid_count for a hold state. Default = 0.
-    ///\param repeat_count  The count after hold_count for a key repeat. Default = 0.
+    ///\param hold_count    The count after valid_count for a hold state.
+    /// Default = 0. \param repeat_count  The count after hold_count for a key
+    /// repeat. Default = 0.
     //*************************************************************************
     debounce(count_t valid, count_t hold = 0, count_t repeat = 0)
       : debounce4(false)
@@ -582,6 +569,6 @@ namespace etl
     count_t hold_count;
     count_t repeat_count;
   };
-}
+} // namespace etl
 
 #endif

@@ -159,7 +159,7 @@ namespace
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
       uint32_t i = 0x5A3DUL;
-      type_t t(0x5A3DUL);
+      type_t   t(0x5A3DUL);
 
       CHECK_EQUAL(++i, uint32_t(++t));
       CHECK_EQUAL(i++, uint32_t(t++));
@@ -193,14 +193,14 @@ namespace
     TEST(test_binary_operators)
     {
       class __type_t__;
-      using type_t = etl::type_def<__type_t__, uint32_t> ;
-      
+      using type_t = etl::type_def<__type_t__, uint32_t>;
+
       uint32_t i1 = 0x5A3DUL;
       uint32_t i2 = 0xB47AUL;
       uint32_t i3 = 3UL;
-      type_t t1(0x5A3DUL);
-      type_t t2(0xB47AUL);
-      type_t t3(3UL);
+      type_t   t1(0x5A3DUL);
+      type_t   t2(0xB47AUL);
+      type_t   t3(3UL);
 
       CHECK_EQUAL(i1 + Two, t1 + Two);
       CHECK_EQUAL(Two + i1, Two + t1);
@@ -215,8 +215,8 @@ namespace
       CHECK_EQUAL(i1 * i2, t1 * t2);
 
       CHECK_EQUAL(i1 / Two, t1 / Two);
-      CHECK_EQUAL(i2  / i1, i2 / t1);
-      CHECK_EQUAL(i2  / i1, t2 / t1);
+      CHECK_EQUAL(i2 / i1, i2 / t1);
+      CHECK_EQUAL(i2 / i1, t2 / t1);
 
       CHECK_EQUAL(uint32_t(0xFF00) & i1, uint32_t(0xFF00) & t1);
       CHECK_EQUAL(i1 & uint32_t(0xFF00), t1 & uint32_t(0xFF00));
@@ -257,13 +257,13 @@ namespace
       type_t t3(t1);
       type_t t4(t2);
 
-      CHECK(t1 <  t2);
-      CHECK(!(t2 <  t1));
+      CHECK(t1 < t2);
+      CHECK(!(t2 < t1));
       CHECK(t1 <= t2);
       CHECK(!(t2 <= t1));
       CHECK(t1 <= t3);
-      CHECK(t2 >  t1);
-      CHECK(!(t1 >  t2));
+      CHECK(t2 > t1);
+      CHECK(!(t1 > t2));
       CHECK(t2 >= t1);
       CHECK(!(t1 >= t2));
       CHECK(t2 >= t4);
@@ -280,12 +280,12 @@ namespace
 
       constexpr bool eq   = t1 == t1;
       constexpr bool neq  = t1 == t2;
-      constexpr bool lt   = t1  < t2;
-      constexpr bool nlt  = t2  < t1;
+      constexpr bool lt   = t1 < t2;
+      constexpr bool nlt  = t2 < t1;
       constexpr bool lte  = t1 <= t2;
       constexpr bool nlte = t2 <= t1;
-      constexpr bool gt   = t1  > t2;
-      constexpr bool ngt  = t2  > t1;
+      constexpr bool gt   = t1 > t2;
+      constexpr bool ngt  = t2 > t1;
       constexpr bool gte  = t1 >= t2;
       constexpr bool ngte = t2 >= t1;
 
@@ -332,9 +332,9 @@ namespace
       constexpr arithmetic_type_t value_plus  = CreatePlus();
       constexpr arithmetic_type_t value_minus = CreateMinus();
 
-      CHECK_EQUAL(3,  value_plus.get());
+      CHECK_EQUAL(3, value_plus.get());
       CHECK_EQUAL(-3, value_minus.get());
     }
 #endif
   }
-}
+} // namespace

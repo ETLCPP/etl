@@ -34,8 +34,8 @@ SOFTWARE.
 ETL_DECLARE_USER_TYPE(CompassDirection, int)
 ETL_USER_TYPE(North, 0)
 ETL_USER_TYPE(South, 180)
-ETL_USER_TYPE(East,  90)
-ETL_USER_TYPE(West,  270)
+ETL_USER_TYPE(East, 90)
+ETL_USER_TYPE(West, 270)
 ETL_END_USER_TYPE(CompassDirection)
 
 namespace
@@ -45,9 +45,9 @@ namespace
     //*************************************************************************
     TEST(Values)
     {
-      CHECK_EQUAL(0,   CompassDirection::North);
+      CHECK_EQUAL(0, CompassDirection::North);
       CHECK_EQUAL(180, CompassDirection::South);
-      CHECK_EQUAL(90,  CompassDirection::East);
+      CHECK_EQUAL(90, CompassDirection::East);
       CHECK_EQUAL(270, CompassDirection::West);
     }
 
@@ -85,7 +85,7 @@ namespace
     //*************************************************************************
     TEST(test_pre_increment)
     {
-      CompassDirection value = CompassDirection::North;
+      CompassDirection value    = CompassDirection::North;
       CompassDirection expected = CompassDirection(CompassDirection::North + 1);
 
       CHECK_EQUAL(expected, ++value);
@@ -94,18 +94,17 @@ namespace
     //*************************************************************************
     TEST(test_post_increment)
     {
-      CompassDirection value = CompassDirection::North;
+      CompassDirection value    = CompassDirection::North;
       CompassDirection expected = CompassDirection(CompassDirection::North + 1);
 
       CHECK_EQUAL(CompassDirection::North, value++);
       CHECK_EQUAL(expected, value);
     }
 
-
     //*************************************************************************
     TEST(test_pre_decrement)
     {
-      CompassDirection value = CompassDirection::North;
+      CompassDirection value    = CompassDirection::North;
       CompassDirection expected = CompassDirection(CompassDirection::North - 1);
 
       CHECK_EQUAL(expected, --value);
@@ -114,7 +113,7 @@ namespace
     //*************************************************************************
     TEST(test_post_decrement)
     {
-      CompassDirection value = CompassDirection::North;
+      CompassDirection value    = CompassDirection::North;
       CompassDirection expected = CompassDirection(CompassDirection::North - 1);
 
       CHECK_EQUAL(CompassDirection::North, value--);
@@ -221,4 +220,4 @@ namespace
       CHECK_EQUAL(expected, value);
     }
   }
-}
+} // namespace

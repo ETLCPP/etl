@@ -32,13 +32,13 @@ SOFTWARE.
 #define ETL_HISTOGRAM_INCLUDED
 
 #include "platform.h"
-#include "functional.h"
 #include "algorithm.h"
 #include "array.h"
 #include "flat_map.h"
+#include "functional.h"
+#include "integral_limits.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "integral_limits.h"
 
 namespace etl
 {
@@ -52,7 +52,7 @@ namespace etl
     {
     public:
 
-      ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed"); 
+      ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed");
 
       static ETL_CONSTANT size_t Max_Size = Max_Size_;
 
@@ -127,22 +127,22 @@ namespace etl
       etl::array<TCount, Max_Size> accumulator;
     };
 
-    template <typename TCount, size_t Max_Size_>   
+    template <typename TCount, size_t Max_Size_>
     ETL_CONSTANT size_t histogram_common<TCount, Max_Size_>::Max_Size;
-  }
+  } // namespace private_histogram
 
   //***************************************************************************
   /// Histogram with a compile time start index.
   //***************************************************************************
   template <typename TKey, typename TCount, size_t Max_Size, int32_t Start_Index = etl::integral_limits<int32_t>::max>
-  class histogram 
+  class histogram
     : public etl::private_histogram::histogram_common<TCount, Max_Size>
     , public etl::unary_function<TKey, void>
   {
   public:
 
     ETL_STATIC_ASSERT(etl::is_integral<TKey>::value, "Only integral keys allowed");
-    ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed");   
+    ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed");
 
     typedef TKey   key_type;
     typedef TCount count_type;
@@ -187,7 +187,7 @@ namespace etl
     //*********************************
     /// Copy assignment
     //*********************************
-    histogram& operator =(const histogram& rhs)
+    histogram& operator=(const histogram& rhs)
     {
       this->accumulator = rhs.accumulator;
 
@@ -198,7 +198,7 @@ namespace etl
     //*********************************
     /// Move assignment
     //*********************************
-    histogram& operator =(histogram&& rhs)
+    histogram& operator=(histogram&& rhs)
     {
       this->accumulator = etl::move(rhs.accumulator);
 
@@ -230,7 +230,7 @@ namespace etl
     //*********************************
     /// operator ()
     //*********************************
-    void operator ()(key_type key)
+    void operator()(key_type key)
     {
       add(key);
     }
@@ -239,7 +239,7 @@ namespace etl
     /// operator ()
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -247,7 +247,7 @@ namespace etl
     //*********************************
     /// operator []
     //*********************************
-    value_type operator [](key_type key) const
+    value_type operator[](key_type key) const
     {
       return this->accumulator[static_cast<size_t>(key - Start_Index)];
     }
@@ -256,7 +256,7 @@ namespace etl
   //***************************************************************************
   /// Histogram with a run time start index.
   //***************************************************************************
-  template<typename TKey, typename TCount, size_t Max_Size>
+  template <typename TKey, typename TCount, size_t Max_Size>
   class histogram<TKey, TCount, Max_Size, etl::integral_limits<int32_t>::max>
     : public etl::private_histogram::histogram_common<TCount, Max_Size>
     , public etl::unary_function<TKey, void>
@@ -311,7 +311,7 @@ namespace etl
     //*********************************
     /// Copy assignment
     //*********************************
-    histogram& operator =(const histogram& rhs)
+    histogram& operator=(const histogram& rhs)
     {
       this->accumulator = rhs.accumulator;
 
@@ -322,7 +322,7 @@ namespace etl
     //*********************************
     /// Move assignment
     //*********************************
-    histogram& operator =(histogram&& rhs)
+    histogram& operator=(histogram&& rhs)
     {
       this->accumulator = etl::move(rhs.accumulator);
 
@@ -354,7 +354,7 @@ namespace etl
     //*********************************
     /// operator ()
     //*********************************
-    void operator ()(key_type key)
+    void operator()(key_type key)
     {
       add(key);
     }
@@ -363,7 +363,7 @@ namespace etl
     /// operator ()
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -371,7 +371,7 @@ namespace etl
     //*********************************
     /// operator []
     //*********************************
-    value_type operator [](key_type key) const
+    value_type operator[](key_type key) const
     {
       return this->accumulator[static_cast<size_t>(key - start_index)];
     }
@@ -384,7 +384,7 @@ namespace etl
   //***************************************************************************
   /// Histogram for sparse keys.
   //***************************************************************************
-  template<typename TKey, typename TCount, size_t Max_Size_>
+  template <typename TKey, typename TCount, size_t Max_Size_>
   class sparse_histogram : public etl::unary_function<TKey, void>
   {
   private:
@@ -397,8 +397,8 @@ namespace etl
 
     static ETL_CONSTANT size_t Max_Size = Max_Size_;
 
-    typedef TKey   key_type;
-    typedef TCount count_type;
+    typedef TKey                                      key_type;
+    typedef TCount                                    count_type;
     typedef typename accumulator_type::value_type     value_type;
     typedef typename accumulator_type::const_iterator const_iterator;
 
@@ -407,9 +407,7 @@ namespace etl
     //*********************************
     /// Constructor
     //*********************************
-    sparse_histogram()
-    {
-    }
+    sparse_histogram() {}
 
     //*********************************
     /// Constructor
@@ -441,10 +439,10 @@ namespace etl
     //*********************************
     /// Copy assignment
     //*********************************
-    sparse_histogram& operator =(const sparse_histogram& rhs)
+    sparse_histogram& operator=(const sparse_histogram& rhs)
     {
       accumulator = rhs.accumulator;
-      
+
       return *this;
     }
 
@@ -452,7 +450,7 @@ namespace etl
     //*********************************
     /// Move assignment
     //*********************************
-    sparse_histogram& operator =(sparse_histogram&& rhs)
+    sparse_histogram& operator=(sparse_histogram&& rhs)
     {
       accumulator = etl::move(rhs.accumulator);
 
@@ -516,7 +514,7 @@ namespace etl
     //*********************************
     /// operator ()
     //*********************************
-    void operator ()(const key_type& key)
+    void operator()(const key_type& key)
     {
       add(key);
     }
@@ -525,7 +523,7 @@ namespace etl
     /// operator ()
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -533,7 +531,7 @@ namespace etl
     //*********************************
     /// operator []
     //*********************************
-    const value_type& operator [](const key_type& key) const
+    const value_type& operator[](const key_type& key) const
     {
       static const value_type unused(key_type(), count_type(0));
 
@@ -598,6 +596,6 @@ namespace etl
 
   template <typename TKey, typename TCount, size_t Max_Size_>
   ETL_CONSTANT size_t sparse_histogram<TKey, TCount, Max_Size_>::Max_Size;
-}
+} // namespace etl
 
 #endif

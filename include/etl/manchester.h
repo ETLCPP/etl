@@ -81,7 +81,8 @@ namespace etl
 
     //*************************************************************************
     /// Type trait to determine the encoded type for a given decoded type.
-    /// Encoding doubles the bit width: uint8_t->uint16_t, uint16_t->uint32_t, etc.
+    /// Encoding doubles the bit width: uint8_t->uint16_t, uint16_t->uint32_t,
+    /// etc.
     ///\tparam T The decoded type.
     //*************************************************************************
     template <typename T>
@@ -114,7 +115,8 @@ namespace etl
 
     //*************************************************************************
     /// Type trait to determine the decoded type for a given encoded type.
-    /// Decoding halves the bit width: uint16_t->uint8_t, uint32_t->uint16_t, etc.
+    /// Decoding halves the bit width: uint16_t->uint8_t, uint32_t->uint16_t,
+    /// etc.
     ///\tparam T The encoded type.
     //*************************************************************************
     template <typename T>
@@ -202,7 +204,7 @@ namespace etl
         bytes[index + j] = static_cast<uint_least8_t>(value >> (j * CHAR_BIT));
       }
     }
-  }  // namespace private_manchester
+  } // namespace private_manchester
 
   //***************************************************************************
   /// Exception for Manchester.
@@ -210,6 +212,7 @@ namespace etl
   class manchester_exception : public etl::exception
   {
   public:
+
     manchester_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
@@ -222,6 +225,7 @@ namespace etl
   class manchester_invalid_size : public etl::manchester_exception
   {
   public:
+
     manchester_invalid_size(string_type file_name_, numeric_type line_number_)
       : etl::manchester_exception("manchester:size", file_name_, line_number_)
     {
@@ -236,11 +240,12 @@ namespace etl
   template <typename TManchesterType>
   struct manchester_base
   {
-    ETL_STATIC_ASSERT((etl::is_same<TManchesterType, private_manchester::manchester_type_normal>::value ||
-                       etl::is_same<TManchesterType, private_manchester::manchester_type_inverted>::value),
+    ETL_STATIC_ASSERT((etl::is_same<TManchesterType, private_manchester::manchester_type_normal>::value
+                       || etl::is_same<TManchesterType, private_manchester::manchester_type_inverted>::value),
                       "TManchesterType must be manchester_type_normal or manchester_type_inverted");
 
-    ETL_STATIC_ASSERT(CHAR_BIT == etl::numeric_limits<uint_least8_t>::digits, "Manchester requires uint_least8_t to have the same number of bits as CHAR (CHAR_BITS)");
+    ETL_STATIC_ASSERT(CHAR_BIT == etl::numeric_limits<uint_least8_t>::digits,
+                      "Manchester requires uint_least8_t to have the same number of bits as CHAR (CHAR_BITS)");
 
     //*************************************************************************
     // Encoding functions
@@ -253,8 +258,9 @@ namespace etl
     ///\return The Manchester encoded value.
     //*************************************************************************
     template <typename TDecoded>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TDecoded, uint8_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
-    encode(TDecoded decoded)
+    static
+      ETL_CONSTEXPR14 typename etl::enable_if< etl::is_same<TDecoded, uint8_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
+      encode(TDecoded decoded)
     {
       typedef typename private_manchester::encoded<TDecoded>::type TEncoded;
 
@@ -263,7 +269,8 @@ namespace etl
       encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 4U)) & 0x0F0FU);
       encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 2U)) & 0x3333U);
       encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 1U)) & 0x5555U);
-      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 1U)) ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask)));
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) << 1U))
+                                      ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask)));
       return encoded;
     }
 #endif
@@ -274,8 +281,9 @@ namespace etl
     ///\return The Manchester encoded value.
     //*************************************************************************
     template <typename TDecoded>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TDecoded, uint16_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
-    encode(TDecoded decoded)
+    static
+      ETL_CONSTEXPR14 typename etl::enable_if< etl::is_same<TDecoded, uint16_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
+      encode(TDecoded decoded)
     {
       typedef typename private_manchester::encoded<TDecoded>::type TEncoded;
 
@@ -296,8 +304,9 @@ namespace etl
     ///\return The Manchester encoded value.
     //*************************************************************************
     template <typename TDecoded>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TDecoded, uint32_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
-    encode(TDecoded decoded)
+    static
+      ETL_CONSTEXPR14 typename etl::enable_if< etl::is_same<TDecoded, uint32_t>::value, typename private_manchester::encoded<TDecoded>::type>::type
+      encode(TDecoded decoded)
     {
       typedef typename private_manchester::encoded<TDecoded>::type TEncoded;
 
@@ -328,7 +337,7 @@ namespace etl
       ETL_ASSERT(encoded.size() >= decoded.size() * 2, ETL_ERROR(manchester_invalid_size));
       ETL_ASSERT(decoded.size() % sizeof(TDecoded) == 0, ETL_ERROR(manchester_invalid_size));
 
-      size_t dest_index = 0;
+      size_t dest_index   = 0;
       size_t source_index = 0;
       for (size_t i = 0; i < decoded.size() / sizeof(TDecoded); ++i)
       {
@@ -352,12 +361,14 @@ namespace etl
     ///\return The Manchester decoded value.
     //*************************************************************************
     template <typename TEncoded>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TEncoded, uint16_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
-    decode(TEncoded encoded)
+    static
+      ETL_CONSTEXPR14 typename etl::enable_if< etl::is_same<TEncoded, uint16_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
+      decode(TEncoded encoded)
     {
       typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
 
-      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask))) & 0x5555U);
+      encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask)))
+                                      & 0x5555U);
       encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 1)) & 0x3333U);
       encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 2)) & 0x0F0FU);
       return static_cast<TDecoded>(static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 4U));
@@ -370,8 +381,9 @@ namespace etl
     ///\return The Manchester decoded value.
     //*************************************************************************
     template <typename TEncoded>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TEncoded, uint32_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
-    decode(TEncoded encoded)
+    static
+      ETL_CONSTEXPR14 typename etl::enable_if< etl::is_same<TEncoded, uint32_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
+      decode(TEncoded encoded)
     {
       typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
 
@@ -389,8 +401,9 @@ namespace etl
     ///\return The Manchester decoded value.
     //*************************************************************************
     template <typename TEncoded>
-    static ETL_CONSTEXPR14 typename etl::enable_if<etl::is_same<TEncoded, uint64_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
-    decode(TEncoded encoded)
+    static
+      ETL_CONSTEXPR14 typename etl::enable_if< etl::is_same<TEncoded, uint64_t>::value, typename private_manchester::decoded<TEncoded>::type>::type
+      decode(TEncoded encoded)
     {
       typedef typename private_manchester::decoded<TEncoded>::type TDecoded;
 
@@ -418,7 +431,7 @@ namespace etl
       ETL_ASSERT(decoded.size() * 2 >= encoded.size(), ETL_ERROR(manchester_invalid_size));
       ETL_ASSERT(encoded.size() % sizeof(TChunk) == 0, ETL_ERROR(manchester_invalid_size));
 
-      size_t dest_index = 0;
+      size_t dest_index   = 0;
       size_t source_index = 0;
       for (size_t i = 0; i < encoded.size() / sizeof(TEncoded); ++i)
       {
@@ -441,9 +454,8 @@ namespace etl
     ///\return True if the value is valid Manchester encoding.
     //*************************************************************************
     template <typename TChunk>
-    ETL_NODISCARD static ETL_CONSTEXPR14
-      typename etl::enable_if<private_manchester::is_decodable<TChunk>::value, bool>::type
-      is_valid(TChunk encoded)
+    ETL_NODISCARD
+    static ETL_CONSTEXPR14 typename etl::enable_if<private_manchester::is_decodable<TChunk>::value, bool>::type is_valid(TChunk encoded)
     {
       const TChunk mask = static_cast<TChunk>(0x5555555555555555ULL);
       return (((encoded ^ (encoded >> 1)) & mask) == mask);
@@ -454,7 +466,8 @@ namespace etl
     ///\param encoded The span of encoded data to validate.
     ///\return True if all data is valid Manchester encoding.
     //*************************************************************************
-    ETL_NODISCARD static ETL_CONSTEXPR14 bool is_valid(etl::span<const uint_least8_t> encoded)
+    ETL_NODISCARD
+    static ETL_CONSTEXPR14 bool is_valid(etl::span<const uint_least8_t> encoded)
     {
       ETL_ASSERT(encoded.size() % sizeof(uint16_t) == 0, ETL_ERROR(manchester_invalid_size));
 
@@ -484,6 +497,6 @@ namespace etl
   //***************************************************************************
   typedef manchester_base<private_manchester::manchester_type_inverted> manchester_inverted;
 
-}  // namespace etl
+} // namespace etl
 
 #endif

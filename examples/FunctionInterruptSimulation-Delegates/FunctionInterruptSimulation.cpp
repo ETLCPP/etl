@@ -11,8 +11,8 @@ enum VectorId
   USART1_IRQ_HANDLER  = 52,
   USART2_IRQ_HANDLER  = 53,
   VECTOR_ID_END,
-  VECTOR_ID_OFFSET    = TIM1_CC_IRQ_HANDLER,
-  VECTOR_ID_RANGE     = VECTOR_ID_END - VECTOR_ID_OFFSET
+  VECTOR_ID_OFFSET = TIM1_CC_IRQ_HANDLER,
+  VECTOR_ID_RANGE  = VECTOR_ID_END - VECTOR_ID_OFFSET
 };
 
 typedef etl::delegate_service<VECTOR_ID_RANGE, VECTOR_ID_OFFSET> InterruptVectors;
@@ -91,8 +91,8 @@ public:
 
   // Constructor.
   Uart(int port_id, size_t interruptId)
-    : port_id(port_id),
-      callback(etl::delegate<void(size_t)>::create<Uart, &Uart::InterruptHandler>(*this))
+    : port_id(port_id)
+    , callback(etl::delegate<void(size_t)>::create<Uart, &Uart::InterruptHandler>(*this))
   {
     GetInterruptVectorsInstance().register_delegate(interruptId, callback);
   }
@@ -119,7 +119,8 @@ Uart  uart1(0, USART1_IRQ_HANDLER);
 Uart  uart2(1, USART2_IRQ_HANDLER);
 
 // Declare a global callback for the timer.
-// Uses the most efficient callback type for a class, as everything is known at compile time.
+// Uses the most efficient callback type for a class, as everything is known at
+// compile time.
 etl::delegate<void(size_t)> timer_member_callback = etl::delegate<void(size_t)>::create<Timer, timer, &Timer::InterruptHandler>();
 
 // Declare the callbacks for the free functions.

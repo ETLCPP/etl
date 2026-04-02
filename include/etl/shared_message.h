@@ -32,16 +32,17 @@ SOFTWARE.
 #define ETL_SHARED_MESSAGE_INCLUDED
 
 #include "platform.h"
-#include "utility.h"
-#include "reference_counted_message.h"
 #include "ireference_counted_message_pool.h"
 #include "message.h"
-#include "type_traits.h"
+#include "reference_counted_message.h"
 #include "static_assert.h"
+#include "type_traits.h"
+#include "utility.h"
 
 //*****************************************************************************
 /// A wrapper for reference counted messages.
-/// Contains pointers to a pool owner and a message defined with a ref count type.
+/// Contains pointers to a pool owner and a message defined with a ref count
+/// type.
 //*****************************************************************************
 namespace etl
 {
@@ -66,7 +67,8 @@ namespace etl
     template <typename TPool, typename TMessage>
     shared_message(TPool& owner, const TMessage& message)
     {
-      ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value), "TPool not derived from etl::ireference_counted_message_pool");
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value),
+                        "TPool not derived from etl::ireference_counted_message_pool");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage not derived from etl::imessage");
 
       p_rcmessage = owner.allocate(message);
@@ -84,7 +86,8 @@ namespace etl
     template <typename TPool, typename TMessage, typename... TArgs>
     shared_message(TPool& owner, etl::in_place_type_t<TMessage>, TArgs&&... args)
     {
-      ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value), "TPool not derived from etl::ireference_counted_message_pool");
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value),
+                        "TPool not derived from etl::ireference_counted_message_pool");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage not derived from etl::imessage");
 
       p_rcmessage = owner.template allocate<TMessage>(etl::forward<TArgs>(args)...);
@@ -129,7 +132,7 @@ namespace etl
     //*************************************************************************
     /// Copy assignment operator
     //*************************************************************************
-    shared_message& operator =(const etl::shared_message& other)
+    shared_message& operator=(const etl::shared_message& other)
     {
       if (&other != this)
       {
@@ -142,7 +145,7 @@ namespace etl
         // Copy over the new one.
         p_rcmessage = other.p_rcmessage;
         p_rcmessage->get_reference_counter().increment_reference_count();
-       }
+      }
 
       return *this;
     }
@@ -151,7 +154,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator
     //*************************************************************************
-    shared_message& operator =(etl::shared_message&& other) ETL_NOEXCEPT
+    shared_message& operator=(etl::shared_message&& other) ETL_NOEXCEPT
     {
       if (&other != this)
       {
@@ -162,7 +165,7 @@ namespace etl
         }
 
         // Move over the new one.
-        p_rcmessage = etl::move(other.p_rcmessage);
+        p_rcmessage       = etl::move(other.p_rcmessage);
         other.p_rcmessage = ETL_NULLPTR;
       }
 
@@ -176,9 +179,8 @@ namespace etl
     //*************************************************************************
     ~shared_message()
     {
-      if ((p_rcmessage != ETL_NULLPTR) &&
-          (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U))
-      {       
+      if ((p_rcmessage != ETL_NULLPTR) && (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U))
+      {
         p_rcmessage->release();
       }
     }
@@ -186,7 +188,8 @@ namespace etl
     //*************************************************************************
     /// Get a reference to the contained message.
     //***********************************************************************
-    ETL_NODISCARD etl::imessage& get_message()
+    ETL_NODISCARD
+    etl::imessage& get_message()
     {
       return p_rcmessage->get_message();
     }
@@ -194,7 +197,8 @@ namespace etl
     //*************************************************************************
     /// Get a const reference to the contained message.
     //*************************************************************************
-    ETL_NODISCARD const etl::imessage& get_message() const
+    ETL_NODISCARD
+    const etl::imessage& get_message() const
     {
       return p_rcmessage->get_message();
     }
@@ -202,7 +206,8 @@ namespace etl
     //*************************************************************************
     /// Get the current reference count for this shared message.
     //*************************************************************************
-    ETL_NODISCARD uint32_t get_reference_count() const
+    ETL_NODISCARD
+    uint32_t get_reference_count() const
     {
       return static_cast<uint32_t>(p_rcmessage->get_reference_counter().get_reference_count());
     }
@@ -210,7 +215,8 @@ namespace etl
     //*************************************************************************
     /// Checks if the shared message is valid.
     //*************************************************************************
-    ETL_NODISCARD bool is_valid() const
+    ETL_NODISCARD
+    bool is_valid() const
     {
       return p_rcmessage != ETL_NULLPTR;
     }
@@ -221,6 +227,6 @@ namespace etl
 
     etl::ireference_counted_message* p_rcmessage; ///< A pointer to the reference  counted message.
   };
-}
+} // namespace etl
 
 #endif

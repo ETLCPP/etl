@@ -28,10 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/state_chart.h"
+#include "etl/array.h"
 #include "etl/enum_type.h"
 #include "etl/queue.h"
-#include "etl/array.h"
+#include "etl/state_chart.h"
 
 #include <iostream>
 
@@ -88,7 +88,8 @@ namespace
   public:
 
     MotorControl()
-      : etl::state_chart<MotorControl, int>(*this, transitionTable.begin(), transitionTable.end(), stateTable.begin(), stateTable.end(), StateId::IDLE)
+      : etl::state_chart<MotorControl, int>(*this, transitionTable.begin(), transitionTable.end(), stateTable.begin(), stateTable.end(),
+                                            StateId::IDLE)
     {
       ClearStatistics();
     }
@@ -199,16 +200,16 @@ namespace
       ++null;
     }
 
-    int startCount;
-    int stopCount;
-    int setSpeedCount;
-    int stoppedCount;
+    int  startCount;
+    int  stopCount;
+    int  setSpeedCount;
+    int  stoppedCount;
     bool isLampOn;
-    int speed;
-    int windingDown;
+    int  speed;
+    int  windingDown;
     bool entered_idle;
-    int null;
-    int data;
+    int  null;
+    int  data;
 
     bool guard;
 
@@ -217,24 +218,20 @@ namespace
   };
 
   //***************************************************************************
-  constexpr etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
-  {
-    MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
-    MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
-    MotorControl::transition(StateId::RUNNING,      EventId::STOP,           StateId::WINDING_DOWN, &MotorControl::OnStop),
-    MotorControl::transition(StateId::RUNNING,      EventId::EMERGENCY_STOP, StateId::IDLE,         &MotorControl::OnStop),
-    MotorControl::transition(StateId::RUNNING,      EventId::SET_SPEED,      StateId::RUNNING,      &MotorControl::OnSetSpeed),
-    MotorControl::transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped),
-    MotorControl::transition(                       EventId::ABORT,          StateId::IDLE)
-  };
+  constexpr etl::array<MotorControl::transition, 7> MotorControl::transitionTable = {
+    MotorControl::transition(StateId::IDLE, EventId::START, StateId::RUNNING, &MotorControl::OnStart, &MotorControl::Guard),
+    MotorControl::transition(StateId::IDLE, EventId::START, StateId::IDLE, &MotorControl::Null, &MotorControl::NotGuard),
+    MotorControl::transition(StateId::RUNNING, EventId::STOP, StateId::WINDING_DOWN, &MotorControl::OnStop),
+    MotorControl::transition(StateId::RUNNING, EventId::EMERGENCY_STOP, StateId::IDLE, &MotorControl::OnStop),
+    MotorControl::transition(StateId::RUNNING, EventId::SET_SPEED, StateId::RUNNING, &MotorControl::OnSetSpeed),
+    MotorControl::transition(StateId::WINDING_DOWN, EventId::STOPPED, StateId::IDLE, &MotorControl::OnStopped),
+    MotorControl::transition(EventId::ABORT, StateId::IDLE)};
 
   //***************************************************************************
-  constexpr etl::array<MotorControl::state, 3> MotorControl::stateTable =
-  {
-    MotorControl::state(StateId::IDLE,         &MotorControl::OnEnterIdle,        nullptr),
-    MotorControl::state(StateId::RUNNING,      &MotorControl::OnEnterRunning,     nullptr),
-    MotorControl::state(StateId::WINDING_DOWN, &MotorControl::OnEnterWindingDown, &MotorControl::OnExitWindingDown)
-  };
+  constexpr etl::array<MotorControl::state, 3> MotorControl::stateTable = {
+    MotorControl::state(StateId::IDLE, &MotorControl::OnEnterIdle, nullptr),
+    MotorControl::state(StateId::RUNNING, &MotorControl::OnEnterRunning, nullptr),
+    MotorControl::state(StateId::WINDING_DOWN, &MotorControl::OnEnterWindingDown, &MotorControl::OnExitWindingDown)};
 
   MotorControl motorControl;
 
@@ -242,7 +239,7 @@ namespace
   {
     //*************************************************************************
     TEST(test_state_chart)
-    {    
+    {
       motorControl.ClearStatistics();
 
       // In Idle state.
@@ -474,8 +471,8 @@ namespace
       check = StateId::IDLE;
 
       CHECK_EQUAL(check, state);
-      //CHECK_EQUAL(StateId::IDLE, state);
-      //CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      // CHECK_EQUAL(StateId::IDLE, state);
+      // CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
       // Send Start event.
       motorControl.process_event(EventId::START, 3);
@@ -496,4 +493,4 @@ namespace
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
     }
   }
-}
+} // namespace

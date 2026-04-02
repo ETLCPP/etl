@@ -33,15 +33,15 @@ SOFTWARE.
 
 #include "platform.h"
 #include "alignment.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "debug_count.h"
-#include "type_traits.h"
-#include "parameter_type.h"
-#include "memory_model.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "integral_limits.h"
-#include "utility.h"
+#include "memory_model.h"
+#include "parameter_type.h"
 #include "placement_new.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -96,7 +96,6 @@ namespace etl
     {
     }
   };
-
 
   //***************************************************************************
   /// The base class for all queues.
@@ -167,19 +166,17 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     queue_base(size_type max_size_)
-      : in(0),
-        out(0),
-        current_size(0),
-        CAPACITY(max_size_)
+      : in(0)
+      , out(0)
+      , current_size(0)
+      , CAPACITY(max_size_)
     {
     }
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~queue_base()
-    {
-    }
+    ~queue_base() {}
 
     //*************************************************************************
     /// Increments (and wraps) the 'in' index value to record a queue addition.
@@ -213,30 +210,29 @@ namespace etl
     //*************************************************************************
     void index_clear()
     {
-      in = 0;
-      out = 0;
+      in           = 0;
+      out          = 0;
       current_size = 0;
       ETL_RESET_DEBUG_COUNT;
     }
 
-    size_type in;            ///< Where to input new data.
-    size_type out;           ///< Where to get the oldest data.
-    size_type current_size;   ///< The number of items in the queue.
-    const size_type CAPACITY; ///< The maximum number of items in the queue.
-    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
-
+    size_type       in;           ///< Where to input new data.
+    size_type       out;          ///< Where to get the oldest data.
+    size_type       current_size; ///< The number of items in the queue.
+    const size_type CAPACITY;     ///< The maximum number of items in the queue.
+    ETL_DECLARE_DEBUG_COUNT;      ///< For internal debugging purposes.
   };
 
   //***************************************************************************
   ///\ingroup queue
   ///\brief This is the base for all queues that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived queue.
-  ///\code
+  ///\details Normally a reference to this type will be taken from a derived
+  /// queue. \code
   /// etl::queue<int, 10> myQueue;
   /// etl::iqueue<int>& iQueue = myQueue;
   ///\endcode
-  /// \warning This queue cannot be used for concurrent access from multiple threads.
-  /// \tparam T The type of value that the queue holds.
+  /// \warning This queue cannot be used for concurrent access from multiple
+  /// threads. \tparam T The type of value that the queue holds.
   //***************************************************************************
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue : public etl::queue_base<MEMORY_MODEL>
@@ -247,29 +243,30 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;      ///< The type stored in the queue.
-    typedef T&                         reference;       ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
+    typedef T        value_type;      ///< The type stored in the queue.
+    typedef T&       reference;       ///< A reference to the type used in the queue.
+    typedef const T& const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef T*                         pointer;         ///< A pointer to the type used in the queue.
-    typedef const T*                   const_pointer;   ///< A const pointer to the type used in the queue.
-    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+    typedef T*                         pointer;       ///< A pointer to the type used in the queue.
+    typedef const T*                   const_pointer; ///< A const pointer to the type used in the queue.
+    typedef typename base_t::size_type size_type;     ///< The type used for determining the size of the queue.
 
-    using base_t::in;
-    using base_t::out;
+    using base_t::add_in;
     using base_t::CAPACITY;
     using base_t::current_size;
-    using base_t::full;
-    using base_t::empty;
-    using base_t::add_in;
     using base_t::del_out;
+    using base_t::empty;
+    using base_t::full;
+    using base_t::in;
+    using base_t::out;
 
     //*************************************************************************
     /// Gets a reference to the value at the front of the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
-    /// \return A reference to the value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty. \return A reference to the value at the front of the
+    /// queue.
     //*************************************************************************
     reference front()
     {
@@ -279,8 +276,9 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the value at the front of the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
-    /// \return A const reference to the value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty. \return A const reference to the value at the front of
+    /// the queue.
     //*************************************************************************
     const_reference front() const
     {
@@ -290,8 +288,9 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the value at the back of the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
-    /// \return A reference to the value at the back of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty. \return A reference to the value at the back of the
+    /// queue.
     //*************************************************************************
     reference back()
     {
@@ -301,8 +300,9 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the value at the back of the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
-    /// \return A const reference to the value at the back of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty. \return A const reference to the value at the back of
+    /// the queue.
     //*************************************************************************
     const_reference back() const
     {
@@ -312,7 +312,8 @@ namespace etl
 
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
     void push(const_reference value)
@@ -326,7 +327,8 @@ namespace etl
 #if ETL_USING_CPP11
     //*************************************************************************
     /// Adds a value to the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
     void push(rvalue_reference value)
@@ -341,11 +343,13 @@ namespace etl
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param args The arguments to the constructor for the new item to push to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
+    ///\param args The arguments to the constructor for the new item to push to
+    /// the queue.
     //*************************************************************************
-    template <typename ... Args>
-    reference emplace(Args && ... args)
+    template <typename... Args>
+    reference emplace(Args&&... args)
     {
       ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(queue_full));
 
@@ -357,7 +361,8 @@ namespace etl
 #else
     //*************************************************************************
     /// Constructs a default constructed value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     reference emplace()
     {
@@ -371,8 +376,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value1 The argument to use to construct the item to push to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
+    ///\param value1 The argument to use to construct the item to push to the
+    /// queue.
     //*************************************************************************
     template <typename T1>
     reference emplace(const T1& value1)
@@ -387,9 +394,11 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value1 The first argument to use to construct the item to push to the queue.
-    ///\param value2 The second argument to use to construct the item to push to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
+    ///\param value1 The first argument to use to construct the item to push to
+    /// the queue. \param value2 The second argument to use to construct the
+    /// item to push to the queue.
     //*************************************************************************
     template <typename T1, typename T2>
     reference emplace(const T1& value1, const T2& value2)
@@ -404,10 +413,12 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value1 The first argument to use to construct the item to push to the queue.
-    ///\param value2 The second argument to use to construct the item to push to the queue.
-    ///\param value3 The third argument to use to construct the item to push to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
+    ///\param value1 The first argument to use to construct the item to push to
+    /// the queue. \param value2 The second argument to use to construct the
+    /// item to push to the queue. \param value3 The third argument to use to
+    /// construct the item to push to the queue.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
     reference emplace(const T1& value1, const T2& value2, const T3& value3)
@@ -422,11 +433,13 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value1 The first argument to use to construct the item to push to the queue.
-    ///\param value2 The second argument to use to construct the item to push to the queue.
-    ///\param value3 The third argument to use to construct the item to push to the queue.
-    ///\param value4 The fourth argument to use to construct the item to push to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
+    ///\param value1 The first argument to use to construct the item to push to
+    /// the queue. \param value2 The second argument to use to construct the
+    /// item to push to the queue. \param value3 The third argument to use to
+    /// construct the item to push to the queue. \param value4 The fourth
+    /// argument to use to construct the item to push to the queue.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
@@ -445,7 +458,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         base_t::index_clear();
       }
@@ -457,7 +470,7 @@ namespace etl
           del_out();
         }
 
-        in = 0;
+        in  = 0;
         out = 0;
       }
     }
@@ -465,7 +478,8 @@ namespace etl
     //*************************************************************************
     /// Removes the oldest value from the front of the queue.
     /// Does nothing if the queue is already empty.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty.
     //*************************************************************************
     void pop()
     {
@@ -477,7 +491,8 @@ namespace etl
 
     //*************************************************************************
     /// Gets the oldest value and removes it from the front of the queue.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty.
     //*************************************************************************
     void pop_into(reference destination)
     {
@@ -488,8 +503,9 @@ namespace etl
     //*************************************************************************
     /// Gets the oldest value and removes it from the front of the queue and
     /// pushes it to the destination container.
-    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the queue is empty.
-    /// NOTE: The destination must support a push(T) member function.
+    /// If asserts or exceptions are enabled, throws an etl::queue_empty if the
+    /// queue is empty. NOTE: The destination must support a push(T) member
+    /// function.
     //*************************************************************************
     template <typename TContainer>
     void pop_into(TContainer& destination)
@@ -501,7 +517,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iqueue& operator = (const iqueue& rhs)
+    iqueue& operator=(const iqueue& rhs)
     {
       if (&rhs != this)
       {
@@ -516,7 +532,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iqueue& operator = (iqueue&& rhs)
+    iqueue& operator=(iqueue&& rhs)
     {
       if (&rhs != this)
       {
@@ -568,8 +584,8 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue(T* p_buffer_, size_type max_size_)
-      : base_t(max_size_),
-        p_buffer(p_buffer_)
+      : base_t(max_size_)
+      , p_buffer(p_buffer_)
     {
     }
 
@@ -584,15 +600,15 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_QUEUE) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~iqueue()
-    {
-    }
+
+    virtual ~iqueue() {}
 #else
+
   protected:
-    ~iqueue()
-    {
-    }
+
+    ~iqueue() {}
 #endif
   };
 
@@ -602,7 +618,8 @@ namespace etl
   /// This queue does not support concurrent access by different threads.
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
-  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type
+  /// of the internal counter variables.
   //***************************************************************************
   template <typename T, const size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue : public etl::iqueue<T, MEMORY_MODEL>
@@ -613,8 +630,8 @@ namespace etl
 
   public:
 
-    typedef typename base_t::size_type                                                  size_type;
-    typedef typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type container_type;
+    typedef typename base_t::size_type                                                   size_type;
+    typedef typename etl::aligned_storage< sizeof(T), etl::alignment_of<T>::value>::type container_type;
 
     ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
 
@@ -659,7 +676,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    queue& operator = (const queue& rhs)
+    queue& operator=(const queue& rhs)
     {
       if (&rhs != this)
       {
@@ -673,7 +690,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    queue& operator = (queue&& rhs)
+    queue& operator=(queue&& rhs)
     {
       if (&rhs != this)
       {
@@ -692,6 +709,6 @@ namespace etl
 
   template <typename T, const size_t SIZE, const size_t MEMORY_MODEL>
   ETL_CONSTANT typename queue<T, SIZE, MEMORY_MODEL>::size_type queue<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

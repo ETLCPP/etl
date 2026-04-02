@@ -32,15 +32,15 @@ SOFTWARE.
 #define ETL_MURMUR3_INCLUDED
 
 #include "platform.h"
-#include "ihash.h"
-#include "iterator.h"
 #include "binary.h"
 #include "error_handler.h"
+#include "ihash.h"
+#include "iterator.h"
 
 #include <stdint.h>
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
+  #pragma diag_suppress 1300
 #endif
 
 ///\defgroup murmur3 Murmur3 hash calculations
@@ -82,7 +82,7 @@ namespace etl
     /// \param end   End of the range.
     /// \param seed  The seed value. Default = 0.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     murmur3(TIterator begin, const TIterator end, value_type seed_ = 0)
       : seed(seed_)
     {
@@ -98,7 +98,7 @@ namespace etl
         {
           add_block();
           block_fill_count = 0;
-          block = 0;
+          block            = 0;
         }
 
         ++char_count;
@@ -122,7 +122,7 @@ namespace etl
     /// \param begin
     /// \param end
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     void add(TIterator begin, const TIterator end)
     {
       ETL_STATIC_ASSERT(sizeof(typename etl::iterator_traits<TIterator>::value_type) == 1, "Incompatible type");
@@ -137,7 +137,7 @@ namespace etl
         {
           add_block();
           block_fill_count = 0;
-          block = 0;
+          block            = 0;
         }
 
         ++char_count;
@@ -146,8 +146,8 @@ namespace etl
 
     //*************************************************************************
     /// Adds a uint8_t value.
-    /// If the hash has already been finalised then a 'hash_finalised' error will be emitted.
-    /// \param value The char to add to the hash.
+    /// If the hash has already been finalised then a 'hash_finalised' error
+    /// will be emitted. \param value The char to add to the hash.
     //*************************************************************************
     void add(uint8_t value_)
     {
@@ -160,7 +160,7 @@ namespace etl
       {
         add_block();
         block_fill_count = 0;
-        block = 0;
+        block            = 0;
       }
 
       ++char_count;
@@ -178,7 +178,7 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    operator value_type ()
+    operator value_type()
     {
       return value();
     }
@@ -237,6 +237,6 @@ namespace etl
     static ETL_CONSTANT value_type MULTIPLY   = 5;
     static ETL_CONSTANT value_type ADD        = 0xE6546B64UL;
   };
-}
+} // namespace etl
 
 #endif

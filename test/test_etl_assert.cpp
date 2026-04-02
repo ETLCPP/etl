@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -70,4 +70,4 @@ namespace
       CHECK_NO_THROW(ETL_ASSERT(true, ETL_ERROR_GENERIC("Generic Assert Exception")));
     }
   }
-}
+} // namespace

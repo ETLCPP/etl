@@ -39,8 +39,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "error_handler.h"
-#include "nullptr.h"
 #include "file_error_numbers.h"
+#include "nullptr.h"
 
 namespace etl
 {
@@ -87,9 +87,9 @@ namespace etl
   /// Base class for singletons.
   /// \tparam T   Any type that wants to expose the instance() interface.
   ///
-  /// This class is designed to work as a generic base class for any class that wants to
-  /// provide a singleton interface. It'll also work for classes that do not have a
-  /// default constructor.
+  /// This class is designed to work as a generic base class for any class that
+  /// wants to provide a singleton interface. It'll also work for classes that
+  /// do not have a default constructor.
   ///
   /// Usage example:
   ///
@@ -109,9 +109,10 @@ namespace etl
   ///
   /// Note:
   ///
-  /// It is important that a call to instance() will not create the instance of the class. It needs
-  /// to be created by the user before calling instance(). This way, the user has better control
-  /// over the instance lifetime instead of e.g. lazy initialization.
+  /// It is important that a call to instance() will not create the instance of
+  /// the class. It needs to be created by the user before calling instance().
+  /// This way, the user has better control over the instance lifetime instead
+  /// of e.g. lazy initialization.
   //***********************************************************************
   template <typename T>
   class singleton_base
@@ -131,16 +132,17 @@ namespace etl
     //***********************************************************************
     /// Returns whether an instance has been attached to singleton<T> or not.
     //***********************************************************************
-    static bool is_valid() 
-    { 
-      return (m_self != ETL_NULLPTR); 
+    static bool is_valid()
+    {
+      return (m_self != ETL_NULLPTR);
     }
 
   protected:
 
     //***********************************************************************
     /// Constructs the instance of singleton.
-    /// theInstance Reference to T, which will be returned when instance() is called.
+    /// theInstance Reference to T, which will be returned when instance() is
+    /// called.
     //***********************************************************************
     explicit singleton_base(T& theInstance)
     {
@@ -150,11 +152,12 @@ namespace etl
     }
 
     //***********************************************************************
-    /// Removes the internal reference to the instance passed in the constructor.
+    /// Removes the internal reference to the instance passed in the
+    /// constructor.
     //***********************************************************************
-    ~singleton_base() 
-    { 
-      m_self = ETL_NULLPTR; 
+    ~singleton_base()
+    {
+      m_self = ETL_NULLPTR;
     }
 
   private:
@@ -165,8 +168,8 @@ namespace etl
   //***********************************************************************
   /// No violation of one definition rule as this is a class template
   //***********************************************************************
-  template<class T>
+  template <class T>
   T* singleton_base<T>::m_self = ETL_NULLPTR;
-}
+} // namespace etl
 
 #endif

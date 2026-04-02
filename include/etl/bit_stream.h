@@ -27,22 +27,22 @@ SOFTWARE.
 #define ETL_BIT_STREAM_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
-#include "nullptr.h"
-#include "endianness.h"
-#include "integral_limits.h"
-#include "binary.h"
 #include "algorithm.h"
+#include "binary.h"
+#include "delegate.h"
+#include "endianness.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "integral_limits.h"
 #include "iterator.h"
 #include "memory.h"
-#include "delegate.h"
-#include "span.h"
+#include "nullptr.h"
 #include "optional.h"
-#include "exception.h"
-#include "error_handler.h"
+#include "span.h"
+#include "type_traits.h"
 
-#include <stdint.h>
 #include <limits.h>
+#include <stdint.h>
 
 #include "private/minmax_push.h"
 
@@ -93,7 +93,7 @@ namespace etl
     //***************************************************************************
     void set_stream(void* begin_, size_t length_)
     {
-      pdata  = reinterpret_cast<unsigned char*>(begin_);
+      pdata        = reinterpret_cast<unsigned char*>(begin_);
       length_chars = length_;
       restart();
     }
@@ -112,8 +112,8 @@ namespace etl
     void restart()
     {
       bits_available_in_char = CHAR_BIT;
-      char_index     = 0U;
-      bits_available = CHAR_BIT * length_chars;
+      char_index             = 0U;
+      bits_available         = CHAR_BIT * length_chars;
     }
 
     //***************************************************************************
@@ -148,8 +148,7 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-      put(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
+    typename etl::enable_if<etl::is_integral<T>::value, bool>::type put(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
       return put_integral(static_cast<uint32_t>(value), nbits);
     }
@@ -176,8 +175,7 @@ namespace etl
     /// For floating point types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-      put(T value)
+    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type put(T value)
     {
       bool success = true;
 
@@ -207,7 +205,7 @@ namespace etl
         // Do we have enough bits?
         if (bits_available > 0U)
         {
-          value = get_bit();
+          value   = get_bit();
           success = true;
         }
       }
@@ -219,11 +217,10 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-      get(T& value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
+    typename etl::enable_if<etl::is_integral<T>::value, bool>::type get(T& value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
-      bool success = false;
-      uint_least8_t bits = nbits;
+      bool          success = false;
+      uint_least8_t bits    = nbits;
 
       if (pdata != ETL_NULLPTR)
       {
@@ -238,7 +235,7 @@ namespace etl
             unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
 
             typedef typename etl::make_unsigned<T>::type chunk_t;
-            chunk_t chunk = get_chunk(mask_width);
+            chunk_t                                      chunk = get_chunk(mask_width);
 
             nbits -= mask_width;
             value |= static_cast<T>(chunk << nbits);
@@ -262,8 +259,7 @@ namespace etl
     /// For floating point types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-      get(T& value)
+    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type get(T& value)
     {
       bool success = false;
 
@@ -279,7 +275,7 @@ namespace etl
 
           for (size_t i = 0UL; i < sizeof(T); ++i)
           {
-             get(data.raw[i], CHAR_BIT);
+            get(data.raw[i], CHAR_BIT);
           }
 
           from_bytes(reinterpret_cast<const unsigned char*>(data.raw), value);
@@ -351,7 +347,7 @@ namespace etl
             unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
             nbits -= mask_width;
             uint32_t mask = ((1U << mask_width) - 1U) << nbits;
-            //uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << nbits;
+            // uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << nbits;
 
             // Move chunk to lowest char bits.
             // Chunks are never larger than one char.
@@ -513,11 +509,13 @@ namespace etl
       bits_available -= nbits;
     }
 
-    unsigned char *pdata;                 ///< The start of the bitstream buffer.
-    size_t        length_chars;           ///< The length, in char, of the bitstream buffer.
-    unsigned char bits_available_in_char; ///< The number of available bits in the current char.
-    size_t        char_index;             ///< The index of the char in the bitstream buffer.
-    size_t        bits_available;         ///< The number of bits still available in the bitstream buffer.
+    unsigned char* pdata;                  ///< The start of the bitstream buffer.
+    size_t         length_chars;           ///< The length, in char, of the bitstream buffer.
+    unsigned char  bits_available_in_char; ///< The number of available bits in
+                                           ///< the current char.
+    size_t char_index;                     ///< The index of the char in the bitstream buffer.
+    size_t bits_available;                 ///< The number of bits still available in the
+                                           ///< bitstream buffer.
   };
 
   //***************************************************************************
@@ -527,10 +525,10 @@ namespace etl
   {
   public:
 
-    typedef char value_type;
-    typedef value_type* iterator;
-    typedef const value_type* const_iterator;
-    typedef etl::span<value_type> callback_parameter_type;
+    typedef char                                         value_type;
+    typedef value_type*                                  iterator;
+    typedef const value_type*                            const_iterator;
+    typedef etl::span<value_type>                        callback_parameter_type;
     typedef etl::delegate<void(callback_parameter_type)> callback_type;
 
     //***************************************************************************
@@ -589,8 +587,8 @@ namespace etl
     void restart()
     {
       bits_available_in_char = CHAR_BIT;
-      char_index = 0U;
-      bits_available = capacity_bits();
+      char_index             = 0U;
+      bits_available         = capacity_bits();
     }
 
     //***************************************************************************
@@ -653,8 +651,7 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value, void>::type
-      write_unchecked(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
+    typename etl::enable_if<etl::is_integral<T>::value, void>::type write_unchecked(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
       typedef typename etl::unsigned_type<T>::type unsigned_t;
 
@@ -665,8 +662,7 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-      write(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
+    typename etl::enable_if<etl::is_integral<T>::value, bool>::type write(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
       bool success = (available(nbits) > 0U);
 
@@ -975,10 +971,12 @@ namespace etl
     char* const       pdata;                  ///< The start of the bitstream buffer.
     const size_t      length_chars;           ///< The length of the bitstream buffer.
     const etl::endian stream_endianness;      ///< The endianness of the stream data.
-    unsigned char     bits_available_in_char; ///< The number of available bits in the current char.
-    size_t            char_index;             ///< The index of the current char in the bitstream buffer.
-    size_t            bits_available;         ///< The number of bits still available in the bitstream buffer.
-    callback_type     callback;               ///< An optional callback on every filled byte in buffer.
+    unsigned char     bits_available_in_char; ///< The number of available bits in
+                                              ///< the current char.
+    size_t char_index;                        ///< The index of the current char in the bitstream buffer.
+    size_t bits_available;                    ///< The number of bits still available in the
+                                              ///< bitstream buffer.
+    callback_type callback;                   ///< An optional callback on every filled byte in buffer.
   };
 
   //***************************************************************************
@@ -1005,8 +1003,8 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value, void>::type
-    write_unchecked(etl::bit_stream_writer& stream, const T& value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
+  typename etl::enable_if<etl::is_integral<T>::value, void>::type write_unchecked(etl::bit_stream_writer& stream, const T& value,
+                                                                                  uint_least8_t nbits = CHAR_BIT * sizeof(T))
   {
     stream.write_unchecked(value, nbits);
   }
@@ -1017,8 +1015,8 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    write(etl::bit_stream_writer& stream, const T& value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
+  typename etl::enable_if<etl::is_integral<T>::value, bool>::type write(etl::bit_stream_writer& stream, const T& value,
+                                                                        uint_least8_t nbits = CHAR_BIT * sizeof(T))
   {
     return stream.write(value, nbits);
   }
@@ -1030,7 +1028,7 @@ namespace etl
   {
   public:
 
-    typedef char value_type;
+    typedef char        value_type;
     typedef const char* const_iterator;
 
     //***************************************************************************
@@ -1109,16 +1107,15 @@ namespace etl
     void restart()
     {
       bits_available_in_char = CHAR_BIT;
-      char_index = 0U;
-      bits_available = CHAR_BIT * length_chars;
+      char_index             = 0U;
+      bits_available         = CHAR_BIT * length_chars;
     }
 
     //***************************************************************************
     /// For bool types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_same<bool, T>::value, bool>::type
-      read_unchecked()
+    typename etl::enable_if<etl::is_same<bool, T>::value, bool>::type read_unchecked()
     {
       return get_bit();
     }
@@ -1127,8 +1124,7 @@ namespace etl
     /// For bool types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_same<bool, T>::value, etl::optional<bool> >::type
-      read()
+    typename etl::enable_if<etl::is_same<bool, T>::value, etl::optional<bool> >::type read()
     {
       etl::optional<bool> result;
 
@@ -1144,8 +1140,8 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value && !etl::is_same<bool, T>::value, T>::type
-      read_unchecked(uint_least8_t nbits = CHAR_BIT * sizeof(T))
+    typename etl::enable_if< etl::is_integral<T>::value && !etl::is_same<bool, T>::value, T>::type read_unchecked(uint_least8_t nbits = CHAR_BIT
+                                                                                                                                        * sizeof(T))
     {
       typedef typename etl::unsigned_type<T>::type unsigned_t;
 
@@ -1166,7 +1162,7 @@ namespace etl
       // Do we have enough bits?
       if (bits_available >= nbits)
       {
-        result = read_unchecked<T>(nbits); 
+        result = read_unchecked<T>(nbits);
       }
 
       return result;
@@ -1266,8 +1262,8 @@ namespace etl
       // Make sure that we are not reading more bits than should be available.
       nbits = (nbits > (CHAR_BIT * sizeof(T))) ? (CHAR_BIT * sizeof(T)) : nbits;
 
-      T value = 0;
-      uint_least8_t bits = nbits;
+      T             value = 0;
+      uint_least8_t bits  = nbits;
 
       // Get the bits from the stream.
       while (nbits != 0)
@@ -1352,9 +1348,11 @@ namespace etl
     const char*       pdata;                  ///< The start of the bitstream buffer.
     size_t            length_chars;           ///< The length, in char, of the bitstream buffer.
     const etl::endian stream_endianness;      ///< The endianness of the stream data.
-    unsigned char     bits_available_in_char; ///< The number of available bits in the current char.
-    size_t            char_index;             ///< The index of the char in the bitstream buffer.
-    size_t            bits_available;         ///< The number of bits still available in the bitstream buffer.
+    unsigned char     bits_available_in_char; ///< The number of available bits in
+                                              ///< the current char.
+    size_t char_index;                        ///< The index of the char in the bitstream buffer.
+    size_t bits_available;                    ///< The number of bits still available in the
+                                              ///< bitstream buffer.
   };
 
   //***************************************************************************
@@ -1404,7 +1402,7 @@ namespace etl
   {
     return stream.read<bool>();
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

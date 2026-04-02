@@ -33,11 +33,10 @@ SOFTWARE.
  * This file is intended to evaluated multiple times by design.
  */
 
-#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__) && \
-      (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-#pragma GCC diagnostic pop 
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+  #pragma GCC diagnostic pop
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
-#pragma clang diagnostic pop
+  #pragma clang diagnostic pop
 #endif

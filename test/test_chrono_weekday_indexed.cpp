@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -68,13 +68,13 @@ namespace
     {
       for (unsigned i = 1U; i < 5U; ++i)
       {
-        Chrono::weekday_indexed weekday_indexed_monday(Chrono::Monday,       i);
-        Chrono::weekday_indexed weekday_indexed_tuesday(Chrono::Tuesday,     i);
+        Chrono::weekday_indexed weekday_indexed_monday(Chrono::Monday, i);
+        Chrono::weekday_indexed weekday_indexed_tuesday(Chrono::Tuesday, i);
         Chrono::weekday_indexed weekday_indexed_wednesday(Chrono::Wednesday, i);
-        Chrono::weekday_indexed weekday_indexed_thursday(Chrono::Thursday,   i);
-        Chrono::weekday_indexed weekday_indexed_friday(Chrono::Friday,       i);
-        Chrono::weekday_indexed weekday_indexed_saturday(Chrono::Saturday,   i);
-        Chrono::weekday_indexed weekday_indexed_sunday(Chrono::Sunday,       i);
+        Chrono::weekday_indexed weekday_indexed_thursday(Chrono::Thursday, i);
+        Chrono::weekday_indexed weekday_indexed_friday(Chrono::Friday, i);
+        Chrono::weekday_indexed weekday_indexed_saturday(Chrono::Saturday, i);
+        Chrono::weekday_indexed weekday_indexed_sunday(Chrono::Sunday, i);
 
         CHECK_TRUE(weekday_indexed_monday.ok());
         CHECK_TRUE(weekday_indexed_tuesday.ok());
@@ -83,15 +83,15 @@ namespace
         CHECK_TRUE(weekday_indexed_friday.ok());
         CHECK_TRUE(weekday_indexed_saturday.ok());
         CHECK_TRUE(weekday_indexed_sunday.ok());
-        
-        CHECK_EQUAL(Chrono::Monday.c_encoding(),    weekday_indexed_monday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Tuesday.c_encoding(),   weekday_indexed_tuesday.weekday().c_encoding());
+
+        CHECK_EQUAL(Chrono::Monday.c_encoding(), weekday_indexed_monday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Tuesday.c_encoding(), weekday_indexed_tuesday.weekday().c_encoding());
         CHECK_EQUAL(Chrono::Wednesday.c_encoding(), weekday_indexed_wednesday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Thursday.c_encoding(),  weekday_indexed_thursday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Friday.c_encoding(),    weekday_indexed_friday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Saturday.c_encoding(),  weekday_indexed_saturday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Sunday.c_encoding(),    weekday_indexed_sunday.weekday().c_encoding());
-        
+        CHECK_EQUAL(Chrono::Thursday.c_encoding(), weekday_indexed_thursday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Friday.c_encoding(), weekday_indexed_friday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Saturday.c_encoding(), weekday_indexed_saturday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Sunday.c_encoding(), weekday_indexed_sunday.weekday().c_encoding());
+
         CHECK_EQUAL(i, weekday_indexed_monday.index());
         CHECK_EQUAL(i, weekday_indexed_tuesday.index());
         CHECK_EQUAL(i, weekday_indexed_wednesday.index());
@@ -107,13 +107,13 @@ namespace
     {
       for (unsigned i = 6U; i < 256U; ++i)
       {
-        Chrono::weekday_indexed weekday_indexed_monday(Chrono::Monday,       i);
-        Chrono::weekday_indexed weekday_indexed_tuesday(Chrono::Tuesday,     i);
+        Chrono::weekday_indexed weekday_indexed_monday(Chrono::Monday, i);
+        Chrono::weekday_indexed weekday_indexed_tuesday(Chrono::Tuesday, i);
         Chrono::weekday_indexed weekday_indexed_wednesday(Chrono::Wednesday, i);
-        Chrono::weekday_indexed weekday_indexed_thursday(Chrono::Thursday,   i);
-        Chrono::weekday_indexed weekday_indexed_friday(Chrono::Friday,       i);
-        Chrono::weekday_indexed weekday_indexed_saturday(Chrono::Saturday,   i);
-        Chrono::weekday_indexed weekday_indexed_sunday(Chrono::Sunday,       i);
+        Chrono::weekday_indexed weekday_indexed_thursday(Chrono::Thursday, i);
+        Chrono::weekday_indexed weekday_indexed_friday(Chrono::Friday, i);
+        Chrono::weekday_indexed weekday_indexed_saturday(Chrono::Saturday, i);
+        Chrono::weekday_indexed weekday_indexed_sunday(Chrono::Sunday, i);
 
         CHECK_FALSE(weekday_indexed_monday.ok());
         CHECK_FALSE(weekday_indexed_tuesday.ok());
@@ -128,12 +128,12 @@ namespace
     //*************************************************************************
     TEST(test_weekday_indexed_comparison_operators)
     {
-      Chrono::weekday_indexed weekday_indexed1(Chrono::Monday,  1);
-      Chrono::weekday_indexed weekday_indexed2(Chrono::Monday,  1);
-      Chrono::weekday_indexed weekday_indexed3(Chrono::Monday,  2);
+      Chrono::weekday_indexed weekday_indexed1(Chrono::Monday, 1);
+      Chrono::weekday_indexed weekday_indexed2(Chrono::Monday, 1);
+      Chrono::weekday_indexed weekday_indexed3(Chrono::Monday, 2);
       Chrono::weekday_indexed weekday_indexed4(Chrono::Tuesday, 1);
 
-      CHECK_TRUE(weekday_indexed1  == weekday_indexed2); 
+      CHECK_TRUE(weekday_indexed1 == weekday_indexed2);
       CHECK_FALSE(weekday_indexed1 == weekday_indexed3);
       CHECK_FALSE(weekday_indexed1 == weekday_indexed4);
     }
@@ -160,4 +160,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

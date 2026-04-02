@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/array_view.h"
 #include "etl/array.h"
+#include "etl/array_view.h"
 
-#include <array>
-#include <vector>
 #include <algorithm>
+#include <array>
 #include <iterator>
+#include <vector>
 
 namespace
 {
@@ -44,33 +44,33 @@ namespace
 
     typedef etl::array<int, SIZE> EtlData;
     typedef std::array<int, SIZE> StlData;
-    typedef std::vector<int> StlVData;
+    typedef std::vector<int>      StlVData;
 
-    typedef etl::array_view<int> View;
+    typedef etl::array_view<int>       View;
     typedef etl::array_view<const int> CView;
 
-    EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    StlData stldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    StlVData stlvdata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    EtlData  etldata  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    StlData  stldata  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    StlVData stlvdata = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    EtlData etldatasmaller = { 0, 1, 2, 3, 4, 5, 5, 7, 8, 9 };
-    EtlData etldatashorter = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    EtlData etldatasmaller = {0, 1, 2, 3, 4, 5, 5, 7, 8, 9};
+    EtlData etldatashorter = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
-    EtlData etloriginal = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    EtlData etlmodified = { 0, 1, 10, 10, 10, 10, 10, 10, 8, 9 };
+    EtlData etloriginal = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    EtlData etlmodified = {0, 1, 10, 10, 10, 10, 10, 10, 8, 9};
 
-    const EtlData cetldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    const StlData cstldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    const StlVData cstlvdata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    const EtlData  cetldata  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    const StlData  cstldata  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    const StlVData cstlvdata = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    const int FillData = -1;
-    const EtlData filldata = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+    const int     FillData = -1;
+    const EtlData filldata = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-    int cdata[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    int* pcdata = cdata;
+    int  cdata[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int* pcdata  = cdata;
 
-    const int ccdata[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    const int* pccdata = ccdata;
+    const int  ccdata[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    const int* pccdata  = ccdata;
 
     //*************************************************************************
     TEST(test_default_constructor)
@@ -290,15 +290,15 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_cpp17_deduced_constructor)
     {
-      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-      etl::array_view view1{ data };
-      etl::array_view view2{ data.begin(), data.end() };
-      etl::array_view view3{ data.begin(), data.size() };
-      etl::array_view view4{ view1 };
+      etl::array_view view1{data};
+      etl::array_view view2{data.begin(), data.end()};
+      etl::array_view view3{data.begin(), data.size()};
+      etl::array_view view4{view1};
 
-      int c_array[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      etl::array_view view5{ c_array };
+      int             c_array[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::array_view view5{c_array};
 
       bool isEqual = false;
 
@@ -340,7 +340,7 @@ namespace
       CView cview1(etldata);
       CView cview2;
 
-      view2 = view1;
+      view2  = view1;
       cview2 = cview1;
 
       CHECK_EQUAL(view1.size(), view2.size());
@@ -361,7 +361,7 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_iterator_range)
     {
-      View view;
+      View  view;
       CView cview;
 
       view.assign(etldata.begin(), etldata.end());
@@ -385,7 +385,7 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_iterator_size)
     {
-      View view;
+      View  view;
       CView cview;
 
       view.assign(etldata.begin(), etldata.size());
@@ -431,16 +431,16 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      CHECK_EQUAL(view.begin(),  view.cbegin());
+      CHECK_EQUAL(view.begin(), view.cbegin());
       CHECK_EQUAL(cview.begin(), cview.cbegin());
 
-      CHECK_EQUAL(view.rbegin().base(),  view.crbegin().base());
+      CHECK_EQUAL(view.rbegin().base(), view.crbegin().base());
       CHECK_EQUAL(cview.rbegin().base(), cview.crbegin().base());
 
-      CHECK_EQUAL(view.end(),  view.cend());
+      CHECK_EQUAL(view.end(), view.cend());
       CHECK_EQUAL(cview.end(), cview.cend());
 
-      CHECK_EQUAL(view.rend().base(),  view.crend().base());
+      CHECK_EQUAL(view.rend().base(), view.crend().base());
       CHECK_EQUAL(cview.rend().base(), cview.crend().base());
     }
 
@@ -491,7 +491,7 @@ namespace
       CHECK_THROW(view[view.size()], etl::array_view_bounds);
       CHECK_THROW(cview[cview.size()], etl::array_view_bounds);
     }
-  
+
 #endif
 
     //*************************************************************************
@@ -513,7 +513,7 @@ namespace
       View  view;
       CView cview;
 
-      CHECK_THROW(view.at(0),  etl::array_view_uninitialised);
+      CHECK_THROW(view.at(0), etl::array_view_uninitialised);
       CHECK_THROW(cview.at(0), etl::array_view_uninitialised);
     }
 
@@ -530,8 +530,8 @@ namespace
     //*************************************************************************
     TEST(test_non_member_same)
     {
-      View  view1(etldata.begin(), etldata.end());
-      View  view2(etldata.begin(), etldata.end());
+      View view1(etldata.begin(), etldata.end());
+      View view2(etldata.begin(), etldata.end());
 
       CView cview1(etldata.begin(), etldata.end());
       CView cview2(etldata.begin(), etldata.end());
@@ -555,45 +555,45 @@ namespace
     //*************************************************************************
     TEST(test_non_member_smaller)
     {
-      View  view1(etldata.begin(), etldata.end());
-      View  view2(etldatasmaller.begin(), etldatasmaller.end());
+      View view1(etldata.begin(), etldata.end());
+      View view2(etldatasmaller.begin(), etldatasmaller.end());
 
       CView cview1(etldata.begin(), etldata.end());
       CView cview2(etldatasmaller.begin(), etldatasmaller.end());
 
-      CHECK(!(view1  == view2));
+      CHECK(!(view1 == view2));
       CHECK(!(cview1 == cview2));
 
-      CHECK(!(view1  <= view2));
+      CHECK(!(view1 <= view2));
       CHECK(!(cview1 <= cview2));
 
-      CHECK(view2  <= view1);
+      CHECK(view2 <= view1);
       CHECK(cview2 <= cview1);
 
-      CHECK(view1  >= view2);
+      CHECK(view1 >= view2);
       CHECK(cview1 >= cview2);
 
-      CHECK(!(view2  >= view1));
+      CHECK(!(view2 >= view1));
       CHECK(!(cview2 >= cview1));
 
-      CHECK(view1  > view2);
+      CHECK(view1 > view2);
       CHECK(cview1 > cview2);
 
-      CHECK(!(view2  > view1));
+      CHECK(!(view2 > view1));
       CHECK(!(cview2 > cview1));
 
-      CHECK(!(view1  < view2));
+      CHECK(!(view1 < view2));
       CHECK(!(cview1 < cview2));
 
-      CHECK(view2  < view1);
+      CHECK(view2 < view1);
       CHECK(cview2 < cview1);
     }
 
     //*************************************************************************
     TEST(test_non_member_shorter)
     {
-      View  view1(etldata.begin(), etldata.end());
-      View  view2(etldatashorter.begin(), etldatashorter.end());
+      View view1(etldata.begin(), etldata.end());
+      View view2(etldatashorter.begin(), etldatashorter.end());
 
       CView cview1(etldata.begin(), etldata.end());
       CView cview2(etldatashorter.begin(), etldatashorter.end());
@@ -613,16 +613,16 @@ namespace
       CHECK(!(view2 >= view1));
       CHECK(!(cview2 >= cview1));
 
-      CHECK(view1  > view2);
+      CHECK(view1 > view2);
       CHECK(cview1 > cview2);
 
-      CHECK(!(view2  > view1));
+      CHECK(!(view2 > view1));
       CHECK(!(cview2 > cview1));
 
-      CHECK(!(view1  < view2));
+      CHECK(!(view1 < view2));
       CHECK(!(cview1 < cview2));
 
-      CHECK(view2  < view1);
+      CHECK(view2 < view1);
       CHECK(cview2 < cview1);
     }
 
@@ -659,11 +659,11 @@ namespace
     //*************************************************************************
     TEST(test_remove_prefix_suffix)
     {
-      std::vector<int> original     = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      std::vector<int> prefix       = { 3, 4, 5, 6, 7, 8 };
-      std::vector<int> prefixsuffix = { 3, 4, 5, 6 };
-      View view(original);
-      CView cview(original);
+      std::vector<int> original     = {1, 2, 3, 4, 5, 6, 7, 8};
+      std::vector<int> prefix       = {3, 4, 5, 6, 7, 8};
+      std::vector<int> prefixsuffix = {3, 4, 5, 6};
+      View             view(original);
+      CView            cview(original);
 
       bool isEqual;
 
@@ -685,50 +685,50 @@ namespace
     }
 
     //*************************************************************************
-	  TEST(test_remove_prefix_boundary)
-	  {
-		  // On-point test
-		  std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    TEST(test_remove_prefix_boundary)
+    {
+      // On-point test
+      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
 
-		  View view(original);
+      View view(original);
 
-		  view.remove_prefix(original.size());
+      view.remove_prefix(original.size());
 
-		  CHECK(view.empty());
+      CHECK(view.empty());
 
-		  // Off-point test
+      // Off-point test
 
-		  std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      std::vector<int> original2 = {1, 2, 3, 4, 5, 6, 7, 8};
 
-		  View view2(original2);
+      View view2(original2);
 
-		  view2.remove_prefix(original.size() + 1);
+      view2.remove_prefix(original.size() + 1);
 
-		  CHECK(view2.empty());
-	  }
+      CHECK(view2.empty());
+    }
 
     //*************************************************************************
-	  TEST(test_remove_suffix_boundary)
-	  {
-		  // On-point test
-		  std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    TEST(test_remove_suffix_boundary)
+    {
+      // On-point test
+      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
 
-		  View view(original);
+      View view(original);
 
-		  view.remove_suffix(original.size());
+      view.remove_suffix(original.size());
 
-		  CHECK(view.empty());
+      CHECK(view.empty());
 
-		  // Off-point test
+      // Off-point test
 
-		  std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      std::vector<int> original2 = {1, 2, 3, 4, 5, 6, 7, 8};
 
-		  View view2(original2);
+      View view2(original2);
 
-		  view2.remove_suffix(original.size() + 1);
+      view2.remove_suffix(original.size() + 1);
 
-		  CHECK(view2.empty());
-	  }
+      CHECK(view2.empty());
+    }
 
     //*************************************************************************
     TEST(test_hash)
@@ -761,15 +761,13 @@ namespace
     //*************************************************************************
 #include "etl/private/diagnostic_unused_function_push.h"
 
-    struct C_issue_482 {};
-
-    void f_issue_482(etl::array_view<char>)
+    struct C_issue_482
     {
-    }
+    };
 
-    void f_issue_482(etl::array_view<C_issue_482>)
-    {
-    }
+    void f_issue_482(etl::array_view<char>) {}
+
+    void f_issue_482(etl::array_view<C_issue_482>) {}
 
     TEST(test_issue_482_2)
     {
@@ -794,4 +792,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

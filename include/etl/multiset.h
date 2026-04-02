@@ -33,24 +33,24 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "iterator.h"
-#include "functional.h"
-#include "parameter_type.h"
-#include "pool.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "debug_count.h"
-#include "nullptr.h"
-#include "type_traits.h"
-#include "nth_type.h"
-#include "utility.h"
-#include "placement_new.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "functional.h"
 #include "initializer_list.h"
+#include "iterator.h"
+#include "nth_type.h"
+#include "nullptr.h"
+#include "parameter_type.h"
+#include "placement_new.h"
+#include "pool.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include <stddef.h>
 
-#include "private/minmax_push.h"
 #include "private/comparator_is_transparent.h"
+#include "private/minmax_push.h"
 
 //*****************************************************************************
 /// A multiset with the capacity defined at compile time.
@@ -192,10 +192,10 @@ namespace etl
       //***********************************************************************
       /// Constructor
       //***********************************************************************
-      Node() :
-        parent(ETL_NULLPTR),
-        weight(kNeither),
-        dir(kNeither)
+      Node()
+        : parent(ETL_NULLPTR)
+        , weight(kNeither)
+        , dir(kNeither)
       {
         children[0] = ETL_NULLPTR;
         children[1] = ETL_NULLPTR;
@@ -206,15 +206,15 @@ namespace etl
       //***********************************************************************
       void mark_as_leaf()
       {
-        weight = kNeither;
-        dir = kNeither;
-        parent = ETL_NULLPTR;
+        weight      = kNeither;
+        dir         = kNeither;
+        parent      = ETL_NULLPTR;
         children[0] = ETL_NULLPTR;
         children[1] = ETL_NULLPTR;
       }
 
-      Node* parent;
-      Node* children[2];
+      Node*         parent;
+      Node*         children[2];
       uint_least8_t weight;
       uint_least8_t dir;
     };
@@ -232,9 +232,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~multiset_base()
-    {
-    }
+    ~multiset_base() {}
 
     //*************************************************************************
     /// Attach the provided node to the position provided
@@ -263,7 +261,7 @@ namespace etl
       // their references in the process (e.g. position is the same as
       // replacement or replacement is a child of position)
       Node* detached = position;
-      Node* swap = replacement;
+      Node* swap     = replacement;
 
       // Update current position to point to swap (replacement) node first
       position = swap;
@@ -278,8 +276,8 @@ namespace etl
       }
 
       // Point swap node to detached node's parent, children and weight
-      swap->parent = detached->parent;
-      swap->children[kLeft] = detached->children[kLeft];
+      swap->parent           = detached->parent;
+      swap->children[kLeft]  = detached->children[kLeft];
       swap->children[kRight] = detached->children[kRight];
       if (swap->children[kLeft])
       {
@@ -326,7 +324,7 @@ namespace etl
         }
       } // while(weight_node)
 
-        // Step 2: Update weight for critical_node or rotate tree to balance node
+      // Step 2: Update weight for critical_node or rotate tree to balance node
       if (kNeither == critical_node->weight)
       {
         critical_node->weight = critical_node->dir;
@@ -353,8 +351,7 @@ namespace etl
           {
             if (critical_node->children[critical_node->dir]->children[1 - critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
             {
-              rotate_3node(critical_node, critical_node->dir,
-                           critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+              rotate_3node(critical_node, critical_node->dir, critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
             }
           }
         }
@@ -401,7 +398,8 @@ namespace etl
             position = parent;
             // Find parent of current position
             parent = position->parent; // find_parent_node(root_node, position);
-                                       // Repeat while previous position was on right side of parent tree
+                                       // Repeat while previous position was on
+                                       // right side of parent tree
           } while (parent && parent->children[kRight] == position);
 
           // Set parent node as the next position
@@ -546,15 +544,15 @@ namespace etl
       }
 
       // New root's parent becomes current position's parent
-      new_root->parent = position->parent;
+      new_root->parent            = position->parent;
       new_root->children[1 - dir] = position;
-      new_root->dir = 1 - dir;
+      new_root->dir               = 1 - dir;
 
       // Clear weight factor from current position
       position->weight = kNeither;
       // Position's parent becomes new_root
       position->parent = new_root;
-      position = new_root;
+      position         = new_root;
       // Clear weight factor from new root
       position->weight = kNeither;
     }
@@ -578,7 +576,8 @@ namespace etl
 
       // Capture new root (either E or D depending on dir)
       Node* new_root = position->children[dir]->children[1 - dir];
-      // Set weight factor for B or C based on F or G existing and being a different than dir
+      // Set weight factor for B or C based on F or G existing and being a
+      // different than dir
       position->children[dir]->weight = third != kNeither && third != dir ? dir : uint_least8_t(kNeither);
 
       // Detach new root from its tree (replace with new roots child)
@@ -590,7 +589,7 @@ namespace etl
       }
 
       // Attach current left tree to new root and update its parent
-      new_root->children[dir] = position->children[dir];
+      new_root->children[dir]         = position->children[dir];
       position->children[dir]->parent = new_root;
 
       // Set weight factor for A based on F or G
@@ -604,20 +603,20 @@ namespace etl
       }
 
       // Attach current root to new roots right tree and assume its parent
-      new_root->parent = position->parent;
+      new_root->parent            = position->parent;
       new_root->children[1 - dir] = position;
-      new_root->dir = 1 - dir;
+      new_root->dir               = 1 - dir;
 
       // Update current position's parent and replace with new root
       position->parent = new_root;
-      position = new_root;
+      position         = new_root;
       // Clear weight factor for new current position
       position->weight = kNeither;
     }
 
-    size_type current_size;   ///< The number of the used nodes.
-    const size_type CAPACITY; ///< The maximum size of the set.
-    Node* root_node;          ///< The node that acts as the multiset root.
+    size_type       current_size; ///< The number of the used nodes.
+    const size_type CAPACITY;     ///< The maximum size of the set.
+    Node*           root_node;    ///< The node that acts as the multiset root.
     ETL_DECLARE_DEBUG_COUNT;
   };
 
@@ -630,18 +629,18 @@ namespace etl
   {
   public:
 
-    typedef TKey                key_type;
-    typedef TKey                value_type;
-    typedef TCompare            key_compare;
-    typedef TCompare            value_compare;
-    typedef value_type&         reference;
-    typedef const value_type&   const_reference;
+    typedef TKey              key_type;
+    typedef TKey              value_type;
+    typedef TCompare          key_compare;
+    typedef TCompare          value_compare;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
 #if ETL_USING_CPP11
-    typedef value_type&&        rvalue_reference;
+    typedef value_type&& rvalue_reference;
 #endif
-    typedef value_type*         pointer;
-    typedef const value_type*   const_pointer;
-    typedef size_t              size_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef size_t            size_type;
 
   protected:
 
@@ -733,6 +732,7 @@ namespace etl
     }
 
   public:
+
     //*************************************************************************
     /// iterator.
     //*************************************************************************
@@ -767,64 +767,62 @@ namespace etl
       {
       }
 
-      ~iterator()
-      {
-      }
+      ~iterator() {}
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         p_multiset->next_node(p_node);
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         p_multiset->next_node(p_node);
         return temp;
       }
 
-      iterator& operator --()
+      iterator& operator--()
       {
         p_multiset->prev_node(p_node);
         return *this;
       }
 
-      iterator operator --(int)
+      iterator operator--(int)
       {
         iterator temp(*this);
         p_multiset->prev_node(p_node);
         return temp;
       }
 
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
         p_multiset = other.p_multiset;
-        p_node = other.p_node;
+        p_node     = other.p_node;
         return *this;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
         return imultiset::data_cast(p_node)->value;
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return &(imultiset::data_cast(p_node)->value);
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return &(imultiset::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.p_multiset == rhs.p_multiset && lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -879,64 +877,62 @@ namespace etl
       {
       }
 
-      ~const_iterator()
-      {
-      }
+      ~const_iterator() {}
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         p_multiset->next_node(p_node);
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         p_multiset->next_node(p_node);
         return temp;
       }
 
-      const_iterator& operator --()
+      const_iterator& operator--()
       {
         p_multiset->prev_node(p_node);
         return *this;
       }
 
-      const_iterator operator --(int)
+      const_iterator operator--(int)
       {
         const_iterator temp(*this);
         p_multiset->prev_node(p_node);
         return temp;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         p_multiset = other.p_multiset;
-        p_node = other.p_node;
+        p_node     = other.p_node;
         return *this;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return imultiset::data_cast(p_node)->value;
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return imultiset::data_cast(p_node)->value;
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return &(imultiset::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_multiset == rhs.p_multiset && lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -1061,8 +1057,9 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the multiset.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset does not have enough free space.
-    /// If asserts or exceptions are enabled, emits set_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset
+    /// does not have enough free space. If asserts or exceptions are enabled,
+    /// emits set_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -1157,7 +1154,7 @@ namespace etl
       // Cast const away from node to be removed. This is necessary because the
       // STL definition of this method requires we provide the next node in the
       // sequence as an iterator.
-      Node* node = const_cast<Node*>(position.p_node);
+      Node*    node = const_cast<Node*>(position.p_node);
       iterator next(*this, node);
       ++next;
 
@@ -1173,7 +1170,7 @@ namespace etl
     size_type erase(key_parameter_t key_value)
     {
       // Number of nodes removed
-      size_type d = 0;
+      size_type      d = 0;
       const_iterator lower(*this, find_lower_node(root_node, key_value));
       const_iterator upper(*this, find_upper_node(root_node, key_value));
       while (lower != upper)
@@ -1194,7 +1191,7 @@ namespace etl
     size_type erase(K&& key_value)
     {
       // Number of nodes removed
-      size_type d = 0;
+      size_type      d = 0;
       const_iterator lower(*this, find_lower_node(root_node, etl::forward<K>(key_value)));
       const_iterator upper(*this, find_upper_node(root_node, etl::forward<K>(key_value)));
       while (lower != upper)
@@ -1264,7 +1261,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is
+    /// already full.
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(const_reference value)
@@ -1287,7 +1285,8 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the multiset.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is
+    /// already full.
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(rvalue_reference value)
@@ -1310,7 +1309,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is
+    /// already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -1323,7 +1323,8 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset is
+    /// already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -1336,7 +1337,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the multiset.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset does not have enough free space.
+    /// If asserts or exceptions are enabled, emits set_full if the multiset
+    /// does not have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -1434,7 +1436,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    imultiset& operator = (const imultiset& rhs)
+    imultiset& operator=(const imultiset& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -1449,7 +1451,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    imultiset& operator = (imultiset&& rhs)
+    imultiset& operator=(imultiset&& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -1663,7 +1665,7 @@ namespace etl
         else
         {
           // We found one, keep looking for more on the left
-          found = position;
+          found    = position;
           position = position->children[kLeft];
         }
       }
@@ -1696,7 +1698,7 @@ namespace etl
         else
         {
           // We found one, keep looking for more on the left
-          found = position;
+          found    = position;
           position = position->children[kLeft];
         }
       }
@@ -1730,7 +1732,7 @@ namespace etl
         else
         {
           // We found one, keep looking for more on the left
-          found = position;
+          found    = position;
           position = position->children[kLeft];
         }
       }
@@ -1763,7 +1765,7 @@ namespace etl
         else
         {
           // We found one, keep looking for more on the left
-          found = position;
+          found    = position;
           position = position->children[kLeft];
         }
       }
@@ -1806,7 +1808,7 @@ namespace etl
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position   = position->children[kLeft];
         }
       }
 
@@ -1847,7 +1849,7 @@ namespace etl
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position   = position->children[kLeft];
         }
       }
 
@@ -1956,7 +1958,7 @@ namespace etl
       {
         // Find the critical parent node (default to ETL_NULLPTR)
         Node* critical_parent_node = ETL_NULLPTR;
-        Node* critical_node = root_node;
+        Node* critical_node        = root_node;
 
         while (found)
         {
@@ -1967,7 +1969,8 @@ namespace etl
             critical_node = found;
           }
 
-          // Downcast found to Data_Node class for comparison and other operations
+          // Downcast found to Data_Node class for comparison and other
+          // operations
           Data_Node& found_data_node = imultiset::data_cast(*found);
 
           // Is the node provided to the left of the current position?
@@ -2064,16 +2067,15 @@ namespace etl
         Node* found = node;
 
         // Step 1: Mark path from node provided back to the root node using the
-        // internal temporary dir member value and using the parent pointer. This
-        // will allow us to avoid recursion in finding the node in a tree that
-        //might contain duplicate keys to be found.
+        // internal temporary dir member value and using the parent pointer.
+        // This will allow us to avoid recursion in finding the node in a tree
+        // that might contain duplicate keys to be found.
         while (node)
         {
           if (node->parent)
           {
             // Which direction does parent use to get to this node?
-            node->parent->dir =
-              node->parent->children[kLeft] == node ? kLeft : kRight;
+            node->parent->dir = node->parent->children[kLeft] == node ? kLeft : kRight;
 
             // Make this nodes parent the next node
             node = node->parent;
@@ -2102,13 +2104,11 @@ namespace etl
           }
           else
           {
-            // If this nodes weight is kNeither or we are taking the shorter path
-            // to the next node and our sibling (on longer path) is balanced then
-            // we need to update the balance node to this node but all our
-            // ancestors will not require rebalancing
-            if ((node->weight == kNeither) ||
-              (node->weight == (1 - node->dir) &&
-                node->children[1 - node->dir]->weight == kNeither))
+            // If this nodes weight is kNeither or we are taking the shorter
+            // path to the next node and our sibling (on longer path) is
+            // balanced then we need to update the balance node to this node but
+            // all our ancestors will not require rebalancing
+            if ((node->weight == kNeither) || (node->weight == (1 - node->dir) && node->children[1 - node->dir]->weight == kNeither))
             {
               // Update balance node to this node
               balance = node;
@@ -2139,15 +2139,14 @@ namespace etl
           // to the next node and our sibling (on longer path) is balanced then
           // we need to update the balance node to this node but all our
           // ancestors will not require rebalancing
-          if ((node->weight == kNeither) ||
-            (node->weight == (1 - node->dir) &&
-              node->children[1 - node->dir]->weight == kNeither))
+          if ((node->weight == kNeither) || (node->weight == (1 - node->dir) && node->children[1 - node->dir]->weight == kNeither))
           {
             // Update balance node to this node
             balance = node;
           }
 
-          // Keep searching for replacement node in the direction specified above
+          // Keep searching for replacement node in the direction specified
+          // above
           node = node->children[node->dir];
 
           // Downcast node to Data_Node class for comparison operations
@@ -2171,8 +2170,8 @@ namespace etl
           }
         } // while(node)
 
-          // Step 4: Update weights from balance to parent of node determined
-          // in step 3 above rotating (2 or 3 node rotations) as needed.
+        // Step 4: Update weights from balance to parent of node determined
+        // in step 3 above rotating (2 or 3 node rotations) as needed.
         while (balance)
         {
           // Break when balance node reaches the parent of replacement node
@@ -2203,13 +2202,12 @@ namespace etl
               // Is the root node being rebalanced (no parent)
               if (balance->parent == ETL_NULLPTR)
               {
-                rotate_3node(root_node, 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                rotate_3node(root_node, 1 - balance->dir, balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
               else
               {
                 rotate_3node(balance->parent->children[balance->parent->dir], 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
             }
             // Already balanced, rebalance and make it heavy in opposite
@@ -2231,7 +2229,8 @@ namespace etl
                 rotate_2node(balance->parent->children[balance->parent->dir], 1 - balance->dir);
                 old_parent->children[old_parent->dir]->weight = balance->dir;
               }
-              // Update balance node weight in opposite direction of node removed
+              // Update balance node weight in opposite direction of node
+              // removed
               balance->weight = 1 - balance->dir;
             }
             // Rebalance and leave it balanced
@@ -2253,12 +2252,11 @@ namespace etl
           balance = balance->children[balance->dir];
         } // while(balance)
 
-          // Step 5: Swap found with node (replacement)
+        // Step 5: Swap found with node (replacement)
         if (found->parent)
         {
           // Handle traditional case
-          detach_node(found->parent->children[found->parent->dir],
-            node->parent->children[node->parent->dir]);
+          detach_node(found->parent->children[found->parent->dir], node->parent->children[node->parent->dir]);
         }
         // Handle root node removal
         else
@@ -2290,15 +2288,15 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_MULTISET) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~imultiset()
-    {
-    }
+
+    virtual ~imultiset() {}
 #else
+
   protected:
-    ~imultiset()
-    {
-    }
+
+    ~imultiset() {}
 #endif
   };
 
@@ -2388,7 +2386,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    multiset& operator = (const multiset& rhs)
+    multiset& operator=(const multiset& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -2403,7 +2401,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    multiset& operator = (multiset&& rhs)
+    multiset& operator=(multiset&& rhs)
     {
       if (this != &rhs)
       {
@@ -2446,7 +2444,7 @@ namespace etl
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_multiset(T&&... keys) -> etl::multiset<TKey, sizeof...(T), TKeyCompare>
   {
-    return { etl::forward<T>(keys)... };
+    return {etl::forward<T>(keys)...};
   }
 #endif
 
@@ -2458,7 +2456,7 @@ namespace etl
   ///\ingroup lookup
   //***************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator ==(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
+  bool operator==(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && ETL_OR_STD::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -2471,7 +2469,7 @@ namespace etl
   ///\ingroup lookup
   //***************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator !=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
+  bool operator!=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2484,11 +2482,9 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator <(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
+  bool operator<(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
-    return ETL_OR_STD::lexicographical_compare(lhs.begin(), lhs.end(),
-                                               rhs.begin(), rhs.end(),
-                                               etl::imultiset<TKey, TCompare>::value_compare());
+    return ETL_OR_STD::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), etl::imultiset<TKey, TCompare>::value_compare());
   }
 
   //*************************************************************************
@@ -2499,7 +2495,7 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator >(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
+  bool operator>(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2508,11 +2504,12 @@ namespace etl
   /// Less than or equal operator.
   ///\param lhs Reference to the first list.
   ///\param rhs Reference to the second list.
-  ///\return <b>true</b> if the first list is lexicographically less than or equal
+  ///\return <b>true</b> if the first list is lexicographically less than or
+  /// equal
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator <=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
+  bool operator<=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2525,11 +2522,11 @@ namespace etl
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TCompare>
-  bool operator >=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
+  bool operator>=(const etl::imultiset<TKey, TCompare>& lhs, const etl::imultiset<TKey, TCompare>& rhs)
   {
     return !(lhs < rhs);
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

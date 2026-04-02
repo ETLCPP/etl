@@ -28,15 +28,15 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <bitset>
 #include <limits>
 #include <type_traits>
-#include <bitset>
 
-#include "etl/private/bitset_new.h"
 #include "etl/string.h"
-#include "etl/wstring.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
+#include "etl/wstring.h"
+#include "etl/private/bitset_new.h"
 
 namespace
 {
@@ -47,12 +47,12 @@ namespace
   ETL_CONSTEXPR14 etl::bitset<Active_Bits, TElement> generate_shift_left_bitset(ull value, size_t shift)
   {
     ull mask = 0ULL;
-    
+
     if (shift < 64U)
     {
       mask = etl::integral_limits<ull>::max >> shift;
     }
-     
+
     value &= mask;
 
     etl::bitset<Active_Bits, TElement> data(value);
@@ -196,7 +196,7 @@ namespace
       ETL_CONSTEXPR14 std::bitset<64> compare;
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data;
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -208,12 +208,12 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor_single_element)
     {
-      etl::bitset<8,  uint8_t>  data8;
+      etl::bitset<8, uint8_t>   data8;
       etl::bitset<16, uint16_t> data16;
       etl::bitset<32, uint32_t> data32;
       etl::bitset<64, uint64_t> data64;
 
-      CHECK_EQUAL(8,  data8.Size);
+      CHECK_EQUAL(8, data8.Size);
       CHECK_EQUAL(16, data16.Size);
       CHECK_EQUAL(32, data32.Size);
       CHECK_EQUAL(64, data64.Size);
@@ -235,7 +235,7 @@ namespace
       ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data(0x123456731234567ULL);
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
       CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
 
@@ -252,7 +252,7 @@ namespace
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data(0x123456731234567ULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data_copy(data);
 
-      CHECK_EQUAL(compare.size(),  data_copy.size());
+      CHECK_EQUAL(compare.size(), data_copy.size());
       CHECK_EQUAL(compare.count(), data_copy.count());
 
       for (size_t i = 0UL; i < data_copy.size(); ++i)
@@ -267,7 +267,7 @@ namespace
       ETL_CONSTEXPR14 std::bitset<64> compare(0x8765432187654321ULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data(0x8765432187654321ULL);
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -281,7 +281,7 @@ namespace
     {
       ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data(0x123456731234567ULL);
-      etl::bitset<64, uint64_t> data_copy;
+      etl::bitset<64, uint64_t>           data_copy;
 
       data_copy = data;
 
@@ -297,10 +297,10 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_char_string)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data("110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -312,10 +312,10 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_wchar_t_string)
     {
-      std::bitset<64> compare(L"110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare(L"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data(L"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -327,10 +327,10 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_char16_t_string)
     {
-      std::bitset<64> compare(u"110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare(u"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data(u"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -342,10 +342,10 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_char32_t_string)
     {
-      std::bitset<64> compare(U"110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare(U"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data(U"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -373,7 +373,7 @@ namespace
       etl::bitset<60, uint64_t> data(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -384,7 +384,7 @@ namespace
       etl::bitset<60, uint64_t> data(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -395,20 +395,20 @@ namespace
       etl::bitset<60, uint64_t> data(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
     TEST(test_construct_from_excess_string)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001111100001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001111100001");
       etl::bitset<64, uint64_t> data("110001001000110100010101100111001100010010001101000101011001111100001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
 
@@ -426,7 +426,7 @@ namespace
 
       return data;
     }
-     
+
     TEST(test_set)
     {
       std::bitset<64> compare;
@@ -434,17 +434,17 @@ namespace
 
       compare.set();
 
-      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto size = data.size();
       ETL_CONSTEXPR14 auto count = data.count();
-      ETL_CONSTEXPR14 auto none  = data.none();
-      ETL_CONSTEXPR14 auto any   = data.any();
-      ETL_CONSTEXPR14 auto all   = data.all();
+      ETL_CONSTEXPR14 auto none = data.none();
+      ETL_CONSTEXPR14 auto any = data.any();
+      ETL_CONSTEXPR14 auto all = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -455,7 +455,7 @@ namespace
     //*************************************************************************
     TEST(test_set_less_than_full_size)
     {
-      std::bitset<60> compare;
+      std::bitset<60>           compare;
       etl::bitset<60, uint64_t> data;
 
       compare.set();
@@ -467,11 +467,11 @@ namespace
       auto any   = data.any();
       auto all   = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -516,17 +516,17 @@ namespace
       compare.set(29);
       compare.set(31);
 
-      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto size = data.size();
       ETL_CONSTEXPR14 auto count = data.count();
-      ETL_CONSTEXPR14 auto none  = data.none();
-      ETL_CONSTEXPR14 auto any   = data.any();
-      ETL_CONSTEXPR14 auto all   = data.all();
+      ETL_CONSTEXPR14 auto none = data.none();
+      ETL_CONSTEXPR14 auto any = data.any();
+      ETL_CONSTEXPR14 auto all = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -571,17 +571,17 @@ namespace
       compare.set(29);
       compare.set(31);
 
-      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto size = data.size();
       ETL_CONSTEXPR14 auto count = data.count();
-      ETL_CONSTEXPR14 auto none  = data.none();
-      ETL_CONSTEXPR14 auto any   = data.any();
-      ETL_CONSTEXPR14 auto all   = data.all();
+      ETL_CONSTEXPR14 auto none = data.none();
+      ETL_CONSTEXPR14 auto any = data.any();
+      ETL_CONSTEXPR14 auto all = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -626,17 +626,17 @@ namespace
       compare.set(29);
       compare.set(31);
 
-      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto size = data.size();
       ETL_CONSTEXPR14 auto count = data.count();
-      ETL_CONSTEXPR14 auto none  = data.none();
-      ETL_CONSTEXPR14 auto any   = data.any();
-      ETL_CONSTEXPR14 auto all   = data.all();
+      ETL_CONSTEXPR14 auto none = data.none();
+      ETL_CONSTEXPR14 auto any = data.any();
+      ETL_CONSTEXPR14 auto all = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -681,17 +681,17 @@ namespace
       compare.set(29);
       compare.set(31);
 
-      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto size = data.size();
       ETL_CONSTEXPR14 auto count = data.count();
-      ETL_CONSTEXPR14 auto none  = data.none();
-      ETL_CONSTEXPR14 auto any   = data.any();
-      ETL_CONSTEXPR14 auto all   = data.all();
+      ETL_CONSTEXPR14 auto none = data.none();
+      ETL_CONSTEXPR14 auto any = data.any();
+      ETL_CONSTEXPR14 auto all = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -736,17 +736,17 @@ namespace
       compare.set(29);
       compare.set(31);
 
-      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto size = data.size();
       ETL_CONSTEXPR14 auto count = data.count();
-      ETL_CONSTEXPR14 auto none  = data.none();
-      ETL_CONSTEXPR14 auto any   = data.any();
-      ETL_CONSTEXPR14 auto all   = data.all();
+      ETL_CONSTEXPR14 auto none = data.none();
+      ETL_CONSTEXPR14 auto any = data.any();
+      ETL_CONSTEXPR14 auto all = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -757,16 +757,16 @@ namespace
     //*************************************************************************
     TEST(test_set_with_char_string)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.set("110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -777,16 +777,16 @@ namespace
     //*************************************************************************
     TEST(test_set_with_wchar_t_string)
     {
-      std::bitset<64> compare(L"110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare(L"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.set(L"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -797,16 +797,16 @@ namespace
     //*************************************************************************
     TEST(test_set_with_char16_t_string)
     {
-      std::bitset<64> compare(u"110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare(u"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.set(u"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -817,16 +817,16 @@ namespace
     //*************************************************************************
     TEST(test_set_with_char32_t_string)
     {
-      std::bitset<64> compare(U"110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare(U"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.set(U"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -843,7 +843,7 @@ namespace
       data.set(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -855,7 +855,7 @@ namespace
       data.set(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -867,7 +867,7 @@ namespace
       data.set(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -879,22 +879,22 @@ namespace
       data.set(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
     TEST(test_from_string_with_char)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.from_string("110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -905,16 +905,16 @@ namespace
     //*************************************************************************
     TEST(test_from_string_with_wchar_t)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.from_string(L"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -925,16 +925,16 @@ namespace
     //*************************************************************************
     TEST(test_from_string_with_char16_t)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.from_string(u"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -945,16 +945,16 @@ namespace
     //*************************************************************************
     TEST(test_from_string_with_char32_t)
     {
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
+      std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, uint64_t> data;
 
       data.from_string(U"110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -971,7 +971,7 @@ namespace
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -983,7 +983,7 @@ namespace
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -995,7 +995,7 @@ namespace
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -1007,7 +1007,7 @@ namespace
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0,  data.count());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************
@@ -1158,7 +1158,7 @@ namespace
     TEST(test_to_ulong_min)
     {
       ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long>::bits, uint64_t> data(etl::integral_limits<unsigned long>::min);
-      unsigned long value = data.to_ulong();
+      unsigned long                                                              value = data.to_ulong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
     }
@@ -1167,7 +1167,7 @@ namespace
     TEST(test_to_ulong_max)
     {
       ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long>::bits, uint64_t> data(etl::integral_limits<unsigned long>::max);
-      unsigned long value = data.to_ulong();
+      unsigned long                                                              value = data.to_ulong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), value);
     }
@@ -1183,7 +1183,7 @@ namespace
     TEST(test_to_ullong_min)
     {
       ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long long>::bits, uint64_t> data(etl::integral_limits<unsigned long long>::min);
-      unsigned long long value = data.to_ullong();
+      unsigned long long                                                              value = data.to_ullong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
     }
@@ -1192,7 +1192,7 @@ namespace
     TEST(test_to_ullong_max)
     {
       ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long long>::bits, uint64_t> data(etl::integral_limits<unsigned long long>::max);
-      unsigned long long value = data.to_ullong();
+      unsigned long long                                                              value = data.to_ullong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long long>::max(), value);
     }
@@ -1207,7 +1207,7 @@ namespace
     //*************************************************************************
     TEST(test_position_set)
     {
-      std::bitset<64> compare;
+      std::bitset<64>           compare;
       etl::bitset<64, uint64_t> data;
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -1244,19 +1244,19 @@ namespace
 
       return data;
     }
-    
+
     TEST(test_reset)
     {
       std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data(test_reset_helper());
 
       compare.reset();
-      
-      CHECK_EQUAL(compare.size(),  data.size());
+
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1286,11 +1286,11 @@ namespace
       compare.reset(7);
       compare.reset(13);
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1337,7 +1337,7 @@ namespace
       CHECK_EQUAL(bc3, bd3);
 
       ETL_CONSTEXPR14 bool bc7 = compare[7U];
-      ETL_CONSTEXPR14 bool bd7 = data[7U];
+      ETL_CONSTEXPR14 bool bd7  = data[7U];
       CHECK_EQUAL(bc7, bd7);
 
       ETL_CONSTEXPR14 bool bc13 = compare[13U];
@@ -1641,7 +1641,7 @@ namespace
 
       return data;
     }
-    
+
     TEST(test_flip_position)
     {
       std::bitset<64> compare;
@@ -1689,7 +1689,7 @@ namespace
     //*************************************************************************
     TEST(test_invert_reference)
     {
-      std::bitset<64> compare;
+      std::bitset<64>           compare;
       etl::bitset<64, uint64_t> data;
 
       bool bc = ~compare[3];
@@ -1724,7 +1724,7 @@ namespace
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data2(0x123456781234567ULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data3;
 
-      ETL_CONSTEXPR14 bool equal     =  (data1 == data2);
+      ETL_CONSTEXPR14 bool equal = (data1 == data2);
       ETL_CONSTEXPR14 bool not_equal = !(data1 == data3);
 
       CHECK(equal);
@@ -1787,16 +1787,16 @@ namespace
     {
       uint64_t value = 0x0123456789ABCDEFULL;
 
-      CHECK_EQUAL_HEX((value <<  0U), (generate_shift_left_bitset<64, uint64_t>(value,  0U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  1U), (generate_shift_left_bitset<64, uint64_t>(value,  1U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  2U), (generate_shift_left_bitset<64, uint64_t>(value,  2U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  3U), (generate_shift_left_bitset<64, uint64_t>(value,  3U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  4U), (generate_shift_left_bitset<64, uint64_t>(value,  4U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  5U), (generate_shift_left_bitset<64, uint64_t>(value,  5U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  6U), (generate_shift_left_bitset<64, uint64_t>(value,  6U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  7U), (generate_shift_left_bitset<64, uint64_t>(value,  7U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  8U), (generate_shift_left_bitset<64, uint64_t>(value,  8U).value<uint64_t>()));
-      CHECK_EQUAL_HEX((value <<  9U), (generate_shift_left_bitset<64, uint64_t>(value,  9U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 0U), (generate_shift_left_bitset<64, uint64_t>(value, 0U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 1U), (generate_shift_left_bitset<64, uint64_t>(value, 1U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 2U), (generate_shift_left_bitset<64, uint64_t>(value, 2U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 3U), (generate_shift_left_bitset<64, uint64_t>(value, 3U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 4U), (generate_shift_left_bitset<64, uint64_t>(value, 4U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 5U), (generate_shift_left_bitset<64, uint64_t>(value, 5U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 6U), (generate_shift_left_bitset<64, uint64_t>(value, 6U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 7U), (generate_shift_left_bitset<64, uint64_t>(value, 7U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 8U), (generate_shift_left_bitset<64, uint64_t>(value, 8U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 9U), (generate_shift_left_bitset<64, uint64_t>(value, 9U).value<uint64_t>()));
       CHECK_EQUAL_HEX((value << 10U), (generate_shift_left_bitset<64, uint64_t>(value, 10U).value<uint64_t>()));
       CHECK_EQUAL_HEX((value << 11U), (generate_shift_left_bitset<64, uint64_t>(value, 11U).value<uint64_t>()));
       CHECK_EQUAL_HEX((value << 12U), (generate_shift_left_bitset<64, uint64_t>(value, 12U).value<uint64_t>()));
@@ -1851,7 +1851,7 @@ namespace
       CHECK_EQUAL_HEX((value << 61U), (generate_shift_left_bitset<64, uint64_t>(value, 61U).value<uint64_t>()));
       CHECK_EQUAL_HEX((value << 62U), (generate_shift_left_bitset<64, uint64_t>(value, 62U).value<uint64_t>()));
       CHECK_EQUAL_HEX((value << 63U), (generate_shift_left_bitset<64, uint64_t>(value, 63U).value<uint64_t>()));
-      CHECK_EQUAL_HEX(0ULL,           (generate_shift_left_bitset<64, uint64_t>(value, 64U).value<uint64_t>()));
+      CHECK_EQUAL_HEX(0ULL, (generate_shift_left_bitset<64, uint64_t>(value, 64U).value<uint64_t>()));
     }
 
     //*************************************************************************
@@ -1861,8 +1861,8 @@ namespace
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> shift2(0x48D159EULL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> shift11(0x2468AULL);
 
-      CHECK_EQUAL_HEX(shift1.value<int64_t>(),  (generate_shift_right_bitset<64, uint64_t>(0x12345678ULL, 1U).value<int64_t>()));
-      CHECK_EQUAL_HEX(shift2.value<int64_t>(),  (generate_shift_right_bitset<64, uint64_t>(0x12345678ULL, 2U).value<int64_t>()));
+      CHECK_EQUAL_HEX(shift1.value<int64_t>(), (generate_shift_right_bitset<64, uint64_t>(0x12345678ULL, 1U).value<int64_t>()));
+      CHECK_EQUAL_HEX(shift2.value<int64_t>(), (generate_shift_right_bitset<64, uint64_t>(0x12345678ULL, 2U).value<int64_t>()));
       CHECK_EQUAL_HEX(shift11.value<int64_t>(), (generate_shift_right_bitset<64, uint64_t>(0x12345678ULL, 11U).value<int64_t>()));
     }
 
@@ -2045,12 +2045,12 @@ namespace
 
       return data1;
     }
-    
+
     TEST(test_and_equals_operator)
     {
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data1(0x12345678UL);
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data2(0x23456789UL);
-      
+
       ETL_CONSTEXPR14 etl::bitset<64, uint64_t> data3(test_and_equals_operator_helper(data1, data2));
 
       CHECK((data1 & data2) == data3);
@@ -2119,43 +2119,43 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs1(ull(0x00));
       ETL_CONSTEXPR14 size_t bs1find_first_false = bs1.find_first(false);
-      ETL_CONSTEXPR14 size_t bs1find_first_true  = bs1.find_first(true);
+      ETL_CONSTEXPR14 size_t bs1find_first_true = bs1.find_first(true);
       CHECK_EQUAL(0U, bs1find_first_false);
       CHECK_EQUAL(etl::bitset<>::npos, bs1find_first_true);
 
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs2(ull(0xFF));
       ETL_CONSTEXPR14 size_t bs2find_first_false = bs2.find_first(false);
-      ETL_CONSTEXPR14 size_t bs2find_first_true  = bs2.find_first(true);
+      ETL_CONSTEXPR14 size_t bs2find_first_true = bs2.find_first(true);
       CHECK_EQUAL(etl::bitset<>::npos, bs2find_first_false);
       CHECK_EQUAL(0U, bs2find_first_true);
 
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs3(ull(0x01));
       ETL_CONSTEXPR14 size_t bs3find_first_false = bs3.find_first(false);
-      ETL_CONSTEXPR14 size_t bs3find_first_true  = bs3.find_first(true);
+      ETL_CONSTEXPR14 size_t bs3find_first_true = bs3.find_first(true);
       CHECK_EQUAL(1U, bs3find_first_false);
       CHECK_EQUAL(0U, bs3find_first_true);
 
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs4(ull(0x20));
       ETL_CONSTEXPR14 size_t bs4find_first_false = bs4.find_first(false);
-      ETL_CONSTEXPR14 size_t bs4find_first_true  = bs4.find_first(true);
+      ETL_CONSTEXPR14 size_t bs4find_first_true = bs4.find_first(true);
       CHECK_EQUAL(0U, bs4find_first_false);
       CHECK_EQUAL(5U, bs4find_first_true);
 
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs5(ull(0x21));
       ETL_CONSTEXPR14 size_t bs5find_first_false = bs5.find_first(false);
-      ETL_CONSTEXPR14 size_t bs5find_first_true  = bs5.find_first(true);
+      ETL_CONSTEXPR14 size_t bs5find_first_true = bs5.find_first(true);
       CHECK_EQUAL(1U, bs5find_first_false);
       CHECK_EQUAL(0U, bs5find_first_true);
 
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs6(ull(0x0E));
       ETL_CONSTEXPR14 size_t bs6find_first_false = bs6.find_first(false);
-      ETL_CONSTEXPR14 size_t bs6find_first_true  = bs6.find_first(true);
+      ETL_CONSTEXPR14 size_t bs6find_first_true = bs6.find_first(true);
       CHECK_EQUAL(0U, bs6find_first_false);
       CHECK_EQUAL(1U, bs6find_first_true);
 
       ETL_CONSTEXPR14 etl::bitset<8, uint8_t> bs7(ull(0x31));
       ETL_CONSTEXPR14 size_t bs7find_first_false = bs7.find_first(false);
-      ETL_CONSTEXPR14 size_t bs7find_first_true  = bs7.find_first(true);
+      ETL_CONSTEXPR14 size_t bs7find_first_true = bs7.find_first(true);
       CHECK_EQUAL(1U, bs7find_first_false);
       CHECK_EQUAL(0U, bs7find_first_true);
     }
@@ -2250,10 +2250,11 @@ namespace
 
       ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
-      etl::string<32> text = b.to_string('.', '*');
-      std::string stdtext  = b.to_string<std::string>('.', '*');
+      etl::string<32> text    = b.to_string('.', '*');
+      std::string     stdtext = b.to_string<std::string>('.', '*');
 
-      //CHECK_THROW(b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);
+      // CHECK_THROW(b.to_string<etl::string<30>>('.', '*'),
+      // etl::bitset_overflow);
       CHECK_EQUAL(std::string("...*..*...**.*...*.*.**..****..."), std::string(text.c_str()));
       CHECK_EQUAL(std::string("...*..*...**.*...*.*.**..****..."), std::string(stdtext.c_str()));
     }
@@ -2265,8 +2266,8 @@ namespace
 
       ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
-      etl::wstring<32> text = b.to_string<etl::wstring<32>>(L'.', L'*');
-      std::wstring stdtext = b.to_string<std::wstring>(L'.', L'*');
+      etl::wstring<32> text    = b.to_string<etl::wstring<32>>(L'.', L'*');
+      std::wstring     stdtext = b.to_string<std::wstring>(L'.', L'*');
 
       CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(text.c_str()));
       CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(stdtext.c_str()));
@@ -2279,8 +2280,8 @@ namespace
 
       ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
-      etl::u16string<32> text = b.to_string<etl::u16string<32>>(u'.', u'*');
-      std::u16string stdtext = b.to_string<std::u16string>(u'.', u'*');
+      etl::u16string<32> text    = b.to_string<etl::u16string<32>>(u'.', u'*');
+      std::u16string     stdtext = b.to_string<std::u16string>(u'.', u'*');
 
       CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(text.c_str()));
       CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(stdtext.c_str()));
@@ -2293,8 +2294,8 @@ namespace
 
       ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
-      etl::u32string<32> text = b.to_string<etl::u32string<32>>(U'.', U'*');
-      std::u32string stdtext = b.to_string<std::u32string>(U'.', U'*');
+      etl::u32string<32> text    = b.to_string<etl::u32string<32>>(U'.', U'*');
+      std::u32string     stdtext = b.to_string<std::u32string>(U'.', U'*');
 
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(text.c_str()));
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(stdtext.c_str()));
@@ -2305,16 +2306,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint8_t(0x38), (b.extract<uint8_t>( 0, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t>( 1, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x1E), (b.extract<uint8_t>( 2, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x0F), (b.extract<uint8_t>( 3, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x27), (b.extract<uint8_t>( 4, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x33), (b.extract<uint8_t>( 5, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x19), (b.extract<uint8_t>( 6, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x2C), (b.extract<uint8_t>( 7, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x16), (b.extract<uint8_t>( 8, 6)));
-      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t>( 9, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x38), (b.extract<uint8_t>(0, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t>(1, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x1E), (b.extract<uint8_t>(2, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x0F), (b.extract<uint8_t>(3, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x27), (b.extract<uint8_t>(4, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x33), (b.extract<uint8_t>(5, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x19), (b.extract<uint8_t>(6, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x2C), (b.extract<uint8_t>(7, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x16), (b.extract<uint8_t>(8, 6)));
+      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t>(9, 6)));
       CHECK_EQUAL_HEX(uint8_t(0x15), (b.extract<uint8_t>(10, 6)));
       CHECK_EQUAL_HEX(uint8_t(0x0A), (b.extract<uint8_t>(11, 6)));
       CHECK_EQUAL_HEX(uint8_t(0x05), (b.extract<uint8_t>(12, 6)));
@@ -2342,16 +2343,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint8_t(0x38), (b.extract<uint8_t,  0, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t,  1, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x1E), (b.extract<uint8_t,  2, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x0F), (b.extract<uint8_t,  3, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x27), (b.extract<uint8_t,  4, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x33), (b.extract<uint8_t,  5, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x19), (b.extract<uint8_t,  6, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x2C), (b.extract<uint8_t,  7, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x16), (b.extract<uint8_t,  8, 6>()));
-      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t,  9, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x38), (b.extract<uint8_t, 0, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t, 1, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x1E), (b.extract<uint8_t, 2, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x0F), (b.extract<uint8_t, 3, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x27), (b.extract<uint8_t, 4, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x33), (b.extract<uint8_t, 5, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x19), (b.extract<uint8_t, 6, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x2C), (b.extract<uint8_t, 7, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x16), (b.extract<uint8_t, 8, 6>()));
+      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t, 9, 6>()));
       CHECK_EQUAL_HEX(uint8_t(0x15), (b.extract<uint8_t, 10, 6>()));
       CHECK_EQUAL_HEX(uint8_t(0x0A), (b.extract<uint8_t, 11, 6>()));
       CHECK_EQUAL_HEX(uint8_t(0x05), (b.extract<uint8_t, 12, 6>()));
@@ -2371,8 +2372,8 @@ namespace
       CHECK_EQUAL_HEX(uint8_t(0x04), (b.extract<uint8_t, 26, 6>()));
 
       // The lines below should static assert.
-      //uint8_t v1 = b.extract<uint8_t, 26, 7>();
-      //uint8_t v1 = b.extract<uint8_t, 27, 6>();
+      // uint8_t v1 = b.extract<uint8_t, 26, 7>();
+      // uint8_t v1 = b.extract<uint8_t, 27, 6>();
     }
 
     //*************************************************************************
@@ -2380,16 +2381,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t>( 0, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t>( 1, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t>( 2, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t>( 3, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t>( 4, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t>( 5, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t>( 6, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t>( 7, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t>( 8, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t>( 9, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t>(0, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t>(1, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t>(2, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t>(3, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t>(4, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t>(5, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t>(6, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t>(7, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t>(8, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t>(9, 6)));
       CHECK_EQUAL_HEX(int8_t(0x15), (b.extract<int8_t>(10, 6)));
       CHECK_EQUAL_HEX(int8_t(0x0A), (b.extract<int8_t>(11, 6)));
       CHECK_EQUAL_HEX(int8_t(0x05), (b.extract<int8_t>(12, 6)));
@@ -2417,16 +2418,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t,  0, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t,  1, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t,  2, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t,  3, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t,  4, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t,  5, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t,  6, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t,  7, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t,  8, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t,  9, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t, 0, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t, 1, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t, 2, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t, 3, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t, 4, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t, 5, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t, 6, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t, 7, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t, 8, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t, 9, 6>()));
       CHECK_EQUAL_HEX(int8_t(0x15), (b.extract<int8_t, 10, 6>()));
       CHECK_EQUAL_HEX(int8_t(0x0A), (b.extract<int8_t, 11, 6>()));
       CHECK_EQUAL_HEX(int8_t(0x05), (b.extract<int8_t, 12, 6>()));
@@ -2446,8 +2447,8 @@ namespace
       CHECK_EQUAL_HEX(int8_t(0x04), (b.extract<int8_t, 26, 6>()));
 
       // The lines below should static assert.
-      //int8_t v1 = b.extract<int8_t, 26, 7>();
-      //int8_t v1 = b.extract<int8_t, 27, 6>();
+      // int8_t v1 = b.extract<int8_t, 26, 7>();
+      // int8_t v1 = b.extract<int8_t, 27, 6>();
     }
 
     //*************************************************************************
@@ -2455,16 +2456,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint8_t(0x78), b.extract<uint8_t>( 0, 8));
-      CHECK_EQUAL_HEX(uint8_t(0x3C), b.extract<uint8_t>( 1, 8));
-      CHECK_EQUAL_HEX(uint8_t(0x9E), b.extract<uint8_t>( 2, 8));
-      CHECK_EQUAL_HEX(uint8_t(0xCF), b.extract<uint8_t>( 3, 8));
-      CHECK_EQUAL_HEX(uint8_t(0x67), b.extract<uint8_t>( 4, 8));
-      CHECK_EQUAL_HEX(uint8_t(0xB3), b.extract<uint8_t>( 5, 8));
-      CHECK_EQUAL_HEX(uint8_t(0x59), b.extract<uint8_t>( 6, 8));
-      CHECK_EQUAL_HEX(uint8_t(0xAC), b.extract<uint8_t>( 7, 8));
-      CHECK_EQUAL_HEX(uint8_t(0x56), b.extract<uint8_t>( 8, 8));
-      CHECK_EQUAL_HEX(uint8_t(0x2B), b.extract<uint8_t>( 9, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x78), b.extract<uint8_t>(0, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x3C), b.extract<uint8_t>(1, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x9E), b.extract<uint8_t>(2, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xCF), b.extract<uint8_t>(3, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x67), b.extract<uint8_t>(4, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xB3), b.extract<uint8_t>(5, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x59), b.extract<uint8_t>(6, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xAC), b.extract<uint8_t>(7, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x56), b.extract<uint8_t>(8, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x2B), b.extract<uint8_t>(9, 8));
       CHECK_EQUAL_HEX(uint8_t(0x15), b.extract<uint8_t>(10, 8));
       CHECK_EQUAL_HEX(uint8_t(0x8A), b.extract<uint8_t>(11, 8));
       CHECK_EQUAL_HEX(uint8_t(0x45), b.extract<uint8_t>(12, 8));
@@ -2490,16 +2491,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint8_t(0x78), (b.extract<uint8_t,  0, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t,  1, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0x9E), (b.extract<uint8_t,  2, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0xCF), (b.extract<uint8_t,  3, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0x67), (b.extract<uint8_t,  4, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0xB3), (b.extract<uint8_t,  5, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0x59), (b.extract<uint8_t,  6, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0xAC), (b.extract<uint8_t,  7, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0x56), (b.extract<uint8_t,  8, 8>()));
-      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t,  9, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x78), (b.extract<uint8_t, 0, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t, 1, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x9E), (b.extract<uint8_t, 2, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xCF), (b.extract<uint8_t, 3, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x67), (b.extract<uint8_t, 4, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xB3), (b.extract<uint8_t, 5, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x59), (b.extract<uint8_t, 6, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xAC), (b.extract<uint8_t, 7, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x56), (b.extract<uint8_t, 8, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t, 9, 8>()));
       CHECK_EQUAL_HEX(uint8_t(0x15), (b.extract<uint8_t, 10, 8>()));
       CHECK_EQUAL_HEX(uint8_t(0x8A), (b.extract<uint8_t, 11, 8>()));
       CHECK_EQUAL_HEX(uint8_t(0x45), (b.extract<uint8_t, 12, 8>()));
@@ -2517,8 +2518,8 @@ namespace
       CHECK_EQUAL_HEX(uint8_t(0x12), (b.extract<uint8_t, 24, 8>()));
 
       // The lines below should static assert.
-      //uint8_t v1 = b.extract<uint8_t, 24, 9>();
-      //uint8_t v2 = b.extract<uint8_t, 25, 8>();
+      // uint8_t v1 = b.extract<uint8_t, 24, 9>();
+      // uint8_t v2 = b.extract<uint8_t, 25, 8>();
     }
 
     //*************************************************************************
@@ -2526,16 +2527,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int8_t(0x78), b.extract<int8_t>( 0, 8));
-      CHECK_EQUAL_HEX(int8_t(0x3C), b.extract<int8_t>( 1, 8));
-      CHECK_EQUAL_HEX(int8_t(0x9E), b.extract<int8_t>( 2, 8));
-      CHECK_EQUAL_HEX(int8_t(0xCF), b.extract<int8_t>( 3, 8));
-      CHECK_EQUAL_HEX(int8_t(0x67), b.extract<int8_t>( 4, 8));
-      CHECK_EQUAL_HEX(int8_t(0xB3), b.extract<int8_t>( 5, 8));
-      CHECK_EQUAL_HEX(int8_t(0x59), b.extract<int8_t>( 6, 8));
-      CHECK_EQUAL_HEX(int8_t(0xAC), b.extract<int8_t>( 7, 8));
-      CHECK_EQUAL_HEX(int8_t(0x56), b.extract<int8_t>( 8, 8));
-      CHECK_EQUAL_HEX(int8_t(0x2B), b.extract<int8_t>( 9, 8));
+      CHECK_EQUAL_HEX(int8_t(0x78), b.extract<int8_t>(0, 8));
+      CHECK_EQUAL_HEX(int8_t(0x3C), b.extract<int8_t>(1, 8));
+      CHECK_EQUAL_HEX(int8_t(0x9E), b.extract<int8_t>(2, 8));
+      CHECK_EQUAL_HEX(int8_t(0xCF), b.extract<int8_t>(3, 8));
+      CHECK_EQUAL_HEX(int8_t(0x67), b.extract<int8_t>(4, 8));
+      CHECK_EQUAL_HEX(int8_t(0xB3), b.extract<int8_t>(5, 8));
+      CHECK_EQUAL_HEX(int8_t(0x59), b.extract<int8_t>(6, 8));
+      CHECK_EQUAL_HEX(int8_t(0xAC), b.extract<int8_t>(7, 8));
+      CHECK_EQUAL_HEX(int8_t(0x56), b.extract<int8_t>(8, 8));
+      CHECK_EQUAL_HEX(int8_t(0x2B), b.extract<int8_t>(9, 8));
       CHECK_EQUAL_HEX(int8_t(0x15), b.extract<int8_t>(10, 8));
       CHECK_EQUAL_HEX(int8_t(0x8A), b.extract<int8_t>(11, 8));
       CHECK_EQUAL_HEX(int8_t(0x45), b.extract<int8_t>(12, 8));
@@ -2561,16 +2562,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int8_t(0x78), (b.extract<int8_t,  0, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0x3C), (b.extract<int8_t,  1, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0x9E), (b.extract<int8_t,  2, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0xCF), (b.extract<int8_t,  3, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0x67), (b.extract<int8_t,  4, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0xB3), (b.extract<int8_t,  5, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0x59), (b.extract<int8_t,  6, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0xAC), (b.extract<int8_t,  7, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0x56), (b.extract<int8_t,  8, 8>()));
-      CHECK_EQUAL_HEX(int8_t(0x2B), (b.extract<int8_t,  9, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x78), (b.extract<int8_t, 0, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x3C), (b.extract<int8_t, 1, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x9E), (b.extract<int8_t, 2, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0xCF), (b.extract<int8_t, 3, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x67), (b.extract<int8_t, 4, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0xB3), (b.extract<int8_t, 5, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x59), (b.extract<int8_t, 6, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0xAC), (b.extract<int8_t, 7, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x56), (b.extract<int8_t, 8, 8>()));
+      CHECK_EQUAL_HEX(int8_t(0x2B), (b.extract<int8_t, 9, 8>()));
       CHECK_EQUAL_HEX(int8_t(0x15), (b.extract<int8_t, 10, 8>()));
       CHECK_EQUAL_HEX(int8_t(0x8A), (b.extract<int8_t, 11, 8>()));
       CHECK_EQUAL_HEX(int8_t(0x45), (b.extract<int8_t, 12, 8>()));
@@ -2588,8 +2589,8 @@ namespace
       CHECK_EQUAL_HEX(int8_t(0x12), (b.extract<int8_t, 24, 8>()));
 
       // The lines below should static assert.
-      //int8_t v1 = b.extract<int8_t, 24, 9>();
-      //int8_t v2 = b.extract<int8_t, 25, 8>();
+      // int8_t v1 = b.extract<int8_t, 24, 9>();
+      // int8_t v2 = b.extract<int8_t, 25, 8>();
     }
 
     //*************************************************************************
@@ -2597,16 +2598,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint16_t(0x1678), b.extract<uint16_t>( 0, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x0B3C), b.extract<uint16_t>( 1, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x159E), b.extract<uint16_t>( 2, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x0ACF), b.extract<uint16_t>( 3, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x0567), b.extract<uint16_t>( 4, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x02B3), b.extract<uint16_t>( 5, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x1159), b.extract<uint16_t>( 6, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x08AC), b.extract<uint16_t>( 7, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x1456), b.extract<uint16_t>( 8, 13));
-      CHECK_EQUAL_HEX(uint16_t(0x1A2B), b.extract<uint16_t>( 9, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x1678), b.extract<uint16_t>(0, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x0B3C), b.extract<uint16_t>(1, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x159E), b.extract<uint16_t>(2, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x0ACF), b.extract<uint16_t>(3, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x0567), b.extract<uint16_t>(4, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x02B3), b.extract<uint16_t>(5, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x1159), b.extract<uint16_t>(6, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x08AC), b.extract<uint16_t>(7, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x1456), b.extract<uint16_t>(8, 13));
+      CHECK_EQUAL_HEX(uint16_t(0x1A2B), b.extract<uint16_t>(9, 13));
       CHECK_EQUAL_HEX(uint16_t(0x0D15), b.extract<uint16_t>(10, 13));
       CHECK_EQUAL_HEX(uint16_t(0x068A), b.extract<uint16_t>(11, 13));
       CHECK_EQUAL_HEX(uint16_t(0x0345), b.extract<uint16_t>(12, 13));
@@ -2627,16 +2628,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint16_t(0x1678), (b.extract<uint16_t,  0, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x0B3C), (b.extract<uint16_t,  1, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x159E), (b.extract<uint16_t,  2, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x0ACF), (b.extract<uint16_t,  3, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x0567), (b.extract<uint16_t,  4, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x02B3), (b.extract<uint16_t,  5, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x1159), (b.extract<uint16_t,  6, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x08AC), (b.extract<uint16_t,  7, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x1456), (b.extract<uint16_t,  8, 13>()));
-      CHECK_EQUAL_HEX(uint16_t(0x1A2B), (b.extract<uint16_t,  9, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x1678), (b.extract<uint16_t, 0, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x0B3C), (b.extract<uint16_t, 1, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x159E), (b.extract<uint16_t, 2, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x0ACF), (b.extract<uint16_t, 3, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x0567), (b.extract<uint16_t, 4, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x02B3), (b.extract<uint16_t, 5, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x1159), (b.extract<uint16_t, 6, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x08AC), (b.extract<uint16_t, 7, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x1456), (b.extract<uint16_t, 8, 13>()));
+      CHECK_EQUAL_HEX(uint16_t(0x1A2B), (b.extract<uint16_t, 9, 13>()));
       CHECK_EQUAL_HEX(uint16_t(0x0D15), (b.extract<uint16_t, 10, 13>()));
       CHECK_EQUAL_HEX(uint16_t(0x068A), (b.extract<uint16_t, 11, 13>()));
       CHECK_EQUAL_HEX(uint16_t(0x0345), (b.extract<uint16_t, 12, 13>()));
@@ -2649,8 +2650,8 @@ namespace
       CHECK_EQUAL_HEX(uint16_t(0x0246), (b.extract<uint16_t, 19, 13>()));
 
       // The lines below should static assert.
-      //uint16_t v1 = b.extract<uint16_t, 19, 14);
-      //uint16_t v2 = b.extract<uint16_t, 20, 13);
+      // uint16_t v1 = b.extract<uint16_t, 19, 14);
+      // uint16_t v2 = b.extract<uint16_t, 20, 13);
     }
 
     //*************************************************************************
@@ -2658,16 +2659,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint16_t(0x5678), b.extract<uint16_t>( 0, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x2B3C), b.extract<uint16_t>( 1, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x159E), b.extract<uint16_t>( 2, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x8ACF), b.extract<uint16_t>( 3, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x4567), b.extract<uint16_t>( 4, 16));
-      CHECK_EQUAL_HEX(uint16_t(0xA2B3), b.extract<uint16_t>( 5, 16));
-      CHECK_EQUAL_HEX(uint16_t(0xD159), b.extract<uint16_t>( 6, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x68AC), b.extract<uint16_t>( 7, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x3456), b.extract<uint16_t>( 8, 16));
-      CHECK_EQUAL_HEX(uint16_t(0x1A2B), b.extract<uint16_t>( 9, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x5678), b.extract<uint16_t>(0, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x2B3C), b.extract<uint16_t>(1, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x159E), b.extract<uint16_t>(2, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x8ACF), b.extract<uint16_t>(3, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x4567), b.extract<uint16_t>(4, 16));
+      CHECK_EQUAL_HEX(uint16_t(0xA2B3), b.extract<uint16_t>(5, 16));
+      CHECK_EQUAL_HEX(uint16_t(0xD159), b.extract<uint16_t>(6, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x68AC), b.extract<uint16_t>(7, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x3456), b.extract<uint16_t>(8, 16));
+      CHECK_EQUAL_HEX(uint16_t(0x1A2B), b.extract<uint16_t>(9, 16));
       CHECK_EQUAL_HEX(uint16_t(0x8D15), b.extract<uint16_t>(10, 16));
       CHECK_EQUAL_HEX(uint16_t(0x468A), b.extract<uint16_t>(11, 16));
       CHECK_EQUAL_HEX(uint16_t(0x2345), b.extract<uint16_t>(12, 16));
@@ -2685,16 +2686,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(uint16_t(0x5678), (b.extract<uint16_t,  0, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x2B3C), (b.extract<uint16_t,  1, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x159E), (b.extract<uint16_t,  2, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x8ACF), (b.extract<uint16_t,  3, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x4567), (b.extract<uint16_t,  4, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0xA2B3), (b.extract<uint16_t,  5, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0xD159), (b.extract<uint16_t,  6, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x68AC), (b.extract<uint16_t,  7, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x3456), (b.extract<uint16_t,  8, 16>()));
-      CHECK_EQUAL_HEX(uint16_t(0x1A2B), (b.extract<uint16_t,  9, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x5678), (b.extract<uint16_t, 0, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x2B3C), (b.extract<uint16_t, 1, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x159E), (b.extract<uint16_t, 2, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x8ACF), (b.extract<uint16_t, 3, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x4567), (b.extract<uint16_t, 4, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0xA2B3), (b.extract<uint16_t, 5, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0xD159), (b.extract<uint16_t, 6, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x68AC), (b.extract<uint16_t, 7, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x3456), (b.extract<uint16_t, 8, 16>()));
+      CHECK_EQUAL_HEX(uint16_t(0x1A2B), (b.extract<uint16_t, 9, 16>()));
       CHECK_EQUAL_HEX(uint16_t(0x8D15), (b.extract<uint16_t, 10, 16>()));
       CHECK_EQUAL_HEX(uint16_t(0x468A), (b.extract<uint16_t, 11, 16>()));
       CHECK_EQUAL_HEX(uint16_t(0x2345), (b.extract<uint16_t, 12, 16>()));
@@ -2704,8 +2705,8 @@ namespace
       CHECK_EQUAL_HEX(uint16_t(0x1234), (b.extract<uint16_t, 16, 16>()));
 
       // The lines below should static assert.
-      //uint16_t v1 = b.extract<uint16_t, 16, 17>();
-      //uint16_t v2 = b.extract<uint16_t, 17, 16>();
+      // uint16_t v1 = b.extract<uint16_t, 16, 17>();
+      // uint16_t v2 = b.extract<uint16_t, 17, 16>();
     }
 
     //*************************************************************************
@@ -2713,16 +2714,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int16_t(0x5678), b.extract<int16_t>( 0, 16));
-      CHECK_EQUAL_HEX(int16_t(0x2B3C), b.extract<int16_t>( 1, 16));
-      CHECK_EQUAL_HEX(int16_t(0x159E), b.extract<int16_t>( 2, 16));
-      CHECK_EQUAL_HEX(int16_t(0x8ACF), b.extract<int16_t>( 3, 16));
-      CHECK_EQUAL_HEX(int16_t(0x4567), b.extract<int16_t>( 4, 16));
-      CHECK_EQUAL_HEX(int16_t(0xA2B3), b.extract<int16_t>( 5, 16));
-      CHECK_EQUAL_HEX(int16_t(0xD159), b.extract<int16_t>( 6, 16));
-      CHECK_EQUAL_HEX(int16_t(0x68AC), b.extract<int16_t>( 7, 16));
-      CHECK_EQUAL_HEX(int16_t(0x3456), b.extract<int16_t>( 8, 16));
-      CHECK_EQUAL_HEX(int16_t(0x1A2B), b.extract<int16_t>( 9, 16));
+      CHECK_EQUAL_HEX(int16_t(0x5678), b.extract<int16_t>(0, 16));
+      CHECK_EQUAL_HEX(int16_t(0x2B3C), b.extract<int16_t>(1, 16));
+      CHECK_EQUAL_HEX(int16_t(0x159E), b.extract<int16_t>(2, 16));
+      CHECK_EQUAL_HEX(int16_t(0x8ACF), b.extract<int16_t>(3, 16));
+      CHECK_EQUAL_HEX(int16_t(0x4567), b.extract<int16_t>(4, 16));
+      CHECK_EQUAL_HEX(int16_t(0xA2B3), b.extract<int16_t>(5, 16));
+      CHECK_EQUAL_HEX(int16_t(0xD159), b.extract<int16_t>(6, 16));
+      CHECK_EQUAL_HEX(int16_t(0x68AC), b.extract<int16_t>(7, 16));
+      CHECK_EQUAL_HEX(int16_t(0x3456), b.extract<int16_t>(8, 16));
+      CHECK_EQUAL_HEX(int16_t(0x1A2B), b.extract<int16_t>(9, 16));
       CHECK_EQUAL_HEX(int16_t(0x8D15), b.extract<int16_t>(10, 16));
       CHECK_EQUAL_HEX(int16_t(0x468A), b.extract<int16_t>(11, 16));
       CHECK_EQUAL_HEX(int16_t(0x2345), b.extract<int16_t>(12, 16));
@@ -2740,16 +2741,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int16_t(0x5678), (b.extract<int16_t,  0, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x2B3C), (b.extract<int16_t,  1, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x159E), (b.extract<int16_t,  2, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x8ACF), (b.extract<int16_t,  3, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x4567), (b.extract<int16_t,  4, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0xA2B3), (b.extract<int16_t,  5, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0xD159), (b.extract<int16_t,  6, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x68AC), (b.extract<int16_t,  7, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x3456), (b.extract<int16_t,  8, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x1A2B), (b.extract<int16_t,  9, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x5678), (b.extract<int16_t, 0, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x2B3C), (b.extract<int16_t, 1, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x159E), (b.extract<int16_t, 2, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x8ACF), (b.extract<int16_t, 3, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x4567), (b.extract<int16_t, 4, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0xA2B3), (b.extract<int16_t, 5, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0xD159), (b.extract<int16_t, 6, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x68AC), (b.extract<int16_t, 7, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x3456), (b.extract<int16_t, 8, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x1A2B), (b.extract<int16_t, 9, 16>()));
       CHECK_EQUAL_HEX(int16_t(0x8D15), (b.extract<int16_t, 10, 16>()));
       CHECK_EQUAL_HEX(int16_t(0x468A), (b.extract<int16_t, 11, 16>()));
       CHECK_EQUAL_HEX(int16_t(0x2345), (b.extract<int16_t, 12, 16>()));
@@ -2759,8 +2760,8 @@ namespace
       CHECK_EQUAL_HEX(int16_t(0x1234), (b.extract<int16_t, 16, 16>()));
 
       // The lines below should static assert.
-      //int16_t v1 = b.extract<int16_t, 16, 17>());
-      //int16_t v2 = b.extract<int16_t, 17, 16>());
+      // int16_t v1 = b.extract<int16_t, 16, 17>());
+      // int16_t v2 = b.extract<int16_t, 17, 16>());
     }
 
     //*************************************************************************
@@ -2824,4 +2825,4 @@ namespace
       CHECK_EQUAL(32, ETL_OR_STD17::size(b));
     }
   }
-}
+} // namespace

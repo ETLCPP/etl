@@ -31,13 +31,13 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "message.h"
-#include "error_handler.h"
-#include "static_assert.h"
-#include "largest.h"
 #include "alignment.h"
-#include "utility.h"
+#include "error_handler.h"
+#include "largest.h"
+#include "message.h"
+#include "static_assert.h"
 #include "type_list.h"
+#include "utility.h"
 
 #include <stdint.h>
 
@@ -50,7 +50,6 @@ namespace etl
   template <typename... TMessageTypes>
   class message_packet
   {
-
   private:
 
     template <typename T>
@@ -66,19 +65,19 @@ namespace etl
 
     using message_types = etl::type_list<TMessageTypes...>;
 
-    //********************************************
-#include "private/diagnostic_uninitialized_push.h"
+      //********************************************
+  #include "private/diagnostic_uninitialized_push.h"
     constexpr message_packet() noexcept
       : valid(false)
     {
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
-    //********************************************
-    ///
-    //********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    template <typename T, typename = typename etl::enable_if<IsIMessage<T> || IsInMessageList<T>, int>::type>
+      //********************************************
+      ///
+      //********************************************
+  #include "private/diagnostic_uninitialized_push.h"
+    template <typename T, typename = typename etl::enable_if< IsIMessage<T> || IsInMessageList<T>, int>::type>
     explicit message_packet(T&& msg)
       : valid(true)
     {
@@ -105,7 +104,7 @@ namespace etl
         ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
       }
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
     //**********************************************
     message_packet(const message_packet& other)
@@ -118,7 +117,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
     //**********************************************
     message_packet(message_packet&& other)
     {
@@ -129,7 +128,7 @@ namespace etl
         add_new_message(etl::move(other.get()));
       }
     }
-#endif
+  #endif
 
     //**********************************************
     void copy(const message_packet& other)
@@ -153,9 +152,9 @@ namespace etl
       }
     }
 
-    //**********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    message_packet& operator =(const message_packet& rhs)
+      //**********************************************
+  #include "private/diagnostic_uninitialized_push.h"
+    message_packet& operator=(const message_packet& rhs)
     {
       delete_current_message();
       valid = rhs.is_valid();
@@ -166,11 +165,11 @@ namespace etl
 
       return *this;
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
-    //**********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    message_packet& operator =(message_packet&& rhs)
+      //**********************************************
+  #include "private/diagnostic_uninitialized_push.h"
+    message_packet& operator=(message_packet&& rhs)
     {
       delete_current_message();
       valid = rhs.is_valid();
@@ -181,7 +180,7 @@ namespace etl
 
       return *this;
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
     //********************************************
     ~message_packet()
@@ -228,16 +227,14 @@ namespace etl
 
     //**********************************************
     template <typename TMessage>
-    static ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
-      accepts()
+    static ETL_CONSTEXPR typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type accepts()
     {
       return accepts<TMessage::ID>();
     }
 
     enum
     {
-      SIZE = etl::largest<TMessageTypes...>::size,
+      SIZE      = etl::largest<TMessageTypes...>::size,
       ALIGNMENT = etl::largest<TMessageTypes...>::alignment
     };
 
@@ -257,24 +254,24 @@ namespace etl
       return Id1 == id2;
     }
 
-    //********************************************
-#include "private/diagnostic_uninitialized_push.h"
+      //********************************************
+  #include "private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-#if ETL_HAS_VIRTUAL_MESSAGES
+  #if ETL_HAS_VIRTUAL_MESSAGES
         pmsg->~imessage();
-#else
+  #else
         delete_message(pmsg);
-#endif
+  #endif
       }
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
-#if !ETL_HAS_VIRTUAL_MESSAGES
+  #if !ETL_HAS_VIRTUAL_MESSAGES
     //********************************************
     void delete_message(etl::imessage* pmsg)
     {
@@ -296,7 +293,7 @@ namespace etl
         return false;
       }
     }
-#endif
+  #endif
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -310,20 +307,20 @@ namespace etl
       (add_new_message_type<TMessageTypes>(etl::move(msg)) || ...);
     }
 
-#include "private/diagnostic_uninitialized_push.h"
+  #include "private/diagnostic_uninitialized_push.h"
     //********************************************
     /// Only enabled for types that are in the typelist.
     //********************************************
     template <typename TMessage>
-    etl::enable_if_t<etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<TMessage>>, TMessageTypes...>, void>
+    etl::enable_if_t< etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<TMessage>>, TMessageTypes...>, void>
       add_new_message_type(TMessage&& msg)
     {
       void* p = data;
       new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
-#include "private/diagnostic_uninitialized_push.h"
+  #include "private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
     bool add_new_message_type(const etl::imessage& msg)
@@ -339,9 +336,9 @@ namespace etl
         return false;
       }
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
-#include "private/diagnostic_uninitialized_push.h"
+  #include "private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
     bool add_new_message_type(etl::imessage&& msg)
@@ -357,10 +354,10 @@ namespace etl
         return false;
       }
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    bool valid;
+    bool                                                 valid;
   };
 
   //***************************************************************************
@@ -384,55 +381,43 @@ namespace etl
 
     using message_types = etl::type_list<>;
 
-    //********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    constexpr message_packet() noexcept
-    {
-    }
-#include "private/diagnostic_pop.h"
+      //********************************************
+  #include "private/diagnostic_uninitialized_push.h"
+    constexpr message_packet() noexcept {}
+  #include "private/diagnostic_pop.h"
 
     //**********************************************
-    message_packet(const message_packet& /*other*/)
-    {
-    }
+    message_packet(const message_packet& /*other*/) {}
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
     //**********************************************
-    message_packet(message_packet&& /*other*/)
-    {
-    }
-#endif
+    message_packet(message_packet&& /*other*/) {}
+  #endif
 
     //**********************************************
-    void copy(const message_packet& /*other*/)
-    {
-    }
+    void copy(const message_packet& /*other*/) {}
 
     //**********************************************
-    void copy(message_packet&& /*other*/)
-    {
-    }
+    void copy(message_packet&& /*other*/) {}
 
-    //**********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    message_packet& operator =(const message_packet& /*rhs*/)
+      //**********************************************
+  #include "private/diagnostic_uninitialized_push.h"
+    message_packet& operator=(const message_packet& /*rhs*/)
     {
       return *this;
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
-    //**********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    message_packet& operator =(message_packet&& /*rhs*/)
+      //**********************************************
+  #include "private/diagnostic_uninitialized_push.h"
+    message_packet& operator=(message_packet&& /*rhs*/)
     {
       return *this;
     }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
     //********************************************
-    ~message_packet()
-    {
-    }
+    ~message_packet() {}
 
     //********************************************
     bool is_valid() const
@@ -461,22 +446,21 @@ namespace etl
 
     //**********************************************
     template <typename TMessage>
-    static ETL_CONSTEXPR
-      typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
-      accepts()
+    static ETL_CONSTEXPR typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type accepts()
     {
       return false;
     }
 
     enum
     {
-      SIZE = 0,
+      SIZE      = 0,
       ALIGNMENT = 1
     };
   };
 
   //***************************************************************************
-  /// Helper to turn etl::type_list<TTypes...> into etl::message_packet<TTypes...>
+  /// Helper to turn etl::type_list<TTypes...> into
+  /// etl::message_packet<TTypes...>
   template <typename TList>
   struct message_packet_from_type_list;
 
@@ -492,6 +476,6 @@ namespace etl
 #else
   #include "private/message_packet_cpp03.h"
 #endif
-}
+} // namespace etl
 
 #endif

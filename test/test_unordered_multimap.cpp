@@ -28,16 +28,16 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <map>
-#include <array>
 #include <algorithm>
-#include <utility>
-#include <iterator>
-#include <string>
-#include <vector>
-#include <numeric>
+#include <array>
 #include <functional>
+#include <iterator>
+#include <map>
+#include <numeric>
+#include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "data.h"
 
@@ -48,20 +48,20 @@ namespace etl
   template <>
   struct hash<std::string>
   {
-    size_t operator ()(const std::string& e) const
+    size_t operator()(const std::string& e) const
     {
       size_t sum = 0U;
       return std::accumulate(e.begin(), e.end(), sum);
     }
   };
-}
+} // namespace etl
 
 namespace
 {
   //*************************************************************************
   struct simple_hash
   {
-    size_t operator ()(const std::string& text) const
+    size_t operator()(const std::string& text) const
     {
       return std::accumulate(text.begin(), text.end(), size_t(0));
     }
@@ -90,15 +90,15 @@ namespace
   {
     typedef int is_transparent;
 
-    size_t operator ()(const char* s) const
+    size_t operator()(const char* s) const
     {
-      size_t sum = 0U;
+      size_t sum    = 0U;
       size_t length = etl::strlen(s);
 
       return std::accumulate(s, s + length, sum);
     }
 
-    size_t operator ()(const std::string& text) const
+    size_t operator()(const std::string& text) const
     {
       return std::accumulate(text.begin(), text.end(), size_t(0));
     }
@@ -123,7 +123,7 @@ namespace
     {
     }
 
-    size_t operator ()(uint32_t e) const
+    size_t operator()(uint32_t e) const
     {
       return size_t(e);
     }
@@ -144,7 +144,7 @@ namespace
     {
     }
 
-    size_t operator ()(uint32_t lhs, uint32_t rhs) const
+    size_t operator()(uint32_t lhs, uint32_t rhs) const
     {
       return (lhs == rhs);
     }
@@ -158,7 +158,10 @@ namespace
   {
     size_t modulus;
 
-    parameterized_hash(size_t modulus_ = 2) : modulus(modulus_){}
+    parameterized_hash(size_t modulus_ = 2)
+      : modulus(modulus_)
+    {
+    }
 
     size_t operator()(size_t val) const
     {
@@ -173,7 +176,10 @@ namespace
     size_t modulus;
 
     // Hasher whose hash behaviour depends on provided data.
-    parameterized_equal(size_t modulus_ = 2) : modulus(modulus_){}
+    parameterized_equal(size_t modulus_ = 2)
+      : modulus(modulus_)
+    {
+    }
 
     bool operator()(size_t lhs, size_t rhs) const
     {
@@ -191,25 +197,25 @@ namespace
     typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
     typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
 
-    typedef etl::unordered_multimap<std::string, DC,  SIZE, SIZE / 2, simple_hash> DataDC;
-    typedef etl::unordered_multimap<std::string, NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
-    typedef etl::iunordered_multimap<std::string, NDC, simple_hash> IDataNDC;
+    typedef etl::unordered_multimap<std::string, DC, SIZE, SIZE / 2, simple_hash>                        DataDC;
+    typedef etl::unordered_multimap<std::string, NDC, SIZE, SIZE / 2, simple_hash>                       DataNDC;
+    typedef etl::iunordered_multimap<std::string, NDC, simple_hash>                                      IDataNDC;
     typedef etl::unordered_multimap<std::string, NDC, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>> DataNDCTransparent;
-    typedef etl::unordered_multimap<std::string, DC, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>> DataDCTransparent;
+    typedef etl::unordered_multimap<std::string, DC, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>  DataDCTransparent;
 
     using ItemM = TestDataM<int>;
     using DataM = etl::unordered_multimap<std::string, ItemM, SIZE, SIZE, std::hash<std::string>>;
 
-    NDC N0 = NDC("A");
-    NDC N1 = NDC("B");
-    NDC N2 = NDC("C");
-    NDC N3 = NDC("D");
-    NDC N4 = NDC("E");
-    NDC N5 = NDC("F");
-    NDC N6 = NDC("G");
-    NDC N7 = NDC("H");
-    NDC N8 = NDC("I");
-    NDC N9 = NDC("J");
+    NDC N0  = NDC("A");
+    NDC N1  = NDC("B");
+    NDC N2  = NDC("C");
+    NDC N3  = NDC("D");
+    NDC N4  = NDC("E");
+    NDC N5  = NDC("F");
+    NDC N6  = NDC("G");
+    NDC N7  = NDC("H");
+    NDC N8  = NDC("I");
+    NDC N9  = NDC("J");
     NDC N10 = NDC("K");
     NDC N11 = NDC("L");
     NDC N12 = NDC("M");
@@ -263,7 +269,7 @@ namespace
     std::string K18 = CK18; // 8
     std::string K19 = CK19; // 9
 
-    std::string K[] = { K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14, K15, K16, K17, K18, K19 };
+    std::string K[] = {K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14, K15, K16, K17, K18, K19};
 
     std::vector<ElementNDC> initial_data;
     std::vector<ElementNDC> excess_data;
@@ -293,29 +299,16 @@ namespace
     {
       SetupFixture()
       {
-        ElementNDC n[] =
-        {
-          ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
-          ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9)
-        };
+        ElementNDC n[] = {ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
+                          ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9)};
 
-        ElementNDC n2[] =
-        {
-          ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
-          ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9),
-          ElementNDC(K10, N10)
-        };
+        ElementNDC n2[] = {ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),  ElementNDC(K5, N5),
+                           ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9), ElementNDC(K10, N10)};
 
-        ElementNDC n3[] =
-        {
-          ElementNDC(K10, N10), ElementNDC(K11, N11), ElementNDC(K12, N12), ElementNDC(K13, N13), ElementNDC(K14, N14),
-          ElementNDC(K15, N15), ElementNDC(K16, N16), ElementNDC(K17, N17), ElementNDC(K18, N18), ElementNDC(K19, N19)
-        };
+        ElementNDC n3[] = {ElementNDC(K10, N10), ElementNDC(K11, N11), ElementNDC(K12, N12), ElementNDC(K13, N13), ElementNDC(K14, N14),
+                           ElementNDC(K15, N15), ElementNDC(K16, N16), ElementNDC(K17, N17), ElementNDC(K18, N18), ElementNDC(K19, N19)};
 
-        ElementNDC n4[] =
-        {
-          ElementNDC(K10, N10), ElementNDC(K11, N11), ElementNDC(K11, N12), ElementNDC(K11, N13), ElementNDC(K12, N14)
-        };
+        ElementNDC n4[] = {ElementNDC(K10, N10), ElementNDC(K11, N11), ElementNDC(K11, N12), ElementNDC(K11, N13), ElementNDC(K12, N14)};
 
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
@@ -339,10 +332,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
-      etl::unordered_multimap data{ ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
-                                    ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
-      etl::unordered_multimap<std::string, NDC, 10U, 10U> check = { ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
-                                                                    ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
+      etl::unordered_multimap data{ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
+                                   ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9)};
+      etl::unordered_multimap<std::string, NDC, 10U, 10U> check = {ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3),
+                                                                   ElementNDC(K4, N4), ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7),
+                                                                   ElementNDC(K8, N8), ElementNDC(K9, N9)};
 
       CHECK(!data.empty());
       CHECK(data.full());
@@ -499,11 +493,11 @@ namespace
     {
       DataNDC data;
 
-      data.insert(DataNDC::value_type(K0,  N0)); // Inserted
-      data.insert(DataNDC::value_type(K2,  N2)); // Inserted
-      data.insert(DataNDC::value_type(K1,  N1)); // Inserted
+      data.insert(DataNDC::value_type(K0, N0));  // Inserted
+      data.insert(DataNDC::value_type(K2, N2));  // Inserted
+      data.insert(DataNDC::value_type(K1, N1));  // Inserted
       data.insert(DataNDC::value_type(K11, N1)); // Duplicate hash. Inserted
-      data.insert(DataNDC::value_type(K1,  N3)); // Duplicate key.  Inserted
+      data.insert(DataNDC::value_type(K1, N3));  // Duplicate key.  Inserted
 
       CHECK_EQUAL(5U, data.size());
 
@@ -512,15 +506,15 @@ namespace
       idata = data.find(K0);
 
       std::string k = idata->first;
-      NDC n = idata->second;
+      NDC         n = idata->second;
 
       CHECK(idata != data.end());
-      CHECK(idata->first  == K0);
+      CHECK(idata->first == K0);
       CHECK(idata->second == N0);
 
       idata = data.find(K1);
       CHECK(idata != data.end());
-      CHECK(idata->first  == K1);
+      CHECK(idata->first == K1);
       CHECK(idata->second == N3);
 
       // The other value with key == K1
@@ -531,12 +525,12 @@ namespace
 
       idata = data.find(K2);
       CHECK(idata != data.end());
-      CHECK(idata->first  == K2);
+      CHECK(idata->first == K2);
       CHECK(idata->second == N2);
 
       idata = data.find(K11);
       CHECK(idata != data.end());
-      CHECK(idata->first  == K11);
+      CHECK(idata->first == K11);
       CHECK(idata->second == N1);
     }
 
@@ -644,7 +638,7 @@ namespace
       ++inext;
 
       DataNDC::iterator iafter = data.erase(idata);
-      idata = data.find(K5);
+      idata                    = data.find(K5);
 
       CHECK(idata == data.end());
       CHECK(inext == iafter);
@@ -664,7 +658,7 @@ namespace
       ++inext;
 
       DataNDC::iterator iafter = data.erase(idata);
-      idata = data.find(K5);
+      idata                    = data.find(K5);
 
       CHECK(idata == data.cend());
       CHECK(inext == iafter);
@@ -857,19 +851,19 @@ namespace
       ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> result;
 
       result = data.equal_range(K10);
-      CHECK(result.first  == data.begin());
+      CHECK(result.first == data.begin());
       CHECK(result.second != data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
       CHECK_EQUAL(result.first->first, K10);
 
       result = data.equal_range(K11);
-      CHECK(result.first  != data.begin());
+      CHECK(result.first != data.begin());
       CHECK(result.second != data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 3);
       CHECK_EQUAL(result.first->first, K11);
 
       result = data.equal_range(K12);
-      CHECK(result.first  != data.begin());
+      CHECK(result.first != data.begin());
       CHECK(result.second == data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
       CHECK_EQUAL(result.first->first, K12);
@@ -909,19 +903,19 @@ namespace
       ETL_OR_STD::pair<DataNDCTransparent::iterator, DataNDCTransparent::iterator> result;
 
       result = data.equal_range(CK10);
-      CHECK(result.first  == data.begin());
+      CHECK(result.first == data.begin());
       CHECK(result.second != data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
       CHECK_EQUAL(result.first->first, CK10);
 
       result = data.equal_range(CK11);
-      CHECK(result.first  != data.begin());
+      CHECK(result.first != data.begin());
       CHECK(result.second != data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 3);
       CHECK_EQUAL(result.first->first, CK11);
 
       result = data.equal_range(CK12);
-      CHECK(result.first  != data.begin());
+      CHECK(result.first != data.begin());
       CHECK(result.second == data.end());
       CHECK_EQUAL(std::distance(result.first, result.second), 1);
       CHECK_EQUAL(result.first->first, CK12);
@@ -982,8 +976,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_hash_function)
     {
-      DataNDC data;
-      DataNDC::hasher hash_function =  data.hash_function();
+      DataNDC         data;
+      DataNDC::hasher hash_function = data.hash_function();
 
       CHECK_EQUAL(simple_hash()(std::string("ABCDEF")), hash_function(std::string("ABCDEF")));
     }
@@ -991,7 +985,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_key_eq_function)
     {
-      DataNDC data;
+      DataNDC            data;
       DataNDC::key_equal key_eq = data.key_eq();
 
       CHECK(key_eq(std::string("ABCDEF"), std::string("ABCDEF")));
@@ -1030,21 +1024,13 @@ namespace
       using etl_map = etl::unordered_multimap<int, std::string, 20, 20, bad_hash>;
       using stl_map = std::unordered_multimap<int, std::string, bad_hash>;
 
-      std::vector<etl_map::value_type> random_keys1 =
-      {
-        {17, "17"}, {14, "14"}, { 3,  "3"}, { 7,  "7"}, { 2,  "2"},
-        { 6,  "6"}, { 9,  "9"}, { 3,  "3"}, {18, "18"}, {10, "10"},
-        { 8,  "8"}, {11, "11"}, { 4,  "4"}, { 1,  "1"}, {12, "12"},
-        {15, "15"}, {16, "16"}, { 0,  "0"}, { 5,  "5"}, {19, "19"}
-      };
+      std::vector<etl_map::value_type> random_keys1 = {{17, "17"}, {14, "14"}, {3, "3"},   {7, "7"}, {2, "2"},   {6, "6"},  {9, "9"},
+                                                       {3, "3"},   {18, "18"}, {10, "10"}, {8, "8"}, {11, "11"}, {4, "4"},  {1, "1"},
+                                                       {12, "12"}, {15, "15"}, {16, "16"}, {0, "0"}, {5, "5"},   {19, "19"}};
 
-      std::vector<etl_map::value_type> random_keys2 =
-      {
-        { 3,  "3"}, { 6,  "6"}, { 5,  "5"}, {17, "17"}, { 2,  "2"},
-        { 7,  "7"}, { 3,  "3"}, {19, "19"}, { 8,  "8"}, {15, "15"},
-        {14, "14"}, { 0,  "0"}, {18, "18"}, { 4,  "4"}, {10, "10"},
-        { 9,  "9"}, {16, "16"}, {11, "11"}, {12, "12"}, { 1,  "1"}
-      };
+      std::vector<etl_map::value_type> random_keys2 = {{3, "3"},   {6, "6"}, {5, "5"},   {17, "17"}, {2, "2"},   {7, "7"},   {3, "3"},
+                                                       {19, "19"}, {8, "8"}, {15, "15"}, {14, "14"}, {0, "0"},   {18, "18"}, {4, "4"},
+                                                       {10, "10"}, {9, "9"}, {16, "16"}, {11, "11"}, {12, "12"}, {1, "1"}};
 
       // Check that the input data is valid.
       CHECK_EQUAL(random_keys1.size(), random_keys2.size());
@@ -1102,7 +1088,7 @@ namespace
 
       std::vector<std::string> s;
 
-      for (const auto &kv : map)
+      for (const auto& kv : map)
       {
         std::stringstream ss;
         ss << "map[" << kv.first << "] = " << kv.second;
@@ -1151,15 +1137,8 @@ namespace
       CustomHashFunction chf1(1);
       CustomKeyEq        ceq2(2);
 
-      using value_type = etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
-      std::array<value_type, 5> data =
-      {
-        value_type{1, 11},
-        value_type{2, 22},
-        value_type{3, 33},
-        value_type{4, 44},
-        value_type{5, 55}
-      };
+      using value_type               = etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+      std::array<value_type, 5> data = {value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55}};
 
       etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1(data.begin(), data.end(), chf1, ceq2);
 
@@ -1175,7 +1154,8 @@ namespace
 
       using value_type = etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
 
-      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1({ value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55} }, chf1, ceq2);
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1(
+        {value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55}}, chf1, ceq2);
 
       CHECK_EQUAL(chf1.id, map1.hash_function().id);
       CHECK_EQUAL(ceq2.id, map1.key_eq().id);
@@ -1192,8 +1172,8 @@ namespace
     TEST(test_parameterized_eq)
     {
       constexpr std::size_t MODULO = 4;
-      parameterized_hash hash{MODULO};
-      parameterized_equal eq{MODULO};
+      parameterized_hash    hash{MODULO};
+      parameterized_equal   eq{MODULO};
       // values are equal modulo 4
       etl::unordered_multimap<std::size_t, int, 10, 10, parameterized_hash, parameterized_equal> map;
       map.insert(etl::make_pair(2, 20));
@@ -1232,7 +1212,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      const char* not_inserted  = "ZZ";
+      const char* not_inserted = "ZZ";
 
       CHECK_TRUE(data.contains(K0));
       CHECK_FALSE(data.contains(not_inserted));
@@ -1243,10 +1223,10 @@ namespace
     {
       DataNDCTransparent data(initial_data.begin(), initial_data.end());
 
-      const char* not_inserted  = "ZZ";
+      const char* not_inserted = "ZZ";
 
       CHECK_TRUE(data.contains("FF"));
       CHECK_FALSE(data.contains(not_inserted));
     }
   }
-}
+} // namespace

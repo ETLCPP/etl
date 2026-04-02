@@ -28,27 +28,27 @@ SOFTWARE.
 
 #include "etl/error_handler.h"
 
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 
 //*****************************************************************************
 struct ErrorLog
 {
-    ErrorLog()
-        : log_count(0)
-    {
-    }
+  ErrorLog()
+    : log_count(0)
+  {
+  }
 
-    void Log(const etl::exception& /*e*/)
-    {
-        ++log_count;
-    }
+  void Log(const etl::exception& /*e*/)
+  {
+    ++log_count;
+  }
 
-    int log_count;
+  int log_count;
 };
 
 int exception_count = 0;
-int return_count = 0;
+int return_count    = 0;
 
 //*****************************************************************************
 class test_exception : public etl::exception
@@ -241,4 +241,3 @@ int main()
 
   return (log_count_passed && return_count_passed && exception_count_passed) ? 0 : 1;
 }
-

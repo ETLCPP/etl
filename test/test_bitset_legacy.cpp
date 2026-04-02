@@ -28,9 +28,9 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <bitset>
 #include <limits>
 #include <type_traits>
-#include <bitset>
 
 #include "etl/private/bitset_legacy.h"
 
@@ -44,7 +44,7 @@ namespace
       std::bitset<60> compare;
       etl::bitset<60> data;
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -59,7 +59,7 @@ namespace
       std::bitset<60> compare(0x123456731234567ULL);
       etl::bitset<60> data(0x123456731234567ULL);
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -74,7 +74,7 @@ namespace
       std::bitset<60> compare(0x8765432187654321ULL);
       etl::bitset<60> data(0x8765432187654321ULL);
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -89,7 +89,7 @@ namespace
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -193,11 +193,11 @@ namespace
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001111100001");
       etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001111100001");
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -214,11 +214,11 @@ namespace
       compare.set();
       data.set();
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -237,11 +237,11 @@ namespace
       compare.set();
       idata.set();
 
-      CHECK_EQUAL(compare.size(),  idata.size());
+      CHECK_EQUAL(compare.size(), idata.size());
       CHECK_EQUAL(compare.count(), idata.count());
-      CHECK_EQUAL(compare.none(),  idata.none());
-      CHECK_EQUAL(compare.any(),   idata.any());
-      CHECK_EQUAL(compare.all(),   idata.all());
+      CHECK_EQUAL(compare.none(), idata.none());
+      CHECK_EQUAL(compare.any(), idata.any());
+      CHECK_EQUAL(compare.all(), idata.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -509,7 +509,7 @@ namespace
     TEST(test_value_u8_min)
     {
       etl::bitset<8> data("00000000");
-      uint8_t value = data.value<uint8_t>();
+      uint8_t        value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::min(), value);
     }
@@ -518,7 +518,7 @@ namespace
     TEST(test_value_u8_max)
     {
       etl::bitset<8> data("11111111");
-      uint8_t value = data.value<uint8_t>();
+      uint8_t        value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::max(), value);
     }
@@ -527,7 +527,7 @@ namespace
     TEST(test_value_s8_min)
     {
       etl::bitset<8> data("10000000");
-      int8_t value = data.value<int8_t>();
+      int8_t         value = data.value<int8_t>();
 
       CHECK_EQUAL(std::numeric_limits<int8_t>::min(), value);
     }
@@ -536,7 +536,7 @@ namespace
     TEST(test_value_s8_max)
     {
       etl::bitset<8> data("01111111");
-      int8_t value = data.value<int8_t>();
+      int8_t         value = data.value<int8_t>();
 
       CHECK_EQUAL(std::numeric_limits<int8_t>::max(), value);
     }
@@ -545,7 +545,7 @@ namespace
     TEST(test_value_u16_min)
     {
       etl::bitset<16> data("0000000000000000");
-      uint16_t value = data.value<uint16_t>();
+      uint16_t        value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::min(), value);
     }
@@ -554,7 +554,7 @@ namespace
     TEST(test_value_u16_max)
     {
       etl::bitset<16> data("1111111111111111");
-      uint16_t value = data.value<uint16_t>();
+      uint16_t        value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::max(), value);
     }
@@ -563,7 +563,7 @@ namespace
     TEST(test_value_s16_min)
     {
       etl::bitset<16> data("1000000000000000");
-      int16_t value = data.value<int16_t>();
+      int16_t         value = data.value<int16_t>();
 
       CHECK_EQUAL(std::numeric_limits<int16_t>::min(), value);
     }
@@ -572,7 +572,7 @@ namespace
     TEST(test_value_s16_max)
     {
       etl::bitset<16> data("0111111111111111");
-      int16_t value = data.value<int16_t>();
+      int16_t         value = data.value<int16_t>();
 
       CHECK_EQUAL(std::numeric_limits<int16_t>::max(), value);
     }
@@ -581,7 +581,7 @@ namespace
     TEST(test_value_u32_min)
     {
       etl::bitset<32> data("00000000000000000000000000000000");
-      uint32_t value = data.value<uint32_t>();
+      uint32_t        value = data.value<uint32_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint32_t>::min(), value);
     }
@@ -590,7 +590,7 @@ namespace
     TEST(test_value_u32_max)
     {
       etl::bitset<32> data("11111111111111111111111111111111");
-      uint32_t value = data.value<uint32_t>();
+      uint32_t        value = data.value<uint32_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint32_t>::max(), value);
     }
@@ -599,7 +599,7 @@ namespace
     TEST(test_value_s32_min)
     {
       etl::bitset<32> data("10000000000000000000000000000000");
-      int32_t value = data.value<int32_t>();
+      int32_t         value = data.value<int32_t>();
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::min(), value);
     }
@@ -608,7 +608,7 @@ namespace
     TEST(test_value_s32_max)
     {
       etl::bitset<32> data("01111111111111111111111111111111");
-      int32_t value = data.value<int32_t>();
+      int32_t         value = data.value<int32_t>();
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::max(), value);
     }
@@ -617,7 +617,7 @@ namespace
     TEST(test_value_u64_min)
     {
       etl::bitset<64> data("0000000000000000000000000000000000000000000000000000000000000000");
-      uint64_t value = data.value<uint64_t>();
+      uint64_t        value = data.value<uint64_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint64_t>::min(), value);
     }
@@ -626,7 +626,7 @@ namespace
     TEST(test_value_u64_max)
     {
       etl::bitset<64> data("1111111111111111111111111111111111111111111111111111111111111111");
-      uint64_t value = data.value<uint64_t>();
+      uint64_t        value = data.value<uint64_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint64_t>::max(), value);
     }
@@ -635,7 +635,7 @@ namespace
     TEST(test_value_s64_min)
     {
       etl::bitset<64> data("1000000000000000000000000000000000000000000000000000000000000000");
-      int64_t value = data.value<int64_t>();
+      int64_t         value = data.value<int64_t>();
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::min(), value);
     }
@@ -644,7 +644,7 @@ namespace
     TEST(test_value_s64_max)
     {
       etl::bitset<64> data("0111111111111111111111111111111111111111111111111111111111111111");
-      int64_t value = data.value<int64_t>();
+      int64_t         value = data.value<int64_t>();
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::max(), value);
     }
@@ -654,7 +654,7 @@ namespace
     {
       etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
 
-      etl::ibitset& idata= data;
+      etl::ibitset& idata = data;
 
       uint32_t value = 0U;
 
@@ -675,11 +675,11 @@ namespace
         data.set(i, (i % 2) == 0);
       }
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -703,11 +703,11 @@ namespace
       compare.reset();
       etl::bitset<60>& rdata = data.reset();
 
-      CHECK_EQUAL(compare.size(),  rdata.size());
+      CHECK_EQUAL(compare.size(), rdata.size());
       CHECK_EQUAL(compare.count(), rdata.count());
-      CHECK_EQUAL(compare.none(),  rdata.none());
-      CHECK_EQUAL(compare.any(),   rdata.any());
-      CHECK_EQUAL(compare.all(),   rdata.all());
+      CHECK_EQUAL(compare.none(), rdata.none());
+      CHECK_EQUAL(compare.any(), rdata.any());
+      CHECK_EQUAL(compare.all(), rdata.all());
 
       for (size_t i = 0UL; i < rdata.size(); ++i)
       {
@@ -720,24 +720,23 @@ namespace
     {
       std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
       etl::bitset<60> data(0xFFFFFFFFFFFFFFFULL);
-      etl::ibitset& idata = data;
+      etl::ibitset&   idata = data;
 
       etl::ibitset& ridata = idata.reset();
 
       compare.reset();
 
-      CHECK_EQUAL(compare.size(),  ridata.size());
+      CHECK_EQUAL(compare.size(), ridata.size());
       CHECK_EQUAL(compare.count(), ridata.count());
-      CHECK_EQUAL(compare.none(),  ridata.none());
-      CHECK_EQUAL(compare.any(),   ridata.any());
-      CHECK_EQUAL(compare.all(),   ridata.all());
+      CHECK_EQUAL(compare.none(), ridata.none());
+      CHECK_EQUAL(compare.any(), ridata.any());
+      CHECK_EQUAL(compare.all(), ridata.all());
 
       for (size_t i = 0UL; i < ridata.size(); ++i)
       {
         CHECK_EQUAL(compare.test(i), ridata.test(i));
       }
     }
-
 
     //*************************************************************************
     TEST(test_position_reset)
@@ -751,11 +750,11 @@ namespace
         data.reset(i);
       }
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1084,7 +1083,7 @@ namespace
     TEST(test_shift_left_operator_all_shifts_partial_size)
     {
       constexpr uint64_t value = 0x0123456789ABCDEFULL;
-      constexpr uint64_t mask = 0x0FFFFFFFFFFFFFFFULL;
+      constexpr uint64_t mask  = 0x0FFFFFFFFFFFFFFFULL;
 
       for (int shift = 0; shift < 64; ++shift)
       {
@@ -1123,7 +1122,7 @@ namespace
     TEST(test_shift_right_operator_all_shifts_full_size)
     {
       constexpr uint64_t value = 0x0123456789ABCDEFULL;
-      
+
       for (int shift = 0; shift < 64; ++shift)
       {
         etl::bitset<64> data(value);
@@ -1369,19 +1368,19 @@ namespace
       CHECK_EQUAL(etl::ibitset::npos, data.find_next(true, 2));
 
       data.set("111111");
-      CHECK_EQUAL(0U, data.find_next(true,  0));
-      CHECK_EQUAL(1U, data.find_next(true,  1));
+      CHECK_EQUAL(0U, data.find_next(true, 0));
+      CHECK_EQUAL(1U, data.find_next(true, 1));
       CHECK_EQUAL(etl::ibitset::npos, data.find_next(false, 2));
 
       data.set("001110");
       CHECK_EQUAL(0U, data.find_next(false, 0));
-      CHECK_EQUAL(1U, data.find_next(true,  0));
+      CHECK_EQUAL(1U, data.find_next(true, 0));
       CHECK_EQUAL(4U, data.find_next(false, 1));
 
       data.set("110001");
-      CHECK_EQUAL(0U, data.find_next(true,  0));
+      CHECK_EQUAL(0U, data.find_next(true, 0));
       CHECK_EQUAL(1U, data.find_next(false, 0));
-      CHECK_EQUAL(4U, data.find_next(true,  1));
+      CHECK_EQUAL(4U, data.find_next(true, 1));
     }
 
     //*************************************************************************
@@ -1390,7 +1389,7 @@ namespace
       etl::bitset<24> data;
       data.set(12);
       data.set(22);
-      CHECK_EQUAL(12U, data.find_next(true,  3));
+      CHECK_EQUAL(12U, data.find_next(true, 3));
       CHECK_EQUAL(12U, data.find_next(true, 10));
 
       // set first ten bytes
@@ -1421,14 +1420,14 @@ namespace
     TEST(test_find_next_github_issue_617)
     {
       etl::bitset<64> bs1(0xC000000000000031ULL);
-      size_t bs1fnt1 = bs1.find_next(true, 10);
-      size_t bs1fnt2 = bs1.find_next(true, 59);
+      size_t          bs1fnt1 = bs1.find_next(true, 10);
+      size_t          bs1fnt2 = bs1.find_next(true, 59);
       CHECK_EQUAL(62U, bs1fnt1);
       CHECK_EQUAL(62U, bs1fnt2);
 
       etl::bitset<64> bs2(0x3FFFFFFFFFFFFFCEULL);
-      size_t bs2fnf1 = bs2.find_next(false, 10);
-      size_t bs2fnf2 = bs2.find_next(false, 59);
+      size_t          bs2fnf1 = bs2.find_next(false, 10);
+      size_t          bs2fnf2 = bs2.find_next(false, 59);
       CHECK_EQUAL(62U, bs2fnf1);
       CHECK_EQUAL(62U, bs2fnf2);
     }
@@ -1461,7 +1460,7 @@ namespace
       CHECK_EQUAL(0x34U, s[2]);
       CHECK_EQUAL(0x12U, s[3]);
 
-      s[2] = 0x9AU;
+      s[2]           = 0x9AU;
       uint32_t value = b.value<uint32_t>();
       CHECK_EQUAL(0x129A5678UL, value);
     }
@@ -1485,10 +1484,10 @@ namespace
     {
       etl::bitset<32> b(0x12345678UL);
 
-      etl::string<32> text = b.to_string('.', '*');
-      std::string stdtext = b.to_string<std::string>('.', '*');
+      etl::string<32> text    = b.to_string('.', '*');
+      std::string     stdtext = b.to_string<std::string>('.', '*');
 
-      CHECK_THROW(etl::string<32> text1 = b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);   
+      CHECK_THROW(etl::string<32> text1 = b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);
       CHECK_EQUAL("...*..*...**.*...*.*.**..****...", text.c_str());
       CHECK_EQUAL("...*..*...**.*...*.*.**..****...", stdtext.c_str());
     }
@@ -1506,13 +1505,13 @@ namespace
     {
       etl::bitset<5U> bits;
       std::bitset<5U> stdbits;
-      etl::bitset<5U> negbits = ~bits;
+      etl::bitset<5U> negbits    = ~bits;
       std::bitset<5U> stdnegbits = ~stdbits;
 
-      CHECK_EQUAL(stdbits.count(),    bits.count());
-      CHECK_EQUAL(stdbits.all(),      bits.all());
+      CHECK_EQUAL(stdbits.count(), bits.count());
+      CHECK_EQUAL(stdbits.all(), bits.all());
       CHECK_EQUAL(stdnegbits.count(), negbits.count());
-      CHECK_EQUAL(stdnegbits.all(),   negbits.all());
+      CHECK_EQUAL(stdnegbits.all(), negbits.all());
     }
 
     //*************************************************************************
@@ -1523,14 +1522,14 @@ namespace
 
       CHECK_EQUAL(stdbits.size(), bits.size());
       CHECK_EQUAL(stdbits.none(), bits.none());
-      CHECK_EQUAL(stdbits.all(),  bits.all());
-      CHECK_EQUAL(stdbits.any(),  bits.any());
+      CHECK_EQUAL(stdbits.all(), bits.all());
+      CHECK_EQUAL(stdbits.any(), bits.any());
 
-      CHECK_EQUAL(stdbits.count(),     bits.count());
-      CHECK_EQUAL(stdbits.to_ulong(),  bits.to_ulong());
+      CHECK_EQUAL(stdbits.count(), bits.count());
+      CHECK_EQUAL(stdbits.to_ulong(), bits.to_ulong());
       CHECK_EQUAL(stdbits.to_ullong(), bits.to_ullong());
 
       etl::bitset<0> shiftbits = bits << 1; // No exception.
     }
   }
-}
+} // namespace

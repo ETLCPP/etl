@@ -31,7 +31,8 @@ SOFTWARE.
 #ifndef ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 #define ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 
-#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be true if not already defined
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be true if not
+                                          // already defined
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE 1
   #endif
@@ -81,7 +82,9 @@ SOFTWARE.
   #endif
 #endif
 
-#if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for existence of builtin functions? Fix VS2022 intellisense issue.
+#if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for
+                                                               // existence of builtin functions?
+                                                               // Fix VS2022 intellisense issue.
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
   #endif
@@ -112,7 +115,7 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_MEMCPY)
     #define ETL_USING_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
-   #endif
+  #endif
 
   #if !defined(ETL_USING_BUILTIN_MEMMOVE)
     #define ETL_USING_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
@@ -198,7 +201,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
     static ETL_CONSTANT bool using_builtin_memcmp                     = (ETL_USING_BUILTIN_MEMCMP == 1);
     static ETL_CONSTANT bool using_builtin_memchr                     = (ETL_USING_BUILTIN_MEMCHR == 1);
-  }
-}
+  } // namespace traits
+} // namespace etl
 
 #endif

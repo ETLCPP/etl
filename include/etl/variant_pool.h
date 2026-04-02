@@ -30,10 +30,10 @@ SOFTWARE.
 #define ETL_VARIANT_POOL_INCLUDED
 
 #include "platform.h"
-#include "pool.h"
-#include "type_traits.h"
-#include "static_assert.h"
 #include "largest.h"
+#include "pool.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include <stdint.h>
 
@@ -41,26 +41,19 @@ namespace etl
 {
 #if ETL_USING_CPP11 && !defined(ETL_VARIANT_POOL_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  template <size_t MAX_SIZE_, typename ... Ts>
-  class variant_pool
-    : public etl::generic_pool<etl::largest<Ts...>::size,
-                               etl::largest<Ts...>::alignment,
-                               MAX_SIZE_>
+  template <size_t MAX_SIZE_, typename... Ts>
+  class variant_pool : public etl::generic_pool<etl::largest<Ts...>::size, etl::largest<Ts...>::alignment, MAX_SIZE_>
   {
   public:
 
-    typedef etl::generic_pool<etl::largest<Ts...>::size,
-                              etl::largest<Ts...>::alignment,
-                              MAX_SIZE_> base_t;
+    typedef etl::generic_pool<etl::largest<Ts...>::size, etl::largest<Ts...>::alignment, MAX_SIZE_> base_t;
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    variant_pool()
-    {
-    }
+    variant_pool() {}
 
     //*************************************************************************
     /// Creates the object from a type. Variadic parameter constructor.
@@ -95,19 +88,16 @@ namespace etl
   private:
 
     variant_pool(const variant_pool&) ETL_DELETE;
-    variant_pool& operator =(const variant_pool&) ETL_DELETE;
+    variant_pool& operator=(const variant_pool&) ETL_DELETE;
   };
 
   //***************************************************************************
-  template <typename ... Ts>
-  class variant_pool_ext
-    : public etl::generic_pool_ext<etl::largest<Ts...>::size,
-                                   etl::largest<Ts...>::alignment>
+  template <typename... Ts>
+  class variant_pool_ext : public etl::generic_pool_ext<etl::largest<Ts...>::size, etl::largest<Ts...>::alignment>
   {
   public:
 
-    typedef etl::generic_pool_ext<etl::largest<Ts...>::size,
-                                  etl::largest<Ts...>::alignment> base_t;
+    typedef etl::generic_pool_ext<etl::largest<Ts...>::size, etl::largest<Ts...>::alignment> base_t;
 
     //*************************************************************************
     /// Default constructor.
@@ -150,11 +140,11 @@ namespace etl
   private:
 
     variant_pool_ext(const variant_pool_ext&) ETL_DELETE;
-    variant_pool_ext& operator =(const variant_pool_ext&) ETL_DELETE;
+    variant_pool_ext& operator=(const variant_pool_ext&) ETL_DELETE;
   };
 #else
   #include "private/variant_pool_cpp03.h"
 #endif
-}
+} // namespace etl
 
 #endif

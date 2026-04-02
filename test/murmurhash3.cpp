@@ -13,9 +13,9 @@
   #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 #endif
 
-#include "murmurhash3.h"
 #include "etl/bit.h"
 #include "etl/endianness.h"
+#include "murmurhash3.h"
 
 //-----------------------------------------------------------------------------
 // Platform-specific functions and macros
@@ -24,20 +24,20 @@
 
 #if defined(ETL_COMPILER_MICROSOFT)
 
-#define FORCE_INLINE    __forceinline
+  #define FORCE_INLINE __forceinline
 
-#include <stdlib.h>
+  #include <stdlib.h>
 
-#define ROTL32(x,y)     _rotl(x,y)
-#define ROTL64(x,y)     _rotl64(x,y)
+  #define ROTL32(x, y) _rotl(x, y)
+  #define ROTL64(x, y) _rotl64(x, y)
 
-#define BIG_CONSTANT(x) (x##UI64)
+  #define BIG_CONSTANT(x) (x##UI64)
 
 // Other compilers
 
-#else   // defined(ETL_COMPILER_MICROSOFT)
+#else // defined(ETL_COMPILER_MICROSOFT)
 
-#define FORCE_INLINE inline __attribute__((always_inline))
+  #define FORCE_INLINE inline __attribute__((always_inline))
 
 inline uint32_t rotl32(uint32_t x, uint8_t r)
 {
@@ -49,10 +49,10 @@ inline uint64_t rotl64(uint64_t x, uint8_t r)
   return (x << r) | (x >> (64U - r));
 }
 
-#define ROTL32(x,y)     rotl32(x,y)
-#define ROTL64(x,y)     rotl64(x,y)
+  #define ROTL32(x, y) rotl32(x, y)
+  #define ROTL64(x, y) rotl64(x, y)
 
-#define BIG_CONSTANT(x) (x##LLU)
+  #define BIG_CONSTANT(x) (x##LLU)
 
 #endif // !defined(ETL_COMPILER_MICROSOFT)
 
@@ -60,7 +60,7 @@ inline uint64_t rotl64(uint64_t x, uint8_t r)
 // Block read - if your platform needs to do endian-swapping or can only
 // handle aligned reads, do the conversion here
 
-FORCE_INLINE uint32_t getblock32(const uint32_t * p, int i)
+FORCE_INLINE uint32_t getblock32(const uint32_t* p, int i)
 {
   if (etl::endianness::value() == etl::endian::little)
   {
@@ -73,7 +73,7 @@ FORCE_INLINE uint32_t getblock32(const uint32_t * p, int i)
 }
 
 #if ETL_USING_64BIT_TYPES
-FORCE_INLINE uint64_t getblock64(const uint64_t * p, int i)
+FORCE_INLINE uint64_t getblock64(const uint64_t* p, int i)
 {
   if (etl::endianness::value() == etl::endian::little)
   {
@@ -117,10 +117,10 @@ FORCE_INLINE uint64_t fmix64(uint64_t k)
 
 //-----------------------------------------------------------------------------
 
-void MurmurHash3_x86_32(const void * key, uint32_t len, uint32_t seed, void * out)
+void MurmurHash3_x86_32(const void* key, uint32_t len, uint32_t seed, void* out)
 {
-  const uint8_t * data = (const uint8_t*)key;
-  const int nblocks = static_cast<int>(len / 4);
+  const uint8_t* data    = (const uint8_t*)key;
+  const int      nblocks = static_cast<int>(len / 4);
 
   uint32_t h1 = seed;
 
@@ -130,7 +130,7 @@ void MurmurHash3_x86_32(const void * key, uint32_t len, uint32_t seed, void * ou
   //----------
   // body
 
-  const uint32_t * blocks = (const uint32_t *)(data + nblocks * 4);
+  const uint32_t* blocks = (const uint32_t*)(data + nblocks * 4);
 
   for (int i = -nblocks; i; i++)
   {
@@ -148,16 +148,20 @@ void MurmurHash3_x86_32(const void * key, uint32_t len, uint32_t seed, void * ou
   //----------
   // tail
 
-  const uint8_t * tail = data + nblocks * 4;
+  const uint8_t* tail = data + nblocks * 4;
 
   uint32_t k1 = 0U;
 
   switch (len & 3)
   {
-  case 3: k1 ^= static_cast<uint32_t>(tail[2]) << 16U;
-  case 2: k1 ^= static_cast<uint32_t>(tail[1]) << 8U;
-  case 1: k1 ^= tail[0];
-    k1 *= c1; k1 = ROTL32(k1, 15); k1 *= c2; h1 ^= k1;
+    case 3: k1 ^= static_cast<uint32_t>(tail[2]) << 16U;
+    case 2: k1 ^= static_cast<uint32_t>(tail[1]) << 8U;
+    case 1:
+      k1 ^= tail[0];
+      k1 *= c1;
+      k1 = ROTL32(k1, 15);
+      k1 *= c2;
+      h1 ^= k1;
   }
 
   //----------
@@ -172,11 +176,10 @@ void MurmurHash3_x86_32(const void * key, uint32_t len, uint32_t seed, void * ou
 
 //-----------------------------------------------------------------------------
 
-void MurmurHash3_x86_128(const void * key, const uint32_t len,
-  uint32_t seed, void * out)
+void MurmurHash3_x86_128(const void* key, const uint32_t len, uint32_t seed, void* out)
 {
-  const uint8_t * data = (const uint8_t*)key;
-  const int nblocks = static_cast<int>(len / 16);
+  const uint8_t* data    = (const uint8_t*)key;
+  const int      nblocks = static_cast<int>(len / 16);
 
   uint32_t h1 = seed;
   uint32_t h2 = seed;
@@ -191,7 +194,7 @@ void MurmurHash3_x86_128(const void * key, const uint32_t len,
   //----------
   // body
 
-  const uint32_t * blocks = (const uint32_t *)(data + nblocks * 16);
+  const uint32_t* blocks = (const uint32_t*)(data + nblocks * 16);
 
   for (int i = -nblocks; i; i++)
   {
@@ -200,27 +203,47 @@ void MurmurHash3_x86_128(const void * key, const uint32_t len,
     uint32_t k3 = getblock32(blocks, i * 4 + 2);
     uint32_t k4 = getblock32(blocks, i * 4 + 3);
 
-    k1 *= c1; k1 = ROTL32(k1, 15); k1 *= c2; h1 ^= k1;
+    k1 *= c1;
+    k1 = ROTL32(k1, 15);
+    k1 *= c2;
+    h1 ^= k1;
 
-    h1 = ROTL32(h1, 19); h1 += h2; h1 = h1 * 5 + 0x561ccd1bUL;
+    h1 = ROTL32(h1, 19);
+    h1 += h2;
+    h1 = h1 * 5 + 0x561ccd1bUL;
 
-    k2 *= c2; k2 = ROTL32(k2, 16); k2 *= c3; h2 ^= k2;
+    k2 *= c2;
+    k2 = ROTL32(k2, 16);
+    k2 *= c3;
+    h2 ^= k2;
 
-    h2 = ROTL32(h2, 17); h2 += h3; h2 = h2 * 5 + 0x0bcaa747UL;
+    h2 = ROTL32(h2, 17);
+    h2 += h3;
+    h2 = h2 * 5 + 0x0bcaa747UL;
 
-    k3 *= c3; k3 = ROTL32(k3, 17); k3 *= c4; h3 ^= k3;
+    k3 *= c3;
+    k3 = ROTL32(k3, 17);
+    k3 *= c4;
+    h3 ^= k3;
 
-    h3 = ROTL32(h3, 15); h3 += h4; h3 = h3 * 5 + 0x96cd1c35UL;
+    h3 = ROTL32(h3, 15);
+    h3 += h4;
+    h3 = h3 * 5 + 0x96cd1c35UL;
 
-    k4 *= c4; k4 = ROTL32(k4, 18); k4 *= c1; h4 ^= k4;
+    k4 *= c4;
+    k4 = ROTL32(k4, 18);
+    k4 *= c1;
+    h4 ^= k4;
 
-    h4 = ROTL32(h4, 13); h4 += h1; h4 = h4 * 5 + 0x32ac3b17UL;
+    h4 = ROTL32(h4, 13);
+    h4 += h1;
+    h4 = h4 * 5 + 0x32ac3b17UL;
   }
 
   //----------
   // tail
 
-  const uint8_t * tail = data + nblocks * 16;
+  const uint8_t* tail = data + nblocks * 16;
 
   uint32_t k1 = 0U;
   uint32_t k2 = 0U;
@@ -229,45 +252,72 @@ void MurmurHash3_x86_128(const void * key, const uint32_t len,
 
   switch (len & 15)
   {
-  case 15: k4 ^= static_cast<uint32_t>(tail[14]) << 16U;
-  case 14: k4 ^= static_cast<uint32_t>(tail[13]) << 8U;
-  case 13: k4 ^= static_cast<uint32_t>(tail[12]) << 0U;
-    k4 *= c4; k4 = ROTL32(k4, 18); k4 *= c1; h4 ^= k4;
+    case 15: k4 ^= static_cast<uint32_t>(tail[14]) << 16U;
+    case 14: k4 ^= static_cast<uint32_t>(tail[13]) << 8U;
+    case 13:
+      k4 ^= static_cast<uint32_t>(tail[12]) << 0U;
+      k4 *= c4;
+      k4 = ROTL32(k4, 18);
+      k4 *= c1;
+      h4 ^= k4;
 
-  case 12: k3 ^= static_cast<uint32_t>(tail[11]) << 24U;
-  case 11: k3 ^= static_cast<uint32_t>(tail[10]) << 16U;
-  case 10: k3 ^= static_cast<uint32_t>(tail[9]) << 8U;
-  case  9: k3 ^= static_cast<uint32_t>(tail[8]) << 0U;
-    k3 *= c3; k3 = ROTL32(k3, 17); k3 *= c4; h3 ^= k3;
+    case 12: k3 ^= static_cast<uint32_t>(tail[11]) << 24U;
+    case 11: k3 ^= static_cast<uint32_t>(tail[10]) << 16U;
+    case 10: k3 ^= static_cast<uint32_t>(tail[9]) << 8U;
+    case 9:
+      k3 ^= static_cast<uint32_t>(tail[8]) << 0U;
+      k3 *= c3;
+      k3 = ROTL32(k3, 17);
+      k3 *= c4;
+      h3 ^= k3;
 
-  case  8: k2 ^= static_cast<uint32_t>(tail[7]) << 24U;
-  case  7: k2 ^= static_cast<uint32_t>(tail[6]) << 16U;
-  case  6: k2 ^= static_cast<uint32_t>(tail[5]) << 8U;
-  case  5: k2 ^= static_cast<uint32_t>(tail[4]) << 0U;
-    k2 *= c2; k2 = ROTL32(k2, 16); k2 *= c3; h2 ^= k2;
+    case 8: k2 ^= static_cast<uint32_t>(tail[7]) << 24U;
+    case 7: k2 ^= static_cast<uint32_t>(tail[6]) << 16U;
+    case 6: k2 ^= static_cast<uint32_t>(tail[5]) << 8U;
+    case 5:
+      k2 ^= static_cast<uint32_t>(tail[4]) << 0U;
+      k2 *= c2;
+      k2 = ROTL32(k2, 16);
+      k2 *= c3;
+      h2 ^= k2;
 
-  case  4: k1 ^= static_cast<uint32_t>(tail[3]) << 24U;
-  case  3: k1 ^= static_cast<uint32_t>(tail[2]) << 16U;
-  case  2: k1 ^= static_cast<uint32_t>(tail[1]) << 8U;
-  case  1: k1 ^= static_cast<uint32_t>(tail[0]) << 0U;
-    k1 *= c1; k1 = ROTL32(k1, 15); k1 *= c2; h1 ^= k1;
+    case 4: k1 ^= static_cast<uint32_t>(tail[3]) << 24U;
+    case 3: k1 ^= static_cast<uint32_t>(tail[2]) << 16U;
+    case 2: k1 ^= static_cast<uint32_t>(tail[1]) << 8U;
+    case 1:
+      k1 ^= static_cast<uint32_t>(tail[0]) << 0U;
+      k1 *= c1;
+      k1 = ROTL32(k1, 15);
+      k1 *= c2;
+      h1 ^= k1;
   }
 
   //----------
   // finalization
 
-  h1 ^= len; h2 ^= len; h3 ^= len; h4 ^= len;
+  h1 ^= len;
+  h2 ^= len;
+  h3 ^= len;
+  h4 ^= len;
 
-  h1 += h2; h1 += h3; h1 += h4;
-  h2 += h1; h3 += h1; h4 += h1;
+  h1 += h2;
+  h1 += h3;
+  h1 += h4;
+  h2 += h1;
+  h3 += h1;
+  h4 += h1;
 
   h1 = fmix32(h1);
   h2 = fmix32(h2);
   h3 = fmix32(h3);
   h4 = fmix32(h4);
 
-  h1 += h2; h1 += h3; h1 += h4;
-  h2 += h1; h3 += h1; h4 += h1;
+  h1 += h2;
+  h1 += h3;
+  h1 += h4;
+  h2 += h1;
+  h3 += h1;
+  h4 += h1;
 
   ((uint32_t*)out)[0] = h1;
   ((uint32_t*)out)[1] = h2;
@@ -278,11 +328,10 @@ void MurmurHash3_x86_128(const void * key, const uint32_t len,
 //-----------------------------------------------------------------------------
 
 #if ETL_USING_64BIT_TYPES
-void MurmurHash3_x64_128(const void * key, const uint32_t len,
-  const uint32_t seed, void * out)
+void MurmurHash3_x64_128(const void* key, const uint32_t len, const uint32_t seed, void* out)
 {
-  const uint8_t * data = (const uint8_t*)key;
-  const int nblocks = static_cast<int>(len / 16);
+  const uint8_t* data    = (const uint8_t*)key;
+  const int      nblocks = static_cast<int>(len / 16);
 
   uint64_t h1 = seed;
   uint64_t h2 = seed;
@@ -293,56 +342,75 @@ void MurmurHash3_x64_128(const void * key, const uint32_t len,
   //----------
   // body
 
-  const uint64_t * blocks = (const uint64_t *)(data);
+  const uint64_t* blocks = (const uint64_t*)(data);
 
   for (int i = 0; i < nblocks; i++)
   {
     uint64_t k1 = getblock64(blocks, i * 2 + 0);
     uint64_t k2 = getblock64(blocks, i * 2 + 1);
 
-    k1 *= c1; k1 = ROTL64(k1, 31); k1 *= c2; h1 ^= k1;
+    k1 *= c1;
+    k1 = ROTL64(k1, 31);
+    k1 *= c2;
+    h1 ^= k1;
 
-    h1 = ROTL64(h1, 27); h1 += h2; h1 = h1 * 5 + 0x52dce729UL;
+    h1 = ROTL64(h1, 27);
+    h1 += h2;
+    h1 = h1 * 5 + 0x52dce729UL;
 
-    k2 *= c2; k2 = ROTL64(k2, 33); k2 *= c1; h2 ^= k2;
+    k2 *= c2;
+    k2 = ROTL64(k2, 33);
+    k2 *= c1;
+    h2 ^= k2;
 
-    h2 = ROTL64(h2, 31); h2 += h1; h2 = h2 * 5 + 0x38495ab5UL;
+    h2 = ROTL64(h2, 31);
+    h2 += h1;
+    h2 = h2 * 5 + 0x38495ab5UL;
   }
 
   //----------
   // tail
 
-  const uint8_t * tail = data + nblocks * 16;
+  const uint8_t* tail = data + nblocks * 16;
 
   uint64_t k1 = 0ULL;
   uint64_t k2 = 0ULL;
 
   switch (len & 15)
   {
-  case 15: k2 ^= ((uint64_t)tail[14]) << 48U;
-  case 14: k2 ^= ((uint64_t)tail[13]) << 40U;
-  case 13: k2 ^= ((uint64_t)tail[12]) << 32U;
-  case 12: k2 ^= ((uint64_t)tail[11]) << 24U;
-  case 11: k2 ^= ((uint64_t)tail[10]) << 16U;
-  case 10: k2 ^= ((uint64_t)tail[9]) << 8U;
-  case  9: k2 ^= ((uint64_t)tail[8]) << 0U;
-    k2 *= c2; k2 = ROTL64(k2, 33); k2 *= c1; h2 ^= k2;
+    case 15: k2 ^= ((uint64_t)tail[14]) << 48U;
+    case 14: k2 ^= ((uint64_t)tail[13]) << 40U;
+    case 13: k2 ^= ((uint64_t)tail[12]) << 32U;
+    case 12: k2 ^= ((uint64_t)tail[11]) << 24U;
+    case 11: k2 ^= ((uint64_t)tail[10]) << 16U;
+    case 10: k2 ^= ((uint64_t)tail[9]) << 8U;
+    case 9:
+      k2 ^= ((uint64_t)tail[8]) << 0U;
+      k2 *= c2;
+      k2 = ROTL64(k2, 33);
+      k2 *= c1;
+      h2 ^= k2;
 
-  case  8: k1 ^= ((uint64_t)tail[7]) << 56U;
-  case  7: k1 ^= ((uint64_t)tail[6]) << 48U;
-  case  6: k1 ^= ((uint64_t)tail[5]) << 40U;
-  case  5: k1 ^= ((uint64_t)tail[4]) << 32U;
-  case  4: k1 ^= ((uint64_t)tail[3]) << 24U;
-  case  3: k1 ^= ((uint64_t)tail[2]) << 16U;
-  case  2: k1 ^= ((uint64_t)tail[1]) << 8U;
-  case  1: k1 ^= ((uint64_t)tail[0]) << 0U;
-    k1 *= c1; k1 = ROTL64(k1, 31); k1 *= c2; h1 ^= k1;
+    case 8: k1 ^= ((uint64_t)tail[7]) << 56U;
+    case 7: k1 ^= ((uint64_t)tail[6]) << 48U;
+    case 6: k1 ^= ((uint64_t)tail[5]) << 40U;
+    case 5: k1 ^= ((uint64_t)tail[4]) << 32U;
+    case 4: k1 ^= ((uint64_t)tail[3]) << 24U;
+    case 3: k1 ^= ((uint64_t)tail[2]) << 16U;
+    case 2: k1 ^= ((uint64_t)tail[1]) << 8U;
+    case 1:
+      k1 ^= ((uint64_t)tail[0]) << 0U;
+      k1 *= c1;
+      k1 = ROTL64(k1, 31);
+      k1 *= c2;
+      h1 ^= k1;
   }
 
   //----------
   // finalization
 
-  h1 ^= len; h2 ^= len;
+  h1 ^= len;
+  h2 ^= len;
 
   h1 += h2;
   h2 += h1;

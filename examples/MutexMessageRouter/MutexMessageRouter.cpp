@@ -1,13 +1,13 @@
 
-#include <iostream>
-#include <thread>
 #include <atomic>
-#include <string>
 #include <chrono>
+#include <iostream>
+#include <string>
+#include <thread>
 
-#include "etl/mutex.h"
 #include "etl/message.h"
 #include "etl/message_router.h"
+#include "etl/mutex.h"
 
 //*************************************
 struct Message1 : public etl::message<1>
@@ -48,9 +48,7 @@ public:
   }
 
   //*****************
-  void on_receive_unknown(const etl::imessage&)
-  {
-  }
+  void on_receive_unknown(const etl::imessage&) {}
 
   std::string result;
 
@@ -61,7 +59,7 @@ private:
 
 //*************************************
 etl::atomic<bool> start = false;
-Router router;
+Router            router;
 
 //*************************************
 void thread1()
@@ -106,5 +104,3 @@ int main()
 
   return 0;
 }
-
-

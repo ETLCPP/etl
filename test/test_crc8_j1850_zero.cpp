@@ -29,15 +29,16 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <iterator>
+#include <stdint.h>
 #include <string>
 #include <vector>
-#include <stdint.h>
 
 #include "etl/crc8_j1850_zero.h"
 #include "etl/endianness.h"
 
 //*****************************************************************************
-// The results for these tests were created from http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
+// The results for these tests were created from
+// http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
 //*****************************************************************************
 
 namespace
@@ -60,8 +61,8 @@ namespace
     //*************************************************************************
     TEST(test_crc8_j1850_zero_4_constructor_constexpr)
     {
-      constexpr char data[] = "123456789";
-      constexpr uint8_t crc = etl::crc8_j1850_zero_t4(data, data + 9);
+      constexpr char    data[] = "123456789";
+      constexpr uint8_t crc    = etl::crc8_j1850_zero_t4(data, data + 9);
 
       CHECK_EQUAL(0x37U, int(crc));
     }
@@ -115,17 +116,17 @@ namespace
     //*************************************************************************
     TEST(test_crc8_j1850_zero_4_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint8_t crc1 = etl::crc8_j1850_zero_t4(data1.begin(), data1.end());
       uint8_t crc2 = etl::crc8_j1850_zero_t4((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -151,8 +152,8 @@ namespace
     //*************************************************************************
     TEST(test_crc8_j1850_zero_16_constructor_constexpr)
     {
-      constexpr char data[] = "123456789";
-      constexpr uint8_t crc = etl::crc8_j1850_zero_t16(data, data + 9);
+      constexpr char    data[] = "123456789";
+      constexpr uint8_t crc    = etl::crc8_j1850_zero_t16(data, data + 9);
 
       CHECK_EQUAL(0x37U, int(crc));
     }
@@ -206,17 +207,17 @@ namespace
     //*************************************************************************
     TEST(test_crc8_j1850_zero_16_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint8_t crc1 = etl::crc8_j1850_zero_t16(data1.begin(), data1.end());
       uint8_t crc2 = etl::crc8_j1850_zero_t16((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -242,8 +243,8 @@ namespace
     //*************************************************************************
     TEST(test_crc8_j1850_zero_256_constructor_constexpr)
     {
-      constexpr char data[] = "123456789";
-      constexpr uint8_t crc = etl::crc8_j1850_zero(data, data + 9);
+      constexpr char    data[] = "123456789";
+      constexpr uint8_t crc    = etl::crc8_j1850_zero(data, data + 9);
 
       CHECK_EQUAL(0x37U, int(crc));
     }
@@ -297,17 +298,17 @@ namespace
     //*************************************************************************
     TEST(test_crc8_j1850_zero_256_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint8_t crc1 = etl::crc8_j1850_zero(data1.begin(), data1.end());
       uint8_t crc2 = etl::crc8_j1850_zero((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -317,5 +318,4 @@ namespace
       CHECK_EQUAL(int(crc1), int(crc3));
     }
   }
-}
-
+} // namespace

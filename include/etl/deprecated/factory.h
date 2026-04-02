@@ -33,19 +33,19 @@ SOFTWARE.
 #include <utility>
 
 #include "platform.h"
+#include "alignment.h"
 #include "error_handler.h"
 #include "exception.h"
 #include "largest.h"
-#include "type_traits.h"
-#include "alignment.h"
+#include "pool.h"
 #include "static_assert.h"
 #include "type_lookup.h"
-#include "pool.h"
+#include "type_traits.h"
 
 #if defined(ETL_COMPILER_GCC)
   #warning THIS CLASS IS DEPRECATED!USE VARIANT_POOL INSTEAD.
 #elif defined(ETL_COMPILER_MICROSOFT)
-  #pragma message ("THIS CLASS IS DEPRECATED! USE VARIANT_POOL INSTEAD.")
+  #pragma message("THIS CLASS IS DEPRECATED! USE VARIANT_POOL INSTEAD.")
 #endif
 
 #undef ETL_FILE
@@ -87,23 +87,14 @@ namespace etl
   };
 
   //***************************************************************************
-  template <const size_t MAX_SIZE_,
-            typename T1,
-            typename T2  = etl::type_id_pair<etl::null_type, -2>,
-            typename T3  = etl::type_id_pair<etl::null_type, -3>,
-            typename T4  = etl::type_id_pair<etl::null_type, -4>,
-            typename T5  = etl::type_id_pair<etl::null_type, -5>,
-            typename T6  = etl::type_id_pair<etl::null_type, -6>,
-            typename T7  = etl::type_id_pair<etl::null_type, -7>,
-            typename T8  = etl::type_id_pair<etl::null_type, -8>,
-            typename T9  = etl::type_id_pair<etl::null_type, -9>,
-            typename T10 = etl::type_id_pair<etl::null_type, -10>,
-            typename T11 = etl::type_id_pair<etl::null_type, -11>,
-            typename T12 = etl::type_id_pair<etl::null_type, -12>,
-            typename T13 = etl::type_id_pair<etl::null_type, -13>,
-            typename T14 = etl::type_id_pair<etl::null_type, -14>,
-            typename T15 = etl::type_id_pair<etl::null_type, -15>,
-            typename T16 = etl::type_id_pair<etl::null_type, -16> >
+  template < const size_t MAX_SIZE_, typename T1, typename T2 = etl::type_id_pair<etl::null_type, -2>,
+             typename T3 = etl::type_id_pair<etl::null_type, -3>, typename T4 = etl::type_id_pair<etl::null_type, -4>,
+             typename T5 = etl::type_id_pair<etl::null_type, -5>, typename T6 = etl::type_id_pair<etl::null_type, -6>,
+             typename T7 = etl::type_id_pair<etl::null_type, -7>, typename T8 = etl::type_id_pair<etl::null_type, -8>,
+             typename T9 = etl::type_id_pair<etl::null_type, -9>, typename T10 = etl::type_id_pair<etl::null_type, -10>,
+             typename T11 = etl::type_id_pair<etl::null_type, -11>, typename T12 = etl::type_id_pair<etl::null_type, -12>,
+             typename T13 = etl::type_id_pair<etl::null_type, -13>, typename T14 = etl::type_id_pair<etl::null_type, -14>,
+             typename T15 = etl::type_id_pair<etl::null_type, -15>, typename T16 = etl::type_id_pair<etl::null_type, -16> >
   class factory
   {
   private:
@@ -125,8 +116,7 @@ namespace etl
     typedef typename T15::type TT15;
     typedef typename T16::type TT16;
 
-    typedef etl::type_id_lookup<T1, T2,  T3,  T4,  T5,  T6,  T7,  T8,
-                                T9, T10, T11, T12, T13, T14, T15, T16> lookup_t;
+    typedef etl::type_id_lookup<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> lookup_t;
 
   public:
 
@@ -135,9 +125,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    factory()
-    {
-    }
+    factory() {}
 
 #if !ETL_CPP11_SUPPORTED
     //*************************************************************************
@@ -146,7 +134,8 @@ namespace etl
     template <typename T>
     T* create_from_type()
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value),
+                    "Unsupported type");
 
       T* p = nullptr;
 
@@ -173,7 +162,8 @@ namespace etl
     template <typename T, typename TP1>
     T* create_from_type(const TP1& p1)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value),
+                    "Unsupported type");
 
       T* p = nullptr;
 
@@ -200,7 +190,8 @@ namespace etl
     template <typename T, typename TP1, typename TP2>
     T* create_from_type(const TP1& p1, const TP2& p2)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value),
+                    "Unsupported type");
 
       T* p = nullptr;
 
@@ -227,7 +218,8 @@ namespace etl
     template <typename T, typename TP1, typename TP2, typename TP3>
     T* create_from_type(const TP1& p1, const TP2& p2, const TP3& p3)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value),
+                    "Unsupported type");
 
       T* p = nullptr;
 
@@ -254,7 +246,8 @@ namespace etl
     template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
     T* create_from_type(const TP1& p1, const TP2& p2, const TP3& p3, const TP4& p4)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value),
+                    "Unsupported type");
 
       T* p = nullptr;
 
@@ -336,7 +329,8 @@ namespace etl
     template <typename T, typename... Args>
     T* create_from_type(Args&&... args)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value), "Unsupported type");
+      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value),
+                    "Unsupported type");
 
       T* p = nullptr;
 
@@ -375,23 +369,13 @@ namespace etl
     template <typename T>
     bool destroy(const T* const p)
     {
-      STATIC_ASSERT((etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value ||
-                     etl::is_base_of<T, TT1>::value  ||
-                     etl::is_base_of<T, TT2>::value  ||
-                     etl::is_base_of<T, TT3>::value  ||
-                     etl::is_base_of<T, TT4>::value  ||
-                     etl::is_base_of<T, TT5>::value  ||
-                     etl::is_base_of<T, TT6>::value  ||
-                     etl::is_base_of<T, TT7>::value  ||
-                     etl::is_base_of<T, TT8>::value  ||
-                     etl::is_base_of<T, TT9>::value  ||
-                     etl::is_base_of<T, TT10>::value ||
-                     etl::is_base_of<T, TT11>::value ||
-                     etl::is_base_of<T, TT12>::value ||
-                     etl::is_base_of<T, TT13>::value ||
-                     etl::is_base_of<T, TT14>::value ||
-                     etl::is_base_of<T, TT15>::value ||
-                     etl::is_base_of<T, TT16>::value), "Invalid type");
+      STATIC_ASSERT(
+        (etl::is_one_of<T, TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::value
+         || etl::is_base_of<T, TT1>::value || etl::is_base_of<T, TT2>::value || etl::is_base_of<T, TT3>::value || etl::is_base_of<T, TT4>::value
+         || etl::is_base_of<T, TT5>::value || etl::is_base_of<T, TT6>::value || etl::is_base_of<T, TT7>::value || etl::is_base_of<T, TT8>::value
+         || etl::is_base_of<T, TT9>::value || etl::is_base_of<T, TT10>::value || etl::is_base_of<T, TT11>::value || etl::is_base_of<T, TT12>::value
+         || etl::is_base_of<T, TT13>::value || etl::is_base_of<T, TT14>::value || etl::is_base_of<T, TT15>::value || etl::is_base_of<T, TT16>::value),
+        "Invalid type");
 
       p->~T();
 
@@ -454,14 +438,14 @@ namespace etl
   private:
 
     factory(const factory&);
-    factory& operator =(const factory&);
+    factory& operator=(const factory&);
 
     // The pool.
-    etl::generic_pool<etl::largest<TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::size,
-                      etl::largest<TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::alignment,
-                      MAX_SIZE> pool;
+    etl::generic_pool< etl::largest<TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::size,
+                       etl::largest<TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, TT13, TT14, TT15, TT16>::alignment, MAX_SIZE>
+      pool;
   };
-}
+} // namespace etl
 
 #undef ETL_FILE
 

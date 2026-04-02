@@ -30,10 +30,10 @@ SOFTWARE.
 #define ETL_TYPE_LOOKUP_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
-#include "static_assert.h"
 #include "integral_limits.h"
 #include "null_type.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include <limits.h>
 namespace etl
@@ -72,24 +72,22 @@ namespace etl
   private:
 
     // The type for no match.
-    struct nulltype {};
+    struct nulltype
+    {
+    };
 
     // For N type pairs.
     template <int Id, typename T1, typename... TRest>
     struct type_from_id_helper
     {
-      using type = typename etl::conditional<Id == T1::Id,
-        typename T1::type,
-        typename type_from_id_helper<Id, TRest...>::type>::type;
+      using type = typename etl::conditional< Id == T1::Id, typename T1::type, typename type_from_id_helper<Id, TRest...>::type>::type;
     };
 
     // Specialisation for 1 type pair.
     template <int Id, typename T1>
     struct type_from_id_helper<Id, T1>
     {
-      using type = typename etl::conditional<Id == T1::Id,
-        typename T1::type,
-        nulltype>::type;
+      using type = typename etl::conditional<Id == T1::Id, typename T1::type, nulltype>::type;
     };
 
   public:
@@ -139,10 +137,10 @@ namespace etl
       static_assert(value != UNKNOWN, "Invalid type");
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t id_from_type_v = id_from_type<T>::value;
-#endif
+  #endif
 
     //************************************
     template <typename T>
@@ -168,22 +166,21 @@ namespace etl
   private:
 
     // The type for no match.
-    struct nulltype {};
+    struct nulltype
+    {
+    };
 
     template <typename T, typename T1, typename... TRest>
     struct type_from_type_helper
     {
-      using type = typename etl::conditional<etl::is_same<T, typename T1::type1>::value,
-        typename T1::type2,
-        typename type_from_type_helper<T, TRest...>::type>::type;
+      using type = typename etl::conditional< etl::is_same<T, typename T1::type1>::value, typename T1::type2,
+                                              typename type_from_type_helper<T, TRest...>::type>::type;
     };
 
     template <typename T, typename T1>
     struct type_from_type_helper<T, T1>
     {
-      using type = typename etl::conditional<etl::is_same<T, typename T1::type1>::value,
-        typename T1::type2,
-        nulltype>::type;
+      using type = typename etl::conditional<etl::is_same<T, typename T1::type1>::value, typename T1::type2, nulltype>::type;
     };
 
   public:
@@ -205,8 +202,8 @@ namespace etl
   };
 
 #else
-#include "private/type_lookup_cpp03.h"
+  #include "private/type_lookup_cpp03.h"
 #endif
-}
+} // namespace etl
 
 #endif

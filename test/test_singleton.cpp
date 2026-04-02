@@ -49,7 +49,7 @@ public:
     text += "*";
   }
 
-  int i;
+  int         i;
   std::string text;
 };
 
@@ -99,5 +99,4 @@ namespace
       CHECK_THROW(Test_Singleton::instance(), etl::singleton_not_created);
     }
   }
-}
-
+} // namespace

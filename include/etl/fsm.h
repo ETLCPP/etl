@@ -31,13 +31,13 @@ SOFTWARE.
 
 #include "platform.h"
 #include "array.h"
-#include "nullptr.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "user_type.h"
-#include "message_router.h"
 #include "integral_limits.h"
 #include "largest.h"
+#include "message_router.h"
+#include "nullptr.h"
+#include "user_type.h"
 #if ETL_USING_CPP11
   #include "tuple.h"
   #include "type_list.h"
@@ -140,6 +140,7 @@ namespace etl
   class fsm_not_started : public etl::fsm_exception
   {
   public:
+
     fsm_not_started(string_type file_name_, numeric_type line_number_)
       : etl::fsm_exception(ETL_ERROR_TEXT("fsm:not started", ETL_FSM_FILE_ID"F"), file_name_, line_number_)
     {
@@ -147,12 +148,14 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Exception for call to receive/start/etc. while receive/start/etc. is already happening.
-  /// A call like that could result in an infinite loop or landing in an incorrect state.
+  /// Exception for call to receive/start/etc. while receive/start/etc. is
+  /// already happening. A call like that could result in an infinite loop or
+  /// landing in an incorrect state.
   //***************************************************************************
   class fsm_reentrant_transition_forbidden : public etl::fsm_exception
   {
   public:
+
     fsm_reentrant_transition_forbidden(string_type file_name_, numeric_type line_number_)
       : etl::fsm_exception(ETL_ERROR_TEXT("fsm:reentrant calls to start/receive/etc. forbidden", ETL_FSM_FILE_ID"G"), file_name_, line_number_)
     {
@@ -187,13 +190,14 @@ namespace etl
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
 
     // Compile-time: TState::ID must equal its index in the type list (0..N-1)
-    template <size_t Id, typename...> struct check_ids : etl::true_type
+    template <size_t Id, typename...>
+    struct check_ids : etl::true_type
     {
     };
 
     template <size_t Id, typename TState0, typename... TRest>
     struct check_ids<Id, TState0, TRest...>
-      : etl::integral_constant<bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value>
+      : etl::integral_constant< bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value>
     {
     };
 
@@ -205,6 +209,7 @@ namespace etl
     class fsm_reentrancy_guard
     {
     public:
+
       //*******************************************
       /// Constructor.
       /// Checks if another method has locked reentrancy.
@@ -226,18 +231,19 @@ namespace etl
       }
 
     private:
+
       // Reference to the flag signifying a lock on the state machine.
       bool& is_locked;
 
       // Copy & move semantics disabled since this is a guard.
       fsm_reentrancy_guard(fsm_reentrancy_guard const&) ETL_DELETE;
-      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard const&) ETL_DELETE;
+      fsm_reentrancy_guard& operator=(fsm_reentrancy_guard const&) ETL_DELETE;
 #if ETL_USING_CPP11
       fsm_reentrancy_guard(fsm_reentrancy_guard&&) ETL_DELETE;
-      fsm_reentrancy_guard& operator= (fsm_reentrancy_guard&&) ETL_DELETE;
+      fsm_reentrancy_guard& operator=(fsm_reentrancy_guard&&) ETL_DELETE;
 #endif
     };
-  }
+  } // namespace private_fsm
 
   class ifsm_state;
 
@@ -254,7 +260,8 @@ namespace etl
 
     ETL_STATIC_ASSERT((private_fsm::check_ids<0, TStates...>::value), "State IDs must be 0..N-1 and in order");
     ETL_STATIC_ASSERT(sizeof...(TStates) > 0, "At least one state is required");
-    ETL_STATIC_ASSERT(sizeof...(TStates) < private_fsm::ifsm_state_helper<>::No_State_Change, "State IDs mst be less than ifsm_state::No_State_Change");
+    ETL_STATIC_ASSERT(sizeof...(TStates) < private_fsm::ifsm_state_helper<>::No_State_Change,
+                      "State IDs mst be less than ifsm_state::No_State_Change");
 
     //*********************************
     // The number of states.
@@ -296,7 +303,7 @@ namespace etl
     etl::tuple<TStates...> storage{};
 
     /// Pointers to the states.
-    etl::ifsm_state* states[sizeof...(TStates)]{ &etl::get<TStates>(storage)... };
+    etl::ifsm_state* states[sizeof...(TStates)]{&etl::get<TStates>(storage)...};
   };
 #endif
 
@@ -319,7 +326,7 @@ namespace etl
     template <typename, typename, etl::fsm_state_id_t, typename...>
     friend class fsm_state;
 #else
-    #include "private/fsm_friend_decl_cpp03.h"
+  #include "private/fsm_friend_decl_cpp03.h"
 #endif
 
     //*******************************************
@@ -352,7 +359,7 @@ namespace etl
     template <typename TSize>
     void set_child_states(etl::ifsm_state** state_list, TSize size)
     {
-      p_active_child = ETL_NULLPTR;
+      p_active_child  = ETL_NULLPTR;
       p_default_child = ETL_NULLPTR;
 
       for (TSize i = 0; i < size; ++i)
@@ -368,20 +375,18 @@ namespace etl
     /// Constructor.
     //*******************************************
     ifsm_state(etl::fsm_state_id_t state_id_)
-      : state_id(state_id_),
-      p_context(ETL_NULLPTR),
-      p_parent(ETL_NULLPTR),
-      p_active_child(ETL_NULLPTR),
-      p_default_child(ETL_NULLPTR)
+      : state_id(state_id_)
+      , p_context(ETL_NULLPTR)
+      , p_parent(ETL_NULLPTR)
+      , p_active_child(ETL_NULLPTR)
+      , p_default_child(ETL_NULLPTR)
     {
     }
 
     //*******************************************
     /// Destructor.
     //*******************************************
-    virtual ~ifsm_state()
-    {
-    }
+    virtual ~ifsm_state() {}
 
     //*******************************************
     etl::fsm& get_fsm_context() const
@@ -393,8 +398,11 @@ namespace etl
 
     virtual fsm_state_id_t process_event(const etl::imessage& message) = 0;
 
-    virtual fsm_state_id_t on_enter_state() { return No_State_Change; } // By default, do nothing.
-    virtual void on_exit_state() {}  // By default, do nothing.
+    virtual fsm_state_id_t on_enter_state()
+    {
+      return No_State_Change;
+    } // By default, do nothing.
+    virtual void on_exit_state() {} // By default, do nothing.
 
     //*******************************************
     void set_fsm_context(etl::fsm& context)
@@ -419,7 +427,7 @@ namespace etl
 
     // Disabled.
     ifsm_state(const ifsm_state&) ETL_DELETE;
-    ifsm_state& operator =(const ifsm_state&) ETL_DELETE;
+    ifsm_state& operator=(const ifsm_state&) ETL_DELETE;
   };
 
   //***************************************************************************
@@ -451,7 +459,7 @@ namespace etl
     template <typename TSize>
     void set_states(etl::ifsm_state** p_states, TSize size)
     {
-      state_list = p_states;
+      state_list       = p_states;
       number_of_states = etl::fsm_state_id_t(size);
 
       ETL_ASSERT(number_of_states > 0, ETL_ERROR(etl::fsm_state_list_exception));
@@ -473,7 +481,7 @@ namespace etl
     template <typename... TStates>
     void set_states(etl::fsm_state_pack<TStates...>& state_pack)
     {
-      state_list = state_pack.get_state_list();
+      state_list       = state_pack.get_state_list();
       number_of_states = etl::fsm_state_id_t(state_pack.size());
 
       for (etl::fsm_state_id_t i = 0; i < number_of_states; ++i)
@@ -487,7 +495,8 @@ namespace etl
     /// Starts the FSM.
     /// Can only be called once.
     /// Subsequent calls will do nothing.
-    ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
+    ///\param call_on_enter_state If true will call on_enter_state() for the
+    /// first state. Default = true.
     //*******************************************
     virtual void start(bool call_on_enter_state = true)
     {
@@ -502,11 +511,10 @@ namespace etl
         if (call_on_enter_state)
         {
           etl::fsm_state_id_t next_state_id;
-          etl::ifsm_state* p_last_state;
+          etl::ifsm_state*    p_last_state;
 
-          do
-          {
-            p_last_state = p_state;
+          do {
+            p_last_state  = p_state;
             next_state_id = p_state->on_enter_state();
             if (next_state_id != ifsm_state::No_State_Change)
             {
@@ -602,7 +610,8 @@ namespace etl
 
     //*******************************************
     /// Reset the FSM to pre-started state.
-    ///\param call_on_exit_state If true will call on_exit_state() for the current state. Default = false.
+    ///\param call_on_exit_state If true will call on_exit_state() for the
+    /// current state. Default = false.
     //*******************************************
     virtual void reset(bool call_on_exit_state = false)
     {
@@ -617,7 +626,8 @@ namespace etl
     }
 
     //********************************************
-    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
+    ETL_DEPRECATED
+    bool is_null_router() const ETL_OVERRIDE
     {
       return false;
     }
@@ -639,9 +649,8 @@ namespace etl
     //********************************************
     bool have_changed_state(etl::fsm_state_id_t next_state_id) const
     {
-      return (next_state_id != p_state->get_state_id()) &&
-             (next_state_id != ifsm_state::No_State_Change) &&
-             (next_state_id != ifsm_state::Self_Transition);
+      return (next_state_id != p_state->get_state_id()) && (next_state_id != ifsm_state::No_State_Change)
+             && (next_state_id != ifsm_state::Self_Transition);
     }
 
     //********************************************
@@ -666,8 +675,7 @@ namespace etl
         ETL_ASSERT_OR_RETURN_VALUE(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception), p_state->get_state_id());
         etl::ifsm_state* p_next_state = state_list[next_state_id];
 
-        do
-        {
+        do {
           p_state->on_exit_state();
           p_state = p_next_state;
 
@@ -684,10 +692,12 @@ namespace etl
       return p_state->get_state_id();
     }
 
-    etl::ifsm_state*    p_state;          ///< A pointer to the current state.
-    etl::ifsm_state**   state_list;       ///< The list of added states.
-    etl::fsm_state_id_t number_of_states; ///< The number of states.
-    bool is_processing_state_change;      ///< Whether a method call that could potentially trigger a state change is active
+    etl::ifsm_state*    p_state;                    ///< A pointer to the current state.
+    etl::ifsm_state**   state_list;                 ///< The list of added states.
+    etl::fsm_state_id_t number_of_states;           ///< The number of states.
+    bool                is_processing_state_change; ///< Whether a method call that could
+                                                    ///< potentially trigger a state change is
+                                                    ///< active
   };
 
   //*************************************************************************************************
@@ -709,9 +719,10 @@ namespace etl
     using message_types        = etl::type_list<TMessageTypes...>;
     using sorted_message_types = etl::type_list_sort_t<message_types, etl::compare_message_id_less>;
 
-    static_assert(etl::type_list_is_unique<message_types>::value,                    "All TMessageTypes must be unique");
-    static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value, "All TMessageTypes must satisfy the condition etl::is_message_type");
-    static_assert(etl::index_sequence_is_unique<message_id_sequence>::value,         "All message IDs must be unique");
+    static_assert(etl::type_list_is_unique<message_types>::value, "All TMessageTypes must be unique");
+    static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value,
+                  "All TMessageTypes must satisfy the condition etl::is_message_type");
+    static_assert(etl::index_sequence_is_unique<message_id_sequence>::value, "All message IDs must be unique");
 
     static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
@@ -722,9 +733,7 @@ namespace etl
 
   protected:
 
-    ~fsm_state()
-    {
-    }
+    ~fsm_state() {}
 
     TContext& get_fsm_context() const
     {
@@ -751,32 +760,42 @@ namespace etl
 
     template <size_t Index>
     struct contiguous_impl<Index, false>
-      : etl::bool_constant<(etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U ==
-                              etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID) &&
-                              contiguous_impl<Index + 1U>::value>
+      : etl::bool_constant< (etl::type_list_type_at_index_t<sorted_message_types, Index>::ID + 1U
+                             == etl::type_list_type_at_index_t<sorted_message_types, Index + 1U>::ID)
+                            && contiguous_impl<Index + 1U>::value>
     {
-
-
     };
 
-    // The message ids are contiguous if there are 0 or 1 message types, or if each message id is one greater than the previous message id.
+    // The message ids are contiguous if there are 0 or 1 message types, or if
+    // each message id is one greater than the previous message id.
     static constexpr bool Message_Ids_Are_Contiguous = (Number_Of_Messages <= 1U) ? true : contiguous_impl<0U>::value;
 
-    using handler_ptr              = etl::fsm_state_id_t (*)(TDerived&, const etl::imessage&); ///< Pointer to a handler function that takes a reference to the derived class and a reference to the message.
-    using message_dispatch_table_t = etl::array<handler_ptr, Number_Of_Messages>;              ///< The dispatch table type. An array of handler pointers, one for each message type.
-    using message_id_table_t       = etl::array<etl::message_id_t, Number_Of_Messages>;        ///< The message id table type. An array of message ids, one for each message type.
+    using handler_ptr = etl::fsm_state_id_t (*)(TDerived&,
+                                                const etl::imessage&); ///< Pointer to a handler function that takes a
+                                                                       ///< reference to the derived class and a
+                                                                       ///< reference to the message.
+    using message_dispatch_table_t = etl::array<handler_ptr,
+                                                Number_Of_Messages>; ///< The dispatch table type. An array of
+                                                                     ///< handler pointers, one for each
+                                                                     ///< message type.
+    using message_id_table_t = etl::array<etl::message_id_t,
+                                          Number_Of_Messages>; ///< The message id table type. An
+                                                               ///< array of message ids, one for
+                                                               ///< each message type.
 
     //********************************************
     etl::fsm_state_id_t process_event(const etl::imessage& message)
     {
       const etl::message_id_t id = message.get_message_id();
 
-      // The IDs are sorted, so an ID less than the first is not handled by this router.
+      // The IDs are sorted, so an ID less than the first is not handled by this
+      // router.
       if (id >= Message_Id_Start)
       {
         const size_t index = get_dispatch_index_from_message_id(id);
 
-        // If the index is less than Number_Of_Messages, then we have a handler for this message type, so dispatch it.
+        // If the index is less than Number_Of_Messages, then we have a handler
+        // for this message type, so dispatch it.
         if (index < Number_Of_Messages)
         {
           const etl::fsm_state_id_t new_state_id = dispatch(message, index);
@@ -788,10 +807,11 @@ namespace etl
         }
       }
 
-#include "etl/private/diagnostic_array_bounds_push.h"
-      // If we get here, then we don't have a handler for this message type, so pass it to the parent if we have one, otherwise call on_event_unknown.
+  #include "etl/private/diagnostic_array_bounds_push.h"
+      // If we get here, then we don't have a handler for this message type, so
+      // pass it to the parent if we have one, otherwise call on_event_unknown.
       return (p_parent != nullptr) ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -804,13 +824,14 @@ namespace etl
     }
 
     //**********************************************
-    // Get the handler for a single message type at the index in the sorted type_list.
-    // This will be called for each message type to generate the dispatch table.
+    // Get the handler for a single message type at the index in the sorted
+    // type_list. This will be called for each message type to generate the
+    // dispatch table.
     //**********************************************
     template <size_t Index>
     static constexpr handler_ptr get_message_handler()
     {
-      return &call_on_event<etl::type_list_type_at_index_t<sorted_message_types, Index>>;
+      return &call_on_event< etl::type_list_type_at_index_t<sorted_message_types, Index>>;
     }
 
     //**********************************************
@@ -820,12 +841,13 @@ namespace etl
     template <size_t... Indices>
     static constexpr message_dispatch_table_t make_message_dispatch_table(etl::index_sequence<Indices...>)
     {
-      return message_dispatch_table_t{ { get_message_handler<Indices>()... } };
+      return message_dispatch_table_t{{get_message_handler<Indices>()...}};
     }
 
     //**********************************************
-    // Get the message id for a single message type at an index in the sorted type_list.
-    // This will be called for each message type to generate the message id table.
+    // Get the message id for a single message type at an index in the sorted
+    // type_list. This will be called for each message type to generate the
+    // message id table.
     //**********************************************
     template <size_t Index>
     static constexpr etl::message_id_t get_message_id_from_index()
@@ -840,18 +862,19 @@ namespace etl
     template <size_t... Indices>
     static constexpr message_id_table_t make_message_id_table(etl::index_sequence<Indices...>)
     {
-      return message_id_table_t{ { get_message_id_from_index<Indices>()... } };
+      return message_id_table_t{{get_message_id_from_index<Indices>()...}};
     }
 
     //**********************************************
     // Get the dispatch index for a message id.
     // This will be used at runtime to find the handler for a message id.
-    // If the message ids are contiguous, we can calculate the index directly. If they are not contiguous, we need to do a binary search.
-    // This will return Number_Of_Messages if the message id is not found.
+    // If the message ids are contiguous, we can calculate the index directly.
+    // If they are not contiguous, we need to do a binary search. This will
+    // return Number_Of_Messages if the message id is not found.
     //**********************************************
     static size_t get_dispatch_index_from_message_id(etl::message_id_t id)
     {
-      if ETL_IF_CONSTEXPR(Message_Ids_Are_Contiguous)
+      if ETL_IF_CONSTEXPR (Message_Ids_Are_Contiguous)
       {
         // The IDs are contiguous, so we can calculate the index directly.
         return static_cast<size_t>(id - Message_Id_Start);
@@ -885,7 +908,8 @@ namespace etl
     }
 
     //**********************************************
-    // Dispatch the message to the appropriate handler based on the index in the dispatch table.
+    // Dispatch the message to the appropriate handler based on the index in the
+    // dispatch table.
     //**********************************************
     etl::fsm_state_id_t dispatch(const etl::imessage& msg, size_t index)
     {
@@ -893,27 +917,31 @@ namespace etl
     }
 
     //**********************************************
-    // The dispatch table is generated at compile time. The dispatch table contains pointers to the on_receive handlers for each message type.
+    // The dispatch table is generated at compile time. The dispatch table
+    // contains pointers to the on_receive handlers for each message type.
     //**********************************************
     static ETL_INLINE_VAR constexpr message_dispatch_table_t message_dispatch_table =
-      etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::make_message_dispatch_table(etl::make_index_sequence<etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::Number_Of_Messages>{});
+      etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::make_message_dispatch_table(
+        etl::make_index_sequence< etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::Number_Of_Messages>{});
 
     //**********************************************
-    // The message id table is generated at compile time. The message id table contains the corresponding message ids for each message type.
+    // The message id table is generated at compile time. The message id table
+    // contains the corresponding message ids for each message type.
     //**********************************************
     static ETL_INLINE_VAR constexpr message_id_table_t message_id_table =
-      etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::make_message_id_table(etl::make_index_sequence<etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::Number_Of_Messages>{});
+      etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::make_message_id_table(
+        etl::make_index_sequence< etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::Number_Of_Messages>{});
   };
 
-#if ETL_USING_CPP11 && !ETL_USING_CPP17
+  #if ETL_USING_CPP11 && !ETL_USING_CPP17
   template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
-  constexpr const typename etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_dispatch_table_t
+  constexpr const typename etl::fsm_state< TContext, TDerived, STATE_ID_, TMessageTypes...>::message_dispatch_table_t
     etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_dispatch_table;
 
   template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
   constexpr const typename etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_id_table_t
     etl::fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::message_id_table;
-#endif
+  #endif
 
   /// Definition of STATE_ID
   template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
@@ -943,9 +971,7 @@ namespace etl
 
   protected:
 
-    ~fsm_state()
-    {
-    }
+    ~fsm_state() {}
 
     TContext& get_fsm_context() const
     {
@@ -964,7 +990,7 @@ namespace etl
 #else
   #include "private/fsm_cpp03.h"
 #endif
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

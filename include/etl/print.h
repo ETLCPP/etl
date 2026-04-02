@@ -37,8 +37,8 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
-// to be implemented in a concrete project, typically printing to a serial console
-// type int here is the convention from putchar(), actually storing char
+// to be implemented in a concrete project, typically printing to a serial
+// console type int here is the convention from putchar(), actually storing char
 extern "C" void etl_putchar(int c);
 
 namespace etl
@@ -51,9 +51,11 @@ namespace etl
     class print_iterator
     {
     public:
+
       class print_to
       {
       public:
+
         print_to& operator=(char_type c)
         {
           etl_putchar(static_cast<int>(c));
@@ -61,13 +63,9 @@ namespace etl
         }
       };
 
-      print_iterator()
-      {
-      }
+      print_iterator() {}
 
-      print_iterator(const print_iterator&)
-      {
-      }
+      print_iterator(const print_iterator&) {}
 
       print_iterator& operator=(const print_iterator&)
       {
@@ -89,7 +87,7 @@ namespace etl
         return *this;
       }
     };
-  }  // namespace private_print
+  } // namespace private_print
 
   template <class... Args>
   void print(etl::format_string<Args...> fmt, Args&&... args)
@@ -110,7 +108,7 @@ namespace etl
     (void)format_to(it, etl::move(fmt), etl::forward<Args>(args)...);
     println();
   }
-}  // namespace etl
+} // namespace etl
 
 #endif
 

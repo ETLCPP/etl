@@ -57,6 +57,6 @@ namespace etl
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
 #endif
   }
-}
+} // namespace etl
 
 #endif

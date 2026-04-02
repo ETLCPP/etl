@@ -45,9 +45,7 @@ namespace
       destructor = false;
     }
 
-    virtual ~Base()
-    {
-    }
+    virtual ~Base() {}
 
     virtual void Set() = 0;
   };
@@ -176,7 +174,7 @@ namespace
     //*************************************************************************
     TEST(test_sizes)
     {
-      auto buffer = new Factory::element[SIZE];
+      auto    buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       size_t ms = variant_pool.max_size();
@@ -209,13 +207,13 @@ namespace
     //*************************************************************************
     TEST(test_create_release)
     {
-      auto buffer = new Factory::element[SIZE];
+      auto    buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       Base* p;
 
       // Derived 1
-      p = variant_pool.create<Derived1>();
+      p             = variant_pool.create<Derived1>();
       Derived1* pd1 = static_cast<Derived1*>(p);
       CHECK_EQUAL(0, pd1->i);
       p->Set();
@@ -224,8 +222,8 @@ namespace
       CHECK(destructor);
 
       // Derived 2
-      destructor = false;
-      p = variant_pool.create<Derived2>();
+      destructor    = false;
+      p             = variant_pool.create<Derived2>();
       Derived2* pd2 = static_cast<Derived2*>(p);
       CHECK_EQUAL(0.0, pd2->d);
       p->Set();
@@ -234,8 +232,8 @@ namespace
       CHECK(destructor);
 
       // Derived 3
-      destructor = false;
-      p = variant_pool.create<Derived3>();
+      destructor    = false;
+      p             = variant_pool.create<Derived3>();
       Derived3* pd3 = static_cast<Derived3*>(p);
       CHECK_EQUAL("constructed", pd3->s);
       p->Set();
@@ -244,7 +242,7 @@ namespace
       CHECK(destructor);
 
       // Non Derived
-      destructor = false;
+      destructor      = false;
       NonDerived* pnd = variant_pool.create<NonDerived>();
       CHECK_EQUAL("constructed", pnd->s);
       pnd->Set();
@@ -262,7 +260,7 @@ namespace
     //*************************************************************************
     TEST(test_create_release_const)
     {
-      auto buffer = new Factory::element[SIZE];
+      auto    buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       const Derived1& d = *variant_pool.create<Derived1>();
@@ -277,28 +275,28 @@ namespace
     //*************************************************************************
     TEST(test_create_emplace)
     {
-      auto buffer = new Factory::element[SIZE];
+      auto    buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
-      Base* p;
+      Base*     p;
       Derived3* pd3;
 
-      p = variant_pool.create<Derived3>("1");
+      p   = variant_pool.create<Derived3>("1");
       pd3 = static_cast<Derived3*>(p);
       CHECK_EQUAL("constructed1", pd3->s);
       variant_pool.destroy(p);
 
-      p = variant_pool.create<Derived3>("1", "2");
+      p   = variant_pool.create<Derived3>("1", "2");
       pd3 = static_cast<Derived3*>(p);
       CHECK_EQUAL("constructed12", pd3->s);
       variant_pool.destroy(p);
 
-      p = variant_pool.create<Derived3>("1", "2", "3");
+      p   = variant_pool.create<Derived3>("1", "2", "3");
       pd3 = static_cast<Derived3*>(p);
       CHECK_EQUAL("constructed123", pd3->s);
       variant_pool.destroy(p);
 
-      p = variant_pool.create<Derived3>("1", "2", "3", "4");
+      p   = variant_pool.create<Derived3>("1", "2", "3", "4");
       pd3 = static_cast<Derived3*>(p);
       CHECK_EQUAL("constructed1234", pd3->s);
       variant_pool.destroy(p);
@@ -309,9 +307,9 @@ namespace
     //*************************************************************************
     TEST(test_did_not_create)
     {
-      auto buffer1 = new Factory::element[SIZE];
+      auto    buffer1 = new Factory::element[SIZE];
       Factory variant_pool1(buffer1, SIZE);
-      auto buffer2 = new Factory::element[SIZE];
+      auto    buffer2 = new Factory::element[SIZE];
       Factory variant_pool2(buffer2, SIZE);
 
       Base* p;
@@ -326,4 +324,4 @@ namespace
       delete[] buffer2;
     }
   }
-}
+} // namespace

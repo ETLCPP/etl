@@ -32,16 +32,16 @@ SOFTWARE.
 #define ETL_REFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
 
 #include "platform.h"
-#include "message.h"
+#include "atomic.h"
+#include "error_handler.h"
 #include "imemory_block_allocator.h"
 #include "ireference_counted_message_pool.h"
+#include "largest.h"
+#include "memory.h"
+#include "message.h"
 #include "reference_counted_message.h"
 #include "static_assert.h"
-#include "error_handler.h"
 #include "utility.h"
-#include "atomic.h"
-#include "memory.h"
-#include "largest.h"
 
 namespace etl
 {
@@ -66,7 +66,8 @@ namespace etl
   public:
 
     reference_counted_message_pool_allocation_failure(string_type file_name_, numeric_type line_number_)
-      : reference_counted_message_pool_exception(ETL_ERROR_TEXT("reference_counted_message_pool:allocation failure", ETL_REFERENCE_COUNTER_MESSAGE_POOL_FILE_ID"A"), file_name_, line_number_)
+      : reference_counted_message_pool_exception(
+          ETL_ERROR_TEXT("reference_counted_message_pool:allocation failure", ETL_REFERENCE_COUNTER_MESSAGE_POOL_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -79,7 +80,8 @@ namespace etl
   public:
 
     reference_counted_message_pool_release_failure(string_type file_name_, numeric_type line_number_)
-      : reference_counted_message_pool_exception(ETL_ERROR_TEXT("reference_counted_message_pool:release failure", ETL_REFERENCE_COUNTER_MESSAGE_POOL_FILE_ID"B"), file_name_, line_number_)
+      : reference_counted_message_pool_exception(
+          ETL_ERROR_TEXT("reference_counted_message_pool:release failure", ETL_REFERENCE_COUNTER_MESSAGE_POOL_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -110,7 +112,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-      typedef rcm_t* prcm_t;
+      typedef rcm_t*                                             prcm_t;
 
       prcm_t p = ETL_NULLPTR;
 
@@ -120,7 +122,7 @@ namespace etl
 
       if (p != ETL_NULLPTR)
       {
-        ::new(p) rcm_t(*this, etl::forward<TArgs>(args)...);
+        ::new (p) rcm_t(*this, etl::forward<TArgs>(args)...);
       }
 
       ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
@@ -138,7 +140,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-      typedef rcm_t* prcm_t;
+      typedef rcm_t*                                             prcm_t;
 
       prcm_t p = ETL_NULLPTR;
 
@@ -148,7 +150,7 @@ namespace etl
 
       if (p != ETL_NULLPTR)
       {
-        ::new(p) rcm_t(message, *this);
+        ::new (p) rcm_t(message, *this);
       }
 
       ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
@@ -165,7 +167,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-      typedef rcm_t* prcm_t;
+      typedef rcm_t*                                             prcm_t;
 
       prcm_t p = ETL_NULLPTR;
 
@@ -175,7 +177,7 @@ namespace etl
 
       if (p != ETL_NULLPTR)
       {
-        ::new(p) rcm_t(*this);
+        ::new (p) rcm_t(*this);
       }
 
       ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
@@ -215,7 +217,7 @@ namespace etl
       static constexpr size_t size2 = pool_message_parameters<TMessages...>::max_size;
 
       // Size of the first pool message type.
-      static constexpr size_t alignment1 = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
+      static constexpr size_t alignment1 = etl::alignment_of< etl::reference_counted_message<TMessage1, TCounter>>::value;
 
       // Maximum size of the rest of the pool message types.
       static constexpr size_t alignment2 = pool_message_parameters<TMessages...>::max_alignment;
@@ -241,11 +243,11 @@ namespace etl
       static constexpr size_t max_size = sizeof(etl::reference_counted_message<TMessage1, TCounter>);
 
       // The maximum alignment.
-      static constexpr size_t max_alignment = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
+      static constexpr size_t max_alignment = etl::alignment_of< etl::reference_counted_message<TMessage1, TCounter>>::value;
     };
 
 #else
-    template <typename TMessage1,             typename TMessage2 = TMessage1, typename TMessage3 = TMessage1, typename TMessage4 = TMessage1,
+    template <typename TMessage1, typename TMessage2 = TMessage1, typename TMessage3 = TMessage1, typename TMessage4 = TMessage1,
               typename TMessage5 = TMessage1, typename TMessage6 = TMessage1, typename TMessage7 = TMessage1, typename TMessage8 = TMessage1>
     struct pool_message_parameters
     {
@@ -258,24 +260,17 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage7 not derived from etl::imessage");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage8 not derived from etl::imessage");
 
-      static ETL_CONSTANT size_t max_size = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
-                                                         etl::reference_counted_message<TMessage2, TCounter>,
-                                                         etl::reference_counted_message<TMessage3, TCounter>,
-                                                         etl::reference_counted_message<TMessage4, TCounter>,
-                                                         etl::reference_counted_message<TMessage5, TCounter>,
-                                                         etl::reference_counted_message<TMessage6, TCounter>,
-                                                         etl::reference_counted_message<TMessage7, TCounter>,
-                                                         etl::reference_counted_message<TMessage8, TCounter> >::size;
+      static ETL_CONSTANT size_t max_size =
+        etl::largest< etl::reference_counted_message<TMessage1, TCounter>, etl::reference_counted_message<TMessage2, TCounter>,
+                      etl::reference_counted_message<TMessage3, TCounter>, etl::reference_counted_message<TMessage4, TCounter>,
+                      etl::reference_counted_message<TMessage5, TCounter>, etl::reference_counted_message<TMessage6, TCounter>,
+                      etl::reference_counted_message<TMessage7, TCounter>, etl::reference_counted_message<TMessage8, TCounter> >::size;
 
-
-      static ETL_CONSTANT size_t max_alignment = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
-                                                              etl::reference_counted_message<TMessage2, TCounter>,
-                                                              etl::reference_counted_message<TMessage3, TCounter>,
-                                                              etl::reference_counted_message<TMessage4, TCounter>,
-                                                              etl::reference_counted_message<TMessage5, TCounter>,
-                                                              etl::reference_counted_message<TMessage6, TCounter>,
-                                                              etl::reference_counted_message<TMessage7, TCounter>,
-                                                              etl::reference_counted_message<TMessage8, TCounter> >::alignment;
+      static ETL_CONSTANT size_t max_alignment =
+        etl::largest< etl::reference_counted_message<TMessage1, TCounter>, etl::reference_counted_message<TMessage2, TCounter>,
+                      etl::reference_counted_message<TMessage3, TCounter>, etl::reference_counted_message<TMessage4, TCounter>,
+                      etl::reference_counted_message<TMessage5, TCounter>, etl::reference_counted_message<TMessage6, TCounter>,
+                      etl::reference_counted_message<TMessage7, TCounter>, etl::reference_counted_message<TMessage8, TCounter> >::alignment;
     };
 
 #endif
@@ -287,36 +282,38 @@ namespace etl
 
     // Should not be copied.
     reference_counted_message_pool(const reference_counted_message_pool&) ETL_DELETE;
-    reference_counted_message_pool& operator =(const reference_counted_message_pool&) ETL_DELETE;
+    reference_counted_message_pool& operator=(const reference_counted_message_pool&) ETL_DELETE;
   };
 
 #if ETL_USING_CPP11
 
   template <typename TCounter>
   template <typename TMessage1, typename... TMessages>
-  constexpr size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessages...>::max_size;
+  constexpr size_t reference_counted_message_pool< TCounter>::pool_message_parameters< TMessage1, TMessages...>::max_size;
 
   template <typename TCounter>
   template <typename TMessage1, typename... TMessages>
-  constexpr size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessages...>::max_alignment;
+  constexpr size_t reference_counted_message_pool< TCounter>::pool_message_parameters< TMessage1, TMessages...>::max_alignment;
 
 #else
 
   template <typename TCounter>
-  template <typename TMessage1, typename TMessage2, typename TMessage3, typename TMessage4,
-            typename TMessage5, typename TMessage6, typename TMessage7, typename TMessage8>
-  const size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessage2, TMessage3, TMessage4, TMessage5, TMessage6, TMessage7, TMessage8>::max_size;
+  template <typename TMessage1, typename TMessage2, typename TMessage3, typename TMessage4, typename TMessage5, typename TMessage6,
+            typename TMessage7, typename TMessage8>
+  const size_t reference_counted_message_pool<TCounter>::pool_message_parameters< TMessage1, TMessage2, TMessage3, TMessage4, TMessage5, TMessage6,
+                                                                                  TMessage7, TMessage8>::max_size;
 
   template <typename TCounter>
-  template <typename TMessage1, typename TMessage2, typename TMessage3, typename TMessage4,
-            typename TMessage5, typename TMessage6, typename TMessage7, typename TMessage8>
-  const size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessage2, TMessage3, TMessage4, TMessage5, TMessage6, TMessage7, TMessage8>::max_alignment;
+  template <typename TMessage1, typename TMessage2, typename TMessage3, typename TMessage4, typename TMessage5, typename TMessage6,
+            typename TMessage7, typename TMessage8>
+  const size_t reference_counted_message_pool<TCounter>::pool_message_parameters< TMessage1, TMessage2, TMessage3, TMessage4, TMessage5, TMessage6,
+                                                                                  TMessage7, TMessage8>::max_alignment;
 
 #endif
 
 #if ETL_USING_CPP11 && ETL_HAS_ATOMIC
-  using  atomic_counted_message_pool = reference_counted_message_pool<etl::atomic_int>;
+  using atomic_counted_message_pool = reference_counted_message_pool<etl::atomic_int>;
 #endif
-}
+} // namespace etl
 
 #endif

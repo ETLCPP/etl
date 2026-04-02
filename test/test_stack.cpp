@@ -32,8 +32,8 @@ SOFTWARE.
 
 #include "data.h"
 
-#include "etl/stack.h"
 #include "etl/math.h"
+#include "etl/stack.h"
 
 namespace
 {
@@ -53,12 +53,12 @@ namespace
     {
     }
 
-    char c;
-    int i;
+    char   c;
+    int    i;
     double d;
   };
 
-  bool operator == (const Item& lhs, const Item& rhs)
+  bool operator==(const Item& lhs, const Item& rhs)
   {
 #include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
@@ -253,16 +253,16 @@ namespace
       CHECK(item5 == Item('e', 5, 5.6));
 
       CHECK(stack.top() == Item('e', 5, 5.6));
-      
+
       stack.pop();
       CHECK(stack.top() == Item('d', 4, 4.5));
-      
+
       stack.pop();
       CHECK(stack.top() == Item('c', 3, 3.4));
-      
+
       stack.pop();
       CHECK(stack.top() == Item('b', 2, 2.3));
-      
+
       stack.pop();
       CHECK(stack.top() == Item('a', 1, 1.2));
     }
@@ -410,7 +410,7 @@ namespace
     //*************************************************************************
     TEST(test_top_const)
     {
-      etl::stack<int, 4> stack;
+      etl::stack<int, 4>        stack;
       const etl::stack<int, 4>& constQueue = stack;
 
       stack.push(1);
@@ -429,7 +429,7 @@ namespace
     //*************************************************************************
     TEST(test_top_const_bounds_exception)
     {
-      etl::stack<int, 4> stack;
+      etl::stack<int, 4>        stack;
       const etl::stack<int, 4>& constStack = stack;
 
       CHECK(constStack.empty());
@@ -524,7 +524,6 @@ namespace
       }
     }
 
-
     //*************************************************************************
     TEST(test_self_assignment)
     {
@@ -535,10 +534,10 @@ namespace
       stack.push(3);
       stack.push(4);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       stack = stack;
-#include "etl/private/diagnostic_pop.h" 
-      
+#include "etl/private/diagnostic_pop.h"
+
       CHECK(stack.max_size() == stack.size());
 
       CHECK_EQUAL(4, stack.top());
@@ -581,4 +580,4 @@ namespace
       CHECK_EQUAL(4, i);
     }
   }
-}
+} // namespace

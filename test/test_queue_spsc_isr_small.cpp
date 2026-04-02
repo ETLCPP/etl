@@ -30,12 +30,12 @@ SOFTWARE.
 
 #include "etl/queue_spsc_isr.h"
 
-#include <thread>
 #include <mutex>
+#include <thread>
 #include <vector>
 
 #if defined(ETL_COMPILER_MICROSOFT)
-#include <Windows.h>
+  #include <Windows.h>
 #endif
 
 #include "data.h"
@@ -50,7 +50,7 @@ namespace
 
     static void clear()
     {
-      called_lock = false;
+      called_lock   = false;
       called_unlock = false;
     }
 
@@ -95,7 +95,7 @@ namespace
     int d;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
+  bool operator==(const Data& lhs, const Data& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
@@ -644,7 +644,8 @@ namespace
 
     //*************************************************************************
 #if REALTIME_TEST
-  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
+                                     // supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
@@ -681,8 +682,8 @@ namespace
       FIX_PROCESSOR_AFFINITY;
 
       const size_t TICK = 1UL;
-      size_t tick = TICK;
-      ticks = 1;
+      size_t       tick = TICK;
+      ticks             = 1;
 
       while (ticks <= LENGTH)
       {
@@ -731,4 +732,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

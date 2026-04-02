@@ -1,4 +1,4 @@
- /******************************************************************************
+/******************************************************************************
 The MIT License(MIT)
 
 Embedded Template Library.
@@ -40,13 +40,13 @@ namespace
     //*************************************************************************
     TEST(test_is_nan)
     {
-      float  f1 = NAN;
-      float  f2 = 0;
-      double d1 = NAN;
-      double d2 = 0;
+      float       f1  = NAN;
+      float       f2  = 0;
+      double      d1  = NAN;
+      double      d2  = 0;
       long double ld1 = NAN;
       long double ld2 = 0;
-      int i = 0;
+      int         i   = 0;
 
       CHECK_TRUE(etl::is_nan(f1));
       CHECK_FALSE(etl::is_nan(f2));
@@ -60,18 +60,18 @@ namespace
     //*************************************************************************
     TEST(test_is_infinity)
     {
-      float  f1a = INFINITY;
-      float  f1b = -INFINITY;
-      float  f2 = 0;
-      double d1a = INFINITY;
-      double d1b = -INFINITY;
-      double d2 = 0;
+      float       f1a  = INFINITY;
+      float       f1b  = -INFINITY;
+      float       f2   = 0;
+      double      d1a  = INFINITY;
+      double      d1b  = -INFINITY;
+      double      d2   = 0;
       long double ld1a = INFINITY;
       long double ld1b = -INFINITY;
-      long double ld2 = 0;
-      int ia = INT_MAX;
-      int ib = 0;
-      int ic = INT_MIN;
+      long double ld2  = 0;
+      int         ia   = INT_MAX;
+      int         ib   = 0;
+      int         ic   = INT_MIN;
 
       CHECK_TRUE(etl::is_infinity(f1a));
       CHECK_TRUE(etl::is_infinity(f1b));
@@ -90,14 +90,14 @@ namespace
     //*************************************************************************
     TEST(test_is_zero)
     {
-      float  f1 = 0;
-      float  f2 = 1.0f;
-      double d1 = 0;
-      double d2 = 1.0;
+      float       f1  = 0;
+      float       f2  = 1.0f;
+      double      d1  = 0;
+      double      d2  = 1.0;
       long double ld1 = 0;
       long double ld2 = 1.0L;
-      int i1 = 0;
-      int i2 = 1;
+      int         i1  = 0;
+      int         i2  = 1;
 
       CHECK_TRUE(etl::is_zero(f1));
       CHECK_FALSE(etl::is_zero(f2));
@@ -112,14 +112,14 @@ namespace
     //*************************************************************************
     TEST(test_is_exactly_equal)
     {
-      float  f1 = 0;
-      float  f2 = 1.0f;
-      double d1 = 0;
-      double d2 = 1.0;
+      float       f1  = 0;
+      float       f2  = 1.0f;
+      double      d1  = 0;
+      double      d2  = 1.0;
       long double ld1 = 0;
       long double ld2 = 1.0L;
-      int i1 = 0;
-      int i2 = 1;
+      int         i1  = 0;
+      int         i2  = 1;
 
       CHECK_TRUE(etl::is_exactly_equal(f1, f1));
       CHECK_FALSE(etl::is_exactly_equal(f1, f2));
@@ -131,4 +131,4 @@ namespace
       CHECK_FALSE(etl::is_exactly_equal(i1, i2));
     }
   }
-}
+} // namespace

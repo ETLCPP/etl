@@ -29,9 +29,9 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <iterator>
+#include <stdint.h>
 #include <string>
 #include <vector>
-#include <stdint.h>
 
 #include "etl/checksum.h"
 
@@ -41,7 +41,7 @@ namespace
   TSum reference_checksum(TIterator begin, TIterator end)
   {
     typedef typename std::iterator_traits<TIterator>::value_type value_type;
-    TSum checksum = 0;
+    TSum                                                         checksum = 0;
 
     while (begin != end)
     {
@@ -134,9 +134,9 @@ namespace
     //*************************************************************************
     TEST(test_checksum_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
-      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
+      std::vector<uint32_t> data2 = {0x04030201UL, 0x08070605UL};
+      std::vector<uint8_t>  data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint64_t hash1 = etl::xor_checksum<uint8_t>(data1.begin(), data1.end());
       uint64_t hash2 = etl::xor_checksum<uint8_t>((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
@@ -145,5 +145,4 @@ namespace
       CHECK_EQUAL(hash1, hash3);
     }
   }
-}
-
+} // namespace

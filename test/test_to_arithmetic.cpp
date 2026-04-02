@@ -28,24 +28,24 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <ostream>
-#include <sstream>
 #include <iomanip>
 #include <limits>
+#include <ostream>
+#include <sstream>
 
-#include "etl/to_arithmetic.h"
-#include "etl/string.h"
 #include "etl/format_spec.h"
+#include "etl/string.h"
+#include "etl/to_arithmetic.h"
 
 #undef STR
 #define STR(x) x
-using Text  = std::string;
+using Text = std::string;
 
 namespace
 {
   //*************************************************************************
   template <typename T>
-  std::ostream& operator <<(std::ostream& os, const etl::to_arithmetic_result<T>& result)
+  std::ostream& operator<<(std::ostream& os, const etl::to_arithmetic_result<T>& result)
   {
     if (result.has_value())
     {
@@ -266,25 +266,37 @@ namespace
 
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin));
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin).error());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::bin).error());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::bin).error());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::bin).error());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow,
+                  etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin).error());
     }
 
     //*************************************************************************
@@ -1031,14 +1043,13 @@ namespace
 #if ETL_USING_CPP14
     TEST(test_constexpr_integral)
     {
-      constexpr Text::const_pointer text{ STR("123") };
+      constexpr Text::const_pointer text{STR("123")};
 
       constexpr etl::to_arithmetic_result<int> result = etl::to_arithmetic<int>(text, 3U, etl::radix::decimal);
-      constexpr int i = result.value();
+      constexpr int                            i      = result.value();
 
       CHECK_EQUAL(123, i);
     }
 #endif
   }
-}
-
+} // namespace

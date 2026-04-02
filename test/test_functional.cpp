@@ -31,8 +31,8 @@ SOFTWARE.
 #include "etl/functional.h"
 
 #include <list>
-#include <vector>
 #include <numeric>
+#include <vector>
 
 namespace
 {
@@ -94,11 +94,17 @@ namespace
   struct Wrapper
   {
     int value;
-    constexpr explicit Wrapper(int v) : value(v) {}
+    constexpr explicit Wrapper(int v)
+      : value(v)
+    {
+    }
   };
 
   // int < Wrapper  -- defined
-  constexpr bool operator<(int lhs, const Wrapper& rhs) { return lhs < rhs.value; }
+  constexpr bool operator<(int lhs, const Wrapper& rhs)
+  {
+    return lhs < rhs.value;
+  }
 
   // Wrapper < int  -- intentionally NOT defined
 #endif
@@ -222,7 +228,7 @@ namespace
     //*************************************************************************
     TEST(test_reference_wrapper)
     {
-      int a = 0;
+      int                         a = 0;
       etl::reference_wrapper<int> ra(a);
 
       ra.get() = 1;
@@ -237,8 +243,8 @@ namespace
     //*************************************************************************
     TEST(test_reference_wrapper_container)
     {
-      std::list<int> test    = { 0, 1, 2, 3, 4 };
-      std::list<int> compare = { 0, 1, 2, 3, 4 };
+      std::list<int>                           test    = {0, 1, 2, 3, 4};
+      std::list<int>                           compare = {0, 1, 2, 3, 4};
       std::vector<etl::reference_wrapper<int>> test_ref(test.begin(), test.end());
 
       std::list<int>::const_iterator itest    = test.begin();
@@ -255,7 +261,7 @@ namespace
     //*************************************************************************
     TEST(test_ref)
     {
-      int a = 0;
+      int                         a  = 0;
       etl::reference_wrapper<int> ra = etl::ref(a);
 
       ra.get() = 1;
@@ -266,7 +272,7 @@ namespace
     //*************************************************************************
     TEST(test_cref)
     {
-      int a = 0;
+      int                               a  = 0;
       etl::reference_wrapper<const int> ra = etl::cref(a);
 
       a = 1;
@@ -280,10 +286,13 @@ namespace
     {
       struct functor
       {
-        int operator()() const { return 42; }
+        int operator()() const
+        {
+          return 42;
+        }
       };
 
-      functor f;
+      functor                         f;
       etl::reference_wrapper<functor> rw(f);
       CHECK_EQUAL(42, rw());
     }
@@ -293,10 +302,13 @@ namespace
     {
       struct adder
       {
-        int operator()(int a, int b) const { return a + b; }
+        int operator()(int a, int b) const
+        {
+          return a + b;
+        }
       };
 
-      adder f;
+      adder                         f;
       etl::reference_wrapper<adder> rw(f);
       CHECK_EQUAL(7, rw(3, 4));
     }
@@ -304,9 +316,12 @@ namespace
     //*************************************************************************
     TEST(test_reference_wrapper_call_operator_function_pointer)
     {
-      int (*fn)(int, int) = [](int a, int b) { return a * b; };
+      int (*fn)(int, int) = [](int a, int b)
+      {
+        return a * b;
+      };
 
-      etl::reference_wrapper<int(*)(int, int)> rw(fn);
+      etl::reference_wrapper<int (*)(int, int)> rw(fn);
       CHECK_EQUAL(12, rw(3, 4));
     }
 #endif
@@ -358,9 +373,9 @@ namespace
     {
       auto f = etl::logical_and<bool>();
       CHECK_EQUAL(false && false, f(false, false));
-      CHECK_EQUAL(false && true,  f(false, true));
-      CHECK_EQUAL(true  && false, f(true,  false));
-      CHECK_EQUAL(true &&  true,  f(true,  true));
+      CHECK_EQUAL(false && true, f(false, true));
+      CHECK_EQUAL(true && false, f(true, false));
+      CHECK_EQUAL(true && true, f(true, true));
     }
 
     //*************************************************************************
@@ -368,9 +383,9 @@ namespace
     {
       auto f = etl::logical_or<bool>();
       CHECK_EQUAL(false || false, f(false, false));
-      CHECK_EQUAL(false || true,  f(false, true));
-      CHECK_EQUAL(true  || false, f(true, false));
-      CHECK_EQUAL(true  || true,  f(true, true));
+      CHECK_EQUAL(false || true, f(false, true));
+      CHECK_EQUAL(true || false, f(true, false));
+      CHECK_EQUAL(true || true, f(true, true));
     }
 
     //*************************************************************************
@@ -424,7 +439,7 @@ namespace
     //*************************************************************************
     TEST(test_mem_fn)
     {
-      MemFnTest mft;
+      MemFnTest   mft;
       std::string result;
 
       auto f1 = etl::mem_fn(&MemFnTest::Function1);
@@ -447,7 +462,7 @@ namespace
     TEST(test_const_mem_fn)
     {
       const MemFnTest mft;
-      std::string result;
+      std::string     result;
 
       auto f1 = etl::mem_fn(&MemFnTest::Function1_Const);
       result.clear();
@@ -469,7 +484,7 @@ namespace
     TEST(test_constexpr_mem_fn)
     {
       const MemFnTest mft;
-      std::string result;
+      std::string     result;
 
       constexpr auto f1 = etl::mem_fn(&MemFnTest::Function1_Const);
       result.clear();
@@ -492,7 +507,7 @@ namespace
     TEST(test_identity)
     {
       etl::identity i;
-      std::string s{"abc"};
+      std::string   s{"abc"};
       CHECK_EQUAL(s, i(s));
       CHECK_EQUAL(&s, &i(s));
       CHECK_EQUAL(&s, i(&s));
@@ -529,8 +544,8 @@ namespace
     TEST(test_ranges_equal_to_constexpr)
     {
       constexpr etl::ranges::equal_to eq{};
-      constexpr bool result_equal     = eq(5, 5);
-      constexpr bool result_not_equal = eq(5, 6);
+      constexpr bool                  result_equal     = eq(5, 5);
+      constexpr bool                  result_not_equal = eq(5, 6);
 
       CHECK(result_equal);
       CHECK(!result_not_equal);
@@ -567,15 +582,14 @@ namespace
     TEST(test_ranges_less_constexpr)
     {
       constexpr etl::ranges::less lt{};
-      constexpr bool result_less     = lt(5, 6);
-      constexpr bool result_not_less = lt(6, 5);
-      constexpr bool result_equal    = lt(5, 5);
+      constexpr bool              result_less     = lt(5, 6);
+      constexpr bool              result_not_less = lt(6, 5);
+      constexpr bool              result_equal    = lt(5, 5);
 
       CHECK(result_less);
       CHECK(!result_not_less);
       CHECK(!result_equal);
     }
 #endif
-
   }
-}
+} // namespace

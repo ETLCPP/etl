@@ -33,20 +33,19 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "iterator.h"
-#include "functional.h"
-#include "utility.h"
-#include "pool.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "debug_count.h"
-#include "nullptr.h"
-#include "type_traits.h"
-#include "memory.h"
-#include "iterator.h"
-#include "static_assert.h"
-#include "placement_new.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "functional.h"
 #include "initializer_list.h"
+#include "iterator.h"
+#include "memory.h"
+#include "nullptr.h"
+#include "placement_new.h"
+#include "pool.h"
+#include "static_assert.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include <stddef.h>
 
@@ -129,7 +128,6 @@ namespace etl
     {
     }
   };
-
 
   //***************************************************************************
   /// The base class for all forward_lists.
@@ -243,17 +241,17 @@ namespace etl
         return;
       }
 
-      node_t* p_last = &start_node;
+      node_t* p_last    = &start_node;
       node_t* p_current = p_last->next;
-      node_t* p_next = p_current->next;
+      node_t* p_next    = p_current->next;
 
       p_current->next = ETL_NULLPTR;
 
       while (p_next != ETL_NULLPTR)
       {
-        p_last = p_current;
+        p_last    = p_current;
         p_current = p_next;
-        p_next = p_current->next;
+        p_next    = p_current->next;
 
         p_current->next = p_last;
       }
@@ -267,9 +265,9 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     forward_list_base(bool pool_is_shared_)
-      : p_node_pool(ETL_NULLPTR),
-        MAX_SIZE(0),
-        pool_is_shared(pool_is_shared_)
+      : p_node_pool(ETL_NULLPTR)
+      , MAX_SIZE(0)
+      , pool_is_shared(pool_is_shared_)
     {
     }
 
@@ -277,18 +275,16 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     forward_list_base(etl::ipool& node_pool_, size_type max_size_, bool pool_is_shared_)
-      : p_node_pool(&node_pool_),
-        MAX_SIZE(max_size_),
-        pool_is_shared(pool_is_shared_)
+      : p_node_pool(&node_pool_)
+      , MAX_SIZE(max_size_)
+      , pool_is_shared(pool_is_shared_)
     {
     }
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~forward_list_base()
-    {
-    }
+    ~forward_list_base() {}
 
     //*************************************************************************
     /// Get the head node.
@@ -373,7 +369,7 @@ namespace etl
     typedef size_t   size_type;
 
 #if ETL_USING_CPP11
-    typedef T&&      rvalue_reference;
+    typedef T&& rvalue_reference;
 #endif
 
   protected:
@@ -385,7 +381,8 @@ namespace etl
     {
       explicit data_node_t(const T& value_)
         : value(value_)
-      {}
+      {
+      }
 
       T value;
     };
@@ -417,46 +414,46 @@ namespace etl
       {
       }
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         p_node = p_node->next;
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         p_node = p_node->next;
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator operator=(const iterator& other)
       {
         p_node = other.p_node;
         return *this;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
         return iforward_list::data_cast(p_node)->value;
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return &(iforward_list::data_cast(p_node)->value);
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return &(iforward_list::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -500,46 +497,46 @@ namespace etl
       {
       }
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         p_node = p_node->next;
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         p_node = p_node->next;
         return temp;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         p_node = other.p_node;
         return *this;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return iforward_list::data_cast(p_node)->value;
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return &(iforward_list::data_cast(p_node)->value);
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return &(iforward_list::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -625,7 +622,8 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
-    /// If asserts or exceptions are enabled, throws an etl::forward_list_empty if the list is empty.
+    /// If asserts or exceptions are enabled, throws an etl::forward_list_empty
+    /// if the list is empty.
     //*************************************************************************
     reference front()
     {
@@ -635,7 +633,8 @@ namespace etl
 
     //*************************************************************************
     /// Gets a const reference to the first element.
-    /// If asserts or exceptions are enabled, throws an etl::forward_list_empty if the list is empty.
+    /// If asserts or exceptions are enabled, throws an etl::forward_list_empty
+    /// if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
@@ -645,8 +644,10 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the forward_list.
-    /// If asserts or exceptions are enabled throws etl::forward_list_full if the forward_list does not have enough free space.
-    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws forward_list_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled throws etl::forward_list_full if
+    /// the forward_list does not have enough free space. If
+    /// ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws
+    /// forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
@@ -669,7 +670,7 @@ namespace etl
         ++first;
         join(p_last_node, &data_node);
         data_node.next = ETL_NULLPTR;
-        p_last_node = &data_node;
+        p_last_node    = &data_node;
       }
     }
 
@@ -690,7 +691,7 @@ namespace etl
         data_node_t& data_node = allocate_data_node(value);
         join(p_last_node, &data_node);
         data_node.next = ETL_NULLPTR;
-        p_last_node = &data_node;
+        p_last_node    = &data_node;
       }
     }
 
@@ -722,8 +723,8 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
-    template <typename ... Args>
-    reference emplace_front(Args && ... args)
+    template <typename... Args>
+    reference emplace_front(Args&&... args)
     {
       ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(forward_list_full));
 
@@ -829,8 +830,8 @@ namespace etl
 
     //*************************************************************************
     /// Resizes the forward_list.
-    /// If asserts or exceptions are enabled, will throw an etl::forward_list_full
-    /// if <b>n</b> is larger than the maximum size.
+    /// If asserts or exceptions are enabled, will throw an
+    /// etl::forward_list_full if <b>n</b> is larger than the maximum size.
     //*************************************************************************
     void resize(size_t n, T value)
     {
@@ -846,7 +847,7 @@ namespace etl
       }
       else
       {
-        size_t i = 0UL;
+        size_t   i      = 0UL;
         iterator i_node = begin();
         iterator i_last_node;
 
@@ -892,8 +893,8 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
-    template <typename ... Args>
-    iterator emplace_after(const_iterator position, Args && ... args)
+    template <typename... Args>
+    iterator emplace_after(const_iterator position, Args&&... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
@@ -986,7 +987,8 @@ namespace etl
 #endif // ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
 
     //*************************************************************************
-    /// Inserts 'n' copies of a value to the forward_list after the specified position.
+    /// Inserts 'n' copies of a value to the forward_list after the specified
+    /// position.
     //*************************************************************************
     iterator insert_after(const_iterator position, size_t n, const T& value)
     {
@@ -1008,10 +1010,12 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Inserts a range of values to the forward_list after the specified position.
+    /// Inserts a range of values to the forward_list after the specified
+    /// position.
     //*************************************************************************
     template <typename TIterator>
-    iterator insert_after(const_iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
+    iterator insert_after(const_iterator position, TIterator first, TIterator last,
+                          typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
 #if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
@@ -1109,7 +1113,8 @@ namespace etl
 
     //*************************************************************************
     /// Moves a range from one position to another within the list.
-    /// Moves a range at position 'first_before' to the position before 'to_before'.
+    /// Moves a range at position 'first_before' to the position before
+    /// 'to_before'.
     //*************************************************************************
     void move_after(const_iterator from_before, const_iterator to_before)
     {
@@ -1133,7 +1138,8 @@ namespace etl
 
     //*************************************************************************
     /// Moves a range from one position to another within the list.
-    /// Moves a range at position 'first_before'/'last' to the position before 'to_before'.
+    /// Moves a range at position 'first_before'/'last' to the position before
+    /// 'to_before'.
     //*************************************************************************
     void move_after(const_iterator first_before, const_iterator last, const_iterator to_before)
     {
@@ -1142,19 +1148,19 @@ namespace etl
         return; // Can't more to before yourself!
       }
 
-//#if ETL_IS_DEBUG_BUILD
-      // Check that we are not doing an illegal move!
+      // #if ETL_IS_DEBUG_BUILD
+      //  Check that we are not doing an illegal move!
       for (const_iterator item = first_before; item != last; ++item)
       {
         ETL_ASSERT(item != to_before, ETL_ERROR(forward_list_iterator));
       }
-//#endif
+      // #endif
 
       node_t* p_first_before = const_cast<node_t*>(first_before.p_node); // We're not changing the value, just it's position.
-      node_t* p_last = const_cast<node_t*>(last.p_node);         // We're not changing the value, just it's position.
-      node_t* p_to_before = const_cast<node_t*>(to_before.p_node);    // We're not changing the value, just it's position.
-      node_t* p_first = p_first_before->next;
-      node_t* p_final = p_first_before;
+      node_t* p_last         = const_cast<node_t*>(last.p_node);         // We're not changing the value, just it's position.
+      node_t* p_to_before    = const_cast<node_t*>(to_before.p_node);    // We're not changing the value, just it's position.
+      node_t* p_first        = p_first_before->next;
+      node_t* p_final        = p_first_before;
 
       // Find the last node that will be moved.
       while (p_final->next != p_last)
@@ -1191,7 +1197,7 @@ namespace etl
         return;
       }
 
-      node_t* last = get_head();
+      node_t* last    = get_head();
       node_t* current = last->next;
 
       while (current != ETL_NULLPTR)
@@ -1269,12 +1275,12 @@ namespace etl
         p_head = before_begin();
         p_tail = before_begin();
 
-        number_of_merges = 0;  // Count the number of merges we do in this pass.
+        number_of_merges = 0; // Count the number of merges we do in this pass.
 
         while (p_left != end())
         {
-          ++number_of_merges;  // There exists a merge to be done.
-          p_right = p_left;
+          ++number_of_merges; // There exists a merge to be done.
+          p_right   = p_left;
           left_size = 0;
 
           // Step 'list_size' places along from left
@@ -1313,7 +1319,8 @@ namespace etl
             }
             else if (!compare(*p_right, *p_left))
             {
-              // First node of left is lower or same. The node must come from left.
+              // First node of left is lower or same. The node must come from
+              // left.
               p_node = p_left;
               ++p_left;
               --left_size;
@@ -1347,7 +1354,7 @@ namespace etl
         }
 
         // If we have done only one merge, we're finished.
-        if (number_of_merges <= 1)   // Allow for number_of_merges == 0, the empty head case
+        if (number_of_merges <= 1) // Allow for number_of_merges == 0, the empty head case
         {
           return;
         }
@@ -1362,7 +1369,7 @@ namespace etl
     //*************************************************************************
     void remove(const T& value)
     {
-      iterator i_item = begin();
+      iterator i_item      = begin();
       iterator i_last_item = before_begin();
 
       while (i_item != end())
@@ -1385,7 +1392,7 @@ namespace etl
     template <typename TPredicate>
     void remove_if(TPredicate predicate)
     {
-      iterator i_item = begin();
+      iterator i_item      = begin();
       iterator i_last_item = before_begin();
 
       while (i_item != end())
@@ -1405,7 +1412,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    iforward_list& operator = (const iforward_list& rhs)
+    iforward_list& operator=(const iforward_list& rhs)
     {
       if (&rhs != this)
       {
@@ -1419,7 +1426,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    iforward_list& operator = (iforward_list&& rhs)
+    iforward_list& operator=(iforward_list&& rhs)
     {
       move_container(etl::move(rhs));
 
@@ -1541,7 +1548,7 @@ namespace etl
               ++first;
               join(p_last_node, &data_node);
               data_node.next = ETL_NULLPTR;
-              p_last_node = &data_node;
+              p_last_node    = &data_node;
             }
 
             rhs.initialise();
@@ -1629,15 +1636,15 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_FORWARD_LIST) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~iforward_list()
-    {
-    }
+
+    virtual ~iforward_list() {}
 #else
+
   protected:
-    ~iforward_list()
-    {
-    }
+
+    ~iforward_list() {}
 #endif
 
   private:
@@ -1743,7 +1750,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    forward_list& operator = (const forward_list& rhs)
+    forward_list& operator=(const forward_list& rhs)
     {
       if (&rhs != this)
       {
@@ -1757,9 +1764,8 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    forward_list& operator = (forward_list&& rhs)
+    forward_list& operator=(forward_list&& rhs)
     {
-
       this->move_container(etl::move(rhs));
 
       return *this;
@@ -1780,7 +1786,7 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
-  forward_list(T...) ->forward_list<typename etl::common_type_t<T...>, sizeof...(T)>;
+  forward_list(T...) -> forward_list<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
@@ -1790,7 +1796,7 @@ namespace etl
   template <typename... T>
   constexpr auto make_forward_list(T&&... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
   {
-    return { etl::forward<T>(t)... };
+    return {etl::forward<T>(t)...};
   }
 #endif
 
@@ -1889,7 +1895,8 @@ namespace etl
     /// Construct from range.
     //*************************************************************************
     template <typename TIterator>
-    forward_list_ext(TIterator first, TIterator last, etl::ipool& node_pool, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
+    forward_list_ext(TIterator first, TIterator last, etl::ipool& node_pool,
+                     typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
     {
       this->assign(first, last);
@@ -1917,7 +1924,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    forward_list_ext& operator = (const forward_list_ext& rhs)
+    forward_list_ext& operator=(const forward_list_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -1931,7 +1938,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    forward_list_ext& operator = (forward_list_ext&& rhs)
+    forward_list_ext& operator=(forward_list_ext&& rhs)
     {
       this->move_container(etl::move(rhs));
 
@@ -1969,10 +1976,9 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>.
   //*************************************************************************
   template <typename T>
-  bool operator ==(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
+  bool operator==(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
-    return (lhs.size() == rhs.size()) &&
-      etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
   //*************************************************************************
@@ -1982,7 +1988,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>.
   //*************************************************************************
   template <typename T>
-  bool operator !=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
+  bool operator!=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -1991,11 +1997,12 @@ namespace etl
   /// Less than operator.
   ///\param lhs Reference to the first forward_list.
   ///\param rhs Reference to the second forward_list.
-  ///\return <b>true</b> if the first forward_list is lexicographically less than the
+  ///\return <b>true</b> if the first forward_list is lexicographically less
+  /// than the
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename T>
-  bool operator <(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
+  bool operator<(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -2004,11 +2011,12 @@ namespace etl
   /// Greater than operator.
   ///\param lhs Reference to the first forward_list.
   ///\param rhs Reference to the second forward_list.
-  ///\return <b>true</b> if the first forward_list is lexicographically greater than the
+  ///\return <b>true</b> if the first forward_list is lexicographically greater
+  /// than the
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename T>
-  bool operator >(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
+  bool operator>(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2017,11 +2025,12 @@ namespace etl
   /// Less than or equal operator.
   ///\param lhs Reference to the first forward_list.
   ///\param rhs Reference to the second forward_list.
-  ///\return <b>true</b> if the first forward_list is lexicographically less than or equal
+  ///\return <b>true</b> if the first forward_list is lexicographically less
+  /// than or equal
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename T>
-  bool operator <=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
+  bool operator<=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2030,15 +2039,16 @@ namespace etl
   /// Greater than or equal operator.
   ///\param lhs Reference to the first forward_list.
   ///\param rhs Reference to the second forward_list.
-  ///\return <b>true</b> if the first forward_list is lexicographically greater than or
+  ///\return <b>true</b> if the first forward_list is lexicographically greater
+  /// than or
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename T>
-  bool operator >=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
+  bool operator>=(const etl::iforward_list<T>& lhs, const etl::iforward_list<T>& rhs)
   {
     return !(lhs < rhs);
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

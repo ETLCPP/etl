@@ -34,8 +34,8 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "type_traits.h"
 #include "static_assert.h"
+#include "type_traits.h"
 #include "utility.h"
 
 namespace etl
@@ -131,7 +131,7 @@ namespace etl
     struct right_spec
     {
     };
-  }
+  } // namespace private_basic_format_spec
 
   //***************************************************************************
   // Stream formatting manipulators.
@@ -222,14 +222,8 @@ namespace etl
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec(uint_least8_t base__,
-                                    uint_least8_t width__,
-                                    uint_least8_t precision__,
-                                    bool upper_case__,
-                                    bool left_justified__,
-                                    bool boolalpha__,
-                                    bool show_base__,
-                                    typename TString::value_type fill__) ETL_NOEXCEPT
+    ETL_CONSTEXPR basic_format_spec(uint_least8_t base__, uint_least8_t width__, uint_least8_t precision__, bool upper_case__, bool left_justified__,
+                                bool boolalpha__, bool show_base__, typename TString::value_type fill__) ETL_NOEXCEPT
       : base_(base__)
       , width_(width__)
       , precision_(precision__)
@@ -400,7 +394,7 @@ namespace etl
     //***************************************************************************
     /// Gets the width.
     //***************************************************************************
-    ETL_CONSTEXPR uint32_t get_width() const  ETL_NOEXCEPT
+    ETL_CONSTEXPR uint32_t get_width() const ETL_NOEXCEPT
     {
       return width_;
     }
@@ -570,36 +564,32 @@ namespace etl
     //***************************************************************************
     /// Equality operator.
     //***************************************************************************
-    ETL_CONSTEXPR friend bool operator ==(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    ETL_CONSTEXPR friend bool operator==(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
-      return (lhs.base_ == rhs.base_) &&
-             (lhs.width_ == rhs.width_) &&
-             (lhs.precision_ == rhs.precision_) &&
-             (lhs.upper_case_ == rhs.upper_case_) &&
-             (lhs.left_justified_ == rhs.left_justified_) &&
-             (lhs.boolalpha_ == rhs.boolalpha_) &&
-             (lhs.show_base_ == rhs.show_base_) &&
-             (lhs.fill_ == rhs.fill_);
+      return (lhs.base_ == rhs.base_) && (lhs.width_ == rhs.width_) && (lhs.precision_ == rhs.precision_) && (lhs.upper_case_ == rhs.upper_case_)
+             && (lhs.left_justified_ == rhs.left_justified_) && (lhs.boolalpha_ == rhs.boolalpha_) && (lhs.show_base_ == rhs.show_base_)
+             && (lhs.fill_ == rhs.fill_);
     }
 
     //***************************************************************************
     /// Inequality operator.
     //***************************************************************************
-    ETL_CONSTEXPR friend bool operator !=(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    ETL_CONSTEXPR friend bool operator!=(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
       return !(lhs == rhs);
     }
 
   private:
-    uint_least8_t base_;
-    uint_least8_t width_;
-    uint_least8_t precision_;
-    bool upper_case_;
-    bool left_justified_;
-    bool boolalpha_;
-    bool show_base_;
+
+    uint_least8_t                base_;
+    uint_least8_t                width_;
+    uint_least8_t                precision_;
+    bool                         upper_case_;
+    bool                         left_justified_;
+    bool                         boolalpha_;
+    bool                         show_base_;
     typename TString::value_type fill_;
   };
-}
+} // namespace etl
 
 #endif

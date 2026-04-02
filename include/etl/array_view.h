@@ -32,18 +32,18 @@ SOFTWARE.
 #define ETL_ARRAY_VIEW_INCLUDED
 
 #include "platform.h"
-#include "memory.h"
+#include "algorithm.h"
 #include "array.h"
-#include "iterator.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "nullptr.h"
 #include "hash.h"
-#include "algorithm.h"
+#include "iterator.h"
+#include "memory.h"
+#include "nullptr.h"
 #include "type_traits.h"
 
 #if ETL_USING_STL && ETL_USING_CPP11
-#include <array>
+  #include <array>
 #endif
 
 ///\defgroup array array
@@ -114,22 +114,22 @@ namespace etl
   {
   public:
 
-    typedef T        value_type;
-    typedef size_t   size_type;
-    typedef const T& const_reference;
-    typedef const T* const_pointer;
-    typedef const T* const_iterator;
+    typedef T                                            value_type;
+    typedef size_t                                       size_type;
+    typedef const T&                                     const_reference;
+    typedef const T*                                     const_pointer;
+    typedef const T*                                     const_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
 #if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
-    typedef T* pointer;
-    typedef T& reference;
-    typedef T* iterator;
+    typedef T*                                     pointer;
+    typedef T&                                     reference;
+    typedef T*                                     iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator> reverse_iterator;
 #else
-    typedef const_pointer   pointer;
-    typedef const_reference reference;
-    typedef const_pointer   iterator;
+    typedef const_pointer          pointer;
+    typedef const_reference        reference;
+    typedef const_pointer          iterator;
     typedef const_reverse_iterator reverse_iterator;
 #endif
 
@@ -137,8 +137,8 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR array_view() ETL_NOEXCEPT
-      : mbegin(ETL_NULLPTR),
-        mend(ETL_NULLPTR)
+      : mbegin(ETL_NULLPTR)
+      , mend(ETL_NULLPTR)
     {
     }
 
@@ -146,7 +146,8 @@ namespace etl
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t Size, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template < typename U, size_t Size,
+               typename = typename etl::enable_if< etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR array_view(etl::array<U, Size>& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
@@ -156,7 +157,8 @@ namespace etl
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t Size, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template < typename U, size_t Size,
+               typename = typename etl::enable_if< etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR array_view(const etl::array<U, Size>& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
@@ -167,7 +169,9 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t Size>
-    ETL_CONSTEXPR array_view(etl::array<U, Size>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
+    ETL_CONSTEXPR array_view(
+      etl::array<U, Size>& a,
+      typename etl::enable_if< etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {
@@ -177,7 +181,9 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t Size>
-    ETL_CONSTEXPR array_view(const etl::array<U, Size>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
+    ETL_CONSTEXPR array_view(
+      const etl::array<U, Size>& a,
+      typename etl::enable_if< etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {
@@ -188,7 +194,8 @@ namespace etl
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t Size, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template < typename U, size_t Size,
+               typename = typename etl::enable_if< etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR array_view(std::array<U, Size>& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
@@ -198,7 +205,8 @@ namespace etl
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t Size, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template < typename U, size_t Size,
+               typename = typename etl::enable_if< etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR array_view(const std::array<U, Size>& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
@@ -211,10 +219,12 @@ namespace etl
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
-                                                                      !etl::is_array<etl::remove_reference_t<TContainer>>::value &&
-                                                                      etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
-      ETL_CONSTEXPR array_view(TContainer&& a) ETL_NOEXCEPT
+    template < typename TContainer,
+               typename = typename etl::enable_if<
+                 !etl::is_pointer<etl::remove_reference_t<TContainer>>::value && !etl::is_array<etl::remove_reference_t<TContainer>>::value
+                   && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t< TContainer>::value_type>>::value,
+                 void>::type>
+    ETL_CONSTEXPR array_view(TContainer&& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {
@@ -225,9 +235,12 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    ETL_CONSTEXPR array_view(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
-                                                                    !etl::is_array<TContainer>::value &&
-                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
+    ETL_CONSTEXPR array_view(TContainer& a,
+                         typename etl::enable_if<
+                           !etl::is_pointer< typename etl::remove_reference<TContainer>::type>::value && !etl::is_array<TContainer>::value
+                             && etl::is_same< typename etl::remove_cv<T>::type,
+                                              typename etl::remove_cv<typename etl::remove_reference< TContainer>::type::value_type>::type>::value,
+                           void>::type* = 0) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {
@@ -238,9 +251,12 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    ETL_CONSTEXPR array_view(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
-                                                                          !etl::is_array<TContainer>::value &&
-                                                                          etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
+    ETL_CONSTEXPR array_view(const TContainer& a,
+                         typename etl::enable_if<
+                           !etl::is_pointer< typename etl::remove_reference<TContainer>::type>::value && !etl::is_array<TContainer>::value
+                             && etl::is_same< typename etl::remove_cv<T>::type,
+                                              typename etl::remove_cv<typename etl::remove_reference< TContainer>::type::value_type>::type>::value,
+                           void>::type* = 0) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {
@@ -252,29 +268,28 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR array_view(const TIterator begin_, const TIterator end_) ETL_NOEXCEPT
-      : mbegin(etl::to_address(begin_)),
-        mend(etl::to_address(begin_) + etl::distance(begin_, end_))
+      : mbegin(etl::to_address(begin_))
+      , mend(etl::to_address(begin_) + etl::distance(begin_, end_))
     {
     }
 
     //*************************************************************************
     /// Construct from iterator and size
     //*************************************************************************
-    template <typename TIterator,
-              typename TSize>
+    template <typename TIterator, typename TSize>
     ETL_CONSTEXPR array_view(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
-      : mbegin(etl::to_address(begin_)),
-        mend(etl::to_address(begin_) + size_)
+      : mbegin(etl::to_address(begin_))
+      , mend(etl::to_address(begin_) + size_)
     {
     }
 
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<size_t Array_Size>
-    ETL_CONSTEXPR array_view(T(&begin_)[Array_Size]) ETL_NOEXCEPT
-      : mbegin(begin_),
-        mend(begin_ + Array_Size)
+    template <size_t Array_Size>
+    ETL_CONSTEXPR array_view(T (&begin_)[Array_Size]) ETL_NOEXCEPT
+      : mbegin(begin_)
+      , mend(begin_ + Array_Size)
     {
     }
 
@@ -282,14 +297,15 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT
-      : mbegin(other.mbegin),
-        mend(other.mend)
+      : mbegin(other.mbegin)
+      , mend(other.mend)
     {
     }
 
     //*************************************************************************
     /// Returns a reference to the first element.
-    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if
+    /// the view is empty.
     //*************************************************************************
     reference front()
     {
@@ -299,7 +315,8 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the first element.
-    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if
+    /// the view is empty.
     //*************************************************************************
     const_reference front() const
     {
@@ -309,7 +326,8 @@ namespace etl
 
     //*************************************************************************
     /// Returns a reference to the last element.
-    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if
+    /// the view is empty.
     //*************************************************************************
     reference back()
     {
@@ -319,7 +337,8 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the last element.
-    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if the view is empty.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_empty if
+    /// the view is empty.
     //*************************************************************************
     const_reference back() const
     {
@@ -486,8 +505,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterator and size.
     //*************************************************************************
-    template <typename TIterator,
-              typename TSize>
+    template <typename TIterator, typename TSize>
     void assign(const TIterator begin_, const TSize size_)
     {
       mbegin = etl::to_address(begin_);
@@ -497,7 +515,8 @@ namespace etl
 #if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
     //*************************************************************************
     /// Returns a reference to the indexed value.
-    /// If asserts or exceptions are enabled, throws an etl::array_view_bounds if the index is out of bounds.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_bounds
+    /// if the index is out of bounds.
     //*************************************************************************
     reference operator[](const size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
@@ -509,7 +528,8 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
-    /// If asserts or exceptions are enabled, throws an etl::array_view_bounds if the index is out of bounds.
+    /// If asserts or exceptions are enabled, throws an etl::array_view_bounds
+    /// if the index is out of bounds.
     //*************************************************************************
     const_reference operator[](const size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
@@ -556,10 +576,10 @@ namespace etl
     //*************************************************************************
     void remove_prefix(const size_type n) ETL_NOEXCEPT
     {
-		if (n < size())
-			mbegin += n;
-		else
-			mbegin = mend;
+      if (n < size())
+        mbegin += n;
+      else
+        mbegin = mend;
     }
 
     //*************************************************************************
@@ -567,10 +587,10 @@ namespace etl
     //*************************************************************************
     void remove_suffix(const size_type n) ETL_NOEXCEPT
     {
-		if (n < size())
-			mend -= n;
-		else
-			mend = mbegin;
+      if (n < size())
+        mend -= n;
+      else
+        mend = mbegin;
     }
 
     //*************************************************************************
@@ -584,16 +604,15 @@ namespace etl
     //*************************************************************************
     /// Equality for array views.
     //*************************************************************************
-    friend bool operator == (const array_view<T>& lhs, const array_view<T>& rhs)
+    friend bool operator==(const array_view<T>& lhs, const array_view<T>& rhs)
     {
-      return (lhs.size() == rhs.size()) &&
-             etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+      return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************
     /// Inequality for array views.
     //*************************************************************************
-    friend bool operator != (const array_view<T>& lhs, const array_view<T>& rhs)
+    friend bool operator!=(const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return !(lhs == rhs);
     }
@@ -601,7 +620,7 @@ namespace etl
     //*************************************************************************
     /// Less-than for array views.
     //*************************************************************************
-    friend bool operator < (const array_view<T>& lhs, const array_view<T>& rhs)
+    friend bool operator<(const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
@@ -609,7 +628,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than for array views.
     //*************************************************************************
-    friend bool operator > (const array_view<T>& lhs, const array_view<T>& rhs)
+    friend bool operator>(const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return rhs < lhs;
     }
@@ -617,7 +636,7 @@ namespace etl
     //*************************************************************************
     /// Less-than-equal for array views.
     //*************************************************************************
-    friend bool operator <= (const array_view<T>& lhs, const array_view<T>& rhs)
+    friend bool operator<=(const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return !(lhs > rhs);
     }
@@ -625,7 +644,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than-equal for array views.
     //*************************************************************************
-    friend bool operator >= (const array_view<T>& lhs, const array_view<T>& rhs)
+    friend bool operator>=(const array_view<T>& lhs, const array_view<T>& rhs)
     {
       return !(lhs < rhs);
     }
@@ -641,18 +660,14 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17
   template <typename TArray>
-  array_view(TArray& a) 
-    -> array_view<typename TArray::value_type>;
+  array_view(TArray& a) -> array_view<typename TArray::value_type>;
 
   template <typename TIterator>
-  array_view(const TIterator begin_, const TIterator end_)
-    -> array_view<etl::remove_pointer_t<TIterator>>;
+  array_view(const TIterator begin_, const TIterator end_) -> array_view<etl::remove_pointer_t<TIterator>>;
 
-  template <typename TIterator,
-            typename TSize>
-  array_view(const TIterator begin_, const TSize size_)
-    -> array_view<etl::remove_pointer_t<TIterator>>;
-#endif  
+  template <typename TIterator, typename TSize>
+  array_view(const TIterator begin_, const TSize size_) -> array_view<etl::remove_pointer_t<TIterator>>;
+#endif
 
   //*************************************************************************
   /// Hash function.
@@ -668,7 +683,7 @@ namespace etl
     }
   };
 #endif
-}
+} // namespace etl
 
 //*************************************************************************
 /// Swaps the values.

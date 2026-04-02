@@ -1,5 +1,5 @@
 //*************************************************************************
-///Decode from Base64 from and to pointer/length
+/// Decode from Base64 from and to pointer/length
 //*************************************************************************///\file
 
 /******************************************************************************
@@ -29,16 +29,16 @@ SOFTWARE.
 #define ETL_BASE64_DECODER_INCLUDED
 
 #include "platform.h"
-#include "static_assert.h"
-#include "error_handler.h"
-#include "type_traits.h"
-#include "binary.h"
 #include "algorithm.h"
+#include "binary.h"
+#include "delegate.h"
+#include "enum_type.h"
+#include "error_handler.h"
 #include "integral_limits.h"
 #include "iterator.h"
-#include "enum_type.h"
-#include "delegate.h"
 #include "span.h"
+#include "static_assert.h"
+#include "type_traits.h"
 
 #include "base64.h"
 
@@ -48,11 +48,12 @@ SOFTWARE.
   #include <iterator>
 #endif
 
-#define ETL_IS_8_BIT_INTEGRAL(Type) (etl::is_integral<typename etl::remove_cv<Type>::type>::value && \
-                                     (etl::integral_limits<typename etl::remove_cv<Type>::type>::bits == 8U))
+#define ETL_IS_8_BIT_INTEGRAL(Type) \
+  (etl::is_integral<typename etl::remove_cv<Type>::type>::value && (etl::integral_limits<typename etl::remove_cv<Type>::type>::bits == 8U))
 
-#define ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(Type) (etl::is_integral<typename etl::iterator_traits<typename etl::remove_cv<Type>::type>::value_type>::value && \
-                                                   (etl::integral_limits<typename etl::iterator_traits<typename etl::remove_cv<Type>::type>::value_type>::bits == 8U))
+#define ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(Type)                                                            \
+  (etl::is_integral< typename etl::iterator_traits< typename etl::remove_cv<Type>::type>::value_type>::value \
+   && (etl::integral_limits< typename etl::iterator_traits< typename etl::remove_cv<Type>::type>::value_type>::bits == 8U))
 
 namespace etl
 {
@@ -70,8 +71,7 @@ namespace etl
     /// Decode to Base64
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
-    bool decode(T value)
+    ETL_CONSTEXPR14 bool decode(T value)
     {
       ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(T), "Input type must be an 8 bit integral");
 
@@ -101,8 +101,7 @@ namespace etl
     /// Decode from Base64
     //*************************************************************************
     template <typename TInputIterator>
-    ETL_CONSTEXPR14
-    bool decode(TInputIterator input_begin, TInputIterator input_end)
+    ETL_CONSTEXPR14 bool decode(TInputIterator input_begin, TInputIterator input_end)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
 
@@ -121,8 +120,7 @@ namespace etl
     /// Decode from Base64
     //*************************************************************************
     template <typename TInputIterator>
-    ETL_CONSTEXPR14
-    bool decode(TInputIterator input_begin, size_t input_length)
+    ETL_CONSTEXPR14 bool decode(TInputIterator input_begin, size_t input_length)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
 
@@ -141,8 +139,7 @@ namespace etl
     /// Decode from Base64
     //*************************************************************************
     template <typename TInputIterator>
-    ETL_CONSTEXPR14
-    bool decode_final(TInputIterator input_begin, TInputIterator input_end)
+    ETL_CONSTEXPR14 bool decode_final(TInputIterator input_begin, TInputIterator input_end)
     {
       return decode(input_begin, input_end) && flush();
     }
@@ -151,8 +148,7 @@ namespace etl
     /// Decode from Base64
     //*************************************************************************
     template <typename TInputIterator>
-    ETL_CONSTEXPR14
-    bool decode_final(TInputIterator input_begin, size_t input_length)
+    ETL_CONSTEXPR14 bool decode_final(TInputIterator input_begin, size_t input_length)
     {
       return decode(input_begin, input_length) && flush();
     }
@@ -160,8 +156,7 @@ namespace etl
     //*************************************************************************
     /// Flush any remaining data to the output.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    bool flush()
+    ETL_CONSTEXPR14 bool flush()
     {
       // Encode any remaining input data.
       bool success = decode_block();
@@ -193,32 +188,28 @@ namespace etl
     //*************************************************************************
     /// Reset the encoder.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    void restart()
+    ETL_CONSTEXPR14 void restart()
     {
       reset_input_buffer();
       reset_output_buffer();
-      overflow_detected = false;
+      overflow_detected     = false;
       invalid_data_detected = false;
-      padding_received = false;
+      padding_received      = false;
     }
 
     //*************************************************************************
     /// Returns the beginning of the output buffer.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    const unsigned char* begin() const
+    ETL_NODISCARD ETL_CONSTEXPR14 const unsigned char* begin() const
     {
       return p_output_buffer;
     }
 
     //*************************************************************************
-    /// This only returns a useful value if a callback has not been set or called.
+    /// This only returns a useful value if a callback has not been set or
+    /// called.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    const unsigned char* end() const
+    ETL_NODISCARD ETL_CONSTEXPR14 const unsigned char* end() const
     {
       return p_output_buffer + output_buffer_length;
     }
@@ -226,30 +217,26 @@ namespace etl
     //*************************************************************************
     /// Returns the beginning of the output buffer.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    const unsigned char* cbegin() const
+    ETL_NODISCARD ETL_CONSTEXPR14 const unsigned char* cbegin() const
     {
       return p_output_buffer;
     }
 
     //*************************************************************************
-    /// This only returns a useful value if a callback has not been set or called.
+    /// This only returns a useful value if a callback has not been set or
+    /// called.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    const unsigned char* cend() const
+    ETL_NODISCARD ETL_CONSTEXPR14 const unsigned char* cend() const
     {
       return p_output_buffer + output_buffer_length;
     }
 
     //*************************************************************************
     /// Returns the size of the output buffer.
-    /// This only returns a useful value if a callback has not been set or called.
+    /// This only returns a useful value if a callback has not been set or
+    /// called.
     //*************************************************************************
-    ETL_NODISCARD
-      ETL_CONSTEXPR14
-      size_t size() const
+    ETL_NODISCARD ETL_CONSTEXPR14 size_t size() const
     {
       return output_buffer_length;
     }
@@ -257,20 +244,17 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum size of the output buffer.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    size_t buffer_size() const
+    ETL_NODISCARD ETL_CONSTEXPR14 size_t buffer_size() const
     {
       return output_buffer_max_size;
     }
 
     //*************************************************************************
     /// Get a span of the output data.
-    /// This only returns a useful span if a callback has not been set or called.
+    /// This only returns a useful span if a callback has not been set or
+    /// called.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    span_type span() const
+    ETL_NODISCARD ETL_CONSTEXPR14 span_type span() const
     {
       return span_type(begin(), end());
     }
@@ -278,9 +262,7 @@ namespace etl
     //*************************************************************************
     /// Returns true if the output buffer has overflowed
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool overflow() const
+    ETL_NODISCARD ETL_CONSTEXPR14 bool overflow() const
     {
       return overflow_detected;
     }
@@ -288,9 +270,7 @@ namespace etl
     //*************************************************************************
     /// Returns true if an invalid character was detected.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool invalid_data() const
+    ETL_NODISCARD ETL_CONSTEXPR14 bool invalid_data() const
     {
       return invalid_data_detected;
     }
@@ -298,9 +278,7 @@ namespace etl
     //*************************************************************************
     /// Returns true if an error was detected.
     //*************************************************************************
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool error() const
+    ETL_NODISCARD ETL_CONSTEXPR14 bool error() const
     {
       return overflow() || invalid_data();
     }
@@ -310,12 +288,8 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    ETL_CONSTEXPR14
-    ibase64_decoder(const char*    encoder_table_,
-                    bool           use_padding_,
-                    unsigned char* p_output_buffer_,
-                    size_t         ouput_buffer_max_size_,
-                    callback_type  callback_)
+    ETL_CONSTEXPR14 ibase64_decoder(const char* encoder_table_, bool use_padding_, unsigned char* p_output_buffer_, size_t ouput_buffer_max_size_,
+                              callback_type callback_)
       : base64(encoder_table_, use_padding_)
       , input_buffer()
       , input_buffer_length(0)
@@ -333,9 +307,7 @@ namespace etl
     /// Calculates the minimum buffer size required to decode from Base64
     //*************************************************************************
     ETL_NODISCARD
-    static
-    ETL_CONSTEXPR14
-    size_t decoded_size_from_valid_input_length(size_t input_length)
+    static ETL_CONSTEXPR14 size_t decoded_size_from_valid_input_length(size_t input_length)
     {
       return input_length - (input_length / 4U);
     }
@@ -343,14 +315,13 @@ namespace etl
   private:
 
     //*************************************************************************
-    // Translates a sextet into an index 
+    // Translates a sextet into an index
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
-    uint32_t get_index_from_sextet(T sextet)
+    ETL_CONSTEXPR14 uint32_t get_index_from_sextet(T sextet)
     {
       const char* encoder_table_end = encoder_table + 64;
-      const char* p_sextet = etl::find(encoder_table, encoder_table_end, static_cast<char>(sextet));
+      const char* p_sextet          = etl::find(encoder_table, encoder_table_end, static_cast<char>(sextet));
 
       if (p_sextet != encoder_table_end)
       {
@@ -369,8 +340,7 @@ namespace etl
     template <typename T>
     ETL_NODISCARD
     static
-    ETL_CONSTEXPR14
-    T padding()
+      ETL_CONSTEXPR14 T padding()
     {
       return static_cast<T>('=');
     }
@@ -378,51 +348,50 @@ namespace etl
     //*************************************************************************
     /// Decode one block of data.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    bool decode_block()
+    ETL_CONSTEXPR14 bool decode_block()
     {
       switch (input_buffer_length)
       {
         // Only triggered on call to flush().
         case 2:
-        {
-          uint32_t  sextets = (get_index_from_sextet(input_buffer[0]) << 6);
-          sextets = sextets | (get_index_from_sextet(input_buffer[1]));
-          push_to_output_buffer((sextets >> 4) & 0xFF);
-          break;
-        }
+          {
+            uint32_t sextets = (get_index_from_sextet(input_buffer[0]) << 6);
+            sextets          = sextets | (get_index_from_sextet(input_buffer[1]));
+            push_to_output_buffer((sextets >> 4) & 0xFF);
+            break;
+          }
 
         // Only triggered on call to flush().
         case 3:
-        {
-          uint32_t  sextets = (get_index_from_sextet(input_buffer[0]) << 12);
-          sextets = sextets | (get_index_from_sextet(input_buffer[1]) << 6);
-          sextets = sextets | (get_index_from_sextet(input_buffer[2]));
-          push_to_output_buffer((sextets >> 10) & 0xFF);
-          push_to_output_buffer((sextets >> 2) & 0xFF);
-          break;
-        }
+          {
+            uint32_t sextets = (get_index_from_sextet(input_buffer[0]) << 12);
+            sextets          = sextets | (get_index_from_sextet(input_buffer[1]) << 6);
+            sextets          = sextets | (get_index_from_sextet(input_buffer[2]));
+            push_to_output_buffer((sextets >> 10) & 0xFF);
+            push_to_output_buffer((sextets >> 2) & 0xFF);
+            break;
+          }
 
         // Only triggered on call to decode().
         case 4:
-        {
-          // Read in four sextets
-          uint32_t  sextets = (get_index_from_sextet(input_buffer[0]) << 18);
-          sextets = sextets | (get_index_from_sextet(input_buffer[1]) << 12);
-          sextets = sextets | (get_index_from_sextet(input_buffer[2]) << 6);
-          sextets = sextets | (get_index_from_sextet(input_buffer[3]));
+          {
+            // Read in four sextets
+            uint32_t sextets = (get_index_from_sextet(input_buffer[0]) << 18);
+            sextets          = sextets | (get_index_from_sextet(input_buffer[1]) << 12);
+            sextets          = sextets | (get_index_from_sextet(input_buffer[2]) << 6);
+            sextets          = sextets | (get_index_from_sextet(input_buffer[3]));
 
-          // Write out three octets
-          push_to_output_buffer((sextets >> 16) & 0xFF);
-          push_to_output_buffer((sextets >> 8) & 0xFF);
-          push_to_output_buffer((sextets >> 0) & 0xFF);
-          break;
-        }
+            // Write out three octets
+            push_to_output_buffer((sextets >> 16) & 0xFF);
+            push_to_output_buffer((sextets >> 8) & 0xFF);
+            push_to_output_buffer((sextets >> 0) & 0xFF);
+            break;
+          }
 
         default:
-        {
-          break;
-        }
+          {
+            break;
+          }
       }
 
       ETL_ASSERT(!invalid_data_detected, ETL_ERROR(etl::base64_invalid_data));
@@ -434,8 +403,7 @@ namespace etl
     //*************************************************************************
     // Push to the output buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    void push_to_output_buffer(unsigned char c)
+    ETL_CONSTEXPR14 void push_to_output_buffer(unsigned char c)
     {
       if (output_buffer_length < output_buffer_max_size)
       {
@@ -448,28 +416,25 @@ namespace etl
     }
 
     //*************************************************************************
-    // 
+    //
     //*************************************************************************
-    ETL_CONSTEXPR14
-    bool output_buffer_is_full() const
+    ETL_CONSTEXPR14 bool output_buffer_is_full() const
     {
       return output_buffer_length == output_buffer_max_size;
     }
 
     //*************************************************************************
-    // 
+    //
     //*************************************************************************
-    ETL_CONSTEXPR14
-    bool output_buffer_is_empty() const
+    ETL_CONSTEXPR14 bool output_buffer_is_empty() const
     {
       return output_buffer_length == 0;
     }
 
     //*************************************************************************
-    // 
+    //
     //*************************************************************************
-    ETL_CONSTEXPR14
-    void reset_output_buffer()
+    ETL_CONSTEXPR14 void reset_output_buffer()
     {
       output_buffer_length = 0;
     }
@@ -478,8 +443,7 @@ namespace etl
     // Push to the input buffer.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14
-    void push_to_input_buffer(T value)
+    ETL_CONSTEXPR14 void push_to_input_buffer(T value)
     {
       if (value == padding<T>())
       {
@@ -500,19 +464,17 @@ namespace etl
     }
 
     //*************************************************************************
-    // 
+    //
     //*************************************************************************
-    ETL_CONSTEXPR14
-    bool input_buffer_is_full() const
+    ETL_CONSTEXPR14 bool input_buffer_is_full() const
     {
       return input_buffer_length == 4U;
     }
 
     //*************************************************************************
-    // 
+    //
     //*************************************************************************
-    ETL_CONSTEXPR14
-    void reset_input_buffer()
+    ETL_CONSTEXPR14 void reset_input_buffer()
     {
       input_buffer_length = 0;
     }
@@ -544,13 +506,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-2152 constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc2152_decoder()
-      : ibase64_decoder(etl::base64::character_set_1(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_type())
+    ETL_CONSTEXPR14 base64_rfc2152_decoder()
+      : ibase64_decoder(etl::base64::character_set_1(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_type())
       , output_buffer()
     {
     }
@@ -558,13 +515,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-2152 constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc2152_decoder(callback_type callback_)
-      : ibase64_decoder(etl::base64::character_set_1(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_)
+    ETL_CONSTEXPR14 base64_rfc2152_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_1(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_)
       , output_buffer()
     {
     }
@@ -574,8 +526,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     static
-    ETL_CONSTEXPR14
-    size_t safe_output_buffer_size(size_t input_length)
+      ETL_CONSTEXPR14 size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -599,13 +550,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-3501 constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc3501_decoder()
-      : ibase64_decoder(etl::base64::character_set_3(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_type())
+    ETL_CONSTEXPR14 base64_rfc3501_decoder()
+      : ibase64_decoder(etl::base64::character_set_3(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_type())
       , output_buffer()
     {
     }
@@ -613,13 +559,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-3501 constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc3501_decoder(callback_type callback_)
-      : ibase64_decoder(etl::base64::character_set_3(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_)
+    ETL_CONSTEXPR14 base64_rfc3501_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_3(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_)
       , output_buffer()
     {
     }
@@ -629,8 +570,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     static
-    ETL_CONSTEXPR14
-    size_t safe_output_buffer_size(size_t input_length)
+      ETL_CONSTEXPR14 size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -654,13 +594,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648 constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc4648_decoder()
-      : ibase64_decoder(etl::base64::character_set_1(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_type())
+    ETL_CONSTEXPR14 base64_rfc4648_decoder()
+      : ibase64_decoder(etl::base64::character_set_1(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_type())
       , output_buffer()
     {
     }
@@ -668,13 +603,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648 constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc4648_decoder(callback_type callback_)
-      : ibase64_decoder(etl::base64::character_set_1(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_)
+    ETL_CONSTEXPR14 base64_rfc4648_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_1(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_)
       , output_buffer()
     {
     }
@@ -683,9 +613,8 @@ namespace etl
     /// Calculate the required output encode buffer size.
     //*************************************************************************
     ETL_NODISCARD
-      static
-      ETL_CONSTEXPR14
-      size_t safe_output_buffer_size(size_t input_length)
+    static
+      ETL_CONSTEXPR14 size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -709,13 +638,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648-Padding constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc4648_padding_decoder()
-      : ibase64_decoder(etl::base64::character_set_1(),
-                        etl::base64::Padding::Use_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_type())
+    ETL_CONSTEXPR14 base64_rfc4648_padding_decoder()
+      : ibase64_decoder(etl::base64::character_set_1(), etl::base64::Padding::Use_Padding, output_buffer, Buffer_Size, callback_type())
       , output_buffer()
     {
     }
@@ -723,13 +647,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648-Padding constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc4648_padding_decoder(callback_type callback_)
-      : ibase64_decoder(etl::base64::character_set_1(),
-                        etl::base64::Padding::Use_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_)
+    ETL_CONSTEXPR14 base64_rfc4648_padding_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_1(), etl::base64::Padding::Use_Padding, output_buffer, Buffer_Size, callback_)
       , output_buffer()
     {
     }
@@ -739,8 +658,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     static
-    ETL_CONSTEXPR14
-    size_t safe_output_buffer_size(size_t input_length)
+      ETL_CONSTEXPR14 size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -764,13 +682,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648-Padding constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc4648_url_decoder()
-      : ibase64_decoder(etl::base64::character_set_2(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_type())
+    ETL_CONSTEXPR14 base64_rfc4648_url_decoder()
+      : ibase64_decoder(etl::base64::character_set_2(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_type())
       , output_buffer()
     {
     }
@@ -778,13 +691,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648-Padding constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-    base64_rfc4648_url_decoder(callback_type callback_)
-      : ibase64_decoder(etl::base64::character_set_2(),
-                        etl::base64::Padding::No_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_)
+    ETL_CONSTEXPR14 base64_rfc4648_url_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_2(), etl::base64::Padding::No_Padding, output_buffer, Buffer_Size, callback_)
       , output_buffer()
     {
     }
@@ -794,8 +702,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     static
-    ETL_CONSTEXPR14
-    size_t safe_output_buffer_size(size_t input_length)
+      ETL_CONSTEXPR14 size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -819,13 +726,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648-Padding constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-      base64_rfc4648_url_padding_decoder()
-      : ibase64_decoder(etl::base64::character_set_2(),
-                        etl::base64::Padding::Use_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_type())
+    ETL_CONSTEXPR14 base64_rfc4648_url_padding_decoder()
+      : ibase64_decoder(etl::base64::character_set_2(), etl::base64::Padding::Use_Padding, output_buffer, Buffer_Size, callback_type())
       , output_buffer()
     {
     }
@@ -833,13 +735,8 @@ namespace etl
     //*************************************************************************
     /// Base64 RFC-4648-Padding constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14
-      base64_rfc4648_url_padding_decoder(callback_type callback_)
-      : ibase64_decoder(etl::base64::character_set_2(),
-                        etl::base64::Padding::Use_Padding,
-                        output_buffer,
-                        Buffer_Size,
-                        callback_)
+    ETL_CONSTEXPR14 base64_rfc4648_url_padding_decoder(callback_type callback_)
+      : ibase64_decoder(etl::base64::character_set_2(), etl::base64::Padding::Use_Padding, output_buffer, Buffer_Size, callback_)
       , output_buffer()
     {
     }
@@ -849,8 +746,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     static
-    ETL_CONSTEXPR14
-    size_t safe_output_buffer_size(size_t input_length)
+      ETL_CONSTEXPR14 size_t safe_output_buffer_size(size_t input_length)
     {
       return ibase64_decoder::decoded_size_from_valid_input_length(input_length);
     }
@@ -860,7 +756,7 @@ namespace etl
     /// The internal output buffer.
     unsigned char output_buffer[Buffer_Size];
   };
-}
+} // namespace etl
 
 #undef ETL_IS_TYPE_8_BIT_INTEGRAL
 #undef ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL

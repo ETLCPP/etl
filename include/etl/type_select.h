@@ -30,9 +30,9 @@ SOFTWARE.
 #define ETL_TYPE_SELECT_INCLUDED
 
 #include "platform.h"
+#include "null_type.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "null_type.h"
 namespace etl
 {
 #if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
@@ -48,9 +48,7 @@ namespace etl
     template <size_t Id, size_t Index, typename T1, typename... TRest>
     struct type_select_helper
     {
-      using type = typename etl::conditional<Id == Index,
-                                             T1,
-                                             typename type_select_helper<Id, Index + 1, TRest...>::type>::type;
+      using type = typename etl::conditional< Id == Index, T1, typename type_select_helper<Id, Index + 1, TRest...>::type>::type;
     };
 
     //***********************************
@@ -78,11 +76,11 @@ namespace etl
   // Select type alias
   //***************************************************************************
   template <size_t Index, typename... TTypes>
-  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<Index>;
+  using type_select_t = typename etl::type_select<TTypes...>::template select_t<Index>;
 
 #else
-#include "private/type_select_cpp03.h"
+  #include "private/type_select_cpp03.h"
 #endif
-}
+} // namespace etl
 
 #endif

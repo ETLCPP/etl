@@ -28,47 +28,47 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/string_view.h"
+#include "etl/hash.h"
 #include "etl/string.h"
-#include "etl/wstring.h"
-#include "etl/u8string.h"
+#include "etl/string_view.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
-#include "etl/hash.h"
+#include "etl/u8string.h"
+#include "etl/wstring.h"
 
 #include <algorithm>
-#include <iterator>
-#include <string>
 #include <array>
+#include <iterator>
 #include <ostream>
+#include <string>
 
 namespace
 {
-  using View    = etl::string_view;
-  using WView   = etl::wstring_view;
+  using View  = etl::string_view;
+  using WView = etl::wstring_view;
 #if ETL_USING_CPP20
-  using U8View  = etl::u8string_view;
+  using U8View = etl::u8string_view;
 #endif
   using U16View = etl::u16string_view;
   using U32View = etl::u32string_view;
 
-  etl::string<11> etltext    = "Hello World";
-  std::string text           = "Hello World";
-  std::wstring wtext         = L"Hello World";
+  etl::string<11> etltext = "Hello World";
+  std::string     text    = "Hello World";
+  std::wstring    wtext   = L"Hello World";
 #if ETL_USING_CPP20
-  std::u8string u8text       = u8"Hello World";
+  std::u8string u8text = u8"Hello World";
 #endif
-  std::u16string u16text     = u"Hello World";
-  std::u32string u32text     = U"Hello World";
-  std::string text_smaller   = "Hello Worlc";
-  std::string text_shorter   = "Hello Worl";
-  std::string text_different = "Goodbye!!!!";
+  std::u16string u16text        = u"Hello World";
+  std::u32string u32text        = U"Hello World";
+  std::string    text_smaller   = "Hello Worlc";
+  std::string    text_shorter   = "Hello Worl";
+  std::string    text_different = "Goodbye!!!!";
 
-  constexpr char     cctext[]   = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
-  constexpr wchar_t  cwtext[]   = { L'H', L'e', L'l', L'l', L'o', L' ', L'W', L'o', L'r', L'l', L'd', L'\0' };
-  constexpr char16_t cu16text[] = { u'H', u'e', u'l', u'l', u'o', u' ', u'W', u'o', u'r', u'l', u'd', u'\0' };
-  constexpr char32_t cu32text[] = { U'H', U'e', U'l', U'l', U'o', U' ', U'W', U'o', U'r', U'l', U'd', U'\0' };
-  
+  constexpr char     cctext[]   = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0'};
+  constexpr wchar_t  cwtext[]   = {L'H', L'e', L'l', L'l', L'o', L' ', L'W', L'o', L'r', L'l', L'd', L'\0'};
+  constexpr char16_t cu16text[] = {u'H', u'e', u'l', u'l', u'o', u' ', u'W', u'o', u'r', u'l', u'd', u'\0'};
+  constexpr char32_t cu32text[] = {U'H', U'e', U'l', U'l', U'o', U' ', U'W', U'o', U'r', U'l', U'd', U'\0'};
+
   const char*     pctext   = cctext;
   const wchar_t*  pwtext   = cwtext;
   const char16_t* pu16text = cu16text;
@@ -212,9 +212,9 @@ namespace
       auto wview   = etl::make_string_view(L"Hello World");
       auto u16view = etl::make_string_view(u"Hello World");
       auto u32view = etl::make_string_view(U"Hello World");
-    
-      CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
-      CHECK(std::equal(wview.begin(),   wview.end(),   wtext.begin()));
+
+      CHECK(std::equal(cview.begin(), cview.end(), text.begin()));
+      CHECK(std::equal(wview.begin(), wview.end(), wtext.begin()));
       CHECK(std::equal(u16view.begin(), u16view.end(), u16text.begin()));
       CHECK(std::equal(u32view.begin(), u32view.end(), u32text.begin()));
     }
@@ -228,8 +228,8 @@ namespace
       constexpr auto u16view = etl::make_string_view(cu16text);
       constexpr auto u32view = etl::make_string_view(cu32text);
 
-      CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
-      CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
+      CHECK(std::equal(cview.begin(), cview.end(), text.begin()));
+      CHECK(std::equal(wview.begin(), wview.end(), text.begin()));
       CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
       CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
     }
@@ -238,9 +238,9 @@ namespace
     //*************************************************************************
     TEST(test_make_string_view_check_consistent_strings_from_arrays_of_char)
     {
-      char text_extra_nulls[10] = { 'H', 'e', 'l', 'l', 'o' };
-      char text_no_null[10]     = { 'H', 'e', 'l', 'l', 'o' };
-      std::string text_expected = "Hello";
+      char        text_extra_nulls[10] = {'H', 'e', 'l', 'l', 'o'};
+      char        text_no_null[10]     = {'H', 'e', 'l', 'l', 'o'};
+      std::string text_expected        = "Hello";
 
       auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
       auto view_no_null     = etl::make_string_view(text_no_null);
@@ -249,18 +249,18 @@ namespace
       CHECK_EQUAL(text_expected.size(), view_no_null.size());
 
       CHECK(std::equal(view_extra_nulls.begin(), view_extra_nulls.end(), text_expected.begin()));
-      CHECK(std::equal(view_no_null.begin(),     view_no_null.end(),     text_expected.begin()));
+      CHECK(std::equal(view_no_null.begin(), view_no_null.end(), text_expected.begin()));
     }
 
     //*************************************************************************
     TEST(test_make_string_view_check_consistent_strings_from_arrays_of_wchar_t)
     {
-      wchar_t text_extra_nulls[10] = { L'H', L'e', L'l', L'l', L'o' };
-      wchar_t text_no_null[10] = { L'H', L'e', L'l', L'l', L'o' };
-      std::wstring text_expected = L"Hello";
+      wchar_t      text_extra_nulls[10] = {L'H', L'e', L'l', L'l', L'o'};
+      wchar_t      text_no_null[10]     = {L'H', L'e', L'l', L'l', L'o'};
+      std::wstring text_expected        = L"Hello";
 
       auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
-      auto view_no_null = etl::make_string_view(text_no_null);
+      auto view_no_null     = etl::make_string_view(text_no_null);
 
       CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
       CHECK_EQUAL(text_expected.size(), view_no_null.size());
@@ -272,12 +272,12 @@ namespace
     //*************************************************************************
     TEST(test_make_string_view_check_consistent_strings_from_arrays_of_char16_t)
     {
-      char16_t text_extra_nulls[10] = { u'H', u'e', u'l', u'l', u'o' };
-      char16_t text_no_null[10] = { u'H', u'e', u'l', u'l', u'o' };
-      std::u16string text_expected = u"Hello";
+      char16_t       text_extra_nulls[10] = {u'H', u'e', u'l', u'l', u'o'};
+      char16_t       text_no_null[10]     = {u'H', u'e', u'l', u'l', u'o'};
+      std::u16string text_expected        = u"Hello";
 
       auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
-      auto view_no_null = etl::make_string_view(text_no_null);
+      auto view_no_null     = etl::make_string_view(text_no_null);
 
       CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
       CHECK_EQUAL(text_expected.size(), view_no_null.size());
@@ -289,12 +289,12 @@ namespace
     //*************************************************************************
     TEST(test_make_string_view_check_consistent_strings_from_arrays_of_char32_t)
     {
-      char32_t text_extra_nulls[10] = { U'H', U'e', U'l', U'l', U'o' };
-      char32_t text_no_null[10] = { U'H', U'e', U'l', U'l', U'o' };
-      std::u32string text_expected = U"Hello";
+      char32_t       text_extra_nulls[10] = {U'H', U'e', U'l', U'l', U'o'};
+      char32_t       text_no_null[10]     = {U'H', U'e', U'l', U'l', U'o'};
+      std::u32string text_expected        = U"Hello";
 
       auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
-      auto view_no_null = etl::make_string_view(text_no_null);
+      auto view_no_null     = etl::make_string_view(text_no_null);
 
       CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
       CHECK_EQUAL(text_expected.size(), view_no_null.size());
@@ -307,13 +307,13 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_template_deduction)
     {
-      etl::basic_string_view cview{ "Hello World" };
-      etl::basic_string_view wview{ L"Hello World" };
-      etl::basic_string_view u16view{ u"Hello World" };
-      etl::basic_string_view u32view{ U"Hello World" };
+      etl::basic_string_view cview{"Hello World"};
+      etl::basic_string_view wview{L"Hello World"};
+      etl::basic_string_view u16view{u"Hello World"};
+      etl::basic_string_view u32view{U"Hello World"};
 
-      CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
-      CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
+      CHECK(std::equal(cview.begin(), cview.end(), text.begin()));
+      CHECK(std::equal(wview.begin(), wview.end(), text.begin()));
       CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
       CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
     }
@@ -355,27 +355,27 @@ namespace
     //*************************************************************************
     TEST(test_begin_end)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
-      CHECK(view.begin() ==         view.cbegin());
+      CHECK(view.begin() == view.cbegin());
       CHECK(view.rbegin().base() == view.crbegin().base());
-      CHECK(view.end() ==           view.cend());
-      CHECK(view.rend().base() ==   view.crend().base());
+      CHECK(view.end() == view.cend());
+      CHECK(view.rend().base() == view.crend().base());
     }
 
     //*************************************************************************
     TEST(test_front_back)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
       CHECK(text.front() == view.front());
-      CHECK(text.back() ==  view.back());
+      CHECK(text.back() == view.back());
     }
 
     //*************************************************************************
     TEST(test_data)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
       CHECK(text.data() == view.data());
     }
@@ -383,7 +383,7 @@ namespace
     //*************************************************************************
     TEST(test_index_operator)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
       for (size_t i = 0UL; i < text.size(); ++i)
       {
@@ -394,7 +394,7 @@ namespace
     //*************************************************************************
     TEST(test_at)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
       for (size_t i = 0UL; i < text.size(); ++i)
       {
@@ -405,15 +405,15 @@ namespace
     //*************************************************************************
     TEST(test_at_uninitialised_exception)
     {
-      View  view;
+      View view;
 
-      CHECK_THROW(view.at(0),  etl::string_view_uninitialised);
+      CHECK_THROW(view.at(0), etl::string_view_uninitialised);
     }
 
     //*************************************************************************
     TEST(test_at_bounds_exception)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
       CHECK_THROW(view.at(view.size()), etl::string_view_bounds);
     }
@@ -423,11 +423,11 @@ namespace
     //*************************************************************************
     TEST(test_index_bounds_exception)
     {
-      View  view(text.c_str(), text.size());
+      View view(text.c_str(), text.size());
 
       CHECK_THROW(view[view.size()], etl::string_view_bounds);
     }
-  
+
 #endif
 
     //*************************************************************************
@@ -449,8 +449,8 @@ namespace
     //*************************************************************************
     TEST(test_non_member_same)
     {
-      View  view1(text.c_str(), text.size());
-      View  view2(text.c_str(), text.size());
+      View view1(text.c_str(), text.size());
+      View view2(text.c_str(), text.size());
 
       CHECK(view1 == view2);
       CHECK(view1 <= view2);
@@ -462,8 +462,8 @@ namespace
     //*************************************************************************
     TEST(test_non_member_smaller)
     {
-      View  view1(text.c_str(), text.size());
-      View  view2(text_smaller.c_str(), text_smaller.size());
+      View view1(text.c_str(), text.size());
+      View view2(text_smaller.c_str(), text_smaller.size());
 
       CHECK(!(view1 == view2));
       CHECK(!(view1 <= view2));
@@ -479,8 +479,8 @@ namespace
     //*************************************************************************
     TEST(test_non_member_shorter)
     {
-      View  view1(text.c_str(), text.size());
-      View  view2(text_shorter.c_str(), text_shorter.size());
+      View view1(text.c_str(), text.size());
+      View view2(text_shorter.c_str(), text_shorter.size());
 
       CHECK(!(view1 == view2));
       CHECK(!(view1 <= view2));
@@ -529,7 +529,7 @@ namespace
       std::string original     = "Hello World";
       std::string prefix       = "llo World";
       std::string prefixsuffix = "llo Wor";
-      View view(original.c_str());
+      View        view(original.c_str());
 
       bool isEqual;
 
@@ -545,10 +545,10 @@ namespace
     //*************************************************************************
     TEST(test_copy)
     {
-      View view(text.c_str());
+      View                 view(text.c_str());
       std::array<char, 12> destination;
       std::array<char, 12> blank;
-      size_t count;
+      size_t               count;
 
       blank.fill(0);
 
@@ -620,11 +620,11 @@ namespace
       View view_smaller(text_smaller.c_str());
       View view_shorter(text_shorter.c_str());
 
-      CHECK(0 ==  view.compare(view));
+      CHECK(0 == view.compare(view));
       CHECK(-1 == view_smaller.compare(view));
       CHECK(-1 == view_shorter.compare(view));
-      CHECK(1 ==  view.compare(view_smaller));
-      CHECK(1 ==  view.compare(view_shorter));
+      CHECK(1 == view.compare(view_smaller));
+      CHECK(1 == view.compare(view_shorter));
     }
 
     //*************************************************************************
@@ -635,18 +635,18 @@ namespace
       View view_shorter(text_shorter.c_str());
 
       std::string text_long = std::string("xx") + text + std::string("xx");
-      View view_long(text_long.c_str());
+      View        view_long(text_long.c_str());
 
       std::string text_smaller_long = std::string("xx") + text_smaller + std::string("xx");
-      View view_smaller_long(text_smaller_long.c_str());
+      View        view_smaller_long(text_smaller_long.c_str());
 
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
-      View view_shorter_long(text_shorter_long.c_str());
+      View        view_shorter_long(text_shorter_long.c_str());
 
-      CHECK(0 ==  view_long.compare(2, view.size(), view));
+      CHECK(0 == view_long.compare(2, view.size(), view));
       CHECK(-1 == view_smaller_long.compare(2, view.size(), view));
-      CHECK(1 ==  view_long.compare(2, view.size(), view_smaller));
-      CHECK(1 ==  view_long.compare(2, view.size(), view_shorter));
+      CHECK(1 == view_long.compare(2, view.size(), view_smaller));
+      CHECK(1 == view_long.compare(2, view.size(), view_shorter));
     }
 
     //*************************************************************************
@@ -655,19 +655,19 @@ namespace
       View view(text.c_str());
 
       std::string text_long = std::string("xx") + text + std::string("xx");
-      View view_long(text_long.c_str());
+      View        view_long(text_long.c_str());
 
       std::string text_smaller_long = std::string("xx") + text_smaller + std::string("xx");
-      View view_smaller_long(text_smaller_long.c_str());
+      View        view_smaller_long(text_smaller_long.c_str());
 
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
-      View view_shorter_long(text_shorter_long.c_str());
+      View        view_shorter_long(text_shorter_long.c_str());
 
-      CHECK(0 ==  view_long.compare(2, view.size(), view_long, 2, view.size()));
+      CHECK(0 == view_long.compare(2, view.size(), view_long, 2, view.size()));
       CHECK(-1 == view_smaller_long.compare(2, view.size(), view_long, 2, view.size()));
       CHECK(-1 == view_shorter_long.compare(2, text_shorter.size(), view_long, 2, view.size()));
-      CHECK(1 ==  view_long.compare(2, view.size(), view_smaller_long, 2, view.size()));
-      CHECK(1 ==  view_long.compare(2, view.size(), view_shorter_long, 2, text_shorter.size()));
+      CHECK(1 == view_long.compare(2, view.size(), view_smaller_long, 2, view.size()));
+      CHECK(1 == view_long.compare(2, view.size(), view_shorter_long, 2, text_shorter.size()));
     }
 
     //*************************************************************************
@@ -677,11 +677,11 @@ namespace
       View view_smaller(text_smaller.c_str());
       View view_shorter(text_shorter.c_str());
 
-      CHECK(0 ==  view.compare(view.data()));
+      CHECK(0 == view.compare(view.data()));
       CHECK(-1 == view_smaller.compare(view.data()));
-      CHECK(1 ==  view.compare(view_smaller.data()));
+      CHECK(1 == view.compare(view_smaller.data()));
       CHECK(-1 == view_shorter.compare(view.data()));
-      CHECK(1 ==  view.compare(view_shorter.data()));
+      CHECK(1 == view.compare(view_shorter.data()));
     }
 
     //*************************************************************************
@@ -692,13 +692,13 @@ namespace
       View view_shorter(text_shorter.c_str());
 
       std::string text_long = std::string("xx") + text + std::string("xx");
-      View view_long(text_long.c_str());
+      View        view_long(text_long.c_str());
 
       std::string text_smaller_long = std::string("xx") + text_smaller + std::string("xx");
-      View view_smaller_long(text_smaller_long.c_str());
+      View        view_smaller_long(text_smaller_long.c_str());
 
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
-      View view_shorter_long(text_shorter_long.c_str());
+      View        view_shorter_long(text_shorter_long.c_str());
 
       CHECK(0 == view_long.compare(2, view.size(), view.data()));
       CHECK(-1 == view_smaller_long.compare(2, view.size(), view_long.data()));
@@ -715,13 +715,13 @@ namespace
       View view_shorter(text_shorter.c_str());
 
       std::string text_long = std::string("xx") + text + std::string("xx");
-      View view_long(text_long.c_str());
+      View        view_long(text_long.c_str());
 
       std::string text_smaller_long = std::string("xx") + text_smaller + std::string("xx");
-      View view_smaller_long(text_smaller_long.c_str());
+      View        view_smaller_long(text_smaller_long.c_str());
 
       std::string text_shorter_long = std::string("xx") + text_shorter + std::string("xx");
-      View view_shorter_long(text_shorter_long.c_str());
+      View        view_shorter_long(text_shorter_long.c_str());
 
       CHECK(0 == view_long.compare(2, view.size(), view.data(), view.size()));
       CHECK(-1 == view_smaller_long.compare(2, view.size(), view_long.data(), view_long.size()));
@@ -1138,28 +1138,28 @@ namespace
 
       using namespace etl::literals::string_literals;
 
-      View    view    =  "Hello World"_sv;
+      View    view    = "Hello World"_sv;
       WView   wview   = L"Hello World"_sv;
       U16View u16view = u"Hello World"_sv;
       U32View u32view = U"Hello World"_sv;
 
-      CHECK_TRUE((view    == View{ "Hello World",     etl::strlen("Hello World") }));
-      CHECK_TRUE((wview   == WView{ L"Hello World",   etl::strlen(L"Hello World") }));
-      CHECK_TRUE((u16view == U16View{ u"Hello World", etl::strlen(u"Hello World") }));
-      CHECK_TRUE((u32view == U32View{ U"Hello World", etl::strlen(U"Hello World") }));
+      CHECK_TRUE((view == View{"Hello World", etl::strlen("Hello World")}));
+      CHECK_TRUE((wview == WView{L"Hello World", etl::strlen(L"Hello World")}));
+      CHECK_TRUE((u16view == U16View{u"Hello World", etl::strlen(u"Hello World")}));
+      CHECK_TRUE((u32view == U32View{U"Hello World", etl::strlen(U"Hello World")}));
     }
 
     //*************************************************************************
 #if ETL_USING_STL
     TEST(write_to_std_stream)
     {
-      View view{ "Hello World" };
-      WView wview{ L"Hello World" };
-      U16View u16view{ u"Hello World" };
-      U32View u32view{ U"Hello World" };
+      View    view{"Hello World"};
+      WView   wview{L"Hello World"};
+      U16View u16view{u"Hello World"};
+      U32View u32view{U"Hello World"};
 
-      std::stringstream sstream;
-      std::wstringstream wsstream;
+      std::stringstream                 sstream;
+      std::wstringstream                wsstream;
       std::basic_stringstream<char16_t> u16sstream;
       std::basic_stringstream<char32_t> u32sstream;
 
@@ -1172,8 +1172,8 @@ namespace
       u32sstream << u32view;
       std::u32string u32sstream_string = u32sstream.str();
 
-      View sstream_view(sstream_string.data(), sstream_string.size());
-      WView wsstream_view(wsstream_string.data(), wsstream_string.size());
+      View    sstream_view(sstream_string.data(), sstream_string.size());
+      WView   wsstream_view(wsstream_string.data(), wsstream_string.size());
       U16View u16sstream_view(u16sstream_string.data(), u16sstream_string.size());
       U32View u32sstream_view(u32sstream_string.data(), u32sstream_string.size());
 
@@ -1184,4 +1184,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

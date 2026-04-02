@@ -59,23 +59,21 @@ namespace etl
 
     typedef const char* string_type;
     typedef int         numeric_type;
-    
+
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
 #if defined(ETL_VERBOSE_ERRORS)
     ETL_EXCEPTION_CONSTEXPR
     exception(string_type reason_, string_type file_, numeric_type line_)
-      : reason_text(reason_),
-        file_text(file_),
-        line(line_)
+      : reason_text(reason_)
+      , file_text(file_)
+      , line(line_)
     {
     }
 #elif defined(ETL_MINIMAL_ERRORS)
     ETL_EXCEPTION_CONSTEXPR
-    exception(string_type /*reason_*/, string_type /*file_*/, numeric_type /*line_*/)
-    {
-    }
+    exception(string_type /*reason_*/, string_type /*file_*/, numeric_type /*line_*/) {}
 #else
     ETL_EXCEPTION_CONSTEXPR
     exception(string_type reason_, string_type /*file_*/, numeric_type /*line_*/)
@@ -90,8 +88,7 @@ namespace etl
     //***************************************************************************
     ETL_EXCEPTION_CONSTEXPR
     string_type what() const ETL_NOEXCEPT
-#if ETL_USING_STD_EXCEPTION
-      override
+#if ETL_USING_STD_EXCEPTION override
 #endif
     {
 #if !defined(ETL_MINIMAL_ERRORS)
@@ -100,7 +97,6 @@ namespace etl
       return "";
 #endif
     }
-
 
     //***************************************************************************
     /// Gets the file for the exception.
@@ -133,14 +129,14 @@ namespace etl
   private:
 
 #if !defined(ETL_MINIMAL_ERRORS)
-  string_type  reason_text; ///< The reason for the exception.
+    string_type reason_text; ///< The reason for the exception.
 #endif
 
 #if defined(ETL_VERBOSE_ERRORS)
-    string_type  file_text;   ///< The file for the exception.
-    numeric_type line;   ///< The line for the exception.
+    string_type  file_text; ///< The file for the exception.
+    numeric_type line;      ///< The line for the exception.
 #endif
   };
-}
+} // namespace etl
 
 #endif

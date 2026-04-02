@@ -33,14 +33,14 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "utility.h"
-#include "functional.h"
-#include "iterator.h"
-#include "vector.h"
-#include "type_traits.h"
-#include "parameter_type.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "functional.h"
+#include "iterator.h"
+#include "parameter_type.h"
+#include "type_traits.h"
+#include "utility.h"
+#include "vector.h"
 
 #include <stddef.h>
 
@@ -109,11 +109,11 @@ namespace etl
     }
   };
 
-
   //***************************************************************************
   ///\ingroup queue
-  ///\brief This is the base for all priority queues that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived queue.
+  ///\brief This is the base for all priority queues that contain a particular
+  /// type. \details Normally a reference to this type will be taken from a
+  /// derived queue.
   /// The TContainer specified must provide the front, push_back, pop_back, and
   /// assign methods to work correctly with priority_queue.
   ///\code
@@ -131,21 +131,22 @@ namespace etl
   {
   public:
 
-    typedef T                     value_type;         ///< The type stored in the queue.
-    typedef TContainer            container_type;     ///< The container type used for priority queue.
-    typedef TCompare              compare_type;       ///< The comparison type.
-    typedef T&                    reference;          ///< A reference to the type used in the queue.
-    typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
+    typedef T          value_type;      ///< The type stored in the queue.
+    typedef TContainer container_type;  ///< The container type used for priority queue.
+    typedef TCompare   compare_type;    ///< The comparison type.
+    typedef T&         reference;       ///< A reference to the type used in the queue.
+    typedef const T&   const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                   rvalue_reference;   ///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
     typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
-    typedef typename etl::iterator_traits<typename TContainer::iterator>::difference_type difference_type;
+    typedef typename etl::iterator_traits< typename TContainer::iterator>::difference_type difference_type;
 
     //*************************************************************************
     /// Gets a reference to the highest priority value in the priority queue.
-    /// If asserts or exceptions are enabled, throws an etl::priority_queue_empty if the priority queue is empty.
-    /// \return A reference to the highest priority value in the priority queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::priority_queue_empty if the priority queue is empty. \return A
+    /// reference to the highest priority value in the priority queue.
     //*************************************************************************
     reference top()
     {
@@ -154,9 +155,10 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets a const reference to the highest priority value in the priority queue.
-    /// If asserts or exceptions are enabled, throws an etl::priority_queue_empty if the priority queue is empty.
-    /// \return A const reference to the highest priority value in the priority queue.
+    /// Gets a const reference to the highest priority value in the priority
+    /// queue. If asserts or exceptions are enabled, throws an
+    /// etl::priority_queue_empty if the priority queue is empty. \return A
+    /// const reference to the highest priority value in the priority queue.
     //*************************************************************************
     const_reference top() const
     {
@@ -205,8 +207,8 @@ namespace etl
     /// is the priority queue is already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
-    template <typename ... Args>
-    void emplace(Args && ... args)
+    template <typename... Args>
+    void emplace(Args&&... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
 
@@ -326,8 +328,9 @@ namespace etl
 
     //*************************************************************************
     /// Removes the oldest value from the back of the priority queue.
-    /// If asserts or exceptions are enabled, throws an etl::priority_queue_empty if the priority queue is empty.
-    /// Does nothing if the priority queue is already empty.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::priority_queue_empty if the priority queue is empty. Does nothing
+    /// if the priority queue is already empty.
     //*************************************************************************
     void pop()
     {
@@ -375,7 +378,8 @@ namespace etl
 
     //*************************************************************************
     /// Checks to see if the priority queue is full.
-    /// \return <b>true</b> if the priority queue is full, otherwise <b>false</b>
+    /// \return <b>true</b> if the priority queue is full, otherwise
+    /// <b>false</b>
     //*************************************************************************
     bool full() const
     {
@@ -402,7 +406,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ipriority_queue& operator = (const ipriority_queue& rhs)
+    ipriority_queue& operator=(const ipriority_queue& rhs)
     {
       if (&rhs != this)
       {
@@ -416,7 +420,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ipriority_queue& operator = (ipriority_queue&& rhs)
+    ipriority_queue& operator=(ipriority_queue&& rhs)
     {
       if (&rhs != this)
       {
@@ -455,9 +459,7 @@ namespace etl
     //*************************************************************************
     /// The constructor that is called from derived classes.
     //*************************************************************************
-    ipriority_queue()
-    {
-    }
+    ipriority_queue() {}
 
   private:
 
@@ -477,7 +479,8 @@ namespace etl
   /// \tparam T    The type this queue should support.
   /// \tparam SIZE The maximum capacity of the queue.
   //***************************************************************************
-  template <typename T, const size_t SIZE, typename TContainer = etl::vector<T, SIZE>, typename TCompare = etl::less<typename TContainer::value_type> >
+  template <typename T, const size_t SIZE, typename TContainer = etl::vector<T, SIZE>,
+            typename TCompare = etl::less<typename TContainer::value_type> >
   class priority_queue : public etl::ipriority_queue<T, TContainer, TCompare>
   {
   public:
@@ -539,7 +542,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    priority_queue& operator = (const priority_queue& rhs)
+    priority_queue& operator=(const priority_queue& rhs)
     {
       if (&rhs != this)
       {
@@ -553,7 +556,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    priority_queue& operator = (priority_queue&& rhs)
+    priority_queue& operator=(priority_queue&& rhs)
     {
       if (&rhs != this)
       {
@@ -568,6 +571,6 @@ namespace etl
 
   template <typename T, const size_t SIZE, typename TContainer, typename TCompare>
   ETL_CONSTANT typename priority_queue<T, SIZE, TContainer, TCompare>::size_type priority_queue<T, SIZE, TContainer, TCompare>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

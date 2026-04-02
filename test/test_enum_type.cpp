@@ -48,8 +48,8 @@ struct enum_test
   ETL_END_ENUM_TYPE
 };
 
-namespace 
-{		
+namespace
+{
   SUITE(test_enum_type)
   {
     //*************************************************************************
@@ -69,10 +69,10 @@ namespace
       constexpr enum_test zero2(zero);
       constexpr enum_test zero3 = zero;
 
-      constexpr int int_zero = zero;
+      constexpr int int_zero  = zero;
       constexpr int int_zero2 = zero.get_value();
 
-      constexpr enum_test enum_zero = zero;
+      constexpr enum_test enum_zero  = zero;
       constexpr enum_test enum_zero2 = zero.get_enum();
 
       constexpr const char* string_zero = zero.c_str();
@@ -136,8 +136,8 @@ namespace
     //*************************************************************************
     TEST(test_get_value)
     {
-      enum_test actual = enum_test::THREE;
-      enum_test::value_type expected = enum_test::THREE; 
+      enum_test             actual   = enum_test::THREE;
+      enum_test::value_type expected = enum_test::THREE;
 
       CHECK_EQUAL(expected, actual.get_value());
     }
@@ -145,10 +145,10 @@ namespace
     //*************************************************************************
     TEST(test_get_enum)
     {
-      enum_test actual = enum_test::THREE;
+      enum_test            actual   = enum_test::THREE;
       enum_test::enum_type expected = enum_test::THREE;
 
       CHECK_EQUAL(expected, actual.get_enum());
     }
   }
-}
+} // namespace

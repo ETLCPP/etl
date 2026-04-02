@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -69,7 +69,7 @@ namespace
       Chrono::year_month ym{Chrono::year(2000), Chrono::January};
 
       CHECK_TRUE(ym.ok()); // Valid year_month
-      CHECK_EQUAL(2000,            (int)ym.year());
+      CHECK_EQUAL(2000, (int)ym.year());
       CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ym.month());
     }
 
@@ -170,7 +170,7 @@ namespace
     TEST(test_year_month_year_month_diff_operator)
     {
       Chrono::year_month ym1(Chrono::year(2021), Chrono::January);
-      Chrono::months dms = ym1 - ym1;
+      Chrono::months     dms = ym1 - ym1;
       CHECK_EQUAL(dms.count(), 0);
       Chrono::year_month ym2(Chrono::year(2026), Chrono::December);
       dms = ym2 - ym1; // positive
@@ -183,7 +183,7 @@ namespace
     TEST(test_year_month_add_sub_months_operators)
     {
       Chrono::year_month ym1(Chrono::year(2021), Chrono::January);
-      Chrono::months dms(0); // zero
+      Chrono::months     dms(0); // zero
       CHECK_TRUE(dms + ym1 == ym1);
       CHECK_TRUE(ym1 + dms == ym1);
       CHECK_TRUE(ym1 - dms == ym1);
@@ -202,7 +202,7 @@ namespace
     TEST(test_year_month_add_sub_years_operator)
     {
       Chrono::year_month ym(Chrono::year(2021), Chrono::January);
-      Chrono::years dys(0); // zero
+      Chrono::years      dys(0); // zero
       CHECK_TRUE((ym + dys == Chrono::year_month(ym.year() + dys, ym.month())));
       CHECK_TRUE((dys + ym == Chrono::year_month(ym.year() + dys, ym.month())));
       CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
@@ -216,4 +216,4 @@ namespace
       CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
     }
   }
-}
+} // namespace

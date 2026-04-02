@@ -33,14 +33,14 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "type_traits.h"
+#include "initializer_list.h"
 #include "integral_limits.h"
 #include "static_assert.h"
-#include "initializer_list.h"
+#include "type_traits.h"
 
-#include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 namespace etl
 {
@@ -53,7 +53,7 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT(etl::is_integral<T>::value && etl::is_unsigned<T>::value, "Unsigned integral values only");
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value&& etl::is_unsigned<T>::value, "Unsigned integral values only");
 
     typedef T value_type;
 
@@ -286,7 +286,7 @@ namespace etl
     //*************************************************************************
     /// operator &=
     //*************************************************************************
-    ETL_CONSTEXPR14 flags<T, MASK>& operator &=(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator&=(value_type pattern) ETL_NOEXCEPT
     {
       data &= pattern;
 
@@ -296,7 +296,7 @@ namespace etl
     //*************************************************************************
     /// operator |=
     //*************************************************************************
-    ETL_CONSTEXPR14 flags<T, MASK>& operator |=(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator|=(value_type pattern) ETL_NOEXCEPT
     {
       data |= (pattern & MASK);
 
@@ -306,7 +306,7 @@ namespace etl
     //*************************************************************************
     /// operator ^=
     //*************************************************************************
-    ETL_CONSTEXPR14 flags<T, MASK>& operator ^=(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator^=(value_type pattern) ETL_NOEXCEPT
     {
       data ^= (pattern & MASK);
 
@@ -316,7 +316,7 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    ETL_CONSTEXPR14 flags<T, MASK>& operator =(flags<T, MASK> other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator=(flags<T, MASK> other) ETL_NOEXCEPT
     {
       data = other.data;
 
@@ -326,7 +326,7 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
-    ETL_CONSTEXPR14 flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 flags<T, MASK>& operator=(value_type pattern) ETL_NOEXCEPT
     {
       data = (pattern & MASK);
 
@@ -360,7 +360,7 @@ namespace etl
   /// operator ==
   //***************************************************************************
   template <typename T, T MASK>
-  ETL_CONSTEXPR bool operator == (flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR bool operator==(flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
   {
     return lhs.value() == rhs.value();
   }
@@ -369,7 +369,7 @@ namespace etl
   /// operator !=
   //***************************************************************************
   template <typename T, T MASK>
-  ETL_CONSTEXPR bool operator != (flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR bool operator!=(flags<T, MASK> lhs, flags<T, MASK> rhs) ETL_NOEXCEPT
   {
     return !(lhs == rhs);
   }
@@ -382,6 +382,6 @@ namespace etl
   {
     lhs.swap(rhs);
   }
-}
+} // namespace etl
 
 #endif
