@@ -153,7 +153,7 @@ Macros:
   - ETL_NODISCARD=[[nodiscard]]
   - ETL_NORETURN=[[noreturn]]
   - ETL_DEPRECATED=[[deprecated]]
-  - ETL_DEPRECATED_REASON=[[deprecated(%0)]]
+#  - ETL_DEPRECATED_REASON=[[deprecated(%0)]] # Hangs with clang-format 18
   - ETL_LIKELY=[[likely]]
   - ETL_UNLIKELY=[[unlikely]]
   - ETL_FALLTHROUGH=[[fallthrough]]
