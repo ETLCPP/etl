@@ -93,21 +93,79 @@ StatementMacros:
   - ETL_DECREMENT_DEBUG_COUNT
   - ETL_ADD_DEBUG_COUNT
   - ETL_STATIC_ASSERT
+  - ETL_ASSERT
+  - ETL_ASSERT_OR_RETURN
+  - ETL_ASSERT_OR_RETURN_VALUE
+  - ETL_ASSERT_FAIL
+  - ETL_ASSERT_FAIL_AND_RETURN
+  - ETL_ASSERT_FAIL_AND_RETURN_VALUE
+  - ETL_MOVE
+  - ETL_ENUM_CLASS
+  - ETL_ENUM_CLASS_TYPE
+  - ETL_IF_CONSTEXPR
 
 # Macros that behave like attributes or specifiers.
 AttributeMacros:
+  - ETL_NORETURN
+  - ETL_FINAL
+  - ETL_OVERRIDE
+  - ETL_EXPLICIT
+  - ETL_DELETE
+  - ETL_CONSTANT
+  - ETL_CONSTEXPR
+  - ETL_CONSTEXPR11
+  - ETL_CONSTEXPR14
+  - ETL_CONSTEXPR17
+  - ETL_CONSTEXPR20
+  - ETL_CONSTEXPR23
+  - ETL_CONSTEVAL
   - ETL_NODISCARD
   - ETL_NORETURN
   - ETL_DEPRECATED
-  - ETL_CONSTEXPR
-  - ETL_CONSTEXPR14
+  - ETL_DEPRECATED_REASON
+  - ETL_LIKELY
+  - ETL_UNLIKELY
+  - ETL_FALLTHROUGH
+  - ETL_MAYBE_UNUSED
+  - ETL_INLINE_VAR
+  - ETL_ASSUME
+  - ETL_LVALUE_REF_QUALIFIER
+  - ETL_RVALUE_REF_QUALIFIER
+  - ETL_NOEXCEPT
+  - ETL_NOEXCEPT_EXPR
+  - ETL_NOEXCEPT_IF
+  - ETL_NOEXCEPT_FROM
 
 Macros:
+  - ETL_NORETURN=[[noreturn]]
+  - ETL_FINAL=final
+  - ETL_OVERRIDE=override
+  - ETL_EXPLICIT=explicit
+  - ETL_DELETE=delete
+  - ETL_CONSTANT=const
   - ETL_CONSTEXPR=constexpr
+  - ETL_CONSTEXPR11=constexpr
   - ETL_CONSTEXPR14=constexpr
+  - ETL_CONSTEXPR17=constexpr
+  - ETL_CONSTEXPR20=constexpr
+  - ETL_CONSTEXPR23=constexpr
+  - ETL_CONSTEVAL=consteval
   - ETL_NODISCARD=[[nodiscard]]
   - ETL_NORETURN=[[noreturn]]
   - ETL_DEPRECATED=[[deprecated]]
+  - ETL_DEPRECATED_REASON=[[deprecated(%0)]]
+  - ETL_LIKELY=[[likely]]
+  - ETL_UNLIKELY=[[unlikely]]
+  - ETL_FALLTHROUGH=[[fallthrough]]
+  - ETL_MAYBE_UNUSED=[[maybe_unused]]
+  - ETL_INLINE_VAR=inline
+  - ETL_ASSUME=[[assume(&0)]]
+  - ETL_LVALUE_REF_QUALIFIER=&
+  - ETL_RVALUE_REF_QUALIFIER=&&
+  - ETL_NOEXCEPT=noexcept
+#  - ETL_NOEXCEPT_EXPR=noexcept(&0)) # Hangs with clang-format 18
+#  - ETL_NOEXCEPT_IF=noexcept(&0)    # Hangs with clang-format 18
+#  - ETL_NOEXCEPT_FROM=noexcept(&0)  # Hangs with clang-format 18
 
 # Macros that behave like type names
 TypenameMacros:
