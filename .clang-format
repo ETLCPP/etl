@@ -63,8 +63,9 @@ AlignConsecutiveMacros:       true # align macro bodies
 # =============================================================================
 # Line length and wrapping
 # =============================================================================
-ColumnLimit:    0
+ColumnLimit:    150
 ReflowComments: true # preserve hand-formatted comment rulers
+AlignEscapedNewlines: Left
 
 # =============================================================================
 # Includes
