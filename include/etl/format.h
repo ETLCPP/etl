@@ -1021,7 +1021,7 @@ namespace etl
         unsigned_value %= highest_digit;
         format_digit_char(it, digit, spec);
 
-        if ETL_CONSTEXPR17 (skip_last_zeros)
+        if ETL_IF_CONSTEXPR(skip_last_zeros)
         {
           if (unsigned_value == 0)
           {
