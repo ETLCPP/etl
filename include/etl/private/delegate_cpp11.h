@@ -122,7 +122,7 @@ namespace etl
   private:
 
     using object_ptr   = void*;
-    using function_ptr = TReturn(*)(TArgs...);
+    using function_ptr = TReturn (*)(TArgs...);
 
   public:
 
@@ -163,9 +163,10 @@ namespace etl
     // Delete construction from rvalue reference lambda or functor.
     // Excludes non-capturing lambdas convertible to a function pointer.
     //*************************************************************************
-    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value &&
-                                                            !etl::is_same<etl::delegate<TReturn(TArgs...)>, TLambda>::value &&
-                                                            !etl::is_convertible<TLambda, function_ptr>::value, void>>
+    template <typename TLambda,
+              typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TArgs...)>, TLambda>::value
+                                            && !etl::is_convertible<TLambda, function_ptr>::value,
+                                          void>>
     ETL_CONSTEXPR14 delegate(TLambda&& instance) = delete;
 
     //*************************************************************************
@@ -531,7 +532,7 @@ namespace etl
     //*************************************************************************
     // Create from a function pointer.
     //*************************************************************************
-    delegate& operator =(function_ptr fp) ETL_NOEXCEPT
+    delegate& operator=(function_ptr fp) ETL_NOEXCEPT
     {
       assign(fp, function_ptr_stub);
       return *this;
@@ -607,7 +608,7 @@ namespace etl
     //*************************************************************************
     struct invocation_element
     {
-      using stub_type = TReturn(*)(const invocation_element&, TArgs...);
+      using stub_type = TReturn (*)(const invocation_element&, TArgs...);
 
       //***********************************************************************
       ETL_CONSTEXPR14 invocation_element() ETL_NOEXCEPT
@@ -640,9 +641,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR14 bool operator==(const invocation_element& rhs) const ETL_NOEXCEPT
       {
-        return (rhs.stub == stub) &&
-               ((stub == function_ptr_stub) ? (rhs.ptr.fp == ptr.fp)
-                                            : (rhs.ptr.object == ptr.object));
+        return (rhs.stub == stub) && ((stub == function_ptr_stub) ? (rhs.ptr.fp == ptr.fp) : (rhs.ptr.object == ptr.object));
       }
 
       //***********************************************************************
@@ -739,7 +738,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a member function. Run time instance.
     //*************************************************************************
-    template <typename T, TReturn(T::*Method)(TArgs...)>
+    template <typename T, TReturn (T::*Method)(TArgs...)>
     static ETL_CONSTEXPR14 TReturn method_stub(const invocation_element& invocation, TArgs... args)
     {
       T* p = static_cast<T*>(invocation.ptr.object);
@@ -749,7 +748,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a const member function. Run time instance.
     //*************************************************************************
-    template <typename T, TReturn(T::*Method)(TArgs...) const>
+    template <typename T, TReturn (T::*Method)(TArgs...) const>
     static ETL_CONSTEXPR14 TReturn const_method_stub(const invocation_element& invocation, TArgs... args)
     {
       T* const p = static_cast<T*>(invocation.ptr.object);
@@ -759,7 +758,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
-    template <typename T, TReturn(T::*Method)(TArgs...), T& Instance>
+    template <typename T, TReturn (T::*Method)(TArgs...), T& Instance>
     static ETL_CONSTEXPR14 TReturn method_instance_stub(const invocation_element&, TArgs... args)
     {
       return (Instance.*Method)(etl::forward<TArgs>(args)...);
@@ -768,7 +767,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
-    template <typename T, TReturn(T::*Method)(TArgs...) const, const T& Instance>
+    template <typename T, TReturn (T::*Method)(TArgs...) const, const T& Instance>
     static ETL_CONSTEXPR14 TReturn const_method_instance_stub(const invocation_element&, TArgs... args)
     {
       return (Instance.*Method)(etl::forward<TArgs>(args)...);
@@ -788,7 +787,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a free function.
     //*************************************************************************
-    template <TReturn(*Method)(TArgs...)>
+    template <TReturn (*Method)(TArgs...)>
     static ETL_CONSTEXPR14 TReturn function_stub(const invocation_element&, TArgs... args)
     {
       return (Method)(etl::forward<TArgs>(args)...);

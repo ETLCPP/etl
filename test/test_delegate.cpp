@@ -644,7 +644,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_from_rvalue_non_capturing_lambda)
     {
-      etl::delegate<int(int, int)> d(+[](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j; });
+      etl::delegate<int(int, int)> d(+[](int i, int j)
+                                     {
+                                       function_called   = FunctionCalled::Lambda_Called;
+                                       parameter_correct = (i == VALUE1) && (j == VALUE2);
+                                       return i + j;
+                                     });
 
       int result = d(VALUE1, VALUE2);
 
@@ -658,7 +663,12 @@ namespace
     {
       etl::delegate<int(int, int)> d;
 
-      d = +[](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 2; };
+      d = +[](int i, int j)
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+        return i + j + 2;
+      };
 
       int result = d(VALUE1, VALUE2);
 
@@ -670,7 +680,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_create_from_rvalue_non_capturing_lambda)
     {
-      auto d = etl::delegate<int(int, int)>::create(+[](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 5; });
+      auto d = etl::delegate<int(int, int)>::create(+[](int i, int j)
+                                                    {
+                                                      function_called   = FunctionCalled::Lambda_Called;
+                                                      parameter_correct = (i == VALUE1) && (j == VALUE2);
+                                                      return i + j + 5;
+                                                    });
 
       int result = d(VALUE1, VALUE2);
 
@@ -685,7 +700,11 @@ namespace
       etl::delegate<int(int, int)> d;
 
       d.set(+[](int i, int j)
-            { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return i + j + 6; });
+            {
+              function_called   = FunctionCalled::Lambda_Called;
+              parameter_correct = (i == VALUE1) && (j == VALUE2);
+              return i + j + 6;
+            });
 
       int result = d(VALUE1, VALUE2);
 
@@ -1234,7 +1253,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_make_delegate_member_static)
     {
       auto d = etl::make_delegate<Object::member_static>();
@@ -1247,7 +1266,7 @@ namespace
       CHECK(function_called == FunctionCalled::Member_Static_Called);
       CHECK(parameter_correct);
     }
-#endif
+  #endif
 
     //*************************************************************************
   #if ETL_USING_CPP14
@@ -1266,7 +1285,7 @@ namespace
   #endif
 
     //*************************************************************************
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     TEST_FIXTURE(SetupFixture, test_make_delegate_member_static_constexpr)
     {
       constexpr auto d = etl::make_delegate<Object::member_static>();
@@ -1279,7 +1298,7 @@ namespace
       CHECK(function_called == FunctionCalled::Member_Static_Called);
       CHECK(parameter_correct);
     }
-#endif
+  #endif
 
   #if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 5))
     //*************************************************************************
@@ -1704,7 +1723,12 @@ namespace
     {
       etl::delegate<void(int, int)> d;
 
-      d.set([](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); });
+      d.set(
+        [](int i, int j)
+        {
+          function_called   = FunctionCalled::Lambda_Called;
+          parameter_correct = (i == VALUE1) && (j == VALUE2);
+        });
 
       d(VALUE1, VALUE2);
 
@@ -1864,7 +1888,7 @@ namespace
 
       auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       auto d2 = d1;
-      auto d3 = etl::delegate<void(int, int)>::create(+[](int, int) { });
+      auto d3 = etl::delegate<void(int, int)>::create(+[](int, int) {});
       auto d4 = d3;
 
       CHECK(d1 == d2);
@@ -1878,7 +1902,7 @@ namespace
 
       auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       auto d2 = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);
-      auto d3 = etl::delegate<void(int, int)>::create(+[](int, int) { });
+      auto d3 = etl::delegate<void(int, int)>::create(+[](int, int) {});
 
       CHECK(d1 != d2);
       CHECK(d1 != d3);
