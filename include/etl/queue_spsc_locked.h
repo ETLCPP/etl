@@ -32,19 +32,48 @@ SOFTWARE.
 #define ETL_SPSC_QUEUE_LOCKED_INCLUDED
 
 #include "platform.h"
-#include "memory.h"
-#include "parameter_type.h"
-#include "memory_model.h"
-#include "integral_limits.h"
 #include "function.h"
-#include "utility.h"
+#include "integral_limits.h"
+#include "memory.h"
+#include "memory_model.h"
+#include "mutex.h"
+#include "parameter_type.h"
 #include "placement_new.h"
+#include "utility.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_spsc_locked_exception : public exception
+  {
+  public:
+
+    queue_spsc_locked_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_spsc_locked_empty : public queue_spsc_locked_exception
+  {
+  public:
+
+    queue_spsc_locked_empty(string_type file_name_, numeric_type line_number_)
+      : queue_spsc_locked_exception(ETL_ERROR_TEXT("queue_spsc_locked:empty", ETL_QUEUE_SPSC_LOCKED_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_locked_base
   {
@@ -104,10 +133,10 @@ namespace etl
   protected:
 
     iqueue_spsc_locked_base(size_type max_size_)
-      : write_index(0),
-        read_index(0),
-        current_size(0),
-        MAX_SIZE(max_size_)
+      : write_index(0)
+      , read_index(0)
+      , current_size(0)
+      , MAX_SIZE(max_size_)
     {
     }
 
@@ -126,10 +155,10 @@ namespace etl
       return index;
     }
 
-    size_type write_index;    ///< Where to input new data.
-    size_type read_index;     ///< Where to get the oldest data.
-    size_type current_size;   ///< The current size of the queue.
-    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
+    size_type       write_index;  ///< Where to input new data.
+    size_type       read_index;   ///< Where to get the oldest data.
+    size_type       current_size; ///< The current size of the queue.
+    const size_type MAX_SIZE;     ///< The maximum number of items in the queue.
 
   protected:
 
@@ -169,24 +198,26 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_SPSC_QUEUE_ISR) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~iqueue_spsc_locked_base()
-    {
-    }
+
+    virtual ~iqueue_spsc_locked_base() {}
 #else
+
   protected:
-    ~iqueue_spsc_locked_base()
-    {
-    }
+
+    ~iqueue_spsc_locked_base() {}
 #endif
   };
 
   //***************************************************************************
   ///\ingroup queue_spsc
-  ///\brief This is the base for all queue_spsc_locked that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived queue_spsc_locked.
+  ///\brief This is the base for all queue_spsc_locked that contain a particular
+  /// type. \details Normally a reference to this type will be taken from a
+  /// derived queue_spsc_locked.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_spsc_locked holds.
+  /// \note All types used must have a copy constructor.
   //***************************************************************************
   template <typename T, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class iqueue_spsc_locked : public iqueue_spsc_locked_base<MEMORY_MODEL>
@@ -197,13 +228,13 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;       ///< The type stored in the queue.
-    typedef T&                         reference;        ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
+    typedef T        value_type;      ///< The type stored in the queue.
+    typedef T&       reference;       ///< A reference to the type used in the queue.
+    typedef const T& const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
+    typedef typename base_t::size_type size_type; ///< The type used for determining the size of the queue.
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -258,17 +289,17 @@ namespace etl
     /// Constructs a value in the queue 'in place'.
     /// Unlocked.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_from_unlocked(Args&&... args)
     {
       return emplace_implementation(etl::forward<Args>(args)...);
     }
-    
+
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// Locked.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace(Args&&... args)
     {
       lock();
@@ -282,7 +313,8 @@ namespace etl
 #else
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1>
     bool emplace_from_unlocked(const T1& value1)
@@ -292,7 +324,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2>
     bool emplace_from_unlocked(const T1& value1, const T2& value2)
@@ -302,7 +335,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
     bool emplace_from_unlocked(const T1& value1, const T2& value2, const T3& value3)
@@ -312,7 +346,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     bool emplace_from_unlocked(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
@@ -322,7 +357,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     bool emplace()
     {
@@ -337,7 +373,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1>
     bool emplace(const T1& value1)
@@ -353,7 +390,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2>
     bool emplace(const T1& value1, const T2& value2)
@@ -369,7 +407,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
     bool emplace(const T1& value1, const T2& value2, const T3& value3)
@@ -385,7 +424,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
@@ -466,29 +506,59 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value from the front of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::queue_spsc_locked_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+#if ETL_CHECKING_EXTRA
       lock();
-
+      if (!this->empty_from_unlocked())
+      {
+        reference inner_result = front_implementation();
+        unlock();
+        return inner_result;
+      }
+      else
+      {
+        unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_locked_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      lock();
       reference result = front_implementation();
-
       unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value from the front of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::queue_spsc_locked_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+#if ETL_CHECKING_EXTRA
       lock();
-
+      if (!this->empty_from_unlocked())
+      {
+        const_reference inner_result = front_implementation();
+        unlock();
+        return inner_result;
+      }
+      else
+      {
+        unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_spsc_locked_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      lock();
       const_reference result = front_implementation();
-
       unlock();
-
       return result;
     }
 
@@ -510,7 +580,7 @@ namespace etl
     {
       lock();
 
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         this->write_index  = 0;
         this->read_index   = 0;
@@ -646,7 +716,7 @@ namespace etl
     /// Constructs a value in the queue 'in place'.
     /// Unlocked.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_implementation(Args&&... args)
     {
       if (this->current_size != this->MAX_SIZE)
@@ -837,11 +907,11 @@ namespace etl
 
     // Disable copy construction and assignment.
     iqueue_spsc_locked(const iqueue_spsc_locked&) ETL_DELETE;
-    iqueue_spsc_locked& operator =(const iqueue_spsc_locked&) ETL_DELETE;
+    iqueue_spsc_locked& operator=(const iqueue_spsc_locked&) ETL_DELETE;
 
 #if ETL_USING_CPP11
-    iqueue_spsc_locked(iqueue_spsc_locked&&) = delete;
-    iqueue_spsc_locked& operator =(iqueue_spsc_locked&&) = delete;
+    iqueue_spsc_locked(iqueue_spsc_locked&&)            = delete;
+    iqueue_spsc_locked& operator=(iqueue_spsc_locked&&) = delete;
 #endif
 
     T* p_buffer; ///< The internal buffer.
@@ -856,7 +926,9 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
-  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type
+  /// of the internal counter variables. \note T must have a copy constructor
+  /// defined, as front() returns by value.
   //***************************************************************************
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_spsc_locked : public etl::iqueue_spsc_locked<T, MEMORY_MODEL>
@@ -877,8 +949,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
 
-    queue_spsc_locked(const etl::ifunction<void>& lock_,
-                      const etl::ifunction<void>& unlock_)
+    queue_spsc_locked(const etl::ifunction<void>& lock_, const etl::ifunction<void>& unlock_)
       : base_t(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, lock_, unlock_)
     {
     }
@@ -894,11 +965,11 @@ namespace etl
   private:
 
     queue_spsc_locked(const queue_spsc_locked&) ETL_DELETE;
-    queue_spsc_locked& operator = (const queue_spsc_locked&) ETL_DELETE;
+    queue_spsc_locked& operator=(const queue_spsc_locked&) ETL_DELETE;
 
 #if ETL_USING_CPP11
-    queue_spsc_locked(queue_spsc_locked&&) = delete;
-    queue_spsc_locked& operator =(queue_spsc_locked&&) = delete;
+    queue_spsc_locked(queue_spsc_locked&&)            = delete;
+    queue_spsc_locked& operator=(queue_spsc_locked&&) = delete;
 #endif
 
     /// The uninitialised buffer of T used in the queue_lockable.
@@ -907,6 +978,6 @@ namespace etl
 
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL>
   ETL_CONSTANT typename queue_spsc_locked<T, SIZE, MEMORY_MODEL>::size_type queue_spsc_locked<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

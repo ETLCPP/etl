@@ -33,9 +33,9 @@ SOFTWARE.
 namespace
 {
   //*****************************************************************************
-  const int VALUE = 1;
-  bool function_called = false;
-  bool parameter_correct = false;
+  const int VALUE             = 1;
+  bool      function_called   = false;
+  bool      parameter_correct = false;
 
   //*****************************************************************************
   // Object data structure.
@@ -110,7 +110,7 @@ namespace
   //*****************************************************************************
   void free_int(int i)
   {
-    function_called = true;
+    function_called   = true;
     parameter_correct = (i == VALUE);
   }
 
@@ -119,7 +119,7 @@ namespace
   //*****************************************************************************
   void free_reference(const Data& data)
   {
-    function_called = true;
+    function_called   = true;
     parameter_correct = (data.d == VALUE);
   }
 
@@ -137,19 +137,19 @@ namespace
 
     void member_int(int i)
     {
-      function_called = true;
+      function_called   = true;
       parameter_correct = (i == VALUE);
     }
 
     void member_reference(const Data& data)
     {
-      function_called = true;
+      function_called   = true;
       parameter_correct = (data.d == VALUE);
     }
   };
 
   Object test_static;
-}
+} // namespace
 
 //*****************************************************************************
 // Initialises the test results.
@@ -158,7 +158,7 @@ struct SetupFixture
 {
   SetupFixture()
   {
-    function_called = false;
+    function_called   = false;
     parameter_correct = false;
   }
 };
@@ -298,7 +298,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void)
     {
-      Object object;
+      Object                      object;
       etl::function<Object, void> function(object, &Object::member_void);
 
       call(function);
@@ -309,7 +309,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_void)
     {
-      Object object;
+      Object                            object;
       const etl::function<Object, void> function(object, &Object::member_void);
 
       call(function);
@@ -320,7 +320,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int)
     {
-      Object object;
+      Object                     object;
       etl::function<Object, int> function(object, &Object::member_int);
 
       call(function);
@@ -332,7 +332,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_int)
     {
-      Object object;
+      Object                           object;
       const etl::function<Object, int> function(object, &Object::member_int);
 
       call(function);
@@ -344,7 +344,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference)
     {
-      Object object;
+      Object                             object;
       etl::function<Object, const Data&> function(object, &Object::member_reference);
 
       call(function);
@@ -356,7 +356,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_reference)
     {
-      Object object;
+      Object                                   object;
       const etl::function<Object, const Data&> function(object, &Object::member_reference);
 
       call(function);
@@ -368,7 +368,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time)
     {
-      Object object;
+      Object                                         object;
       etl::function_mv<Object, &Object::member_void> function(object);
 
       call(function);
@@ -379,7 +379,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_void_compile_time)
     {
-      Object object;
+      Object                                               object;
       const etl::function_mv<Object, &Object::member_void> function(object);
 
       call(function);
@@ -390,7 +390,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int_compile_time)
     {
-      Object object;
+      Object                                             object;
       etl::function_mp<Object, int, &Object::member_int> function(object);
 
       call(function);
@@ -402,7 +402,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_int_compile_time)
     {
-      Object object;
+      Object                                                   object;
       const etl::function_mp<Object, int, &Object::member_int> function(object);
 
       call(function);
@@ -414,7 +414,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference_compile_time)
     {
-      Object object;
+      Object                                                           object;
       etl::function_mp<Object, const Data&, &Object::member_reference> function(object);
 
       call(function);
@@ -426,7 +426,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_reference_compile_time)
     {
-      Object object;
+      Object                                                                 object;
       const etl::function_mp<Object, const Data&, &Object::member_reference> function(object);
 
       call(function);
@@ -507,4 +507,4 @@ namespace
       CHECK(function_called);
     }
   }
-}
+} // namespace

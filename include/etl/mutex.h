@@ -101,6 +101,6 @@ namespace etl
     mutex_type& m;
   };
 
-}
+} // namespace etl
 
 #endif

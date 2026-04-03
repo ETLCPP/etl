@@ -33,8 +33,9 @@ SOFTWARE.
 #include "etl/tuple.h"
 #include "etl/type_list.h"
 
-#include <string>
 #include <array>
+#include <string>
+#include <type_traits>
 
 namespace
 {
@@ -42,14 +43,13 @@ namespace
   using DataM = TestDataM<std::string>;
 
   template <std::size_t... Indices>
-  auto to_array(etl::index_sequence<Indices...>)
-    -> std::array<std::size_t, sizeof...(Indices)>
+  auto to_array(etl::index_sequence<Indices...>) -> std::array<std::size_t, sizeof...(Indices)>
   {
     return std::array<std::size_t, sizeof...(Indices)>{Indices...};
   }
 
   //*********************************
-  struct From 
+  struct From
   {
     From(int i_)
       : i(i_)
@@ -60,14 +60,14 @@ namespace
   };
 
   //*********************************
-  struct To 
+  struct To
   {
     explicit To(const From& from)
       : i(from.i)
     {
     }
 
-    To& operator =(const From& from)
+    To& operator=(const From& from)
     {
       i = from.i;
       return *this;
@@ -75,7 +75,7 @@ namespace
 
     int i;
   };
-  
+
   SUITE(test_tuple)
   {
     //*************************************************************************
@@ -98,27 +98,27 @@ namespace
     {
       using Tuple = etl::tuple<int, double, int, Data>;
 
-      CHECK_TRUE((std::is_same<int,    etl::tuple_element_t<0, Tuple>>::value));
+      CHECK_TRUE((std::is_same<int, etl::tuple_element_t<0, Tuple>>::value));
       CHECK_TRUE((std::is_same<double, etl::tuple_element_t<1, Tuple>>::value));
-      CHECK_TRUE((std::is_same<int,    etl::tuple_element_t<2, Tuple>>::value));
-      CHECK_TRUE((std::is_same<Data,   etl::tuple_element_t<3, Tuple>>::value));
+      CHECK_TRUE((std::is_same<int, etl::tuple_element_t<2, Tuple>>::value));
+      CHECK_TRUE((std::is_same<Data, etl::tuple_element_t<3, Tuple>>::value));
     }
 
     //*************************************************************************
     TEST(test_tuple_from_type_list)
     {
-      using TypeList        = etl::type_list<int, double, int, Data>;
+      using TypeList          = etl::type_list<int, double, int, Data>;
       using TupleFromTypeList = etl::tuple_from_type_list_t<TypeList>;
       using Tuple             = etl::tuple<int, double, int, Data>;
 
-      CHECK_TRUE((std::is_same<Tuple,    TupleFromTypeList>::value));
+      CHECK_TRUE((std::is_same<Tuple, TupleFromTypeList>::value));
       CHECK_TRUE((std::is_same<TypeList, TupleFromTypeList::type_list>::value));
     }
 
     //*************************************************************************
     TEST(test_tuple_type_list)
     {
-      using Tuple = etl::tuple<int, double, int, Data>;
+      using Tuple      = etl::tuple<int, double, int, Data>;
       using TupleTypes = etl::type_list<int, double, int, Data>;
 
       CHECK_TRUE((std::is_same<TupleTypes, Tuple::type_list>::value));
@@ -164,7 +164,7 @@ namespace
     TEST(test_copy_constructor_from_explicitly_convertible_type)
     {
       etl::tuple<From> from(1);
-      etl::tuple<To> to(from);
+      etl::tuple<To>   to(from);
 
       CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
     }
@@ -173,7 +173,7 @@ namespace
     TEST(test_copy_constructor_from_const_explicitly_convertible_type)
     {
       const etl::tuple<From> from(1);
-      etl::tuple<To> to(from);
+      etl::tuple<To>         to(from);
 
       CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
     }
@@ -194,7 +194,7 @@ namespace
     TEST(test_move_constructor_from_const)
     {
       const etl::tuple<int, double, int, Data> tp(1, 2.2, 3, Data("4"));
-      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+      etl::tuple<int, double, int, Data>       otherTuple(etl::move(tp));
 
       CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
       CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
@@ -206,7 +206,7 @@ namespace
     TEST(test_move_constructor_from_implicitly_convertible_type)
     {
       etl::tuple<short, float, short, Data> tp(1, 2.2f, 3, Data("4"));
-      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+      etl::tuple<int, double, int, Data>    otherTuple(etl::move(tp));
 
       CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
       CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
@@ -218,7 +218,7 @@ namespace
     TEST(test_move_constructor_from_const_implicitly_convertible_type)
     {
       const etl::tuple<short, float, short, Data> tp(1, 2.2f, 3, Data("4"));
-      etl::tuple<int, double, int, Data> otherTuple(etl::move(tp));
+      etl::tuple<int, double, int, Data>          otherTuple(etl::move(tp));
 
       CHECK_EQUAL(etl::get<0>(tp), etl::get<0>(otherTuple));
       CHECK_EQUAL(etl::get<1>(tp), etl::get<1>(otherTuple));
@@ -230,7 +230,7 @@ namespace
     TEST(test_move_constructor_from_explicitly_convertible_type)
     {
       etl::tuple<From> from(1);
-      etl::tuple<To> to(etl::move(from));
+      etl::tuple<To>   to(etl::move(from));
 
       CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
     }
@@ -239,7 +239,7 @@ namespace
     TEST(test_move_constructor_from_const_explicitly_convertible_type)
     {
       const etl::tuple<From> from(1);
-      etl::tuple<To> to(etl::move(from));
+      etl::tuple<To>         to(etl::move(from));
 
       CHECK_EQUAL(etl::get<0>(to).i, etl::get<0>(from).i);
     }
@@ -302,9 +302,9 @@ namespace
     {
       etl::tuple<char, float, short> tp(char(1), float(2.2), short(3));
 
-      int          i0 = etl::get<0>(tp);
-      double       d1 = etl::get<1>(tp);
-      int          i2 = etl::get<2>(tp);
+      int    i0 = etl::get<0>(tp);
+      double d1 = etl::get<1>(tp);
+      int    i2 = etl::get<2>(tp);
 
       CHECK_EQUAL(1, i0);
       CHECK_CLOSE(2.2, d1, 0.01);
@@ -487,7 +487,58 @@ namespace
     }
 
     //*************************************************************************
-    ETL_NODISCARD bool Get()
+    TEST(test_construct_from_rvalue_pair_implicit_conversion)
+    {
+      ETL_OR_STD::pair<int, Data> p(1, Data("2"));
+
+      etl::tuple<int, Data> tp(etl::move(p));
+
+      int  i = etl::get<0>(tp);
+      Data d = etl::get<1>(tp);
+
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(std::string("2"), d.value);
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_rvalue_pair_explicit_conversion)
+    {
+      ETL_OR_STD::pair<From, From> p(From(1), From(2));
+
+      etl::tuple<To, To> tp(etl::move(p));
+
+      CHECK_EQUAL(1, etl::get<0>(tp).i);
+      CHECK_EQUAL(2, etl::get<1>(tp).i);
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_const_rvalue_pair_implicit_conversion)
+    {
+      const ETL_OR_STD::pair<int, Data> p(1, Data("2"));
+
+      etl::tuple<int, Data> tp(etl::move(p));
+
+      int  i = etl::get<0>(tp);
+      Data d = etl::get<1>(tp);
+
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(std::string("2"), d.value);
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_const_rvalue_pair_explicit_conversion)
+    {
+      const ETL_OR_STD::pair<From, From> p(From(1), From(2));
+
+      etl::tuple<To, To> tp(etl::move(p));
+
+      CHECK_EQUAL(1, etl::get<0>(tp).i);
+      CHECK_EQUAL(2, etl::get<1>(tp).i);
+    }
+
+    //*************************************************************************
+    ETL_NODISCARD
+    bool Get()
     {
       return true;
     }
@@ -539,10 +590,10 @@ namespace
     {
       etl::tuple<int, double, int, Data> tp{1, 2.3, 4, Data("Data", 5)};
 
-      char   c;
+      char        c;
       long double ld;
-      short  s;
-      Data   data;
+      short       s;
+      Data        data;
 
       etl::tie(c, ld, s, data) = tp;
 
@@ -553,7 +604,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_tuple_cat)
+    TEST(test_tuple_cat_2)
     {
       etl::tuple<int, double> tp1{1, 2.3};
       etl::tuple<int, Data>   tp2{4, Data("Data", 5)};
@@ -564,6 +615,46 @@ namespace
       CHECK_EQUAL(etl::get<1>(tp3), etl::get<1>(tp1));
       CHECK_EQUAL(etl::get<2>(tp3), etl::get<0>(tp2));
       CHECK_EQUAL(etl::get<3>(tp3), etl::get<1>(tp2));
+    }
+
+    //*************************************************************************
+    TEST(test_tuple_cat_3)
+    {
+      etl::tuple<int, double> tp1{1, 2.3};
+      etl::tuple<int, Data>   tp2{4, Data("Data", 5)};
+      etl::tuple<bool, int>   tp3{true, 5};
+
+      auto tp4 = etl::tuple_cat(tp1, tp2, tp3);
+      static_assert(std::is_same<decltype(tp4), etl::tuple<int, double, int, Data, bool, int>>::value, "tp4 type mismatch");
+
+      CHECK_EQUAL(etl::get<0>(tp4), etl::get<0>(tp1));
+      CHECK_EQUAL(etl::get<1>(tp4), etl::get<1>(tp1));
+      CHECK_EQUAL(etl::get<2>(tp4), etl::get<0>(tp2));
+      CHECK_EQUAL(etl::get<3>(tp4), etl::get<1>(tp2));
+      CHECK_EQUAL(etl::get<4>(tp4), etl::get<0>(tp3));
+      CHECK_EQUAL(etl::get<5>(tp4), etl::get<1>(tp3));
+    }
+
+    //*************************************************************************
+    TEST(test_tuple_cat_4)
+    {
+      etl::tuple<int, double>       tp1{1, 2.3};
+      etl::tuple<int, Data>         tp2{4, Data("Data", 5)};
+      etl::tuple<bool, int>         tp3{true, 5};
+      etl::tuple<double, int, bool> tp4{1.01, 6, false};
+
+      auto tp5 = etl::tuple_cat(tp1, tp2, tp3, tp4);
+      static_assert(std::is_same<decltype(tp5), etl::tuple<int, double, int, Data, bool, int, double, int, bool>>::value, "tp5 type mismatch");
+
+      CHECK_EQUAL(etl::get<0>(tp5), etl::get<0>(tp1));
+      CHECK_EQUAL(etl::get<1>(tp5), etl::get<1>(tp1));
+      CHECK_EQUAL(etl::get<2>(tp5), etl::get<0>(tp2));
+      CHECK_EQUAL(etl::get<3>(tp5), etl::get<1>(tp2));
+      CHECK_EQUAL(etl::get<4>(tp5), etl::get<0>(tp3));
+      CHECK_EQUAL(etl::get<5>(tp5), etl::get<1>(tp3));
+      CHECK_EQUAL(etl::get<6>(tp5), etl::get<0>(tp4));
+      CHECK_EQUAL(etl::get<7>(tp5), etl::get<1>(tp4));
+      CHECK_EQUAL(etl::get<8>(tp5), etl::get<2>(tp4));
     }
 
     //*************************************************************************
@@ -598,7 +689,7 @@ namespace
       Tuple1 tp1{1, 2.3, 4, Data("Data", 5)};
 
       using Sequence = etl::index_sequence<3, 2, 1, 0>;
-      Tuple2 tp2 = etl::select_from_tuple(tp1, Sequence());
+      Tuple2 tp2     = etl::select_from_tuple(tp1, Sequence());
 
       CHECK_EQUAL(etl::get<0>(tp1), etl::get<3>(tp2));
       CHECK_EQUAL(etl::get<1>(tp1), etl::get<2>(tp2));
@@ -615,7 +706,7 @@ namespace
       Tuple1 tp1{1, 2.3, 4, Data("Data", 5)};
 
       using Sequence = etl::index_sequence<1, 0>;
-      Tuple2 tp2 = etl::select_from_tuple(tp1, Sequence());
+      Tuple2 tp2     = etl::select_from_tuple(tp1, Sequence());
 
       CHECK_EQUAL(etl::get<1>(tp1), etl::get<0>(tp2));
       CHECK_EQUAL(etl::get<0>(tp1), etl::get<1>(tp2));
@@ -643,7 +734,7 @@ namespace
       Tuple1 tp1{1, 2.3, 4, DataM("DataM")};
 
       using Sequence = etl::index_sequence<3, 2, 1, 0>;
-      Tuple2 tp2 = etl::select_from_tuple(etl::move(tp1), Sequence());
+      Tuple2 tp2     = etl::select_from_tuple(etl::move(tp1), Sequence());
 
       CHECK_EQUAL(etl::get<0>(tp1), etl::get<3>(tp2));
       CHECK_EQUAL(etl::get<1>(tp1), etl::get<2>(tp2));
@@ -716,7 +807,7 @@ namespace
 
       std::tuple<char, int, std::string> tp_std(v1, v2, v3);
 
-      auto tp_etl = etl::to_etl(tp_std);
+      auto tp_etl       = etl::to_etl(tp_std);
       auto tp_etl_moved = etl::to_etl(etl::move(tp_std));
 
       CHECK_EQUAL(v1, etl::get<0>(tp_etl));
@@ -740,7 +831,7 @@ namespace
 
       etl::tuple<char, int, std::string> tp_etl(v1, v2, v3);
 
-      auto tp_std = etl::to_std(tp_etl);
+      auto tp_std       = etl::to_std(tp_etl);
       auto tp_std_moved = etl::to_std(etl::move(tp_etl));
 
       CHECK_EQUAL(v1, std::get<0>(tp_std));
@@ -759,7 +850,7 @@ namespace
     TEST(test_common_type)
     {
       using Tuple = etl::tuple<char, int, double>;
-      using Type = etl::common_type<Tuple>::type;
+      using Type  = etl::common_type<Tuple>::type;
 
       CHECK_TRUE((std::is_same<double, Type>::value));
     }
@@ -770,7 +861,7 @@ namespace
     {
       etl::tuple<char, int, std::string> tp(1, 2, "Hello");
 
-      const auto &[c, i, s] = tp;
+      const auto& [c, i, s] = tp;
 
       CHECK_EQUAL(etl::get<0>(tp), c);
       CHECK_EQUAL(etl::get<1>(tp), i);
@@ -831,7 +922,7 @@ namespace
 
       etl::tuple<int, Data> tp(0, Data(""));
 
-      tp = static_cast<const ETL_OR_STD::pair<int, Data>&&>(p);
+      tp = etl::move(p);
 
       int  i = etl::get<0>(tp);
       Data d = etl::get<1>(tp);
@@ -840,4 +931,4 @@ namespace
       CHECK_EQUAL(std::string("2"), d.value);
     }
   }
-}
+} // namespace

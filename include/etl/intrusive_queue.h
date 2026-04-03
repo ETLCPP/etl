@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_INTRUSIVE_QUEUE_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
+#include "type_traits.h"
 
 #include <stddef.h>
 
@@ -84,8 +84,9 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup queue
-  /// Base for intrusive queue. Stores elements derived any ETL type that supports an 'etl_next' pointer member.
-  /// \tparam TLink  The link type that the value is derived from.
+  /// Base for intrusive queue. Stores elements derived any ETL type that
+  /// supports an 'etl_next' pointer member. \tparam TLink  The link type that
+  /// the value is derived from.
   //***************************************************************************
   template <typename TLink>
   class intrusive_queue_base
@@ -112,7 +113,7 @@ namespace etl
         p_back->etl_next = &value;
       }
 
-      p_back = &value;
+      p_back         = &value;
       value.etl_next = &terminator;
 
       ++current_size;
@@ -128,7 +129,7 @@ namespace etl
 
       link_type* p_front = terminator.etl_next;
 
-      link_type* p_next = p_front->etl_next;
+      link_type* p_next   = p_front->etl_next;
       terminator.etl_next = p_next;
 
       p_front->clear();
@@ -144,7 +145,8 @@ namespace etl
     //*************************************************************************
     /// Removes the oldest item from the queue and pushes it to the destination.
     /// Undefined behaviour if the queue is already empty.
-    /// NOTE: The destination must be an intrusive container that supports a push(TLink) member function.
+    /// NOTE: The destination must be an intrusive container that supports a
+    /// push(TLink) member function.
     //*************************************************************************
     template <typename TContainer>
     void pop_into(TContainer& destination)
@@ -189,7 +191,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_queue_base()
-      : p_back (&terminator)
+      : p_back(&terminator)
       , current_size(0)
     {
       terminator.etl_next = &terminator;
@@ -198,22 +200,22 @@ namespace etl
     //*************************************************************************
     /// Destructor
     //*************************************************************************
-    ~intrusive_queue_base()
-    {
-    }
+    ~intrusive_queue_base() {}
 
     link_type* p_back;     ///< Pointer to the current back of the queue.
-    link_type  terminator; ///< This link terminates the queue and points to the front of the queue.
+    link_type  terminator; ///< This link terminates the queue and points to the
+                           ///< front of the queue.
 
     size_t current_size; ///< Counts the number of elements in the list.
   };
 
   //***************************************************************************
   ///\ingroup queue
-  /// An intrusive queue. Stores elements derived from any type that supports an 'etl_next' pointer member.
-  /// \warning This queue cannot be used for concurrent access from multiple threads.
-  /// \tparam TValue The type of value that the queue holds.
-  /// \tparam TLink  The link type that the value is derived from.
+  /// An intrusive queue. Stores elements derived from any type that supports an
+  /// 'etl_next' pointer member. \warning This queue cannot be used for
+  /// concurrent access from multiple threads. \tparam TValue The type of value
+  /// that the queue holds. \tparam TLink  The link type that the value is
+  /// derived from.
   //***************************************************************************
   template <typename TValue, typename TLink>
   class intrusive_queue : public etl::intrusive_queue_base<TLink>
@@ -241,41 +243,49 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the value at the front of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A reference to the value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_queue_empty if the queue is empty. \return A reference to
+    /// the value at the front of the queue.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<TValue*>(this->terminator.etl_next);
     }
 
     //*************************************************************************
     /// Gets a reference to the value at the back of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A reference to the value at the back of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_queue_empty if the queue is empty. \return A reference to
+    /// the value at the back of the queue.
     //*************************************************************************
     reference back()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<TValue*>(this->p_back);
     }
 
     //*************************************************************************
     /// Gets a const reference to the value at the front of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A const reference to the value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_queue_empty if the queue is empty. \return A const
+    /// reference to the value at the front of the queue.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<const TValue*>(this->terminator.etl_next);
     }
 
     //*************************************************************************
     /// Gets a reference to the value at the back of the queue.
-    /// Undefined behaviour if the queue is empty.
-    /// \return A reference to the value at the back of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_queue_empty if the queue is empty. \return A reference to
+    /// the value at the back of the queue.
     //*************************************************************************
     const_reference back() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_queue_empty));
       return *static_cast<const TValue*>(this->p_back);
     }
 
@@ -283,8 +293,8 @@ namespace etl
 
     // Disable copy construction and assignment.
     intrusive_queue(const intrusive_queue&);
-    intrusive_queue& operator = (const intrusive_queue& rhs);
+    intrusive_queue& operator=(const intrusive_queue& rhs);
   };
-}
+} // namespace etl
 
 #endif

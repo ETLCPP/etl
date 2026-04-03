@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/function.h"
 #include "etl/callback_service.h"
+#include "etl/function.h"
 
 namespace
 {
@@ -39,11 +39,11 @@ namespace
   typedef etl::callback_service<SIZE, OFFSET> Service;
 
   //*****************************************************************************
-  bool global_called    = false;
-  bool member1_called   = false;
-  bool member2_called   = false;
-  bool unhandled_called = false;
-  size_t called_id      = UINT_MAX;
+  bool   global_called    = false;
+  bool   member1_called   = false;
+  bool   member2_called   = false;
+  bool   unhandled_called = false;
+  size_t called_id        = UINT_MAX;
 
   //*****************************************************************************
   // The global function taking no parameters.
@@ -109,14 +109,14 @@ namespace
   {
     SetupFixture()
     {
-      called_id = UINT_MAX;
-      global_called = false;
-      member1_called = false;
-      member2_called = false;
+      called_id        = UINT_MAX;
+      global_called    = false;
+      member1_called   = false;
+      member2_called   = false;
       unhandled_called = false;
     }
   };
-}
+} // namespace
 
 namespace
 {
@@ -153,7 +153,7 @@ namespace
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(GLOBAL, global_callback);
       service.register_callback(MEMBER1, object.callback);
       service.register_callback(MEMBER2, member_callback);
 
@@ -189,7 +189,7 @@ namespace
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(GLOBAL, global_callback);
       service.register_callback(MEMBER1, object.callback);
       service.register_callback(MEMBER2, member_callback);
 
@@ -280,7 +280,7 @@ namespace
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(GLOBAL, global_callback);
       service.register_callback(MEMBER2, member_callback);
 
       service.callback(MEMBER1);
@@ -316,7 +316,7 @@ namespace
     {
       Service service;
 
-      service.register_callback(GLOBAL,  global_callback);
+      service.register_callback(GLOBAL, global_callback);
       service.register_callback(MEMBER2, member_callback);
 
       service.register_unhandled_callback(unhandled_callback);
@@ -330,4 +330,4 @@ namespace
       CHECK(unhandled_called);
     }
   }
-}
+} // namespace

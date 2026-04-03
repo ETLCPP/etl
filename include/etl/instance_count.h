@@ -71,7 +71,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    instance_count& operator =(const instance_count&)
+    instance_count& operator=(const instance_count&)
     {
       return *this;
     }
@@ -107,11 +107,10 @@ namespace etl
     //*************************************************************************
     static counter_type& current_instance_count()
     {
-      static counter_type counter = { 0 };
+      static counter_type counter = {0};
       return counter;
     }
   };
-}
+} // namespace etl
 
 #endif
-

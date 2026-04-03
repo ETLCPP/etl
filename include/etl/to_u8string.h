@@ -35,8 +35,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "u8string.h"
 #include "u8format_spec.h"
+#include "u8string.h"
 #include "private/to_string_helper.h"
 
 namespace etl
@@ -89,14 +89,13 @@ namespace etl
     return private_to_string::to_string(value, denominator_exponent, str, format, append);
   }
 
-
   //***************************************************************************
   /// Default format spec.
   /// etl::iu8string
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_same<T, etl::iu8string>::value, const etl::iu8string&>::type
-    to_string(const T& value, etl::iu8string& str, bool append = false)
+  typename etl::enable_if<etl::is_same<T, etl::iu8string>::value, const etl::iu8string&>::type to_string(const T& value, etl::iu8string& str,
+                                                                                                         bool append = false)
   {
     etl::u8format_spec format;
 
@@ -123,8 +122,8 @@ namespace etl
   /// etl::u8string_view
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_same<T, etl::u8string_view>::value, const etl::iu8string&>::type
-    to_string(T value, etl::iu8string& str, bool append = false)
+  typename etl::enable_if<etl::is_same<T, etl::u8string_view>::value, const etl::iu8string&>::type to_string(T value, etl::iu8string& str,
+                                                                                                             bool append = false)
   {
     etl::u8format_spec format;
 
@@ -145,6 +144,6 @@ namespace etl
 
     return str;
   }
-}
+} // namespace etl
 
 #endif

@@ -28,9 +28,9 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/largest.h"
 #include "etl/message_router.h"
 #include "etl/queue.h"
-#include "etl/largest.h"
 
 //***************************************************************************
 // The set of messages.
@@ -64,7 +64,7 @@ namespace
 
   ////***********************************
   // Uncomment to demonstrate static assert
-  //struct Message0 : public etl::message<MESSAGE0, NotInterface>
+  // struct Message0 : public etl::message<MESSAGE0, NotInterface>
   //{
   //};
 
@@ -99,7 +99,7 @@ namespace
     }
 
     etl::imessage_router& callback;
-    int value[10];
+    int                   value[10];
   };
 
   //***********************************
@@ -147,13 +147,13 @@ namespace
   public:
 
     Router1()
-      : message_router(ROUTER1),
-        message1_count(0),
-        message2_count(0),
-        message3_count(0),
-        message4_count(0),
-        message_unknown_count(0),
-        callback_count(0)
+      : message_router(ROUTER1)
+      , message1_count(0)
+      , message2_count(0)
+      , message3_count(0)
+      , message4_count(0)
+      , message_unknown_count(0)
+      , callback_count(0)
     {
     }
 
@@ -161,7 +161,7 @@ namespace
     {
       ++message1_count;
       etl::send_message(msg.callback, message5);
-      //CHECK_EQUAL(1, msg.VirtualFunction());
+      // CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -208,27 +208,25 @@ namespace
   public:
 
     Router2()
-      : message_router(ROUTER2),
-        message1_count(0),
-        message2_count(0),
-        message4_count(0),
-        message_unknown_count(0),
-        callback_count(0),
-        sender_id(0)
+      : message_router(ROUTER2)
+      , message1_count(0)
+      , message2_count(0)
+      , message4_count(0)
+      , message_unknown_count(0)
+      , callback_count(0)
+      , sender_id(0)
     {
-
     }
 
     Router2(etl::imessage_router& successor_)
-      : message_router(ROUTER2, successor_),
-        message1_count(0),
-        message2_count(0),
-        message4_count(0),
-        message_unknown_count(0),
-        callback_count(0),
-        sender_id(0)
+      : message_router(ROUTER2, successor_)
+      , message1_count(0)
+      , message2_count(0)
+      , message4_count(0)
+      , message_unknown_count(0)
+      , callback_count(0)
+      , sender_id(0)
     {
-
     }
 
     void on_receive(const Message1& msg)
@@ -236,7 +234,7 @@ namespace
       ++message1_count;
       sender_id = msg.callback.get_message_router_id();
       etl::send_message(msg.callback, message5);
-      //CHECK_EQUAL(1, msg.VirtualFunction());
+      // CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -296,46 +294,38 @@ namespace
       switch (msg.get_message_id())
       {
         case MESSAGE1:
-        {
-          message1_received = true;
-          break;
-        }
+          {
+            message1_received = true;
+            break;
+          }
 
         case MESSAGE2:
-        {
-          message2_received = true;
-          break;
-        }
+          {
+            message2_received = true;
+            break;
+          }
 
         case MESSAGE3:
-        {
-          message3_received = true;
-          break;
-        }
+          {
+            message3_received = true;
+            break;
+          }
 
         default:
-        {
-          unknown_message_received = true;
-          break;
-        }
+          {
+            unknown_message_received = true;
+            break;
+          }
       }
     }
 
-    void on_receive(const Message1&)
-    {
-    }
+    void on_receive(const Message1&) {}
 
-    void on_receive(const Message2&)
-    {
-    }
+    void on_receive(const Message2&) {}
 
-    void on_receive(const Message3&)
-    {
-    }
+    void on_receive(const Message3&) {}
 
-    void on_receive_unknown(const etl::imessage&)
-    {
-    }
+    void on_receive_unknown(const etl::imessage&) {}
 
     bool message1_received;
     bool message2_received;
@@ -402,24 +392,24 @@ namespace
     TEST(message_router_member_types)
     {
       CHECK((std::is_same<etl::message_packet<>, Router0::message_packet>::value));
-      CHECK((std::is_same<etl::type_list<>,      Router0::message_types>::value));
-      CHECK((std::is_same<etl::type_list<>,      Router0::sorted_message_types>::value));
+      CHECK((std::is_same<etl::type_list<>, Router0::message_types>::value));
+      CHECK((std::is_same<etl::type_list<>, Router0::sorted_message_types>::value));
 
-      CHECK((std::is_same<etl::message_packet<Message5, Message3, Message2, Message4, Message1>, Router1::message_packet>::value));
-      CHECK((std::is_same<etl::type_list<Message5, Message3, Message2, Message4, Message1>,      Router1::message_types>::value));
-      CHECK((std::is_same<etl::type_list<Message1, Message2, Message3, Message4, Message5>,      Router1::sorted_message_types>::value));
+      CHECK((std::is_same< etl::message_packet<Message5, Message3, Message2, Message4, Message1>, Router1::message_packet>::value));
+      CHECK((std::is_same< etl::type_list<Message5, Message3, Message2, Message4, Message1>, Router1::message_types>::value));
+      CHECK((std::is_same< etl::type_list<Message1, Message2, Message3, Message4, Message5>, Router1::sorted_message_types>::value));
 
-      CHECK((std::is_same<etl::message_packet<Message1, Message2, Message4, Message5>, Router2::message_packet>::value));
-      CHECK((std::is_same<etl::type_list<Message1, Message2, Message4, Message5>,      Router2::message_types>::value));
-      CHECK((std::is_same<etl::type_list<Message1, Message2, Message4, Message5>,      Router2::sorted_message_types>::value));
+      CHECK((std::is_same< etl::message_packet<Message1, Message2, Message4, Message5>, Router2::message_packet>::value));
+      CHECK((std::is_same<etl::type_list<Message1, Message2, Message4, Message5>, Router2::message_types>::value));
+      CHECK((std::is_same<etl::type_list<Message1, Message2, Message4, Message5>, Router2::sorted_message_types>::value));
 
       CHECK((std::is_same<etl::message_packet<>, etl::null_message_router::message_packet>::value));
-      CHECK((std::is_same<etl::type_list<>,      etl::null_message_router::message_types>::value));
-      CHECK((std::is_same<etl::type_list<>,      etl::null_message_router::sorted_message_types>::value));
+      CHECK((std::is_same<etl::type_list<>, etl::null_message_router::message_types>::value));
+      CHECK((std::is_same<etl::type_list<>, etl::null_message_router::sorted_message_types>::value));
 
       CHECK((std::is_same<etl::message_packet<>, etl::message_producer::message_packet>::value));
-      CHECK((std::is_same<etl::type_list<>,      etl::message_producer::message_types>::value));
-      CHECK((std::is_same<etl::type_list<>,      etl::message_producer::sorted_message_types>::value));
+      CHECK((std::is_same<etl::type_list<>, etl::message_producer::message_types>::value));
+      CHECK((std::is_same<etl::type_list<>, etl::message_producer::sorted_message_types>::value));
     }
 #endif
 
@@ -477,7 +467,7 @@ namespace
     //*************************************************************************
     TEST(message_null_router)
     {
-      Router2 router;
+      Router2                  router;
       etl::null_message_router null_router;
 
       Message1 message1(null_router);
@@ -543,7 +533,7 @@ namespace
     //*************************************************************************
     TEST(message_producer)
     {
-      Router2 router;
+      Router2               router;
       etl::message_producer producer(ROUTER3);
 
       Message1 message1(producer);
@@ -559,7 +549,7 @@ namespace
 
       // Send from the producer.
       router.receive(message1);
-      //etl::send_message(router, message1);
+      // etl::send_message(router, message1);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(0, router.message2_count);
       CHECK_EQUAL(0, router.message4_count);
@@ -680,7 +670,7 @@ namespace
       Router2 r2;
 
       typedef Router2::message_packet Packet;
-      typedef etl::queue<Packet, 4> Queue;
+      typedef etl::queue<Packet, 4>   Queue;
 
       Queue queue;
 
@@ -735,8 +725,8 @@ namespace
       CHECK_EQUAL(3, r1.callback_count);
       queue.pop();
 
-      const Queue& crqueue = queue;
-      const etl::imessage& imr4 = crqueue.front().get();
+      const Queue&         crqueue = queue;
+      const etl::imessage& imr4    = crqueue.front().get();
       r2.receive(imr4);
       CHECK_EQUAL(1, r2.message1_count);
       CHECK_EQUAL(1, r2.message2_count);
@@ -830,4 +820,4 @@ namespace
       CHECK_FALSE(router.unknown_message_received);
     }
   }
-}
+} // namespace

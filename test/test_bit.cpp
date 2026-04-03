@@ -217,7 +217,7 @@ namespace
     {
       using Int = etl::smallest_int_for_bits_t<sizeof(float) * CHAR_BIT>;
 
-      Int i1;
+      Int   i1;
       float f = 123.456789f;
       memcpy(&i1, &f, sizeof(float));
 
@@ -288,7 +288,7 @@ namespace
     TEST(test_rotl_8_constexpr)
     {
       constexpr size_t Size = etl::rotl(uint8_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotl(uint8_t(0xAAU), 1), sizeof(temp));
     }
@@ -393,7 +393,7 @@ namespace
     TEST(test_rotl_16_constexpr)
     {
       constexpr size_t Size = etl::rotl(uint16_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotl(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -462,7 +462,7 @@ namespace
     TEST(test_rotr_8_constexpr)
     {
       constexpr size_t Size = etl::rotr(uint8_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotr(uint8_t(0xAAU), 1), sizeof(temp));
     }
@@ -567,7 +567,7 @@ namespace
     TEST(test_rotr_16_constexpr)
     {
       constexpr size_t Size = etl::rotr(uint16_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotr(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -577,16 +577,16 @@ namespace
     TEST(test_rotate16)
     {
       uint16_t value;
-      int offset;
+      int      offset;
 
       offset = 4;
-      value = 0xB73CU;
-      value = etl::rotate(value, offset);
+      value  = 0xB73CU;
+      value  = etl::rotate(value, offset);
       CHECK_EQUAL(0x73CBU, int(value));
 
       offset = -4;
-      value = 0xB73CU;
-      value = etl::rotate(value, offset);
+      value  = 0xB73CU;
+      value  = etl::rotate(value, offset);
       CHECK_EQUAL(0xCB73U, int(value));
     }
 
@@ -595,7 +595,7 @@ namespace
     TEST(test_rotate16_constexpr)
     {
       constexpr size_t Size = etl::rotate(uint16_t(0xAAU), 1);
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::rotate(uint16_t(0xAAU), 1), sizeof(temp));
     }
@@ -616,7 +616,7 @@ namespace
     TEST(test_byteswap_8_constexpr)
     {
       constexpr size_t Size = etl::byteswap(uint8_t(0x12U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint8_t(0x12)), sizeof(temp));
     }
@@ -645,7 +645,7 @@ namespace
     TEST(test_byteswap_16_constexpr)
     {
       constexpr size_t Size = etl::byteswap(uint16_t(0xA500U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint16_t(0xA500U)), sizeof(temp));
     }
@@ -674,7 +674,7 @@ namespace
     TEST(test_byteswap_32_constexpr)
     {
       constexpr uint32_t Size = etl::byteswap(uint32_t(0xA5000000UL));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint32_t(0xA5000000UL)), sizeof(temp));
     }
@@ -703,7 +703,7 @@ namespace
     TEST(test_byteswap_64_constexpr)
     {
       constexpr uint64_t Size = etl::byteswap(uint64_t(0xA500000000000000ULL));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(etl::byteswap(uint64_t(0xA500000000000000ULL)), sizeof(temp));
     }
@@ -722,8 +722,8 @@ namespace
     //*************************************************************************
     TEST(test_popcount_8_constexpr)
     {
-      constexpr size_t Size = etl::popcount(uint8_t(0xFFU));     
-      char temp[Size];
+      constexpr size_t Size = etl::popcount(uint8_t(0xFFU));
+      char             temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint8_t(0xFFU)), sizeof(temp));
     }
@@ -743,7 +743,7 @@ namespace
     TEST(test_popcount_16_constexpr)
     {
       constexpr size_t Size = etl::popcount(uint16_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint16_t(0xFFU)), sizeof(temp));
     }
@@ -769,7 +769,7 @@ namespace
     TEST(test_popcount_32_constexpr)
     {
       constexpr size_t Size = etl::popcount(uint32_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint32_t(0xFFU)), sizeof(temp));
     }
@@ -795,7 +795,7 @@ namespace
     TEST(test_popcount_64_constexpr)
     {
       constexpr size_t Size = etl::popcount(uint64_t(0xFFU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::popcount(uint64_t(0xFFU)), sizeof(temp));
     }
@@ -819,7 +819,7 @@ namespace
     TEST(test_countr_zero_8_constexpr)
     {
       constexpr size_t Size = etl::countr_zero(uint8_t(0x08));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint8_t(0x08)), sizeof(temp));
     }
@@ -841,7 +841,7 @@ namespace
     TEST(test_countr_zero_16_constexpr)
     {
       constexpr size_t Size = etl::countr_zero(uint16_t(0x08));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint16_t(0x08)), sizeof(temp));
     }
@@ -867,7 +867,7 @@ namespace
     TEST(test_countr_zero_32_constexpr)
     {
       constexpr size_t Size = etl::countr_zero(uint32_t(0x08));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint32_t(0x08)), sizeof(temp));
     }
@@ -893,7 +893,7 @@ namespace
     TEST(test_countr_zero_64_constexpr)
     {
       constexpr size_t Size = etl::countr_zero(uint64_t(0x08));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(etl::countr_zero(uint64_t(0x08)), sizeof(temp));
     }
@@ -946,7 +946,7 @@ namespace
     TEST(test_countr_one_16_constexpr)
     {
       constexpr size_t Size = etl::countr_one(uint16_t(0x000F));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint16_t(0x000F)), sizeof(temp));
     }
@@ -977,7 +977,7 @@ namespace
     TEST(test_countr_one_32_constexpr)
     {
       constexpr size_t Size = etl::countr_one(uint32_t(0x0000000F));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint32_t(0x0000000F)), sizeof(temp));
     }
@@ -1007,7 +1007,7 @@ namespace
     TEST(test_countr_one_64_constexpr)
     {
       constexpr size_t Size = etl::countr_one(uint64_t(0x000000000000000F));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_trailing_ones(uint64_t(0x000000000000000F)), sizeof(temp));
     }
@@ -1034,7 +1034,7 @@ namespace
     TEST(test_countl_zero_8_constexpr)
     {
       constexpr size_t Size = etl::countl_zero(uint8_t(0x01U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint8_t(0x01U)), sizeof(temp));
     }
@@ -1061,7 +1061,7 @@ namespace
     TEST(test_countl_zero_16_constexpr)
     {
       constexpr size_t Size = etl::countl_zero(uint16_t(0x0800U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint16_t(0x0800U)), sizeof(temp));
     }
@@ -1092,7 +1092,7 @@ namespace
     TEST(test_countl_zero_32_constexpr)
     {
       constexpr size_t Size = etl::countl_zero(uint32_t(0x08000000U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint32_t(0x08000000U)), sizeof(temp));
     }
@@ -1123,7 +1123,7 @@ namespace
     TEST(test_countl_zero_64_constexpr)
     {
       constexpr size_t Size = etl::countl_zero(uint64_t(0x0800000000000000U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_zeros(uint64_t(0x0800000000000000U)), sizeof(temp));
     }
@@ -1150,7 +1150,7 @@ namespace
     TEST(test_countl_one_8_constexpr)
     {
       constexpr size_t Size = etl::countl_one(uint8_t(0xF0U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint8_t(0xF0U)), sizeof(temp));
     }
@@ -1177,7 +1177,7 @@ namespace
     TEST(test_countl_one_16_constexpr)
     {
       constexpr size_t Size = etl::countl_one(uint16_t(0xF000U));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint16_t(0xF000U)), sizeof(temp));
     }
@@ -1208,7 +1208,7 @@ namespace
     TEST(test_countl_one_32_constexpr)
     {
       constexpr size_t Size = etl::countl_one(uint32_t(0xF0000000UL));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint32_t(0xF0000000UL)), sizeof(temp));
     }
@@ -1239,7 +1239,7 @@ namespace
     TEST(test_countl_one_64_constexpr)
     {
       constexpr size_t Size = etl::countl_one(uint64_t(0xF000000000000000UL));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_leading_ones(uint64_t(0xF000000000000000UL)), sizeof(temp));
     }
@@ -1261,7 +1261,7 @@ namespace
     TEST(test_bit_ceil_8_constexpr)
     {
       constexpr size_t Size = etl::bit_ceil(uint8_t(1));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint8_t(1)), sizeof(temp));
     }
@@ -1292,7 +1292,7 @@ namespace
     TEST(test_bit_ceil_16_constexpr)
     {
       constexpr size_t Size = etl::bit_ceil(uint16_t(1));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint16_t(1)), sizeof(temp));
     }
@@ -1323,7 +1323,7 @@ namespace
     TEST(test_bit_ceil_32_constexpr)
     {
       constexpr size_t Size = etl::bit_ceil(uint32_t(1));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint32_t(1)), sizeof(temp));
     }
@@ -1354,7 +1354,7 @@ namespace
     TEST(test_bit_ceil_64_constexpr)
     {
       constexpr uint64_t Size = etl::bit_ceil(uint64_t(1));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_bit_ceil(uint64_t(1)), sizeof(temp));
     }
@@ -1396,7 +1396,7 @@ namespace
     TEST(test_bit_floor_16_constexpr)
     {
       constexpr size_t Size = etl::bit_floor(uint16_t(1));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_floor(uint16_t(1)), sizeof(temp));
     }
@@ -1427,7 +1427,7 @@ namespace
     TEST(test_bit_floor_32_constexpr)
     {
       constexpr size_t Size = etl::bit_floor(uint32_t(1));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_floor(uint32_t(1)), sizeof(temp));
     }
@@ -1458,7 +1458,7 @@ namespace
     TEST(test_bit_floor_64_constexpr)
     {
       constexpr uint64_t Size = etl::bit_floor(uint64_t(1));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_bit_floor(uint64_t(1)), sizeof(temp));
     }
@@ -1480,7 +1480,7 @@ namespace
     TEST(test_bit_width_8_constexpr)
     {
       constexpr size_t Size = etl::bit_width(uint8_t(0xAU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint8_t(0xAU)), sizeof(temp));
     }
@@ -1506,7 +1506,7 @@ namespace
     TEST(test_bit_width_16_constexpr)
     {
       constexpr size_t Size = etl::bit_width(uint16_t(0xAU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint16_t(0xAU)), sizeof(temp));
     }
@@ -1532,7 +1532,7 @@ namespace
     TEST(test_bit_width_32_constexpr)
     {
       constexpr size_t Size = etl::bit_width(uint32_t(0xAU));
-      char temp[Size];
+      char             temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint32_t(0xAU)), sizeof(temp));
     }
@@ -1558,12 +1558,12 @@ namespace
     TEST(test_bit_width_64_constexpr)
     {
       constexpr uint64_t Size = etl::bit_width(uint64_t(0xAU));
-      char temp[Size];
+      char               temp[Size];
 
       CHECK_EQUAL(test_bit_width(uint64_t(0xAU)), sizeof(temp));
     }
 #endif
   }
-}
+} // namespace
 
 #include "etl/private/diagnostic_pop.h"

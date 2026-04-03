@@ -27,26 +27,30 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "UnitTest++/TestDetails.h"
 #include "UnitTest++/TestReporter.h"
 #include "UnitTest++/TestReporterStdout.h"
 #include "UnitTest++/TestRunner.h"
-#include "UnitTest++/TestDetails.h"
 
 #include <cstring>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 class VerboseTestReporter : public UnitTest::TestReporter
 {
 public:
-  VerboseTestReporter() : m_testIndex(0), m_currentTestFailed(false) {}
+
+  VerboseTestReporter()
+    : m_testIndex(0)
+    , m_currentTestFailed(false)
+  {
+  }
 
   void ReportTestStart(UnitTest::TestDetails const& test) override
   {
     ++m_testIndex;
     m_currentTestFailed = false;
-    std::cout << "[START #" << m_testIndex << "] "
-              << test.suiteName << "::" << test.testName << std::endl;
+    std::cout << "[START #" << m_testIndex << "] " << test.suiteName << "::" << test.testName << std::endl;
     std::cout.flush();
     std::cerr.flush();
   }
@@ -55,39 +59,32 @@ public:
   {
     std::cout.flush();
     std::cerr.flush();
-    std::cout << "[" << (m_currentTestFailed ? "FAILED" : "PASSED")
-              << "  #" << m_testIndex << "] "
-              << test.suiteName << "::" << test.testName
-              << " (" << std::fixed << std::setprecision(4) << secondsElapsed << " s)"
-              << std::endl;
+    std::cout << "[" << (m_currentTestFailed ? "FAILED" : "PASSED") << "  #" << m_testIndex << "] " << test.suiteName << "::" << test.testName << " ("
+              << std::fixed << std::setprecision(4) << secondsElapsed << " s)" << std::endl;
   }
 
   void ReportFailure(UnitTest::TestDetails const& details, char const* failure) override
   {
     m_currentTestFailed = true;
 #if defined(__APPLE__) || defined(__GNUG__)
-    std::cerr << details.filename << ":" << details.lineNumber << ":1: error: Failure in "
-              << details.testName << ": " << failure << std::endl;
+    std::cerr << details.filename << ":" << details.lineNumber << ":1: error: Failure in " << details.testName << ": " << failure << std::endl;
 #else
-    std::cerr << details.filename << "(" << details.lineNumber << "): error: Failure in "
-              << details.testName << ": " << failure << std::endl;
+    std::cerr << details.filename << "(" << details.lineNumber << "): error: Failure in " << details.testName << ": " << failure << std::endl;
 #endif
   }
 
-  void ReportSummary(int totalTestCount, int failedTestCount,
-                     int failureCount, float secondsElapsed) override
+  void ReportSummary(int totalTestCount, int failedTestCount, int failureCount, float secondsElapsed) override
   {
     if (failureCount > 0)
-      std::cout << "FAILURE: " << failedTestCount << " out of " << totalTestCount
-                << " tests failed (" << failureCount << " failures)." << std::endl;
+      std::cout << "FAILURE: " << failedTestCount << " out of " << totalTestCount << " tests failed (" << failureCount << " failures)." << std::endl;
     else
       std::cout << "Success: " << totalTestCount << " tests passed." << std::endl;
 
-    std::cout << "Test time: " << std::fixed << std::setprecision(2)
-              << secondsElapsed << " seconds." << std::endl;
+    std::cout << "Test time: " << std::fixed << std::setprecision(2) << secondsElapsed << " seconds." << std::endl;
   }
 
 private:
+
   int  m_testIndex;
   bool m_currentTestFailed;
 };
@@ -103,7 +100,7 @@ int main(int argc, char* argv[])
 
   if (verbose)
   {
-    VerboseTestReporter reporter;
+    VerboseTestReporter  reporter;
     UnitTest::TestRunner runner(reporter);
     return runner.RunTestsIf(UnitTest::Test::GetTestList(), NULL, UnitTest::True(), 0);
   }

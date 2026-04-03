@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/intrusive_queue.h"
 #include "etl/intrusive_links.h"
+#include "etl/intrusive_queue.h"
 
 #include <vector>
 
@@ -38,39 +38,37 @@ namespace
   typedef etl::forward_link<0>       link_fwd;
   typedef etl::bidirectional_link<1> link_bdir;
 
-  struct Data : public link_fwd, public link_bdir
+  struct Data
+    : public link_fwd
+    , public link_bdir
   {
     Data(int i_)
       : i(i_)
     {
-
     }
 
     int i;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
+  bool operator==(const Data& lhs, const Data& rhs)
   {
     return lhs.i == rhs.i;
   }
 
-  std::ostream& operator << (std::ostream& os, const Data& data)
+  std::ostream& operator<<(std::ostream& os, const Data& data)
   {
     os << data.i;
     return os;
   }
 
-  std::vector<Data> data =
-  {
-    Data(1), Data(2), Data(3), Data(4), Data(5), Data(6), Data(7), Data(8)
-  };
+  std::vector<Data> data = {Data(1), Data(2), Data(3), Data(4), Data(5), Data(6), Data(7), Data(8)};
 
   SUITE(test_intrusive_queue)
   {
     //*************************************************************************
     TEST(test_constructor)
     {
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>  queueD;
       etl::intrusive_queue<Data, link_bdir> queueC;
 
       CHECK(queueD.empty());
@@ -83,7 +81,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>  queueD;
       etl::intrusive_queue<Data, link_bdir> queueC;
 
       Data data1(1);
@@ -106,7 +104,7 @@ namespace
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>  queueD;
       etl::intrusive_queue<Data, link_bdir> queueC;
 
       queueD.push(data1);
@@ -127,7 +125,7 @@ namespace
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>  queueD;
       etl::intrusive_queue<Data, link_bdir> queueC;
 
       queueD.push(data1);
@@ -171,7 +169,7 @@ namespace
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>  queueD;
       etl::intrusive_queue<Data, link_bdir> queueC;
 
       queueD.push(data1);
@@ -245,7 +243,7 @@ namespace
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>  queueD;
       etl::intrusive_queue<Data, link_bdir> queueC;
 
       queueD.push(data1);
@@ -403,7 +401,7 @@ namespace
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>        queueD;
       const etl::intrusive_queue<Data, link_fwd>& queueDR = queueD;
 
       queueD.push(data1);
@@ -420,12 +418,11 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
-
       Data data1(1);
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_queue<Data, link_fwd> queueD;
+      etl::intrusive_queue<Data, link_fwd>        queueD;
       const etl::intrusive_queue<Data, link_fwd>& queueDR = queueD;
 
       queueD.push(data1);
@@ -438,5 +435,43 @@ namespace
       queueD.pop();
       CHECK_EQUAL(queueD.back(), queueDR.back());
     }
+
+    //*************************************************************************
+    TEST(test_front_empty_exception)
+    {
+      etl::intrusive_queue<Data, link_fwd> queueD;
+
+      CHECK_EQUAL(0U, queueD.size());
+      CHECK_THROW(queueD.front(), etl::intrusive_queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_back_empty_exception)
+    {
+      etl::intrusive_queue<Data, link_fwd> queueD;
+
+      CHECK_EQUAL(0U, queueD.size());
+      CHECK_THROW(queueD.back(), etl::intrusive_queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const_empty_exception)
+    {
+      etl::intrusive_queue<Data, link_fwd>        queueD;
+      const etl::intrusive_queue<Data, link_fwd>& queueDR = queueD;
+
+      CHECK_EQUAL(0U, queueDR.size());
+      CHECK_THROW(queueDR.front(), etl::intrusive_queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_back_const_empty_exception)
+    {
+      etl::intrusive_queue<Data, link_fwd>        queueD;
+      const etl::intrusive_queue<Data, link_fwd>& queueDR = queueD;
+
+      CHECK_EQUAL(0U, queueDR.size());
+      CHECK_THROW(queueDR.back(), etl::intrusive_queue_empty);
+    }
   }
-}
+} // namespace

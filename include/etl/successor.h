@@ -32,10 +32,10 @@ SOFTWARE.
 #define ETL_SUCCESSOR_INCLUDED
 
 #include "platform.h"
-#include "nullptr.h"
-#include "exception.h"
 #include "error_handler.h"
+#include "exception.h"
 #include "file_error_numbers.h"
+#include "nullptr.h"
 
 namespace etl
 {
@@ -190,6 +190,6 @@ namespace etl
 
     successor_type* p_successor;
   };
-}
+} // namespace etl
 
 #endif

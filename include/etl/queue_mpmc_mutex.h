@@ -36,18 +36,46 @@ SOFTWARE.
 
 #if ETL_HAS_MUTEX
 
-#include "alignment.h"
-#include "parameter_type.h"
-#include "memory_model.h"
-#include "integral_limits.h"
-#include "utility.h"
-#include "placement_new.h"
+  #include "alignment.h"
+  #include "integral_limits.h"
+  #include "memory_model.h"
+  #include "parameter_type.h"
+  #include "placement_new.h"
+  #include "utility.h"
 
-#include <stddef.h>
-#include <stdint.h>
+  #include <stddef.h>
+  #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_mpmc_exception : public exception
+  {
+  public:
+
+    queue_mpmc_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_mpmc_empty : public queue_mpmc_exception
+  {
+  public:
+
+    queue_mpmc_empty(string_type file_name_, numeric_type line_number_)
+      : queue_mpmc_exception(ETL_ERROR_TEXT("queue_mpmc_mutex:empty", ETL_QUEUE_MPMC_MUTEX_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_mpmc_mutex_base
   {
@@ -75,10 +103,10 @@ namespace etl
   protected:
 
     queue_mpmc_mutex_base(size_type max_size_)
-      : write_index(0),
-        read_index(0),
-        current_size(0),
-        MAX_SIZE(max_size_)
+      : write_index(0)
+      , read_index(0)
+      , current_size(0)
+      , MAX_SIZE(max_size_)
     {
     }
 
@@ -97,32 +125,32 @@ namespace etl
       return index;
     }
 
-    size_type write_index;    ///< Where to input new data.
-    size_type read_index;     ///< Where to get the oldest data.
-    size_type current_size;   ///< The current size of the queue.
-    const size_type MAX_SIZE; ///< The maximum number of items in the queue.
+    size_type       write_index;  ///< Where to input new data.
+    size_type       read_index;   ///< Where to get the oldest data.
+    size_type       current_size; ///< The current size of the queue.
+    const size_type MAX_SIZE;     ///< The maximum number of items in the queue.
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
-#if defined(ETL_POLYMORPHIC_MPMC_QUEUE_MUTEX) || defined(ETL_POLYMORPHIC_CONTAINERS)
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
+  #if defined(ETL_POLYMORPHIC_MPMC_QUEUE_MUTEX) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~queue_mpmc_mutex_base()
-    {
-    }
-#else
+
+    virtual ~queue_mpmc_mutex_base() {}
+  #else
+
   protected:
-    ~queue_mpmc_mutex_base()
-    {
-    }
-#endif
+
+    ~queue_mpmc_mutex_base() {}
+  #endif
   };
 
   //***************************************************************************
   ///\ingroup queue_mpmc
-  ///\brief This is the base for all queue_mpmc_mutex's that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived queue_mpmc_mutex.
-  ///\code
+  ///\brief This is the base for all queue_mpmc_mutex's that contain a
+  /// particular type. \details Normally a reference to this type will be taken
+  /// from a derived queue_mpmc_mutex. \code
   /// etl::queue_mpmc_mutex<int, 10> myQueue;
   /// etl::iqueue_mpmc_mutex<int>& iQueue = myQueue;
   ///\endcode
@@ -138,19 +166,19 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;      ///< The type stored in the queue.
-    typedef T&                         reference;       ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
-#endif
-    typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
+    typedef T        value_type;      ///< The type stored in the queue.
+    typedef T&       reference;       ///< A reference to the type used in the queue.
+    typedef const T& const_reference; ///< A const reference to the type used in the queue.
+  #if ETL_USING_CPP11
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
+  #endif
+    typedef typename base_t::size_type size_type; ///< The type used for determining the size of the queue.
 
-    using base_t::write_index;
-    using base_t::read_index;
     using base_t::current_size;
-    using base_t::MAX_SIZE;
     using base_t::get_next_index;
+    using base_t::MAX_SIZE;
+    using base_t::read_index;
+    using base_t::write_index;
 
     //*************************************************************************
     /// Push a value to the queue.
@@ -166,7 +194,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -180,14 +208,15 @@ namespace etl
 
       return result;
     }
-#endif
+  #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace(Args&&... args)
     {
       access.lock();
@@ -198,10 +227,11 @@ namespace etl
 
       return result;
     }
-#else
+  #else
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     bool emplace()
     {
@@ -216,7 +246,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1>
     bool emplace(const T1& value1)
@@ -232,7 +263,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2>
     bool emplace(const T1& value1, const T2& value2)
@@ -248,7 +280,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
     bool emplace(const T1& value1, const T2& value2, const T3& value3)
@@ -264,7 +297,8 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the
+    /// queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
@@ -277,7 +311,7 @@ namespace etl
 
       return result;
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Pop a value from the queue.
@@ -309,29 +343,59 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if
+    /// the queue is empty.
     //*************************************************************************
     reference front()
     {
+  #if ETL_CHECKING_EXTRA
       access.lock();
-
+      if (current_size != 0)
+      {
+        reference inner_result = front_implementation();
+        access.unlock();
+        return inner_result;
+      }
+      else
+      {
+        access.unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+  #endif
+      access.lock();
       reference result = front_implementation();
-
       access.unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an etl::queue_mpmc_empty if
+    /// the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+  #if ETL_CHECKING_EXTRA
       access.lock();
-
+      if (current_size != 0)
+      {
+        const_reference inner_result = front_implementation();
+        access.unlock();
+        return inner_result;
+      }
+      else
+      {
+        access.unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_mpmc_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+  #endif
+      access.lock();
       const_reference result = front_implementation();
-
       access.unlock();
-
       return result;
     }
 
@@ -342,7 +406,7 @@ namespace etl
     {
       access.lock();
 
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         this->write_index  = 0;
         this->read_index   = 0;
@@ -421,8 +485,8 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue_mpmc_mutex(T* p_buffer_, size_type max_size_)
-      : base_t(max_size_),
-        p_buffer(p_buffer_)
+      : base_t(max_size_)
+      , p_buffer(p_buffer_)
     {
     }
 
@@ -448,7 +512,7 @@ namespace etl
       return false;
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -468,13 +532,13 @@ namespace etl
       // Queue is full.
       return false;
     }
-#endif
+  #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_implementation(Args&&... args)
     {
       if (current_size != MAX_SIZE)
@@ -491,7 +555,7 @@ namespace etl
       // Queue is full.
       return false;
     }
-#else
+  #else
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
@@ -593,7 +657,7 @@ namespace etl
       // Queue is full.
       return false;
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Pop a value from the queue.
@@ -606,11 +670,11 @@ namespace etl
         return false;
       }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+  #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[read_index]);
-#else
+  #else
       value = p_buffer[read_index];
-#endif
+  #endif
 
       p_buffer[read_index].~T();
 
@@ -659,7 +723,7 @@ namespace etl
 
     // Disable copy construction and assignment.
     iqueue_mpmc_mutex(const iqueue_mpmc_mutex&);
-    iqueue_mpmc_mutex& operator =(const iqueue_mpmc_mutex&);
+    iqueue_mpmc_mutex& operator=(const iqueue_mpmc_mutex&);
 
     T* p_buffer; ///< The internal buffer.
 
@@ -672,7 +736,8 @@ namespace etl
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T            The type this queue should support.
   /// \tparam SIZE         The maximum capacity of the queue.
-  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type of the internal counter variables.
+  /// \tparam MEMORY_MODEL The memory model for the queue. Determines the type
+  /// of the internal counter variables.
   //***************************************************************************
   template <typename T, size_t SIZE, const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_mpmc_mutex : public etl::iqueue_mpmc_mutex<T, MEMORY_MODEL>
@@ -708,20 +773,20 @@ namespace etl
   private:
 
     queue_mpmc_mutex(const queue_mpmc_mutex&) ETL_DELETE;
-    queue_mpmc_mutex& operator = (const queue_mpmc_mutex&) ETL_DELETE;
+    queue_mpmc_mutex& operator=(const queue_mpmc_mutex&) ETL_DELETE;
 
-#if ETL_USING_CPP11
-    queue_mpmc_mutex(queue_mpmc_mutex&&) = delete;
-    queue_mpmc_mutex& operator = (queue_mpmc_mutex&&) = delete;
-#endif
+  #if ETL_USING_CPP11
+    queue_mpmc_mutex(queue_mpmc_mutex&&)            = delete;
+    queue_mpmc_mutex& operator=(queue_mpmc_mutex&&) = delete;
+  #endif
 
     /// The uninitialised buffer of T used in the queue_mpmc_mutex.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
 
-  template <typename T, size_t SIZE, const size_t MEMORY_MODEL>  
+  template <typename T, size_t SIZE, const size_t MEMORY_MODEL>
   ETL_CONSTANT typename queue_mpmc_mutex<T, SIZE, MEMORY_MODEL>::size_type queue_mpmc_mutex<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif
 #endif

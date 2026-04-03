@@ -28,11 +28,11 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/message_router.h"
-#include "etl/message_bus.h"
-#include "etl/queue.h"
 #include "etl/largest.h"
+#include "etl/message_bus.h"
+#include "etl/message_router.h"
 #include "etl/packet.h"
+#include "etl/queue.h"
 
 //***************************************************************************
 // The set of messages.
@@ -88,7 +88,7 @@ namespace
     }
 
     etl::imessage_router& callback;
-    int value[10];
+    int                   value[10];
   };
 
   struct Message4 : public etl::message<MESSAGE4>
@@ -125,14 +125,14 @@ namespace
   public:
 
     RouterA(etl::message_router_id_t id)
-      : message_router(id),
-        message1_count(0),
-        message2_count(0),
-        message3_count(0),
-        message4_count(0),
-        message5_count(0),
-        message_unknown_count(0),
-        order(0)
+      : message_router(id)
+      , message1_count(0)
+      , message2_count(0)
+      , message3_count(0)
+      , message4_count(0)
+      , message5_count(0)
+      , message_unknown_count(0)
+      , order(0)
     {
     }
 
@@ -189,12 +189,12 @@ namespace
   public:
 
     RouterB(etl::message_router_id_t id)
-      : message_router(id),
-        message1_count(0),
-        message2_count(0),
-        message4_count(0),
-        message5_count(0),
-        message_unknown_count(0)
+      : message_router(id)
+      , message1_count(0)
+      , message2_count(0)
+      , message4_count(0)
+      , message5_count(0)
+      , message_unknown_count(0)
     {
     }
 
@@ -224,7 +224,7 @@ namespace
     void on_receive_unknown(const etl::imessage&)
     {
       ++message_unknown_count;
-      //etl::send_message(msg.callback, response);
+      // etl::send_message(msg.callback, response);
     }
 
     int message1_count;
@@ -246,13 +246,9 @@ namespace
     {
     }
 
-    void on_receive(const Message6&)
-    {
-    }
+    void on_receive(const Message6&) {}
 
-    void on_receive_unknown(const etl::imessage&)
-    {
-    }
+    void on_receive_unknown(const etl::imessage&) {}
   };
 
   //***************************************************************************
@@ -635,7 +631,7 @@ namespace
       CHECK_EQUAL(0, router2.message_unknown_count);
 
       CHECK_EQUAL(4, callback.message5_count);
-      
+
       CHECK_EQUAL(5, bus1.message_count);
     }
 
@@ -965,10 +961,10 @@ namespace
     //*************************************************************************
     TEST(message_bus_successor_to_message_producer)
     {
-      MessageBus<2> bus;
+      MessageBus<2>         bus;
       etl::message_producer producer(ROUTER2);
-      RouterA router(ROUTER1);
-      Response message;
+      RouterA               router(ROUTER1);
+      Response              message;
 
       bus.subscribe(router);
       bus.subscribe(producer);
@@ -1008,4 +1004,4 @@ namespace
       CHECK_FALSE(bus1.accepts(MESSAGE7));
     }
   }
-}
+} // namespace

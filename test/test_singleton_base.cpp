@@ -34,7 +34,7 @@ SOFTWARE.
 #include <string>
 #include <type_traits>
 
-class Test_Singleton: public etl::singleton_base<Test_Singleton>
+class Test_Singleton : public etl::singleton_base<Test_Singleton>
 {
 public:
 
@@ -51,7 +51,7 @@ public:
     text += "*";
   }
 
-  int i;
+  int         i;
   std::string text;
 };
 
@@ -100,5 +100,4 @@ namespace
       CHECK_THROW(Test_Singleton::instance(), etl::singleton_base_not_created);
     }
   }
-}
-
+} // namespace

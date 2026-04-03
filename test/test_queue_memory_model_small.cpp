@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include <queue>
 
-#include "etl/queue.h"
 #include "etl/math.h"
+#include "etl/queue.h"
 
 namespace
 {
@@ -45,18 +45,18 @@ namespace
     }
 
     Item(char c_, int i_, double d_)
-      : c(c_),
-        i(i_),
-        d(d_)
+      : c(c_)
+      , i(i_)
+      , d(d_)
     {
     }
 
-    char c;
-    int i;
+    char   c;
+    int    i;
     double d;
   };
 
-  bool operator == (const Item& lhs, const Item& rhs)
+  bool operator==(const Item& lhs, const Item& rhs)
   {
 #include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
@@ -87,7 +87,7 @@ namespace
   typedef etl::iqueue<int, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueInt;
 
   typedef etl::queue<ItemNTD, 4, etl::memory_model::MEMORY_MODEL_SMALL> QueueItemNTD;
-  typedef etl::iqueue<ItemNTD, etl::memory_model::MEMORY_MODEL_SMALL> IQueueItemNTD;
+  typedef etl::iqueue<ItemNTD, etl::memory_model::MEMORY_MODEL_SMALL>   IQueueItemNTD;
 
   typedef etl::queue<int, 255, etl::memory_model::MEMORY_MODEL_SMALL> QueueInt255;
 
@@ -226,7 +226,7 @@ namespace
     //*************************************************************************
     TEST(test_front_const)
     {
-      QueueInt queue;
+      QueueInt        queue;
       const QueueInt& constQueue = queue;
 
       queue.push(1);
@@ -260,7 +260,7 @@ namespace
     //*************************************************************************
     TEST(test_back_const)
     {
-      QueueInt queue;
+      QueueInt        queue;
       const QueueInt& constQueue = queue;
 
       queue.push(1);
@@ -532,10 +532,10 @@ namespace
       queue.push(3);
       queue.push(4);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       queue = queue;
-#include "etl/private/diagnostic_pop.h" 
-      
+#include "etl/private/diagnostic_pop.h"
+
       CHECK(queue.max_size() == queue.size());
 
       CHECK_EQUAL(1, queue.front());
@@ -551,4 +551,4 @@ namespace
       queue.pop();
     }
   }
-}
+} // namespace

@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "unit_test_framework.h"
 #include "etl/not_null.h"
+#include "unit_test_framework.h"
 
 #if ETL_USING_CPP14
 namespace
@@ -71,10 +71,10 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_non_null_pointer)
     {
-      static constexpr const int value = 123;
+      static constexpr const int                 value = 123;
       static constexpr etl::not_null<const int*> nn(&value);
-      static constexpr const int* p = nn.get();
-      static constexpr const int  v = *nn;
+      static constexpr const int*                p = nn.get();
+      static constexpr const int                 v = *nn;
       CHECK_EQUAL(&value, p);
       CHECK_EQUAL(123, v);
     }
@@ -82,11 +82,11 @@ namespace
     //*************************************************************************
     TEST(test_copy_construct)
     {
-      static constexpr const int value = 123;
+      static constexpr const int                 value = 123;
       static constexpr etl::not_null<const int*> nn1(&value);
       static constexpr etl::not_null<const int*> nn2(nn1); // Copy constructor
-      static constexpr const int* p = nn2.get();
-      static constexpr const int  v = *nn2;
+      static constexpr const int*                p = nn2.get();
+      static constexpr const int                 v = *nn2;
       CHECK_EQUAL(&value, p);
       CHECK_EQUAL(123, v);
     }
@@ -94,8 +94,8 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_pointer)
     {
-      static constexpr const int value1 = 123;
-      static constexpr const int value2 = 456;
+      static constexpr const int                 value1 = 123;
+      static constexpr const int                 value2 = 456;
       static constexpr etl::not_null<const int*> nn(CreateNotNullAssignFromPointer(&value1, &value2));
 
       CHECK_EQUAL(&value2, nn.get());
@@ -105,8 +105,8 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_not_null)
     {
-      static constexpr const int value1 = 123;
-      static constexpr const int value2 = 456;
+      static constexpr const int                 value1 = 123;
+      static constexpr const int                 value2 = 456;
       static constexpr etl::not_null<const int*> nn(CreateNotNullAssignFromNotNull(&value1, &value2));
 
       CHECK_EQUAL(&value2, nn.get());
@@ -116,7 +116,7 @@ namespace
     //*************************************************************************
     TEST(test_implicit_conversion)
     {
-      static constexpr const S s{123};
+      static constexpr const S                 s{123};
       static constexpr etl::not_null<const S*> nn(&s);
 
       static constexpr const S* raw = nn;
@@ -126,7 +126,7 @@ namespace
     //*************************************************************************
     TEST(test_arrow_operator)
     {
-      static constexpr const S s{123};
+      static constexpr const S                 s{123};
       static constexpr etl::not_null<const S*> nn(&s);
 
       static constexpr int x1 = nn->x;
@@ -139,7 +139,7 @@ namespace
     //*************************************************************************
     TEST(test_dereference_operator)
     {
-      static constexpr const S s{123};
+      static constexpr const S                 s{123};
       static constexpr etl::not_null<const S*> nn(&s);
 
       static constexpr int x1 = (*nn).x;
@@ -149,6 +149,6 @@ namespace
       CHECK_EQUAL(s.get(), x2);
     }
   }
-}
+} // namespace
 
 #endif

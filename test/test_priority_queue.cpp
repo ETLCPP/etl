@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include <queue>
 
-#include "etl/priority_queue.h"
 #include "etl/math.h"
+#include "etl/priority_queue.h"
 #include <functional>
 #include <string>
 
@@ -57,24 +57,24 @@ namespace
     {
     }
 
-    char c;
-    int i;
+    char   c;
+    int    i;
     double d;
   };
 
-  bool operator == (const Item& lhs, const Item& rhs)
+  bool operator==(const Item& lhs, const Item& rhs)
   {
 #include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
 #include "etl/private/diagnostic_pop.h"
   }
 
-  bool operator < (const Item& lhs, const Item& rhs)
+  bool operator<(const Item& lhs, const Item& rhs)
   {
     return (lhs.c < rhs.c);
   }
 
-  std::ostream& operator << (std::ostream& os, const Item& item)
+  std::ostream& operator<<(std::ostream& os, const Item& item)
   {
     os << item.c << "," << item.i << "," << item.d;
     return os;
@@ -147,7 +147,7 @@ namespace
 
       etl::priority_queue<ItemM, SIZE> priority_queue2(std::move(priority_queue));
 
-      CHECK_EQUAL(0U,   priority_queue.size());
+      CHECK_EQUAL(0U, priority_queue.size());
       CHECK_EQUAL(SIZE, priority_queue2.size());
 
       CHECK_EQUAL(priority_queue2.top().value, "D");
@@ -162,9 +162,9 @@ namespace
     //*************************************************************************
     TEST(test_constructor_range)
     {
-      int n[] = { 3, 4, 1, 2 };
+      int                            n[] = {3, 4, 1, 2};
       etl::priority_queue<int, SIZE> priority_queue(std::begin(n), std::end(n));
-      std::priority_queue<int> compare_priority_queue(std::begin(n), std::end(n));
+      std::priority_queue<int>       compare_priority_queue(std::begin(n), std::end(n));
 
       CHECK_EQUAL(compare_priority_queue.size(), priority_queue.size());
       CHECK(!priority_queue.empty());
@@ -203,9 +203,9 @@ namespace
     //*************************************************************************
     TEST(test_assign_range)
     {
-      int n[] = { 3, 4, 1, 2 };
+      int                            n[] = {3, 4, 1, 2};
       etl::priority_queue<int, SIZE> priority_queue;
-      std::priority_queue<int> compare_priority_queue(std::begin(n), std::end(n));
+      std::priority_queue<int>       compare_priority_queue(std::begin(n), std::end(n));
 
       priority_queue.assign(std::begin(n), std::end(n));
 
@@ -251,7 +251,7 @@ namespace
     TEST(test_top)
     {
       etl::priority_queue<int, SIZE> priority_queue;
-      std::priority_queue<int> compare_priority_queue;
+      std::priority_queue<int>       compare_priority_queue;
 
       priority_queue.push(1);
       compare_priority_queue.push(1);
@@ -271,9 +271,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_top_const)
+    TEST(test_top_bounds_exception)
     {
       etl::priority_queue<int, SIZE> priority_queue;
+
+      CHECK(priority_queue.empty());
+      CHECK_THROW(priority_queue.top(), etl::priority_queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_top_const)
+    {
+      etl::priority_queue<int, SIZE>        priority_queue;
       const etl::priority_queue<int, SIZE>& constQueue = priority_queue;
 
       priority_queue.push(1);
@@ -287,10 +296,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_top_const_bounds_exception)
+    {
+      etl::priority_queue<int, SIZE>        priority_queue;
+      const etl::priority_queue<int, SIZE>& constQueue = priority_queue;
+
+      CHECK(constQueue.empty());
+      CHECK_THROW(constQueue.top(), etl::priority_queue_empty);
+    }
+
+    //*************************************************************************
     TEST(test_push)
     {
       etl::priority_queue<int, SIZE> priority_queue;
-      std::priority_queue<int> compare_priority_queue;
+      std::priority_queue<int>       compare_priority_queue;
 
       priority_queue.push(1);
       compare_priority_queue.push(1);
@@ -328,7 +347,7 @@ namespace
       ItemM a("A"), b("B"), c("C"), d("D");
 
       etl::priority_queue<ItemM, SIZE> priority_queue;
-      std::priority_queue<ItemM> compare_priority_queue;
+      std::priority_queue<ItemM>       compare_priority_queue;
 
       priority_queue.push(std::move(c));
       priority_queue.push(std::move(d));
@@ -355,7 +374,7 @@ namespace
     TEST(test_emplace)
     {
       etl::priority_queue<Item, 5> priority_queue;
-      std::priority_queue<Item> compare_priority_queue;
+      std::priority_queue<Item>    compare_priority_queue;
 
       priority_queue.emplace();
       compare_priority_queue.emplace();
@@ -407,7 +426,7 @@ namespace
     TEST(test_pop)
     {
       etl::priority_queue<int, SIZE> priority_queue;
-      std::priority_queue<int> compare_priority_queue;
+      std::priority_queue<int>       compare_priority_queue;
 
       priority_queue.push(1);
       compare_priority_queue.push(1);
@@ -585,10 +604,9 @@ namespace
 
       etl::priority_queue<int, SIZE> priority_queue2 = priority_queue1;
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       priority_queue1 = priority_queue1;
-#include "etl/private/diagnostic_pop.h" 
-      
+#include "etl/private/diagnostic_pop.h"
 
       CHECK(priority_queue1.size() == priority_queue2.size());
 
@@ -603,8 +621,8 @@ namespace
     //*************************************************************************
     TEST(test_interface)
     {
-      typedef etl::priority_queue<int, SIZE> priority_queue_t;
-      priority_queue_t priority_queue;
+      typedef etl::priority_queue<int, SIZE>                                                       priority_queue_t;
+      priority_queue_t                                                                             priority_queue;
       etl::ipriority_queue<int, priority_queue_t::container_type, priority_queue_t::compare_type>& ipriority_queue = priority_queue;
 
       std::priority_queue<int> compare_priority_queue;
@@ -651,4 +669,4 @@ namespace
       }
     }
   }
-}
+} // namespace

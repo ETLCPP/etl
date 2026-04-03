@@ -69,6 +69,6 @@ namespace etl
   template <size_t Value, size_t KV>
   inline constexpr size_t permutations_v = permutations<Value, KV>::value;
 #endif
-}
+} // namespace etl
 
 #endif

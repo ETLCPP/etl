@@ -54,19 +54,19 @@ namespace etl
     gamma_encode(double gamma_, TInput maximum_)
       : one_over_gamma(1.0 / gamma_)
       , maximum(maximum_)
-    {      
+    {
     }
 
     //*********************************
     /// operator ()
     /// Get the gamma.
     //*********************************
-    TInput operator ()(TInput value) const
+    TInput operator()(TInput value) const
     {
       // Calculate intermediate result because rounding + optimization
       // lead to wrong values when returning directly (test on i386)
       const double result = maximum * pow(double(value) / maximum, one_over_gamma);
-      
+
       return TInput(result);
     }
 
@@ -90,14 +90,14 @@ namespace etl
     gamma_decode(double gamma_, TInput maximum_)
       : gamma(gamma_)
       , maximum(maximum_)
-    {      
+    {
     }
 
     //*********************************
     /// operator ()
     /// Get the gamma.
     //*********************************
-    TInput operator ()(TInput value) const
+    TInput operator()(TInput value) const
     {
       // Calculate intermediate result because rounding + optimization
       // lead to wrong values when returning directly (test on i386)
@@ -110,6 +110,6 @@ namespace etl
     const double gamma;
     const double maximum;
   };
-}
+} // namespace etl
 
 #endif

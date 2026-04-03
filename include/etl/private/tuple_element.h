@@ -39,16 +39,16 @@ namespace etl
   struct tuple_element;
 
   //***************************************************************************
-  template<size_t Index, typename TType>
+  template <size_t Index, typename TType>
   struct tuple_element<Index, const TType>
   {
-    using type = typename etl::add_const_t<typename etl::tuple_element<Index, TType>::type>;
+    using type = typename etl::add_const_t< typename etl::tuple_element<Index, TType>::type>;
   };
 
   //***************************************************************************
   template <size_t Index, typename TType>
   using tuple_element_t = typename tuple_element<Index, TType>::type;
 #endif
-}
+} // namespace etl
 
 #endif

@@ -31,16 +31,16 @@ SOFTWARE.
 #include "etl/inplace_function.h"
 #include "etl/vector.h"
 
-#include <vector>
-#include <functional>
 #include <algorithm>
-#include <type_traits>
+#include <functional>
 #include <stdexcept>
+#include <type_traits>
+#include <vector>
 
-// Enable exactly one of these at a time to see the corresponding static_assert fire.
-//#define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN
-//#define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST
-//#define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_CONST
+// Enable exactly one of these at a time to see the corresponding static_assert
+// fire. #define ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN #define
+// ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST #define
+// ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_CONST
 
 namespace
 {
@@ -71,9 +71,9 @@ namespace
   FunctionCalled function_called = FunctionCalled::Not_Called;
 
   //*****************************************************************************
-  const int VALUE1 = 1;
-  const int VALUE2 = 2;
-  bool parameter_correct = false;
+  const int VALUE1            = 1;
+  const int VALUE2            = 2;
+  bool      parameter_correct = false;
 
   //*****************************************************************************
   // Object data structure.
@@ -88,13 +88,13 @@ namespace
   //*****************************************************************************
   struct MoveableOnlyData
   {
-    MoveableOnlyData() = default;
-    ~MoveableOnlyData() = default;
-    MoveableOnlyData(const MoveableOnlyData&) = delete;
+    MoveableOnlyData()                                   = default;
+    ~MoveableOnlyData()                                  = default;
+    MoveableOnlyData(const MoveableOnlyData&)            = delete;
     MoveableOnlyData& operator=(const MoveableOnlyData&) = delete;
-    MoveableOnlyData(MoveableOnlyData&&) = default;
-    MoveableOnlyData& operator=(MoveableOnlyData&&) = default;
-    int ipf;
+    MoveableOnlyData(MoveableOnlyData&&)                 = default;
+    MoveableOnlyData& operator=(MoveableOnlyData&&)      = default;
+    int               ipf;
   };
 
   //*****************************************************************************
@@ -110,7 +110,7 @@ namespace
   //*****************************************************************************
   void free_int(int i, int j)
   {
-    function_called = FunctionCalled::Free_Int_Called;
+    function_called   = FunctionCalled::Free_Int_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
   }
 
@@ -119,7 +119,7 @@ namespace
   //*****************************************************************************
   void free_reference(const Data& data, int j)
   {
-    function_called = FunctionCalled::Free_Reference_Called;
+    function_called   = FunctionCalled::Free_Reference_Called;
     parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
   }
 
@@ -128,7 +128,7 @@ namespace
   //*****************************************************************************
   void free_moveableonly(MoveableOnlyData&& data)
   {
-    function_called = FunctionCalled::Free_Moveableonly_Called;
+    function_called   = FunctionCalled::Free_Moveableonly_Called;
     parameter_correct = (data.ipf == VALUE1);
   }
 
@@ -137,7 +137,7 @@ namespace
   //*****************************************************************************
   int normal(int i, int j)
   {
-    function_called = FunctionCalled::Normal_Called;
+    function_called   = FunctionCalled::Normal_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
 
     return i + j;
@@ -148,7 +148,7 @@ namespace
   //*****************************************************************************
   void normal_returning_void(int i, int j)
   {
-    function_called = FunctionCalled::Normal_Returning_Void_Called;
+    function_called   = FunctionCalled::Normal_Returning_Void_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
   }
 
@@ -157,7 +157,7 @@ namespace
   //*****************************************************************************
   int alternative(int i, int j)
   {
-    function_called = FunctionCalled::Alternative_Called;
+    function_called   = FunctionCalled::Alternative_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
 
     return i + j + 1;
@@ -197,7 +197,7 @@ namespace
   };
 
   //*******************************************
-  int times_2(int a) 
+  int times_2(int a)
   {
     return a * 2;
   }
@@ -211,10 +211,10 @@ namespace
 
 #if ETL_USING_CPP17
   static auto global_lambda = [](int i, int j)
-    {
-      function_called = FunctionCalled::Lambda_Called;
-      parameter_correct = (i == VALUE1) && (j == VALUE2);
-    };
+  {
+    function_called   = FunctionCalled::Lambda_Called;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+  };
 #endif
 
   //*******************************************
@@ -291,7 +291,7 @@ namespace
 
     char data[Size];
   };
-}
+} // namespace
 
 //*****************************************************************************
 // The test class with member functions.
@@ -322,17 +322,17 @@ public:
   // int
   int member_int(int i, int j)
   {
-    function_called = FunctionCalled::Member_Int_Called;
+    function_called   = FunctionCalled::Member_Int_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
 
     ++call_count;
 
-    return i + j + 1; 
+    return i + j + 1;
   }
 
   int member_int_const(int i, int j) const
   {
-    function_called = FunctionCalled::Member_Int_Const_Called;
+    function_called   = FunctionCalled::Member_Int_Const_Called;
     parameter_correct = (i == VALUE1) && (j == VALUE2);
 
     ++call_count;
@@ -344,13 +344,13 @@ public:
   // reference
   void member_reference(const Data& data, int j)
   {
-    function_called = FunctionCalled::Member_Reference_Called;
+    function_called   = FunctionCalled::Member_Reference_Called;
     parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
   }
 
   void member_reference_const(const Data& data, int j) const
   {
-    function_called = FunctionCalled::Member_Reference_Const_Called;
+    function_called   = FunctionCalled::Member_Reference_Const_Called;
     parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
 
     ++call_count;
@@ -360,7 +360,7 @@ public:
   // moveable only data
   void member_moveableonly(MoveableOnlyData&& data)
   {
-    function_called = FunctionCalled::Member_Moveableonly_Called;
+    function_called   = FunctionCalled::Member_Moveableonly_Called;
     parameter_correct = (data.ipf == VALUE1);
 
     ++call_count;
@@ -370,7 +370,7 @@ public:
   // static
   static void member_static(const Data& data, int j)
   {
-    function_called = FunctionCalled::Member_Static_Called;
+    function_called   = FunctionCalled::Member_Static_Called;
     parameter_correct = (data.ipf == VALUE1) && (j == VALUE2);
   }
 
@@ -395,10 +395,10 @@ public:
   mutable int call_count;
 };
 
-Object object_static;
+Object                 object_static;
 constexpr const Object const_object_static;
 
-Functor functor_static;
+Functor            functor_static;
 const FunctorConst const_functor_static;
 
 namespace
@@ -432,11 +432,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_inplace_function_size_and_alignment)
     {
-      using InplaceFunction84  = etl::inplace_function<int(float, long),  8, 4>;
+      using InplaceFunction84  = etl::inplace_function<int(float, long), 8, 4>;
       using InplaceFunction168 = etl::inplace_function<int(float, long), 16, 8>;
 
       // Check the sizes.
-      CHECK_EQUAL(8,  InplaceFunction84::size());
+      CHECK_EQUAL(8, InplaceFunction84::size());
       CHECK_EQUAL(16, InplaceFunction168::size());
 
       // Check the alignments.
@@ -458,7 +458,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_true)
     {
-      auto lambda = [] {};
+      auto lambda = [] {
+      };
 
       etl::inplace_function<void(void)> ipf(lambda);
 
@@ -470,7 +471,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_is_valid_after_clear)
     {
-      auto lambda = [] {};
+      auto lambda = [] {
+      };
 
       etl::inplace_function<void(void)> ipf(lambda);
 
@@ -509,6 +511,16 @@ namespace
       CHECK(function_called == FunctionCalled::Free_Void_Called);
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_from_nullptr)
+    {
+      etl::inplace_function<void(void)> ipf(nullptr);
+
+      CHECK_FALSE(ipf.is_valid());
+      CHECK_FALSE(ipf);
+      CHECK_THROW(ipf(), etl::inplace_function_uninitialized);
+    }
+
 #if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_free_void_compile_time)
@@ -527,15 +539,15 @@ namespace
       {
         auto ipf = etl::inplace_function<void(void)>::create<throwing_void>();
 
-        CHECK_THROW(ipf(),         std::runtime_error);
+        CHECK_THROW(ipf(), std::runtime_error);
         CHECK_THROW(ipf.call_if(), std::runtime_error);
       }
 
       {
         auto ipf = etl::inplace_function<int(int, int)>::create<throwing_normal>();
 
-        CHECK_THROW({ipf.call_or(alternative, VALUE1, VALUE2);}, std::runtime_error);
-        CHECK_THROW({ipf.call_or<alternative>(VALUE1, VALUE2);}, std::runtime_error);
+        CHECK_THROW({ ipf.call_or(alternative, VALUE1, VALUE2); }, std::runtime_error);
+        CHECK_THROW({ ipf.call_or<alternative>(VALUE1, VALUE2); }, std::runtime_error);
       }
     }
 
@@ -549,7 +561,7 @@ namespace
       CHECK(function_called == FunctionCalled::Free_Int_Called);
       CHECK(parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_free_int_compile_time)
     {
@@ -704,7 +716,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_int)
     {
-      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+      auto lambda = [](int i, int j)
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+      };
 
       etl::inplace_function<void(int, int)> ipf(lambda);
 
@@ -717,7 +733,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_inplace_function_lambda_int_run_time)
     {
-      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+      auto lambda = [](int i, int j)
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+      };
 
       auto ipf = etl::make_inplace_function(lambda);
 
@@ -731,7 +751,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_inplace_function_lambda_int_compile_time)
     {
-      static auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+      static auto lambda = [](int i, int j)
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+      };
 
       auto ipf = etl::make_inplace_function<decltype(lambda), lambda>();
 
@@ -747,7 +771,12 @@ namespace
     {
       int value = VALUE1;
 
-      auto lambda = [value](int i, int j) -> int { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return value + VALUE1 + VALUE2; };
+      auto lambda = [value](int i, int j) -> int
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+        return value + VALUE1 + VALUE2;
+      };
 
       etl::inplace_function<int(int, int)> ipf(lambda);
 
@@ -763,7 +792,12 @@ namespace
     {
       int value = VALUE1;
 
-      auto lambda = [value](int i, int j) -> int { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return value + VALUE1 + VALUE2; };
+      auto lambda = [value](int i, int j) -> int
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+        return value + VALUE1 + VALUE2;
+      };
 
       auto ipf = etl::make_inplace_function(lambda);
 
@@ -780,7 +814,12 @@ namespace
     {
       int value = VALUE1;
 
-      static auto lambda = [value](int i, int j) -> int { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); return value + VALUE1 + VALUE2; };
+      static auto lambda = [value](int i, int j) -> int
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+        return value + VALUE1 + VALUE2;
+      };
 
       auto ipf = etl::make_inplace_function<decltype(lambda), lambda>();
 
@@ -801,7 +840,7 @@ namespace
 
       ipf();
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Operator_Called);
     }
 
@@ -814,7 +853,7 @@ namespace
 
       ipf();
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Operator_Const_Called);
     }
 
@@ -905,7 +944,7 @@ namespace
 
       ipf();
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Operator_Called);
     }
 
@@ -928,7 +967,7 @@ namespace
 
       ipf();
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Void_Called);
     }
 
@@ -947,7 +986,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_const)
     {
-      auto ipf = etl::inplace_function<void(void)>::create<Object, &Object::member_void_const, const_object_static>();
+      auto ipf = etl::inplace_function<void(void)>::create< Object, &Object::member_void_const, const_object_static>();
 
       ipf();
 
@@ -963,7 +1002,7 @@ namespace
 
       ipf();
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Void_Const_Called);
     }
 
@@ -995,11 +1034,12 @@ namespace
     {
       Object object;
 
-      auto ipf = etl::make_inplace_function(&Object::member_int, object); // Pass it by value to the inplace function.
+      auto ipf = etl::make_inplace_function(&Object::member_int,
+                                            object); // Pass it by value to the inplace function.
 
       ipf(VALUE1, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Int_Called);
       CHECK(parameter_correct);
     }
@@ -1037,7 +1077,7 @@ namespace
 
       ipf(VALUE1, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Int_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1059,14 +1099,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_reference)
     {
       Object object;
-      auto ipf = etl::inplace_function<void(const Data&, int)>(&Object::member_reference, object);
+      auto   ipf = etl::inplace_function<void(const Data&, int)>(&Object::member_reference, object);
 
       Data data;
       data.ipf = VALUE1;
 
       ipf(data, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
@@ -1075,14 +1115,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_make_member_reference_run_time)
     {
       Object object;
-      auto ipf = etl::make_inplace_function(&Object::member_reference, object);
+      auto   ipf = etl::make_inplace_function(&Object::member_reference, object);
 
       Data data;
       data.ipf = VALUE1;
 
       ipf(data, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
@@ -1107,14 +1147,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_reference_const)
     {
       Object object;
-      auto ipf = etl::inplace_function<void(const Data&, int)>(&Object::member_reference_const, object);
+      auto   ipf = etl::inplace_function<void(const Data&, int)>(&Object::member_reference_const, object);
 
       Data data;
       data.ipf = VALUE1;
 
       ipf(data, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1123,14 +1163,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_make_member_reference_run_time_const)
     {
       Object object;
-      auto ipf = etl::make_inplace_function(&Object::member_reference_const, object);
+      auto   ipf = etl::make_inplace_function(&Object::member_reference_const, object);
 
       Data data;
       data.ipf = VALUE1;
 
       ipf(data, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1155,14 +1195,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_member_moveableonly)
     {
       Object object;
-      auto ipf = etl::inplace_function<void(MoveableOnlyData&&)>(&Object::member_moveableonly, object);
+      auto   ipf = etl::inplace_function<void(MoveableOnlyData&&)>(&Object::member_moveableonly, object);
 
       MoveableOnlyData data;
       data.ipf = VALUE1;
 
       ipf(std::move(data));
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Moveableonly_Called);
       CHECK(parameter_correct);
     }
@@ -1215,7 +1255,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_set_free_int_run_time)
     {
       // Start with a destructible object to check that it is properly destroyed
-      DestructibleMovableObject object;
+      DestructibleMovableObject             object;
       etl::inplace_function<void(int, int)> ipf(object);
 
       ipf.set(free_int);
@@ -1224,7 +1264,7 @@ namespace
 
       ipf(VALUE1, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Free_Int_Called);
       CHECK(parameter_correct);
     }
@@ -1247,7 +1287,11 @@ namespace
     {
       etl::inplace_function<void(int, int)> ipf;
 
-      auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
+      auto lambda = [](int i, int j)
+      {
+        function_called   = FunctionCalled::Lambda_Called;
+        parameter_correct = (i == VALUE1) && (j == VALUE2);
+      };
 
       ipf.set(lambda);
 
@@ -1301,7 +1345,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference_run_time)
     {
-      Object object;
+      Object                                        object;
       etl::inplace_function<void(const Data&, int)> ipf;
 
       ipf.set(&Object::member_reference, object);
@@ -1311,7 +1355,7 @@ namespace
 
       ipf(data, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Called);
       CHECK(parameter_correct);
     }
@@ -1319,7 +1363,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference_compile_time)
     {
-      Object object;
+      Object                                        object;
       etl::inplace_function<void(const Data&, int)> ipf;
 
       ipf.set(&Object::member_reference, object);
@@ -1336,7 +1380,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference_const_run_time)
     {
-      const Object object;
+      const Object                                  object;
       etl::inplace_function<void(const Data&, int)> ipf;
 
       ipf.set(&Object::member_reference_const, object);
@@ -1346,7 +1390,7 @@ namespace
 
       ipf(data, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Reference_Const_Called);
       CHECK(parameter_correct);
     }
@@ -1354,7 +1398,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference_const_compile_time)
     {
-      const Object object;
+      const Object                                  object;
       etl::inplace_function<void(const Data&, int)> ipf;
 
       ipf.set(&Object::member_reference_const, object);
@@ -1378,7 +1422,7 @@ namespace
 
       d2(VALUE1, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK(function_called == FunctionCalled::Member_Int_Called);
       CHECK(parameter_correct);
     }
@@ -1398,10 +1442,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_construct_different_size)
     {
-      auto d1 = etl::inplace_function<void(int, int),  8, 16>(free_int);
+      auto d1 = etl::inplace_function<void(int, int), 8, 16>(free_int);
       auto d2 = etl::inplace_function<void(int, int), 16, 16>(free_int);
-      auto d3 = etl::inplace_function<void(int, int), 16,  8>(free_int);
-      auto d4 = etl::inplace_function<void(int, int),  8,  8>(free_int);
+      auto d3 = etl::inplace_function<void(int, int), 16, 8>(free_int);
+      auto d4 = etl::inplace_function<void(int, int), 8, 8>(free_int);
 
       // These should not trigger any static asserts.
       decltype(d1) d1_1_copy(d1);
@@ -1437,14 +1481,14 @@ namespace
     {
       DestructibleMovableObject object;
 
-      auto d1 = etl::inplace_function<void(int, int)>(object);
+      auto                                  d1 = etl::inplace_function<void(int, int)>(object);
       etl::inplace_function<void(int, int)> d2;
 
       d2 = d1;
 
       d2(VALUE1, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK_TRUE(DestructibleMovableObject::function_operator_called);
     }
 
@@ -1453,14 +1497,14 @@ namespace
     {
       DestructibleMovableObject object;
 
-      auto d1 = etl::inplace_function<void(int, int)>(object);
+      auto                                  d1 = etl::inplace_function<void(int, int)>(object);
       etl::inplace_function<void(int, int)> d2;
 
       d2 = etl::move(d1);
 
       d2(VALUE1, VALUE2);
 
-      CHECK_EQUAL(0, object.call_count);  // Ensure the original object is not modified.
+      CHECK_EQUAL(0, object.call_count); // Ensure the original object is not modified.
       CHECK_TRUE(DestructibleMovableObject::function_operator_called);
     }
 
@@ -1560,7 +1604,7 @@ namespace
       CHECK(function_called == FunctionCalled::Not_Called);
       CHECK(!parameter_correct);
     }
-    
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_inplace_function_for)
     {
@@ -1571,7 +1615,7 @@ namespace
       int size = 0;
 
       function_called = FunctionCalled::Not_Called;
-      size = ipf();
+      size            = ipf();
       CHECK_EQUAL(functor32.size(), size);
       CHECK_TRUE(function_called == FunctionCalled::Operator_Called);
     }
@@ -1583,8 +1627,8 @@ namespace
       FunctorSized<16> functor16;
       FunctorSized<32> functor32;
 
-      auto ipf = etl::inplace_function_for_any<int(void), FunctorSized<8>, FunctorSized<16>, FunctorSized<32>>();
-      int size = 0;
+      auto ipf  = etl::inplace_function_for_any<int(void), FunctorSized<8>, FunctorSized<16>, FunctorSized<32>>();
+      int  size = 0;
 
       function_called = FunctionCalled::Not_Called;
       ipf.set(functor8);
@@ -1597,7 +1641,7 @@ namespace
       size = ipf();
       CHECK_TRUE(function_called == FunctionCalled::Operator_Called);
       CHECK_EQUAL(functor16.size(), size);
-      
+
       function_called = FunctionCalled::Not_Called;
       ipf.set(functor32);
       size = ipf();
@@ -1632,20 +1676,23 @@ namespace
     {
       etl::inplace_function<int(int i, int j)> ipf;
 
-      int value = 1;
-      auto lambda = [value](int i, int j) -> int { return value + i + j; };
+      int  value  = 1;
+      auto lambda = [value](int i, int j) -> int
+      {
+        return value + i + j;
+      };
 
       int result = 0;
 
-      ipf = lambda;
+      ipf    = lambda;
       result = ipf(2, 3);
       CHECK_EQUAL(1 + 2 + 3, result);
 
-      ipf = normal;
+      ipf    = normal;
       result = ipf(3, 4);
       CHECK_EQUAL(3 + 4, result);
 
-      ipf = lambda;
+      ipf    = lambda;
       result = ipf(5, 6);
       CHECK_EQUAL(1 + 5 + 6, result);
     }
@@ -1661,7 +1708,7 @@ namespace
 
       int r1_before = ipf1(VALUE1, VALUE2);
       int r2_before = ipf2(VALUE1, VALUE2);
-      CHECK_EQUAL(VALUE1 + VALUE2,     r1_before);
+      CHECK_EQUAL(VALUE1 + VALUE2, r1_before);
       CHECK_EQUAL(VALUE1 + VALUE2 + 1, r2_before);
 
       swap(ipf1, ipf2); // ADL swap uses member swap
@@ -1670,7 +1717,7 @@ namespace
       int r2_after = ipf2(VALUE1, VALUE2);
       // After swap ipf1 should now hold 'member_int', ipf2 should hold 'normal'
       CHECK_EQUAL(VALUE1 + VALUE2 + 1, r1_after);
-      CHECK_EQUAL(VALUE1 + VALUE2,     r2_after);
+      CHECK_EQUAL(VALUE1 + VALUE2, r2_after);
     }
 
     //*************************************************************************
@@ -1712,9 +1759,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_swap_self_noop)
     {
       etl::inplace_function<int(int, int)> ipf(normal);
-      int before = ipf(VALUE1, VALUE2);
+      int                                  before = ipf(VALUE1, VALUE2);
       ipf.swap(ipf); // self-swap should be a no-op
-      int after  = ipf(VALUE1, VALUE2);
+      int after = ipf(VALUE1, VALUE2);
       CHECK_EQUAL(before, after);
       CHECK_EQUAL(VALUE1 + VALUE2, after);
     }
@@ -1724,19 +1771,22 @@ namespace
     {
       struct PlusOne
       {
-        int operator()(int a, int b) { return a + b + 1; }
+        int operator()(int a, int b)
+        {
+          return a + b + 1;
+        }
       } functor;
 
       etl::inplace_function<int(int, int)> ipf_functor(functor);
       etl::inplace_function<int(int, int)> ipf_function(normal);
 
       CHECK_EQUAL(VALUE1 + VALUE2 + 1, ipf_functor(VALUE1, VALUE2));
-      CHECK_EQUAL(VALUE1 + VALUE2,     ipf_function(VALUE1, VALUE2));
+      CHECK_EQUAL(VALUE1 + VALUE2, ipf_function(VALUE1, VALUE2));
 
       ipf_functor.swap(ipf_function);
 
-      CHECK_EQUAL(VALUE1 + VALUE2,     ipf_functor(VALUE1, VALUE2));     // now holds 'normal'
-      CHECK_EQUAL(VALUE1 + VALUE2 + 1, ipf_function(VALUE1, VALUE2));    // now holds functor
+      CHECK_EQUAL(VALUE1 + VALUE2, ipf_functor(VALUE1, VALUE2));      // now holds 'normal'
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, ipf_function(VALUE1, VALUE2)); // now holds functor
     }
 
 #if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_BAD_RETURN)
@@ -1746,7 +1796,8 @@ namespace
     {
       auto bad = [](int) { /* returns void */ };
       // static_assert in lambda_stub/const_lambda_stub should trigger:
-      // "etl::inplace_function: bound lambda/functor is not compatible with the inplace_function signature"
+      // "etl::inplace_function: bound lambda/functor is not compatible with the
+      // inplace_function signature"
       auto ipf = etl::inplace_function<int(int)>(bad);
       (void)ipf;
     }
@@ -1754,11 +1805,13 @@ namespace
 
 #if defined(ETL_NEGATIVE_TEST_INPLACE_FUNCTION_RVALUE_PARAM_MISMATCH_NONCONST)
     //*************************************************************************
-    // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda takes lvalue ref)
+    // Triggers: parameter ref-qualification mismatch (expects rvalue, lambda
+    // takes lvalue ref)
     TEST(test_inplace_function_static_assert_param_mismatch_nonconst)
     {
       auto bad = [](int&) { /* needs lvalue */ };
-      // Not invocable with int&&, so is_compatible_callable is false, so static_assert triggers
+      // Not invocable with int&&, so is_compatible_callable is false, so
+      // static_assert triggers
       auto ipf = etl::inplace_function<void(int&&)>(bad);
       (void)ipf;
     }
@@ -1770,11 +1823,11 @@ namespace
     TEST(test_inplace_function_static_assert_param_mismatch_const)
     {
       const auto bad = [](int&) { /* needs lvalue */ };
-      // Not invocable with int&&, so is_compatible_callable is false, so static_assert triggers
+      // Not invocable with int&&, so is_compatible_callable is false, so
+      // static_assert triggers
       auto ipf = etl::inplace_function<void(int&&)>(bad);
       (void)ipf;
     }
 #endif
   }
-}
-
+} // namespace

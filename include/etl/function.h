@@ -57,11 +57,11 @@ namespace etl
     typedef TParameter parameter_type; ///< The type of parameter sent to the function.
 
     virtual ~ifunction() {}
-  
+
     //*************************************************************************
     /// The function operator that will be overridden.
     //*************************************************************************
-    virtual void operator ()(TParameter) const = 0;
+    virtual void operator()(TParameter) const = 0;
   };
 
   //***************************************************************************
@@ -76,11 +76,11 @@ namespace etl
     typedef void parameter_type; ///< The type of parameter sent to the function.
 
     virtual ~ifunction() {}
-  
+
     //*************************************************************************
     /// The function operator that will be overridden.
     //*************************************************************************
-    virtual void operator ()() const = 0;
+    virtual void operator()() const = 0;
   };
 
   //***************************************************************************
@@ -102,9 +102,9 @@ namespace etl
     ///\param object    Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object_, void(TObject::* p_function_)(TParameter))
-      : p_object(&object_),
-        p_function(p_function_)
+    function(TObject& object_, void (TObject::*p_function_)(TParameter))
+      : p_object(&object_)
+      , p_function(p_function_)
     {
     }
 
@@ -112,7 +112,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()(TParameter data) const ETL_OVERRIDE
+    virtual void operator()(TParameter data) const ETL_OVERRIDE
     {
       // Call the object's member function with the data.
       (p_object->*p_function)(data);
@@ -120,8 +120,8 @@ namespace etl
 
   private:
 
-    TObject* p_object;                        ///< Pointer to the object that contains the function.
-    void (TObject::* p_function)(TParameter); ///< Pointer to the member function.
+    TObject* p_object;                       ///< Pointer to the object that contains the function.
+    void (TObject::*p_function)(TParameter); ///< Pointer to the member function.
   };
 
   //***************************************************************************
@@ -139,16 +139,16 @@ namespace etl
     ///\param object   Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function(TObject& object_, void(TObject::* p_function_)(void))
-      : p_object(&object_),
-        p_function(p_function_)
+    function(TObject& object_, void (TObject::*p_function_)(void))
+      : p_object(&object_)
+      , p_function(p_function_)
     {
     }
 
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    virtual void operator ()() const ETL_OVERRIDE
+    virtual void operator()() const ETL_OVERRIDE
     {
       // Call the object's member function.
       (p_object->*p_function)();
@@ -156,8 +156,8 @@ namespace etl
 
   private:
 
-    TObject* p_object;              ///< Pointer to the object that contains the function.
-    void (TObject::* p_function)(); ///< Pointer to the member function.
+    TObject* p_object;             ///< Pointer to the object that contains the function.
+    void (TObject::*p_function)(); ///< Pointer to the member function.
   };
 
   //***************************************************************************
@@ -173,7 +173,7 @@ namespace etl
     /// Constructor.
     ///\param p_function Pointer to the function
     //*************************************************************************
-    explicit function(void(*p_function_)(TParameter))
+    explicit function(void (*p_function_)(TParameter))
       : p_function(p_function_)
     {
     }
@@ -182,7 +182,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()(TParameter data) const ETL_OVERRIDE
+    virtual void operator()(TParameter data) const ETL_OVERRIDE
     {
       // Call the function with the data.
       (*p_function)(data);
@@ -206,7 +206,7 @@ namespace etl
     /// Constructor.
     ///\param p_function Pointer to the function.
     //*************************************************************************
-    explicit function(void(*p_function_)(void))
+    explicit function(void (*p_function_)(void))
       : p_function(p_function_)
     {
     }
@@ -214,7 +214,7 @@ namespace etl
     //*************************************************************************
     /// The function operator that calls the destination function.
     //*************************************************************************
-    virtual void operator ()() const ETL_OVERRIDE
+    virtual void operator()() const ETL_OVERRIDE
     {
       // Call the function.
       (*p_function)();
@@ -252,7 +252,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()(TParameter data) const ETL_OVERRIDE
+    virtual void operator()(TParameter data) const ETL_OVERRIDE
     {
       // Call the object's member function with the data.
       (p_object->*Function)(data);
@@ -290,7 +290,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()() const ETL_OVERRIDE
+    virtual void operator()() const ETL_OVERRIDE
     {
       // Call the object's member function.
       (p_object->*Function)();
@@ -319,7 +319,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()(TParameter data) const ETL_OVERRIDE
+    virtual void operator()(TParameter data) const ETL_OVERRIDE
     {
       // Call the object's member function with the data.
       (Instance.*Function)(data);
@@ -344,7 +344,7 @@ namespace etl
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()() const ETL_OVERRIDE
+    virtual void operator()() const ETL_OVERRIDE
     {
       // Call the object's member function.
       (Instance.*Function)();
@@ -368,15 +368,13 @@ namespace etl
     ///\param object    Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function_fp()
-    {
-    }
+    function_fp() {}
 
     //*************************************************************************
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()(TParameter data) const ETL_OVERRIDE
+    virtual void operator()(TParameter data) const ETL_OVERRIDE
     {
       // Call the object's member function with the data.
       (*Function)(data);
@@ -388,7 +386,7 @@ namespace etl
   /// A derived function template that takes a parameter type.
   ///\tparam TParameter The parameter type accepted by the member function.
   //***************************************************************************
-  template <void(*Function)(void)>
+  template <void (*Function)(void)>
   class function_fv : public ifunction<void>
   {
   public:
@@ -400,21 +398,19 @@ namespace etl
     ///\param object    Reference to the object
     ///\param p_function Pointer to the member function
     //*************************************************************************
-    function_fv()
-    {
-    }
+    function_fv() {}
 
     //*************************************************************************
     /// The function operator that calls the destination function.
     ///\param data The data to pass to the function.
     //*************************************************************************
-    virtual void operator ()() const ETL_OVERRIDE
+    virtual void operator()() const ETL_OVERRIDE
     {
       // Call the function.
       (*Function)();
     }
   };
 
-}
+} // namespace etl
 
 #endif

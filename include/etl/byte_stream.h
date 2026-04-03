@@ -32,22 +32,21 @@ SOFTWARE.
 #define ETL_BYTE_STREAM_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
-#include "nullptr.h"
-#include "endianness.h"
-#include "integral_limits.h"
 #include "algorithm.h"
+#include "delegate.h"
+#include "endianness.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "integral_limits.h"
 #include "iterator.h"
 #include "memory.h"
-#include "span.h"
-#include "iterator.h"
+#include "nullptr.h"
 #include "optional.h"
-#include "delegate.h"
-#include "exception.h"
-#include "error_handler.h"
+#include "span.h"
+#include "type_traits.h"
 
-#include <stdint.h>
 #include <limits.h>
+#include <stdint.h>
 
 namespace etl
 {
@@ -58,9 +57,9 @@ namespace etl
   {
   public:
 
-    typedef char* iterator;
-    typedef const char* const_iterator;
-    typedef etl::span<char> callback_parameter_type;
+    typedef char*                                        iterator;
+    typedef const char*                                  const_iterator;
+    typedef etl::span<char>                              callback_parameter_type;
     typedef etl::delegate<void(callback_parameter_type)> callback_type;
 
     //***************************************************************************
@@ -93,7 +92,7 @@ namespace etl
     byte_stream_writer(void* begin_, void* end_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
       , pcurrent(reinterpret_cast<char*>(begin_))
-      , stream_length(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)))
+      , stream_length(static_cast<size_t>(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_))))
       , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
@@ -115,7 +114,7 @@ namespace etl
     /// Construct from array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_writer(T(&begin_)[Size], etl::endian stream_endianness_, callback_type callback_ = callback_type())
+    byte_stream_writer(T (&begin_)[Size], etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(begin_)
       , pcurrent(begin_)
       , stream_length(begin_ + (Size * sizeof(T)))
@@ -151,8 +150,7 @@ namespace etl
     /// Write a value to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type
-      write_unchecked(T value)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type write_unchecked(T value)
     {
       to_bytes<T>(value);
     }
@@ -161,8 +159,7 @@ namespace etl
     /// Write a value to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
-      write(T value)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type write(T value)
     {
       bool success = (available<T>() > 0U);
 
@@ -178,8 +175,7 @@ namespace etl
     /// Write a range of T to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type
-      write_unchecked(const etl::span<T>& range)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type write_unchecked(const etl::span<T>& range)
     {
       typename etl::span<T>::iterator itr = range.begin();
 
@@ -194,8 +190,7 @@ namespace etl
     /// Write a range of T to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
-      write(const etl::span<T>& range)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type write(const etl::span<T>& range)
     {
       bool success = (available<T>() >= range.size());
 
@@ -211,8 +206,7 @@ namespace etl
     /// Write a range of T to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type
-      write_unchecked(const T* start, size_t length)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type write_unchecked(const T* start, size_t length)
     {
       while (length-- != 0U)
       {
@@ -225,8 +219,7 @@ namespace etl
     /// Write a range of T to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
-      write(const T* start, size_t length)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type write(const T* start, size_t length)
     {
       bool success = (available<T>() >= length);
 
@@ -381,7 +374,7 @@ namespace etl
     //***************************************************************************
     size_t size_bytes() const
     {
-      return etl::distance(pdata, pcurrent);
+      return static_cast<size_t>(etl::distance(pdata, pcurrent));
     }
 
     //***************************************************************************
@@ -439,8 +432,7 @@ namespace etl
     /// to_bytes
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) == 1U, void>::type
-      to_bytes(const T value)
+    typename etl::enable_if<sizeof(T) == 1U, void>::type to_bytes(const T value)
     {
       *pcurrent = static_cast<char>(value);
       step(1U);
@@ -448,8 +440,7 @@ namespace etl
 
     //*********************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) != 1U, void>::type
-      to_bytes(const T value)
+    typename etl::enable_if<sizeof(T) != 1U, void>::type to_bytes(const T value)
     {
       const char* pv = reinterpret_cast<const char*>(&value);
       copy_value(pv, pcurrent, sizeof(T));
@@ -494,7 +485,7 @@ namespace etl
   {
   public:
 
-    typedef char* iterator;
+    typedef char*       iterator;
     typedef const char* const_iterator;
 
     //***************************************************************************
@@ -525,7 +516,7 @@ namespace etl
     byte_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , pcurrent(reinterpret_cast<const char*>(begin_))
-      , stream_length(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
+      , stream_length(static_cast<size_t>(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_))))
       , stream_endianness(stream_endianness_)
     {
     }
@@ -545,7 +536,7 @@ namespace etl
     /// Construct from array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_reader(T(&begin_)[Size], etl::endian stream_endianness_)
+    byte_stream_reader(T (&begin_)[Size], etl::endian stream_endianness_)
       : pdata(begin_)
       , pcurrent(begin_)
       , stream_length(begin_ + (Size * sizeof(T)))
@@ -557,7 +548,7 @@ namespace etl
     /// Construct from const array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_reader(const T(&begin_)[Size], etl::endian stream_endianness_)
+    byte_stream_reader(const T (&begin_)[Size], etl::endian stream_endianness_)
       : pdata(begin_)
       , pcurrent(begin_)
       , stream_length(begin_ + (Size * sizeof(T)))
@@ -569,8 +560,7 @@ namespace etl
     /// Read a value from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, T>::type
-      read_unchecked()
+    typename etl::enable_if< etl::is_integral<T>::value || etl::is_floating_point<T>::value, T>::type read_unchecked()
     {
       return from_bytes<T>();
     }
@@ -579,8 +569,7 @@ namespace etl
     /// Read a value from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<T> >::type
-      read()
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<T> >::type read()
     {
       etl::optional<T> result;
 
@@ -597,14 +586,13 @@ namespace etl
     /// Read a byte range from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) == 1U, etl::span<const T> >::type
-      read_unchecked(size_t n)
+    typename etl::enable_if<sizeof(T) == 1U, etl::span<const T> >::type read_unchecked(size_t n)
     {
       etl::span<const T> result;
 
       const char* pend = pcurrent + (n * sizeof(T));
 
-      result = etl::span<const T>(reinterpret_cast<const T*>(pcurrent), reinterpret_cast<const T*>(pend));
+      result   = etl::span<const T>(reinterpret_cast<const T*>(pcurrent), reinterpret_cast<const T*>(pend));
       pcurrent = pend;
 
       return result;
@@ -614,8 +602,7 @@ namespace etl
     /// Read a byte range from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) == 1U, etl::optional<etl::span<const T> > >::type
-      read(size_t n)
+    typename etl::enable_if<sizeof(T) == 1U, etl::optional<etl::span<const T> > >::type read(size_t n)
     {
       etl::optional<etl::span<const T> > result;
 
@@ -665,8 +652,8 @@ namespace etl
     /// Read a range of T from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::span<const T> >::type
-      read_unchecked(T* start,  size_t length)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::span<const T> >::type read_unchecked(T*     start,
+                                                                                                                                      size_t length)
     {
       T* destination = start;
 
@@ -799,7 +786,7 @@ namespace etl
     template <typename T>
     size_t available() const
     {
-      size_t used = etl::distance(pdata, pcurrent);
+      size_t used = static_cast<size_t>(etl::distance(pdata, pcurrent));
 
       return (stream_length - used) / sizeof(T);
     }
@@ -826,16 +813,14 @@ namespace etl
     /// from_bytes
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) == 1U, T>::type
-      from_bytes()
+    typename etl::enable_if<sizeof(T) == 1U, T>::type from_bytes()
     {
       return static_cast<T>(*pcurrent++);
     }
 
     //*********************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) != 1U, T>::type
-      from_bytes()
+    typename etl::enable_if<sizeof(T) != 1U, T>::type from_bytes()
     {
       T value;
 
@@ -893,7 +878,7 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
-  T  read_unchecked(etl::byte_stream_reader& stream)
+  T read_unchecked(etl::byte_stream_reader& stream)
   {
     return stream.read_unchecked<T>();
   }
@@ -906,6 +891,6 @@ namespace etl
   {
     return stream.read<T>();
   }
-}
+} // namespace etl
 
 #endif

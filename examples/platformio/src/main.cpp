@@ -88,35 +88,35 @@ public:
   // Notify observers about a position event.
   void Position_Event()
   {
-    Position position = { 100, 200 };
+    Position position = {100, 200};
     notify_observers(position);
   }
 
   // Notify observers about a button up event.
   void Button_Event_Up()
   {
-    Button button = { Button::Up };
+    Button button = {Button::Up};
     notify_observers(button);
   }
 
   // Notify observers about a button down event.
   void Button_Event_Down()
   {
-    Button button = { Button::Down };
+    Button button = {Button::Down};
     notify_observers(button);
   }
 
   // Notify observers about a wheel up event.
   void Wheel_Event_Up()
   {
-    Wheel wheel = { 50 };
+    Wheel wheel = {50};
     notify_observers(wheel);
   }
 
   // Notify observers about a wheel down event.
   void Wheel_Event_Down()
   {
-    Wheel wheel = { -25 };
+    Wheel wheel = {-25};
     notify_observers(wheel);
   }
 };
@@ -137,6 +137,6 @@ int main()
   mouse_driver.Position_Event();
   mouse_driver.Wheel_Event_Down();
   mouse_driver.Wheel_Event_Up();
- 
+
   return 0;
 }

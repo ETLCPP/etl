@@ -34,10 +34,10 @@ SOFTWARE.
 
 #include <algorithm>
 #include <array>
-#include <list>
-#include <vector>
-#include <string>
 #include <functional>
+#include <list>
+#include <string>
+#include <vector>
 
 typedef TestDataDC<std::string>  ItemDC;
 typedef TestDataNDC<std::string> ItemNDC;
@@ -48,7 +48,9 @@ namespace
   typedef etl::bidirectional_link<1> SecondLink;
 
   //***************************************************************************
-  class ItemDCNode : public FirstLink, public SecondLink
+  class ItemDCNode
+    : public FirstLink
+    , public SecondLink
   {
   public:
 
@@ -61,7 +63,9 @@ namespace
   };
 
   //***************************************************************************
-  class ItemNDCNode : public FirstLink, public SecondLink
+  class ItemNDCNode
+    : public FirstLink
+    , public SecondLink
   {
   public:
 
@@ -70,12 +74,12 @@ namespace
     {
     }
 
-    bool operator <(const ItemNDCNode& other) const
+    bool operator<(const ItemNDCNode& other) const
     {
       return data < other.data;
     }
 
-    bool operator >(const ItemNDCNode& other) const
+    bool operator>(const ItemNDCNode& other) const
     {
       return other.data < data;
     }
@@ -84,27 +88,27 @@ namespace
   };
 
   //***************************************************************************
-//  bool operator ==(const ItemDCNode& lhs, const ItemDCNode& rhs)
-//  {
-//    return lhs.data == rhs.data;
-//  }
+  //  bool operator ==(const ItemDCNode& lhs, const ItemDCNode& rhs)
+  //  {
+  //    return lhs.data == rhs.data;
+  //  }
 
-  bool operator ==(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
+  bool operator==(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
   {
     return lhs.data == rhs.data;
   }
 
-//  bool operator !=(const ItemDCNode& lhs, const ItemDCNode& rhs)
-//  {
-//    return lhs.data != rhs.data;
-//  }
+  //  bool operator !=(const ItemDCNode& lhs, const ItemDCNode& rhs)
+  //  {
+  //    return lhs.data != rhs.data;
+  //  }
 
-//  bool operator !=(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
-//  {
-//    return lhs.data != rhs.data;
-//  }
+  //  bool operator !=(const ItemNDCNode& lhs, const ItemNDCNode& rhs)
+  //  {
+  //    return lhs.data != rhs.data;
+  //  }
 
-  std::ostream& operator << (std::ostream& os, const ItemNDCNode& node)
+  std::ostream& operator<<(std::ostream& os, const ItemNDCNode& node)
   {
     os << node.data;
     return os;
@@ -113,7 +117,7 @@ namespace
   //***************************************************************************
   struct CompareItemNDCNode
   {
-    bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
+    bool operator()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
     {
       return lhs.data < rhs.data;
     }
@@ -121,20 +125,20 @@ namespace
 
   struct EqualItemNDCNode
   {
-    bool operator ()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
+    bool operator()(const ItemNDCNode& lhs, const ItemNDCNode& rhs) const
     {
       return lhs.data == rhs.data;
     }
   };
 
   //***************************************************************************
-  typedef etl::intrusive_list<ItemDCNode,  FirstLink>  DataDC0;
-  typedef etl::intrusive_list<ItemDCNode,  SecondLink> DataDC1;
+  typedef etl::intrusive_list<ItemDCNode, FirstLink>   DataDC0;
+  typedef etl::intrusive_list<ItemDCNode, SecondLink>  DataDC1;
   typedef etl::intrusive_list<ItemNDCNode, FirstLink>  DataNDC0;
   typedef etl::intrusive_list<ItemNDCNode, SecondLink> DataNDC1;
 
   typedef std::vector<ItemNDCNode> InitialDataNDC;
-}
+} // namespace
 
 namespace
 {
@@ -158,19 +162,25 @@ namespace
     {
       SetupFixture()
       {
-        stable_sort_data = { ItemNDCNode("1", 1), ItemNDCNode("2", 2), ItemNDCNode("3", 3), ItemNDCNode("2", 4), ItemNDCNode("0", 5), ItemNDCNode("2", 6), ItemNDCNode("7", 7), ItemNDCNode("4", 8), ItemNDCNode("4", 9), ItemNDCNode("8", 10) };
-        unsorted_data    = { ItemNDCNode("1"), ItemNDCNode("0"), ItemNDCNode("3"), ItemNDCNode("2"), ItemNDCNode("5"), ItemNDCNode("4"), ItemNDCNode("7"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("8") };
-        sorted_data      = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
-        sorted_data2     = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
-        non_unique_data  = { ItemNDCNode("0"), ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
-        unique_data      = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
-        small_data       = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5") };
+        stable_sort_data = {ItemNDCNode("1", 1), ItemNDCNode("2", 2), ItemNDCNode("3", 3), ItemNDCNode("2", 4), ItemNDCNode("0", 5),
+                            ItemNDCNode("2", 6), ItemNDCNode("7", 7), ItemNDCNode("4", 8), ItemNDCNode("4", 9), ItemNDCNode("8", 10)};
+        unsorted_data    = {ItemNDCNode("1"), ItemNDCNode("0"), ItemNDCNode("3"), ItemNDCNode("2"), ItemNDCNode("5"),
+                            ItemNDCNode("4"), ItemNDCNode("7"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("8")};
+        sorted_data      = {ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"),
+                            ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9")};
+        sorted_data2     = {ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"),
+                            ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9")};
+        non_unique_data  = {ItemNDCNode("0"), ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("2"),
+                            ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5")};
+        unique_data      = {ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5")};
+        small_data       = {ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4"), ItemNDCNode("5")};
 
-        merge_data0 = { ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("5"), ItemNDCNode("7"), ItemNDCNode("8") };
-        merge_data1 = { ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("9") };
-        merge_data2 = { ItemNDCNode("0"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("7") };
-        merge_data3 = { ItemNDCNode("0"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("7") };
-        merge_data4 = { ItemNDCNode("0"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
+        merge_data0 = {ItemNDCNode("1"), ItemNDCNode("1"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("5"), ItemNDCNode("7"), ItemNDCNode("8")};
+        merge_data1 = {ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("9"), ItemNDCNode("9")};
+        merge_data2 = {ItemNDCNode("0"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("7")};
+        merge_data3 = {ItemNDCNode("0"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"), ItemNDCNode("6"), ItemNDCNode("7")};
+        merge_data4 = {ItemNDCNode("0"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("3"),
+                       ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9")};
       }
     };
 
@@ -209,12 +219,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_variadic_list_multiple)
     {
-      DataNDC0 data0(sorted_data[0], sorted_data[1], sorted_data[2], sorted_data[3], sorted_data[4],
-                     sorted_data[5], sorted_data[6], sorted_data[7], sorted_data[8], sorted_data[9]);
+      DataNDC0 data0(sorted_data[0], sorted_data[1], sorted_data[2], sorted_data[3], sorted_data[4], sorted_data[5], sorted_data[6], sorted_data[7],
+                     sorted_data[8], sorted_data[9]);
 
       CHECK(!data0.empty());
       CHECK_EQUAL(10, data0.size());
-      
+
       bool are_equal = std::equal(data0.begin(), data0.end(), sorted_data.begin());
       CHECK(are_equal);
     }
@@ -222,8 +232,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
-      DataNDC0 data0 = { sorted_data[0], sorted_data[1], sorted_data[2], sorted_data[3], sorted_data[4],
-                         sorted_data[5], sorted_data[6], sorted_data[7], sorted_data[8], sorted_data[9] };
+      DataNDC0 data0 = {sorted_data[0], sorted_data[1], sorted_data[2], sorted_data[3], sorted_data[4],
+                        sorted_data[5], sorted_data[6], sorted_data[7], sorted_data[8], sorted_data[9]};
 
       CHECK(!data0.empty());
       CHECK_EQUAL(10, data0.size());
@@ -263,7 +273,7 @@ namespace
     {
       ItemNDCNode item1("1");
       ItemNDCNode item2("2");
-      DataNDC0 data;
+      DataNDC0    data;
       data.push_back(item1);
       data.push_back(item2);
 
@@ -290,7 +300,7 @@ namespace
     {
       ItemNDCNode item1("1");
       ItemNDCNode item2("2");
-      DataNDC0 data;
+      DataNDC0    data;
       data.push_back(item1);
       data.push_back(item2);
 
@@ -326,7 +336,7 @@ namespace
       SecondLink& sl9 = sorted_data[9];
 
       DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      
+
       CHECK_TRUE(fl0.is_linked());
       CHECK_TRUE(fl1.is_linked());
       CHECK_TRUE(fl2.is_linked());
@@ -348,7 +358,7 @@ namespace
       CHECK_FALSE(sl7.is_linked());
       CHECK_FALSE(sl8.is_linked());
       CHECK_FALSE(sl9.is_linked());
-      
+
       DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
       CHECK_TRUE(fl0.is_linked());
@@ -524,8 +534,8 @@ namespace
       ItemNDCNode INSERT_VALUE2 = ItemNDCNode("2");
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       size_t offset = 2;
 
@@ -579,8 +589,8 @@ namespace
     {
       bool are_equal;
 
-      std::vector<ItemNDCNode> test1 = { ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4") };
-      std::vector<ItemNDCNode> test2 = { ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9") };
+      std::vector<ItemNDCNode> test1 = {ItemNDCNode("0"), ItemNDCNode("1"), ItemNDCNode("2"), ItemNDCNode("3"), ItemNDCNode("4")};
+      std::vector<ItemNDCNode> test2 = {ItemNDCNode("5"), ItemNDCNode("6"), ItemNDCNode("7"), ItemNDCNode("8"), ItemNDCNode("9")};
       std::vector<ItemNDCNode> compare(test2);
       compare.insert(compare.end(), test1.begin(), test1.end());
 
@@ -601,7 +611,7 @@ namespace
       data0.assign(test1.begin(), test1.end());
 
       std::vector<ItemNDCNode>::iterator icd = compare.begin();
-      DataNDC0::iterator id = data0.begin();
+      DataNDC0::iterator                 id  = data0.begin();
 
       std::advance(icd, 3);
       std::advance(id, 3);
@@ -627,7 +637,7 @@ namespace
       bool are_equal;
 
       std::list<ItemNDCNode> compare_data;
-      DataNDC0 data0;
+      DataNDC0               data0;
 
       static ItemNDCNode node1("1");
       static ItemNDCNode node2("2");
@@ -736,8 +746,8 @@ namespace
       bool are_equal;
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       DataNDC0::iterator i_data = data0.begin();
       std::advance(i_data, 3);
@@ -798,8 +808,8 @@ namespace
       bool are_equal;
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       // Move to the third value and erase.
       std::vector<ItemNDCNode>::iterator i_compare_data = compare_data.begin();
@@ -811,7 +821,7 @@ namespace
       ItemNDCNode& node1   = *i_data;
       ItemNDCNode* p_next1 = static_cast<ItemNDCNode*>(node1.FirstLink::get_next());
       ItemNDCNode* p_node1 = data0.erase(node1);
-      i_compare_data = compare_data.erase(i_compare_data);
+      i_compare_data       = compare_data.erase(i_compare_data);
 
       are_equal = std::equal(data0.begin(), data0.end(), compare_data.begin());
 
@@ -844,10 +854,10 @@ namespace
       i_data = data0.begin();
       std::advance(i_data, data0.size() - 1);
 
-      ItemNDCNode& node3 = *i_data;
+      ItemNDCNode& node3   = *i_data;
       ItemNDCNode* p_next3 = static_cast<ItemNDCNode*>(node3.FirstLink::get_next());
       ItemNDCNode* p_node3 = data0.erase(node3);
-      i_compare_data = compare_data.erase(i_compare_data);
+      i_compare_data       = compare_data.erase(i_compare_data);
 
       are_equal = std::equal(data0.begin(), data0.end(), compare_data.begin());
 
@@ -872,7 +882,7 @@ namespace
       ItemNDCNode* p_node5 = &data0.front();
 
       ItemNDCNode* p_next5 = static_cast<ItemNDCNode*>(p_node5->FirstLink::get_next());
-      p_next5 = data0.erase(*p_node5);
+      p_next5              = data0.erase(*p_node5);
       CHECK(ETL_NULLPTR == p_next5);
     }
 
@@ -882,8 +892,8 @@ namespace
       bool are_equal;
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       // Move to the third value and erase.
       std::vector<ItemNDCNode>::iterator i_compare_data = compare_data.begin();
@@ -895,7 +905,7 @@ namespace
       ItemNDCNode& node1   = *i_data;
       ItemNDCNode* p_next1 = static_cast<ItemNDCNode*>(node1.FirstLink::get_next());
       ItemNDCNode* p_node1 = data0.erase(&node1);
-      i_compare_data = compare_data.erase(i_compare_data);
+      i_compare_data       = compare_data.erase(i_compare_data);
 
       are_equal = std::equal(data0.begin(), data0.end(), compare_data.begin());
 
@@ -928,10 +938,10 @@ namespace
       i_data = data0.begin();
       std::advance(i_data, data0.size() - 1);
 
-      ItemNDCNode& node3 = *i_data;
+      ItemNDCNode& node3   = *i_data;
       ItemNDCNode* p_next3 = static_cast<ItemNDCNode*>(node3.FirstLink::get_next());
       ItemNDCNode* p_node3 = data0.erase(&node3);
-      i_compare_data = compare_data.erase(i_compare_data);
+      i_compare_data       = compare_data.erase(i_compare_data);
 
       are_equal = std::equal(data0.begin(), data0.end(), compare_data.begin());
 
@@ -956,7 +966,7 @@ namespace
       ItemNDCNode* p_node5 = &data0.front();
 
       ItemNDCNode* p_next5 = static_cast<ItemNDCNode*>(p_node5->FirstLink::get_next());
-      p_next5 = data0.erase(p_node5);
+      p_next5              = data0.erase(p_node5);
       CHECK(ETL_NULLPTR == p_next5);
     }
 
@@ -988,8 +998,8 @@ namespace
       SecondLink& sl9 = sorted_data[9];
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       DataNDC0::iterator i_data_1 = data0.begin();
       std::advance(i_data_1, 3);
@@ -1048,8 +1058,8 @@ namespace
       bool are_equal;
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       DataNDC0::iterator i_data = data0.begin();
       std::advance(i_data, 5);
@@ -1093,6 +1103,32 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_empty_exception)
+    {
+      DataNDC0 data0;
+
+      CHECK_EQUAL(0U, data0.size());
+      CHECK_THROW(data0.front(), etl::intrusive_list_empty);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back)
+    {
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
+
+      CHECK_EQUAL(sorted_data.back(), data0.back());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back_empty_exception)
+    {
+      DataNDC0 data0;
+
+      CHECK_EQUAL(0U, data0.size());
+      CHECK_THROW(data0.back(), etl::intrusive_list_empty);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_unique)
     {
       bool are_equal;
@@ -1121,8 +1157,8 @@ namespace
       bool are_equal;
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       std::vector<ItemNDCNode>::iterator i_item = std::find(compare_data.begin(), compare_data.end(), ItemNDCNode("7"));
       compare_data.erase(i_item);
@@ -1146,8 +1182,8 @@ namespace
       bool are_equal;
 
       std::vector<ItemNDCNode> compare_data(sorted_data.begin(), sorted_data.end());
-      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
-      DataNDC1 data1(sorted_data.begin(), sorted_data.end());
+      DataNDC0                 data0(sorted_data.begin(), sorted_data.end());
+      DataNDC1                 data1(sorted_data.begin(), sorted_data.end());
 
       std::vector<ItemNDCNode>::iterator i_item = std::find(compare_data.begin(), compare_data.end(), ItemNDCNode("7"));
       compare_data.erase(i_item);
@@ -1206,13 +1242,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_stable_sort)
     {
       std::list<ItemNDCNode> compare_data(stable_sort_data.begin(), stable_sort_data.end());
-      DataNDC0 data(stable_sort_data.begin(), stable_sort_data.end());
+      DataNDC0               data(stable_sort_data.begin(), stable_sort_data.end());
 
       compare_data.sort();
       data.sort();
 
       std::list<ItemNDCNode>::const_iterator citr = compare_data.begin();
-      DataNDC0::const_iterator ditr = data.begin();
+      DataNDC0::const_iterator               ditr = data.begin();
 
       while (ditr != data.end())
       {
@@ -1245,7 +1281,7 @@ namespace
     {
       bool are_equal;
 
-      DataNDC0 data0(sorted_data.begin(),   sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
       DataNDC0 data1(unsorted_data.begin(), unsorted_data.end());
 
       DataNDC0::iterator idata_source = data1.begin();
@@ -1306,7 +1342,7 @@ namespace
     {
       bool are_equal;
 
-      DataNDC0 data0(sorted_data.begin() , sorted_data.end());
+      DataNDC0 data0(sorted_data.begin(), sorted_data.end());
       DataNDC0 data1(sorted_data2.begin(), sorted_data2.end());
 
       DataNDC0::iterator idata_destination = data0.begin();
@@ -1421,7 +1457,8 @@ namespace
 
       CHECK_EQUAL(data0.size(), compare0.size());
 
-      // Double check that after splicing `etl_previous` is also correct - `.reverse()` easy way to do so.
+      // Double check that after splicing `etl_previous` is also correct -
+      // `.reverse()` easy way to do so.
       data0.reverse();
       compare0.reverse();
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
@@ -1529,7 +1566,7 @@ namespace
       compare0.reverse();
       compare1.reverse();
 
-      data0.merge(data1,       std::greater<ItemNDCNode>());
+      data0.merge(data1, std::greater<ItemNDCNode>());
       compare0.merge(compare1, std::greater<ItemNDCNode>());
 
       are_equal = std::equal(data0.begin(), data0.end(), compare0.begin());
@@ -1611,4 +1648,4 @@ namespace
       CHECK_FALSE(data0.contains(compare_node2));
     }
   }
-}
+} // namespace

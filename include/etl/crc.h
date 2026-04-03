@@ -62,6 +62,7 @@ SOFTWARE.
 #include "crc16_en13757.h"
 #include "crc16_genibus.h"
 #include "crc16_kermit.h"
+#include "crc16_m17.h"
 #include "crc16_maxim.h"
 #include "crc16_mcrf4xx.h"
 #include "crc16_modbus.h"
@@ -75,7 +76,6 @@ SOFTWARE.
 #include "crc16_usb.h"
 #include "crc16_x25.h"
 #include "crc16_xmodem.h"
-#include "crc16_m17.h"
 
 #include "crc32.h"
 #include "crc32_bzip2.h"

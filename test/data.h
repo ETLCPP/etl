@@ -43,37 +43,35 @@ class TestDataDC : public etl::instance_count<TestDataDC<T>>
 public:
 
   TestDataDC()
-  : value(T()),
-    index(0)
+    : value(T())
+    , index(0)
   {
   }
 
   explicit TestDataDC(const T& value_, int index_ = 0)
-    : value(value_),
-      index(index_)
+    : value(value_)
+    , index(index_)
   {
   }
 
-  virtual ~TestDataDC()
-  {
-  }
+  virtual ~TestDataDC() {}
 
-  bool operator < (const TestDataDC& other) const
+  bool operator<(const TestDataDC& other) const
   {
     return value < other.value;
   }
 
-  bool operator > (const TestDataDC& other) const
+  bool operator>(const TestDataDC& other) const
   {
     return value > other.value;
   }
 
-  bool operator <= (const TestDataDC& other) const
+  bool operator<=(const TestDataDC& other) const
   {
     return !(value > other.value);
   }
 
-  bool operator >= (const TestDataDC& other) const
+  bool operator>=(const TestDataDC& other) const
   {
     return !(value < other.value);
   }
@@ -90,7 +88,7 @@ public:
 };
 
 template <typename T>
-bool operator == (const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
+bool operator==(const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
 {
 #include "etl/private/diagnostic_float_equal_push.h"
   return lhs.value == rhs.value;
@@ -98,7 +96,7 @@ bool operator == (const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
 }
 
 template <typename T>
-bool operator != (const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
+bool operator!=(const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
 {
 #include "etl/private/diagnostic_float_equal_push.h"
   return lhs.value != rhs.value;
@@ -106,7 +104,7 @@ bool operator != (const TestDataDC<T>& lhs, const TestDataDC<T>& rhs)
 }
 
 template <typename T>
-std::ostream& operator << (std::ostream& s, const TestDataDC<T>& rhs)
+std::ostream& operator<<(std::ostream& s, const TestDataDC<T>& rhs)
 {
   s << rhs.value;
   return s;
@@ -121,33 +119,32 @@ class TestDataNDC : public etl::instance_count<TestDataNDC<T>>
 public:
 
   explicit TestDataNDC(const T& value_, int index_ = 0)
-    : value(value_),
-      index(index_)
-  {}
-
-  virtual ~TestDataNDC()
+    : value(value_)
+    , index(index_)
   {
   }
 
-  TestDataNDC(const TestDataNDC&) = default;
-  TestDataNDC& operator =(const TestDataNDC&) = default;
+  virtual ~TestDataNDC() {}
 
-  bool operator < (const TestDataNDC& other) const
+  TestDataNDC(const TestDataNDC&)            = default;
+  TestDataNDC& operator=(const TestDataNDC&) = default;
+
+  bool operator<(const TestDataNDC& other) const
   {
     return value < other.value;
   }
 
-  bool operator > (const TestDataNDC& other) const
+  bool operator>(const TestDataNDC& other) const
   {
     return value > other.value;
   }
 
-  bool operator <= (const TestDataNDC& other) const
+  bool operator<=(const TestDataNDC& other) const
   {
     return !(value > other.value);
   }
 
-  bool operator >= (const TestDataNDC& other) const
+  bool operator>=(const TestDataNDC& other) const
   {
     return !(value < other.value);
   }
@@ -159,24 +156,24 @@ public:
 #include "etl/private/diagnostic_pop.h"
   }
 
-  T value;
+  T   value;
   int index;
 };
 
 template <typename T>
-bool operator == (const TestDataNDC<T>& lhs, const TestDataNDC<T>& rhs)
+bool operator==(const TestDataNDC<T>& lhs, const TestDataNDC<T>& rhs)
 {
   return lhs.value == rhs.value;
 }
 
 template <typename T>
-bool operator != (const TestDataNDC<T>& lhs, const TestDataNDC<T>& rhs)
+bool operator!=(const TestDataNDC<T>& lhs, const TestDataNDC<T>& rhs)
 {
   return lhs.value != rhs.value;
 }
 
 template <typename T>
-std::ostream& operator << (std::ostream& s, const TestDataNDC<T>& rhs)
+std::ostream& operator<<(std::ostream& s, const TestDataNDC<T>& rhs)
 {
   s << rhs.value;
   return s;
@@ -221,7 +218,7 @@ public:
     valid = false;
   }
 
-  TestDataM& operator =(TestDataM&& other) noexcept
+  TestDataM& operator=(TestDataM&& other) noexcept
   {
     value = std::move(other.value);
     valid = true;
@@ -231,22 +228,22 @@ public:
     return *this;
   }
 
-  bool operator < (const TestDataM& other) const
+  bool operator<(const TestDataM& other) const
   {
     return value < other.value;
   }
 
-  bool operator > (const TestDataM& other) const
+  bool operator>(const TestDataM& other) const
   {
     return other.value < value;
   }
 
-  bool operator <= (const TestDataM& other) const
+  bool operator<=(const TestDataM& other) const
   {
     return !(other.value < value);
   }
 
-  bool operator >= (const TestDataM& other) const
+  bool operator>=(const TestDataM& other) const
   {
     return !(value < other.value);
   }
@@ -256,17 +253,17 @@ public:
     return valid;
   }
 
-  T value;
+  T            value;
   mutable bool valid;
 
 private:
 
-  TestDataM(const TestDataM& other) = delete;
-  TestDataM& operator =(const TestDataM& other) = delete;
+  TestDataM(const TestDataM& other)            = delete;
+  TestDataM& operator=(const TestDataM& other) = delete;
 };
 
 template <typename T>
-bool operator == (const TestDataM<T>& lhs, const TestDataM<T>& rhs)
+bool operator==(const TestDataM<T>& lhs, const TestDataM<T>& rhs)
 {
 #include "etl/private/diagnostic_float_equal_push.h"
   return lhs.value == rhs.value;
@@ -274,7 +271,7 @@ bool operator == (const TestDataM<T>& lhs, const TestDataM<T>& rhs)
 }
 
 template <typename T>
-bool operator != (const TestDataM<T>& lhs, const TestDataM<T>& rhs)
+bool operator!=(const TestDataM<T>& lhs, const TestDataM<T>& rhs)
 {
 #include "etl/private/diagnostic_float_equal_push.h"
   return lhs.value != rhs.value;
@@ -282,7 +279,7 @@ bool operator != (const TestDataM<T>& lhs, const TestDataM<T>& rhs)
 }
 
 template <typename T>
-std::ostream& operator << (std::ostream& s, const TestDataM<T>& rhs)
+std::ostream& operator<<(std::ostream& s, const TestDataM<T>& rhs)
 {
   s << rhs.value;
   return s;

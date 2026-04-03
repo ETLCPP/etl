@@ -56,9 +56,8 @@ namespace etl
 
     singleton() ETL_DELETE;
     singleton(const singleton&) ETL_DELETE;
-    singleton& operator =(const singleton&) ETL_DELETE;
+    singleton& operator=(const singleton&) ETL_DELETE;
   };
-
 
   template <typename TSingleton>
   class singleton_factory
@@ -73,15 +72,13 @@ namespace etl
         return TSingleton::mp_Instance.get();
       }
 
-
       is_created = true;
       static Singleton Tmp;
       _TSingleton::mp_Instance.reset(pTmp);
 
       return _TSingleton::mp_Instance.get();
     }
-
   };
-}
+} // namespace etl
 
 #endif

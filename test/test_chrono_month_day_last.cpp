@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -34,9 +34,9 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -93,11 +93,11 @@ namespace
       Chrono::month_day_last month_day_last2(Chrono::January);
       Chrono::month_day_last month_day_last3(Chrono::February);
 
-      CHECK_TRUE(month_day_last1  == month_day_last2);
+      CHECK_TRUE(month_day_last1 == month_day_last2);
       CHECK_FALSE(month_day_last1 == month_day_last3);
 
       CHECK_FALSE(month_day_last1 != month_day_last2);
-      CHECK_TRUE(month_day_last1  != month_day_last3);
+      CHECK_TRUE(month_day_last1 != month_day_last3);
     }
 
 #if ETL_USING_ETL_CHRONO
@@ -127,4 +127,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

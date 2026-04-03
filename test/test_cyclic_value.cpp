@@ -257,7 +257,7 @@ namespace
 
       value.set(2, 7);
 
-      int expected[8] = { 2, 3, 4, 5, 6, 7, 2, 3 };
+      int expected[8] = {2, 3, 4, 5, 6, 7, 2, 3};
 
       for (int i = 0; i < 8; ++i)
       {
@@ -271,7 +271,7 @@ namespace
     {
       etl::cyclic_value<int, 2, 7> value;
 
-      int expected[8] = { 2, 3, 4, 5, 6, 7, 2, 3 };
+      int expected[8] = {2, 3, 4, 5, 6, 7, 2, 3};
 
       for (int i = 0; i < 8; ++i)
       {
@@ -285,7 +285,7 @@ namespace
     {
       etl::cyclic_value<int, 2, 7> value;
 
-      int expected[8] = { 2, 7, 6, 5, 4, 3, 2, 7 };
+      int expected[8] = {2, 7, 6, 5, 4, 3, 2, 7};
 
       for (int i = 0; i < 8; ++i)
       {
@@ -301,7 +301,7 @@ namespace
 
       value.set(2, 7);
 
-      int expected[8] = { 2, 7, 6, 5, 4, 3, 2, 7 };
+      int expected[8] = {2, 7, 6, 5, 4, 3, 2, 7};
 
       for (int i = 0; i < 8; ++i)
       {
@@ -430,9 +430,9 @@ namespace
       etl::cyclic_value<int> value2(3, 8);
 
       value1 = value2;
-      CHECK(value1.get()   == value2.get());
+      CHECK(value1.get() == value2.get());
       CHECK(value1.first() == value2.first());
-      CHECK(value1.last()  == value2.last());
+      CHECK(value1.last() == value2.last());
 
       value1 = 4;
       CHECK((int)value1 == 4);
@@ -493,4 +493,4 @@ namespace
       CHECK(data2 == compare1);
     }
   }
-}
+} // namespace

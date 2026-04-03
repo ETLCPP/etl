@@ -35,7 +35,7 @@ SOFTWARE.
 #include "functional.h"
 #include "type_traits.h"
 
-//#include <math.h>
+// #include <math.h>
 #include <stdint.h>
 
 namespace etl
@@ -43,7 +43,7 @@ namespace etl
   //***************************************************************************
   /// Threshold.
   //***************************************************************************
-  template<typename TInput, typename TCompare = etl::less<TInput> >
+  template <typename TInput, typename TCompare = etl::less<TInput> >
   class threshold : public etl::unary_function<TInput, TInput>
   {
   public:
@@ -62,7 +62,7 @@ namespace etl
     //*****************************************************************
     // operator ()
     //*****************************************************************
-    TInput operator ()(TInput value) const
+    TInput operator()(TInput value) const
     {
       return compare(value, threshold_value) ? true_value : false_value;
     }
@@ -74,6 +74,6 @@ namespace etl
     const TInput   false_value;
     const TCompare compare;
   };
-}
+} // namespace etl
 
 #endif

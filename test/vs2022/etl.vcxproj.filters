@@ -741,27 +741,6 @@
     <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\largest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\smallest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\type_lookup_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\type_select_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\fsm_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
-      <Filter>ETL\Containers\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\parameter_pack.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -1278,9 +1257,6 @@
     <ClInclude Include="..\..\include\etl\shared_message.h">
       <Filter>ETL\Messaging</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
-      <Filter>ETL\Messaging\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\poly_span.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -1538,6 +1514,54 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
       <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\print.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\ranges_mini_variant.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ranges.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_cpp03_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_friend_decl_cpp03_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_fwd_decl_cpp03_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\variant_pool_cpp03_generator.h">
+      <Filter>ETL\Containers\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_alignment_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_type_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\smallest_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_lookup_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_select_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_traits_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_cpp03_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_router_cpp03_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2380,6 +2404,9 @@
     </ClCompile>
     <ClCompile Include="..\test_random.cpp">
       <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_ranges.cpp">
+      <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_error_handler.cpp">
       <Filter>Tests\Errors</Filter>
@@ -3769,6 +3796,9 @@
     </ClCompile>
     <ClCompile Include="..\test_inplace_function.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_print.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -27,29 +27,31 @@ SOFTWARE.
 ******************************************************************************/
 
 ///\defgroup etl Embedded Template Library.
-https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https
+  : // github.com/ETLCPP/etl
+    http
+  : // www.etlcpp.com
 
-///\defgroup containers Containers
-///\ingroup etl
+    ///\defgroup containers Containers
+    ///\ingroup etl
 
-///\defgroup utilities Utilities
-/// A set of utility templates.
-///\ingroup etl
+    ///\defgroup utilities Utilities
+    /// A set of utility templates.
+    ///\ingroup etl
 
-///\defgroup maths Maths
-/// A set of mathematical templates.
-///\ingroup etl
+    ///\defgroup maths Maths
+    /// A set of mathematical templates.
+    ///\ingroup etl
 
-///\defgroup patterns Patterns
-/// A set of templated design patterns.
-///\ingroup etl
+    ///\defgroup patterns Patterns
+    /// A set of templated design patterns.
+    ///\ingroup etl
 
-///\defgroup crc CRC
-/// A set of CRC calculations
-///\ingroup maths
+    ///\defgroup crc CRC
+    /// A set of CRC calculations
+    ///\ingroup maths
 
-///\ingroup etl
-namespace etl {}
-
-
+    ///\ingroup etl
+    namespace etl
+{
+}

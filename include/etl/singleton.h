@@ -36,10 +36,10 @@ SOFTWARE.
 ///\ingroup etl
 
 #include "platform.h"
-#include "utility.h"
 #include "error_handler.h"
 #include "file_error_numbers.h"
 #include "memory.h"
+#include "utility.h"
 
 namespace etl
 {
@@ -74,7 +74,7 @@ namespace etl
   /// Singleton pattern base class.
   /// \ingroup singleton
   //*************************************************************************
-  template<typename T>
+  template <typename T>
   class singleton
   {
   public:
@@ -149,7 +149,7 @@ namespace etl
       }
 
       etl::uninitialized_buffer_of<T, 1U> storage;
-      bool valid;
+      bool                                valid;
     };
 
     //*************************************************************************
@@ -163,16 +163,16 @@ namespace etl
     }
 
     // Disabled.
-    singleton() = delete;
-    singleton(const singleton&) = delete;
-    singleton& operator =(const singleton&) = delete;   
+    singleton()                            = delete;
+    singleton(const singleton&)            = delete;
+    singleton& operator=(const singleton&) = delete;
   };
 #else
   //*************************************************************************
   /// Singleton pattern base class.
   /// \ingroup singleton
   //*************************************************************************
-  template<typename T>
+  template <typename T>
   class singleton
   {
   public:
@@ -314,7 +314,7 @@ namespace etl
       }
 
       etl::uninitialized_buffer_of<T, 1U> storage;
-      bool valid;
+      bool                                valid;
     };
 
     static Data& get_data()
@@ -327,10 +327,9 @@ namespace etl
     // Disabled.
     singleton();
     singleton(const singleton&);
-    singleton& operator =(const singleton&);
+    singleton& operator=(const singleton&);
   };
 #endif
-}
+} // namespace etl
 
 #endif
-

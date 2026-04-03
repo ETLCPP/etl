@@ -1,1 +1,1 @@
-python3 -m cogapp -d -e -o../message_packet.h -DHandlers=16 message_packet_generator.h 
+python3 -m cogapp -d -e -o../private/message_packet_cpp03.h -DHandlers=16 message_packet_cpp03_generator.h

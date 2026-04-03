@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_CRC1_INCLUDED
 
 #include "platform.h"
-#include "frame_check_sequence.h"
 #include "binary.h"
+#include "frame_check_sequence.h"
 
 namespace etl
 {
@@ -93,13 +93,13 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     ETL_CONSTEXPR14 crc1(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
     }
   };
-}
+} // namespace etl
 
 #endif

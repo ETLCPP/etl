@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -58,7 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_with_month_and_day)
     {
-      Chrono::month_weekday_last mwdl{ Chrono::January, Chrono::weekday_last(Chrono::Friday)};
+      Chrono::month_weekday_last mwdl{Chrono::January, Chrono::weekday_last(Chrono::Friday)};
 
       CHECK_TRUE(mwdl.ok()); // Valid month_weekday_last
       CHECK_EQUAL(Chrono::January, mwdl.month());
@@ -84,9 +84,9 @@ namespace
     //*************************************************************************
     TEST(test_month_weekday_last_equality_operator)
     {
-      Chrono::month_weekday_last mwd1{Chrono::January,  Chrono::weekday_last(Chrono::Friday)};
+      Chrono::month_weekday_last mwd1{Chrono::January, Chrono::weekday_last(Chrono::Friday)};
       Chrono::month_weekday_last mwd2{Chrono::February, Chrono::weekday_last(Chrono::Friday)};
-      Chrono::month_weekday_last mwd3{Chrono::January,  Chrono::weekday_last(Chrono::Saturday)};
+      Chrono::month_weekday_last mwd3{Chrono::January, Chrono::weekday_last(Chrono::Saturday)};
 
       CHECK_TRUE(mwd1 == mwd1);  // January == January
       CHECK_FALSE(mwd1 == mwd2); // January != February
@@ -96,9 +96,9 @@ namespace
     //*************************************************************************
     TEST(test_month_weekday_last_not_equality_operator)
     {
-      Chrono::month_weekday_last mwd1{Chrono::January,  Chrono::weekday_last(Chrono::Friday)};
+      Chrono::month_weekday_last mwd1{Chrono::January, Chrono::weekday_last(Chrono::Friday)};
       Chrono::month_weekday_last mwd2{Chrono::February, Chrono::weekday_last(Chrono::Friday)};
-      Chrono::month_weekday_last mwd3{Chrono::January,  Chrono::weekday_last(Chrono::Saturday)};
+      Chrono::month_weekday_last mwd3{Chrono::January, Chrono::weekday_last(Chrono::Saturday)};
 
       CHECK_FALSE(mwd1 != mwd1); // January == January
       CHECK_TRUE(mwd1 != mwd2);  // January != February
@@ -111,9 +111,10 @@ namespace
     {
       std::vector<size_t> hashes;
 
-      for (int i = 0; i < 256; ++i)
+      for (unsigned int i = 0U; i < 256U; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::month_weekday_last>()(Chrono::month_weekday_last(Chrono::month((i % 12) + 1), Chrono::weekday_last(Chrono::weekday(i % 7)))));
+        hashes.push_back(etl::hash<Chrono::month_weekday_last>()(
+          Chrono::month_weekday_last(Chrono::month((i % 12U) + 1U), Chrono::weekday_last(Chrono::weekday(i % 7U)))));
       }
 
       std::sort(hashes.begin(), hashes.end());
@@ -122,4 +123,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

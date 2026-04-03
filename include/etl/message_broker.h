@@ -30,10 +30,10 @@ SOFTWARE.
 #define ETL_MESSAGE_BROKER_INCLUDED
 
 #include "platform.h"
-#include "nullptr.h"
-#include "message_types.h"
 #include "message.h"
 #include "message_router.h"
+#include "message_types.h"
+#include "nullptr.h"
 #include "span.h"
 
 #include <stdint.h>
@@ -129,7 +129,7 @@ namespace etl
     };
 
     using etl::imessage_router::receive;
-    
+
     //*******************************************
     /// Constructor.
     //*******************************************
@@ -155,7 +155,8 @@ namespace etl
       : imessage_router(id_)
       , head()
     {
-      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER), ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER),
+                 ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //*******************************************
@@ -165,7 +166,8 @@ namespace etl
       : imessage_router(id_, successor_)
       , head()
     {
-      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER), ETL_ERROR(etl::message_router_illegal_id));
+      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER),
+                 ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //*******************************************
@@ -194,8 +196,7 @@ namespace etl
     }
 
     //*******************************************
-    virtual void receive(etl::message_router_id_t destination_router_id,
-                         const etl::imessage&     msg) ETL_OVERRIDE
+    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       const etl::message_id_t id = msg.get_message_id();
 
@@ -214,8 +215,7 @@ namespace etl
           {
             etl::imessage_router* router = sub->get_router();
 
-            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS ||
-                destination_router_id == router->get_message_router_id())
+            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS || destination_router_id == router->get_message_router_id())
             {
               router->receive(msg);
             }
@@ -233,8 +233,7 @@ namespace etl
     }
 
     //*******************************************
-    virtual void receive(etl::message_router_id_t destination_router_id, 
-                         etl::shared_message      shared_msg) ETL_OVERRIDE
+    virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg) ETL_OVERRIDE
     {
       const etl::message_id_t id = shared_msg.get_message().get_message_id();
 
@@ -253,8 +252,7 @@ namespace etl
           {
             etl::imessage_router* router = sub->get_router();
 
-            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS ||
-                destination_router_id == router->get_message_router_id())
+            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS || destination_router_id == router->get_message_router_id())
             {
               router->receive(shared_msg);
             }
@@ -315,7 +313,7 @@ namespace etl
 
       return false;
 
-      //return true;
+      // return true;
     }
 
     //*******************************************
@@ -325,7 +323,8 @@ namespace etl
     }
 
     //********************************************
-    ETL_DEPRECATED virtual bool is_null_router() const ETL_OVERRIDE
+    ETL_DEPRECATED
+    virtual bool is_null_router() const ETL_OVERRIDE
     {
       return false;
     }
@@ -372,7 +371,7 @@ namespace etl
         }
 
         // Move on up the list.
-        p_sub = p_sub->get_next();
+        p_sub          = p_sub->get_next();
         p_sub_previous = p_sub_previous->get_next();
       }
 
@@ -385,6 +384,6 @@ namespace etl
 
     subscription_node head;
   };
-}
+} // namespace etl
 
 #endif
