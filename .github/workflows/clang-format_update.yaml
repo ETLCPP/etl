@@ -1,0 +1,20 @@
+name: clang-format-update
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang-format
+          clang-format --version
+
+      - name: Run clang-format
+        run: |
+          find . \( -name '*.cpp' -o -name '*.h' -o -name '*.c' \)
+          xargs clang-format --dry-run --Werror
