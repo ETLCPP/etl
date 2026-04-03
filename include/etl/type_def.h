@@ -46,7 +46,7 @@ namespace etl
 #if ETL_USING_CPP11
   #define ETL_TYPE_DEF_RETURN(T, TValue, TReturn) typename etl::enable_if<etl::is_convertible<T, TValue>::value, TReturn>::type
 #else
-  #define ETL_TYPE_DEF_ENABLE_IF_RETURN(T, TValue, ReturnType) ReturnType
+  #define ETL_TYPE_DEF_RETURN(T, TValue, ReturnType) ReturnType
 #endif
 
   //*************************************************************************
