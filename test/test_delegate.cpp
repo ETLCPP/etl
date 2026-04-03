@@ -1864,7 +1864,7 @@ namespace
 
       auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       auto d2 = d1;
-      auto d3 = etl::delegate<void(int, int)>::create([](int, int) { });
+      auto d3 = etl::delegate<void(int, int)>::create(+[](int, int) { });
       auto d4 = d3;
 
       CHECK(d1 == d2);
@@ -1878,7 +1878,7 @@ namespace
 
       auto d1 = etl::delegate<void(int, int)>::create<Object, &Object::member_int>(object);
       auto d2 = etl::delegate<void(int, int)>::create<Object, &Object::member_int_const>(object);
-      auto d3 = etl::delegate<void(int, int)>::create([](int, int) { });
+      auto d3 = etl::delegate<void(int, int)>::create(+[](int, int) { });
 
       CHECK(d1 != d2);
       CHECK(d1 != d3);
