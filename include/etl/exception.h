@@ -36,8 +36,10 @@ SOFTWARE.
 #if ETL_USING_STD_EXCEPTION
   #include <exception>
   #define ETL_EXCEPTION_CONSTEXPR
+  #define ETL_EXCEPTION_OVERRIDE override
 #else
   #define ETL_EXCEPTION_CONSTEXPR ETL_CONSTEXPR
+  #define ETL_EXCEPTION_OVERRIDE
 #endif
 
 ///\defgroup exception exception
@@ -87,9 +89,7 @@ namespace etl
     /// \return const char* to the reason.
     //***************************************************************************
     ETL_EXCEPTION_CONSTEXPR
-    string_type what() const ETL_NOEXCEPT
-#if ETL_USING_STD_EXCEPTION override
-#endif
+    string_type what() const ETL_NOEXCEPT ETL_EXCEPTION_OVERRIDE
     {
 #if !defined(ETL_MINIMAL_ERRORS)
       return reason_text;
