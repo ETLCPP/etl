@@ -7,13 +7,14 @@ jobs:
   clang-format:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install clang-format
+        run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends clang-format
           clang-format --version
 
         run: |
-          find . \( -name '*.cpp' -o -name '*.h' -o -name '*.c' \)
-          xargs clang-format --dry-run --Werror
+          find . \( -name '*.cpp' -o -name '*.h' -o -name '*.c' \) | xargs clang-format --dry-run --Werror
