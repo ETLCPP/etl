@@ -29,7 +29,7 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-gcc-cpp11-linux-no-stl:
     name: GCC C++11 Linux - No STL
@@ -52,4 +52,4 @@ jobs:
         make -j $(getconf _NPROCESSORS_ONLN)
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v

@@ -33,13 +33,13 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "iterator.h"
+#include "error_handler.h"
+#include "exception.h"
 #include "functional.h"
+#include "intrusive_links.h"
+#include "iterator.h"
 #include "nullptr.h"
 #include "type_traits.h"
-#include "exception.h"
-#include "error_handler.h"
-#include "intrusive_links.h"
 
 #include <stddef.h>
 
@@ -70,7 +70,8 @@ namespace etl
   public:
 
     intrusive_forward_list_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"A"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"A"), file_name_,
+                                                        line_number_)
     {
     }
   };
@@ -84,7 +85,8 @@ namespace etl
   public:
 
     intrusive_forward_list_iterator_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"B"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"B"), file_name_,
+                                                        line_number_)
     {
     }
   };
@@ -98,7 +100,8 @@ namespace etl
   public:
 
     intrusive_forward_list_index_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"C"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"C"), file_name_,
+                                                        line_number_)
     {
     }
   };
@@ -112,7 +115,8 @@ namespace etl
   public:
 
     intrusive_forward_list_unsorted(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"D"), file_name_,
+                                                        line_number_)
     {
     }
   };
@@ -126,7 +130,8 @@ namespace etl
   public:
 
     intrusive_forward_list_value_is_already_linked(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:value is already linked", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"E"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:value is already linked", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"E"),
+                                                        file_name_, line_number_)
     {
     }
   };
@@ -163,7 +168,8 @@ namespace etl
 
     //*************************************************************************
     /// Assigns a range of values to the intrusive_forward_list.
-    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws forward_list_iterator if the iterators are reversed.
+    /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws
+    /// forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
@@ -180,7 +186,7 @@ namespace etl
       // Add all of the elements.
       while (first != last)
       {
-         link_type& value = *first++;
+        link_type& value = *first++;
 
         ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked));
 
@@ -222,15 +228,17 @@ namespace etl
       }
 
       link_type* previous = &terminator;    // Point to the terminator of the linked list.
-      link_type* current  = start.etl_next; // Point to the first item in the linked list (could be the terminator).
-      link_type* next     = start.etl_next; // Point to the first item in the linked list (could be the terminator).
-        
+      link_type* current  = start.etl_next; // Point to the first item in the linked list (could be
+                                            // the terminator).
+      link_type* next = start.etl_next;     // Point to the first item in the linked
+                                            // list (could be the terminator).
+
       while (next != &terminator)
       {
-        next     = next->etl_next;    // Point to next link.
-        current->etl_next = previous; // Reverse the current link.
-        previous = current;           // Previous points to current.
-        current  = next;              // Current points to next.
+        next              = next->etl_next; // Point to next link.
+        current->etl_next = previous;       // Reverse the current link.
+        previous          = current;        // Previous points to current.
+        current           = next;           // Current points to next.
       }
 
       etl::link<link_type>(start, previous);
@@ -272,8 +280,10 @@ namespace etl
 
   protected:
 
-    link_type start;             ///< The link pointer that acts as the intrusive_forward_list start.
-    static link_type terminator; ///< The link that acts as the intrusive_forward_list terminator.
+    link_type start;             ///< The link pointer that acts as the
+                                 ///< intrusive_forward_list start.
+    static link_type terminator; ///< The link that acts as the
+                                 ///< intrusive_forward_list terminator.
 
     size_t current_size; ///< Counts the number of elements in the list.
 
@@ -351,7 +361,7 @@ namespace etl
     void initialise()
     {
       start.etl_next = &terminator;
-      current_size = 0;
+      current_size   = 0;
     }
 
     //*************************************************************************
@@ -371,7 +381,7 @@ namespace etl
         }
 
         p_previous = p_link;
-        p_link = p_link->link_type::etl_next;
+        p_link     = p_link->link_type::etl_next;
       }
 
       return ETL_NULLPTR;
@@ -380,7 +390,7 @@ namespace etl
     //*************************************************************************
     /// Remove the specified node from the list.
     /// Returns ETL_NULLPTR if the link was not in this list.
-    /// Returns the next 
+    /// Returns the next
     //*************************************************************************
     link_type* remove_link(link_type* link)
     {
@@ -482,14 +492,14 @@ namespace etl
       {
       }
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         // Read the appropriate 'etl_next'.
         p_value = p_value->etl_next;
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         // Read the appropriate 'etl_next'.
@@ -497,35 +507,35 @@ namespace etl
         return temp;
       }
 
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
         p_value = other.p_value;
         return *this;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
 #include "private/diagnostic_null_dereference_push.h"
         return *static_cast<pointer>(p_value);
 #include "private/diagnostic_pop.h"
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return static_cast<pointer>(p_value);
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return static_cast<pointer>(p_value);
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.p_value == rhs.p_value;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -564,14 +574,14 @@ namespace etl
       {
       }
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         // Read the appropriate 'etl_next'.
         p_value = p_value->etl_next;
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         // Read the appropriate 'etl_next'.
@@ -579,33 +589,33 @@ namespace etl
         return temp;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
         p_value = other.p_value;
         return *this;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return *static_cast<const value_type*>(p_value);
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return static_cast<const value_type*>(p_value);
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return static_cast<const value_type*>(p_value);
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_value == rhs.p_value;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -625,16 +635,12 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    intrusive_forward_list()
-    {
-    }
+    intrusive_forward_list() {}
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~intrusive_forward_list()
-    {
-    }
+    ~intrusive_forward_list() {}
 
     //*************************************************************************
     /// Constructor from range
@@ -727,22 +733,29 @@ namespace etl
 
     //*************************************************************************
     /// Gets a reference to the first element.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_forward_list_empty if the list is empty.
     //*************************************************************************
     reference front()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_forward_list_empty));
       return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
     /// Gets a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_forward_list_empty if the list is empty.
     //*************************************************************************
     const_reference front() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_forward_list_empty));
       return *static_cast<const value_type*>(this->get_head());
     }
 
     //*************************************************************************
-    /// Inserts a value to the intrusive_forward_list after the specified position.
+    /// Inserts a value to the intrusive_forward_list after the specified
+    /// position.
     //*************************************************************************
     iterator insert_after(iterator position, value_type& value)
     {
@@ -753,7 +766,8 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Inserts a range of values to the intrusive_forward_list after the specified position.
+    /// Inserts a range of values to the intrusive_forward_list after the
+    /// specified position.
     //*************************************************************************
     template <typename TIterator>
     void insert_after(iterator position, TIterator first, TIterator last)
@@ -762,7 +776,7 @@ namespace etl
       {
         // Set up the next free link.
         ETL_ASSERT_OR_RETURN(!(*first).link_type::is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked));
-        
+
         this->insert_link_after(*position.p_value, *first);
         ++first;
         ++position;
@@ -795,7 +809,7 @@ namespace etl
     {
       if (first != end() && (first != last))
       {
-        this->current_size -= etl::distance(first, last) - 1;
+        this->current_size -= static_cast<size_t>(etl::distance(first, last) - 1);
 
         link_type* p_first = first.p_value;
         link_type* p_last  = last.p_value;
@@ -921,12 +935,12 @@ namespace etl
         i_head = before_begin();
         i_tail = before_begin();
 
-        number_of_merges = 0;  // Count the number of merges we do in this pass.
+        number_of_merges = 0; // Count the number of merges we do in this pass.
 
         while (i_left != end())
         {
-          ++number_of_merges;  // There exists a merge to be done.
-          i_right = i_left;
+          ++number_of_merges; // There exists a merge to be done.
+          i_right   = i_left;
           left_size = 0;
 
           // Step 'list_size' places along from left
@@ -965,7 +979,8 @@ namespace etl
             }
             else if (!compare(*i_right, *i_left))
             {
-              // First link of left is lower or same. The link must come from left.
+              // First link of left is lower or same. The link must come from
+              // left.
               i_link = i_left;
               ++i_left;
               --left_size;
@@ -973,7 +988,7 @@ namespace etl
             else
             {
               // First link of right is lower. The link must come from right.
-              i_link  = i_right;
+              i_link = i_right;
               ++i_right;
               --right_size;
             }
@@ -999,9 +1014,9 @@ namespace etl
         }
 
         // If we have done only one merge, we're finished.
-        if (number_of_merges <= 1)   // Allow for number_of_merges == 0, the empty head case
+        if (number_of_merges <= 1) // Allow for number_of_merges == 0, the empty head case
         {
-            return;
+          return;
         }
 
         // Otherwise repeat, merging lists twice the size
@@ -1014,7 +1029,7 @@ namespace etl
     //*************************************************************************
     void remove(const_reference value)
     {
-      iterator i_item = begin();
+      iterator i_item      = begin();
       iterator i_last_item = before_begin();
 
       while (i_item != end())
@@ -1037,7 +1052,7 @@ namespace etl
     template <typename TPredicate>
     void remove_if(TPredicate predicate)
     {
-      iterator i_item = begin();
+      iterator i_item      = begin();
       iterator i_last_item = before_begin();
 
       while (i_item != end())
@@ -1115,7 +1130,7 @@ namespace etl
       {
         if (&other != this)
         {
-          size_t n = etl::distance(begin_, end_) - 1;
+          size_t n = static_cast<size_t>(etl::distance(begin_, end_) - 1);
           this->current_size += n;
           other.current_size -= n;
         }
@@ -1182,7 +1197,7 @@ namespace etl
             while ((other_begin != other_terminal) && (compare(*static_cast<pointer>(other_begin), *static_cast<pointer>(before_next))))
             {
               link_type* value = other_begin;
-              other_begin = get_next(other_begin);
+              other_begin      = get_next(other_begin);
               etl::link_splice<link_type>(*before, *value);
               before = get_next(before);
             }
@@ -1195,7 +1210,7 @@ namespace etl
           while (other_begin != other_terminal)
           {
             link_type* value = other_begin;
-            other_begin = get_next(other_begin);
+            other_begin      = get_next(other_begin);
             etl::link_splice<link_type>(*before, *value);
             before = get_next(before);
           }
@@ -1240,7 +1255,7 @@ namespace etl
       link_type* current = &first;
       ++count;
       ((current->etl_next = &links, current = &links, ++count), ...);
-      
+
       return current;
     }
 #elif ETL_USING_CPP11
@@ -1275,9 +1290,9 @@ namespace etl
 
     // Disabled.
     intrusive_forward_list(const intrusive_forward_list& other);
-    intrusive_forward_list& operator = (const intrusive_forward_list& rhs);
+    intrusive_forward_list& operator=(const intrusive_forward_list& rhs);
   };
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

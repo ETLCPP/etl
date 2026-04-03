@@ -50,8 +50,8 @@ namespace
     {
       etl::byte b = etl::byte(0x5A);
 
-      CHECK_EQUAL(0x5A,       etl::to_integer<char>(b));
-      CHECK_EQUAL(0x005AU,    etl::to_integer<uint16_t>(b));
+      CHECK_EQUAL(0x5A, etl::to_integer<char>(b));
+      CHECK_EQUAL(0x005AU, etl::to_integer<uint16_t>(b));
       CHECK_EQUAL(0x0000005A, etl::to_integer<int32_t>(b));
     }
 
@@ -232,5 +232,4 @@ namespace
       CHECK_EQUAL((unsigned char)(~i), etl::to_integer<unsigned char>(~etl::byte(i)));
     }
   }
-}
-
+} // namespace

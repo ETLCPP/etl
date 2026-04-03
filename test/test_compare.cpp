@@ -43,41 +43,41 @@ namespace
     int b;
   };
 
-  Object ta = { 1, 2 };
-  Object tb = { 2, 3 };
+  Object ta = {1, 2};
+  Object tb = {2, 3};
 
   //***********************************
-  bool constexpr operator <(const Object& lhs, const Object& rhs)
+  bool constexpr operator<(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) < (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool constexpr operator >(const Object& lhs, const Object& rhs)
+  bool constexpr operator>(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) > (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool constexpr operator <=(const Object& lhs, const Object& rhs)
+  bool constexpr operator<=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) <= (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool constexpr operator >=(const Object& lhs, const Object& rhs)
+  bool constexpr operator>=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) >= (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool constexpr operator ==(const Object& lhs, const Object& rhs)
+  bool constexpr operator==(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) == (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool constexpr operator !=(const Object& lhs, const Object& rhs)
+  bool constexpr operator!=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) != (rhs.a + rhs.b);
   }
@@ -167,9 +167,9 @@ namespace
       CHECK_EQUAL(CompareInt::Less, (CompareInt::cmp(2, 4)));
       CHECK_EQUAL(CompareInt::Greater, (CompareInt::cmp(4, 2)));
       CHECK_EQUAL(CompareInt::Equal, (CompareInt::cmp(0, 0)));
-      CHECK_EQUAL(CompareTest::Less, (CompareTest::cmp(Object{ 0, 1 }, Object{ 2, 4 })));
-      CHECK_EQUAL(CompareTest::Greater, (CompareTest::cmp(Object{ 2, 4 }, Object{ 0, 1 })));
-      CHECK_EQUAL(CompareTest::Equal, (CompareTest::cmp(Object{ 2, 4 }, Object{ 2, 4 })));
+      CHECK_EQUAL(CompareTest::Less, (CompareTest::cmp(Object{0, 1}, Object{2, 4})));
+      CHECK_EQUAL(CompareTest::Greater, (CompareTest::cmp(Object{2, 4}, Object{0, 1})));
+      CHECK_EQUAL(CompareTest::Equal, (CompareTest::cmp(Object{2, 4}, Object{2, 4})));
     }
 
     //*************************************************************************
@@ -179,17 +179,17 @@ namespace
       constexpr int cmp_greater = CompareInt::cmp(4, 2);
       constexpr int cmp_equal   = CompareInt::cmp(0, 0);
 
-      constexpr int cmp_test_less    = CompareTest::cmp(Object{ 0, 1 }, Object{ 2, 4 });
-      constexpr int cmp_test_greater = CompareTest::cmp(Object{ 2, 4 }, Object{ 0, 1 });
-      constexpr int cmp_test_equal   = CompareTest::cmp(Object{ 2, 4 }, Object{ 2, 4 });
+      constexpr int cmp_test_less    = CompareTest::cmp(Object{0, 1}, Object{2, 4});
+      constexpr int cmp_test_greater = CompareTest::cmp(Object{2, 4}, Object{0, 1});
+      constexpr int cmp_test_equal   = CompareTest::cmp(Object{2, 4}, Object{2, 4});
 
-      CHECK_EQUAL(CompareInt::Less,    cmp_less);
+      CHECK_EQUAL(CompareInt::Less, cmp_less);
       CHECK_EQUAL(CompareInt::Greater, cmp_greater);
-      CHECK_EQUAL(CompareInt::Equal,   cmp_equal);
+      CHECK_EQUAL(CompareInt::Equal, cmp_equal);
 
-      CHECK_EQUAL(CompareInt::Less,    cmp_test_less);
+      CHECK_EQUAL(CompareInt::Less, cmp_test_less);
       CHECK_EQUAL(CompareInt::Greater, cmp_test_greater);
-      CHECK_EQUAL(CompareInt::Equal,   cmp_test_equal);
+      CHECK_EQUAL(CompareInt::Equal, cmp_test_equal);
     }
   }
-}
+} // namespace

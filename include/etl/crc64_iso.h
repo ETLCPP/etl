@@ -61,7 +61,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc64_iso_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -74,5 +74,5 @@ namespace etl
   typedef etl::crc64_iso_t<16U>  crc64_iso_t16;
   typedef etl::crc64_iso_t<4U>   crc64_iso_t4;
   typedef crc64_iso_t256         crc64_iso;
-}
+} // namespace etl
 #endif

@@ -3543,6 +3543,19 @@
     <ClInclude Include="..\..\include\etl\expected.h" />
     <ClInclude Include="..\..\include\etl\function_traits.h" />
     <ClInclude Include="..\..\include\etl\gcd.h" />
+    <ClInclude Include="..\..\include\etl\generators\fsm_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\fsm_friend_decl_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\fsm_fwd_decl_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\largest_alignment_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\largest_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\largest_type_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\message_packet_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\message_router_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\smallest_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\type_lookup_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\type_select_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\type_traits_cpp03_generator.h" />
+    <ClInclude Include="..\..\include\etl\generators\variant_pool_cpp03_generator.h" />
     <ClInclude Include="..\..\include\etl\index_of_type.h" />
     <ClInclude Include="..\..\include\etl\inplace_function.h" />
     <ClInclude Include="..\..\include\etl\invoke.h" />
@@ -3552,6 +3565,7 @@
     <ClInclude Include="..\..\include\etl\monostate.h" />
     <ClInclude Include="..\..\include\etl\not_null.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
+    <ClInclude Include="..\..\include\etl\print.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\day.h" />
@@ -3593,15 +3607,7 @@
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\callback_service.h" />
     <ClInclude Include="..\..\include\etl\gamma.h" />
-    <ClInclude Include="..\..\include\etl\generators\fsm_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\smallest_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\type_lookup_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\type_select_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h" />
-    <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\generic_pool.h" />
     <ClInclude Include="..\..\include\etl\hfsm.h" />
     <ClInclude Include="..\..\include\etl\histogram.h" />
@@ -3641,6 +3647,7 @@
     <ClInclude Include="..\..\include\etl\private\crc_parameters.h" />
     <ClInclude Include="..\..\include\etl\private\delegate_cpp03.h" />
     <ClInclude Include="..\..\include\etl\private\delegate_cpp11.h" />
+    <ClInclude Include="..\..\include\etl\private\ranges_mini_variant.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\variant_variadic.h" />
@@ -3812,6 +3819,7 @@
     <ClInclude Include="..\..\include\etl\queue.h" />
     <ClInclude Include="..\..\include\etl\radix.h" />
     <ClInclude Include="..\..\include\etl\random.h" />
+    <ClInclude Include="..\..\include\etl\ranges.h" />
     <ClInclude Include="..\..\include\etl\reference_flat_map.h" />
     <ClInclude Include="..\..\include\etl\reference_flat_multimap.h" />
     <ClInclude Include="..\..\include\etl\reference_flat_multiset.h" />
@@ -10362,6 +10370,7 @@
     <ClCompile Include="..\test_not_null_unique_pointer.cpp" />
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp" />
     <ClCompile Include="..\test_poly_span_fixed_extent.cpp" />
+    <ClCompile Include="..\test_print.cpp" />
     <ClCompile Include="..\test_pseudo_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_cpp03.cpp" />
@@ -11345,6 +11354,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\test_ranges.cpp" />
     <ClCompile Include="..\test_reference_flat_map.cpp" />
     <ClCompile Include="..\test_reference_flat_multimap.cpp" />
     <ClCompile Include="..\test_reference_flat_multiset.cpp" />

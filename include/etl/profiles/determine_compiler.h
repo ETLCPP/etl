@@ -34,18 +34,9 @@ SOFTWARE.
 //*****************************************************************************
 // Macros that are conditionally defined.
 //*****************************************************************************
-#if !defined(ETL_COMPILER_GCC) && \
-    !defined(ETL_COMPILER_MICROSOFT) && \
-    !defined(ETL_COMPILER_ARM5) && \
-    !defined(ETL_COMPILER_ARM6) && \
-    !defined(ETL_COMPILER_ARM7) && \
-    !defined(ETL_COMPILER_CLANG) && \
-    !defined(ETL_COMPILER_GREEN_HILLS) && \
-    !defined(ETL_COMPILER_IAR) && \
-    !defined(ETL_COMPILER_INTEL) && \
-    !defined(ETL_COMPILER_TEXAS_INSTRUMENTS) && \
-    !defined(ETL_COMPILER_TASKING) && \
-    !defined(ETL_COMPILER_GENERIC)
+#if !defined(ETL_COMPILER_GCC) && !defined(ETL_COMPILER_MICROSOFT) && !defined(ETL_COMPILER_ARM5) && !defined(ETL_COMPILER_ARM6)     \
+  && !defined(ETL_COMPILER_ARM7) && !defined(ETL_COMPILER_CLANG) && !defined(ETL_COMPILER_GREEN_HILLS) && !defined(ETL_COMPILER_IAR) \
+  && !defined(ETL_COMPILER_INTEL) && !defined(ETL_COMPILER_TEXAS_INSTRUMENTS) && !defined(ETL_COMPILER_TASKING) && !defined(ETL_COMPILER_GENERIC)
 
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_ARM5)
     #if defined(__CC_ARM)

@@ -30,9 +30,9 @@ SOFTWARE.
 
 #include <queue>
 
-#include "etl/queue.h"
-#include "etl/math.h"
 #include "data.h"
+#include "etl/math.h"
+#include "etl/queue.h"
 
 namespace
 {
@@ -52,12 +52,12 @@ namespace
     {
     }
 
-    char c;
-    int i;
+    char   c;
+    int    i;
     double d;
   };
 
-  bool operator == (const Item& lhs, const Item& rhs)
+  bool operator==(const Item& lhs, const Item& rhs)
   {
 #include "etl/private/diagnostic_float_equal_push.h"
     return (lhs.c == rhs.c) && (lhs.i == rhs.i) && (lhs.d == rhs.d);
@@ -252,9 +252,17 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_front_const)
+    TEST(test_front_bounds_exception)
     {
       etl::queue<int, 4> queue;
+      CHECK(queue.empty());
+      CHECK_THROW(queue.front(), etl::queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_front_const)
+    {
+      etl::queue<int, 4>        queue;
       const etl::queue<int, 4>& constQueue = queue;
 
       queue.push(1);
@@ -268,6 +276,16 @@ namespace
 
       queue.pop();
       CHECK_EQUAL(3, constQueue.front());
+    }
+
+    //*************************************************************************
+    TEST(test_front_const_bounds_exception)
+    {
+      etl::queue<int, 4>        queue;
+      const etl::queue<int, 4>& constQueue = queue;
+
+      CHECK(constQueue.empty());
+      CHECK_THROW(constQueue.front(), etl::queue_empty);
     }
 
     //*************************************************************************
@@ -286,9 +304,17 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_back_const)
+    TEST(test_back_bounds_exception)
     {
       etl::queue<int, 4> queue;
+      CHECK(queue.empty());
+      CHECK_THROW(queue.back(), etl::queue_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_back_const)
+    {
+      etl::queue<int, 4>        queue;
       const etl::queue<int, 4>& constQueue = queue;
 
       queue.push(1);
@@ -299,6 +325,16 @@ namespace
 
       queue.push(3);
       CHECK_EQUAL(3, constQueue.back());
+    }
+
+    //*************************************************************************
+    TEST(test_back_const_bounds_exception)
+    {
+      etl::queue<int, 4>        queue;
+      const etl::queue<int, 4>& constQueue = queue;
+
+      CHECK(constQueue.empty());
+      CHECK_THROW(constQueue.back(), etl::queue_empty);
     }
 
     //*************************************************************************
@@ -557,9 +593,9 @@ namespace
       queue.push(3);
       queue.push(4);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       queue = queue;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       CHECK(queue.max_size() == queue.size());
 
@@ -576,4 +612,4 @@ namespace
       queue.pop();
     }
   }
-}
+} // namespace

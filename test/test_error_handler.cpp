@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 #include <iostream>
-#include <string>
 #include <string.h>
+#include <string>
 
 #include "etl/error_handler.h"
 #include "etl/exception.h"
@@ -86,7 +86,7 @@ namespace
   };
 
   test_class static_test;
-}
+} // namespace
 
 namespace
 {
@@ -189,4 +189,4 @@ namespace
       CHECK(error_received);
     }
   }
-}
+} // namespace

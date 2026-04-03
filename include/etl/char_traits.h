@@ -45,9 +45,11 @@ SOFTWARE.
 
 namespace etl
 {
-  template<typename T> struct char_traits_types;
+  template <typename T>
+  struct char_traits_types;
 
-  template<> struct char_traits_types<char>
+  template <>
+  struct char_traits_types<char>
   {
     typedef char      char_type;
     typedef int       int_type;
@@ -56,7 +58,8 @@ namespace etl
     typedef char      state_type;
   };
 
-  template<> struct char_traits_types<signed char>
+  template <>
+  struct char_traits_types<signed char>
   {
     typedef signed char char_type;
     typedef int         int_type;
@@ -65,7 +68,8 @@ namespace etl
     typedef signed char state_type;
   };
 
-  template<> struct char_traits_types<unsigned char>
+  template <>
+  struct char_traits_types<unsigned char>
   {
     typedef unsigned char char_type;
     typedef int           int_type;
@@ -74,7 +78,8 @@ namespace etl
     typedef unsigned char state_type;
   };
 
-  template<> struct char_traits_types<wchar_t>
+  template <>
+  struct char_traits_types<wchar_t>
   {
     typedef wchar_t        char_type;
     typedef uint_least16_t int_type;
@@ -84,17 +89,19 @@ namespace etl
   };
 
 #if ETL_USING_CPP20
-  template<> struct char_traits_types<char8_t>
+  template <>
+  struct char_traits_types<char8_t>
   {
-    typedef char8_t       char_type;
-    typedef unsigned int  int_type;
-    typedef long long     off_type;
-    typedef size_t        pos_type;
-    typedef char          state_type;
+    typedef char8_t      char_type;
+    typedef unsigned int int_type;
+    typedef long long    off_type;
+    typedef size_t       pos_type;
+    typedef char         state_type;
   };
 #endif
 
-  template<> struct char_traits_types<char16_t>
+  template <>
+  struct char_traits_types<char16_t>
   {
     typedef char16_t       char_type;
     typedef uint_least16_t int_type;
@@ -103,7 +110,8 @@ namespace etl
     typedef char           state_type;
   };
 
-  template<> struct char_traits_types<char32_t>
+  template <>
+  struct char_traits_types<char32_t>
   {
     typedef char32_t       char_type;
     typedef uint_least32_t int_type;
@@ -115,7 +123,7 @@ namespace etl
   //***************************************************************************
   /// Character traits for any character type.
   //***************************************************************************
-  template<typename T>
+  template <typename T>
   struct char_traits : public char_traits_types<T>
   {
     typedef typename char_traits_types<T>::char_type  char_type;
@@ -196,9 +204,7 @@ namespace etl
       }
       else
       {
-        etl::copy_n(ETL_OR_STD::reverse_iterator<const char_type*>(src + count),
-                    count,
-                    ETL_OR_STD::reverse_iterator<char_type*>(dst + count));
+        etl::copy_n(ETL_OR_STD::reverse_iterator<const char_type*>(src + count), count, ETL_OR_STD::reverse_iterator<char_type*>(dst + count));
       }
 
       return dst;
@@ -270,7 +276,7 @@ namespace etl
     //*************************************************************************
     static ETL_CONSTEXPR int_type eof() ETL_NOEXCEPT
     {
-      return -1;
+      return static_cast<int_type>(-1);
     }
 
     //*************************************************************************
@@ -310,7 +316,7 @@ namespace etl
       {
         return 1;
       }
-      
+
       if (*t1 < *t2)
       {
         return -1;
@@ -343,7 +349,7 @@ namespace etl
       ++t1;
       ++t2;
       --n;
-    } 
+    }
 
     return 0;
   }
@@ -384,6 +390,6 @@ namespace etl
 
     return result;
   }
-}
+} // namespace etl
 
 #endif

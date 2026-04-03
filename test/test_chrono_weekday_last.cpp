@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,9 +34,9 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -59,7 +59,6 @@ namespace
     //*************************************************************************
     TEST(test_constructor_in_range)
     {
-      for (unsigned i = 1U; i < 5U; ++i)
       {
         Chrono::weekday_last weekday_last_monday(Chrono::Monday);
         Chrono::weekday_last weekday_last_tuesday(Chrono::Tuesday);
@@ -77,13 +76,13 @@ namespace
         CHECK_TRUE(weekday_last_saturday.ok());
         CHECK_TRUE(weekday_last_sunday.ok());
 
-        CHECK_EQUAL(Chrono::Monday.c_encoding(),    weekday_last_monday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Tuesday.c_encoding(),   weekday_last_tuesday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Monday.c_encoding(), weekday_last_monday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Tuesday.c_encoding(), weekday_last_tuesday.weekday().c_encoding());
         CHECK_EQUAL(Chrono::Wednesday.c_encoding(), weekday_last_wednesday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Thursday.c_encoding(),  weekday_last_thursday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Friday.c_encoding(),    weekday_last_friday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Saturday.c_encoding(),  weekday_last_saturday.weekday().c_encoding());
-        CHECK_EQUAL(Chrono::Sunday.c_encoding(),    weekday_last_sunday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Thursday.c_encoding(), weekday_last_thursday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Friday.c_encoding(), weekday_last_friday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Saturday.c_encoding(), weekday_last_saturday.weekday().c_encoding());
+        CHECK_EQUAL(Chrono::Sunday.c_encoding(), weekday_last_sunday.weekday().c_encoding());
       }
     }
 
@@ -92,7 +91,7 @@ namespace
     {
       for (unsigned i = 8U; i < 256U; ++i)
       {
-        auto wd = Chrono::weekday(i);
+        auto                 wd = Chrono::weekday(i);
         Chrono::weekday_last weekday_last(wd);
 
         CHECK_FALSE(weekday_last.ok());
@@ -106,7 +105,7 @@ namespace
       Chrono::weekday_last weekday_last2(Chrono::Monday);
       Chrono::weekday_last weekday_last3(Chrono::Tuesday);
 
-      CHECK_TRUE(weekday_last1  == weekday_last2);
+      CHECK_TRUE(weekday_last1 == weekday_last2);
       CHECK_FALSE(weekday_last1 == weekday_last3);
     }
 
@@ -132,4 +131,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

@@ -3,6 +3,8 @@
 ## Personal
 #################
 docs/html
+hugo/public
+hugo/.hugo_build.lock
 include/etl/html/
 include/etl/latex/
 test/vs2013/Debug

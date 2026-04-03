@@ -30,10 +30,10 @@ SOFTWARE.
 
 #include "etl/utility.h"
 
-#include <map>
-#include <vector>
 #include <algorithm>
+#include <map>
 #include <type_traits>
+#include <vector>
 
 #include "data.h"
 
@@ -78,7 +78,7 @@ namespace
   };
 
   static TestClass test;
-}
+} // namespace
 
 namespace
 {
@@ -89,7 +89,7 @@ namespace
     {
       etl::pair<int, double> p1;
 
-      CHECK_EQUAL(int(),    p1.first);
+      CHECK_EQUAL(int(), p1.first);
       CHECK_EQUAL(double(), p1.second);
     }
 
@@ -98,7 +98,7 @@ namespace
     {
       etl::pair<int, double> p1(1, 2.3);
 
-      CHECK_EQUAL(1,   p1.first);
+      CHECK_EQUAL(1, p1.first);
       CHECK_EQUAL(2.3, p1.second);
     }
 
@@ -106,12 +106,12 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_pair_construct)
     {
-      etl::pair p1{ 1, 2.3 };
+      etl::pair p1{1, 2.3};
 
       CHECK((std::is_same_v<decltype(p1.first), int>));
       CHECK((std::is_same_v<decltype(p1.second), double>));
 
-      CHECK_EQUAL(1,   p1.first);
+      CHECK_EQUAL(1, p1.first);
       CHECK_EQUAL(2.3, p1.second);
     }
 #endif
@@ -121,7 +121,7 @@ namespace
     {
       etl::pair<ItemM1, ItemM2> p1(1, 2.3);
 
-      CHECK_EQUAL(1,   p1.first.value);
+      CHECK_EQUAL(1, p1.first.value);
       CHECK_EQUAL(2.3, p1.second.value);
     }
 
@@ -131,7 +131,7 @@ namespace
       etl::pair<int, double> p1(1, 2.3);
       etl::pair<int, double> p2(p1);
 
-      CHECK_EQUAL(p1.first,  p2.first);
+      CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -144,7 +144,7 @@ namespace
       CHECK(!bool(p1.first));
       CHECK(!bool(p1.second));
 
-      CHECK_EQUAL(1,   p2.first.value);
+      CHECK_EQUAL(1, p2.first.value);
       CHECK_EQUAL(2.3, p2.second.value);
     }
 
@@ -154,7 +154,7 @@ namespace
       etl::pair<char, float> p1(1, 2.3f);
       etl::pair<int, double> p2(p1);
 
-      CHECK_EQUAL(p1.first,  p2.first);
+      CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -165,7 +165,7 @@ namespace
       etl::pair<int, double> p2;
       p2 = etl::make_pair(1, 2.3);
 
-      CHECK_EQUAL(p1.first,  p2.first);
+      CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -191,10 +191,10 @@ namespace
 
       p1.swap(p2);
 
-      CHECK_EQUAL(2,   p1.first);
+      CHECK_EQUAL(2, p1.first);
       CHECK_EQUAL(3.4, p1.second);
 
-      CHECK_EQUAL(1,   p2.first);
+      CHECK_EQUAL(1, p2.first);
       CHECK_EQUAL(2.3, p2.second);
     }
 
@@ -206,10 +206,10 @@ namespace
 
       swap(p1, p2);
 
-      CHECK_EQUAL(2,   p1.first);
+      CHECK_EQUAL(2, p1.first);
       CHECK_EQUAL(3.4, p1.second);
 
-      CHECK_EQUAL(1,   p2.first);
+      CHECK_EQUAL(1, p2.first);
       CHECK_EQUAL(2.3, p2.second);
     }
 
@@ -306,9 +306,9 @@ namespace
     //*************************************************************************
     TEST(test_exchange_const)
     {
-      int a = 1;
+      int       a = 1;
       const int b = 2;
-      int c = etl::exchange(a, b); // c = a, a = b
+      int       c = etl::exchange(a, b); // c = a, a = b
 
       CHECK_EQUAL(2, a);
       CHECK_EQUAL(2, b);
@@ -329,7 +329,7 @@ namespace
       CHECK(!constCalled);
 
       nonConstCalled = false;
-      constCalled = false;
+      constCalled    = false;
 
       TestText(etl::as_const(text));
 
@@ -359,9 +359,7 @@ namespace
       using Map    = std::map<int, double>;
       using Vector = std::vector<int>;
 
-      const Map map = {{1, 0.3},
-                       {47, 0.8},
-                       {33, 0.1}};
+      const Map map = {{1, 0.3}, {47, 0.8}, {33, 0.1}};
       Vector    result{};
 
       // Extract the map keys into a vector
@@ -395,9 +393,7 @@ namespace
       using Map    = std::map<int, double>;
       using Vector = std::vector<double>;
 
-      const Map map = {{1, 0.3},
-                       {47, 0.8},
-                       {33, 0.1}};
+      const Map map = {{1, 0.3}, {47, 0.8}, {33, 0.1}};
       Vector    result{};
 
       // Extract the map values into a vector
@@ -407,7 +403,7 @@ namespace
       CHECK_EQUAL(3, result.size());
 
       const Vector expected{0.1, 0.3, 0.8};
-      sort(result.begin(), result.end());  // sort for comparison
+      sort(result.begin(), result.end()); // sort for comparison
       CHECK_ARRAY_CLOSE(expected, result, 3, 0.0001);
     }
 
@@ -421,7 +417,7 @@ namespace
     //*************************************************************************
     TEST(test_member_function_wrapper_deprecated)
     {
-      constexpr int(*pf)(int) = &etl::member_function_wrapper<int(int)>::function<TestClass, test, &TestClass::MemberFunction>;
+      constexpr int (*pf)(int) = &etl::member_function_wrapper<int(int)>::function<TestClass, test, &TestClass::MemberFunction>;
 
       CHECK_EQUAL(2, pf(1));
     }
@@ -429,7 +425,7 @@ namespace
     //*************************************************************************
     TEST(test_functor_wrapper_deprecated)
     {
-      constexpr int(*pf)(int) = &etl::functor_wrapper<int(int)>::function<TestClass, test>;
+      constexpr int (*pf)(int) = &etl::functor_wrapper<int(int)>::function<TestClass, test>;
 
       CHECK_EQUAL(2, pf(1));
     }
@@ -489,7 +485,6 @@ namespace
     //*************************************************************************
     struct SF
     {
-
     };
 
     //*********************************
@@ -502,39 +497,39 @@ namespace
     };
 
     //*********************************
-    std::ostream& operator << (std::ostream& os, forward_call_type type)
+    std::ostream& operator<<(std::ostream& os, forward_call_type type)
     {
       switch (type)
       {
         case forward_call_type::LValue:
-        {
-          os << "LValue";
-          break;
-        }
+          {
+            os << "LValue";
+            break;
+          }
 
         case forward_call_type::ConstLValue:
-        {
-          os << "ConstLValue";
-          break;
-        }
+          {
+            os << "ConstLValue";
+            break;
+          }
 
         case forward_call_type::RValue:
-        {
-          os << "RValue";
-          break;
-        }
+          {
+            os << "RValue";
+            break;
+          }
 
         case forward_call_type::ConstRValue:
-        {
-          os << "ConstRValue";
-          break;
-        }
+          {
+            os << "ConstRValue";
+            break;
+          }
 
         default:
-        {
-          os << "Unknown type";
-          break;
-        }
+          {
+            os << "Unknown type";
+            break;
+          }
       }
 
       return os;
@@ -566,7 +561,7 @@ namespace
 
     //*********************************
     template <typename T>
-    forward_call_type template_function_f(T&& t)
+    forward_call_type template_function_f(T && t)
     {
       return function_f(etl::forward<T>(t));
     }
@@ -574,11 +569,11 @@ namespace
     //*********************************
     TEST(test_forward)
     {
-      SF s1;
+      SF       s1;
       const SF s2;
 
-      CHECK_EQUAL(forward_call_type::LValue,      template_function_f(s1));
-      CHECK_EQUAL(forward_call_type::RValue,      template_function_f(etl::move(s1)));
+      CHECK_EQUAL(forward_call_type::LValue, template_function_f(s1));
+      CHECK_EQUAL(forward_call_type::RValue, template_function_f(etl::move(s1)));
       CHECK_EQUAL(forward_call_type::ConstLValue, template_function_f(s2));
       CHECK_EQUAL(forward_call_type::ConstRValue, template_function_f(etl::move(s2)));
     }
@@ -601,39 +596,39 @@ namespace
     };
 
     //*********************************
-    std::ostream& operator << (std::ostream& os, forward_like_call_type type)
+    std::ostream& operator<<(std::ostream& os, forward_like_call_type type)
     {
       switch (type)
       {
         case forward_like_call_type::LValue:
-        {
-          os << "LValue";
-          break;
-        }
+          {
+            os << "LValue";
+            break;
+          }
 
         case forward_like_call_type::ConstLValue:
-        {
-          os << "ConstLValue";
-          break;
-        }
+          {
+            os << "ConstLValue";
+            break;
+          }
 
         case forward_like_call_type::RValue:
-        {
-          os << "RValue";
-          break;
-        }
+          {
+            os << "RValue";
+            break;
+          }
 
         case forward_like_call_type::ConstRValue:
-        {
-          os << "ConstRValue";
-          break;
-        }
+          {
+            os << "ConstRValue";
+            break;
+          }
 
         default:
-        {
-          os << "Unknown type";
-          break;
-        }
+          {
+            os << "Unknown type";
+            break;
+          }
       }
 
       return os;
@@ -665,7 +660,7 @@ namespace
 
     //*********************************
     template <typename T, typename U>
-    forward_like_call_type template_function_fl(U&& u)
+    forward_like_call_type template_function_fl(U && u)
     {
       return function_fl(etl::forward_like<T>(u));
     }
@@ -673,19 +668,19 @@ namespace
     //*********************************
     TEST(test_forward_like)
     {
-      UFL u1;
-      const UFL u2;
-      UFL& u3 = u1;
+      UFL        u1;
+      const UFL  u2;
+      UFL&       u3 = u1;
       const UFL& u4 = u2;
 
-      CHECK_EQUAL(forward_like_call_type::LValue,      template_function_fl<TFL&>(u1));
+      CHECK_EQUAL(forward_like_call_type::LValue, template_function_fl<TFL&>(u1));
       CHECK_EQUAL(forward_like_call_type::ConstLValue, template_function_fl<const TFL&>(u1));
-      CHECK_EQUAL(forward_like_call_type::RValue,      template_function_fl<TFL&&>(u1));
+      CHECK_EQUAL(forward_like_call_type::RValue, template_function_fl<TFL&&>(u1));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(u1));
 
-      CHECK_EQUAL(forward_like_call_type::LValue,      template_function_fl<TFL&>(etl::move(u1)));
+      CHECK_EQUAL(forward_like_call_type::LValue, template_function_fl<TFL&>(etl::move(u1)));
       CHECK_EQUAL(forward_like_call_type::ConstLValue, template_function_fl<const TFL&>(etl::move(u1)));
-      CHECK_EQUAL(forward_like_call_type::RValue,      template_function_fl<TFL&&>(etl::move(u1)));
+      CHECK_EQUAL(forward_like_call_type::RValue, template_function_fl<TFL&&>(etl::move(u1)));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u1)));
 
       CHECK_EQUAL(forward_like_call_type::ConstLValue, template_function_fl<TFL&>(u2));
@@ -698,14 +693,14 @@ namespace
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<TFL&&>(etl::move(u2)));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u2)));
 
-      CHECK_EQUAL(forward_like_call_type::LValue,      template_function_fl<TFL&>(u3));
+      CHECK_EQUAL(forward_like_call_type::LValue, template_function_fl<TFL&>(u3));
       CHECK_EQUAL(forward_like_call_type::ConstLValue, template_function_fl<const TFL&>(u3));
-      CHECK_EQUAL(forward_like_call_type::RValue,      template_function_fl<TFL&&>(u3));
+      CHECK_EQUAL(forward_like_call_type::RValue, template_function_fl<TFL&&>(u3));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(u3));
 
-      CHECK_EQUAL(forward_like_call_type::LValue,      template_function_fl<TFL&>(etl::move(u3)));
+      CHECK_EQUAL(forward_like_call_type::LValue, template_function_fl<TFL&>(etl::move(u3)));
       CHECK_EQUAL(forward_like_call_type::ConstLValue, template_function_fl<const TFL&>(etl::move(u3)));
-      CHECK_EQUAL(forward_like_call_type::RValue,      template_function_fl<TFL&&>(etl::move(u3)));
+      CHECK_EQUAL(forward_like_call_type::RValue, template_function_fl<TFL&&>(etl::move(u3)));
       CHECK_EQUAL(forward_like_call_type::ConstRValue, template_function_fl<const TFL&&>(etl::move(u3)));
 
       CHECK_EQUAL(forward_like_call_type::ConstLValue, template_function_fl<TFL&>(u4));
@@ -748,9 +743,9 @@ namespace
       enum1_t e1 = enum1_t::b2;
       enum2_t e2 = enum2_t::c0;
 
-      CHECK_TRUE((etl::is_same<int8_t,        etl::underlying_type_t<enum0_t>>::value));
+      CHECK_TRUE((etl::is_same<int8_t, etl::underlying_type_t<enum0_t>>::value));
       CHECK_TRUE((etl::is_same<unsigned char, etl::underlying_type_t<enum1_t>>::value));
-      CHECK_TRUE((etl::is_same<int32_t,       etl::underlying_type_t<enum2_t>>::value));
+      CHECK_TRUE((etl::is_same<int32_t, etl::underlying_type_t<enum2_t>>::value));
 
       CHECK_EQUAL(etl::to_underlying(e0), 't');
       CHECK_EQUAL(etl::to_underlying(e1), 5);
@@ -779,7 +774,8 @@ namespace
         uint32_t a = 0x12345678;
         uint8_t  b = 0x9A;
         uint32_t c = 0x87654321;
-      }; ETL_END_PACKED
+      };
+      ETL_END_PACKED
 
       Unpacked unpacked;
       Packed   packed;
@@ -810,8 +806,8 @@ namespace
       CHECK_EQUAL(p_a, &b);
       CHECK_EQUAL(p_b, &a);
 
-      uint32_t a_a[4] {0x12345678, 0x23456789, 0x34567890, 0x09876543};
-      uint32_t a_b[4] {0x12abcd78, 0x23abcd89, 0x34abcd90, 0x09abcd43};
+      uint32_t a_a[4]{0x12345678, 0x23456789, 0x34567890, 0x09876543};
+      uint32_t a_b[4]{0x12abcd78, 0x23abcd89, 0x34abcd90, 0x09abcd43};
 
       ETL_OR_STD::swap(a_a, a_b);
 
@@ -840,12 +836,20 @@ namespace
       CHECK_TRUE('A' == etl::nontype_t<'A'>::value);
 
       // Test with enum
-      enum class E : uint8_t { A = 1, B = 2 };
+      enum class E : uint8_t
+      {
+        A = 1,
+        B = 2
+      };
       CHECK_TRUE(E::A == etl::nontype_t<E::A>::value);
       CHECK_TRUE(E::B == etl::nontype_t<E::B>::value);
     }
 #elif ETL_USING_CPP11
-    enum class E : uint8_t { A = 1, B = 2 };
+    enum class E : uint8_t
+    {
+      A = 1,
+      B = 2
+    };
 
     TEST(test_nontype_t_cpp11)
     {
@@ -863,5 +867,185 @@ namespace
       CHECK_TRUE(E::B == (etl::nontype_t<E, E::B>::value));
     }
 #endif
+
+    //*********************************
+    TEST(test_make_index_sequence_matches_expected)
+    {
+      using seq0    = etl::make_index_sequence<0U>;
+      using seq1    = etl::make_index_sequence<1U>;
+      using seq4    = etl::make_index_sequence<4U>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<0U>;
+      using expect4 = etl::index_sequence<0U, 1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<seq0, expect0>::value));
+      CHECK_TRUE((std::is_same<seq1, expect1>::value));
+      CHECK_TRUE((std::is_same<seq4, expect4>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_for_pack_matches_expected)
+    {
+      struct T1
+      {
+      };
+      struct T2
+      {
+      };
+      struct T3
+      {
+      };
+
+      using seq12     = etl::make_index_sequence_for<T1, T2>;
+      using seq123    = etl::make_index_sequence_for<T1, T2, T3>;
+      using expect12  = etl::index_sequence<0U, 1U>;
+      using expect123 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<seq12, expect12>::value));
+      CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_for_type_list_matches_expected)
+    {
+      struct T1
+      {
+      };
+      struct T2
+      {
+      };
+      struct T3
+      {
+      };
+
+      using list12    = etl::type_list<T1, T2>;
+      using list123   = etl::type_list<T1, T2, T3>;
+      using seq12     = etl::make_index_sequence_for<list12>;
+      using seq123    = etl::make_index_sequence_for<list123>;
+      using expect12  = etl::index_sequence<0U, 1U>;
+      using expect123 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<seq12, expect12>::value));
+      CHECK_TRUE((std::is_same<seq123, expect123>::value));
+    }
+
+    //*********************************
+    TEST(test_make_index_sequence_with_offset_matches_expected)
+    {
+      using seq0    = etl::make_index_sequence_with_offset<5U, 0U>;
+      using seq2    = etl::make_index_sequence_with_offset<3U, 2U>;
+      using seq4    = etl::make_index_sequence_with_offset<7U, 4U>;
+      using expect0 = etl::index_sequence<>;
+      using expect2 = etl::index_sequence<3U, 4U>;
+      using expect4 = etl::index_sequence<7U, 8U, 9U, 10U>;
+
+      CHECK_TRUE((std::is_same<seq0, expect0>::value));
+      CHECK_TRUE((std::is_same<seq2, expect2>::value));
+      CHECK_TRUE((std::is_same<seq4, expect4>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_push_front_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_push_front_t<seq0, 5U>;
+      using result1 = etl::index_sequence_push_front_t<seq1, 0U>;
+      using expect0 = etl::index_sequence<5U>;
+      using expect1 = etl::index_sequence<0U, 1U, 2U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_pop_front_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_pop_front_t<seq0>;
+      using result1 = etl::index_sequence_pop_front_t<seq1>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<2U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_push_back_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_push_back_t<seq0, 5U>;
+      using result1 = etl::index_sequence_push_back_t<seq1, 3U>;
+      using expect0 = etl::index_sequence<5U>;
+      using expect1 = etl::index_sequence<1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_pop_back_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<1U, 2U>;
+      using result0 = etl::index_sequence_pop_back_t<seq0>;
+      using result1 = etl::index_sequence_pop_back_t<seq1>;
+      using expect0 = etl::index_sequence<>;
+      using expect1 = etl::index_sequence<1U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_cat_matches_expected)
+    {
+      using seq0    = etl::index_sequence<>;
+      using seq1    = etl::index_sequence<0U, 1U>;
+      using seq2    = etl::index_sequence<2U, 3U>;
+      using result0 = etl::index_sequence_cat_t<seq0, seq1>;
+      using result1 = etl::index_sequence_cat_t<seq1, seq2>;
+      using expect0 = etl::index_sequence<0U, 1U>;
+      using expect1 = etl::index_sequence<0U, 1U, 2U, 3U>;
+
+      CHECK_TRUE((std::is_same<result0, expect0>::value));
+      CHECK_TRUE((std::is_same<result1, expect1>::value));
+    }
+
+    //*********************************
+    TEST(test_index_sequence_at_matches_expected)
+    {
+      // using seq0    = etl::index_sequence<>;          // This should fail to
+      // compile as seq0 is empty
+      using seq1 = etl::index_sequence<1U, 2U, 3U>;
+      // using result0 = etl::index_sequence_at<seq0, 0>; // This should fail to
+      // compile as seq0 is empty auto  ignore0 = result0; // Uses result0
+      size_t result1a = etl::index_sequence_at<seq1, 0>::value;
+      size_t result1b = etl::index_sequence_at<seq1, 1>::value;
+      size_t result1c = etl::index_sequence_at<seq1, 2>::value;
+      // size_t result1d = etl::index_sequence_at<seq1, 3>::value;  // This
+      // should fail to compile as seq1 only has 3 elements auto   ignore1d =
+      // result1d;                                // Uses result1d
+      size_t expect1a = 1U;
+      size_t expect1b = 2U;
+      size_t expect1c = 3U;
+
+      CHECK_EQUAL(expect1a, result1a);
+      CHECK_EQUAL(expect1b, result1b);
+      CHECK_EQUAL(expect1c, result1c);
+
+#if ETL_USING_CPP17
+      size_t result1e = etl::index_sequence_at_v<seq1, 0>;
+      size_t result1f = etl::index_sequence_at_v<seq1, 1>;
+      size_t result1g = etl::index_sequence_at_v<seq1, 2>;
+
+      CHECK_EQUAL(expect1a, result1e);
+      CHECK_EQUAL(expect1b, result1f);
+      CHECK_EQUAL(expect1c, result1g);
+#endif
+    }
   }
-}
+} // namespace

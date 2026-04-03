@@ -34,10 +34,9 @@ SOFTWARE.
 //*****************************************************************************
 ///\defgroup observer observer
 /// A templated implementation to simplify the creation of the observer pattern
-/// and attempts to eliminate certain runtime errors by turning them into compile errors.
-/// The pattern consists of two template classes.
-/// \li <b>Observer</b><br>
-/// This template may take up to eight notification types.
+/// and attempts to eliminate certain runtime errors by turning them into
+/// compile errors. The pattern consists of two template classes. \li
+/// <b>Observer</b><br> This template may take up to eight notification types.
 /// Each notification type will generate a pure virtual 'notification'
 /// function. The class that inherits from this *must* define all
 /// of the 'notification' function overloads otherwise the object will
@@ -53,10 +52,11 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "vector.h"
-#include "exception.h"
 #include "error_handler.h"
+#include "exception.h"
+#include "type_list.h"
 #include "utility.h"
+#include "vector.h"
 
 namespace etl
 {
@@ -91,8 +91,8 @@ namespace etl
   //*********************************************************************
   /// The object that is being observed.
   ///\tparam TObserver     The observer type.
-  ///\tparam Max_Observers The maximum number of observers that can be accommodated.
-  ///\ingroup observer
+  ///\tparam Max_Observers The maximum number of observers that can be
+  /// accommodated. \ingroup observer
   //*********************************************************************
   template <typename TObserver, const size_t Max_Observers>
   class observable
@@ -124,7 +124,7 @@ namespace etl
       {
       }
 
-      bool operator ()(const observer_item& item) const
+      bool operator()(const observer_item& item) const
       {
         return p_observer == item.p_observer;
       }
@@ -140,8 +140,9 @@ namespace etl
 
     //*****************************************************************
     /// Add an observer to the list.
-    /// If asserts or exceptions are enabled then an etl::observable_observer_list_full
-    /// is emitted if the observer list is already full.
+    /// If asserts or exceptions are enabled then an
+    /// etl::observable_observer_list_full is emitted if the observer list is
+    /// already full.
     ///\param observer A reference to the observer.
     //*****************************************************************
     void add_observer(TObserver& observer)
@@ -186,7 +187,8 @@ namespace etl
     //*****************************************************************
     /// Enable an observer
     ///\param observer A reference to the observer.
-    ///\param state    <b>true</b> to enable, <b>false</b> to disable. Default is enable.
+    ///\param state    <b>true</b> to enable, <b>false</b> to disable. Default
+    /// is enable.
     //*****************************************************************
     void enable_observer(TObserver& observer, bool state = true)
     {
@@ -272,9 +274,7 @@ namespace etl
 
   protected:
 
-    ~observable()
-    {
-    }
+    ~observable() {}
 
   private:
 
@@ -300,7 +300,9 @@ namespace etl
   ///\ingroup observer
   //*****************************************************************
   template <typename T1, typename... TRest>
-  class observer<T1, TRest...> : public observer<T1>, public observer<TRest...>
+  class observer<T1, TRest...>
+    : public observer<T1>
+    , public observer<TRest...>
   {
   public:
 
@@ -308,6 +310,7 @@ namespace etl
 
     using observer<T1>::notification;
     using observer<TRest...>::notification;
+    using type_list = etl::type_list<T1, TRest...>;
   };
 
   //*****************************************************************
@@ -318,6 +321,8 @@ namespace etl
   class observer<T1>
   {
   public:
+
+    using type_list = etl::type_list<T1>;
 
     virtual ~observer() = default;
 
@@ -333,10 +338,26 @@ namespace etl
   {
   public:
 
+    using type_list = etl::type_list<>;
+
     virtual ~observer() = default;
 
     virtual void notification() = 0;
   };
+
+  //***************************************************************************
+  /// Helper to turn etl::type_list<TTypes...> into etl::observer<TTypes...>
+  template <typename TList>
+  struct observer_from_type_list;
+
+  template <typename... TTypes>
+  struct observer_from_type_list<etl::type_list<TTypes...>>
+  {
+    using type = etl::observer<TTypes...>;
+  };
+
+  template <typename TTypeList>
+  using observer_from_type_list_t = typename observer_from_type_list<TTypeList>::type;
 
 #else
 
@@ -344,24 +365,20 @@ namespace etl
   /// The observer interface for eight notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2  = void,
-            typename T3  = void,
-            typename T4  = void,
-            typename T5  = void,
-            typename T6  = void,
-            typename T7  = void,
-            typename T8  = void>
-  class observer : public observer<T1>
-                 , public observer<T2>
-                 , public observer<T3>
-                 , public observer<T4>
-                 , public observer<T5>
-                 , public observer<T6>
-                 , public observer<T7>
-                 , public observer<T8>
+  template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void, typename T6 = void, typename T7 = void,
+            typename T8 = void>
+  class observer
+    : public observer<T1>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
+    , public observer<T6>
+    , public observer<T7>
+    , public observer<T8>
   {
   public:
+
     virtual ~observer() {}
 
     using observer<T1>::notification;
@@ -378,20 +395,15 @@ namespace etl
   /// The observer interface for seven notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2,
-            typename T3,
-            typename T4,
-            typename T5,
-            typename T6,
-            typename T7>
-  class observer<T1, T2, T3, T4, T5, T6, T7> : public observer<T1>
-                                             , public observer<T2>
-                                             , public observer<T3>
-                                             , public observer<T4>
-                                             , public observer<T5>
-                                             , public observer<T6>
-                                             , public observer<T7>
+  template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+  class observer<T1, T2, T3, T4, T5, T6, T7>
+    : public observer<T1>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
+    , public observer<T6>
+    , public observer<T7>
   {
   public:
 
@@ -409,18 +421,14 @@ namespace etl
   /// The observer interface for six notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2,
-            typename T3,
-            typename T4,
-            typename T5,
-            typename T6>
-  class observer<T1, T2, T3, T4, T5, T6> : public observer<T1>
-                                         , public observer<T2>
-                                         , public observer<T3>
-                                         , public observer<T4>
-                                         , public observer<T5>
-                                         , public observer<T6>
+  template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
+  class observer<T1, T2, T3, T4, T5, T6>
+    : public observer<T1>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
+    , public observer<T6>
   {
   public:
 
@@ -437,16 +445,13 @@ namespace etl
   /// The observer interface for five notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2,
-            typename T3,
-            typename T4,
-            typename T5>
-  class observer<T1, T2, T3, T4, T5> : public observer<T1>
-                                     , public observer<T2>
-                                     , public observer<T3>
-                                     , public observer<T4>
-                                     , public observer<T5>
+  template <typename T1, typename T2, typename T3, typename T4, typename T5>
+  class observer<T1, T2, T3, T4, T5>
+    : public observer<T1>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
+    , public observer<T5>
   {
   public:
 
@@ -462,14 +467,12 @@ namespace etl
   /// The observer interface for four notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2,
-            typename T3,
-            typename T4>
-  class observer<T1, T2, T3, T4> : public observer<T1>
-                                 , public observer<T2>
-                                 , public observer<T3>
-                                 , public observer<T4>
+  template <typename T1, typename T2, typename T3, typename T4>
+  class observer<T1, T2, T3, T4>
+    : public observer<T1>
+    , public observer<T2>
+    , public observer<T3>
+    , public observer<T4>
   {
   public:
 
@@ -484,12 +487,11 @@ namespace etl
   /// The observer interface for three notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2,
-            typename T3>
-  class observer<T1, T2, T3> : public observer<T1>
-                             , public observer<T2>
-                             , public observer<T3>
+  template <typename T1, typename T2, typename T3>
+  class observer<T1, T2, T3>
+    : public observer<T1>
+    , public observer<T2>
+    , public observer<T3>
   {
   public:
 
@@ -503,10 +505,10 @@ namespace etl
   /// The observer interface for two notification types.
   ///\ingroup observer
   //*********************************************************************
-  template <typename T1,
-            typename T2>
-  class observer<T1, T2> : public observer<T1>
-                         , public observer<T2>
+  template <typename T1, typename T2>
+  class observer<T1, T2>
+    : public observer<T1>
+    , public observer<T2>
   {
   public:
 
@@ -542,6 +544,6 @@ namespace etl
   };
 
 #endif
-}
+} // namespace etl
 
 #endif

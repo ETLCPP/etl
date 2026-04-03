@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2023 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -51,7 +51,7 @@ SOFTWARE.
   #endif
 #endif
 
-namespace 
+namespace
 {
   SUITE(test_chrono_year)
   {
@@ -71,7 +71,7 @@ namespace
         etl::chrono::year year(i);
 
         CHECK_TRUE(year.ok());
-        CHECK_EQUAL(i, int(year));
+        CHECK_EQUAL(i, static_cast<int>(year));
       }
     }
 
@@ -79,7 +79,7 @@ namespace
     TEST(test_pre_increment)
     {
       etl::chrono::year year(-32767);
-      int count = int(year);
+      int               count = int(year);
 
       for (int32_t i = 0; i < 65534; ++i)
       {
@@ -87,7 +87,7 @@ namespace
         etl::chrono::year this_year = ++year;
 
         CHECK_TRUE(year.ok());
-        CHECK_EQUAL(count, year);
+        CHECK_EQUAL(count, static_cast<int>(year));
         CHECK_EQUAL(this_year, year);
       }
     }
@@ -96,7 +96,7 @@ namespace
     TEST(test_post_increment)
     {
       etl::chrono::year year(-32767);
-      int count = -32767;
+      int               count = -32767;
 
       for (int32_t i = 0; i < 65534; ++i)
       {
@@ -116,7 +116,7 @@ namespace
     TEST(test_pre_decrement)
     {
       etl::chrono::year year(256);
-      int count = 256;
+      int               count = 256;
 
       for (int i = 0; i < 255; ++i)
       {
@@ -132,7 +132,7 @@ namespace
     TEST(test_post_decrement)
     {
       etl::chrono::year year(256);
-      int count = (int)year;
+      int               count = (int)year;
 
       for (int i = 0; i < 255; ++i)
       {
@@ -151,7 +151,7 @@ namespace
     //*************************************************************************
     TEST(test_plus_equal_years)
     {
-      etl::chrono::year year(0);
+      etl::chrono::year  year(0);
       etl::chrono::years years(2);
 
       for (int i = 0; i < 128; ++i)
@@ -166,7 +166,7 @@ namespace
     //*************************************************************************
     TEST(test_year_plus_years)
     {
-      etl::chrono::year year(0);
+      etl::chrono::year  year(0);
       etl::chrono::years years(2);
 
       for (int i = 0; i < 128; ++i)
@@ -181,7 +181,7 @@ namespace
     //*************************************************************************
     TEST(test_years_plus_year)
     {
-      etl::chrono::year year(0);
+      etl::chrono::year  year(0);
       etl::chrono::years years(2);
 
       for (int i = 0; i < 128; ++i)
@@ -196,7 +196,7 @@ namespace
     //*************************************************************************
     TEST(test_minus_equal_years)
     {
-      etl::chrono::year year(256);
+      etl::chrono::year  year(256);
       etl::chrono::years years(2);
 
       for (int i = 0; i < 128; ++i)
@@ -211,7 +211,7 @@ namespace
     //*************************************************************************
     TEST(test_year_minus_years)
     {
-      etl::chrono::year year(256);
+      etl::chrono::year  year(256);
       etl::chrono::years years(2);
 
       for (int i = 0; i < 128; ++i)
@@ -226,16 +226,11 @@ namespace
     //*************************************************************************
     TEST(test_year_minus_year)
     {
-      etl::chrono::year year(256);
-      etl::chrono::years years(2);
-
-      for (int i = 0; i < 128; ++i)
-      {
-        year = years - year;
-
-        CHECK_TRUE(year.ok());
-        CHECK_EQUAL((256 - (2 * i)) - 2, int(year));
-      }
+      etl::chrono::year y1(2056);
+      CHECK_TRUE(y1 - y1 == etl::chrono::years(0));
+      etl::chrono::year y2(2);
+      CHECK_TRUE(y1 - y2 == etl::chrono::years(2054));
+      CHECK_TRUE(y2 - y1 == etl::chrono::years(-2054));
     }
 
     //*************************************************************************
@@ -251,13 +246,12 @@ namespace
       }
     }
 
-
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_min_max_year)
     {
-      CHECK_EQUAL(-32767, etl::chrono::year::min());
-      CHECK_EQUAL(32767,  etl::chrono::year::max());
+      CHECK_EQUAL(-32767, static_cast<int>(etl::chrono::year::min()));
+      CHECK_EQUAL(32767, static_cast<int>(etl::chrono::year::max()));
     }
 #endif
 
@@ -267,11 +261,11 @@ namespace
     {
       using namespace etl::literals::chrono_literals;
 
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
       etl::chrono::year year = 25_year;
-#else
+  #else
       etl::chrono::year year = 25_y;
-#endif
+  #endif
 
       CHECK_TRUE(year.ok());
       CHECK_EQUAL(25, int(year));
@@ -281,19 +275,19 @@ namespace
     //*************************************************************************
     TEST(test_year_comparison_operators)
     {
-        etl::chrono::year year10(10);
-        etl::chrono::year year20(20);
+      etl::chrono::year year10(10);
+      etl::chrono::year year20(20);
 
-        CHECK_TRUE(year10  == year10);
-        CHECK_FALSE(year10 != year10);
+      CHECK_TRUE(year10 == year10);
+      CHECK_FALSE(year10 != year10);
 
-        CHECK_FALSE(year10  == year20);
-        CHECK_TRUE(year10 != year20);
+      CHECK_FALSE(year10 == year20);
+      CHECK_TRUE(year10 != year20);
 
 #if ETL_USING_CPP20
-        CHECK_TRUE((year10 <=> year10) == 0);
-        CHECK_TRUE((year10 <=> year20)  < 0);
-        CHECK_TRUE((year20 <=> year10)  > 0);
+      CHECK_TRUE((year10 <=> year10) == 0);
+      CHECK_TRUE((year10 <=> year20) < 0);
+      CHECK_TRUE((year20 <=> year10) > 0);
 #endif
     }
 
@@ -314,4 +308,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

@@ -42,7 +42,9 @@ namespace
   typedef etl::forward_link<0> FLink0;
   typedef etl::forward_link<1> FLink1;
 
-  struct FData : public FLink0, public FLink1
+  struct FData
+    : public FLink0
+    , public FLink1
   {
     FData(int value_)
       : value(value_)
@@ -58,7 +60,9 @@ namespace
   typedef etl::bidirectional_link<0> BLink0;
   typedef etl::bidirectional_link<1> BLink1;
 
-  struct BData : public BLink0, public BLink1
+  struct BData
+    : public BLink0
+    , public BLink1
   {
     BData(int value_)
       : value(value_)
@@ -75,7 +79,9 @@ namespace
   typedef etl::tree_link<1> TLink1;
   typedef etl::tree_link<2> TLink2;
 
-  struct TData : public TLink0, public TLink1
+  struct TData
+    : public TLink0
+    , public TLink1
   {
     TData(int value_)
       : value(value_)
@@ -88,7 +94,10 @@ namespace
   //*******************************************************
   // Mixed
   //*******************************************************
-  struct MData : public FLink0, public BLink1, public TLink2
+  struct MData
+    : public FLink0
+    , public BLink1
+    , public TLink2
   {
     MData(int value_)
       : value(value_)
@@ -109,7 +118,7 @@ namespace
       FData data3(3);
 
       etl::link_clear<FLink0>(data0);
-      etl::link<FLink0>(data0,  data1);
+      etl::link<FLink0>(data0, data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
       etl::link_clear<FLink0>(data0);
@@ -117,16 +126,16 @@ namespace
       CHECK(data0.FLink0::etl_next == &data1);
 
       etl::link_clear<FLink0>(data0);
-      etl::link<FLink0>(data0,  &data1);
+      etl::link<FLink0>(data0, &data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
       etl::link_clear<FLink0>(data0);
       etl::link<FLink0>(&data0, &data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
-      etl::link<FLink0>(data1,  data2);
-      etl::link<FLink0>(data2,  data3);
-      etl::link<FLink0>(data3,  nullptr);
+      etl::link<FLink0>(data1, data2);
+      etl::link<FLink0>(data2, data3);
+      etl::link<FLink0>(data3, nullptr);
 
       etl::link<FLink1>(data3, data2);
       etl::link<FLink1>(data2, data1);
@@ -475,7 +484,6 @@ namespace
       CHECK(data5.FLink0::etl_next == nullptr);
     }
 
-
     //*************************************************************************
     TEST(test_unlink_after_forward_link)
     {
@@ -497,10 +505,10 @@ namespace
       etl::unlink_after<FLink0>(data1);
       data2.FLink0::clear();
 
-      CHECK(data0.FLink0::etl_next  == &data1);
-      CHECK(data1.FLink0::etl_next  == &data3);
-      CHECK(data2.FLink0::etl_next  == nullptr);
-      CHECK(data3.FLink0::etl_next  == nullptr);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data3);
+      CHECK(data2.FLink0::etl_next == nullptr);
+      CHECK(data3.FLink0::etl_next == nullptr);
 
       CHECK(data3.FLink1::etl_next == &data2);
       CHECK(data2.FLink1::etl_next == &data1);
@@ -510,9 +518,9 @@ namespace
       etl::unlink_after<FLink1>(data2);
       data1.FLink1::clear();
 
-      CHECK(data0.FLink0::etl_next  == &data1);
-      CHECK(data1.FLink0::etl_next  == &data3);
-      CHECK(data3.FLink0::etl_next  == nullptr);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data3);
+      CHECK(data3.FLink0::etl_next == nullptr);
 
       CHECK(data3.FLink1::etl_next == &data2);
       CHECK(data2.FLink1::etl_next == &data0);
@@ -522,9 +530,9 @@ namespace
       etl::unlink_after<FLink0>(data3);
       etl::unlink_after<FLink1>(data0);
 
-      CHECK(data0.FLink0::etl_next  == &data1);
-      CHECK(data1.FLink0::etl_next  == &data3);
-      CHECK(data3.FLink0::etl_next  == nullptr);
+      CHECK(data0.FLink0::etl_next == &data1);
+      CHECK(data1.FLink0::etl_next == &data3);
+      CHECK(data3.FLink0::etl_next == nullptr);
 
       CHECK(data3.FLink1::etl_next == &data2);
       CHECK(data2.FLink1::etl_next == &data0);
@@ -554,7 +562,7 @@ namespace
       CHECK(data1.FLink0::etl_next == &data2);
       CHECK(data2.FLink0::etl_next == nullptr);
       CHECK(data3.FLink0::etl_next == nullptr);
-      
+
       etl::link_clear_range(*start);
       CHECK(data0.FLink0::etl_next == &data3);
       CHECK(data1.FLink0::etl_next == nullptr);
@@ -593,22 +601,22 @@ namespace
 
       data1.BLink0::clear();
       etl::link<BLink0>(data0, data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
 
       data1.BLink0::clear();
       etl::link<BLink0>(data0, data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
-      CHECK(data1.BLink0::etl_previous == &data0);
-
-      data1.BLink0::clear();
-      etl::link<BLink0>(data0,  data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
 
       data1.BLink0::clear();
       etl::link<BLink0>(data0, data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
+      CHECK(data1.BLink0::etl_previous == &data0);
+
+      data1.BLink0::clear();
+      etl::link<BLink0>(data0, data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
 
       etl::link<BLink0>(data1, data2);
@@ -617,26 +625,26 @@ namespace
 
       CHECK(data0.BLink0::etl_previous == nullptr);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data1.BLink0::etl_next == &data2);
       CHECK(data2.BLink0::etl_previous == &data1);
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data3.BLink0::etl_previous == &data2);
-      CHECK(data3.BLink0::etl_next     == nullptr);
+      CHECK(data3.BLink0::etl_next == nullptr);
 
       etl::link<BLink1>(nullptr, data3);
-      etl::link<BLink1>(data3,   data2);
-      etl::link<BLink1>(data2,   data1);
-      etl::link<BLink1>(data1,   data0);
-      etl::link<BLink1>(data0,   nullptr);
+      etl::link<BLink1>(data3, data2);
+      etl::link<BLink1>(data2, data1);
+      etl::link<BLink1>(data1, data0);
+      etl::link<BLink1>(data0, nullptr);
 
-      CHECK(data3.BLink1::etl_previous    == nullptr);
-      CHECK(data3.BLink1::etl_next        == &data2);
-      CHECK(data2.BLink1::etl_previous    == &data3);
-      CHECK(data2.BLink1::etl_next        == &data1);
-      CHECK(data1.BLink1::etl_previous    == &data2);
-      CHECK(data1.BLink1::etl_next        == &data0);
-      CHECK(data0.BLink1::etl_previous    == &data1);
-      CHECK(data0.BLink1::etl_next        == nullptr);
+      CHECK(data3.BLink1::etl_previous == nullptr);
+      CHECK(data3.BLink1::etl_next == &data2);
+      CHECK(data2.BLink1::etl_previous == &data3);
+      CHECK(data2.BLink1::etl_next == &data1);
+      CHECK(data1.BLink1::etl_previous == &data2);
+      CHECK(data1.BLink1::etl_next == &data0);
+      CHECK(data0.BLink1::etl_previous == &data1);
+      CHECK(data0.BLink1::etl_next == nullptr);
 
       BData* pdata;
 
@@ -669,32 +677,32 @@ namespace
       CHECK_EQUAL(3, pdata->value);
 
       data1.BLink0::unlink();
-      CHECK(data0.BLink0::etl_next     == &data2);
+      CHECK(data0.BLink0::etl_next == &data2);
       CHECK(data2.BLink0::etl_previous == &data0);
 
-      CHECK(data3.BLink1::etl_previous    == nullptr);
-      CHECK(data3.BLink1::etl_next        == &data2);
-      CHECK(data2.BLink1::etl_previous    == &data3);
-      CHECK(data2.BLink1::etl_next        != nullptr);
-      CHECK(data0.BLink1::etl_previous    != nullptr);
-      CHECK(data0.BLink1::etl_next        == nullptr);
+      CHECK(data3.BLink1::etl_previous == nullptr);
+      CHECK(data3.BLink1::etl_next == &data2);
+      CHECK(data2.BLink1::etl_previous == &data3);
+      CHECK(data2.BLink1::etl_next != nullptr);
+      CHECK(data0.BLink1::etl_previous != nullptr);
+      CHECK(data0.BLink1::etl_next == nullptr);
 
       data0.BLink0::unlink();
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data2.BLink0::etl_previous == nullptr);
       CHECK(data3.BLink0::etl_previous == &data2);
 
-      CHECK(data3.BLink1::etl_previous    == nullptr);
-      CHECK(data3.BLink1::etl_next        == &data2);
-      CHECK(data2.BLink1::etl_previous    == &data3);
-      CHECK(data2.BLink1::etl_next        != nullptr);
+      CHECK(data3.BLink1::etl_previous == nullptr);
+      CHECK(data3.BLink1::etl_next == &data2);
+      CHECK(data2.BLink1::etl_previous == &data3);
+      CHECK(data2.BLink1::etl_next != nullptr);
 
       data3.BLink0::unlink();
-      CHECK(data2.BLink0::etl_next     == nullptr);
+      CHECK(data2.BLink0::etl_next == nullptr);
       CHECK(data2.BLink0::etl_previous == nullptr);
 
-      CHECK(data2.BLink1::etl_next        != nullptr);
-      CHECK(data2.BLink1::etl_previous    != nullptr);
+      CHECK(data2.BLink1::etl_next != nullptr);
+      CHECK(data2.BLink1::etl_previous != nullptr);
 
       data2.BLink0::unlink();
     }
@@ -710,24 +718,24 @@ namespace
       BLink0* last0 = etl::create_linked_list<BLink0>(data0, data1, data2, data3);
       CHECK(last0 == &data3);
       CHECK(data0.BLink0::etl_previous == ETL_NULLPTR);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data1.BLink0::etl_next == &data2);
       CHECK(data2.BLink0::etl_previous == &data1);
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data3.BLink0::etl_previous == &data2);
-      CHECK(data3.BLink0::etl_next     == ETL_NULLPTR);
+      CHECK(data3.BLink0::etl_next == ETL_NULLPTR);
 
       BLink1* last1 = etl::create_linked_list<BLink1>(data3, data2, data1, data0);
       CHECK(last1 == &data0);
       CHECK(data3.BLink1::etl_previous == ETL_NULLPTR);
-      CHECK(data3.BLink1::etl_next     == &data2);
+      CHECK(data3.BLink1::etl_next == &data2);
       CHECK(data2.BLink1::etl_previous == &data3);
-      CHECK(data2.BLink1::etl_next     == &data1);
+      CHECK(data2.BLink1::etl_next == &data1);
       CHECK(data1.BLink1::etl_previous == &data2);
-      CHECK(data1.BLink1::etl_next     == &data0);
+      CHECK(data1.BLink1::etl_next == &data0);
       CHECK(data0.BLink1::etl_previous == &data1);
-      CHECK(data0.BLink1::etl_next     == ETL_NULLPTR);
+      CHECK(data0.BLink1::etl_next == ETL_NULLPTR);
 
       BData* pdata;
 
@@ -753,20 +761,20 @@ namespace
       auto last2 = etl::create_linked_list<BLink0>(*last0, data4, data5, data6, data7);
       CHECK(last2 == &data7);
       CHECK(data0.BLink0::etl_previous == ETL_NULLPTR);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data1.BLink0::etl_next == &data2);
       CHECK(data2.BLink0::etl_previous == &data1);
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data3.BLink0::etl_previous == &data2);
-      CHECK(data3.BLink0::etl_next     == &data4);
+      CHECK(data3.BLink0::etl_next == &data4);
       CHECK(data4.BLink0::etl_previous == &data3);
-      CHECK(data4.BLink0::etl_next     == &data5);
+      CHECK(data4.BLink0::etl_next == &data5);
       CHECK(data5.BLink0::etl_previous == &data4);
-      CHECK(data5.BLink0::etl_next     == &data6);
+      CHECK(data5.BLink0::etl_next == &data6);
       CHECK(data6.BLink0::etl_previous == &data5);
-      CHECK(data6.BLink0::etl_next     == &data7);
-      CHECK(data7.BLink0::etl_next     == ETL_NULLPTR);
+      CHECK(data6.BLink0::etl_next == &data7);
+      CHECK(data7.BLink0::etl_next == ETL_NULLPTR);
     }
 
     //*************************************************************************
@@ -882,11 +890,11 @@ namespace
       BData data2(2);
       BData data3(3);
 
-      // Use reference interface    
+      // Use reference interface
       data0.BLink0::set_next(data1);
       data1.BLink0::set_next(data2);
       data2.BLink0::set_next(data3);
-      
+
       data1.BLink0::set_previous(data0);
       data2.BLink0::set_previous(data1);
       data3.BLink0::set_previous(data2);
@@ -957,48 +965,48 @@ namespace
       etl::link_splice<BLink0>(nullptr, data0);
 
       etl::link_splice<BLink0>(data0, data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
 
       data0.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data0);
 
       etl::link_splice<BLink0>(data0, &data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
 
       data0.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data0);
 
       etl::link_splice<BLink0>(&data0, data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
 
       data0.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data0);
 
       etl::link_splice<BLink0>(&data0, &data1);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
 
       data0.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data0);
-      etl::link_splice<BLink0>(data0,   data3);
-      etl::link_splice<BLink0>(data0,   data1);
-      etl::link_splice<BLink0>(data1,   data2);
+      etl::link_splice<BLink0>(data0, data3);
+      etl::link_splice<BLink0>(data0, data1);
+      etl::link_splice<BLink0>(data1, data2);
 
       CHECK(data0.BLink0::etl_previous == nullptr);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data1.BLink0::etl_next == &data2);
       CHECK(data2.BLink0::etl_previous == &data1);
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data3.BLink0::etl_previous == &data2);
-      CHECK(data3.BLink0::etl_next     == nullptr);
+      CHECK(data3.BLink0::etl_next == nullptr);
     }
 
     //*************************************************************************
@@ -1016,35 +1024,35 @@ namespace
       // Build the first range.
       data0.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data0);
-      etl::link_splice<BLink0>(data0,   data1);
-      etl::link_splice<BLink0>(data1,   data6);
-      etl::link_splice<BLink0>(data6,   data7);
+      etl::link_splice<BLink0>(data0, data1);
+      etl::link_splice<BLink0>(data1, data6);
+      etl::link_splice<BLink0>(data6, data7);
 
       // Build the second range.
       data2.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data2);
-      etl::link_splice<BLink0>(data2,   data3);
-      etl::link_splice<BLink0>(data3,   data4);
-      etl::link_splice<BLink0>(data4,   data5);
+      etl::link_splice<BLink0>(data2, data3);
+      etl::link_splice<BLink0>(data3, data4);
+      etl::link_splice<BLink0>(data4, data5);
 
       etl::link_splice<BLink0>(data1, data2, data5);
 
       CHECK(data0.BLink0::etl_previous == nullptr);
-      CHECK(data0.BLink0::etl_next     == &data1);
+      CHECK(data0.BLink0::etl_next == &data1);
       CHECK(data1.BLink0::etl_previous == &data0);
-      CHECK(data1.BLink0::etl_next     == &data2);
+      CHECK(data1.BLink0::etl_next == &data2);
       CHECK(data2.BLink0::etl_previous == &data1);
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data3.BLink0::etl_previous == &data2);
-      CHECK(data3.BLink0::etl_next     == &data4);
+      CHECK(data3.BLink0::etl_next == &data4);
       CHECK(data4.BLink0::etl_previous == &data3);
-      CHECK(data4.BLink0::etl_next     == &data5);
+      CHECK(data4.BLink0::etl_next == &data5);
       CHECK(data5.BLink0::etl_previous == &data4);
-      CHECK(data5.BLink0::etl_next     == &data6);
+      CHECK(data5.BLink0::etl_next == &data6);
       CHECK(data6.BLink0::etl_previous == &data5);
-      CHECK(data6.BLink0::etl_next     == &data7);
+      CHECK(data6.BLink0::etl_next == &data7);
       CHECK(data7.BLink0::etl_previous == &data6);
-      CHECK(data7.BLink0::etl_next     == nullptr);
+      CHECK(data7.BLink0::etl_next == nullptr);
 
       // Do it again with a pointer parameter.
       // Build the first range.
@@ -1084,20 +1092,20 @@ namespace
       // Build the range.
       data2.BLink0::clear();
       etl::link_splice<BLink0>(nullptr, data2);
-      etl::link_splice<BLink0>(data2,   data3);
-      etl::link_splice<BLink0>(data3,   data4);
-      etl::link_splice<BLink0>(data4,   data5);
+      etl::link_splice<BLink0>(data2, data3);
+      etl::link_splice<BLink0>(data3, data4);
+      etl::link_splice<BLink0>(data4, data5);
 
       etl::link_splice<BLink0>(nullptr, data2, data5);
 
       CHECK(data2.BLink0::etl_previous == nullptr);
-      CHECK(data2.BLink0::etl_next     == &data3);
+      CHECK(data2.BLink0::etl_next == &data3);
       CHECK(data3.BLink0::etl_previous == &data2);
-      CHECK(data3.BLink0::etl_next     == &data4);
+      CHECK(data3.BLink0::etl_next == &data4);
       CHECK(data4.BLink0::etl_previous == &data3);
-      CHECK(data4.BLink0::etl_next     == &data5);
+      CHECK(data4.BLink0::etl_next == &data5);
       CHECK(data5.BLink0::etl_previous == &data4);
-      CHECK(data5.BLink0::etl_next     == nullptr);
+      CHECK(data5.BLink0::etl_next == nullptr);
     }
 
     //*************************************************************************
@@ -1109,100 +1117,100 @@ namespace
       BData data3(3);
 
       etl::link<BLink0>(nullptr, data0);
-      etl::link<BLink0>(data0,   data1);
-      etl::link<BLink0>(data1,   data2);
-      etl::link<BLink0>(data2,   data3);
-      etl::link<BLink0>(data3,   nullptr);
+      etl::link<BLink0>(data0, data1);
+      etl::link<BLink0>(data1, data2);
+      etl::link<BLink0>(data2, data3);
+      etl::link<BLink0>(data3, nullptr);
 
       etl::link<BLink1>(nullptr, data3);
-      etl::link<BLink1>(data3,   data2);
-      etl::link<BLink1>(data2,   data1);
-      etl::link<BLink1>(data1,   data0);
-      etl::link<BLink1>(data0,   nullptr);
+      etl::link<BLink1>(data3, data2);
+      etl::link<BLink1>(data2, data1);
+      etl::link<BLink1>(data1, data0);
+      etl::link<BLink1>(data0, nullptr);
 
       etl::unlink<BLink0>(data1);
       data1.BLink0::clear();
 
-      CHECK(data0.BLink0::etl_previous  == nullptr);
-      CHECK(data0.BLink0::etl_next      == &data2);
-      CHECK(data1.BLink0::etl_previous  == nullptr);
-      CHECK(data1.BLink0::etl_next      == nullptr);
-      CHECK(data2.BLink0::etl_previous  == &data0);
-      CHECK(data2.BLink0::etl_next      == &data3);
-      CHECK(data3.BLink0::etl_previous  == &data2);
-      CHECK(data3.BLink0::etl_next      == nullptr);
+      CHECK(data0.BLink0::etl_previous == nullptr);
+      CHECK(data0.BLink0::etl_next == &data2);
+      CHECK(data1.BLink0::etl_previous == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
+      CHECK(data2.BLink0::etl_previous == &data0);
+      CHECK(data2.BLink0::etl_next == &data3);
+      CHECK(data3.BLink0::etl_previous == &data2);
+      CHECK(data3.BLink0::etl_next == nullptr);
 
       CHECK(data3.BLink1::etl_previous == nullptr);
-      CHECK(data3.BLink1::etl_next     == &data2);
+      CHECK(data3.BLink1::etl_next == &data2);
       CHECK(data2.BLink1::etl_previous == &data3);
-      CHECK(data2.BLink1::etl_next     == &data1);
+      CHECK(data2.BLink1::etl_next == &data1);
       CHECK(data1.BLink1::etl_previous == &data2);
-      CHECK(data1.BLink1::etl_next     == &data0);
+      CHECK(data1.BLink1::etl_next == &data0);
       CHECK(data0.BLink1::etl_previous == &data1);
-      CHECK(data0.BLink1::etl_next     == nullptr);
+      CHECK(data0.BLink1::etl_next == nullptr);
 
       etl::unlink<BLink1>(data2);
       data2.BLink1::clear();
 
-      CHECK(data0.BLink0::etl_previous  == nullptr);
-      CHECK(data0.BLink0::etl_next      == &data2);
-      CHECK(data1.BLink0::etl_previous  == nullptr);
-      CHECK(data1.BLink0::etl_next      == nullptr);
-      CHECK(data2.BLink0::etl_previous  == &data0);
-      CHECK(data2.BLink0::etl_next      == &data3);
-      CHECK(data3.BLink0::etl_previous  == &data2);
-      CHECK(data3.BLink0::etl_next      == nullptr);
+      CHECK(data0.BLink0::etl_previous == nullptr);
+      CHECK(data0.BLink0::etl_next == &data2);
+      CHECK(data1.BLink0::etl_previous == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
+      CHECK(data2.BLink0::etl_previous == &data0);
+      CHECK(data2.BLink0::etl_next == &data3);
+      CHECK(data3.BLink0::etl_previous == &data2);
+      CHECK(data3.BLink0::etl_next == nullptr);
 
       CHECK(data3.BLink1::etl_previous == nullptr);
-      CHECK(data3.BLink1::etl_next     == &data1);
+      CHECK(data3.BLink1::etl_next == &data1);
       CHECK(data2.BLink1::etl_previous == nullptr);
-      CHECK(data2.BLink1::etl_next     == nullptr);
+      CHECK(data2.BLink1::etl_next == nullptr);
       CHECK(data1.BLink1::etl_previous == &data3);
-      CHECK(data1.BLink1::etl_next     == &data0);
+      CHECK(data1.BLink1::etl_next == &data0);
       CHECK(data0.BLink1::etl_previous == &data1);
-      CHECK(data0.BLink1::etl_next     == nullptr);
+      CHECK(data0.BLink1::etl_next == nullptr);
 
       etl::unlink<BLink0>(data0);
       data0.BLink0::clear();
 
-      CHECK(data0.BLink0::etl_previous  == nullptr);
-      CHECK(data0.BLink0::etl_next      == nullptr);
-      CHECK(data1.BLink0::etl_previous  == nullptr);
-      CHECK(data1.BLink0::etl_next      == nullptr);
-      CHECK(data2.BLink0::etl_previous  == nullptr);
-      CHECK(data2.BLink0::etl_next      == &data3);
-      CHECK(data3.BLink0::etl_previous  == &data2);
-      CHECK(data3.BLink0::etl_next      == nullptr);
+      CHECK(data0.BLink0::etl_previous == nullptr);
+      CHECK(data0.BLink0::etl_next == nullptr);
+      CHECK(data1.BLink0::etl_previous == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
+      CHECK(data2.BLink0::etl_previous == nullptr);
+      CHECK(data2.BLink0::etl_next == &data3);
+      CHECK(data3.BLink0::etl_previous == &data2);
+      CHECK(data3.BLink0::etl_next == nullptr);
 
       CHECK(data3.BLink1::etl_previous == nullptr);
-      CHECK(data3.BLink1::etl_next     == &data1);
+      CHECK(data3.BLink1::etl_next == &data1);
       CHECK(data2.BLink1::etl_previous == nullptr);
-      CHECK(data2.BLink1::etl_next     == nullptr);
+      CHECK(data2.BLink1::etl_next == nullptr);
       CHECK(data1.BLink1::etl_previous == &data3);
-      CHECK(data1.BLink1::etl_next     == &data0);
+      CHECK(data1.BLink1::etl_next == &data0);
       CHECK(data0.BLink1::etl_previous == &data1);
-      CHECK(data0.BLink1::etl_next     == nullptr);
+      CHECK(data0.BLink1::etl_next == nullptr);
 
       etl::unlink<BLink1>(data3);
       data3.BLink1::clear();
 
-      CHECK(data0.BLink0::etl_previous  == nullptr);
-      CHECK(data0.BLink0::etl_next      == nullptr);
-      CHECK(data1.BLink0::etl_previous  == nullptr);
-      CHECK(data1.BLink0::etl_next      == nullptr);
-      CHECK(data2.BLink0::etl_previous  == nullptr);
-      CHECK(data2.BLink0::etl_next      == &data3);
-      CHECK(data3.BLink0::etl_previous  == &data2);
-      CHECK(data3.BLink0::etl_next      == nullptr);
+      CHECK(data0.BLink0::etl_previous == nullptr);
+      CHECK(data0.BLink0::etl_next == nullptr);
+      CHECK(data1.BLink0::etl_previous == nullptr);
+      CHECK(data1.BLink0::etl_next == nullptr);
+      CHECK(data2.BLink0::etl_previous == nullptr);
+      CHECK(data2.BLink0::etl_next == &data3);
+      CHECK(data3.BLink0::etl_previous == &data2);
+      CHECK(data3.BLink0::etl_next == nullptr);
 
       CHECK(data3.BLink1::etl_previous == nullptr);
-      CHECK(data3.BLink1::etl_next     == nullptr);
+      CHECK(data3.BLink1::etl_next == nullptr);
       CHECK(data2.BLink1::etl_previous == nullptr);
-      CHECK(data2.BLink1::etl_next     == nullptr);
+      CHECK(data2.BLink1::etl_next == nullptr);
       CHECK(data1.BLink1::etl_previous == nullptr);
-      CHECK(data1.BLink1::etl_next     == &data0);
+      CHECK(data1.BLink1::etl_next == &data0);
       CHECK(data0.BLink1::etl_previous == &data1);
-      CHECK(data0.BLink1::etl_next     == nullptr);
+      CHECK(data0.BLink1::etl_next == nullptr);
     }
 
     //*************************************************************************
@@ -1225,7 +1233,8 @@ namespace
       etl::link<BLink1>(data1, data0);
       etl::link<BLink1>(data0, nullptr);
 
-      // According to the documentation, `data1`/`data2` remain linked to each other.
+      // According to the documentation, `data1`/`data2` remain linked to each
+      // other.
       etl::unlink<BLink0>(data1, data2);
 
       CHECK(data0.BLink0::etl_previous == nullptr);
@@ -1255,12 +1264,12 @@ namespace
       etl::link<BLink0>(data0, data0);
 
       CHECK(data0.BLink0::etl_previous == &data0);
-      CHECK(data0.BLink0::etl_next     == &data0);
+      CHECK(data0.BLink0::etl_next == &data0);
 
       etl::unlink<BLink0>(data0);
 
       CHECK(data0.BLink0::etl_previous == ETL_NULLPTR);
-      CHECK(data0.BLink0::etl_next     == ETL_NULLPTR);
+      CHECK(data0.BLink0::etl_next == ETL_NULLPTR);
     }
 
     //*************************************************************************
@@ -1276,113 +1285,113 @@ namespace
 
       // First link
       data0.TLink0::clear();
-      etl::link_left<TLink0>(data0,  data1);
+      etl::link_left<TLink0>(data0, data1);
       etl::link_right<TLink0>(data0, data2);
-      CHECK(data0.TLink0::etl_left   == &data1);
-      CHECK(data0.TLink0::etl_right  == &data2);
+      CHECK(data0.TLink0::etl_left == &data1);
+      CHECK(data0.TLink0::etl_right == &data2);
       CHECK(data1.TLink0::etl_parent == &data0);
       CHECK(data2.TLink0::etl_parent == &data0);
 
       data0.TLink0::clear();
-      etl::link_left<TLink0>(&data0,  data1);
+      etl::link_left<TLink0>(&data0, data1);
       etl::link_right<TLink0>(&data0, data2);
-      CHECK(data0.TLink0::etl_left    == &data1);
-      CHECK(data0.TLink0::etl_right   == &data2);
-      CHECK(data1.TLink0::etl_parent  == &data0);
-      CHECK(data2.TLink0::etl_parent  == &data0);
-
-      data0.TLink0::clear();
-      etl::link_left<TLink0>(data0,  &data1);
-      etl::link_right<TLink0>(data0, &data2);
-      CHECK(data0.TLink0::etl_left   == &data1);
-      CHECK(data0.TLink0::etl_right  == &data2);
+      CHECK(data0.TLink0::etl_left == &data1);
+      CHECK(data0.TLink0::etl_right == &data2);
       CHECK(data1.TLink0::etl_parent == &data0);
       CHECK(data2.TLink0::etl_parent == &data0);
 
       data0.TLink0::clear();
-      etl::link_left<TLink0>(&data0,  &data1);
+      etl::link_left<TLink0>(data0, &data1);
+      etl::link_right<TLink0>(data0, &data2);
+      CHECK(data0.TLink0::etl_left == &data1);
+      CHECK(data0.TLink0::etl_right == &data2);
+      CHECK(data1.TLink0::etl_parent == &data0);
+      CHECK(data2.TLink0::etl_parent == &data0);
+
+      data0.TLink0::clear();
+      etl::link_left<TLink0>(&data0, &data1);
       etl::link_right<TLink0>(&data0, &data2);
 
-      etl::link_left<TLink0>(data1,  data3);
+      etl::link_left<TLink0>(data1, data3);
       etl::link_right<TLink0>(data1, data4);
-      etl::link_left<TLink0>(data3,  nullptr);
+      etl::link_left<TLink0>(data3, nullptr);
       etl::link_right<TLink0>(data3, nullptr);
-      etl::link_left<TLink0>(data4,  nullptr);
+      etl::link_left<TLink0>(data4, nullptr);
       etl::link_right<TLink0>(data4, nullptr);
 
-      etl::link_left<TLink0>(data2,  data5);
+      etl::link_left<TLink0>(data2, data5);
       etl::link_right<TLink0>(data2, data6);
-      etl::link_left<TLink0>(data5,  nullptr);
+      etl::link_left<TLink0>(data5, nullptr);
       etl::link_right<TLink0>(data5, nullptr);
-      etl::link_left<TLink0>(data6,  nullptr);
+      etl::link_left<TLink0>(data6, nullptr);
       etl::link_right<TLink0>(data6, nullptr);
 
       // Second link
       data0.TLink1::clear();
-      etl::link_left<TLink1>(&data6,  &data4);
+      etl::link_left<TLink1>(&data6, &data4);
       etl::link_right<TLink1>(&data6, &data5);
 
-      etl::link_left<TLink1>(data4,  data0);
+      etl::link_left<TLink1>(data4, data0);
       etl::link_right<TLink1>(data4, data1);
-      etl::link_left<TLink1>(data0,  nullptr);
+      etl::link_left<TLink1>(data0, nullptr);
       etl::link_right<TLink1>(data0, nullptr);
-      etl::link_left<TLink1>(data1,  nullptr);
+      etl::link_left<TLink1>(data1, nullptr);
       etl::link_right<TLink1>(data1, nullptr);
 
-      etl::link_left<TLink1>(data5,  data2);
+      etl::link_left<TLink1>(data5, data2);
       etl::link_right<TLink1>(data5, data3);
-      etl::link_left<TLink1>(data2,  nullptr);
+      etl::link_left<TLink1>(data2, nullptr);
       etl::link_right<TLink1>(data2, nullptr);
-      etl::link_left<TLink1>(data3,  nullptr);
+      etl::link_left<TLink1>(data3, nullptr);
       etl::link_right<TLink1>(data3, nullptr);
 
       // Check first
-      CHECK(data0.TLink0::etl_left   == &data1);
-      CHECK(data0.TLink0::etl_right  == &data2);
+      CHECK(data0.TLink0::etl_left == &data1);
+      CHECK(data0.TLink0::etl_right == &data2);
       CHECK(data1.TLink0::etl_parent == &data0);
       CHECK(data2.TLink0::etl_parent == &data0);
 
-      CHECK(data1.TLink0::etl_left   == &data3);
-      CHECK(data1.TLink0::etl_right  == &data4);
+      CHECK(data1.TLink0::etl_left == &data3);
+      CHECK(data1.TLink0::etl_right == &data4);
       CHECK(data3.TLink0::etl_parent == &data1);
-      CHECK(data3.TLink0::etl_left   == nullptr);
-      CHECK(data3.TLink0::etl_right  == nullptr);
+      CHECK(data3.TLink0::etl_left == nullptr);
+      CHECK(data3.TLink0::etl_right == nullptr);
       CHECK(data4.TLink0::etl_parent == &data1);
-      CHECK(data4.TLink0::etl_left   == nullptr);
-      CHECK(data4.TLink0::etl_right  == nullptr);
+      CHECK(data4.TLink0::etl_left == nullptr);
+      CHECK(data4.TLink0::etl_right == nullptr);
 
-      CHECK(data2.TLink0::etl_left   == &data5);
-      CHECK(data2.TLink0::etl_right  == &data6);
+      CHECK(data2.TLink0::etl_left == &data5);
+      CHECK(data2.TLink0::etl_right == &data6);
       CHECK(data5.TLink0::etl_parent == &data2);
-      CHECK(data5.TLink0::etl_left   == nullptr);
-      CHECK(data5.TLink0::etl_right  == nullptr);
+      CHECK(data5.TLink0::etl_left == nullptr);
+      CHECK(data5.TLink0::etl_right == nullptr);
       CHECK(data6.TLink0::etl_parent == &data2);
-      CHECK(data6.TLink0::etl_left   == nullptr);
-      CHECK(data6.TLink0::etl_right  == nullptr);
+      CHECK(data6.TLink0::etl_left == nullptr);
+      CHECK(data6.TLink0::etl_right == nullptr);
 
       // Check second
-      CHECK(data6.TLink1::etl_left   == &data4);
-      CHECK(data6.TLink1::etl_right  == &data5);
+      CHECK(data6.TLink1::etl_left == &data4);
+      CHECK(data6.TLink1::etl_right == &data5);
       CHECK(data4.TLink1::etl_parent == &data6);
       CHECK(data5.TLink1::etl_parent == &data6);
 
-      CHECK(data4.TLink1::etl_left   == &data0);
-      CHECK(data4.TLink1::etl_right  == &data1);
+      CHECK(data4.TLink1::etl_left == &data0);
+      CHECK(data4.TLink1::etl_right == &data1);
       CHECK(data0.TLink1::etl_parent == &data4);
-      CHECK(data0.TLink1::etl_left   == nullptr);
-      CHECK(data0.TLink1::etl_right  == nullptr);
+      CHECK(data0.TLink1::etl_left == nullptr);
+      CHECK(data0.TLink1::etl_right == nullptr);
       CHECK(data1.TLink1::etl_parent == &data4);
-      CHECK(data1.TLink1::etl_left   == nullptr);
-      CHECK(data1.TLink1::etl_right  == nullptr);
+      CHECK(data1.TLink1::etl_left == nullptr);
+      CHECK(data1.TLink1::etl_right == nullptr);
 
-      CHECK(data5.TLink1::etl_left   == &data2);
-      CHECK(data5.TLink1::etl_right  == &data3);
+      CHECK(data5.TLink1::etl_left == &data2);
+      CHECK(data5.TLink1::etl_right == &data3);
       CHECK(data2.TLink1::etl_parent == &data5);
-      CHECK(data2.TLink1::etl_left   == nullptr);
-      CHECK(data2.TLink1::etl_right  == nullptr);
+      CHECK(data2.TLink1::etl_left == nullptr);
+      CHECK(data2.TLink1::etl_right == nullptr);
       CHECK(data3.TLink1::etl_parent == &data5);
-      CHECK(data3.TLink1::etl_left   == nullptr);
-      CHECK(data3.TLink1::etl_right  == nullptr);
+      CHECK(data3.TLink1::etl_left == nullptr);
+      CHECK(data3.TLink1::etl_right == nullptr);
     }
 
     //*************************************************************************
@@ -1399,8 +1408,8 @@ namespace
       dataNode.TLink0::set_right(dataRight);
 
       CHECK(dataNode.TLink0::get_parent() == &dataParent);
-      CHECK(dataNode.TLink0::get_left()   == &dataLeft);
-      CHECK(dataNode.TLink0::get_right()  == &dataRight);
+      CHECK(dataNode.TLink0::get_left() == &dataLeft);
+      CHECK(dataNode.TLink0::get_right() == &dataRight);
 
       // Use pointer interface
       dataNode.TLink0::clear();
@@ -1410,8 +1419,8 @@ namespace
       dataNode.TLink0::set_right(&dataRight);
 
       CHECK(dataNode.TLink0::get_parent() == &dataParent);
-      CHECK(dataNode.TLink0::get_left()   == &dataLeft);
-      CHECK(dataNode.TLink0::get_right()  == &dataRight);
+      CHECK(dataNode.TLink0::get_left() == &dataLeft);
+      CHECK(dataNode.TLink0::get_right() == &dataRight);
     }
 
     //*************************************************************************
@@ -1457,8 +1466,8 @@ namespace
       dataNode.TLink0::mirror();
 
       CHECK(dataNode.TLink0::get_parent() == &dataParent);
-      CHECK(dataNode.TLink0::get_left()   == &dataRight);
-      CHECK(dataNode.TLink0::get_right()  == &dataLeft);
+      CHECK(dataNode.TLink0::get_left() == &dataRight);
+      CHECK(dataNode.TLink0::get_right() == &dataLeft);
     }
 
     //*************************************************************************
@@ -1500,7 +1509,7 @@ namespace
       CHECK(!bdata.BLink0::is_linked());
       CHECK(bdata.BLink1::is_linked());
 
-      bdata.BLink1::unlink();     // Member API
+      bdata.BLink1::unlink(); // Member API
       CHECK(!bdata.BLink0::is_linked());
       CHECK(!bdata.BLink1::is_linked());
 
@@ -1545,26 +1554,26 @@ namespace
 
       // Bidirectional
       etl::link<BLink1>(nullptr, data3);
-      etl::link<BLink1>(data3,   data2);
-      etl::link<BLink1>(data2,   data1);
-      etl::link<BLink1>(data1,   data0);
-      etl::link<BLink1>(data0,   nullptr);
+      etl::link<BLink1>(data3, data2);
+      etl::link<BLink1>(data2, data1);
+      etl::link<BLink1>(data1, data0);
+      etl::link<BLink1>(data0, nullptr);
 
       // Tree
       data0.TLink2::clear();
-      etl::link_left<TLink2>(data0,  data1);
+      etl::link_left<TLink2>(data0, data1);
       etl::link_right<TLink2>(data0, data2);
-      etl::link_left<TLink2>(data1,  data3);
+      etl::link_left<TLink2>(data1, data3);
       etl::link_right<TLink2>(data1, data4);
-      etl::link_left<TLink2>(data3,  nullptr);
+      etl::link_left<TLink2>(data3, nullptr);
       etl::link_right<TLink2>(data3, nullptr);
-      etl::link_left<TLink2>(data4,  nullptr);
+      etl::link_left<TLink2>(data4, nullptr);
       etl::link_right<TLink2>(data4, nullptr);
-      etl::link_left<TLink2>(data2,  data5);
+      etl::link_left<TLink2>(data2, data5);
       etl::link_right<TLink2>(data2, data6);
-      etl::link_left<TLink2>(data5,  nullptr);
+      etl::link_left<TLink2>(data5, nullptr);
       etl::link_right<TLink2>(data5, nullptr);
-      etl::link_left<TLink2>(data6,  nullptr);
+      etl::link_left<TLink2>(data6, nullptr);
       etl::link_right<TLink2>(data6, nullptr);
 
       CHECK(data0.FLink0::etl_next == &data1);
@@ -1581,28 +1590,28 @@ namespace
       CHECK(data0.BLink1::etl_previous == &data1);
       CHECK(data0.BLink1::etl_next == nullptr);
 
-      CHECK(data0.TLink2::etl_left   == &data1);
-      CHECK(data0.TLink2::etl_right  == &data2);
+      CHECK(data0.TLink2::etl_left == &data1);
+      CHECK(data0.TLink2::etl_right == &data2);
       CHECK(data1.TLink2::etl_parent == &data0);
       CHECK(data2.TLink2::etl_parent == &data0);
 
-      CHECK(data1.TLink2::etl_left   == &data3);
-      CHECK(data1.TLink2::etl_right  == &data4);
+      CHECK(data1.TLink2::etl_left == &data3);
+      CHECK(data1.TLink2::etl_right == &data4);
       CHECK(data3.TLink2::etl_parent == &data1);
-      CHECK(data3.TLink2::etl_left   == nullptr);
-      CHECK(data3.TLink2::etl_right  == nullptr);
+      CHECK(data3.TLink2::etl_left == nullptr);
+      CHECK(data3.TLink2::etl_right == nullptr);
       CHECK(data4.TLink2::etl_parent == &data1);
-      CHECK(data4.TLink2::etl_left   == nullptr);
-      CHECK(data4.TLink2::etl_right  == nullptr);
+      CHECK(data4.TLink2::etl_left == nullptr);
+      CHECK(data4.TLink2::etl_right == nullptr);
 
-      CHECK(data2.TLink2::etl_left   == &data5);
-      CHECK(data2.TLink2::etl_right  == &data6);
+      CHECK(data2.TLink2::etl_left == &data5);
+      CHECK(data2.TLink2::etl_right == &data6);
       CHECK(data5.TLink2::etl_parent == &data2);
-      CHECK(data5.TLink2::etl_left   == nullptr);
-      CHECK(data5.TLink2::etl_right  == nullptr);
+      CHECK(data5.TLink2::etl_left == nullptr);
+      CHECK(data5.TLink2::etl_right == nullptr);
       CHECK(data6.TLink2::etl_parent == &data2);
-      CHECK(data6.TLink2::etl_left   == nullptr);
-      CHECK(data6.TLink2::etl_right  == nullptr);
+      CHECK(data6.TLink2::etl_left == nullptr);
+      CHECK(data6.TLink2::etl_right == nullptr);
     }
 
     //*************************************************************************
@@ -1625,17 +1634,45 @@ namespace
       etl::link_right(a, c);
       etl::link_left(a, e);
 
+      //      r    //
+      //     /     //
+      //    b      //
+      //   / \     //
+      //  d   a    //
+      //     / \   //
+      //    e   c  //
+
       etl::link_rotate_left(b, a);
 
+      //        r  //
+      //       /   //
+      //      a    //
+      //     / \   //
+      //    b   c  //
+      //   / \     //
+      //  d   e    //
+
+      CHECK(r.etl_left == &a);
+
       CHECK(a.etl_parent == &r);
+      CHECK(a.etl_left == &b);
+      CHECK(a.etl_right == &c);
+
       CHECK(b.etl_parent == &a);
-      CHECK(e.etl_parent == &b);
+      CHECK(b.etl_left == &d);
+      CHECK(b.etl_right == &e);
+
       CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left == nullptr);
+      CHECK(d.etl_right == nullptr);
+
       CHECK(c.etl_parent == &a);
-      CHECK(a.etl_left   == &b);
-      CHECK(a.etl_right  == &c);
-      CHECK(b.etl_left   == &d);
-      CHECK(b.etl_right  == &e);
+      CHECK(c.etl_left == nullptr);
+      CHECK(c.etl_right == nullptr);
+
+      CHECK(e.etl_parent == &b);
+      CHECK(e.etl_left == nullptr);
+      CHECK(e.etl_right == nullptr);
     }
 
     //*************************************************************************
@@ -1656,16 +1693,41 @@ namespace
       etl::link_left(b, d);
       etl::link_right(a, c);
 
+      //      r    //
+      //     /     //
+      //    b      //
+      //   / \     //
+      //  d   a    //
+      //       \   //
+      //        c  //
+
       etl::link_rotate_left(b, a);
 
+      //        r  //
+      //       /   //
+      //      a    //
+      //     / \   //
+      //    b   c  //
+      //   /       //
+      //  d        //
+
+      CHECK(r.etl_left == &a);
+
       CHECK(a.etl_parent == &r);
+      CHECK(a.etl_left == &b);
+      CHECK(a.etl_right == &c);
+
       CHECK(b.etl_parent == &a);
+      CHECK(b.etl_left == &d);
+      CHECK(b.etl_right == nullptr);
+
       CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left == nullptr);
+      CHECK(d.etl_right == nullptr);
+
       CHECK(c.etl_parent == &a);
-      CHECK(a.etl_left   == &b);
-      CHECK(a.etl_right  == &c);
-      CHECK(b.etl_left   == &d);
-      CHECK(b.etl_right  == nullptr);
+      CHECK(c.etl_left == nullptr);
+      CHECK(c.etl_right == nullptr);
     }
 
     //*************************************************************************
@@ -1684,21 +1746,49 @@ namespace
       e.clear();
       etl::link_left(r, a);
       etl::link_left(a, b);
-      etl::link_left(b, d);
       etl::link_right(a, c);
+      etl::link_left(b, d);
       etl::link_right(b, e);
+
+      //        r    //
+      //       /     //
+      //      a      //
+      //     / \     //
+      //    b   c    //
+      //   / \       //
+      //  d   e      //
 
       etl::link_rotate_right(a, b);
 
+      //        r    //
+      //       /     //
+      //      b      //
+      //     / \     //
+      //    d   a    //
+      //       / \   //
+      //      e   c  //
+
+      CHECK(r.etl_left == &b);
+
       CHECK(b.etl_parent == &r);
+      CHECK(b.etl_left == &d);
+      CHECK(b.etl_right == &a);
+
       CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left == nullptr);
+      CHECK(d.etl_right == nullptr);
+
       CHECK(a.etl_parent == &b);
-      CHECK(e.etl_parent == &a);
+      CHECK(a.etl_left == &e);
+      CHECK(a.etl_right == &c);
+
       CHECK(c.etl_parent == &a);
-      CHECK(b.etl_left   == &d);
-      CHECK(b.etl_right  == &a);
-      CHECK(a.etl_left   == &e);
-      CHECK(a.etl_right  == &c);
+      CHECK(c.etl_left == nullptr);
+      CHECK(c.etl_right == nullptr);
+
+      CHECK(e.etl_parent == &a);
+      CHECK(e.etl_left == nullptr);
+      CHECK(e.etl_right == nullptr);
     }
 
     //*************************************************************************
@@ -1719,16 +1809,41 @@ namespace
       etl::link_left(b, d);
       etl::link_right(a, c);
 
+      //        r   //
+      //       /    //
+      //      a     //
+      //     / \    //
+      //    b   c   //
+      //   /        //
+      //  d         //
+
       etl::link_rotate_right(a, b);
 
+      //        r    //
+      //       /     //
+      //      b      //
+      //     / \     //
+      //    d   a    //
+      //         \   //
+      //          c  //
+
+      CHECK(r.etl_left == &b);
+
       CHECK(b.etl_parent == &r);
+      CHECK(b.etl_left == &d);
+      CHECK(b.etl_right == &a);
+
       CHECK(d.etl_parent == &b);
+      CHECK(d.etl_left == nullptr);
+      CHECK(d.etl_right == nullptr);
+
       CHECK(a.etl_parent == &b);
+      CHECK(a.etl_left == nullptr);
+      CHECK(a.etl_right == &c);
+
       CHECK(c.etl_parent == &a);
-      CHECK(b.etl_left   == &d);
-      CHECK(b.etl_right  == &a);
-      CHECK(a.etl_left   == nullptr);
-      CHECK(a.etl_right  == &c);
+      CHECK(c.etl_left == nullptr);
+      CHECK(c.etl_right == nullptr);
     }
   }
-}
+} // namespace

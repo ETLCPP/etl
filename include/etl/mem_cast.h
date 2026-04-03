@@ -32,15 +32,15 @@ SOFTWARE.
 #define ETL_MEM_CAST_INCLUDED
 
 #include "platform.h"
-#include "memory.h"
-#include "static_assert.h"
-#include "largest.h"
-#include "utility.h"
-#include "placement_new.h"
-#include "exception.h"
-#include "error_handler.h"
-#include "file_error_numbers.h"
 #include "binary.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "file_error_numbers.h"
+#include "largest.h"
+#include "memory.h"
+#include "placement_new.h"
+#include "static_assert.h"
+#include "utility.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -117,12 +117,12 @@ namespace etl
 
       memcpy(buffer, other.buffer, Size_);
     }
-   
+
     //***********************************
     /// Assignment operator
     //***********************************
     template <size_t Other_Size, size_t Other_Alignment>
-    mem_cast& operator =(const mem_cast<Other_Size, Other_Alignment>& rhs)
+    mem_cast& operator=(const mem_cast<Other_Size, Other_Alignment>& rhs)
     {
       ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
 
@@ -213,7 +213,8 @@ namespace etl
     /// Get a reference to T
     //***********************************
     template <typename T>
-    ETL_NODISCARD T& ref()
+    ETL_NODISCARD
+    T& ref()
     {
       ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of type too large for storage");
 
@@ -224,7 +225,8 @@ namespace etl
     /// Get a const reference to T
     //***********************************
     template <typename T>
-    ETL_NODISCARD const T& ref() const
+    ETL_NODISCARD
+    const T& ref() const
     {
       ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of type too large for storage");
 
@@ -235,7 +237,8 @@ namespace etl
     /// Get a reference to T at offset (dynamic)
     //***********************************
     template <typename T>
-    ETL_NODISCARD T& ref_at_offset(size_t offset)
+    ETL_NODISCARD
+    T& ref_at_offset(size_t offset)
     {
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
@@ -246,7 +249,8 @@ namespace etl
     /// Get a const reference to T at offset (dynamic)
     //***********************************
     template <typename T>
-    ETL_NODISCARD const T& ref_at_offset(size_t offset) const
+    ETL_NODISCARD
+    const T& ref_at_offset(size_t offset) const
     {
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
@@ -257,7 +261,8 @@ namespace etl
     /// Get a reference to T at offset (static)
     //***********************************
     template <typename T, size_t Offset>
-    ETL_NODISCARD T& ref_at_offset()
+    ETL_NODISCARD
+    T& ref_at_offset()
     {
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of type too large for storage");
 
@@ -268,7 +273,8 @@ namespace etl
     /// Get a const reference to T at offset (static)
     //***********************************
     template <typename T, size_t Offset>
-    ETL_NODISCARD const T& ref_at_offset() const
+    ETL_NODISCARD
+    const T& ref_at_offset() const
     {
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of type too large for storage");
 
@@ -278,7 +284,8 @@ namespace etl
     //***********************************
     /// Get the size of the buffer
     //***********************************
-    ETL_NODISCARD static ETL_CONSTEXPR size_t size()
+    ETL_NODISCARD
+    static ETL_CONSTEXPR size_t size()
     {
       return Size;
     }
@@ -286,7 +293,8 @@ namespace etl
     //***********************************
     /// Get the alignment of the buffer
     //***********************************
-    ETL_NODISCARD static ETL_CONSTEXPR size_t alignment()
+    ETL_NODISCARD
+    static ETL_CONSTEXPR size_t alignment()
     {
       return Alignment;
     }
@@ -294,7 +302,8 @@ namespace etl
     //***********************************
     /// Get a pointer to the internal buffer
     //***********************************
-    ETL_NODISCARD char* data()
+    ETL_NODISCARD
+    char* data()
     {
       return buffer;
     }
@@ -302,7 +311,8 @@ namespace etl
     //***********************************
     /// Get a const pointer to the internal buffer
     //***********************************
-    ETL_NODISCARD const char* data() const 
+    ETL_NODISCARD
+    const char* data() const
     {
       return buffer;
     }
@@ -358,7 +368,7 @@ namespace etl
     //***********************************
     /// Assignment operator
     //***********************************
-    mem_cast_ptr& operator =(const mem_cast_ptr& rhs)
+    mem_cast_ptr& operator=(const mem_cast_ptr& rhs)
     {
       pbuffer     = rhs.pbuffer;
       buffer_size = rhs.buffer_size;
@@ -454,7 +464,8 @@ namespace etl
     /// Get a reference to T
     //***********************************
     template <typename T>
-    ETL_NODISCARD T& ref()
+    ETL_NODISCARD
+    T& ref()
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
@@ -468,7 +479,8 @@ namespace etl
     /// Get a const reference to T
     //***********************************
     template <typename T>
-    ETL_NODISCARD const T& ref() const
+    ETL_NODISCARD
+    const T& ref() const
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
@@ -482,7 +494,8 @@ namespace etl
     /// Get a reference to T at offset (dynamic)
     //***********************************
     template <typename T>
-    ETL_NODISCARD T& ref_at_offset(size_t offset)
+    ETL_NODISCARD
+    T& ref_at_offset(size_t offset)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
@@ -496,7 +509,8 @@ namespace etl
     /// Get a const reference to T at offset (dynamic)
     //***********************************
     template <typename T>
-    ETL_NODISCARD const T& ref_at_offset(size_t offset) const
+    ETL_NODISCARD
+    const T& ref_at_offset(size_t offset) const
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
@@ -510,7 +524,8 @@ namespace etl
     /// Get a reference to T at offset (static)
     //***********************************
     template <typename T, size_t Offset>
-    ETL_NODISCARD T& ref_at_offset()
+    ETL_NODISCARD
+    T& ref_at_offset()
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
@@ -524,7 +539,8 @@ namespace etl
     /// Get a const reference to T at offset (static)
     //***********************************
     template <typename T, size_t Offset>
-    ETL_NODISCARD const T& ref_at_offset() const
+    ETL_NODISCARD
+    const T& ref_at_offset() const
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
@@ -537,7 +553,8 @@ namespace etl
     //***********************************
     /// Get the size of the buffer
     //***********************************
-    ETL_NODISCARD size_t size() const
+    ETL_NODISCARD
+    size_t size() const
     {
       return buffer_size;
     }
@@ -545,11 +562,12 @@ namespace etl
     //***********************************
     /// Get the alignment of the buffer
     //***********************************
-    ETL_NODISCARD size_t alignment() const
+    ETL_NODISCARD
+    size_t alignment() const
     {
-      typedef typename etl::smallest_uint_for_bits<sizeof(uintptr_t)* CHAR_BIT>::type type;
+      typedef typename etl::smallest_uint_for_bits<sizeof(uintptr_t) * CHAR_BIT>::type type;
 
-      const type p = reinterpret_cast<type>(pbuffer);    
+      const type p = reinterpret_cast<type>(pbuffer);
 
       return size_t(1U) << etl::count_trailing_zeros(p);
     }
@@ -566,7 +584,8 @@ namespace etl
     //***********************************
     /// Get a pointer to the external buffer
     //***********************************
-    ETL_NODISCARD char* data()
+    ETL_NODISCARD
+    char* data()
     {
       return pbuffer;
     }
@@ -574,7 +593,8 @@ namespace etl
     //***********************************
     /// Get const a pointer to the external buffer
     //***********************************
-    ETL_NODISCARD const char* data() const
+    ETL_NODISCARD
+    const char* data() const
     {
       return pbuffer;
     }
@@ -594,15 +614,15 @@ namespace etl
   template <typename... TTypes>
   using mem_cast_types = etl::mem_cast<etl::largest<TTypes...>::size, etl::largest<TTypes...>::alignment>;
 #else
-  template <typename T1,         typename T2  = char, typename T3  = char, typename T4  = char,
-            typename T5 = char,  typename T6  = char, typename T7  = char, typename T8  = char,
-            typename T9 = char,  typename T10 = char, typename T11 = char, typename T12 = char,
-            typename T13 = char, typename T14 = char, typename T15 = char, typename T16 = char>
-  struct mem_cast_types : public etl::mem_cast<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
-                                               etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment>
+  template <typename T1, typename T2 = char, typename T3 = char, typename T4 = char, typename T5 = char, typename T6 = char, typename T7 = char,
+            typename T8 = char, typename T9 = char, typename T10 = char, typename T11 = char, typename T12 = char, typename T13 = char,
+            typename T14 = char, typename T15 = char, typename T16 = char>
+  struct mem_cast_types
+    : public etl::mem_cast< etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
+                            etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment>
   {
   };
 #endif
-}
+} // namespace etl
 
 #endif

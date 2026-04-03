@@ -38,16 +38,15 @@ namespace
 {
   using iterator = etl::back_insert_iterator<etl::istring>;
 
-  template<class... Args>
+  template <class... Args>
   etl::istring& test_format(etl::istring& s, etl::format_string<Args...> fmt, Args&&... args)
   {
-    (void) etl::format_to(s, fmt, etl::forward<Args>(args)...);
+    (void)etl::format_to(s, fmt, etl::forward<Args>(args)...);
     return s;
   }
 
   SUITE(test_format)
   {
-
     //*************************************************************************
     TEST(test_empty)
     {
@@ -84,6 +83,62 @@ namespace
       CHECK_EQUAL("-2147483648", test_format(s, "{}", INT32_MIN));
       CHECK_EQUAL("0", test_format(s, "{}", 0));
       CHECK_EQUAL("-1", test_format(s, "{}", -1));
+    }
+
+    //*************************************************************************
+    TEST(test_format_short)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<short>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<short>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<short>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<short>(1), static_cast<short>(2)));
+      CHECK_EQUAL("-123", test_format(s, "{}", static_cast<short>(-123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<short>(0)));
+      CHECK_EQUAL("-1", test_format(s, "{}", static_cast<short>(-1)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_short)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned short>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<unsigned short>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<unsigned short>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<unsigned short>(1), static_cast<unsigned short>(2)));
+      CHECK_EQUAL("60123", test_format(s, "{}", static_cast<unsigned short>(60123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned short>(0)));
+      CHECK_EQUAL("65500", test_format(s, "{}", static_cast<unsigned short>(65500)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_long_int)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<long int>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<long int>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<long int>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<long int>(1), static_cast<long int>(2)));
+      CHECK_EQUAL("-123", test_format(s, "{}", static_cast<long int>(-123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<long int>(0)));
+      CHECK_EQUAL("-1", test_format(s, "{}", static_cast<long int>(-1)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_long_int)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned long int>(1)));
+      CHECK_EQUAL("123", test_format(s, "{}", static_cast<unsigned long int>(123)));
+      CHECK_EQUAL("4123", test_format(s, "{}", static_cast<unsigned long int>(4123)));
+      CHECK_EQUAL("1 2", test_format(s, "{} {}", static_cast<unsigned long int>(1), static_cast<unsigned long int>(2)));
+      CHECK_EQUAL("60123", test_format(s, "{}", static_cast<unsigned long int>(60123)));
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned long int>(0)));
+      CHECK_EQUAL("65500", test_format(s, "{}", static_cast<unsigned long int>(65500)));
     }
 
     //*************************************************************************
@@ -131,14 +186,17 @@ namespace
     {
       etl::string<100> s;
 
-      CHECK_EQUAL("34", test_format(s, "{}", static_cast<uint8_t>(34)));
-      CHECK_EQUAL("-14", test_format(s, "{}", static_cast<int8_t>(-14)));
+      // mapped to unsigned char
+      // CHECK_EQUAL("34", test_format(s, "{}", static_cast<uint8_t>(34)));
+      // mapped to signed char
+      // CHECK_EQUAL("-14", test_format(s, "{}", static_cast<int8_t>(-14)));
       CHECK_EQUAL("6534", test_format(s, "{}", static_cast<uint16_t>(6534)));
       CHECK_EQUAL("-9414", test_format(s, "{}", static_cast<int16_t>(-9414)));
       CHECK_EQUAL("236534", test_format(s, "{}", static_cast<uint32_t>(236534)));
       CHECK_EQUAL("-6759414", test_format(s, "{}", static_cast<int32_t>(-6759414)));
     }
 
+  #if ETL_USING_FORMAT_FLOATING_POINT
     //*************************************************************************
     TEST(test_format_float)
     {
@@ -208,6 +266,7 @@ namespace
       CHECK_EQUAL("0x1.92a738p-5", test_format(s, "{:a}", 0.0000015f));
       CHECK_EQUAL("0x1.6345785d8ap+e", test_format(s, "{:a}", 100000000000000000.l));
     }
+  #endif
 
     //*************************************************************************
     TEST(test_format_char_array)
@@ -283,10 +342,73 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_format_string)
+    {
+      etl::string<100> s;
+      etl::string<10>  s_arg = "data1";
+
+      CHECK_EQUAL("data1", test_format(s, "{}", s_arg));
+      CHECK_EQUAL("data1", test_format(s, "{:s}", s_arg));
+      CHECK_THROW(test_format(s, "{:d}", s_arg), etl::bad_format_string_exception);
+      CHECK_EQUAL("data1     ", test_format(s, "{:10s}", s_arg));
+      CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", s_arg));
+      CHECK_EQUAL("     data1", test_format(s, "{:>10s}", s_arg));
+      CHECK_EQUAL("  data1   ", test_format(s, "{:^10s}", s_arg));
+      CHECK_EQUAL("data1", test_format(s, "{:3}", s_arg));
+      CHECK_EQUAL("dat", test_format(s, "{:.3s}", s_arg));
+      CHECK_EQUAL("dat", test_format(s, "{:^.3s}", s_arg));
+      CHECK_EQUAL(".  dat   !", test_format(s, ".{:^8.3s}!", s_arg));
+      CHECK_EQUAL("^dat     $", test_format(s, "^{:8.3s}$", s_arg));
+    }
+
+    //*************************************************************************
+    // this minimal derived class of etl::string is used to prove that the
+    // temporary lifetime is long enough for the format operation
+    template <size_t N>
+    class clearing_string : public etl::string<N>
+    {
+    public:
+
+      using etl::string<N>::string;
+      ~clearing_string()
+      {
+        this->clear();
+      }
+    };
+    TEST(test_format_string_temporary)
+    {
+      etl::string<100> s;
+      const char*      data = "data1";
+      using string_t        = clearing_string<10>;
+
+      CHECK_EQUAL("data1", test_format(s, "{}", string_t(data)));
+      CHECK_EQUAL("data1", test_format(s, "{:s}", string_t(data)));
+      CHECK_THROW(test_format(s, "{:d}", string_t(data)), etl::bad_format_string_exception);
+      CHECK_EQUAL("data1     ", test_format(s, "{:10s}", string_t(data)));
+      CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", string_t(data)));
+      CHECK_EQUAL("     data1", test_format(s, "{:>10s}", string_t(data)));
+      CHECK_EQUAL("  data1   ", test_format(s, "{:^10s}", string_t(data)));
+      CHECK_EQUAL("data1", test_format(s, "{:3}", string_t(data)));
+      CHECK_EQUAL("dat", test_format(s, "{:.3s}", string_t(data)));
+      CHECK_EQUAL("dat", test_format(s, "{:^.3s}", string_t(data)));
+      CHECK_EQUAL(".  dat   !", test_format(s, ".{:^8.3s}!", string_t(data)));
+      CHECK_EQUAL("^dat     $", test_format(s, "^{:8.3s}$", string_t(data)));
+    }
+
+    //*************************************************************************
+    TEST(test_format_string_escaped)
+    {
+      etl::string<100> s;
+      etl::string<10>  s_arg("data1\n");
+
+      CHECK_EQUAL("\"data1\\n\"", test_format(s, "{:?}", s_arg));
+    }
+
+    //*************************************************************************
     TEST(test_format_chars)
     {
       etl::string<100> s;
-      const char* chars = "data1";
+      const char*      chars = "data1";
 
       CHECK_EQUAL("data1", test_format(s, "{}", chars));
       CHECK_EQUAL("data1", test_format(s, "{:s}", chars));
@@ -306,7 +428,7 @@ namespace
     TEST(test_format_chars_escaped)
     {
       etl::string<100> s;
-      const char* chars = "data2\n";
+      const char*      chars = "data2\n";
 
       CHECK_EQUAL("\"data2\\n\"", test_format(s, "{:?}", chars));
     }
@@ -337,6 +459,82 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_format_size_t)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<size_t>(0LL)));
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<size_t>(1LL)));
+      CHECK_EQUAL("12345678", test_format(s, "{}", static_cast<size_t>(12345678LL)));
+      CHECK_EQUAL("4123456780", test_format(s, "{}", static_cast<size_t>(4123456780LL)));
+  #if ETL_PLATFORM_64BIT
+      static_assert(sizeof(size_t) == 8, "size_t is expected to be 64 bit on 64 bit platforms");
+      CHECK_EQUAL("18446744073709551615", test_format(s, "{}", static_cast<size_t>(18446744073709551615ULL)));
+      CHECK_EQUAL("1311768467463790320", test_format(s, "{}", static_cast<size_t>(0x123456789ABCDEF0ULL)));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_long)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{}", static_cast<unsigned long>(0LL)));
+      CHECK_EQUAL("1", test_format(s, "{}", static_cast<unsigned long>(1LL)));
+      CHECK_EQUAL("12345678", test_format(s, "{}", static_cast<unsigned long>(12345678LL)));
+      CHECK_EQUAL("4123456780", test_format(s, "{}", static_cast<unsigned long>(4123456780LL)));
+  #if ETL_PLATFORM_64BIT
+      static_assert(sizeof(unsigned long) == 8, "size_t is expected to be 64 bit on 64 bit platforms");
+      CHECK_EQUAL("18446744073709551615", test_format(s, "{}", static_cast<unsigned long>(18446744073709551615ULL)));
+      CHECK_EQUAL("1311768467463790320", test_format(s, "{}", static_cast<unsigned long>(0x123456789ABCDEF0ULL)));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_format_signed_char)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("a s b", test_format(s, "a {} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a s b", test_format(s, "a {:c} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a 's' b", test_format(s, "a {:?} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a \t b", test_format(s, "a {} b", static_cast<signed char>('\t')));
+      CHECK_EQUAL("a '\\t' b", test_format(s, "a {:?} b", static_cast<signed char>('\t')));
+      CHECK_EQUAL("a '\\n' b", test_format(s, "a {:?} b", static_cast<signed char>('\n')));
+      CHECK_EQUAL("a '\\r' b", test_format(s, "a {:?} b", static_cast<signed char>('\r')));
+      CHECK_EQUAL("a '\\\"' b", test_format(s, "a {:?} b", static_cast<signed char>('"')));
+      CHECK_EQUAL("a '\\'' b", test_format(s, "a {:?} b", static_cast<signed char>('\'')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<signed char>('\\')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<signed char>('\\')));
+      CHECK_EQUAL("a 97 b", test_format(s, "a {:d} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:X} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:x} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a 0x61 b", test_format(s, "a {:#x} b", static_cast<signed char>('a')));
+    }
+
+    //*************************************************************************
+    TEST(test_format_unsigned_char)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("a s b", test_format(s, "a {} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a s b", test_format(s, "a {:c} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a 's' b", test_format(s, "a {:?} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a \t b", test_format(s, "a {} b", static_cast<unsigned char>('\t')));
+      CHECK_EQUAL("a '\\t' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\t')));
+      CHECK_EQUAL("a '\\n' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\n')));
+      CHECK_EQUAL("a '\\r' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\r')));
+      CHECK_EQUAL("a '\\\"' b", test_format(s, "a {:?} b", static_cast<unsigned char>('"')));
+      CHECK_EQUAL("a '\\'' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\'')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\\')));
+      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\\')));
+      CHECK_EQUAL("a 97 b", test_format(s, "a {:d} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:X} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 61 b", test_format(s, "a {:x} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 0x61 b", test_format(s, "a {:#x} b", static_cast<unsigned char>('a')));
+    }
+
+    //*************************************************************************
     TEST(test_format_limit)
     {
       etl::string<10> s;
@@ -359,21 +557,28 @@ namespace
     {
       etl::string<100> s;
 
-      CHECK_THROW(test_format(s, "a{b}", 1), etl::bad_format_string_exception); // bad format index spec
+      CHECK_THROW(test_format(s, "a{b}", 1),
+                  etl::bad_format_string_exception); // bad format index spec
       // goal: rejected at compile time on C++20, error on <= C++17
 
-      CHECK_THROW(test_format(s, "a{b"), etl::bad_format_string_exception); // closing brace missing
+      CHECK_THROW(test_format(s, "a{b"),
+                  etl::bad_format_string_exception); // closing brace missing
       // goal: rejected at compile time on C++20, error on <= C++17
 
-      CHECK_THROW(test_format(s, "a{b}"), etl::bad_format_string_exception); // arg missing
+      CHECK_THROW(test_format(s, "a{b}"),
+                  etl::bad_format_string_exception); // arg missing
       // goal: rejected at compile time on C++20, error on <= C++17
 
-      CHECK_THROW(test_format(s, "a}b"), etl::bad_format_string_exception); // bad format: only escaped }} allowed
+      CHECK_THROW(test_format(s, "a}b"),
+                  etl::bad_format_string_exception); // bad format: only escaped
+                                                     // }} allowed
       // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_EQUAL("123", test_format(s, "{:}", 123)); // valid
-      CHECK_THROW(test_format(s, "{::}", 123), etl::bad_format_string_exception); // bad format spec
-      CHECK_THROW(test_format(s, "{1}", 123), etl::bad_format_string_exception); // bad index
+      CHECK_THROW(test_format(s, "{::}", 123),
+                  etl::bad_format_string_exception); // bad format spec
+      CHECK_THROW(test_format(s, "{1}", 123),
+                  etl::bad_format_string_exception); // bad index
     }
 
     //*************************************************************************
@@ -384,7 +589,8 @@ namespace
       CHECK_EQUAL("34 56", test_format(s, "{0} {1}", 34, 56));
       CHECK_EQUAL("56 34", test_format(s, "{1} {0}", 34, 56));
       CHECK_EQUAL("134 134", test_format(s, "{0} {0}", 134));
-      CHECK_EQUAL("a b c d e f g h i j k l m n", test_format(s, "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'));
+      CHECK_EQUAL("a b c d e f g h i j k l m n", test_format(s, "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13}", 'a', 'b', 'c', 'd',
+                                                             'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'));
     }
 
     //*************************************************************************
@@ -402,7 +608,7 @@ namespace
       etl::string<100> s;
 
       etl::istring::iterator result = etl::format_to(s.begin(), "{0} {1}", 34, 56);
-      s.uninitialized_resize(result - s.begin());
+      s.uninitialized_resize(static_cast<size_t>(result - s.begin()));
       CHECK_EQUAL("34 56", s);
 
       s.clear();
@@ -473,13 +679,13 @@ namespace
       CHECK_EQUAL("0X3F4", test_format(s, "{:#X}", 0x3f4));
       CHECK_EQUAL("34", test_format(s, "{:o}", 034));
       CHECK_EQUAL("034", test_format(s, "{:#o}", 034));
-#if ETL_USING_CPP14
+  #if ETL_USING_CPP14
       CHECK_EQUAL("1010", test_format(s, "{:b}", 0b1010));
       CHECK_EQUAL("0b1010", test_format(s, "{:#b}", 0b1010));
       CHECK_EQUAL("1010", test_format(s, "{:B}", 0b1010));
       CHECK_EQUAL("0B1010", test_format(s, "{:#B}", 0b1010));
       CHECK_EQUAL("-0B1010", test_format(s, "{:#B}", -0b1010));
-#endif
+  #endif
       CHECK_EQUAL("C", test_format(s, "{:c}", 67));
       CHECK_EQUAL("00067", test_format(s, "{:05d}", 67));
       CHECK_EQUAL("+00067", test_format(s, "{:+05d}", 67));
@@ -487,6 +693,6 @@ namespace
       CHECK_THROW(test_format(s, "{:+#05.5X}", 0xEF1), etl::bad_format_string_exception);
     }
   }
-}
+} // namespace
 
 #endif

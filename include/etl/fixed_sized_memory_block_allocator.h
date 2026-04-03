@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_FIXED_MEMORY_BLOCK_POOL_INCLUDED
 
 #include "platform.h"
-#include "imemory_block_allocator.h"
-#include "generic_pool.h"
 #include "alignment.h"
+#include "generic_pool.h"
+#include "imemory_block_allocator.h"
 
 namespace etl
 {
@@ -54,9 +54,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
-    fixed_sized_memory_block_allocator()
-    {
-    }
+    fixed_sized_memory_block_allocator() {}
 
   protected:
 
@@ -65,11 +63,9 @@ namespace etl
     //*************************************************************************
     virtual void* allocate_block(size_t required_size, size_t required_alignment) ETL_OVERRIDE
     {
-      if ((required_alignment <= Alignment) &&
-          (required_size <= Block_Size) &&
-           !pool.full())
+      if ((required_alignment <= Alignment) && (required_size <= Block_Size) && !pool.full())
       {
-        return  pool.template allocate<block>();
+        return pool.template allocate<block>();
       }
       else
       {
@@ -121,6 +117,6 @@ namespace etl
 
   template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
   ETL_CONSTANT size_t fixed_sized_memory_block_allocator<VBlock_Size, VAlignment, VSize>::Size;
-}
+} // namespace etl
 
 #endif

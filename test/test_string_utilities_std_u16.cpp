@@ -29,25 +29,26 @@ SOFTWARE.
 #include "etl/platform.h"
 #if ETL_USING_CPP17
 
-#include "unit_test_framework.h"
+  #include "unit_test_framework.h"
 
-#include <string>
-#include <string_view>
-#include <utility>
-#include <vector>
+  #include <string>
+  #include <string_view>
+  #include <utility>
+  #include <vector>
 
-#include "etl/string_utilities.h"
+  #include "etl/string_utilities.h"
 
-#undef STR
-#define STR(x) u##x
+  #undef STR
+  #define STR(x) u##x
 
-#undef STR_PTR
-#define STR_PTR const char16_t*
+  #undef STR_PTR
+  #define STR_PTR const char16_t*
 
 namespace
 {
   //***********************************
-  //std::ostream& operator << (std::ostream& os, const std::wstring::value_type& c)
+  // std::ostream& operator << (std::ostream& os, const
+  // std::wstring::value_type& c)
   //{
   //  os << uint16_t(c);
 
@@ -56,19 +57,19 @@ namespace
 
   SUITE(test_string_utilities_std_u16)
   {
-    using String     = std::u16string;
-    using IString    = std::u16string;
-#if ETL_USING_CPP17
+    using String  = std::u16string;
+    using IString = std::u16string;
+  #if ETL_USING_CPP17
     using StringView = std::u16string_view;
-#endif
-    using Char       = std::u16string::value_type;
-    using Vector     = std::vector<String>;
+  #endif
+    using Char   = std::u16string::value_type;
+    using Vector = std::vector<String>;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     constexpr auto Whitespace = etl::whitespace_v<String::value_type>;
-#else
+  #else
     STR_PTR Whitespace = etl::whitespace<String::value_type>::value();
-#endif
+  #endif
 
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)
@@ -920,14 +921,7 @@ namespace
       String text(STR("This+++is a  *file//name:"));
       String expected(STR("This---is_a__-file__name_"));
 
-      etl::pair<Char, Char> lookup[] =
-      {
-        { STR('+'), STR('-') },
-        { STR(' '), STR('_') },
-        { STR('*'), STR('-') },
-        { STR('/'), STR('_') },
-        { STR(':'), STR('_') }
-      };
+      etl::pair<Char, Char> lookup[] = {{STR('+'), STR('-')}, {STR(' '), STR('_')}, {STR('*'), STR('-')}, {STR('/'), STR('_')}, {STR(':'), STR('_')}};
 
       etl::replace_characters(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -940,14 +934,7 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      etl::pair<Char, Char> lookup[] =
-      {
-        { STR('+'), STR('-') },
-        { STR(' '), STR('_') },
-        { STR('*'), STR('-') },
-        { STR('/'), STR('_') },
-        { STR(':'), STR('_') }
-      };
+      etl::pair<Char, Char> lookup[] = {{STR('+'), STR('-')}, {STR(' '), STR('_')}, {STR('*'), STR('-')}, {STR('/'), STR('_')}, {STR(':'), STR('_')}};
 
       etl::replace_characters(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -960,14 +947,8 @@ namespace
       String text(STR("This+++is a  *file//name:"));
       String expected(STR("Thisxyis%20a%20%20-file_name.txt"));
 
-      etl::pair<const Char*, const Char*> lookup[] =
-      {
-        { STR("+++"), STR("xy") },
-        { STR(" "),   STR("%20") },
-        { STR("*"),   STR("-") },
-        { STR("//"),  STR("_") },
-        { STR(":"),   STR(".txt") }
-      };
+      etl::pair<const Char*, const Char*> lookup[] = {
+        {STR("+++"), STR("xy")}, {STR(" "), STR("%20")}, {STR("*"), STR("-")}, {STR("//"), STR("_")}, {STR(":"), STR(".txt")}};
 
       etl::replace_strings(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -980,14 +961,8 @@ namespace
       String text(STR(""));
       String expected(STR(""));
 
-      etl::pair<const Char*, const Char*> lookup[] =
-      {
-        { STR("+++"), STR("xy") },
-        { STR(" "),   STR("%20") },
-        { STR("*"),   STR("-") },
-        { STR("//"),  STR("_") },
-        { STR(":"),   STR(".txt") }
-      };
+      etl::pair<const Char*, const Char*> lookup[] = {
+        {STR("+++"), STR("xy")}, {STR(" "), STR("%20")}, {STR("*"), STR("-")}, {STR("//"), STR("_")}, {STR(":"), STR(".txt")}};
 
       etl::replace_strings(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
@@ -1000,7 +975,7 @@ namespace
       String text(STR(",,,The,cat,sat,,on,the,mat,,,"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(","), token, true)))
@@ -1017,7 +992,7 @@ namespace
       String text(STR(",,,The,cat,sat,,on,the,mat,,,"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(","), token, false)))
@@ -1034,7 +1009,7 @@ namespace
       String text(STR(""));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, Whitespace, token, true)))
@@ -1051,7 +1026,7 @@ namespace
       String text(STR("   .,  ;: .,;:"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(" .,;:"), token, true)))
@@ -1068,7 +1043,7 @@ namespace
       String text(STR("The cat sat on the mat"));
       Vector tokens;
 
-      StringView textview(text.data(), text.size());
+      StringView                textview(text.data(), text.size());
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(text, STR(","), token, false)))
@@ -1084,7 +1059,7 @@ namespace
     {
       Vector tokens;
 
-      StringView textview;
+      StringView                textview;
       etl::optional<StringView> token;
 
       while ((token = etl::get_token(textview, Whitespace, token, true)))
@@ -1267,7 +1242,7 @@ namespace
     TEST(test_find_first_of_string_view)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_of(textview, STR("Hel"));
 
@@ -1278,7 +1253,7 @@ namespace
     TEST(test_find_first_of_string_view_not_found)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_of(textview, STR("xyz"));
 
@@ -1298,7 +1273,7 @@ namespace
     //*************************************************************************
     TEST(test_find_first_not_of_iterator_iterator_not_found)
     {
-      String text(STR("abcHello Worldabc"));
+      String           text(STR("abcHello Worldabc"));
       String::iterator itr = etl::find_first_not_of(text.begin(), text.end(), STR("abcHello World"));
 
       CHECK(text.end() == itr);
@@ -1368,7 +1343,7 @@ namespace
     TEST(test_find_first_not_of_string_view)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abc"));
 
@@ -1379,7 +1354,7 @@ namespace
     TEST(test_find_first_not_of_string_view_not_found)
     {
       const String text(STR("abcHello Worldabc"));
-      StringView textview(text.data(), text.size());
+      StringView   textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_first_not_of(textview, STR("abcHello World"));
 
@@ -1469,7 +1444,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_of_string_view)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_of(textview, STR("rld"));
@@ -1480,7 +1455,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_of_string_view_not_found)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_of(textview, STR("xyz"));
@@ -1571,7 +1546,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_not_of_string_view)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abc"));
@@ -1582,7 +1557,7 @@ namespace
     //*************************************************************************
     TEST(test_find_last_not_of_string_view_not_found)
     {
-      String text(STR("abcHello Worldabc"));
+      String     text(STR("abcHello Worldabc"));
       StringView textview(text.data(), text.size());
 
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
@@ -1590,6 +1565,6 @@ namespace
       CHECK(textview.end() == itr);
     }
   }
-}
+} // namespace
 
 #endif

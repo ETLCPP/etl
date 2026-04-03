@@ -37,8 +37,6 @@ private:
   char buffer[Size]
 };
 
-
-
 template <size_t Size_>
 class uni_type_ptr
 {

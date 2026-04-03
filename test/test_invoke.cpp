@@ -28,101 +28,172 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <type_traits>
 #include <string>
+#include <type_traits>
 
-#include "etl/type_traits.h"
 #include "etl/invoke.h"
+#include "etl/type_traits.h"
 
 namespace
 {
   //*************************************************************************
   // Callable subjects
-  int free_add(int a, int b) { return a + b; }
-  int free_noexcept(int v) noexcept { return v; }
-  int free_throw(int v) { throw v; return v; }
+  int free_add(int a, int b)
+  {
+    return a + b;
+  }
+  int free_noexcept(int v) noexcept
+  {
+    return v;
+  }
+  int free_throw(int v)
+  {
+    throw v;
+    return v;
+  }
 
   // C-style variadic function
-  int varfn(int first, ...) { return first; }
+  int varfn(int first, ...)
+  {
+    return first;
+  }
 
   //*********************************************
   struct Base
   {
     int data;
-    Base(int d = 10) : data(d) {}
+    Base(int d = 10)
+      : data(d)
+    {
+    }
 
-    int add(int v) { return data + v; }
-    int add_const(int v) const { return data + v + 1; }
+    int add(int v)
+    {
+      return data + v;
+    }
+    int add_const(int v) const
+    {
+      return data + v + 1;
+    }
 
-    int ref_only(int v)& { return data + v + 2; }
-    int rref_only(int v)&& { return data + v + 3; }
+    int ref_only(int v) &
+    {
+      return data + v + 2;
+    }
+    int rref_only(int v) &&
+    {
+      return data + v + 3;
+    }
 
-    static int static_function(int v) { return v + 1; }
-    int noexcept_member(int v) noexcept { return data + v; }
+    static int static_function(int v)
+    {
+      return v + 1;
+    }
+    int noexcept_member(int v) noexcept
+    {
+      return data + v;
+    }
   };
 
   //*********************************************
   struct Derived : Base
   {
-    Derived(int d = 20) : Base(d) {}
+    Derived(int d = 20)
+      : Base(d)
+    {
+    }
   };
 
   //*********************************************
   struct VolatileBase
   {
     int x;
-    VolatileBase(int v = 0) : x(v) {}
-    int read() const volatile { return x; }
+    VolatileBase(int v = 0)
+      : x(v)
+    {
+    }
+    int read() const volatile
+    {
+      return x;
+    }
   };
 
   //*********************************************
   struct Functor
   {
     int x;
-    explicit Functor(int x_) : x(x_) {}
-    int operator()(int i) { return i + x; }
+    explicit Functor(int x_)
+      : x(x_)
+    {
+    }
+    int operator()(int i)
+    {
+      return i + x;
+    }
   };
 
   //*********************************************
   struct ConstFunctor
   {
     int x;
-    explicit ConstFunctor(int x_) : x(x_) {}
-    int operator()(int i) const { return i + x; }
+    explicit ConstFunctor(int x_)
+      : x(x_)
+    {
+    }
+    int operator()(int i) const
+    {
+      return i + x;
+    }
   };
 
   //*********************************************
   struct OverloadedFunctor
   {
-    int operator()(int i)&  { return i + 1; }
-    int operator()(int i)&& { return i + 2; }
+    int operator()(int i) &
+    {
+      return i + 1;
+    }
+    int operator()(int i) &&
+    {
+      return i + 2;
+    }
   };
 
   //*********************************************
   struct MoveOnlyFunctor
   {
-    MoveOnlyFunctor() = default;
+    MoveOnlyFunctor()                       = default;
     MoveOnlyFunctor(const MoveOnlyFunctor&) = delete;
-    MoveOnlyFunctor(MoveOnlyFunctor&&) = default;
-    int operator()(int i) { return i + 1; }
+    MoveOnlyFunctor(MoveOnlyFunctor&&)      = default;
+    int operator()(int i)
+    {
+      return i + 1;
+    }
   };
 
   //*********************************************
   struct NoThrowFunctor
   {
-    int operator()(int i) const noexcept { return i + 2; }
+    int operator()(int i) const noexcept
+    {
+      return i + 2;
+    }
   };
 
   //*********************************************
   struct ThrowingFunctor
   {
-    int operator()(int) { throw 42; }
+    int operator()(int)
+    {
+      throw 42;
+    }
   };
 
   //*********************************************
   struct MemberObj
   {
-    MemberObj(int v) : i(v) 
+    MemberObj(int v)
+      : i(v)
     {
     }
 
@@ -133,43 +204,67 @@ namespace
   template <typename T>
   struct IntegralOnly
   {
-    template <typename U, typename = typename etl::enable_if<etl::is_integral<U>::value>::type>
-    int operator()(U u) { return static_cast<int>(u) + 1; }
+    template <typename U, typename = typename etl::enable_if< etl::is_integral<U>::value>::type>
+    int operator()(U u)
+    {
+      return static_cast<int>(u) + 1;
+    }
 
-    template <typename U, typename = typename etl::enable_if<!etl::is_integral<U>::value>::type, typename = void>
+    template < typename U, typename = typename etl::enable_if<!etl::is_integral<U>::value>::type, typename = void>
     int operator()(U) = delete;
   };
 
   //*********************************************
   // Non-capturing lambda (convertible to function pointer)
-  static auto lambda_nc = [](int a, int b) { return a + b; };
+  static auto lambda_nc = [](int a, int b)
+  {
+    return a + b;
+  };
 
 #if ETL_USING_CPP14
   //*********************************************
   // Generic lambda (C++14+)
-  static auto lambda_generic = [](auto x, auto y) { return x + y; };
+  static auto lambda_generic = [](auto x, auto y)
+  {
+    return x + y;
+  };
 #endif
 
   //*********************************************
   // Overload set (not directly a single callable type for traits)
-  int  overload(int i)  { return i + 10; }
-  long overload(long l) { return l + 20; }
+  int overload(int i)
+  {
+    return i + 10;
+  }
+  long overload(long l)
+  {
+    return l + 20;
+  }
 
-  int takes_ptr(const int* p) { return *(p + 1); }
+  int takes_ptr(const int* p)
+  {
+    return *(p + 1);
+  }
 
   //*********************************************
   struct Selective
   {
     template <typename T, etl::enable_if_t<etl::is_same<int, T>::value, int> = 0>
-    int operator()(T) { return 1; }
+    int operator()(T)
+    {
+      return 1;
+    }
 
     template <typename T, etl::enable_if_t<etl::is_same<char, T>::value, int> = 0>
-    char operator()(T) { return 2; }
+    char operator()(T)
+    {
+      return 2;
+    }
 
     template <typename T, etl::enable_if_t<!etl::is_integral<T>::value, int> = 0>
     int operator()(T) = delete;
   };
-}
+} // namespace
 
 //*************************************************************************
 // Unit tests for etl::is_invocable / etl::is_invocable_r
@@ -179,37 +274,40 @@ SUITE(test_invoke)
   //*************************************************************************
   TEST(test_invoke_result)
   {
-    int capture_value = 5;
-    auto lambda_cap = [capture_value](int a) { return a + capture_value; };
+    int  capture_value = 5;
+    auto lambda_cap    = [capture_value](int a)
+    {
+      return a + capture_value;
+    };
 
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(free_add), int, int>, int>::value));
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(free_noexcept), int>, int>::value));
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(free_throw), int>, int>::value));
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(varfn), int>, int>::value));
 
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::add),             Base, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::add_const),       Base, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::ref_only),        Base&, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::rref_only),       Base, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::noexcept_member), Base, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::add), Base, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::add_const), Base, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::ref_only), Base&, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::rref_only), Base, int>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&Base::noexcept_member), Base, int>, int>::value));
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Base::static_function), int>, int>::value));
 
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::add),             Derived, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::add_const),       Derived, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::ref_only),        Derived&, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::rref_only),       Derived, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::noexcept_member), Derived, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::static_function), int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&Derived::add), Derived, int>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&Derived::add_const), Derived, int>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&Derived::ref_only), Derived&, int>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&Derived::rref_only), Derived, int>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&Derived::noexcept_member), Derived, int>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&Derived::static_function), int>, int>::value));
 
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&VolatileBase::read), VolatileBase>, int>::value));
+    CHECK_TRUE((etl::is_same< etl::invoke_result_t<decltype(&VolatileBase::read), VolatileBase>, int>::value));
 
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<Functor,      int>,  int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<ConstFunctor, int>,  int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<OverloadedFunctor&,  int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<Functor, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<ConstFunctor, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<OverloadedFunctor&, int>, int>::value));
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<OverloadedFunctor&&, int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<MoveOnlyFunctor,     int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<NoThrowFunctor,      int>, int>::value));
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<ThrowingFunctor,     int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<MoveOnlyFunctor, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<NoThrowFunctor, int>, int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<ThrowingFunctor, int>, int>::value));
 
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(&MemberObj::i), MemberObj&>, int&>::value));
 
@@ -228,7 +326,7 @@ SUITE(test_invoke)
     long (*ov_long)(long) = &overload;
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(ov_long), long>, long>::value));
 
-    CHECK_TRUE((etl::is_same<etl::invoke_result_t<Selective, int>,  int>::value));
+    CHECK_TRUE((etl::is_same<etl::invoke_result_t<Selective, int>, int>::value));
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<Selective, char>, char>::value));
 
     CHECK_TRUE((etl::is_same<etl::invoke_result_t<decltype(takes_ptr), const int* >, int>::value));
@@ -280,7 +378,7 @@ SUITE(test_invoke)
     Base       base(10);
     const Base const_base(20);
 
-    Base*       p_base = &base;
+    Base*       p_base       = &base;
     const Base* p_const_base = &const_base;
 
     CHECK_EQUAL(11, etl::invoke(&Base::add, base, 1));
@@ -302,22 +400,22 @@ SUITE(test_invoke)
   //*************************************************************************
   TEST(test_member_functions_ref_qualification)
   {
-    Base base(10);
-    Base& base_ref   = base;
+    Base  base(10);
+    Base& base_ref = base;
 
     Base&& base_rref = Base(10);
 
-    CHECK_EQUAL(13, etl::invoke(&Base::ref_only,  base_ref,  1));
+    CHECK_EQUAL(13, etl::invoke(&Base::ref_only, base_ref, 1));
     CHECK_EQUAL(15, etl::invoke(&Base::rref_only, std::move(base_rref), 2));
   }
 
-  //************************************************************************* 
+  //*************************************************************************
   TEST(test_inheritance_member_function)
   {
-    Derived derived(10);
+    Derived  derived(10);
     Derived* p_derived = &derived;
 
-    CHECK_EQUAL(11, etl::invoke(&Base::add, derived,   1));
+    CHECK_EQUAL(11, etl::invoke(&Base::add, derived, 1));
     CHECK_EQUAL(12, etl::invoke(&Base::add, p_derived, 2));
   }
 
@@ -392,8 +490,11 @@ SUITE(test_invoke)
   //*************************************************************************
   TEST(test_lambda_capturing)
   {
-    int capture_value = 5;
-    auto lambda_cap = [capture_value](int a) { return a + capture_value; };
+    int  capture_value = 5;
+    auto lambda_cap    = [capture_value](int a)
+    {
+      return a + capture_value;
+    };
 
     CHECK_EQUAL(6, etl::invoke(lambda_cap, 1));
   }
@@ -417,9 +518,15 @@ SUITE(test_invoke)
   //*************************************************************************
   TEST(test_additional_user_defined_conversion)
   {
-    struct Converter { operator int() const { return 11; } };
+    struct Converter
+    {
+      operator int() const
+      {
+        return 11;
+      }
+    };
 
-    CHECK_EQUAL(22, etl::invoke(free_add, Converter(), 11));  // Converter -> int
+    CHECK_EQUAL(22, etl::invoke(free_add, Converter(), 11)); // Converter -> int
   }
 
   //*************************************************************************
@@ -438,7 +545,10 @@ SUITE(test_invoke)
   {
     struct DeletedOverload
     {
-      int operator()(double d) { return static_cast<int>(2 * d); }
+      int operator()(double d)
+      {
+        return static_cast<int>(2 * d);
+      }
       int operator()(int) = delete;
     };
 
@@ -472,13 +582,172 @@ SUITE(test_invoke)
   {
     struct RR
     {
-      int f() && { return 1; }
-      int g() &  { return 2; }
+      int f() &&
+      {
+        return 1;
+      }
+      int g() &
+      {
+        return 2;
+      }
     };
 
     RR rr;
 
     CHECK_EQUAL(1, etl::invoke(&RR::f, etl::move(rr)));
     CHECK_EQUAL(2, etl::invoke(&RR::g, rr));
+  }
+
+  //*************************************************************************
+  // Tests for reference_wrapper as callable (first argument)
+  //*************************************************************************
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_free_function)
+  {
+    // reference_wrapper wrapping a function (decays to function pointer)
+    auto ref_fn = etl::ref(free_add);
+
+    CHECK_EQUAL(3, etl::invoke(ref_fn, 1, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_functor)
+  {
+    Functor functor(10);
+    auto    ref_functor = etl::ref(functor);
+
+    CHECK_EQUAL(12, etl::invoke(ref_functor, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_const_functor)
+  {
+    const ConstFunctor functor(10);
+    auto               ref_functor = etl::cref(functor);
+
+    CHECK_EQUAL(12, etl::invoke(ref_functor, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_lambda)
+  {
+    int  capture_value = 5;
+    auto lambda        = [capture_value](int a)
+    {
+      return a + capture_value;
+    };
+    auto ref_lambda = etl::ref(lambda);
+
+    CHECK_EQUAL(6, etl::invoke(ref_lambda, 1));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_nothrow_functor)
+  {
+    NoThrowFunctor nothrow_functor;
+    auto           ref_functor = etl::ref(nothrow_functor);
+
+    CHECK_EQUAL(12, etl::invoke(ref_functor, 10));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_throwing_functor)
+  {
+    ThrowingFunctor throwing_functor;
+    auto            ref_functor = etl::ref(throwing_functor);
+
+    CHECK_THROW(etl::invoke(ref_functor, 10), int);
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_member_function_pointer)
+  {
+    // reference_wrapper wrapping a pointer-to-member-function
+    auto pmf     = &Base::add;
+    auto ref_pmf = etl::ref(pmf);
+
+    Base base(10);
+
+    CHECK_EQUAL(11, etl::invoke(ref_pmf, base, 1));
+    CHECK_EQUAL(12, etl::invoke(ref_pmf, &base, 2));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_const_member_function_pointer)
+  {
+    auto pmf     = &Base::add_const;
+    auto ref_pmf = etl::ref(pmf);
+
+    const Base const_base(20);
+
+    CHECK_EQUAL(24, etl::invoke(ref_pmf, const_base, 3));
+    CHECK_EQUAL(25, etl::invoke(ref_pmf, &const_base, 4));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_member_object_pointer)
+  {
+    // reference_wrapper wrapping a pointer-to-member-data
+    auto pmd     = &MemberObj::i;
+    auto ref_pmd = etl::ref(pmd);
+
+    MemberObj obj(42);
+
+    CHECK_EQUAL(42, etl::invoke(ref_pmd, obj));
+    CHECK_EQUAL(42, etl::invoke(ref_pmd, &obj));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_derived_member_function)
+  {
+    // reference_wrapper wrapping member pointer, invoked on derived class
+    auto pmf     = &Base::add;
+    auto ref_pmf = etl::ref(pmf);
+
+    Derived derived(10);
+
+    CHECK_EQUAL(11, etl::invoke(ref_pmf, derived, 1));
+    CHECK_EQUAL(12, etl::invoke(ref_pmf, &derived, 2));
+  }
+
+#if ETL_USING_CPP14
+  //*************************************************************************
+  TEST(test_reference_wrapper_identity)
+  {
+    // This is the case that triggered the original compile error:
+    // reference_wrapper<etl::identity> as a callable
+    etl::identity id;
+    auto          ref_id = etl::ref(id);
+
+    CHECK_EQUAL(42, etl::invoke(ref_id, 42));
+    CHECK_EQUAL(7, etl::invoke(ref_id, 7));
+  }
+#endif
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_with_reference_wrapper_arg)
+  {
+    // reference_wrapper as both callable and second argument (member pointer
+    // case)
+    auto pmf     = &Base::add;
+    auto ref_pmf = etl::ref(pmf);
+
+    Base base(10);
+    auto ref_base = etl::ref(base);
+
+    CHECK_EQUAL(11, etl::invoke(ref_pmf, ref_base, 1));
+  }
+
+  //*************************************************************************
+  TEST(test_reference_wrapper_member_object_with_reference_wrapper_arg)
+  {
+    auto pmd     = &MemberObj::i;
+    auto ref_pmd = etl::ref(pmd);
+
+    MemberObj obj(99);
+    auto      ref_obj = etl::ref(obj);
+
+    CHECK_EQUAL(99, etl::invoke(ref_pmd, ref_obj));
   }
 }

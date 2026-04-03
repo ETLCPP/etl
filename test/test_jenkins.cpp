@@ -29,12 +29,12 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <iterator>
+#include <stdint.h>
 #include <string>
 #include <vector>
-#include <stdint.h>
 
-#include "etl/jenkins.h"
 #include "etl/endianness.h"
+#include "etl/jenkins.h"
 
 template <typename TIterator>
 uint32_t jenkins(TIterator begin, TIterator end)
@@ -43,7 +43,7 @@ uint32_t jenkins(TIterator begin, TIterator end)
 
   while (begin != end)
   {
-    hash += *begin++;
+    hash += static_cast<uint32_t>(*begin++);
     hash += (hash << 10U);
     hash ^= (hash >> 6U);
   }
@@ -79,7 +79,7 @@ namespace
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
-        jenkins_calculator.add(data[i]);
+        jenkins_calculator.add(static_cast<uint8_t>(data[i]));
       }
 
       uint32_t hash    = jenkins_calculator;
@@ -123,17 +123,17 @@ namespace
     //*************************************************************************
     TEST(test_jenkins_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint8_t>  data1 = {0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U};
       std::vector<uint32_t> data2;
       if (etl::endianness::value() == etl::endian::little)
       {
-        data2 = { 0x04030201UL, 0x08070605UL };
+        data2 = {0x04030201UL, 0x08070605UL};
       }
       else
       {
-        data2 = { 0x01020304UL, 0x05060708UL };
+        data2 = {0x01020304UL, 0x05060708UL};
       }
-      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+      std::vector<uint8_t> data3 = {0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U};
 
       uint32_t hash1 = etl::jenkins(data1.begin(), data1.end());
       uint32_t hash2 = etl::jenkins((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));
@@ -165,5 +165,4 @@ namespace
       CHECK_THROW(j32.add(0), etl::hash_finalized);
     }
   }
-}
-
+} // namespace

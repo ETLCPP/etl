@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -39,12 +39,12 @@ SOFTWARE.
 
 #if ETL_USING_ETL_CHRONO
   #define Chrono etl::chrono
-  #define Ratio etl::ratio
+  #define Ratio  etl::ratio
 #else
   #if ETL_USING_CPP20
     #include <chrono>
     #define Chrono std::chrono
-    #define Ratio std::ratio
+    #define Ratio  std::ratio
   #else
     #error std::chrono not supported
   #endif
@@ -68,11 +68,11 @@ namespace
       auto sub = time.subseconds();
       auto dur = time.to_duration();
 
-      CHECK_EQUAL(Chrono::hours(0).count(),   h.count());
+      CHECK_EQUAL(Chrono::hours(0).count(), h.count());
       CHECK_EQUAL(Chrono::minutes(0).count(), m.count());
       CHECK_EQUAL(Chrono::seconds(0).count(), s.count());
-      CHECK_EQUAL(duration_type(0).count(),   sub.count());
-      CHECK_EQUAL(0,                          dur.count());
+      CHECK_EQUAL(duration_type(0).count(), sub.count());
+      CHECK_EQUAL(0, dur.count());
       CHECK_FALSE(time.is_negative());
       CHECK_EQUAL(0, time.fractional_width);
       CHECK_TRUE((std::is_same<duration_type, Chrono::hh_mm_ss<duration_type>::precision>::value));
@@ -94,7 +94,7 @@ namespace
       auto sub = time.subseconds();
       auto dur = time.to_duration();
 
-      CHECK_EQUAL(Chrono::hours(1).count(),   h.count());
+      CHECK_EQUAL(Chrono::hours(1).count(), h.count());
       CHECK_EQUAL(Chrono::minutes(2).count(), m.count());
       CHECK_EQUAL(Chrono::seconds(3).count(), s.count());
       CHECK_EQUAL(duration_type(0).count(), sub.count());
@@ -120,10 +120,10 @@ namespace
       auto sub = time.subseconds();
       auto dur = time.to_duration();
 
-      CHECK_EQUAL(Chrono::hours(1).count(),   h.count());
+      CHECK_EQUAL(Chrono::hours(1).count(), h.count());
       CHECK_EQUAL(Chrono::minutes(2).count(), m.count());
       CHECK_EQUAL(Chrono::seconds(3).count(), s.count());
-      CHECK_EQUAL(duration_type(0).count(),   sub.count());
+      CHECK_EQUAL(duration_type(0).count(), sub.count());
       CHECK_EQUAL(-3723, dur.count());
       CHECK_TRUE(time.is_negative());
       CHECK_EQUAL(0, time.fractional_width);
@@ -146,10 +146,10 @@ namespace
       auto sub = time.subseconds();
       auto dur = time.to_duration();
 
-      CHECK_EQUAL(Chrono::hours(1).count(),   h.count());
+      CHECK_EQUAL(Chrono::hours(1).count(), h.count());
       CHECK_EQUAL(Chrono::minutes(2).count(), m.count());
       CHECK_EQUAL(Chrono::seconds(3).count(), s.count());
-      CHECK_EQUAL(duration_type(456).count(),   sub.count());
+      CHECK_EQUAL(duration_type(456).count(), sub.count());
       CHECK_EQUAL(3723456, dur.count());
       CHECK_FALSE(time.is_negative());
       CHECK_EQUAL(3, time.fractional_width);
@@ -161,7 +161,8 @@ namespace
     {
       using duration_type = Chrono::milliseconds;
 
-      // Create a duration of minus 1 hour, 2 minutes, 3 seconds, 456 milliseconds
+      // Create a duration of minus 1 hour, 2 minutes, 3 seconds, 456
+      // milliseconds
       duration_type duration = -(Chrono::hours(1) + Chrono::minutes(2) + Chrono::seconds(3) + duration_type(456));
 
       Chrono::hh_mm_ss<duration_type> time(duration);
@@ -172,10 +173,10 @@ namespace
       auto sub = time.subseconds();
       auto dur = time.to_duration();
 
-      CHECK_EQUAL(Chrono::hours(1).count(),   h.count());
+      CHECK_EQUAL(Chrono::hours(1).count(), h.count());
       CHECK_EQUAL(Chrono::minutes(2).count(), m.count());
       CHECK_EQUAL(Chrono::seconds(3).count(), s.count());
-      CHECK_EQUAL(duration_type(456).count(),   sub.count());
+      CHECK_EQUAL(duration_type(456).count(), sub.count());
       CHECK_EQUAL(-3723456, dur.count());
       CHECK_TRUE(time.is_negative());
       CHECK_EQUAL(3, time.fractional_width);
@@ -286,4 +287,4 @@ namespace
       CHECK_TRUE((std::is_same<duration_type, Chrono::hh_mm_ss<duration_type>::precision>::value));
     }
   }
-}
+} // namespace

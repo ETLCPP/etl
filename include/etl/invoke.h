@@ -32,14 +32,14 @@ SOFTWARE.
 #define ETL_INVOKE_INCLUDED
 
 #include "platform.h"
-#include "functional.h"
 #include "function_traits.h"
+#include "functional.h"
 #include "type_traits.h"
 #include "utility.h"
 
 #if ETL_USING_CPP11
 
-namespace etl 
+namespace etl
 {
   //****************************************************************************
   // invoke implementation
@@ -47,87 +47,92 @@ namespace etl
 
   //****************************************************************************
   /// Pointer to member function + reference_wrapper
-  template <typename TFunction, 
-            typename TRefWrapper, 
-            typename... TArgs,
-            typename = etl::enable_if_t<etl::is_member_function_pointer<etl::decay_t<TFunction>>::value &&
-                                        etl::is_reference_wrapper<etl::decay_t<TRefWrapper>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TRefWrapper&& ref_wrapper, TArgs&&... args)
-    -> decltype((ref_wrapper.get().*f)(etl::forward<TArgs>(args)...))
+  template < typename TFunction, typename TRefWrapper, typename... TArgs,
+             typename = etl::enable_if_t< etl::is_member_function_pointer<etl::decay_t<TFunction>>::value
+                                          && etl::is_reference_wrapper<etl::decay_t<TRefWrapper>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TRefWrapper&& ref_wrapper, TArgs&&... args) -> decltype((ref_wrapper.get().*f)(etl::forward<TArgs>(args)...))
   {
     return (ref_wrapper.get().*f)(etl::forward<TArgs>(args)...);
   }
 
   //****************************************************************************
   /// Pointer to member function + pointer to object
-  template <typename TFunction, 
-            typename TPtr, 
-            typename... TArgs,
-            typename = etl::enable_if_t<etl::is_member_function_pointer<etl::decay_t<TFunction>>::value &&
-                                        etl::is_pointer<etl::decay_t<TPtr>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TPtr&& ptr, TArgs&&... args)
-    -> decltype(((*etl::forward<TPtr>(ptr)).*f)(etl::forward<TArgs>(args)...))
+  template <
+    typename TFunction, typename TPtr, typename... TArgs,
+    typename = etl::enable_if_t< etl::is_member_function_pointer<etl::decay_t<TFunction>>::value && etl::is_pointer<etl::decay_t<TPtr>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TPtr&& ptr, TArgs&&... args) -> decltype(((*etl::forward<TPtr>(ptr)).*f)(etl::forward<TArgs>(args)...))
   {
     return ((*etl::forward<TPtr>(ptr)).*f)(etl::forward<TArgs>(args)...);
   }
 
   //****************************************************************************
   /// Pointer to member function + object (or derived) reference
-  template <typename TFunction, 
-            typename TObject,
-            typename... TArgs,
-            typename = etl::enable_if_t<etl::is_member_function_pointer<etl::decay_t<TFunction>>::value &&
-                                        !etl::is_pointer<etl::decay_t<TObject>>::value &&
-                                        !is_reference_wrapper<etl::decay_t<TObject>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TObject&& obj, TArgs&&... args)
-    -> decltype((etl::forward<TObject>(obj).*f)(etl::forward<TArgs>(args)...))
+  template < typename TFunction, typename TObject, typename... TArgs,
+             typename = etl::enable_if_t< etl::is_member_function_pointer<etl::decay_t<TFunction>>::value
+                                          && !etl::is_pointer<etl::decay_t<TObject>>::value && !is_reference_wrapper<etl::decay_t<TObject>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TObject&& obj, TArgs&&... args) -> decltype((etl::forward<TObject>(obj).*f)(etl::forward<TArgs>(args)...))
   {
     return (etl::forward<TObject>(obj).*f)(etl::forward<TArgs>(args)...);
   }
 
   //****************************************************************************
   /// Pointer to member object + reference_wrapper
-  template <typename TFunction, 
-            typename TRefWrapper,
-            typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
-                                        etl::is_reference_wrapper<etl::decay_t<TRefWrapper>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TRefWrapper&& ref_wrapper)
-    -> decltype(ref_wrapper.get().*f)
+  template < typename TFunction, typename TRefWrapper,
+             typename = etl::enable_if_t< etl::is_member_object_pointer<etl::decay_t<TFunction>>::value
+                                          && etl::is_reference_wrapper<etl::decay_t<TRefWrapper>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TRefWrapper&& ref_wrapper) -> decltype(ref_wrapper.get().*f)
   {
     return ref_wrapper.get().*f;
   }
 
   //****************************************************************************
   /// Pointer to member object + pointer to object
-  template <typename TFunction, typename TPtr,
-            typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
-                                        etl::is_pointer<etl::decay_t<TPtr>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TPtr&& ptr)
-    -> decltype(((*etl::forward<TPtr>(ptr)).*f))
+  template <
+    typename TFunction, typename TPtr,
+    typename = etl::enable_if_t< etl::is_member_object_pointer<etl::decay_t<TFunction>>::value && etl::is_pointer<etl::decay_t<TPtr>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TPtr&& ptr) -> decltype(((*etl::forward<TPtr>(ptr)).*f))
   {
     return ((*etl::forward<TPtr>(ptr)).*f);
   }
 
   //****************************************************************************
   /// Pointer to member object + object (or derived) reference
-  template <typename TFunction, 
-            typename TObject,
-            typename = etl::enable_if_t<etl::is_member_object_pointer<etl::decay_t<TFunction>>::value &&
-                                        !etl::is_pointer<etl::decay_t<TObject>>::value &&
-                                        !is_reference_wrapper<etl::decay_t<TObject>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TObject&& obj)
-    -> decltype(etl::forward<TObject>(obj).*f)
+  template < typename TFunction, typename TObject,
+             typename = etl::enable_if_t< etl::is_member_object_pointer<etl::decay_t<TFunction>>::value
+                                          && !etl::is_pointer<etl::decay_t<TObject>>::value && !is_reference_wrapper<etl::decay_t<TObject>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TObject&& obj) -> decltype(etl::forward<TObject>(obj).*f)
   {
     return etl::forward<TObject>(obj).*f;
   }
 
   //****************************************************************************
+  /// reference_wrapper callable (unwrap and call directly)
+  template < typename TFunction, typename... TArgs,
+             typename = etl::enable_if_t< etl::is_reference_wrapper<etl::decay_t<TFunction>>::value
+                                          && !etl::is_member_pointer<etl::decay_t< decltype(etl::declval<TFunction>().get())>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args) -> decltype(f.get()(etl::forward<TArgs>(args)...))
+  {
+    return f.get()(etl::forward<TArgs>(args)...);
+  }
+
+  //****************************************************************************
+  /// reference_wrapper callable wrapping a member pointer (unwrap and
+  /// re-invoke)
+  template < typename TFunction, typename... TArgs,
+             typename = etl::enable_if_t< etl::is_reference_wrapper<etl::decay_t<TFunction>>::value
+                                          && etl::is_member_pointer<etl::decay_t< decltype(etl::declval<TFunction>().get())>>::value>,
+             typename = void>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args) -> decltype(etl::invoke(f.get(), etl::forward<TArgs>(args)...))
+  {
+    return etl::invoke(f.get(), etl::forward<TArgs>(args)...);
+  }
+
+  //****************************************************************************
   /// General callable (function object / lambda / function pointer)
-  template <typename TFunction, 
-            typename... TArgs,
-            typename = etl::enable_if_t<!etl::is_member_pointer<etl::decay_t<TFunction>>::value>>
-  ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args)
-    -> decltype(etl::forward<TFunction>(f)(etl::forward<TArgs>(args)...))
+  template < typename TFunction, typename... TArgs,
+             typename = etl::enable_if_t< !etl::is_member_pointer<etl::decay_t<TFunction>>::value
+                                          && !etl::is_reference_wrapper<etl::decay_t<TFunction>>::value>>
+  ETL_CONSTEXPR auto invoke(TFunction&& f, TArgs&&... args) -> decltype(etl::forward<TFunction>(f)(etl::forward<TArgs>(args)...))
   {
     return etl::forward<TFunction>(f)(etl::forward<TArgs>(args)...);
   }
@@ -145,7 +150,7 @@ namespace etl
     {
       template <typename U>
       static auto test(int) -> decltype((void)etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...), etl::true_type{});
-      
+
       template <typename>
       static etl::false_type test(...);
 
@@ -179,7 +184,7 @@ namespace etl
     {
       template <typename U>
       static auto test(int) -> decltype(etl::invoke(etl::declval<U>(), etl::declval<TArgs>()...));
-      
+
       template <typename>
       static void test(...);
 
@@ -204,16 +209,34 @@ namespace etl
     using invoke_result_impl_t = typename invoke_result_impl<TFunction, TArgs...>::type;
 
     //*******************************************
-    // Map raw function type to pointer.
+    // Unwrap reference_wrapper<T> to its underlying type T&,
+    // forwarding to etl::unwrap_ref_decay for reference_wrapper detection.
+    template <typename TFunction, bool = etl::is_reference_wrapper<etl::decay_t<TFunction>>::value>
+    struct unwrap_ref_callable
+    {
+      using type = TFunction;
+    };
+
     template <typename TFunction>
-    using effective_callable_t = etl::conditional_t<etl::is_function<etl::remove_reference_t<TFunction>>::value,
-                                                    etl::add_pointer_t<etl::remove_reference_t<TFunction>>,
-                                                    TFunction>;
-  }
+    struct unwrap_ref_callable<TFunction, true>
+    {
+      using type = etl::unwrap_ref_decay_t<TFunction>;
+    };
+
+    template <typename TFunction>
+    using unwrap_ref_callable_t = typename unwrap_ref_callable<TFunction>::type;
+
+    //*******************************************
+    // Map raw function type to pointer, and unwrap reference_wrapper
+    // so that function_traits sees the actual callable type.
+    template <typename TFunction>
+    using effective_callable_t = etl::conditional_t< etl::is_function<etl::remove_reference_t<TFunction>>::value,
+                                                     etl::add_pointer_t<etl::remove_reference_t<TFunction>>, unwrap_ref_callable_t<TFunction>>;
+  } // namespace private_invoke
 
   //****************************************************************************
   /// invoke_result<TFunction, TArgs...>
-  template <typename TFunction, typename, typename... TArgs> 
+  template <typename TFunction, typename, typename... TArgs>
   struct invoke_result
   {
     using type = void;
@@ -221,19 +244,15 @@ namespace etl
 
   //*******************************************
   template <typename TFunction, typename... TArgs>
-  struct invoke_result<TFunction,
-                       etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>,
-                       TArgs...> 
+  struct invoke_result< TFunction, etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>, TArgs...>
   {
   private:
 
     using FC = private_invoke::effective_callable_t<TFunction>;
-  
+
   public:
-  
-    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value,
-                                    private_invoke::invoke_result_impl_t<FC, TArgs...>,
-                                    void>;
+
+    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value, private_invoke::invoke_result_impl_t<FC, TArgs...>, void>;
   };
 
   //****************************************************************************
@@ -247,17 +266,14 @@ namespace etl
 
   public:
 
-    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value,
-      private_invoke::invoke_result_impl_t<FC, TArgs...>,
-      void>;
+    using type = etl::conditional_t<private_invoke::is_invocable_expr<FC, TArgs...>::value, private_invoke::invoke_result_impl_t<FC, TArgs...>, void>;
   };
 
   //*******************************************
-  // Specialization to allow `etl::type_list<...>` as the second template parameter.
+  // Specialization to allow `etl::type_list<...>` as the second template
+  // parameter.
   template <typename TFunction, typename... TArgs>
-  struct invoke_result<TFunction,
-                       etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>,
-                       etl::type_list<TArgs...>> 
+  struct invoke_result< TFunction, etl::void_t<decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...))>, etl::type_list<TArgs...>>
   {
     using type = decltype(etl::invoke(etl::declval<TFunction>(), etl::declval<TArgs>()...));
   };
@@ -269,16 +285,15 @@ namespace etl
   //****************************************************************************
   /// is_invocable<TFunction, TArgs...>
   template <typename TFunction, typename... TArgs>
-  struct is_invocable
-    : etl::bool_constant<private_invoke::is_invocable_expr<private_invoke::effective_callable_t<TFunction>, TArgs...>::value>
+  struct is_invocable : etl::bool_constant< private_invoke::is_invocable_expr< private_invoke::effective_callable_t<TFunction>, TArgs...>::value>
   {
   };
 
   //****************************************************************************
-  // Specialization to allow `etl::type_list<...>` as the second template parameter.
+  // Specialization to allow `etl::type_list<...>` as the second template
+  // parameter.
   template <typename TFunction, typename... TArgs>
-  struct is_invocable<TFunction, etl::type_list<TArgs...>>
-    : is_invocable<TFunction, TArgs...>
+  struct is_invocable<TFunction, etl::type_list<TArgs...>> : is_invocable<TFunction, TArgs...>
   {
   };
 
@@ -286,56 +301,54 @@ namespace etl
   // is_invocable_r<TReturn, TFunction, TArgs...>
   template <typename TReturn, typename TFunction, typename... TArgs>
   struct is_invocable_r
-    : etl::conditional_t<etl::is_same<TReturn, void>::value,
-                         etl::is_invocable<TFunction, TArgs...>,
-                         etl::conditional_t<is_invocable<TFunction, TArgs...>::value,
-                                            etl::bool_constant<etl::is_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value>,
-                                            etl::false_type>>
+    : etl::conditional_t<
+        etl::is_same<TReturn, void>::value, etl::is_invocable<TFunction, TArgs...>,
+        etl::conditional_t< is_invocable<TFunction, TArgs...>::value,
+                            etl::bool_constant<etl::is_convertible< invoke_result_t<TFunction, TArgs...>, TReturn>::value>, etl::false_type>>
   {
   };
 
   //****************************************************************************
-  // Specialization to allow `etl::type_list<...>` as the second template parameter.
+  // Specialization to allow `etl::type_list<...>` as the second template
+  // parameter.
   template <typename TReturn, typename TFunction, typename... TArgs>
-  struct is_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>>
-    : is_invocable_r<TReturn, TFunction, TArgs...>
+  struct is_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>> : is_invocable_r<TReturn, TFunction, TArgs...>
   {
   };
 
   //****************************************************************************
-  // Specialization to allow `etl::type_list<...>` when there is a preceding object argument.
+  // Specialization to allow `etl::type_list<...>` when there is a preceding
+  // object argument.
   template <typename TFunction, typename TObject, typename... TArgs>
-  struct is_invocable<TFunction, TObject, etl::type_list<TArgs...>>
-    : is_invocable<TFunction, TObject, TArgs...>
+  struct is_invocable<TFunction, TObject, etl::type_list<TArgs...>> : is_invocable<TFunction, TObject, TArgs...>
   {
   };
 
   //****************************************************************************
   // Specialization for is_invocable_r with a preceding object argument.
   template <typename TReturn, typename TFunction, typename TObject, typename... TArgs>
-  struct is_invocable_r<TReturn, TFunction, TObject, etl::type_list<TArgs...>>
-    : is_invocable_r<TReturn, TFunction, TObject, TArgs...>
+  struct is_invocable_r<TReturn, TFunction, TObject, etl::type_list<TArgs...>> : is_invocable_r<TReturn, TFunction, TObject, TArgs...>
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   //****************************************************************************
   /// is_nothrow_invocable<TFunction, TArgs...>
   template <typename TFunction, typename... TArgs>
   struct is_nothrow_invocable
-    : etl::bool_constant<etl::is_invocable<TFunction, TArgs...>::value &&
-                         etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept>
+    : etl::bool_constant< etl::is_invocable<TFunction, TArgs...>::value
+                          && etl::function_traits< private_invoke::effective_callable_t<TFunction>>::is_noexcept>
   {
   };
 
   //****************************************************************************
   /// is_nothrow_invocable_r<TReturn, TFunction, TArgs...>
   template <typename TReturn, typename TFunction, typename... TArgs>
-  struct is_nothrow_invocable_r 
-    : etl::bool_constant<etl::is_invocable_r<TReturn, TFunction, TArgs...>::value &&
-                         etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept &&
-                         (etl::is_same<TReturn, void>::value ||
-                          etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
+  struct is_nothrow_invocable_r
+    : etl::bool_constant< etl::is_invocable_r<TReturn, TFunction, TArgs...>::value
+                          && etl::function_traits< private_invoke::effective_callable_t<TFunction>>::is_noexcept
+                          && (etl::is_same<TReturn, void>::value
+                              || etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
   {
   };
 
@@ -343,36 +356,36 @@ namespace etl
   /// is_nothrow_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>>
   template <typename TReturn, typename TFunction, typename... TArgs>
   struct is_nothrow_invocable_r<TReturn, TFunction, etl::type_list<TArgs...>>
-    : etl::bool_constant<etl::is_invocable_r<TReturn, TFunction, TArgs...>::value &&
-                         etl::function_traits<private_invoke::effective_callable_t<TFunction>>::is_noexcept &&
-                         (etl::is_same<TReturn, void>::value ||
-                          etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
+    : etl::bool_constant< etl::is_invocable_r<TReturn, TFunction, TArgs...>::value
+                          && etl::function_traits< private_invoke::effective_callable_t<TFunction>>::is_noexcept
+                          && (etl::is_same<TReturn, void>::value
+                              || etl::is_nothrow_convertible<invoke_result_t<TFunction, TArgs...>, TReturn>::value)>
   {
   };
 
   //****************************************************************************
-  // Specialization to allow `etl::type_list<...>` when there is a preceding object argument
-  // for the nothrow-with-return trait.
+  // Specialization to allow `etl::type_list<...>` when there is a preceding
+  // object argument for the nothrow-with-return trait.
   template <typename TReturn, typename TFunction, typename TObject, typename... TArgs>
-  struct is_nothrow_invocable_r<TReturn, TFunction, TObject, etl::type_list<TArgs...>>
-    : is_nothrow_invocable_r<TReturn, TFunction, TObject, TArgs...>
-  {};
-#endif
+  struct is_nothrow_invocable_r<TReturn, TFunction, TObject, etl::type_list<TArgs...>> : is_nothrow_invocable_r<TReturn, TFunction, TObject, TArgs...>
+  {
+  };
+  #endif
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TFunction, typename... TArgs>
   inline constexpr bool is_invocable_v = is_invocable<TFunction, TArgs...>::value;
 
   template <typename TReturn, typename TFunction, typename... TArgs>
   inline constexpr bool is_invocable_r_v = is_invocable_r<TReturn, TFunction, TArgs...>::value;
-  
+
   template <typename TFunction, typename... TArgs>
   inline constexpr bool is_nothrow_invocable_v = is_nothrow_invocable<TFunction, TArgs...>::value;
 
   template <typename TFunction, typename... TArgs>
   inline constexpr bool is_nothrow_invocable_r_v = is_nothrow_invocable_r<TFunction, TArgs...>::value;
-#endif
-}
+  #endif
+} // namespace etl
 
-#endif  // ETL_USING_CPP11
-#endif  // ETL_INVOKE_INCLUDED
+#endif // ETL_USING_CPP11
+#endif // ETL_INVOKE_INCLUDED

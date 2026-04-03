@@ -63,18 +63,28 @@ namespace
 
   //*****************************************************************************
   // The observer base type.
-  // Declare what notifications you want to observe and how they are passed to 'notification'.
-  // The Notification1 is passed by value.
-  // The Notification2 is passed by reference.
-  // The Notification3 is passed by const reference.
+  // Declare what notifications you want to observe and how they are passed to
+  // 'notification'. The Notification1 is passed by value. The Notification2 is
+  // passed by reference. The Notification3 is passed by const reference.
   //*****************************************************************************
-  typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
+  using ObserverType = etl::observer<Notification1, Notification2&, const Notification3&>;
+
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+  //*****************************************************************************
+  // The observer base type.
+  // Declare what notifications you want to observe and how they are passed to
+  // 'notification'. The Notification1 is passed by value. The Notification2 is
+  // passed by reference. The Notification3 is passed by const reference.
+  //*****************************************************************************
+  using NotificationList     = etl::type_list<Notification1, Notification2&, const Notification3&>;
+  using ObserverFromTypeList = etl::observer_from_type_list_t<NotificationList>;
+#endif
 
   //*****************************************************************************
   // The observer base type that does not take a notification type.
   //*****************************************************************************
-  typedef etl::observer<void, int> ObserverVoidIntType;
-}
+  using ObserverVoidIntType = etl::observer<void, int>;
+} // namespace
 
 //*****************************************************************************
 // The concrete observable 1 class.
@@ -83,18 +93,18 @@ class Observable1 : public etl::observable<ObserverType, 2>
 {
 public:
 
-	Notification1 data1;
-	Notification2 data2;
+  Notification1  data1;
+  Notification2  data2;
   Notification1& data3 = data1;
 
   //*********************************
   // Notify all of the observers.
   //*********************************
-	void send_notifications()
-	{
-		notify_observers(data3);
+  void send_notifications()
+  {
+    notify_observers(data3);
     notify_observers(data2);
-	}
+  }
 };
 
 //*****************************************************************************
@@ -104,16 +114,39 @@ class Observable2 : public etl::observable<ObserverType, 2>
 {
 public:
 
-	Notification3 data3;
+  Notification3 data3;
 
   //*********************************
   // Notify all of the observers.
   //*********************************
-	void send_notifications()
-	{
+  void send_notifications()
+  {
     notify_observers(data3);
-	}
+  }
 };
+
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+//*****************************************************************************
+// The concrete observable 3 class.
+//*****************************************************************************
+class Observable3 : public etl::observable<ObserverFromTypeList, 2>
+{
+public:
+
+  Notification1  data1;
+  Notification2  data2;
+  Notification1& data3 = data1;
+
+  //*********************************
+  // Notify all of the observers.
+  //*********************************
+  void send_notifications()
+  {
+    notify_observers(data3);
+    notify_observers(data2);
+  }
+};
+#endif
 
 //*****************************************************************************
 // The concrete observable 3 class.
@@ -141,8 +174,8 @@ public:
 
 //*****************************************************************************
 // The first observer type.
-// If any one of the overloads is missing or a parameter declaration is incorrect
-// then the class will be 'abstract' and will not compile.
+// If any one of the overloads is missing or a parameter declaration is
+// incorrect then the class will be 'abstract' and will not compile.
 //*****************************************************************************
 class Observer1 : public ObserverType
 {
@@ -159,25 +192,25 @@ public:
   // Notification1 is passed by value.
   //*******************************************
   void notification(Notification1 /*data1*/)
-	{
+  {
     ++data1_count;
-	}
+  }
 
   //*******************************************
   // Notification2 is passed by reference.
   //*******************************************
   void notification(Notification2& /*data2*/)
-	{
+  {
     ++data2_count;
-	}
+  }
 
   //*******************************************
-	// Notification3 is passed by const reference.
+  // Notification3 is passed by const reference.
   //*******************************************
   void notification(const Notification3& /*data3*/)
-	{
+  {
     ++data3_count;
-	}
+  }
 
   int data1_count;
   int data2_count;
@@ -186,8 +219,8 @@ public:
 
 //*****************************************************************************
 // The second observer type.
-// If any one of the overloads is missing or a parameter declaration is incorrect
-// then the class will be 'abstract' and will not compile.
+// If any one of the overloads is missing or a parameter declaration is
+// incorrect then the class will be 'abstract' and will not compile.
 //*****************************************************************************
 class Observer2 : public ObserverType
 {
@@ -204,35 +237,82 @@ public:
   // Notification1 is passed by value.
   //*******************************************
   void notification(Notification1 /*data1*/)
-	{
+  {
     ++data1_count;
-	}
+  }
 
   //*******************************************
   // Notification2 is passed by reference.
   //*******************************************
   void notification(Notification2& /*data2*/)
-	{
+  {
     ++data2_count;
-	}
+  }
 
   //*******************************************
   // Notification3 is passed by const reference.
   //*******************************************
   void notification(const Notification3& /*data3*/)
-	{
+  {
     ++data3_count;
-	}
+  }
 
   int data1_count;
   int data2_count;
   int data3_count;
 };
 
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
 //*****************************************************************************
 // The third observer type.
-// If any one of the overloads is missing or a parameter declaration is incorrect
-// then the class will be 'abstract' and will not compile.
+// If any one of the overloads is missing or a parameter declaration is
+// incorrect then the class will be 'abstract' and will not compile.
+//*****************************************************************************
+class Observer3 : public ObserverFromTypeList
+{
+public:
+
+  Observer3()
+    : data1_count(0)
+    , data2_count(0)
+    , data3_count(0)
+  {
+  }
+
+  //*******************************************
+  // Notification1 is passed by value.
+  //*******************************************
+  void notification(Notification1 /*data1*/)
+  {
+    ++data1_count;
+  }
+
+  //*******************************************
+  // Notification2 is passed by reference.
+  //*******************************************
+  void notification(Notification2& /*data2*/)
+  {
+    ++data2_count;
+  }
+
+  //*******************************************
+  // Notification3 is passed by const reference.
+  //*******************************************
+  void notification(const Notification3& /*data3*/)
+  {
+    ++data3_count;
+  }
+
+  int data1_count;
+  int data2_count;
+  int data3_count;
+};
+#endif
+
+//*****************************************************************************
+// The third observer type.
+// If any one of the overloads is missing or a parameter declaration is
+// incorrect then the class will be 'abstract' and will not compile.
 //*****************************************************************************
 class ObserverVoidInt : public ObserverVoidIntType
 {
@@ -255,7 +335,7 @@ public:
   //*******************************************
   // Notification2
   //*******************************************
-  void notification(int)  override
+  void notification(int) override
   {
     ++data2_count;
   }
@@ -292,7 +372,8 @@ namespace
       CHECK_EQUAL(0, observer2.data2_count);
       CHECK_EQUAL(0, observer2.data3_count);
 
-      observable2.send_notifications(); // Updates data3. observeable2 has no observers yet.
+      observable2.send_notifications(); // Updates data3. observeable2 has no
+                                        // observers yet.
 
       CHECK_EQUAL(1, observer1.data1_count);
       CHECK_EQUAL(1, observer1.data2_count);
@@ -399,10 +480,33 @@ namespace
       CHECK_EQUAL(3, observer2.data1_count);
     }
 
+#if !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    TEST(test_observer_created_from_a_type_list)
+    {
+      // The observable objects.
+      Observable3 observable3;
+
+      // The observer objects.
+      Observer3 observer3;
+
+      observable3.add_observer(observer3);
+
+      // Send the notifications.
+      observable3.send_notifications(); // Updates data1 & data2.
+
+      CHECK_EQUAL(1, observer3.data1_count);
+      CHECK_EQUAL(1, observer3.data2_count);
+      CHECK_EQUAL(0, observer3.data3_count);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_8_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>, Notification<8> > Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7>,
+                            Notification<8> >
+        Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -415,7 +519,8 @@ namespace
     //*************************************************************************
     TEST(test_7_notifications)
     {
-      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7> > Observer;
+      typedef etl::observer<Notification<1>, Notification<2>, Notification<3>, Notification<4>, Notification<5>, Notification<6>, Notification<7> >
+        Observer;
 
       class Observable : public etl::observable<Observer, 1>
       {
@@ -572,5 +677,4 @@ namespace
       CHECK_EQUAL(1U, observer.data2_count);
     }
   }
-}
-
+} // namespace

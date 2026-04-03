@@ -52,6 +52,6 @@ namespace etl
 
   template <typename T, const T VALUE>
   const T constant<T, VALUE>::value;
-}
+} // namespace etl
 
 #endif

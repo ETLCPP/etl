@@ -37,9 +37,9 @@ SOFTWARE.
 /// Smart enumerations.<br>
 /// A method of declaring a user type that also contains a set of constants,
 /// but are not constrained to just those values.
-/// This contrasts with 'enum_type', where the values are expected to <b>only</b> contain
-/// those defined as constants.
-/// <b>Declaring the enumeration.</b>
+/// This contrasts with 'enum_type', where the values are expected to
+/// <b>only</b> contain those defined as constants. <b>Declaring the
+/// enumeration.</b>
 ///\code
 ///   ETL_DECLARE_USER_TYPE(CompassDirection, int)
 ///   ETL_USER_TYPE(North, 0)
@@ -52,7 +52,8 @@ SOFTWARE.
 ///\code
 /// CompassDirection direction;          // Default construction.
 ///
-/// direction = CompassDirection::North; // Assignment from an enumeration constant;
+/// direction = CompassDirection::North; // Assignment from an enumeration
+/// constant;
 ///
 /// int value = int(direction);          // Explicit conversion to 'int'.
 /// int value = direction.get();
@@ -67,7 +68,8 @@ SOFTWARE.
 /// ++direction;                         // Manipulate the value;
 /// direction -= CompassDirection(20);
 ///
-/// direction = value;                   // Implicit conversion from 'int'. **** Compilation error ****
+/// direction = value;                   // Implicit conversion from 'int'. ****
+/// Compilation error ****
 ///
 ///\endcode
 ///\ingroup utilities
@@ -76,50 +78,133 @@ SOFTWARE.
 // The declaration of the structure.
 //*****************************************************************************
 #define ETL_DECLARE_USER_TYPE(TypeName, ValueType) \
-  struct TypeName \
-  { \
-    /* Non-volatile definitions.*/ \
-    typedef ValueType value_type; \
-    TypeName() {} \
-    TypeName(const TypeName &other) : value(other.value) {} \
-    TypeName& operator=(const TypeName &other) { value = other.value; return *this; } \
-    explicit TypeName(ValueType value_) : value(value_) {} \
-    operator ValueType() const { return value; } \
-    ValueType& get() { return value; } \
-    const ValueType& get() const { return value; } \
-    TypeName& operator ++() { ++value; return *this; } \
-    TypeName operator ++(int) { TypeName temp(*this); TypeName::operator ++(); return temp; } \
-    TypeName& operator --() { --value; return *this; } \
-    TypeName operator --(int) { TypeName temp(*this); TypeName::operator --(); return temp; } \
-    TypeName& operator +=(const ValueType& rhs) { value += rhs; return *this; } \
-    TypeName& operator -=(const ValueType& rhs) { value -= rhs; return *this; } \
-    TypeName& operator *=(const ValueType& rhs) { value *= rhs; return *this; } \
-    TypeName& operator /=(const ValueType& rhs) { value /= rhs; return *this; } \
-    TypeName& operator %=(const ValueType& rhs) { value %= rhs; return *this; } \
-    TypeName& operator &=(const ValueType& rhs) { value &= rhs; return *this; } \
-    TypeName& operator |=(const ValueType& rhs) { value |= rhs; return *this; } \
-    TypeName& operator ^=(const ValueType& rhs) { value ^= rhs; return *this; } \
-    TypeName& operator <<=(ValueType distance) { value <<= distance; return *this; } \
-    TypeName& operator >>=(ValueType distance) { value >>= distance; return *this; } \
-  private: \
-    ValueType value; \
-  public: \
-    enum enum_type \
+  struct TypeName                                  \
+  {                                                \
+    /* Non-volatile definitions.*/                 \
+    typedef ValueType value_type;                  \
+    TypeName() {}                                  \
+    TypeName(const TypeName& other)                \
+      : value(other.value)                         \
+    {                                              \
+    }                                              \
+    TypeName& operator=(const TypeName& other)     \
+    {                                              \
+      value = other.value;                         \
+      return *this;                                \
+    }                                              \
+    explicit TypeName(ValueType value_)            \
+      : value(value_)                              \
+    {                                              \
+    }                                              \
+    operator ValueType() const                     \
+    {                                              \
+      return value;                                \
+    }                                              \
+    ValueType& get()                               \
+    {                                              \
+      return value;                                \
+    }                                              \
+    const ValueType& get() const                   \
+    {                                              \
+      return value;                                \
+    }                                              \
+    TypeName& operator++()                         \
+    {                                              \
+      ++value;                                     \
+      return *this;                                \
+    }                                              \
+    TypeName operator++(int)                       \
+    {                                              \
+      TypeName temp(*this);                        \
+      TypeName::operator++();                      \
+      return temp;                                 \
+    }                                              \
+    TypeName& operator--()                         \
+    {                                              \
+      --value;                                     \
+      return *this;                                \
+    }                                              \
+    TypeName operator--(int)                       \
+    {                                              \
+      TypeName temp(*this);                        \
+      TypeName::operator--();                      \
+      return temp;                                 \
+    }                                              \
+    TypeName& operator+=(const ValueType& rhs)     \
+    {                                              \
+      value += rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator-=(const ValueType& rhs)     \
+    {                                              \
+      value -= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator*=(const ValueType& rhs)     \
+    {                                              \
+      value *= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator/=(const ValueType& rhs)     \
+    {                                              \
+      value /= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator%=(const ValueType& rhs)     \
+    {                                              \
+      value %= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator&=(const ValueType& rhs)     \
+    {                                              \
+      value &= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator|=(const ValueType& rhs)     \
+    {                                              \
+      value |= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator^=(const ValueType& rhs)     \
+    {                                              \
+      value ^= rhs;                                \
+      return *this;                                \
+    }                                              \
+    TypeName& operator<<=(ValueType distance)      \
+    {                                              \
+      value <<= distance;                          \
+      return *this;                                \
+    }                                              \
+    TypeName& operator>>=(ValueType distance)      \
+    {                                              \
+      value >>= distance;                          \
+      return *this;                                \
+    }                                              \
+                                                   \
+  private:                                         \
+                                                   \
+    ValueType value;                               \
+                                                   \
+  public:                                          \
+                                                   \
+    enum enum_type                                 \
     {
-
 //*****************************************************************************
 // The predefined constants.
 //*****************************************************************************
-#define ETL_USER_TYPE(enum_name, value) \
-      enum_name = value,
+#define ETL_USER_TYPE(enum_name, value) enum_name = value,
 
 //*****************************************************************************
 // The final section of the structure.
 //*****************************************************************************
-#define ETL_END_USER_TYPE(TypeName) \
-    }; \
-    TypeName(enum_type value_) : value(static_cast<value_type>(value_)) {} \
-  };
-
+#define ETL_END_USER_TYPE(TypeName)          \
+  }                                          \
+  ;                                          \
+  TypeName(enum_type value_)                 \
+    : value(static_cast<value_type>(value_)) \
+  {                                          \
+  }                                          \
+  }                                          \
+  ;
 
 #endif

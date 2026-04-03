@@ -38,9 +38,7 @@ namespace etl
   {
     struct last_spec
     {
-      ETL_CONSTEXPR explicit last_spec()
-      {
-      }
+      ETL_CONSTEXPR explicit last_spec() {}
     };
 
 #if ETL_USING_CPP17
@@ -48,5 +46,5 @@ namespace etl
 #else
     static ETL_CONSTANT last_spec last{};
 #endif
-  }
-}
+  } // namespace chrono
+} // namespace etl

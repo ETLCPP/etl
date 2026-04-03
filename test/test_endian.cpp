@@ -31,8 +31,8 @@ SOFTWARE.
 
 #include "etl/endianness.h"
 
-namespace 
-{		
+namespace
+{
   SUITE(test_endian)
   {
     //*************************************************************************
@@ -62,4 +62,4 @@ namespace
 #endif
     }
   }
-}
+} // namespace

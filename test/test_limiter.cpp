@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include "etl/limiter.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <math.h>
 
 namespace
@@ -43,35 +43,23 @@ namespace
 
   struct Compare
   {
-    bool operator ()(double lhs, double rhs) const
+    bool operator()(double lhs, double rhs) const
     {
       return fabs(lhs - rhs) < 0.1;
     }
   };
 
   //***********************************
-  const std::array<int, Size> input1 =
-  {
-    10, 11, 12, 13, 14, 15, 16, 17, 18, 19
-  };
+  const std::array<int, Size> input1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 
-  const std::array<int, Size> result1a =
-  {
-    13, 13, 13, 13, 14, 15, 16, 16, 16, 16
-  };
+  const std::array<int, Size> result1a = {13, 13, 13, 13, 14, 15, 16, 16, 16, 16};
 
   std::array<int, Size> output1;
 
   //***********************************
-  const std::array<double, Size> input2 =
-  {
-    10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0
-  };
+  const std::array<double, Size> input2 = {10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0};
 
-  const std::array<double, Size> result2a =
-  {
-    13.0, 13.0, 13.0, 13.0, 14.0, 15.0, 16.0, 16.0, 16.0, 16.0
-  };
+  const std::array<double, Size> result2a = {13.0, 13.0, 13.0, 13.0, 14.0, 15.0, 16.0, 16.0, 16.0, 16.0};
 
   std::array<double, Size> output2;
 
@@ -99,4 +87,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

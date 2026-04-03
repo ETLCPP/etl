@@ -55,7 +55,6 @@ namespace
       CHECK(type);
     }
 
-
     //*************************************************************************
     TEST(test_pod_vt)
     {
@@ -82,9 +81,24 @@ namespace
       size_t size;
       bool   type;
 
-      struct S1 { char a; char  b; char c; };
-      struct S2 { char a; short b; char c; };
-      struct S3 { int  a; short b; char c; };
+      struct S1
+      {
+        char a;
+        char b;
+        char c;
+      };
+      struct S2
+      {
+        char  a;
+        short b;
+        char  c;
+      };
+      struct S3
+      {
+        int   a;
+        short b;
+        char  c;
+      };
 
       size = etl::smallest_type<S1, S2, S3>::size;
       type = etl::is_same<S1, etl::smallest_type<S1, S2, S3>::type>::value;
@@ -102,15 +116,30 @@ namespace
     //*************************************************************************
     TEST(test_non_pod_vt)
     {
-      bool   type;
+      bool type;
 
-      struct S1 { char a; char  b; char c; };
-      struct S2 { char a; short b; char c; };
-      struct S3 { int  a; short b; char c; };
+      struct S1
+      {
+        char a;
+        char b;
+        char c;
+      };
+      struct S2
+      {
+        char  a;
+        short b;
+        char  c;
+      };
+      struct S3
+      {
+        int   a;
+        short b;
+        char  c;
+      };
 
 #if ETL_USING_CPP17
       size_t size;
-      
+
       size = etl::smallest_type_v<S1, S2, S3>;
       CHECK_EQUAL(sizeof(S1), size);
 #endif
@@ -318,7 +347,7 @@ namespace
       type = etl::is_same<uint_least32_t, etl::smallest_uint_for_value<UINT32_MAX>::type>::value;
       CHECK(type);
 
-      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value<uint64_t(UINT32_MAX) + 1>::type>::value;
+      type = etl::is_same< uint_least64_t, etl::smallest_uint_for_value<uint64_t(UINT32_MAX) + 1>::type>::value;
       CHECK(type);
 
       type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value<UINT64_MAX>::type>::value;
@@ -348,7 +377,7 @@ namespace
       type = etl::is_same<uint_least32_t, etl::smallest_uint_for_value_t<UINT32_MAX>>::value;
       CHECK(type);
 
-      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value_t<uint64_t(UINT32_MAX) + 1>>::value;
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value_t< uint64_t(UINT32_MAX) + 1>>::value;
       CHECK(type);
 
       type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value_t<UINT64_MAX>>::value;
@@ -393,10 +422,10 @@ namespace
       type = etl::is_same<int_least32_t, etl::smallest_int_for_value<INT32_MAX>::type>::value;
       CHECK(type);
 
-      type = etl::is_same<int_least64_t, etl::smallest_int_for_value<intmax_t(INT32_MIN) - 1>::type>::value;
+      type = etl::is_same< int_least64_t, etl::smallest_int_for_value<intmax_t(INT32_MIN) - 1>::type>::value;
       CHECK(type);
 
-      type = etl::is_same<int_least64_t, etl::smallest_int_for_value<intmax_t(INT32_MAX) + 1>::type>::value;
+      type = etl::is_same< int_least64_t, etl::smallest_int_for_value<intmax_t(INT32_MAX) + 1>::type>::value;
       CHECK(type);
 
       type = etl::is_same<int_least64_t, etl::smallest_int_for_value<INT64_MIN>::type>::value;
@@ -444,10 +473,10 @@ namespace
       type = etl::is_same<int_least32_t, etl::smallest_int_for_value_t<INT32_MAX>>::value;
       CHECK(type);
 
-      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<intmax_t(INT32_MIN) - 1>>::value;
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t< intmax_t(INT32_MIN) - 1>>::value;
       CHECK(type);
 
-      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<intmax_t(INT32_MAX) + 1>>::value;
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t< intmax_t(INT32_MAX) + 1>>::value;
       CHECK(type);
 
       type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<INT64_MIN>>::value;
@@ -457,4 +486,4 @@ namespace
       CHECK(type);
     }
   }
-}
+} // namespace

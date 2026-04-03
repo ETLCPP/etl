@@ -130,6 +130,29 @@ def update_library_properties(filename):
       f.write('\n')
 
 #------------------------------------------------------------------------------
+def update_zephyr_module():
+  print('')
+  print('Updating zephyr/module.yml')
+
+  zephyr_module = os.path.join(etl_dir, 'zephyr', 'module.yml')
+
+  with open(zephyr_module, 'r') as f:
+    text = f.read().splitlines()
+
+  search_purl = 'pkg:github/ETLCPP/etl@'
+
+  for i in range(len(text)):
+    if search_purl in text[i]:
+       idx = text[i].find(search_purl)
+       text[i] = text[i][:idx] + search_purl + full_version
+       print(text[i])
+
+  with open(zephyr_module, 'w') as f:
+    for line in text:
+      f.write(line)
+      f.write('\n')
+
+#------------------------------------------------------------------------------
 def update_versions():
   print('')
   print('Update Versions')
@@ -148,6 +171,8 @@ def update_versions():
   update_library_json(os.path.join(etl_dir,     'library.json'))
 
   update_library_properties(os.path.join(etl_dir,     'library.properties'))
+
+  update_zephyr_module()
 
 #------------------------------------------------------------------------------
 if __name__ == "__main__":

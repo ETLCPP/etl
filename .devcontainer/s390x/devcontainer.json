@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+  "name": "s390x Big Endian (Debian)",
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+      ],
+      "settings": {
+        "cmake.sourceDirectory": "${workspaceFolder}/test",
+        "cmake.configureArgs": [
+          "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/s390x/toolchain-s390x.cmake",
+          "-DBUILD_TESTS=ON",
+          "-DNO_STL=OFF",
+          "-DETL_CXX_STANDARD=17"
+        ],
+        "cmake.buildDirectory": "${workspaceFolder}/build-s390x",
+        "cmake.generator": "Ninja"
+      }
+    }
+  },
+  "remoteUser": "root"
+}

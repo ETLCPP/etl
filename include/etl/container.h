@@ -37,4 +37,3 @@ SOFTWARE.
 #include <stddef.h>
 
 #endif
-

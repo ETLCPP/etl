@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2022 John Wellbelove
 
@@ -31,8 +31,8 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/platform.h"
-#include "etl/macros.h"
 #include "etl/char_traits.h"
+#include "etl/macros.h"
 
 #include <algorithm>
 
@@ -41,21 +41,20 @@ namespace
   SUITE(test_macros)
   {
     template <typename T>
-    bool CheckEqualStrings(const T * expected, const T * actual)
+    bool CheckEqualStrings(const T* expected, const T* actual)
     {
-      return (etl::strlen(expected) == etl::strlen(actual)) &&
-             std::equal(expected, expected + etl::strlen(expected), actual);
+      return (etl::strlen(expected) == etl::strlen(actual)) && std::equal(expected, expected + etl::strlen(expected), actual);
     }
 
     TEST(test_macros)
     {
       CHECK_TRUE(CheckEqualStrings("A, B, C, D, E, F", ETL_STRINGIFY(A, B, C, D, E, F)));
 
-      CHECK_ARRAY_EQUAL( "ABCDEF",  ETL_STRING(ABCDEF),      etl::strlen("ABCDEF"));
-      CHECK_ARRAY_EQUAL(L"ABCDEF",  ETL_WIDE_STRING(ABCDEF), etl::strlen(L"ABCDEF"));
-      CHECK_ARRAY_EQUAL(u8"ABCDEF", ETL_U8_STRING(ABCDEF),   etl::strlen(u8"ABCDEF"));
-      CHECK_ARRAY_EQUAL(u"ABCDEF",  ETL_U16_STRING(ABCDEF),  etl::strlen(u"ABCDEF"));
-      CHECK_ARRAY_EQUAL(U"ABCDEF",  ETL_U32_STRING(ABCDEF),  etl::strlen(U"ABCDEF"));
+      CHECK_ARRAY_EQUAL("ABCDEF", ETL_STRING(ABCDEF), etl::strlen("ABCDEF"));
+      CHECK_ARRAY_EQUAL(L"ABCDEF", ETL_WIDE_STRING(ABCDEF), etl::strlen(L"ABCDEF"));
+      CHECK_ARRAY_EQUAL(u8"ABCDEF", ETL_U8_STRING(ABCDEF), etl::strlen(u8"ABCDEF"));
+      CHECK_ARRAY_EQUAL(u"ABCDEF", ETL_U16_STRING(ABCDEF), etl::strlen(u"ABCDEF"));
+      CHECK_ARRAY_EQUAL(U"ABCDEF", ETL_U32_STRING(ABCDEF), etl::strlen(U"ABCDEF"));
     }
   }
-}
+} // namespace

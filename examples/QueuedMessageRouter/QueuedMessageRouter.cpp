@@ -1,6 +1,6 @@
 
-#include "etl/queue.h"
 #include "etl/message_router.h"
+#include "etl/queue.h"
 
 #include <iostream>
 #include <string>
@@ -81,7 +81,7 @@ public:
     while (!queue.empty())
     {
       message_packet& packet = queue.front();
-      etl::imessage& msg = packet.get();
+      etl::imessage&  msg    = packet.get();
       std::cout << "Processing message " << int(msg.get_message_id()) << std::endl;
 
       // Call the base class's receive function.
@@ -146,4 +146,3 @@ int main()
 
   return 0;
 }
-

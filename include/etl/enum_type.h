@@ -36,9 +36,10 @@ SOFTWARE.
 ///\defgroup enum_type enum_type
 /// Smart enumerations.<br>
 /// A method of declaring enumerations that allow grouping within a structure.
-/// Avoids the problem of clashing names that can occur with standard enumerations.
-/// One way to think of the code is as a type with built-in constants and an optional conversion to a string.<br><br>
-/// <b>Declaring the enumeration.</b>
+/// Avoids the problem of clashing names that can occur with standard
+/// enumerations. One way to think of the code is as a type with built-in
+/// constants and an optional conversion to a string.<br><br> <b>Declaring the
+/// enumeration.</b>
 ///\code
 /// struct CompassDirection
 /// {
@@ -62,55 +63,78 @@ SOFTWARE.
 ///\code
 /// CompassDirection direction;          // Default construction.
 ///
-/// direction = CompassDirection::North; // Assignment from an enumeration constant;
+/// direction = CompassDirection::North; // Assignment from an enumeration
+/// constant;
 ///
 /// int value = direction;               // Implicit conversion to 'int'.
 ///
 /// direction = CompassDirection(value); // Explicit conversion from 'int'.
 ///
-/// direction = CompassDirection(3);     // Explicit conversion from an invalid value. This unfortunately cannot be avoided. Caveat emptor!
+/// direction = CompassDirection(3);     // Explicit conversion from an invalid
+/// value. This unfortunately cannot be avoided. Caveat emptor!
 ///
-/// direction = value;                   // Implicit conversion from 'int'. **** Compilation error ****
+/// direction = value;                   // Implicit conversion from 'int'. ****
+/// Compilation error ****
 ///
-/// std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
+/// std::cout << "Direction = " << direction.c_str(); // Prints "Direction =
+/// North"
 ///\endcode
-/// If a conversion to a string is not required then the 'ETL_ENUM_TYPE' declaration may be omitted.
-/// In that case the c_str() function will return a "?". This will also be the case for any
-/// enumeration value that does not have an ETL_ENUM_TYPE entry.
+/// If a conversion to a string is not required then the 'ETL_ENUM_TYPE'
+/// declaration may be omitted. In that case the c_str() function will return a
+/// "?". This will also be the case for any enumeration value that does not have
+/// an ETL_ENUM_TYPE entry.
 ///\ingroup utilities
 
 //*****************************************************************************
-// The declaration of the member functions and the first section of the 'c_str' function.
+// The declaration of the member functions and the first section of the 'c_str'
+// function.
 //*****************************************************************************
-#define ETL_DECLARE_ENUM_TYPE(TypeName, ValueType) \
-  typedef ValueType value_type; \
-	ETL_CONSTEXPR TypeName() : value(static_cast<enum_type>(value_type())) {} \
-	ETL_CONSTEXPR TypeName(enum_type value_) : value(value_) {} \
-  ETL_CONSTEXPR explicit TypeName(value_type value_) : value(static_cast<enum_type>(value_)) {} \
-	ETL_CONSTEXPR operator value_type() const {return static_cast<value_type>(value);} \
-  ETL_CONSTEXPR value_type get_value() const {return static_cast<value_type>(value);} \
-  ETL_CONSTEXPR enum_type get_enum() const {return value;} \
-  ETL_CONSTEXPR14 const char* c_str() const \
-  { \
-    switch (value) \
+#define ETL_DECLARE_ENUM_TYPE(TypeName, ValueType)   \
+  typedef ValueType value_type;                      \
+  ETL_CONSTEXPR     TypeName()                       \
+    : value(static_cast<enum_type>(value_type()))    \
+  {                                                  \
+  }                                                  \
+  ETL_CONSTEXPR TypeName(enum_type value_)           \
+    : value(value_)                                  \
+  {                                                  \
+  }                                                  \
+  ETL_CONSTEXPR explicit TypeName(value_type value_) \
+    : value(static_cast<enum_type>(value_))          \
+  {                                                  \
+  }                                                  \
+  ETL_CONSTEXPR operator value_type() const          \
+  {                                                  \
+    return static_cast<value_type>(value);           \
+  }                                                  \
+  ETL_CONSTEXPR value_type get_value() const         \
+  {                                                  \
+    return static_cast<value_type>(value);           \
+  }                                                  \
+  ETL_CONSTEXPR enum_type get_enum() const           \
+  {                                                  \
+    return value;                                    \
+  }                                                  \
+  ETL_CONSTEXPR14 const char* c_str() const          \
+  {                                                  \
+    switch (value)                                   \
     {
-
 //*****************************************************************************
 // A case in the 'c_str' function's switch statement.
 //*****************************************************************************
 #define ETL_ENUM_TYPE(value, name) \
-      case value: \
-        return name; \
+  case value: return name;
 
 //*****************************************************************************
 // The final section of the 'c_str' function and the value declaration.
 //*****************************************************************************
 #define ETL_END_ENUM_TYPE \
-      default: \
-        return "?"; \
-    } \
-  } \
-private: \
-  enum_type value;
+  default: return "?";    \
+    }                     \
+    }                     \
+                          \
+  private:                \
+                          \
+    enum_type value;
 
 #endif

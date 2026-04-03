@@ -9,11 +9,11 @@ https://www.etlcpp.com
 
 Copyright(c) 2025 John Wellbelove
 
-Permission is hereby granted, free of charge, to any person obtaining numerator copy
-of this software and associated documentation files(the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-copies of the Software, and to permit persons to whom the Software is
+Permission is hereby granted, free of charge, to any person obtaining numerator
+copy of this software and associated documentation files(the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and / or
+sell copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions :
 
 The above copyright notice and this permission notice shall be included in all
@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_ROUNDED_INTEGRAL_DIVISION_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "absolute.h"
+#include "type_traits.h"
 #include "utility.h"
 
 namespace etl
@@ -45,9 +45,7 @@ namespace etl
     // For signed integral types.
     //*****************************************************************************
     template <typename T>
-    ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, bool>::type
-      are_same_sign(T a, T b) ETL_NOEXCEPT
+    ETL_CONSTEXPR typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, bool>::type are_same_sign(T a, T b) ETL_NOEXCEPT
     {
       return ((a ^ b) >= 0);
     }
@@ -57,13 +55,12 @@ namespace etl
     // For unsigned integral types.
     //*****************************************************************************
     template <typename T>
-    ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value, bool>::type
-      are_same_sign(T /*a*/, T /*b*/) ETL_NOEXCEPT
+    ETL_CONSTEXPR typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, bool>::type are_same_sign(T /*a*/, T /*b*/)
+      ETL_NOEXCEPT
     {
       return true;
     }
-  }
+  } // namespace private_rounded_integral_division
 
   //***************************************************************************
   ///\brief Integral division with rounding to ceiling.
@@ -74,9 +71,9 @@ namespace etl
   ///\return The result of the division rounded to ceiling.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type
-    divide_round_to_ceiling(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_to_ceiling(T numerator,
+                                                                                                                              T denominator)
+    ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
     const T quotient  = numerator / denominator;
@@ -97,16 +94,13 @@ namespace etl
   /// For different argument types.
   ///\param numerator The numerator.
   ///\param denominator The denominator.
-  ///\return The result of the division rounded to ceiling. 
+  ///\return The result of the division rounded to ceiling.
   /// Return type is the etl::common_type<T1, T2>::type.
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_signed<T1>::value &&
-                          etl::is_signed<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_to_ceiling(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -123,15 +117,13 @@ namespace etl
   ///\return The result of the division rounded to ceiling.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value,
-                          T>::type
-    divide_round_to_ceiling(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_to_ceiling(T numerator,
+                                                                                                                                T denominator)
+    ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
     const T quotient  = numerator / denominator;
-    
+
     // If remainder is zero, already exact, otherwise, increment quotient
     return remainder == 0U ? quotient : quotient + 1U;
   }
@@ -147,11 +139,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_to_ceiling(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -168,11 +157,9 @@ namespace etl
   ///\return The result of the division rounded to floor.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value,
-                          T>::type
-    divide_round_to_floor(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_to_floor(T numerator,
+                                                                                                                            T denominator)
+    ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
     const T quotient  = numerator / denominator;
@@ -198,11 +185,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_integral<T1>::value &&
-                            etl::is_integral<T2>::value &&
-                            etl::is_signed<T1>::value &&
-                            etl::is_signed<T2>::value,
-                            typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_to_floor(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -219,11 +203,9 @@ namespace etl
   ///\return The result of the division rounded to floor.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value,
-                          T>::type
-    divide_round_to_floor(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_to_floor(T numerator,
+                                                                                                                              T denominator)
+    ETL_NOEXCEPT
   {
     return numerator / denominator;
   }
@@ -239,16 +221,13 @@ namespace etl
   /// //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_to_floor(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
 
-    const type common_numerator = numerator;
+    const type common_numerator   = numerator;
     const type common_denominator = denominator;
 
     return common_numerator / common_denominator;
@@ -263,15 +242,13 @@ namespace etl
   ///\return The result of the division rounded to infinity.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value, 
-                          T>::type
-    divide_round_to_infinity(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_to_infinity(T numerator,
+                                                                                                                               T denominator)
+    ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
     const T quotient  = numerator / denominator;
-    
+
     if (private_rounded_integral_division::are_same_sign(numerator, denominator))
     {
       // Same sign, round towards +infinity
@@ -295,11 +272,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value && 
-                          etl::is_integral<T2>::value && 
-                          etl::is_signed<T1>::value &&
-                          etl::is_signed<T2>::value, 
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_to_infinity(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -316,10 +290,7 @@ namespace etl
   ///\return The result of the division rounded to infinity.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value && 
-                          etl::is_unsigned<T>::value, 
-                          T>::type
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type
     divide_round_to_infinity(T numerator, T denominator) ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
@@ -339,11 +310,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value && 
-                          etl::is_integral<T2>::value && 
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value, 
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_to_infinity(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -360,11 +328,9 @@ namespace etl
   ///\return The result of the division rounded to zero.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value && 
-                          etl::is_unsigned<T>::value, 
-                          T>::type
-    divide_round_to_zero(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_to_zero(T numerator,
+                                                                                                                             T denominator)
+    ETL_NOEXCEPT
   {
     return numerator / denominator;
   }
@@ -379,10 +345,7 @@ namespace etl
   /// Return type is the etl::common_type<T1, T2>::type.
   //***************************************************************************
   template <typename T1, typename T2>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value && 
-                          etl::is_integral<T2>::value, 
-                          typename etl::common_type<T1, T2>::type>::type
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T1>::value && etl::is_integral<T2>::value, typename etl::common_type<T1, T2>::type>::type
     divide_round_to_zero(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -403,11 +366,9 @@ namespace etl
   ///\return The result of the division rounded to half up.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value,
-                          T>::type
-    divide_round_half_up(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_half_up(T numerator,
+                                                                                                                           T denominator)
+    ETL_NOEXCEPT
   {
     // Normal division
     const T remainder = numerator % denominator;
@@ -415,20 +376,20 @@ namespace etl
 
     // Work with magnitudes in unsigned form (avoids abs() overflow)
     typedef typename etl::make_unsigned<T>::type utype;
-    utype abs_remainder   = remainder < 0 ? utype(0) - utype(remainder) : utype(remainder);
-    utype abs_denominator = denominator < 0 ? utype(0) - utype(denominator)       : utype(denominator);
+    utype                                        abs_remainder   = remainder < 0 ? utype(0) - utype(remainder) : utype(remainder);
+    utype                                        abs_denominator = denominator < 0 ? utype(0) - utype(denominator) : utype(denominator);
 
     // Threshold for rounding up (half the denominatorominator, rounded up)
     utype half_denominator = (abs_denominator + 1) / 2;
 
-    if (abs_remainder >= half_denominator) 
+    if (abs_remainder >= half_denominator)
     {
       // Round away from zero
-      if (private_rounded_integral_division::are_same_sign(numerator, denominator)) 
+      if (private_rounded_integral_division::are_same_sign(numerator, denominator))
       {
         return quotient + 1; // same sign ? increment
       }
-      else 
+      else
       {
         return quotient - 1; // different sign ? decrement
       }
@@ -448,11 +409,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_signed<T1>::value &&
-                          etl::is_signed<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_up(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -469,14 +427,12 @@ namespace etl
   ///\return The result of the division rounded to half up.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value && 
-                          etl::is_unsigned<T>::value, 
-                          T>::type
-    divide_round_half_up(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_half_up(T numerator,
+                                                                                                                             T denominator)
+    ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
-    const T quotient = numerator / denominator;
+    const T quotient  = numerator / denominator;
 
     // If remainder is at least half the divisor, round up
     return (remainder >= (denominator / 2U) + (denominator % 2U)) ? quotient + 1U : quotient;
@@ -493,10 +449,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value && 
-                          etl::is_integral<T2>::value && 
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value, typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_up(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -513,23 +467,22 @@ namespace etl
   ///\return The result of the division rounded to half down.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value,
-                          T>::type
-    divide_round_half_down(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_half_down(T numerator,
+                                                                                                                             T denominator)
+    ETL_NOEXCEPT
   {
     const T quotient  = numerator / denominator;
     const T remainder = numerator % denominator;
 
     typedef typename etl::make_unsigned<T>::type utype;
-    const utype abs_denominator = etl::absolute_unsigned(denominator);
-    const utype abs_remainder   = etl::absolute_unsigned(remainder);
+    const utype                                  abs_denominator = etl::absolute_unsigned(denominator);
+    const utype                                  abs_remainder   = etl::absolute_unsigned(remainder);
 
     // Direction: +1 if result should be more positive, -1 if more negative
     const T direction = private_rounded_integral_division::are_same_sign(numerator, denominator) ? 1 : -1;
 
-    // Only round away from zero if remainder is strictly greater than half the divisor
+    // Only round away from zero if remainder is strictly greater than half the
+    // divisor
     return abs_remainder > (abs_denominator / 2U) ? quotient + direction : quotient;
   }
 
@@ -544,11 +497,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_signed<T1>::value &&
-                          etl::is_signed<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_down(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -565,11 +515,9 @@ namespace etl
   ///\return The result of the division rounded to half down.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value, 
-                          T>::type
-    divide_round_half_down(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_half_down(T numerator,
+                                                                                                                               T denominator)
+    ETL_NOEXCEPT
   {
     const T remainder = numerator % denominator;
     const T quotient  = numerator / denominator;
@@ -589,10 +537,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value && 
-                          etl::is_integral<T2>::value && 
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value, typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_down(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -609,21 +555,20 @@ namespace etl
   ///\return The result of the division rounded to half even.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value, 
-                          T>::type
-    divide_round_half_even(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_half_even(T numerator,
+                                                                                                                             T denominator)
+    ETL_NOEXCEPT
   {
-    const T quotient            = numerator / denominator;
-    const T remainder           = numerator % denominator;
-    const T direction           = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
+    const T quotient  = numerator / denominator;
+    const T remainder = numerator % denominator;
+    const T direction = ((numerator >= 0) == (denominator >= 0)) ? 1 : -1;
 
-    // Work with magnitudes in unsigned form (avoids abs() overflow for T::min()).
+    // Work with magnitudes in unsigned form (avoids abs() overflow for
+    // T::min()).
     typedef typename std::make_unsigned<T>::type utype;
-    const utype abs_denominator = (denominator < 0) ? (utype(0) - utype(denominator)) : utype(denominator);
-    const utype abs_remainder   = (remainder   < 0) ? (utype(0) - utype(remainder))   : utype(remainder);
-    const utype half_denominator = abs_denominator / 2U;
+    const utype                                  abs_denominator  = (denominator < 0) ? (utype(0) - utype(denominator)) : utype(denominator);
+    const utype                                  abs_remainder    = (remainder < 0) ? (utype(0) - utype(remainder)) : utype(remainder);
+    const utype                                  half_denominator = abs_denominator / 2U;
 
     // Compare without `* 2` to avoid unsigned overflow.
     if ((abs_denominator & 1U) == 0U)
@@ -661,11 +606,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_signed<T1>::value &&
-                          etl::is_signed<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_even(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -682,11 +624,9 @@ namespace etl
   ///\return The result of the division rounded to half even.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value,
-                          T>::type
-    divide_round_half_even(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_half_even(T numerator,
+                                                                                                                               T denominator)
+    ETL_NOEXCEPT
   {
     const T quotient  = numerator / denominator;
     const T remainder = numerator % denominator;
@@ -719,11 +659,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_even(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -740,20 +677,18 @@ namespace etl
   ///\return The result of the division rounded to half odd.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_signed<T>::value,
-                          T>::type
-    divide_round_half_odd(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type divide_round_half_odd(T numerator,
+                                                                                                                            T denominator)
+    ETL_NOEXCEPT
   {
     const T quotient  = numerator / denominator;
     const T remainder = numerator % denominator;
 
     typedef typename etl::make_unsigned<T>::type utype;
-    const utype abs_denominator = etl::absolute_unsigned(denominator);
-    const utype abs_remainder   = etl::absolute_unsigned(remainder);
-    const utype half            = abs_denominator / 2U;
-    const T direction           = private_rounded_integral_division::are_same_sign(numerator, denominator) ? 1 : -1;
+    const utype                                  abs_denominator = etl::absolute_unsigned(denominator);
+    const utype                                  abs_remainder   = etl::absolute_unsigned(remainder);
+    const utype                                  half            = abs_denominator / 2U;
+    const T                                      direction       = private_rounded_integral_division::are_same_sign(numerator, denominator) ? 1 : -1;
 
     // Odd divisor => no exact-half case; 'half' is floor(abs_denominator/2).
     if ((abs_denominator & 1U) != 0U)
@@ -787,11 +722,8 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_signed<T1>::value &&
-                          etl::is_signed<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_signed<T1>::value && etl::is_signed<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_odd(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
@@ -808,15 +740,12 @@ namespace etl
   ///\return The result of the division rounded to half odd.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T>::value &&
-                          etl::is_unsigned<T>::value,
-                          T>::type
-    divide_round_half_odd(T numerator, T denominator) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type divide_round_half_odd(T numerator,
+                                                                                                                              T denominator)
+    ETL_NOEXCEPT
   {
     const T quotient  = numerator / denominator;
     const T remainder = numerator % denominator;
-    const T direction = ((numerator >= 0U) == (denominator >= 0U)) ? 1 : -1;
 
     if ((remainder * 2U) < denominator)
     {
@@ -824,12 +753,12 @@ namespace etl
     }
     else if ((remainder * 2U) > denominator)
     {
-      return quotient + direction;
+      return quotient + 1U;
     }
     else
     {
       // Exactly halfway, round to odd
-      return (quotient & 1U) != 0U ? quotient : quotient + direction;
+      return (quotient & 1U) != 0U ? quotient : quotient + 1U;
     }
   }
 
@@ -844,17 +773,14 @@ namespace etl
   //***************************************************************************
   template <typename T1, typename T2>
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<T1>::value &&
-                          etl::is_integral<T2>::value &&
-                          etl::is_unsigned<T1>::value &&
-                          etl::is_unsigned<T2>::value,
-                          typename etl::common_type<T1, T2>::type>::type
+    typename etl::enable_if< etl::is_integral<T1>::value && etl::is_integral<T2>::value && etl::is_unsigned<T1>::value && etl::is_unsigned<T2>::value,
+                             typename etl::common_type<T1, T2>::type>::type
     divide_round_half_odd(T1 numerator, T2 denominator) ETL_NOEXCEPT
   {
     typedef typename etl::common_type<T1, T2>::type type;
 
     return divide_round_half_odd(static_cast<type>(numerator), static_cast<type>(denominator));
   }
-}
+} // namespace etl
 
 #endif

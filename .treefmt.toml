@@ -1,0 +1,45 @@
+[global]
+excludes = [
+  "**/Doxyfile",
+  "**/Makefile",
+  "*.*-format",
+  "*.S",
+  "*.cmm",
+  "*.css",
+  "*.dld",
+  "*.gdb",
+  "*.gif",
+  "*.gitignore",
+  "*.html",
+  "*.ini",
+  "*.josh",
+  "*.json",
+  "*.md",
+  "*.png",
+  "*.puml",
+  "*.py",
+  "*.rb",
+  "*.rst",
+  "*.s",
+  "*.sh",
+  "*.spec",
+  "*.toml",
+  "*.txt",
+  "*.yaml",
+  "*.yml",
+  "docker/**",
+  "temp/**",
+  "scripts/clang-format-wrapper",
+  "include/etl/generators/**",
+  "include/etl/private/*_cpp03.h",
+  "subprojects/**",
+  "test/UnitTest++/**",
+  "test/Deprecated/**",
+  "test/Performance/**",
+  "test/temp/**"
+]
+
+[formatter.cpp]
+command = "scripts/clang-format-wrapper"
+options = [ "-i", "--style=file" ]
+includes = [ "*.c", "*.cc", "*.cpp", "*.h", "*.hh", "*.hpp" ]

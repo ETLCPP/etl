@@ -28,8 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <thread>
 #include <chrono>
+#include <iostream>
+#include <random>
+#include <thread>
 #include <vector>
 
 #include "etl/bip_buffer_spsc_atomic.h"
@@ -38,11 +40,11 @@ SOFTWARE.
 
 #if ETL_HAS_ATOMIC
 
-#if defined(ETL_TARGET_OS_WINDOWS)
-  #include <Windows.h>
-#endif
+  #if defined(ETL_TARGET_OS_WINDOWS)
+    #include <Windows.h>
+  #endif
 
-#define REALTIME_TEST 0
+  #define REALTIME_TEST 0
 
 namespace
 {
@@ -61,7 +63,7 @@ namespace
     TEST(test_size_write_read)
     {
       etl::bip_buffer_spsc_atomic<int, 5> stream;
-      etl::ibip_buffer_spsc_atomic<int>& istream = stream;
+      etl::ibip_buffer_spsc_atomic<int>&  istream = stream;
 
       // Verify empty buffer
       CHECK_EQUAL(0U, stream.size());
@@ -169,50 +171,50 @@ namespace
     //*************************************************************************
     TEST(test_optimal_write)
     {
-        etl::bip_buffer_spsc_atomic<int, 5> stream;
-        etl::ibip_buffer_spsc_atomic<int>& istream = stream;
+      etl::bip_buffer_spsc_atomic<int, 5> stream;
+      etl::ibip_buffer_spsc_atomic<int>&  istream = stream;
 
-        // Prepare buffer for bipartite split
-        auto writer = istream.write_reserve_optimal();
-        CHECK_EQUAL(5U, writer.size());
-        writer[0] = 1;
-        writer[1] = 2;
-        writer[2] = 3;
-        writer[3] = 4;
-        istream.write_commit(writer.subspan(0U, 4U)); // 1 2 3 4 *
+      // Prepare buffer for bipartite split
+      auto writer = istream.write_reserve_optimal();
+      CHECK_EQUAL(5U, writer.size());
+      writer[0] = 1;
+      writer[1] = 2;
+      writer[2] = 3;
+      writer[3] = 4;
+      istream.write_commit(writer.subspan(0U, 4U)); // 1 2 3 4 *
 
-        auto reader = istream.read_reserve(3U);
-        istream.read_commit(reader); // * * * 4 *
-        CHECK_EQUAL(1U, stream.size());
-        CHECK_EQUAL(2U, stream.available());
+      auto reader = istream.read_reserve(3U);
+      istream.read_commit(reader); // * * * 4 *
+      CHECK_EQUAL(1U, stream.size());
+      CHECK_EQUAL(2U, stream.available());
 
-        // Write to remaining linear area
-        writer = istream.write_reserve_optimal();
-        CHECK_EQUAL(1U, writer.size());
-        writer[0] = 5;
+      // Write to remaining linear area
+      writer = istream.write_reserve_optimal();
+      CHECK_EQUAL(1U, writer.size());
+      writer[0] = 5;
 
-        istream.write_commit(writer); // * * * 4 5
+      istream.write_commit(writer); // * * * 4 5
 
-        // Read to capacity
-        reader = istream.read_reserve();
-        CHECK_EQUAL(2U, reader.size());
-        CHECK_EQUAL(4, reader[0]);
-        CHECK_EQUAL(5, reader[1]);
+      // Read to capacity
+      reader = istream.read_reserve();
+      CHECK_EQUAL(2U, reader.size());
+      CHECK_EQUAL(4, reader[0]);
+      CHECK_EQUAL(5, reader[1]);
 
-        istream.read_commit(reader); // * * * * *
+      istream.read_commit(reader); // * * * * *
 
-        // Verify empty buffer
-        CHECK_EQUAL(0U, stream.size());
-        CHECK(stream.empty());
-        CHECK((stream.max_size() / 2U) <= stream.available());
-        CHECK(stream.available() <= stream.max_size());
+      // Verify empty buffer
+      CHECK_EQUAL(0U, stream.size());
+      CHECK(stream.empty());
+      CHECK((stream.max_size() / 2U) <= stream.available());
+      CHECK(stream.available() <= stream.max_size());
     }
 
     //*************************************************************************
     TEST(test_clear)
     {
       etl::bip_buffer_spsc_atomic<int, 5> stream;
-      etl::ibip_buffer_spsc_atomic<int>& istream = stream;
+      etl::ibip_buffer_spsc_atomic<int>&  istream = stream;
 
       CHECK(stream.empty());
 
@@ -225,7 +227,8 @@ namespace
       istream.clear();
       CHECK(stream.empty());
 
-      // Repeat to see that clear() resets the internal state completely and correctly
+      // Repeat to see that clear() resets the internal state completely and
+      // correctly
       writer = istream.write_reserve(istream.capacity());
       // data is committed without set to valid value (it won't be read anyway)
       istream.write_commit(writer);
@@ -239,7 +242,7 @@ namespace
     TEST(test_partial_commits)
     {
       etl::bip_buffer_spsc_atomic<int, 5> stream;
-      etl::ibip_buffer_spsc_atomic<int>& istream = stream;
+      etl::ibip_buffer_spsc_atomic<int>&  istream = stream;
 
       // Write reserve available
       auto writer_1 = istream.write_reserve(istream.capacity());
@@ -260,7 +263,8 @@ namespace
       CHECK_NO_THROW(istream.write_commit(writer_1.subspan(0U, 4U))); // 1 2 3 4 *
       CHECK_EQUAL(4U, stream.size());
 
-      // Can only commit once for each reserve (provided they don't cover a valid area)
+      // Can only commit once for each reserve (provided they don't cover a
+      // valid area)
       CHECK_THROW(istream.write_commit(writer_1), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.write_commit(writer_1.subspan(0U, 4U)), etl::bip_buffer_reserve_invalid);
 
@@ -280,7 +284,8 @@ namespace
       CHECK_NO_THROW(istream.read_commit(reader_1.subspan(0U, 3U))); // * * * 4 *
       CHECK_EQUAL(1U, stream.size());
 
-      // Can only commit once for each reserve (provided they don't cover a valid area)
+      // Can only commit once for each reserve (provided they don't cover a
+      // valid area)
       CHECK_THROW(istream.read_commit(reader_1), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.read_commit(reader_1.subspan(0U, 3U)), etl::bip_buffer_reserve_invalid);
 
@@ -297,7 +302,8 @@ namespace
       // the reservation asked for the largest consecutive block,
       // which resulted in a wraparound span to be allocated
 
-      // Can only commit once for each reserve (provided they don't cover a valid area)
+      // Can only commit once for each reserve (provided they don't cover a
+      // valid area)
       CHECK_THROW(istream.write_commit(writer_1), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.write_commit(writer_2), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.write_commit(writer_2.subspan(0U, 1U)), etl::bip_buffer_reserve_invalid);
@@ -311,7 +317,8 @@ namespace
       CHECK_NO_THROW(istream.read_commit(reader_2)); // 5 * * * *
       CHECK_EQUAL(1U, stream.size());
 
-      // Can only commit once for each reserve (provided they don't cover a valid area)
+      // Can only commit once for each reserve (provided they don't cover a
+      // valid area)
       CHECK_THROW(istream.read_commit(reader_1), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.read_commit(reader_2), etl::bip_buffer_reserve_invalid);
 
@@ -324,7 +331,8 @@ namespace
       CHECK_NO_THROW(istream.read_commit(reader_3)); // * * * * *
       CHECK_EQUAL(0U, stream.size());
 
-      // Can only commit once for each reserve (provided they don't cover a valid area)
+      // Can only commit once for each reserve (provided they don't cover a
+      // valid area)
       CHECK_THROW(istream.read_commit(reader_1), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.read_commit(reader_2), etl::bip_buffer_reserve_invalid);
       CHECK_THROW(istream.read_commit(reader_3), etl::bip_buffer_reserve_invalid);
@@ -333,8 +341,130 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
-    #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+    TEST(test_optimal_write_issue_1276)
+    {
+      etl::bip_buffer_spsc_atomic<char, 5> stream;
+      etl::ibip_buffer_spsc_atomic<char>&  istream = stream;
+
+      // 1. Make all `read`, `write` and `last` in the end of the buffer.
+      {
+        const auto writer = istream.write_reserve_optimal(5);
+        CHECK_EQUAL(5U, writer.size());
+        writer[0] = '0';
+        writer[1] = '1';
+        writer[2] = '2';
+        writer[3] = '3';
+        writer[4] = '4';
+        CHECK_NO_THROW(istream.write_commit(writer)); // [0 1 2 3 4]
+        const auto reader = istream.read_reserve();
+        CHECK_EQUAL(5U, reader.size());
+        CHECK_NO_THROW(istream.read_commit(reader)); //  * * * * *[]
+      }
+      // 2. Write & read 4 bytes.
+      {
+        const auto writer = istream.write_reserve_optimal(4);
+        CHECK_EQUAL(4U, writer.size());
+        writer[0] = '5';
+        writer[1] = '6';
+        writer[2] = '7';
+        writer[3] = '8';
+        CHECK_NO_THROW(istream.write_commit(writer.subspan(0U, 4U))); // 5 6 7 8] *[
+
+        const auto reader = istream.read_reserve();
+        CHECK_EQUAL(4U, reader.size());
+        CHECK_EQUAL('5', reader[0]);
+        CHECK_EQUAL('6', reader[1]);
+        CHECK_EQUAL('7', reader[2]);
+        CHECK_EQUAL('8', reader[3]);
+        CHECK_NO_THROW(istream.read_commit(reader)); // * * * *[]*
+      }
+      // 3. Write and read 2 bytes.
+      {
+        const auto writer = istream.write_reserve_optimal(2);
+        CHECK_EQUAL(3U, writer.size());
+        writer[0] = '9';
+        writer[1] = 'A';
+        CHECK_NO_THROW(istream.write_commit(writer.subspan(0, 2))); // 9 A]* *[*
+
+        const auto reader = istream.read_reserve();
+        CHECK_EQUAL(2U, reader.size());
+        CHECK_EQUAL('9', reader[0]);
+        CHECK_EQUAL('A', reader[1]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_write_random_back_pressure)
+    {
+      // Deliberately seeded with fixed number, so that if it fails then always
+      // in the same way.
+      std::mt19937 mte(123);
+
+      constexpr size_t                    N = 256;
+      etl::bip_buffer_spsc_atomic<int, N> stream;
+      etl::ibip_buffer_spsc_atomic<int>&  istream = stream;
+
+      auto makeRandomNumber = [&mte](const size_t n) -> size_t
+      {
+        return mte() % n;
+      };
+
+      auto verifyIota = [&](const etl::span<int>& seq)
+      {
+        if (!seq.empty())
+        {
+          auto prev = seq[0];
+          for (auto i = 1U; i < seq.size(); ++i)
+          {
+            const auto curr = seq[i];
+            if (prev > curr)
+            {
+              CHECK(prev <= curr);
+              std::cerr << "prev(" << prev << ") should not be bigger than curr(" << curr << ")!\n";
+            }
+            prev = curr;
+          }
+        }
+      };
+
+      const auto all = istream.write_reserve(N);
+      CHECK_EQUAL(N, all.size());
+      std::fill_n(all.begin(), all.size(), 0);
+
+      int iota = 0;
+      // Loop writing a bit more than reading.
+      // 10K iterations is enough to detect 2 failures.
+      for (int i = 0; i < 10000; ++i)
+      {
+        // Write [0...N/16] chunks - on average N/32.
+        {
+          const size_t toWrite = makeRandomNumber(N / 16 + 1);
+          const auto   reserve = istream.write_reserve(toWrite);
+          if (reserve.size() >= toWrite)
+          {
+            ++iota;
+            const auto written = makeRandomNumber(toWrite + 1);
+            std::fill_n(reserve.begin(), written, iota);
+            istream.write_commit(reserve.first(written));
+            verifyIota(reserve.first(written));
+          }
+        }
+
+        // Read a bit less [0...N/17] chunks - on average N/34.
+        if (const size_t toRead = makeRandomNumber(N / 17 + 1))
+        {
+          const auto reserve = istream.read_reserve(toRead);
+          verifyIota(reserve);
+          const auto read = makeRandomNumber(reserve.size() + 1);
+          istream.read_commit(reserve.first(read));
+        }
+      }
+    }
+
+    //*************************************************************************
+  #if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
+    #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
+                                       // supported
       #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1);
       #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2);
     #else
@@ -350,7 +480,7 @@ namespace
       FIX_PROCESSOR_AFFINITY1;
 
       const size_t write_chunk_size = 7UL;
-      size_t tick = 0UL;
+      size_t       tick             = 0UL;
 
       while (tick < LENGTH)
       {
@@ -391,8 +521,8 @@ namespace
         CHECK_EQUAL(i, tick_list[i]);
       }
     }
-#endif
+  #endif
   }
-}
+} // namespace
 
 #endif // ETL_HAS_ATOMIC

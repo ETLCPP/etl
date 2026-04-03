@@ -194,34 +194,34 @@ namespace
     TEST(test_debounce_default_4_4_3_nonbounce)
     {
       etl::debounce<4, 4, 3> key_state;
-      
+
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-      
+
       //*******************************
       // Transition to set.
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-      
+
       // Valid set.
       CHECK(key_state.add(true));
       CHECK(key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-      
+
       //*******************************
       // Transition to held.
       CHECK(!key_state.add(true));
@@ -285,17 +285,17 @@ namespace
       CHECK(key_state.is_set());
       CHECK(key_state.is_held());
       CHECK(key_state.is_repeating());
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
       CHECK(key_state.is_held());
       CHECK(key_state.is_repeating());
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
       CHECK(key_state.is_held());
       CHECK(key_state.is_repeating());
-      
+
       // Valid clear.
       CHECK(key_state.add(false));
       CHECK(!key_state.is_set());
@@ -307,133 +307,133 @@ namespace
     TEST(test_debounce_initial_set_4_4_0_nonbounce)
     {
       etl::debounce<4, 4> key_state(true);
-      
+
       CHECK(key_state.is_set());
-      
+
       //*******************************
       // Transition to clear.
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(key_state.add(false));
       CHECK(!key_state.is_set());
-      
+
       //*******************************
       // Transition to set.
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(key_state.add(true));
       CHECK(key_state.is_set());
     }
-    
+
     //*************************************************************************
     TEST(test_debounce_default_4_4_0_bounce)
     {
       etl::debounce<4, 4> key_state;
-      
+
       CHECK(!key_state.is_set());
-      
+
       //*******************************
       // Transition to set.
-      // Bounce 1  
+      // Bounce 1
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(!key_state.is_set());
-      
+
       // Bounce 2
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(!key_state.is_set());
-      
+
       // Bounce 3
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(!key_state.is_set());
-      
+
       // Stopped bouncing
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
-      
+
       // Valid set.
       CHECK(key_state.add(true));
       CHECK(key_state.is_set());
-      
+
       //*******************************
       // Transition to clear.
       // Bounce 1
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(!key_state.add(true));
       CHECK(key_state.is_set());
-      
+
       // Bounce 2
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
-      CHECK(key_state.is_set());      
-      
+      CHECK(key_state.is_set());
+
       CHECK(!key_state.add(true));
-      CHECK(key_state.is_set());  
-      
+      CHECK(key_state.is_set());
+
       // Bounce 3
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
-      CHECK(!key_state.add(false));
-      CHECK(key_state.is_set());      
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
+      CHECK(!key_state.add(false));
+      CHECK(key_state.is_set());
+
       CHECK(!key_state.add(true));
-      CHECK(key_state.is_set());      
-      
+      CHECK(key_state.is_set());
+
       // Stopped bouncing
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       CHECK(!key_state.add(false));
       CHECK(key_state.is_set());
-      
+
       // Valid clear.
       CHECK(key_state.add(false));
       CHECK(!key_state.is_set());
@@ -540,12 +540,12 @@ namespace
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-            
+
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
       CHECK(!key_state.is_held());
       CHECK(!key_state.is_repeating());
-      
+
       // Valid set.
       CHECK(key_state.add(true));
       CHECK(key_state.is_set());
@@ -785,7 +785,7 @@ namespace
 
       //*******************************
       // Transition to set.
-      // Bounce 1  
+      // Bounce 1
       CHECK(!key_state.add(true));
       CHECK(!key_state.is_set());
 
@@ -876,4 +876,4 @@ namespace
       CHECK(!key_state.is_set());
     }
   }
-}
+} // namespace

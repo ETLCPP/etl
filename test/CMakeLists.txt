@@ -173,6 +173,7 @@ add_executable(etl_tests
 	test_endian.cpp
 	test_enum_type.cpp
 	test_error_handler.cpp
+	test_etl_assert.cpp
 	test_etl_traits.cpp
 	test_exception.cpp
 	test_expected.cpp
@@ -222,6 +223,7 @@ add_executable(etl_tests
 	test_list_shared_pool.cpp
 	test_macros.cpp
 	test_make_string.cpp
+	test_manchester.cpp
 	test_map.cpp
 	test_math.cpp
 	test_math_functions.cpp
@@ -263,8 +265,8 @@ add_executable(etl_tests
 	test_poly_span_fixed_extent.cpp
 	test_pool.cpp
 	test_pool_external_buffer.cpp
-	test_print.cpp
 	test_priority_queue.cpp
+	test_print.cpp
 	test_pseudo_moving_average.cpp
 	test_quantize.cpp
 	test_queue.cpp
@@ -280,6 +282,7 @@ add_executable(etl_tests
 	test_queue_spsc_locked.cpp
 	test_queue_spsc_locked_small.cpp
 	test_random.cpp
+	test_ranges.cpp
 	test_ratio.cpp
 	test_reference_flat_map.cpp
 	test_reference_flat_multimap.cpp
@@ -378,6 +381,10 @@ target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
 
 option(ETL_NO_STL "No STL" OFF)
 
+set(EXTRA_COMPILE_OPTIONS "" CACHE STRING "Additional compiler options")
+set(EXTRA_LINK_OPTIONS "" CACHE STRING "Additional linker options")
+set(EXTRA_LINK_LIBS "" CACHE STRING "Additional libraries to link")
+
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
@@ -473,9 +480,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wsign-conversion
 			-Wextra-semi
 			-g
+			${EXTRA_COMPILE_OPTIONS}
 			)
+	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -490,11 +500,14 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wsign-conversion
 			-Wextra-semi
 			-Wextra-semi-stmt
 			-Wc++11-extra-semi
 			-g
+			${EXTRA_COMPILE_OPTIONS}
 			)
+	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
@@ -520,13 +533,13 @@ target_include_directories(etl_tests
 		${PROJECT_SOURCE_DIR}/../include)
 
 add_subdirectory(UnitTest++)
-target_link_libraries(etl_tests PRIVATE UnitTestpp)
+target_link_libraries(etl_tests PRIVATE UnitTestpp ${EXTRA_LINK_LIBS})
 
+enable_testing()
 # Enable the 'make test' CMake target using the executable defined above
-add_test(etl_unit_tests etl_tests)
+add_test(NAME etl_unit_tests COMMAND etl_tests)
 
 # Since ctest will only show you the results of the single executable
 # define a target that will output all of the failing or passing tests
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
-

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -69,7 +69,7 @@ namespace
       Chrono::year_month ym{Chrono::year(2000), Chrono::January};
 
       CHECK_TRUE(ym.ok()); // Valid year_month
-      CHECK_EQUAL(2000,            (int)ym.year());
+      CHECK_EQUAL(2000, (int)ym.year());
       CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ym.month());
     }
 
@@ -128,7 +128,7 @@ namespace
       Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
       Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
 
-      CHECK_TRUE(ym1 == ym1);  // Same year/month/day
+      CHECK_TRUE(ym1 == ym1);  // Same year/month
       CHECK_FALSE(ym1 == ym2); // Different year
       CHECK_FALSE(ym1 == ym3); // Different month
     }
@@ -140,9 +140,80 @@ namespace
       Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
       Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
 
-      CHECK_FALSE(ym1 != ym1); // Same year/month/day
+      CHECK_FALSE(ym1 != ym1); // Same year/month
       CHECK_TRUE(ym1 != ym2);  // Different year
       CHECK_TRUE(ym1 != ym3);  // Different month
     }
+
+    //*************************************************************************
+    TEST(test_year_month_relational_operators)
+    {
+      Chrono::year_month ym1(Chrono::year(2021), Chrono::January);
+      CHECK_FALSE(ym1 < ym1); // Same year/month
+      CHECK_TRUE(ym1 <= ym1);
+      CHECK_FALSE(ym1 > ym1);
+      CHECK_TRUE(ym1 >= ym1);
+
+      Chrono::year_month ym2(Chrono::year(2026), Chrono::December);
+      CHECK_TRUE(ym1 < ym2); // left year/month strict less
+      CHECK_TRUE(ym1 <= ym2);
+      CHECK_FALSE(ym1 > ym2);
+      CHECK_FALSE(ym1 >= ym2);
+
+      CHECK_FALSE(ym2 < ym1); // left year/month strict greater
+      CHECK_FALSE(ym2 <= ym1);
+      CHECK_TRUE(ym2 > ym1);
+      CHECK_TRUE(ym2 >= ym1);
+    }
+
+    //*************************************************************************
+    TEST(test_year_month_year_month_diff_operator)
+    {
+      Chrono::year_month ym1(Chrono::year(2021), Chrono::January);
+      Chrono::months     dms = ym1 - ym1;
+      CHECK_EQUAL(dms.count(), 0);
+      Chrono::year_month ym2(Chrono::year(2026), Chrono::December);
+      dms = ym2 - ym1; // positive
+      CHECK_EQUAL(dms.count(), (2026 - 2021) * 12 + 11);
+      dms = ym1 - ym2; // negative
+      CHECK_EQUAL(dms.count(), (2021 - 2026) * 12 - 11);
+    }
+
+    //*************************************************************************
+    TEST(test_year_month_add_sub_months_operators)
+    {
+      Chrono::year_month ym1(Chrono::year(2021), Chrono::January);
+      Chrono::months     dms(0); // zero
+      CHECK_TRUE(dms + ym1 == ym1);
+      CHECK_TRUE(ym1 + dms == ym1);
+      CHECK_TRUE(ym1 - dms == ym1);
+      Chrono::year_month ym2(Chrono::year(2026), Chrono::December);
+      dms = ym1 - ym2; // negative
+      CHECK_TRUE(dms + ym2 == ym1);
+      CHECK_TRUE(ym2 + dms == ym1);
+      CHECK_TRUE(ym1 - dms == ym2);
+      dms = ym2 - ym1; // positive
+      CHECK_TRUE(dms + ym1 == ym2);
+      CHECK_TRUE(ym1 + dms == ym2);
+      CHECK_TRUE(ym2 - dms == ym1);
+    }
+
+    //*************************************************************************
+    TEST(test_year_month_add_sub_years_operator)
+    {
+      Chrono::year_month ym(Chrono::year(2021), Chrono::January);
+      Chrono::years      dys(0); // zero
+      CHECK_TRUE((ym + dys == Chrono::year_month(ym.year() + dys, ym.month())));
+      CHECK_TRUE((dys + ym == Chrono::year_month(ym.year() + dys, ym.month())));
+      CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
+      dys = Chrono::years(-200); // negative
+      CHECK_TRUE((ym + dys == Chrono::year_month(ym.year() + dys, ym.month())));
+      CHECK_TRUE((dys + ym == Chrono::year_month(ym.year() + dys, ym.month())));
+      CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
+      dys = Chrono::years(300); // positive
+      CHECK_TRUE((ym + dys == Chrono::year_month(ym.year() + dys, ym.month())));
+      CHECK_TRUE((dys + ym == Chrono::year_month(ym.year() + dys, ym.month())));
+      CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
+    }
   }
-}
+} // namespace

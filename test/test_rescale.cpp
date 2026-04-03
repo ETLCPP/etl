@@ -30,8 +30,8 @@ SOFTWARE.
 
 #include "etl/rescale.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 #include <math.h>
 
 namespace
@@ -43,30 +43,21 @@ namespace
 
   struct Compare
   {
-    bool operator ()(double lhs, double rhs) const
+    bool operator()(double lhs, double rhs) const
     {
       return fabs(lhs - rhs) < 1.0;
     }
   };
 
   //***********************************
-  const std::array<char, Size> input1 =
-  {
-    10, 11, 12, 13, 14, 15, 16, 17, 18, 19
-  };
+  const std::array<char, Size> input1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 
   //***********************************
-  const std::array<int, Size> result1 =
-  {
-    40000, 40211, 40422, 40633, 40844, 41055, 41266, 41477, 41688, 41900
-  };
+  const std::array<int, Size> result1 = {40000, 40211, 40422, 40633, 40844, 41055, 41266, 41477, 41688, 41900};
 
   std::array<int, Size> output1;
 
-  const std::array<double, Size> result2 =
-  {
-    40000.0, 40211.0, 40422.0, 40633.0, 40844.0, 41055.0, 41266.0, 41477.0, 41688.0, 41900.0
-  };
+  const std::array<double, Size> result2 = {40000.0, 40211.0, 40422.0, 40633.0, 40844.0, 41055.0, 41266.0, 41477.0, 41688.0, 41900.0};
 
   std::array<double, Size> output2;
 
@@ -94,4 +85,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

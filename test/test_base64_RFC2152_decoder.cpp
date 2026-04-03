@@ -35,10 +35,10 @@ SOFTWARE.
 #include "etl/string.h"
 #include "etl/vector.h"
 
-#include <string>
-#include <array>
-#include <vector>
 #include <algorithm>
+#include <array>
+#include <string>
+#include <vector>
 
 #if ETL_USING_STL
   #include <iterator>
@@ -54,52 +54,44 @@ namespace
 {
   using codec               = etl::base64_rfc2152_decoder<etl::base64::Min_Decode_Buffer_Size>;
   using codec_larger_buffer = etl::base64_rfc2152_decoder<etl::base64::Min_Decode_Buffer_Size * 10>;
-  
+
 #if (ETL_USING_CPP14)
-  using codec_full_buffer   = etl::base64_rfc2152_decoder< etl::base64_rfc2152_decoder<>::safe_output_buffer_size(342)>;
+  using codec_full_buffer = etl::base64_rfc2152_decoder< etl::base64_rfc2152_decoder<>::safe_output_buffer_size(342)>;
 #else
-  using codec_full_buffer   = etl::base64_rfc2152_decoder<256>;
+  using codec_full_buffer = etl::base64_rfc2152_decoder<256>;
 #endif
 
   std::vector<unsigned char> decoded_output;
-  bool received_final_block = false;
+  bool                       received_final_block = false;
 
   auto lambda = [](const codec::span_type& sp)
+  {
+    if (sp.empty())
     {
-      if (sp.empty())
-      {
-        received_final_block = true;
-      }
-      else
-      {
-        std::copy(sp.begin(), sp.end(), std::back_inserter(decoded_output));
-      }
-    };
+      received_final_block = true;
+    }
+    else
+    {
+      std::copy(sp.begin(), sp.end(), std::back_inserter(decoded_output));
+    }
+  };
 
   codec::callback_type callback = lambda;
 
-  std::array<unsigned char, 256> input_data =
-  {
-    0x3B, 0x27, 0x03, 0x43, 0x2D, 0xFB, 0x28, 0x2A, 0x61, 0xAE, 0xBC, 0x49, 0x71, 0x32, 0x01, 0x15,
-    0x69, 0x5C, 0x5E, 0xF5, 0xD5, 0x9B, 0xDE, 0xA5, 0x57, 0xC9, 0xC1, 0x7D, 0x80, 0xDE, 0x4C, 0x81,
-    0xC0, 0xCF, 0x2A, 0xD1, 0x86, 0x56, 0xD5, 0x71, 0x37, 0xEB, 0x80, 0x32, 0xDF, 0xE4, 0xDF, 0xB6,
-    0xEE, 0x3F, 0xDC, 0x79, 0xB3, 0x17, 0x8E, 0x76, 0x65, 0x8E, 0x96, 0x21, 0xB9, 0x88, 0xD1, 0x6D,
-    0xD0, 0xDD, 0xFF, 0xDA, 0xA8, 0x7A, 0x4D, 0xF5, 0x71, 0x77, 0xFD, 0x2E, 0xF2, 0xE4, 0x40, 0x72,
-    0x8C, 0x83, 0x00, 0x6F, 0x13, 0x72, 0x53, 0xE4, 0x6B, 0x70, 0x0E, 0x37, 0xCA, 0x25, 0xCD, 0x68,
-    0x62, 0xC0, 0xAB, 0x14, 0xC7, 0x59, 0x83, 0xD2, 0x82, 0x8C, 0x93, 0x6D, 0x13, 0x21, 0xC0, 0x08,
-    0xF9, 0x6D, 0xAC, 0x84, 0x78, 0x49, 0x84, 0x6F, 0x6B, 0xFB, 0x20, 0x3B, 0x9C, 0x49, 0xFB, 0x4E,
-    0x80, 0x69, 0x82, 0x25, 0x86, 0x95, 0xD5, 0x4D, 0x91, 0xED, 0xD2, 0x77, 0x2A, 0x24, 0x40, 0x8A,
-    0xDF, 0x4D, 0x80, 0x2D, 0xCD, 0xD5, 0x5A, 0x26, 0xA6, 0x71, 0x15, 0x42, 0x0E, 0x3F, 0xB2, 0x70,
-    0x14, 0x29, 0x1F, 0x8D, 0x23, 0x2E, 0xC1, 0xEA, 0xCE, 0xF9, 0x7E, 0x6C, 0xDF, 0x1C, 0xA3, 0x84,
-    0x2B, 0x24, 0x35, 0xA7, 0x63, 0xC8, 0x0B, 0x1F, 0x8B, 0xBA, 0x51, 0xBF, 0xE9, 0x51, 0x80, 0xD2,
-    0x23, 0xB5, 0xD1, 0xB4, 0x59, 0xAE, 0x7D, 0x30, 0x1D, 0x00, 0x1C, 0xD8, 0x70, 0x6C, 0x16, 0x71,
-    0xC7, 0x56, 0x08, 0xFE, 0x81, 0xAE, 0xFB, 0xE0, 0x92, 0xD8, 0xDB, 0xB9, 0x57, 0x7C, 0x99, 0xCB,
-    0x42, 0xEF, 0xFC, 0xB3, 0x56, 0x1E, 0xD1, 0x42, 0xD3, 0x0C, 0x18, 0xB3, 0xEE, 0xAF, 0x1A, 0x77,
-    0xA8, 0x52, 0x3C, 0x9E, 0xCD, 0xDE, 0x21, 0x34, 0x3E, 0x1F, 0xB5, 0x54, 0xD7, 0xFB, 0xB4, 0xBD
-  };
+  std::array<unsigned char, 256> input_data = {
+    0x3B, 0x27, 0x03, 0x43, 0x2D, 0xFB, 0x28, 0x2A, 0x61, 0xAE, 0xBC, 0x49, 0x71, 0x32, 0x01, 0x15, 0x69, 0x5C, 0x5E, 0xF5, 0xD5, 0x9B, 0xDE, 0xA5,
+    0x57, 0xC9, 0xC1, 0x7D, 0x80, 0xDE, 0x4C, 0x81, 0xC0, 0xCF, 0x2A, 0xD1, 0x86, 0x56, 0xD5, 0x71, 0x37, 0xEB, 0x80, 0x32, 0xDF, 0xE4, 0xDF, 0xB6,
+    0xEE, 0x3F, 0xDC, 0x79, 0xB3, 0x17, 0x8E, 0x76, 0x65, 0x8E, 0x96, 0x21, 0xB9, 0x88, 0xD1, 0x6D, 0xD0, 0xDD, 0xFF, 0xDA, 0xA8, 0x7A, 0x4D, 0xF5,
+    0x71, 0x77, 0xFD, 0x2E, 0xF2, 0xE4, 0x40, 0x72, 0x8C, 0x83, 0x00, 0x6F, 0x13, 0x72, 0x53, 0xE4, 0x6B, 0x70, 0x0E, 0x37, 0xCA, 0x25, 0xCD, 0x68,
+    0x62, 0xC0, 0xAB, 0x14, 0xC7, 0x59, 0x83, 0xD2, 0x82, 0x8C, 0x93, 0x6D, 0x13, 0x21, 0xC0, 0x08, 0xF9, 0x6D, 0xAC, 0x84, 0x78, 0x49, 0x84, 0x6F,
+    0x6B, 0xFB, 0x20, 0x3B, 0x9C, 0x49, 0xFB, 0x4E, 0x80, 0x69, 0x82, 0x25, 0x86, 0x95, 0xD5, 0x4D, 0x91, 0xED, 0xD2, 0x77, 0x2A, 0x24, 0x40, 0x8A,
+    0xDF, 0x4D, 0x80, 0x2D, 0xCD, 0xD5, 0x5A, 0x26, 0xA6, 0x71, 0x15, 0x42, 0x0E, 0x3F, 0xB2, 0x70, 0x14, 0x29, 0x1F, 0x8D, 0x23, 0x2E, 0xC1, 0xEA,
+    0xCE, 0xF9, 0x7E, 0x6C, 0xDF, 0x1C, 0xA3, 0x84, 0x2B, 0x24, 0x35, 0xA7, 0x63, 0xC8, 0x0B, 0x1F, 0x8B, 0xBA, 0x51, 0xBF, 0xE9, 0x51, 0x80, 0xD2,
+    0x23, 0xB5, 0xD1, 0xB4, 0x59, 0xAE, 0x7D, 0x30, 0x1D, 0x00, 0x1C, 0xD8, 0x70, 0x6C, 0x16, 0x71, 0xC7, 0x56, 0x08, 0xFE, 0x81, 0xAE, 0xFB, 0xE0,
+    0x92, 0xD8, 0xDB, 0xB9, 0x57, 0x7C, 0x99, 0xCB, 0x42, 0xEF, 0xFC, 0xB3, 0x56, 0x1E, 0xD1, 0x42, 0xD3, 0x0C, 0x18, 0xB3, 0xEE, 0xAF, 0x1A, 0x77,
+    0xA8, 0x52, 0x3C, 0x9E, 0xCD, 0xDE, 0x21, 0x34, 0x3E, 0x1F, 0xB5, 0x54, 0xD7, 0xFB, 0xB4, 0xBD};
 
-  std::array<std::string, 257> encoded =
-  {
+  std::array<std::string, 257> encoded = {
     "",
     "Ow",
     "Oyc",
@@ -356,8 +348,7 @@ namespace
     "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1w",
     "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/s",
     "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/u0",
-    "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/u0vQ"
-  };
+    "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/u0vQ"};
 
   SUITE(test_base64_rfc2152_decoder_with_no_padding)
   {
@@ -367,7 +358,7 @@ namespace
       for (size_t i = 0; i < 256; ++i)
       {
         size_t minimum_size = i;
-        size_t safe_size = codec::safe_output_buffer_size(encoded[i].size());
+        size_t safe_size    = codec::safe_output_buffer_size(encoded[i].size());
 
         CHECK_TRUE(safe_size >= minimum_size);
         CHECK_TRUE((safe_size - minimum_size) <= 2U);
@@ -386,7 +377,7 @@ namespace
 
         b64.decode_final(encoded[i].data(), encoded[i].size());
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -410,7 +401,7 @@ namespace
         b64.decode_final(encoded[i].data(), encoded[i].size());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -431,7 +422,7 @@ namespace
         decoded_output.clear();
         received_final_block = false;
 
-        auto start = encoded[i].data();
+        auto start  = encoded[i].data();
         auto length = encoded[i].size();
 
         while (length >= 5)
@@ -451,7 +442,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -472,7 +463,7 @@ namespace
         decoded_output.clear();
         received_final_block = false;
 
-        auto start = encoded[i].data();
+        auto start  = encoded[i].data();
         auto length = encoded[i].size();
 
         while (length >= 5)
@@ -492,7 +483,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -516,7 +507,7 @@ namespace
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -540,7 +531,7 @@ namespace
         b64.decode_final(encoded[i].begin(), encoded[i].end());
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -561,7 +552,7 @@ namespace
         decoded_output.clear();
         received_final_block = false;
 
-        auto start = encoded[i].data();
+        auto start  = encoded[i].data();
         auto length = encoded[i].size();
 
         while (length >= 5)
@@ -581,7 +572,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -656,7 +647,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -677,7 +668,7 @@ namespace
         decoded_output.clear();
         received_final_block = false;
 
-        auto start = encoded[i].data();
+        auto start  = encoded[i].data();
         auto length = encoded[i].size();
 
         while (length--)
@@ -690,7 +681,7 @@ namespace
         CHECK_TRUE(received_final_block);
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(decoded_output);
 #include "etl/private/diagnostic_pop.h"
 
@@ -728,7 +719,7 @@ namespace
         b64.flush();
 
 #include "etl/private/diagnostic_null_dereference_push.h"
-        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), i));
+        std::vector<unsigned char> expected(input_data.begin(), std::next(input_data.begin(), static_cast<ptrdiff_t>(i)));
         std::vector<unsigned char> actual(b64.begin(), b64.end());
 #include "etl/private/diagnostic_pop.h"
 
@@ -743,7 +734,7 @@ namespace
     template <size_t Size>
     constexpr auto GetConstexprBase64(const etl::array<char, Size> input) noexcept
     {
-      etl::array<char, 10> output{ 0 };
+      etl::array<unsigned char, 10> output{0};
 
       using codec = etl::base64_rfc2152_decoder<codec::safe_output_buffer_size(Size)>;
 
@@ -756,14 +747,14 @@ namespace
 
     TEST(test_encode_constexpr)
     {
-      constexpr etl::array<char, 14> input = { 'A', 'A', 'E', 'C' ,'A' ,'w', 'Q', 'F', 'B', 'g', 'c', 'I', 'C', 'Q'};
+      constexpr etl::array<char, 14> input = {'A', 'A', 'E', 'C', 'A', 'w', 'Q', 'F', 'B', 'g', 'c', 'I', 'C', 'Q'};
 
-      constexpr auto output{ GetConstexprBase64(input) };
+      constexpr auto output{GetConstexprBase64(input)};
 
-#include "etl/private/diagnostic_null_dereference_push.h"
-      std::vector<unsigned char> expected = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+  #include "etl/private/diagnostic_null_dereference_push.h"
+      std::vector<unsigned char> expected = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       std::vector<unsigned char> actual(output.begin(), output.end());
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_TRUE(std::equal(expected.begin(), expected.end(), actual.begin()));
       CHECK_TRUE(codec::safe_output_buffer_size(14) >= output.size());
@@ -798,5 +789,4 @@ namespace
 #endif
     }
   }
-}
-
+} // namespace

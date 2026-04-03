@@ -41,9 +41,9 @@ namespace
     //*************************************************************************
     TEST(test_constants)
     {
-      typedef etl::constant<char,   etl::integral_limits<char>::max>   C1;
+      typedef etl::constant<char, etl::integral_limits<char>::max>         C1;
       typedef etl::constant<uint32_t, etl::integral_limits<uint32_t>::max> C2;
-      typedef etl::constant<int64_t,  etl::integral_limits<int64_t>::max>  C3;
+      typedef etl::constant<int64_t, etl::integral_limits<int64_t>::max>   C3;
 
       C1 c1;
       C2 c2;
@@ -62,4 +62,4 @@ namespace
       CHECK((etl::is_same<int64_t, C3::value_type>::value));
     }
   }
-}
+} // namespace
