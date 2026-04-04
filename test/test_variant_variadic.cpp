@@ -2243,6 +2243,131 @@ namespace
       CHECK(etl::holds_alternative<int>(v1));
       CHECK(etl::get_if<int>(&v1) != nullptr);
     }
+
+    //*************************************************************************
+    // Tests for noexcept properties of etl::variant
+    // The noexcept specs only take effect when ETL_USING_EXCEPTIONS is enabled,
+    // because ETL_NOEXCEPT_IF expands to nothing otherwise.
+    // The etl::is_nothrow_* traits only work with STL or builtins.
+    //*************************************************************************
+  #if ETL_USING_EXCEPTIONS && (defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS)))
+
+    struct VariantNothrowType
+    {
+      VariantNothrowType() noexcept {}
+      VariantNothrowType(const VariantNothrowType&) noexcept {}
+      VariantNothrowType(VariantNothrowType&&) noexcept {}
+      VariantNothrowType& operator=(const VariantNothrowType&) noexcept
+      {
+        return *this;
+      }
+      VariantNothrowType& operator=(VariantNothrowType&&) noexcept
+      {
+        return *this;
+      }
+    };
+
+    struct VariantThrowingCopy
+    {
+      VariantThrowingCopy() noexcept {}
+      VariantThrowingCopy(const VariantThrowingCopy&) {} // may throw
+      VariantThrowingCopy(VariantThrowingCopy&&) noexcept {}
+      VariantThrowingCopy& operator=(const VariantThrowingCopy&)
+      {
+        return *this;
+      }
+      VariantThrowingCopy& operator=(VariantThrowingCopy&&) noexcept
+      {
+        return *this;
+      }
+    };
+
+    struct VariantThrowingMove
+    {
+      VariantThrowingMove() noexcept {}
+      VariantThrowingMove(const VariantThrowingMove&) noexcept {}
+      VariantThrowingMove(VariantThrowingMove&&) {} // may throw
+      VariantThrowingMove& operator=(const VariantThrowingMove&) noexcept
+      {
+        return *this;
+      }
+      VariantThrowingMove& operator=(VariantThrowingMove&&)
+      {
+        return *this;
+      }
+    };
+
+    TEST(test_variant_nothrow_copy_constructible)
+    {
+      // variant<Ts...> is nothrow copy constructible only if all Ts are
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_copy_constructible<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow copy constructible");
+
+      using HasThrowingCopy = etl::variant<int, VariantThrowingCopy>;
+      static_assert(!etl::is_nothrow_copy_constructible<HasThrowingCopy>::value,
+                    "variant<int, ThrowingCopy> should NOT be nothrow copy constructible");
+
+      using HasThrowingMove = etl::variant<int, VariantThrowingMove>;
+      static_assert(etl::is_nothrow_copy_constructible<HasThrowingMove>::value,
+                    "variant<int, ThrowingMove> should be nothrow copy constructible (copy is nothrow)");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_move_constructible)
+    {
+      // variant<Ts...> is nothrow move constructible only if all Ts are
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_move_constructible<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow move constructible");
+
+      using HasThrowingMove = etl::variant<int, VariantThrowingMove>;
+      static_assert(!etl::is_nothrow_move_constructible<HasThrowingMove>::value,
+                    "variant<int, ThrowingMove> should NOT be nothrow move constructible");
+
+      using HasThrowingCopy = etl::variant<int, VariantThrowingCopy>;
+      static_assert(etl::is_nothrow_move_constructible<HasThrowingCopy>::value,
+                    "variant<int, ThrowingCopy> should be nothrow move constructible (move is nothrow)");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_default_constructible)
+    {
+      // variant default-constructs the first alternative
+      using NothrowFirst = etl::variant<int, VariantThrowingCopy>;
+      static_assert(etl::is_nothrow_default_constructible<NothrowFirst>::value,
+                    "variant<int, ...> should be nothrow default constructible (int is nothrow)");
+
+      using ThrowingFirst = etl::variant<VariantThrowingCopy, int>;
+      // VariantThrowingCopy has noexcept default ctor, so this should be nothrow
+      static_assert(etl::is_nothrow_default_constructible<ThrowingFirst>::value,
+                    "variant<ThrowingCopy, int> should be nothrow default constructible (ThrowingCopy has noexcept default ctor)");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_copy_assignable)
+    {
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_copy_assignable<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow copy assignable");
+
+      using HasThrowingCopy = etl::variant<int, VariantThrowingCopy>;
+      static_assert(!etl::is_nothrow_copy_assignable<HasThrowingCopy>::value, "variant<int, ThrowingCopy> should NOT be nothrow copy assignable");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_move_assignable)
+    {
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_move_assignable<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow move assignable");
+
+      using HasThrowingMove = etl::variant<int, VariantThrowingMove>;
+      static_assert(!etl::is_nothrow_move_assignable<HasThrowingMove>::value, "variant<int, ThrowingMove> should NOT be nothrow move assignable");
+
+      CHECK(true);
+    }
+  #endif
   }
 } // namespace
 
